@@ -17,7 +17,10 @@ const sections = [
 export function Preview() {
   const [dark, setDark] = useState(false);
   const [group, setGroup] = useState("ready");
-  const [selected, setSelected] = useState("major-06");
+  const [selected, setSelected] = useState(() => {
+    const requested = new URLSearchParams(location.search).get("card");
+    return catalog.find((item) => item.id === requested)?.id ?? "major-06";
+  });
   const [back, setBack] = useState(false);
   const cards = catalog.filter((card) =>
     group === "ready" ? available.includes(card.id) : group === "all" || card.group === group,

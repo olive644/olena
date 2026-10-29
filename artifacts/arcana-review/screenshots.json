@@ -1,0 +1,202 @@
+[
+  {
+    "file": "sample-desktop-dark.png",
+    "width": 1440,
+    "height": 1000,
+    "theme": "escuro",
+    "kind": "Seis de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "sample-desktop-light.png",
+    "width": 1440,
+    "height": 1000,
+    "theme": "claro",
+    "kind": "Seis de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "sample-mobile-dark.png",
+    "width": 390,
+    "height": 844,
+    "theme": "escuro",
+    "kind": "Seis de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "sample-mobile-light.png",
+    "width": 390,
+    "height": 844,
+    "theme": "claro",
+    "kind": "Seis de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "translation-desktop-dark.png",
+    "width": 1280,
+    "height": 720,
+    "theme": "escuro",
+    "kind": "Tradução na inspeção real do app",
+    "fixture": "Screenshot do e2e de produção local, perfil fictício, tema por fixture; sem login ou sincronização real"
+  },
+  {
+    "file": "translation-desktop-light.png",
+    "width": 1280,
+    "height": 720,
+    "theme": "claro",
+    "kind": "Tradução na inspeção real do app",
+    "fixture": "Screenshot do e2e de produção local, perfil fictício, tema por fixture; sem login ou sincronização real"
+  },
+  {
+    "file": "translation-mobile-dark-card.png",
+    "width": 390,
+    "height": 836,
+    "theme": "escuro",
+    "kind": "Tradução na inspeção real do app",
+    "fixture": "Perfil visitante fictício, tema aplicado por fixture; sem autenticação ou sincronização real"
+  },
+  {
+    "file": "translation-mobile-dark.png",
+    "width": 390,
+    "height": 836,
+    "theme": "escuro",
+    "kind": "Tradução na inspeção real do app",
+    "fixture": "Perfil visitante fictício, tema aplicado por fixture; sem autenticação ou sincronização real"
+  },
+  {
+    "file": "translation-mobile-light.png",
+    "width": 390,
+    "height": 836,
+    "theme": "claro",
+    "kind": "Tradução na inspeção real do app",
+    "fixture": "Perfil visitante fictício, tema aplicado por fixture; sem autenticação ou sincronização real"
+  },
+  {
+    "file": "wands-05-desktop-dark.png",
+    "width": 1440,
+    "height": 1000,
+    "theme": "escuro",
+    "kind": "Cinco de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-05-desktop-light.png",
+    "width": 1440,
+    "height": 1000,
+    "theme": "claro",
+    "kind": "Cinco de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-05-mobile-dark.png",
+    "width": 390,
+    "height": 844,
+    "theme": "escuro",
+    "kind": "Cinco de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-05-mobile-light.png",
+    "width": 390,
+    "height": 844,
+    "theme": "claro",
+    "kind": "Cinco de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-08-desktop-dark.png",
+    "width": 1440,
+    "height": 1000,
+    "theme": "escuro",
+    "kind": "Oito de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-08-desktop-light.png",
+    "width": 1440,
+    "height": 1000,
+    "theme": "claro",
+    "kind": "Oito de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-08-mobile-dark.png",
+    "width": 390,
+    "height": 844,
+    "theme": "escuro",
+    "kind": "Oito de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-08-mobile-light.png",
+    "width": 390,
+    "height": 844,
+    "theme": "claro",
+    "kind": "Oito de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-09-desktop-dark.png",
+    "width": 1440,
+    "height": 1000,
+    "theme": "escuro",
+    "kind": "Nove de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-09-desktop-light.png",
+    "width": 1440,
+    "height": 1000,
+    "theme": "claro",
+    "kind": "Nove de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-09-mobile-dark.png",
+    "width": 390,
+    "height": 844,
+    "theme": "escuro",
+    "kind": "Nove de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-09-mobile-light.png",
+    "width": 390,
+    "height": 844,
+    "theme": "claro",
+    "kind": "Nove de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-10-desktop-dark.png",
+    "width": 1440,
+    "height": 1000,
+    "theme": "escuro",
+    "kind": "Dez de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-10-desktop-light.png",
+    "width": 1440,
+    "height": 1000,
+    "theme": "claro",
+    "kind": "Dez de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-10-mobile-dark.png",
+    "width": 390,
+    "height": 844,
+    "theme": "escuro",
+    "kind": "Dez de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  },
+  {
+    "file": "wands-10-mobile-light.png",
+    "width": 390,
+    "height": 844,
+    "theme": "claro",
+    "kind": "Dez de Paus, count-v3 no componente real",
+    "fixture": "Chromium headless, viewport fixo; componente real desta branch, sem publicação em produção"
+  }
+]

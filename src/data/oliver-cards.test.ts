@@ -2,7 +2,7 @@ import { expect, it } from "vitest";
 import { drawOliverCards, OLIVER_CARDS } from "./oliver-cards";
 import ARCANA_CARDS from "../../public/arcana/catalog.json";
 import { activeArcanaId } from "./arcana-ids";
-import source from "../../public/arcana/tarot-api.json";
+import source from "../../public/arcana/tarot-ptbr.json";
 it("defines 78 unique arcana with four suits, 22 majors, no combat stats and matched API identities", () => {
   expect(new Set(ARCANA_CARDS.map((c) => c.id)).size).toBe(78);
   expect(ARCANA_CARDS.filter((c) => c.group === "major")).toHaveLength(22);

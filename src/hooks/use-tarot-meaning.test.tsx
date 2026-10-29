@@ -1,89 +1,67 @@
-import { act, renderHook, waitFor } from "@testing-library/react";
-import { expect, it, vi } from "vitest";
+import { renderHook, waitFor } from "@testing-library/react";
+import { afterEach, expect, it, vi } from "vitest";
 import { useTarotMeaning } from "./use-tarot-meaning";
-it("shows the API data fallback during a remote failure without transmitting identity", async () => {
-  const copy = { name: "The Star", upright: "Hope", reversed: "Doubt", description: "A star." };
-  const fetcher = vi
-    .fn()
-    .mockResolvedValueOnce(new Response(JSON.stringify({ ar17: copy })))
-    .mockRejectedValueOnce(Error("offline"));
+afterEach(() => vi.unstubAllGlobals());
+it("mostra o significado em português da cópia própria, sem consultar serviço externo", async () => {
+  const copy = {
+    name: "A Estrela",
+    upright: "Perda, roubo",
+    reversed: "Arrogância",
+    description: "Uma grande estrela.",
+  };
+  const fetcher = vi.fn().mockResolvedValue(new Response(JSON.stringify({ ar17: copy })));
   vi.stubGlobal("fetch", fetcher);
   const { result } = renderHook(() => useTarotMeaning("ar17"));
-  await waitFor(() => expect(result.current?.value?.upright).toBe("Hope"));
-  await waitFor(() => expect(result.current?.offline).toBe(true));
-  expect(fetcher.mock.calls[1]?.[1]).toMatchObject({
-    credentials: "omit",
-    referrerPolicy: "no-referrer",
-  });
+  await waitFor(() => expect(result.current?.value?.upright).toBe("Perda, roubo"));
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  expect(fetcher.mock.calls[0]?.[0]).toBe("/arcana/tarot-ptbr.json");
 });
-it("does not display a late response belonging to the previous selection", async () => {
+
+it("não exibe texto em inglês de fora mesmo que o serviço externo responda", async () => {
+  const fetcher = vi.fn((url: string) =>
+    Promise.resolve(
+      url.startsWith("/arcana/")
+        ? new Response("{}")
+        : new Response(
+            JSON.stringify({
+              card: {
+                name_short: "ar18",
+                name: "The Moon",
+                meaning_up: "x",
+                meaning_rev: "y",
+                desc: "z",
+              },
+            }),
+          ),
+    ),
+  );
+  vi.stubGlobal("fetch", fetcher);
+  const { result } = renderHook(() => useTarotMeaning("ar18"));
+  await waitFor(() => expect(result.current).toBeDefined());
+  expect(result.current?.value).toBeUndefined();
+  expect(fetcher.mock.calls.every(([url]) => String(url).startsWith("/arcana/"))).toBe(true);
+});
+
+it("descarta resposta tardia de uma seleção anterior", async () => {
   let resolve: ((r: Response) => void) | undefined;
+  const moon = { name: "A Lua", upright: "Intuição", reversed: "Medo", description: "Lua" };
   const fetcher = vi
     .fn()
-    .mockResolvedValueOnce(new Response("{}"))
     .mockImplementationOnce(
       () =>
         new Promise<Response>((r) => {
           resolve = r;
         }),
     )
-    .mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          ar18: { name: "Moon", upright: "Intuition", reversed: "Fear", description: "Moon" },
-        }),
-      ),
-    )
-    .mockRejectedValue(Error("offline"));
+    .mockResolvedValueOnce(new Response(JSON.stringify({ ar18: moon })));
   vi.stubGlobal("fetch", fetcher);
   const { result, rerender } = renderHook(({ id }) => useTarotMeaning(id), {
     initialProps: { id: "ar01" },
   });
   await waitFor(() => expect(resolve).toBeDefined());
   rerender({ id: "ar18" });
-  await waitFor(() => expect(result.current?.value?.name).toBe("Moon"));
-  await act(async () => {
-    resolve?.(
-      new Response(
-        JSON.stringify({
-          cards: [
-            {
-              name_short: "ar01",
-              name: "Magician",
-              meaning_up: "Late",
-              meaning_rev: "Late",
-              desc: "Late",
-            },
-          ],
-        }),
-      ),
-    );
-  });
-  expect(result.current?.value?.name).toBe("Moon");
-});
-
-it("accepts the real single-card endpoint shape and verifies its identity", async () => {
-  vi.stubGlobal(
-    "fetch",
-    vi
-      .fn()
-      .mockResolvedValueOnce(new Response("{}"))
-      .mockResolvedValueOnce(
-        new Response(
-          JSON.stringify({
-            nhits: 1,
-            card: {
-              name_short: "ar02",
-              name: "The High Priestess",
-              meaning_up: "Wisdom",
-              meaning_rev: "Conceit",
-              desc: "Pillars",
-            },
-          }),
-        ),
-      ),
-  );
-  const { result } = renderHook(() => useTarotMeaning("ar02"));
-  await waitFor(() => expect(result.current?.offline).toBe(false));
-  expect(result.current?.value?.upright).toBe("Wisdom");
+  await waitFor(() => expect(result.current?.value?.name).toBe("A Lua"));
+  resolve?.(new Response(JSON.stringify({ ar01: { ...moon, name: "O Mago" } })));
+  await Promise.resolve();
+  expect(result.current?.value?.name).toBe("A Lua");
 });

@@ -102,3 +102,7 @@ Conferência automatizada: 312 inspeções, 78 cartas, PC e celular, claro e esc
 ## Coleção Arcano integrada
 
 O preview aprovado passa a ser usado na coleção e nos baús. Contrato de dados, migração autorizada, significado e privacidade: [ARCANA_INTEGRATION.md](ARCANA_INTEGRATION.md). Preservar somente a Estrela antiga na identidade major-17, nunca converter first-star. As 78 artes aprovadas não devem ser reconstruídas nesta integração. Galeria com três favoritas obtidas, categorias e inspeção 3D, no padrão de papel aprovado. UI nova sempre conferida em claro/escuro e PC/celular.
+
+## Revisão de contagem de 29/10/2026
+
+A variante count-v3 do Seis de Paus recebeu aceite visual explícito. A continuação autorizada gerou count-v3 também para Cinco, Oito, Nove e Dez de Paus. No Cinco a mudança torna cinco bastões distintos e legíveis; nos demais corrige a quantidade para o número da carta. Essas quatro versões finais permanecem sujeitas à conferência da proprietária no preview, sem autorização de merge presumida. A página artifacts/arcana-review/index.html apresenta originais, versões e screenshots reais. Os manifests da branch de correção priorizam count-v3 nesses cinco IDs, antes de detail-v2, anatomy-v2 ou base. Originais preservados, sem restaurá-los nos manifests por engano. IDs, personagens, moldura, paleta, dados e recompensas permanecem os mesmos.

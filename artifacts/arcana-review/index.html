@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="pt-BR">
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Revisão Arcano | Olena</title>
+  <style>
+    :root {
+      font: 17px/1.5 system-ui;
+      color: #26212b;
+      background: #faf7ef;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+    }
+    header,
+    main {
+      max-width: 1400px;
+      margin: auto;
+      padding: 24px;
+    }
+    header {
+      border-bottom: 4px solid #facc15;
+    }
+    h1 {
+      margin: 0;
+    }
+    small,
+    figcaption {
+      display: block;
+    }
+    button,
+    a {
+      font: inherit;
+      color: inherit;
+    }
+    button {
+      padding: 10px 16px;
+      background: #facc15;
+      border: 0;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    button:focus-visible,
+    a:focus-visible {
+      outline: 0;
+      text-decoration: underline;
+      text-decoration-thickness: 4px;
+      text-decoration-color: #facc15;
+      background: #fef08a;
+      color: #17151c;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .notice {
+      padding: 16px;
+      background: #fef08a;
+      color: #17151c;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 430px), 1fr));
+      gap: 28px;
+    }
+    figure {
+      margin: 0;
+      padding: 16px;
+      background: #fff;
+      border-bottom: 5px solid #6d28d9;
+    }
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 850px;
+      object-fit: contain;
+      background: #17151c;
+    }
+    figcaption {
+      overflow-wrap: anywhere;
+      padding: 14px 0;
+    }
+    h2 {
+      margin: 0 0 8px;
+    }
+    code {
+      overflow-wrap: anywhere;
+    }
+    body.dark {
+      color: #faf7ef;
+      background: #17151c;
+    }
+    body.dark figure {
+      background: #292331;
+    }
+    dialog {
+      border: 0;
+      padding: 16px;
+      max-width: 96vw;
+      max-height: 96vh;
+      background: #17151c;
+      color: #fff;
+    }
+    dialog::backdrop {
+      background: #000c;
+    }
+    dialog img {
+      display: block;
+      width: min(900px, 85vw);
+      height: auto;
+    }
+    dialog .close {
+      position: sticky;
+      top: 0;
+    }
+    #shots:empty::before {
+      content: "Screenshots do app ainda não disponíveis. Estas imagens são assets originais, não screenshots nem propostas corrigidas.";
+    }
+    a {
+      display: inline-block;
+      padding: 8px;
+    }
+    .meta {
+      font-size: 0.85rem;
+    }
+  </style>
+  <header>
+    <h1>Revisão visual do Arcano</h1>
+    <p>Seis de Paus aprovado. Cinco, Oito, Nove e Dez de Paus aguardam conferência final.</p>
+    <div class="notice">
+      As imagens abaixo são os arquivos originais completos. Não são screenshots do app nem mockups
+      de interface. Tema da página e viewport não comprovam testes do app.
+    </div>
+    <p class="meta">
+      Branch: <code>fix/arcana-counts-ptbr</code><br />SHA base:
+      <code>28539d6e5d835e673ab38a525b81424dcd76efe9</code><br />Versão das artes: count-v3.
+      Capturas feitas na worktree antes do commit.<br /><span id="revision"></span><br /><span
+        id="viewport"
+      ></span>
+    </p>
+    <div class="toolbar">
+      <button id="theme">Usar tema escuro</button
+      ><a href="http://127.0.0.1:4186/perfil" target="_blank" rel="noopener"
+        >Abrir app local, quando disponível</a
+      ><a href="http://127.0.0.1:4186/previews/arcana.html" target="_blank" rel="noopener"
+        >Abrir componente real do baralho</a
+      >
+    </div>
+    <p id="previewStatus">Verificando disponibilidade do preview do app...</p>
+  </header>
+  <main>
+    <section class="grid" id="cards"></section>
+    <h2>Propostas corrigidas</h2>
+    <div id="proposals">
+      <p>Nenhuma proposta corrigida pronta para aceite. Os originais permanecem no catálogo.</p>
+    </div>
+    <h2>Provas da interface real</h2>
+    <div id="shots"></div>
+    <p>
+      Aceite visual será registrado somente após confirmação explícita da proprietária. Aprovação de
+      imagem não autoriza merge.
+    </p>
+  </main>
+  <dialog id="zoom">
+    <button class="close" id="close">Fechar ampliação</button>
+    <p id="zoomTitle"></p>
+    <img id="zoomImage" alt="" />
+  </dialog>
+  <script>
+    const cards = [
+      [
+        "wands-08",
+        "Oito de Paus",
+        "wands-08.webp",
+        "9 bastões estrelados observados, esperado 8. Recontagem em resolução completa confirmou o defeito.",
+      ],
+      [
+        "wands-06",
+        "Seis de Paus",
+        "wands-06.webp",
+        "7 bastões observados, esperado 6. Um erguido e seis abaixo. Defeito confirmado.",
+      ],
+      [
+        "wands-09",
+        "Nove de Paus",
+        "wands-09-detail-v2.webp",
+        "8 bastões observados, esperado 9. Sete ao fundo e um segurado. Defeito confirmado.",
+      ],
+      [
+        "wands-10",
+        "Dez de Paus",
+        "wands-10.webp",
+        "11 bastões observados, esperado 10. Recontagem independente corrigiu o primeiro relatório do Prisma. Defeito confirmado.",
+      ],
+      [
+        "pentacles-10",
+        "Dez de Ouros",
+        "pentacles-10-detail-v2.webp",
+        "9 moedas no arco e um emblema circular na chave. Ambiguidade de leitura, sem correção automática.",
+      ],
+      [
+        "wands-05",
+        "Cinco de Paus",
+        "wands-05-anatomy-v2.webp",
+        "Contagem inconclusiva: hastes interrompidas e uma com duas cabeças. A variante corrigida torna cinco bastões distintos e legíveis.",
+      ],
+    ];
+    const zoom = document.querySelector("#zoom");
+    function enlarge(src, title) {
+      document.querySelector("#zoomImage").src = src;
+      document.querySelector("#zoomImage").alt = title;
+      document.querySelector("#zoomTitle").textContent = title;
+      zoom.showModal();
+    }
+    for (const [id, title, file, note] of cards) {
+      const f = document.createElement("figure");
+      const src = "/public/arcana/ink/" + file;
+      const h = document.createElement("h2");
+      h.textContent = title;
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = title + ", arte original auditada";
+      const cap = document.createElement("figcaption");
+      cap.textContent =
+        note +
+        " Versão: " +
+        file +
+        " | SHA base: 28539d6 | Tema da arte: paleta fixa preto/amarelo/roxos. Viewport: não aplicável ao asset.";
+      const b = document.createElement("button");
+      b.textContent = "Ampliar " + title;
+      b.onclick = () => enlarge(src, title + " | original | " + file);
+      const a = document.createElement("a");
+      a.href = src;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = "Abrir arquivo completo";
+      f.append(h, img, cap, b, a);
+      document.querySelector("#cards").append(f);
+    }
+    document.querySelector("#close").onclick = () => zoom.close();
+    document.querySelector("#theme").onclick = () => {
+      const dark = document.body.classList.toggle("dark");
+      document.querySelector("#theme").textContent = dark ? "Usar tema claro" : "Usar tema escuro";
+      updateViewport();
+    };
+    function updateViewport() {
+      document.querySelector("#viewport").textContent =
+        "Página de revisão: " +
+        innerWidth +
+        " × " +
+        innerHeight +
+        " CSS px | Tema: " +
+        (document.body.classList.contains("dark") ? "escuro" : "claro");
+    }
+    addEventListener("resize", updateViewport);
+    updateViewport();
+    fetch("http://127.0.0.1:4186/", { mode: "no-cors", signal: AbortSignal.timeout(4000) })
+      .then(
+        () =>
+          (document.querySelector("#previewStatus").textContent =
+            "Preview do app responde na porta 4186. Servidor de desenvolvimento da worktree desta tarefa."),
+      )
+      .catch(
+        () =>
+          (document.querySelector("#previewStatus").textContent =
+            "Preview do app indisponível na porta 4186. Não considerar os links acima prova de funcionamento."),
+      );
+    const proposals = document.querySelector("#proposals");
+    proposals.replaceChildren();
+    proposals.className = "grid";
+    for (const [rank, title, count, status] of [
+      ["05", "Cinco de Paus", 5, "Aguardando conferência final da proprietária."],
+      ["06", "Seis de Paus", 6, "Aceite recebido em 29/10/2026."],
+      ["08", "Oito de Paus", 8, "Aguardando conferência final da proprietária."],
+      ["09", "Nove de Paus", 9, "Aguardando conferência final da proprietária."],
+      ["10", "Dez de Paus", 10, "Aguardando conferência final da proprietária."],
+    ]) {
+      const src = "/public/arcana/ink/wands-" + rank + "-count-v3.webp";
+      const proposal = document.createElement("figure");
+      const h = document.createElement("h2");
+      h.textContent = title + ", count-v3";
+      const p = document.createElement("p");
+      p.textContent =
+        status +
+        " Total conferido: " +
+        count +
+        " bastões. Os manifests da coleção e do estudo desta branch usam esta variante; nada foi mesclado ou publicado em produção.";
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = title + ", variante corrigida";
+      const cap = document.createElement("figcaption");
+      cap.textContent =
+        "Edição imagegen da arte original. Base SHA 28539d6 + alterações locais desta branch. Paleta fixa de preto, amarelo e roxos. Viewport não aplicável ao asset; veja os screenshots reais abaixo.";
+      const b = document.createElement("button");
+      b.textContent = "Ampliar " + title;
+      b.onclick = () => enlarge(src, title + " | count-v3");
+      const file = document.createElement("a");
+      file.href = src;
+      file.target = "_blank";
+      file.rel = "noopener";
+      file.textContent = "Abrir WebP completo";
+      const live = document.createElement("a");
+      live.href = "http://127.0.0.1:4186/previews/arcana.html?card=wands-" + rank;
+      live.target = "_blank";
+      live.rel = "noopener";
+      live.textContent = "Abrir no componente real";
+      proposal.append(h, p, img, cap, b, file, live);
+      proposals.append(proposal);
+    }
+    fetch("/artifacts/arcana-review/screenshots.json")
+      .then((r) => r.json())
+      .then((rows) => {
+        const shots = document.querySelector("#shots");
+        shots.className = "grid";
+        for (const row of rows) {
+          const f = document.createElement("figure");
+          const title = document.createElement("h3");
+          title.textContent = row.kind + " | " + row.theme;
+          const img = document.createElement("img");
+          const src = "/artifacts/arcana-review/" + row.file;
+          img.src = src;
+          img.alt = title.textContent;
+          const cap = document.createElement("figcaption");
+          cap.textContent =
+            "Screenshot real do navegador. " +
+            row.width +
+            " × " +
+            row.height +
+            " px | Tema: " +
+            row.theme +
+            " | " +
+            row.fixture +
+            " | Base SHA 28539d6 + alterações desta branch, captura anterior ao commit. Arquivo: " +
+            row.file;
+          const b = document.createElement("button");
+          b.textContent = "Ampliar screenshot";
+          b.onclick = () =>
+            enlarge(src, title.textContent + " | " + row.width + " × " + row.height);
+          const a = document.createElement("a");
+          a.href = src;
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.textContent = "Abrir PNG";
+          f.append(title, img, cap, b, a);
+          shots.append(f);
+        }
+      });
+    fetch("/artifacts/arcana-review/revision.local")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((revision) => {
+        if (revision?.sha)
+          document.querySelector("#revision").textContent = "SHA atual da revisão: " + revision.sha;
+      })
+      .catch(() => {});
+  </script>
+</html>
