@@ -98,3 +98,7 @@ O baralho tem 78 propostas visuais no catálogo. Prioridade de variantes: style-
 Para aves, conferir duas asas e a anatomia oficial, sem impor mãos e pernas humanas. A regra de dois braços e duas mãos aplica-se somente aos personagens que possuem esses membros.
 
 Conferência automatizada: 312 inspeções, 78 cartas, PC e celular, claro e escuro, sem erro de navegador ou overflow. O catálogo verifica a divisão 22/56 e os arquivos. Esses testes não substituem revisão artística. A entrega permanece um preview isolado, sem migrar cartas conquistadas ou recompensas.
+
+## Coleção Arcano integrada
+
+O preview aprovado passa a ser usado na coleção e nos baús. Contrato de dados, migração autorizada, significado e privacidade: [ARCANA_INTEGRATION.md](ARCANA_INTEGRATION.md). Preservar somente a Estrela antiga na identidade major-17, nunca converter first-star. As 78 artes aprovadas não devem ser reconstruídas nesta integração. Galeria com três favoritas obtidas, categorias e inspeção 3D, no padrão de papel aprovado. UI nova sempre conferida em claro/escuro e PC/celular.

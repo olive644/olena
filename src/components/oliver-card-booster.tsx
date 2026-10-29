@@ -259,7 +259,7 @@ export function OliverCardBooster({
                 {index === cards.length - 1 ? uiText(1869) : uiText(771)}
               </button>
             ) : (
-              <span>{uiText(772)}</span>
+              <span>{uiText("Um arcano espera por você.")}</span>
             )}
           </div>
         </>

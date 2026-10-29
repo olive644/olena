@@ -1,15 +1,20 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { expect, it, vi } from "vitest";
 import { OliverCardInspection } from "./oliver-card-inspection";
-afterEach(cleanup);
-it("puts title above lore, rarity in the border and allows a full keyboard rotation", () => {
-  render(<OliverCardInspection id="glass-seed" />);
-  expect(screen.queryByText("Oliver · Comum")).toBeNull();
-  expect(screen.getByLabelText("Raridade rara")).toBeTruthy();
-  const title = screen.getByRole("heading", { name: "Semente de vidro" });
-  expect(title.nextElementSibling?.className).toBe("oliver-card-lore");
-  const card = screen.getByRole("button", { name: /Inspecionar carta em 360/ });
-  for (let index = 0; index < 16; index++) fireEvent.keyDown(card, { key: "ArrowRight" });
+vi.mock("../data/arcana-catalog", async () => {
+  const original =
+    await vi.importActual<typeof import("../data/arcana-catalog")>("../data/arcana-catalog");
+  const data = await import("../../public/arcana/catalog.json");
+  return { ...original, useArcanaCatalog: () => ({ cards: data.default, error: false }) };
+});
+it("uses the new tarot frame and back with full keyboard rotation and no combat stats", () => {
+  render(<OliverCardInspection id="major-17" />);
+  expect(screen.queryByText("Stamina")).toBeNull();
+  expect(screen.getByAltText("A Estrela").getAttribute("src")).toContain(
+    "/arcana/ink/major-17.webp",
+  );
+  const stage = screen.getByRole("button", { name: /Inspecionar carta em 360/ });
+  for (let n = 0; n < 16; n++) fireEvent.keyDown(stage, { key: "ArrowRight" });
   expect(document.querySelector<HTMLElement>(".oliver-inspection-turn")?.style.transform).toContain(
     "rotateY(400deg)",
   );
@@ -17,14 +22,5 @@ it("puts title above lore, rarity in the border and allows a full keyboard rotat
   expect(document.querySelector<HTMLElement>(".oliver-inspection-turn")?.style.transform).toContain(
     "rotateY(0deg)",
   );
-});
-it("shows the special Star arcana without common rarity or combat stats", () => {
-  render(<OliverCardInspection id="oliver-star-tarot" />);
-  expect(screen.getByRole("heading", { name: "A Estrela" })).toBeTruthy();
-  expect(screen.queryByLabelText("Raridade comum")).toBeNull();
-  expect(screen.queryByText("Stamina")).toBeNull();
-  expect(screen.getByText("XVII")).toBeTruthy();
-  expect(screen.getByAltText(/Oliver devolve a luz/).getAttribute("src")).toContain(
-    "oliver-star-tarot",
-  );
+  expect(screen.getByLabelText("Verso das cartas de arcano Olena")).toBeTruthy();
 });

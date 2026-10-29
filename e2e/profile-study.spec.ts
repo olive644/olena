@@ -64,7 +64,7 @@ for (const theme of ["light", "dark"]) {
                   id: "cards-a",
                   unlockAt: 0,
                   opened: true,
-                  cards: ["first-star", "silent-bell"],
+                  cards: ["major-00", "major-01"],
                   revealed: 2,
                   revealedAt: [1792497600000, 1792497700000],
                 },
@@ -72,7 +72,7 @@ for (const theme of ["light", "dark"]) {
                   id: "cards-b",
                   unlockAt: 0,
                   opened: true,
-                  cards: ["chalk-map", "glass-seed"],
+                  cards: ["cups-01", "cups-02"],
                   revealed: 2,
                 },
               ],
@@ -107,11 +107,9 @@ for (const theme of ["light", "dark"]) {
     await expect(page.getByRole("heading", { name: "Meu progresso", exact: true })).toHaveCount(0);
     await expect(page.getByText("O estudo que você já construiu", { exact: true })).toHaveCount(0);
     await expect(page.locator(".profile-islands")).toHaveCount(0);
-    const cards = page.getByRole("region", { name: "Cartas do Oliver" });
-    await expect(cards.locator(".profile-cards__featured > button")).toHaveCount(3);
-    await cards
-      .getByRole("button", { name: "Inspecionar carta A primeira estrela", exact: true })
-      .click();
+    const cards = page.getByRole("region", { name: "Arcano" });
+    await expect(cards.locator(".profile-cards__featured .profile-cards__tile")).toHaveCount(3);
+    await cards.getByRole("button", { name: "Inspecionar carta O Louco", exact: true }).click();
     const modal = page.getByRole("dialog");
     await expect(modal.locator("time")).toHaveAttribute(
       "datetime",
@@ -123,7 +121,7 @@ for (const theme of ["light", "dark"]) {
     await expect(modal.locator(".oliver-inspection-turn")).toHaveCSS("transform", /matrix3d/);
     await modal.getByRole("button", { name: "Remover carta dos destaques", exact: true }).click();
     await modal.getByRole("button", { name: "Voltar à coleção", exact: true }).click();
-    await expect(modal.locator(".profile-cards__gallery-item")).toHaveCount(11);
+    await expect(modal.locator(".profile-cards__gallery-item")).toHaveCount(78);
     if (info.project.name === "mobile") {
       expect(
         await modal
@@ -132,7 +130,7 @@ for (const theme of ["light", "dark"]) {
       ).toBe(3);
     }
     await modal
-      .getByRole("button", { name: "Inspecionar carta Semente de vidro", exact: true })
+      .getByRole("button", { name: "Inspecionar carta Dois de Copas", exact: true })
       .click();
     await expect(modal.getByText("Data não registrada", { exact: true })).toBeVisible();
     await expect(modal.getByRole("button", { name: "Fechar", exact: true })).toBeInViewport();
@@ -142,7 +140,7 @@ for (const theme of ["light", "dark"]) {
       await page.evaluate(
         () => JSON.parse(localStorage.getItem("helena.profile.v1")!).cardFavorites,
       ),
-    ).toEqual(["silent-bell", "chalk-map", "glass-seed"]);
+    ).toEqual(["major-01", "cups-01", "cups-02"]);
     await page.screenshot({
       path: info.outputPath("cartas-inspecao-" + theme + ".png"),
       fullPage: false,

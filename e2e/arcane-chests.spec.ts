@@ -16,7 +16,7 @@ test("legacy rewards become one cosmic dust, reveal saved rarity and inspect nat
           receipts: ["common", "arcane"],
           rounds: { common: 100, arcane: 100 },
           chests: [
-            { id: "common", unlockAt: 0, opened: true, cards: ["first-star"], revealed: 0 },
+            { id: "common", unlockAt: 0, opened: true, cards: ["major-00"], revealed: 0 },
             {
               id: "arcane",
               unlockAt: Date.now() + 60_000,
@@ -62,12 +62,12 @@ test("legacy rewards become one cosmic dust, reveal saved rarity and inspect nat
   await expect(page.locator(".oliver-store-flight")).toHaveCount(0);
   await page.clock.fastForward(1000);
   await expect(dialog).toHaveCount(0);
-  await expect(page.getByRole("dialog", { name: "Coleção do Oliver" })).toHaveCount(0);
+  await expect(page.getByRole("dialog", { name: "Arcano" })).toHaveCount(0);
   await page.getByRole("button", { name: "Continuar Poeira cósmica" }).click();
   for (let i = 1; i <= 4; i++)
     await page.getByRole("button", { name: `Revelar raridade, toque ${i} de 4` }).click();
-  await expect(dialog).toHaveAttribute("data-rarity", "Comum");
-  await expect(dialog).toHaveCSS("background-color", "rgb(23, 75, 59)");
+  await expect(dialog).toHaveAttribute("data-rarity", "Épica");
+  await expect(dialog).toHaveCSS("background-color", "rgb(81, 37, 155)");
   await page.clock.fastForward(1000);
   await page.getByRole("button", { name: "Revelar carta", exact: true }).click();
   await page.clock.fastForward(700);
@@ -75,7 +75,8 @@ test("legacy rewards become one cosmic dust, reveal saved rarity and inspect nat
     "transform",
     /^(none|matrix\(1, 0, 0, 1, 0, 0\))$/,
   );
-  await expect(page.getByLabel("Raridade comum")).toBeVisible();
+  await expect(page.locator(".oliver-inspection-front .arcana-paper")).toBeVisible();
+  await expect(page.getByText("Stamina", { exact: true })).toHaveCount(0);
   await page.screenshot({ path: info.outputPath("cosmic-common-card.png") });
   const box = (await inspect.boundingBox())!;
   await page.mouse.move(box.x + box.width / 2, box.y + 100);
@@ -89,9 +90,9 @@ test("legacy rewards become one cosmic dust, reveal saved rarity and inspect nat
   await page.getByRole("button", { name: "Guardar cartas" }).click();
   await expect(page.locator(".oliver-store-flight > div")).toHaveCount(1);
   await page.clock.fastForward(1000);
-  await expect(page.getByRole("dialog", { name: "Coleção do Oliver" })).toBeVisible();
-  await expect(page.getByText("1 cópia · Lendária")).toBeVisible();
-  await page.getByRole("button", { name: "Fechar coleção" }).click();
+  await expect(page.getByRole("dialog", { name: "Arcano" })).toBeVisible();
+  await expect(page.locator(".profile-cards__gallery-item.is-owned")).toHaveCount(2);
+  await page.getByRole("button", { name: "Fechar", exact: true }).click();
   await page.reload();
   const saved = await page.evaluate(() =>
     JSON.parse(localStorage.getItem("helena.mathPlaceRewards.v1")!),

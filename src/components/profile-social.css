@@ -534,3 +534,29 @@ html[data-reduce-motion="true"] .social-directory {
 .social-profile .math-achievement-grid.is-preview .achievement-tile strong {
   font-size: 0.72rem;
 }
+.social-profile-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+:root body .social-profile-name .profile-streak {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  min-width: 30px;
+  min-height: 36px;
+  gap: 4px;
+}
+.social-profile-name .profile-streak strong {
+  font-size: 0.75rem;
+}
+.social-profile-name .profile-streak :is(img, .streak-tomato, .paper-flower) {
+  width: 24px;
+  height: 24px;
+}
+.social-profile-name .social-profile-streaks:empty {
+  display: none;
+}

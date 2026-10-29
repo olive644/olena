@@ -17,7 +17,7 @@ for (const theme of ["light", "dark"]) {
       dialog.className = "profile-editor social-directory profile-visit-dialog";
       dialog.dataset.inspecting = "true";
       dialog.setAttribute("aria-label", "Perfil de teste visual");
-      dialog.innerHTML = `<header><button class="icon-button" aria-label="Fechar"><img class="paper-editor-icon agenda-close-icon" src="/navigation-icons/paper/agenda-close.svg" width="32" height="32" alt=""></button></header><section class="social-profile"><div class="social-visit-cover"></div><div class="social-visit-avatar"><img src="/profile-avatars/helena.webp" width="140" height="140" alt="Avatar"></div><h3>Perfil de teste visual</h3><p>@layout</p><section class="profile-safety"><details open><summary>Segurança do perfil</summary><div class="profile-safety-actions"><button class="achievement-bare-action" aria-label="Bloquear usuário"><img src="/navigation-icons/paper/profile-block.svg" width="36" height="36" alt=""></button><button class="achievement-bare-action" aria-label="Denunciar usuário"><img src="/navigation-icons/paper/profile-report.svg" width="36" height="36" alt=""></button></div></details></section></section>`;
+      dialog.innerHTML = `<header><button class="icon-button" aria-label="Fechar"><img class="paper-editor-icon agenda-close-icon" src="/navigation-icons/paper/agenda-close.svg" width="32" height="32" alt=""></button></header><section class="social-profile"><div class="social-visit-cover"></div><div class="social-visit-avatar"><img src="/profile-avatars/helena.webp" width="140" height="140" alt="Avatar"></div><div class="social-profile-name"><h3>Leo Bizzocchi</h3><div class="social-profile-streaks"><span class="profile-streak-inspection"><button class="profile-streak" aria-label="Ilhas: 4 dias"><img src="/math-islands/flame.svg" width="28" height="28" alt=""><strong>4</strong></button></span></div></div><p>@layout</p><div class="social-profile-counts"><button class="secondary-button">1 Seguidores</button><button class="secondary-button">1 Seguindo</button></div><section class="profile-safety"><details open><summary>Segurança do perfil</summary><div class="profile-safety-actions"><button class="achievement-bare-action" aria-label="Bloquear usuário"><img src="/navigation-icons/paper/profile-block.svg" width="36" height="36" alt=""></button><button class="achievement-bare-action" aria-label="Denunciar usuário"><img src="/navigation-icons/paper/profile-report.svg" width="36" height="36" alt=""></button></div></details></section></section>`;
       dialog.querySelector(".social-visit-avatar")!.append(badge);
       document.querySelector(".app-shell")!.append(dialog);
       dialog.showModal();
@@ -45,6 +45,22 @@ for (const theme of ["light", "dark"]) {
       expect((await button.boundingBox())!.width).toBeGreaterThanOrEqual(44);
     }
     expect(await dialog.evaluate((node) => node.scrollWidth <= node.clientWidth)).toBe(true);
+    await expect(dialog.locator(".social-profile-name .profile-streak")).toHaveCSS(
+      "background-color",
+      "rgba(0, 0, 0, 0)",
+    );
+    await expect(dialog.locator(".social-profile-name .profile-streak")).toHaveCSS(
+      "box-shadow",
+      "none",
+    );
+    const name = (await dialog.locator(".social-profile-name h3").boundingBox())!,
+      streak = (await dialog.locator(".social-profile-name .profile-streak").boundingBox())!;
+    expect(Math.abs(name.y + name.height / 2 - streak.y - streak.height / 2)).toBeLessThan(20);
+    expect(
+      await dialog
+        .locator(".social-profile-counts")
+        .evaluate((n) => n.previousElementSibling?.textContent),
+    ).toBe("@layout");
     await dialog.screenshot({ path: info.outputPath(`perfil-${theme}.png`) });
   });
 }

@@ -1,18 +1,18 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { expect, it, vi } from "vitest";
 import { OliverCardCollection } from "./oliver-card-collection";
-import { OLIVER_CARDS, isOliverCard } from "../data/oliver-cards";
-import { OLIVER_TAROT } from "../data/oliver-tarot";
-
-afterEach(cleanup);
-it("allows special art inspection without claiming or adding it to common loot", () => {
-  localStorage.clear();
-  render(<OliverCardCollection onClose={() => undefined} />);
-  expect(screen.getByText("0/10 descobertas")).toBeTruthy();
-  fireEvent.click(screen.getByRole("button", { name: "Ver tarot do Oliver, A Estrela" }));
-  expect(screen.getByRole("heading", { name: "A Estrela" })).toBeTruthy();
-  fireEvent.click(screen.getByRole("button", { name: "Voltar à coleção" }));
-  expect(screen.getByText("0/10 descobertas")).toBeTruthy();
-  expect(OLIVER_CARDS).toHaveLength(10);
-  expect(isOliverCard(OLIVER_TAROT.id)).toBe(false);
+vi.mock("../data/arcana-catalog", async () => {
+  const original =
+    await vi.importActual<typeof import("../data/arcana-catalog")>("../data/arcana-catalog");
+  const data = await import("../../public/arcana/catalog.json");
+  return { ...original, useArcanaCatalog: () => ({ cards: data.default, error: false }) };
+});
+it("opens the same 78-card gallery from rewards without awarding unowned cards", () => {
+  render(<OliverCardCollection onClose={vi.fn()} />);
+  expect(screen.getByRole("dialog", { name: "Arcano" })).toBeTruthy();
+  expect(document.querySelectorAll(".profile-cards__gallery-item")).toHaveLength(78);
+  fireEvent.click(screen.getByRole("button", { name: "Inspecionar carta A Estrela" }));
+  expect(
+    screen.getByRole("button", { name: "Destacar carta no perfil" }).hasAttribute("disabled"),
+  ).toBe(true);
 });

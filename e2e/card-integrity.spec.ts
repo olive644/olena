@@ -1,77 +1,67 @@
-import { test, expect } from "@playwright/test";
-import { OLIVER_CARDS } from "../src/data/oliver-cards";
-
-test("all Oliver cards rotate as one surface without dragging art or selecting lore", async ({
-  page,
-}, info) => {
-  test.setTimeout(90_000);
-  const ids = [...OLIVER_CARDS.map((card) => card.id), "oliver-star-tarot"];
-  await page.addInitScript((cards) => {
-    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
-    localStorage.setItem(
-      "helena.mathPlaceRewards.v1",
-      JSON.stringify({
-        foundations: {
-          points: 1100,
-          receipts: cards,
-          chests: cards.map((id, index) => ({
-            id,
-            opened: true,
-            unlockAt: 0,
-            revealed: index === 0 ? 0 : 1,
-            ...(id === "oliver-star-tarot" ? { kind: "arcane", arcana: id } : { cards: [id] }),
-          })),
-        },
-      }),
-    );
-  }, ids);
-  await page.goto("/aprender");
-  await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
-  await expect(page.getByRole("button", { name: "Cartas do Oliver", exact: true })).toHaveCount(0);
-  await page.getByRole("button", { name: "Continuar Poeira cósmica" }).click();
-  for (let i = 1; i <= 4; i++)
-    await page.getByRole("button", { name: `Revelar raridade, toque ${i} de 4` }).click();
-  await page.getByRole("button", { name: "Revelar carta", exact: true }).click();
-  await page.getByRole("button", { name: "Guardar cartas" }).click();
-  await expect(page.getByRole("dialog", { name: "Coleção do Oliver" })).toBeVisible();
-  const labels = [
-    ...OLIVER_CARDS.map((card) => `${card.title}, 1 cópias`),
-    "Ver tarot do Oliver, A Estrela",
-  ];
-  for (const label of labels) {
-    await page.getByRole("button", { name: label, exact: true }).click();
-    const stage = page.locator(".oliver-inspection-stage");
-    await stage.scrollIntoViewIfNeeded();
-    const art = page.locator(".oliver-inspection-front img");
-    await expect(art).toHaveAttribute("draggable", "false");
-    const lore = page.locator(".oliver-inspection-front .oliver-card-lore");
-    // WebKit exposes its selection rule through the prefixed property.
-    await expect
-      .poll(() =>
-        lore.evaluate((element) => {
-          const style = getComputedStyle(element);
-          return [style.userSelect, style.getPropertyValue("-webkit-user-select")];
+import { expect, test } from "@playwright/test";
+import { readFileSync } from "node:fs";
+const catalog: { id: string; title: string; asset: string; group: string }[] = JSON.parse(
+  readFileSync(new URL("../public/arcana/catalog.json", import.meta.url), "utf8"),
+);
+import { ARCANA_IDS } from "../src/data/arcana-ids";
+for (const group of ["major", "wands", "cups", "swords", "pentacles"])
+  test(`arcana ${group} rotate as one surface and use only the new artwork`, async ({
+    page,
+  }, info) => {
+    test.setTimeout(90000);
+    await page.route("https://tarotapi.dev/**", (r) => r.abort());
+    await page.addInitScript((ids) => {
+      localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+      localStorage.setItem("helena.guest.v1", "1");
+      localStorage.setItem(
+        "helena.mathPlaceRewards.v1",
+        JSON.stringify({
+          foundations: {
+            points: 7800,
+            receipts: ids,
+            chests: ids.map((id) => ({ id, opened: true, unlockAt: 0, cards: [id], revealed: 1 })),
+          },
         }),
-      )
-      .toContain("none");
-    expect(
-      await art.evaluate((image) =>
-        image.dispatchEvent(new Event("dragstart", { bubbles: true, cancelable: true })),
-      ),
-    ).toBe(false);
-    const box = (await stage.boundingBox())!;
-    await page.mouse.move(box.x + 70, box.y + 160);
-    await page.mouse.down();
-    await page.mouse.move(box.x + 160, box.y + 185, { steps: 10 });
-    await page.mouse.up();
-    await expect(page.locator(".oliver-inspection-turn")).toHaveAttribute(
-      "style",
-      /rotateY\(81deg\)/,
-    );
-    expect(await page.evaluate(() => window.getSelection()?.toString())).toBe("");
-    await page.getByRole("button", { name: "Recentralizar carta" }).click();
-    if (label.startsWith("Ver tarot"))
-      await stage.screenshot({ path: info.outputPath("embedded-tarot.png") });
-    await page.getByRole("button", { name: "Voltar à coleção" }).click();
-  }
-});
+      );
+    }, ARCANA_IDS);
+    await page.goto("/perfil");
+    await page.getByRole("button", { name: "Ver todas as cartas" }).click();
+    const label = {
+      major: "Arcano maior",
+      wands: "Paus · Fogo",
+      cups: "Copas · Água",
+      swords: "Espadas · Ar",
+      pentacles: "Ouros · Terra",
+    }[group]!;
+    await page.getByRole("button", { name: label, exact: true }).click();
+    const entries = catalog.filter((card) => card.group === group);
+    await expect(page.locator(".profile-cards__gallery-item")).toHaveCount(entries.length);
+    for (const card of entries) {
+      const dialog = page.getByRole("dialog");
+      await dialog
+        .locator(".profile-cards__gallery-item")
+        .getByRole("button", { name: `Inspecionar carta ${card.title}`, exact: true })
+        .click();
+      const stage = page.getByRole("button", { name: /Inspecionar carta em 360/ });
+      await stage.focus();
+      await stage.press("ArrowRight");
+      await expect(page.locator(".oliver-inspection-turn")).toHaveAttribute(
+        "style",
+        /rotateY\(25deg\)/,
+      );
+      const image = page.locator(".oliver-inspection-front img");
+      await expect(image).toHaveAttribute("src", card.asset);
+      await expect
+        .poll(() => image.evaluate((i) => (i as HTMLImageElement).naturalWidth))
+        .toBeGreaterThan(0);
+      await expect(image).toHaveAttribute("draggable", "false");
+      const frame = (await page.locator(".oliver-inspection-front .arcana-paper").boundingBox())!;
+      const title = (await page
+        .locator(".oliver-inspection-front .arcana-paper__title .paper-card-title")
+        .boundingBox())!;
+      expect(title.x).toBeGreaterThanOrEqual(frame.x);
+      expect(title.x + title.width).toBeLessThanOrEqual(frame.x + frame.width + 1);
+      await page.getByRole("button", { name: "Voltar à coleção", exact: true }).click();
+    }
+    await page.screenshot({ path: info.outputPath("arcano-gallery.png") });
+  });

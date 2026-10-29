@@ -336,30 +336,17 @@ export function SocialDirectory({
             <img src={person.photoUrl} width="140" height="140" alt={uiText(1910, [person.name])} />
             {person.details && <ProfileLevelBadge level={person.details.level} />}
           </div>
-          <h3>{person.name}</h3>
-          <ProfileLabels username={person.username} creks={person.username === "oliver644"} />
-          <p>@{person.username}</p>
-          {!person.blocked &&
-            (person.achievements !== undefined ? (
-              <AchievementCollection
-                ids={person.achievements}
-                dates={person.achievementDates}
-                favorites={person.achievementFavorites ?? []}
-                ownerName={person.name}
-                compact
-              />
-            ) : (
-              <p>{uiText(2837)}</p>
-            ))}
-          <div className="social-profile-streaks" aria-label={uiText(919)}>
-            {person.details?.updatedAt !== undefined &&
-              openedAt - person.details.updatedAt < 86_400_000 && (
-                <ProfileStreakValues streaks={person.details.streaks} />
-              )}
+          <div className="social-profile-name">
+            <h3>{person.name}</h3>{" "}
+            <div className="social-profile-streaks" aria-label={uiText(919)}>
+              {person.details?.updatedAt !== undefined &&
+                openedAt - person.details.updatedAt < 86_400_000 && (
+                  <ProfileStreakValues streaks={person.details.streaks} />
+                )}
+            </div>
           </div>
-          <nav className="social-profile-networks" aria-label={uiText(913)}>
-            <ProfileNetworks links={person.details?.socialLinks ?? []} />
-          </nav>
+          <ProfileLabels username={person.username} creks={person.username === "oliver644"} />
+          <p>@{person.username}</p>{" "}
           <div className="social-profile-counts">
             <button
               type="button"
@@ -376,6 +363,21 @@ export function SocialDirectory({
               {person.following} {uiText(918)}
             </button>
           </div>
+          {!person.blocked &&
+            (person.achievements !== undefined ? (
+              <AchievementCollection
+                ids={person.achievements}
+                dates={person.achievementDates}
+                favorites={person.achievementFavorites ?? []}
+                ownerName={person.name}
+                compact
+              />
+            ) : (
+              <p>{uiText(2837)}</p>
+            ))}
+          <nav className="social-profile-networks" aria-label={uiText(913)}>
+            <ProfileNetworks links={person.details?.socialLinks ?? []} />
+          </nav>
           {person.followsYou && <p>{uiText(924)}</p>}
           {person.blocked && <p role="status">{uiText(2830)}</p>}
           {person.username !== feed.self.username && !person.blocked && (

@@ -60,6 +60,13 @@ it("inspeção mostra nível, streak e redes, mas deixa atividades somente no si
       .sort(),
   ).toEqual(["2", "4"]);
   expect(document.querySelectorAll(".social-profile-streaks strong")).toHaveLength(2);
+  expect(
+    document
+      .querySelector(".social-profile-name")
+      ?.contains(document.querySelector(".social-profile-streaks")),
+  ).toBe(true);
+  const counts = document.querySelector(".social-profile-counts")!;
+  expect(counts.previousElementSibling?.textContent).toBe("@bob");
   expect(screen.queryByText(/400/)).toBeNull();
 });
 afterEach(() => {
@@ -281,7 +288,7 @@ it("inspeção mostra logo abaixo do nome só os destaques que a pessoa escolheu
   expect(profile.querySelector(".achievement-empty")).toBeNull();
   const streaks = profile.querySelector(".social-profile-streaks")!;
   expect(
-    tiles[0]!.compareDocumentPosition(streaks) & Node.DOCUMENT_POSITION_FOLLOWING,
+    streaks.compareDocumentPosition(tiles[0]!) & Node.DOCUMENT_POSITION_FOLLOWING,
   ).toBeTruthy();
 });
 it("inspeção não inventa destaques quando a pessoa não escolheu nenhum", async () => {

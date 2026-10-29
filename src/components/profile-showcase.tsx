@@ -374,7 +374,7 @@ export function ProfileOverview({
         </Suspense>
       </div>
       <div className="profile-study-grid">
-        <Suspense fallback={<HelenaLoading label={uiText("Cartas do Oliver")} />}>
+        <Suspense fallback={<HelenaLoading label={uiText("Arcano")} />}>
           <ProfileCards />
         </Suspense>
       </div>

@@ -21,7 +21,7 @@ it("dates only actual revelations and keeps the earliest known copy without fabr
   revealMathCard("foundations", "dated", 1000);
   revealMathCard("foundations", "dated", 2000);
   revealMathCard("foundations", "dated", 3000);
-  expect(oliverCardDates()).toEqual({ "first-star": 1000 });
+  expect(oliverCardDates()).toEqual({ "major-00": 1000 });
   expect(mathPlaceRewards("foundations").chests[0]?.revealedAt).toEqual([1000, 2000]);
 });
 it("stores totals separately, grants one chest at 100 points and deduplicates rounds", () => {
@@ -51,11 +51,11 @@ it("draws arcana at five percent, shares slots and persists one tarot without re
   openMathChest("school", "arcane", 10000, () => {
     throw new Error("tarot needs no common roll");
   });
-  expect(chestCards(mathPlaceRewards("school").chests[0]!)).toEqual(["oliver-star-tarot"]);
-  expect(oliverCollection()["oliver-star-tarot"]).toBeUndefined();
+  expect(chestCards(mathPlaceRewards("school").chests[0]!)).toEqual(["major-17"]);
+  expect(oliverCollection()["major-17"]).toBeUndefined();
   revealMathCard("school", "arcane");
   revealMathCard("school", "arcane");
-  expect(oliverCollection()["oliver-star-tarot"]).toBe(1);
+  expect(oliverCollection()["major-17"]).toBe(1);
   expect(parseMathRewards(localStorage.getItem(MATH_PLACE_REWARDS_KEY)!)).toEqual({
     school: mathPlaceRewards("school"),
   });
@@ -80,15 +80,15 @@ it("persists loot before revealing, resumes a partial booster and never rerolls"
   openMathChest("foundations", "one", 60000, () => rolls.shift()!);
   expect(oliverCollection()).toEqual({});
   revealMathCard("foundations", "one");
-  expect(oliverCollection()).toEqual({ "first-star": 1 });
+  expect(oliverCollection()).toEqual({ "major-00": 1 });
   openMathChest("foundations", "one", 60001, () => {
     throw new Error("must not reroll");
   });
   expect(mathPlaceRewards("foundations").chests[0]!.revealed).toBe(1);
   revealMathCard("foundations", "one");
   revealMathCard("foundations", "one");
-  expect(oliverCollection()).toEqual({ "first-star": 2 });
-  expect(mathPlaceRewards("foundations").chests[0]!.cards).toEqual(["first-star", "first-star"]);
+  expect(oliverCollection()).toEqual({ "major-00": 2 });
+  expect(mathPlaceRewards("foundations").chests[0]!.cards).toEqual(["major-00", "major-00"]);
 });
 it("preserves legacy totals and already opened chests without retroactive cards", () => {
   localStorage.setItem(
@@ -138,7 +138,7 @@ it("preserves arcane metadata from an older opener without crediting common loot
           arcana: "oliver-star-tarot",
           opened: true,
           unlockAt: 60000,
-          cards: ["first-star", "first-star"],
+          cards: ["major-00", "major-00"],
           revealed: 2,
         },
       ],
@@ -147,7 +147,7 @@ it("preserves arcane metadata from an older opener without crediting common loot
   const serialized = JSON.stringify(oldDevice);
   expect(parseMathRewards(serialized)).toEqual(oldDevice);
   localStorage.setItem(MATH_PLACE_REWARDS_KEY, serialized);
-  expect(oliverCollection()).toEqual({ "oliver-star-tarot": 1 });
+  expect(oliverCollection()).toEqual({ "major-17": 1 });
   const invalid = structuredClone(oldDevice);
   invalid.foundations.chests[0]!.arcana = "unknown-arcana";
   expect(parseMathRewards(JSON.stringify(invalid))).toEqual({});
@@ -160,4 +160,43 @@ it("does not roll a rare chest when shared slots are full", () => {
   });
   expect(mathPlaceRewards("foundations").chests).toHaveLength(3);
   expect(mathPlaceRewards("foundations").points).toBe(400);
+});
+
+it("removes legacy common ownership while preserving only an earned Star, dates, points and receipts", () => {
+  const value = {
+    foundations: {
+      points: 3216,
+      receipts: ["old", "star"],
+      chests: [
+        {
+          id: "old",
+          opened: true,
+          unlockAt: 0,
+          cards: ["first-star", "silent-bell"],
+          revealed: 2,
+          revealedAt: [100, 200],
+        },
+        {
+          id: "star",
+          kind: "arcane",
+          arcana: "oliver-star-tarot",
+          opened: true,
+          unlockAt: 0,
+          revealed: 1,
+          revealedAt: [300],
+        },
+      ],
+    },
+  };
+  const serialized = JSON.stringify(value);
+  localStorage.setItem(MATH_PLACE_REWARDS_KEY, serialized);
+  expect(oliverCollection()).toEqual({ "major-17": 1 });
+  expect(oliverCardDates()).toEqual({ "major-17": 300 });
+  expect(oliverCollection()).toEqual({ "major-17": 1 });
+  expect(mathPlaceRewards("foundations").points).toBe(3216);
+  expect(mathPlaceRewards("foundations").receipts).toEqual(["old", "star"]);
+  expect(localStorage.getItem(MATH_PLACE_REWARDS_KEY)).toBe(serialized);
+  value.foundations.chests[1]!.revealed = 0;
+  localStorage.setItem(MATH_PLACE_REWARDS_KEY, JSON.stringify(value));
+  expect(oliverCollection()).toEqual({});
 });
