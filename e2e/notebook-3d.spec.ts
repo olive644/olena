@@ -174,12 +174,12 @@ test("pôr marca mostra onde ela cai, a edição destaca a escolhida e a estante
   await page.mouse.move(middle.x, middle.y);
   await expect(hint).toContainText("Abrir folha 2");
   await page.getByRole("button", { name: "Mostrar ferramentas do caderno" }).click();
-  // Divisória: no meio da folha não pode; na borda direita, o fantasma e a dica confirmam.
+  // Divisória: junto da lombada não pode; do meio da folha direita até a borda, o fantasma e a dica confirmam.
   await page.getByRole("button", { name: "Colocar divisória" }).click();
   // A ferramenta chega à cena num efeito do React: o ponteiro repete até a dica de aviso aparecer.
   // O ponto é projetado de novo a cada tentativa: abrir a bandeja pode mexer no enquadramento.
   await expect(async () => {
-    const point = await project(1.3, 0);
+    const point = await project(0.4, 0);
     await page.mouse.move(point.x - 5, point.y);
     await page.mouse.move(point.x - 4, point.y);
     await expect(hint).toHaveClass(/is-warn/, { timeout: 1500 });
