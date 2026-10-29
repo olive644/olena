@@ -32,12 +32,16 @@ export function OliverCardInspection({
           {meaning?.value ? (
             <>
               <h4>{uiText("Significado")}</h4>
-              <p lang="en">{meaning.value.upright}</p>
+              <p lang="pt-BR">{meaning.value.upright}</p>
               <h4>{uiText("Invertida")}</h4>
-              <p lang="en">{meaning.value.reversed}</p>
+              <p lang="pt-BR">{meaning.value.reversed}</p>
               <details>
                 <summary>{uiText("Simbolismo tradicional")}</summary>
-                <p lang="en">{meaning.value.description}</p>
+                {meaning.value.description.split("\n").map((paragraph, index) => (
+                  <p lang="pt-BR" key={index}>
+                    {paragraph}
+                  </p>
+                ))}
               </details>
             </>
           ) : (
@@ -46,8 +50,9 @@ export function OliverCardInspection({
             </p>
           )}
           <small>
-            {uiText("Fonte: tarot-api, A. E. Waite (1910). Texto original em inglês.")}{" "}
-            {meaning?.offline && uiText("Cópia disponível offline.")}
+            {uiText(
+              "Fonte: A. E. Waite, The Pictorial Key to the Tarot (1910), via tarot-api. Tradução para o português do Brasil.",
+            )}
           </small>
         </aside>
       )}

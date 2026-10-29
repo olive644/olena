@@ -276,7 +276,7 @@
     "mark": "5",
     "characters": ["Nicolas"],
     "meaning": "Desafio",
-    "asset": "/arcana/ink/wands-05-anatomy-v2.webp",
+    "asset": "/arcana/ink/wands-05-count-v3.webp",
     "apiId": "wa05"
   },
   {
@@ -288,7 +288,7 @@
     "mark": "6",
     "characters": ["Andreyna"],
     "meaning": "Troca",
-    "asset": "/arcana/ink/wands-06.webp",
+    "asset": "/arcana/ink/wands-06-count-v3.webp",
     "apiId": "wa06"
   },
   {
@@ -312,7 +312,7 @@
     "mark": "8",
     "characters": ["Ninho"],
     "meaning": "Movimento",
-    "asset": "/arcana/ink/wands-08.webp",
+    "asset": "/arcana/ink/wands-08-count-v3.webp",
     "apiId": "wa08"
   },
   {
@@ -324,7 +324,7 @@
     "mark": "9",
     "characters": ["Nicolas"],
     "meaning": "Maturidade",
-    "asset": "/arcana/ink/wands-09-detail-v2.webp",
+    "asset": "/arcana/ink/wands-09-count-v3.webp",
     "apiId": "wa09"
   },
   {
@@ -336,7 +336,7 @@
     "mark": "10",
     "characters": ["Andreyna"],
     "meaning": "Conclusão",
-    "asset": "/arcana/ink/wands-10.webp",
+    "asset": "/arcana/ink/wands-10-count-v3.webp",
     "apiId": "wa10"
   },
   {

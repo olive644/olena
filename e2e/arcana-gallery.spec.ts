@@ -4,6 +4,10 @@ for (const theme of ["light", "dark"])
     page,
   }, info) => {
     await page.route("https://tarotapi.dev/**", (route) => route.abort());
+    const externalRequests: string[] = [];
+    page.on("request", (request) => {
+      if (request.url().includes("tarotapi.dev")) externalRequests.push(request.url());
+    });
     await page.addInitScript((theme) => {
       localStorage.setItem("helenastudy.theme", theme);
       localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
@@ -109,6 +113,16 @@ for (const theme of ["light", "dark"])
       .click();
     await expect(page.locator(".arcana-interpretation")).toContainText("Esperança e renovação");
     await expect(page.locator(".arcana-interpretation")).toContainText("Significado");
+    const meaning = page.locator(".arcana-interpretation");
+    await expect(meaning).toContainText("Perda, roubo, privação, abandono");
+    await expect(meaning).toContainText("Invertida");
+    await expect(meaning).toContainText("Arrogância, altivez, impotência.");
+    await expect(meaning).toContainText("Uma grande estrela radiante de oito raios");
+    await expect(meaning).toContainText("Tradução para o português do Brasil");
+    await expect(meaning).not.toContainText("Loss, theft");
+    await expect(meaning).not.toContainText("Texto original em inglês");
+    await expect(meaning.locator('[lang="en"]')).toHaveCount(0);
+    expect(externalRequests).toEqual([]);
     await expect(page.locator("time")).toHaveAttribute(
       "datetime",
       new Date(1792497600000).toISOString(),
