@@ -142,8 +142,12 @@ test("pôr marca mostra onde ela cai, a edição destaca a escolhida e a estante
   // Edição: apontar a marca diz qual é; tocar abre o painel para renomear ou remover.
   await page.getByRole("button", { name: "Editar marcas" }).click();
   const tab = await project(3.3, 0.45);
-  await page.mouse.move(tab.x, tab.y);
-  await expect(hint).toContainText("Editar marca");
+  // A marca recém-criada ainda assenta ao entrar na edição: o ponteiro repete até ela responder.
+  await expect(async () => {
+    await page.mouse.move(tab.x - 6, tab.y);
+    await page.mouse.move(tab.x, tab.y);
+    await expect(hint).toContainText("Editar marca", { timeout: 1500 });
+  }).toPass({ timeout: 15_000 });
   await page.mouse.click(tab.x, tab.y);
   await expect(page.getByRole("button", { name: "Remover marcação" })).toBeVisible();
   await page.getByRole("button", { name: "Remover marcação" }).click();
