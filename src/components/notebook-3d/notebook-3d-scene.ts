@@ -953,6 +953,7 @@ export class NotebookScene {
     this.starGeometry.dispose();
     this.marks.selected.dispose();
     window.clearTimeout(this.releaseTimer);
+    window.clearTimeout(this.paintTimer);
     this.resizeObserver?.disconnect();
     document.removeEventListener("visibilitychange", this.onVisibility);
     for (const value of [
@@ -1009,16 +1010,51 @@ export class NotebookScene {
     if (first - margin <= 2 && total) near.add(0);
     return near;
   }
+  private paintQueue: number[] = [];
+  private paintTimer = 0;
   private syncPages() {
-    for (const index of this.pageWindow(2)) {
+    // As folhas à vista (e as que viram sobre elas) saem prontas; as vizinhas são pintadas uma
+    // por vez logo depois, para o primeiro quadro e o folheio não pararem num lote de texturas.
+    const first = this.flipped >= 1 ? (this.flipped - 1) * 2 : 0;
+    const wanted = [...this.pageWindow(2)].sort(
+      (a, b) => Math.abs(a - first) - Math.abs(b - first),
+    );
+    const urgent = wanted.filter(
+      (index) => index === 0 || (index >= first - 1 && index <= first + 2),
+    );
+    this.paintQueue = wanted.filter((index) => !urgent.includes(index));
+    for (const index of urgent) {
       const page = this.pages[index]!;
       this.loadPreview(page);
       this.paintPage(page);
     }
     this.assignPages();
+    this.drainPaintQueue();
     window.clearTimeout(this.releaseTimer);
     // Depois que o folheio assenta, libera a memória das folhas que ficaram longe.
     this.releaseTimer = window.setTimeout(() => this.releaseFar(), 1500);
+  }
+  private drainPaintQueue() {
+    if (this.paintTimer || !this.paintQueue.length || this.disposed) return;
+    this.paintTimer = window.setTimeout(() => {
+      this.paintTimer = 0;
+      if (this.disposed) return;
+      const page = this.pages[this.paintQueue.shift() ?? -1];
+      if (page) {
+        this.loadPreview(page);
+        this.paintPage(page);
+        this.assignPages();
+        this.wake();
+      }
+      this.drainPaintQueue();
+    }, 40);
+  }
+  /** Redesenha textos já pintados (a fonte do app chegou depois da cena). */
+  redrawText() {
+    for (const entry of this.pageTextures.values()) entry.key = "";
+    this.drawCoverTexture();
+    this.syncPages();
+    this.wake();
   }
   private releaseFar() {
     if (this.disposed) return;

@@ -68,7 +68,12 @@ export function Notebook3dView(props: Notebook3dProps) {
           fetch("/navigation-icons/paper/paper-bookmark.svg")
             .then((response) => (response.ok ? response.text() : ""))
             .catch(() => ""),
-          document.fonts?.ready,
+          // As fontes do app não seguram a abertura: passado meio segundo a cena nasce com o que
+          // houver e redesenha os textos quando elas chegam.
+          Promise.race([
+            document.fonts?.ready,
+            new Promise((resolve) => window.setTimeout(resolve, 500)),
+          ]),
         ]);
         if (cancelled || !canvas.current) return;
         const notebookSound = soundModule.createNotebookSound();
@@ -89,6 +94,10 @@ export function Notebook3dView(props: Notebook3dProps) {
           },
         );
         scene.current = instance;
+        if (document.fonts && document.fonts.status !== "loaded")
+          void document.fonts.ready.then(() => {
+            if (!cancelled) instance.redrawText();
+          });
         setReady(true);
         void instance.firstFrame().then(() => {
           if (!cancelled) setPainted(true);
