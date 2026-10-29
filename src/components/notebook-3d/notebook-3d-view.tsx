@@ -1,5 +1,6 @@
 import { uiText, useLanguage } from "../../i18n/runtime";
 import { useEffect, useRef, useState, type RefObject } from "react";
+import { createPortal } from "react-dom";
 import type { NotebookTab, StudyNote } from "../../domain/workspace";
 import { useMotionReduced } from "../../data/accessibility-preferences";
 import type { createNotebookSound } from "../../data/notebook-sound";
@@ -132,7 +133,7 @@ export function Notebook3dView(props: Notebook3dProps) {
         if (!asset || seen.has(key)) continue;
         seen.add(key);
         try {
-          const url = await renderPagePreview(asset, 768);
+          const url = await renderPagePreview(asset, 1152);
           if (!cancelled) setPreviews((current) => keep(current, key, url));
         } catch {
           if (!cancelled) setPreviews((current) => keep(current, key, ""));
@@ -293,15 +294,17 @@ export function Notebook3dView(props: Notebook3dProps) {
           <HelenaLoading label={uiText(3176)} compact />
         </div>
       )}
-      {hint && (
-        <span
-          className={`notebook-3d__peek${hint.warn ? " is-warn" : ""}`}
-          style={{ left: hint.x, top: hint.y }}
-          aria-hidden="true"
-        >
-          {hint.text}
-        </span>
-      )}
+      {hint &&
+        createPortal(
+          <span
+            className={`notebook-3d__peek${hint.warn ? " is-warn" : ""}`}
+            style={{ left: hint.x, top: hint.y }}
+            aria-hidden="true"
+          >
+            {hint.text}
+          </span>,
+          document.body,
+        )}
       {proxy && (
         <article
           className="notebook-sheet notebook-3d__proxy"

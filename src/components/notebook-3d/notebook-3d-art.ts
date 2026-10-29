@@ -356,8 +356,14 @@ export function drawHoverFrame(x: Ctx, width: number, height: number) {
 }
 
 /** Mesmo convite da vitrine 2D: ícone "+" de papel e o nome em roxo, centralizados na folha. */
-export function drawCreateCard(x: Ctx, width: number, height: number, first: boolean) {
-  x.clearRect(0, 0, width, height);
+export function drawCreateCard(x: Ctx, canvasWidth: number, canvasHeight: number, first: boolean) {
+  x.clearRect(0, 0, canvasWidth, canvasHeight);
+  // O desenho é pensado em 1024 de largura; escala para o tamanho do canvas.
+  const scale = canvasWidth / 1024;
+  const width = 1024;
+  const height = canvasHeight / scale;
+  x.save();
+  x.scale(scale, scale);
   const cx = width / 2;
   const icon = 150;
   const top = height / 2 - icon / 2 - 40;
@@ -379,6 +385,7 @@ export function drawCreateCard(x: Ctx, width: number, height: number, first: boo
   x.textAlign = "center";
   x.fillText(first ? uiText(1391) : uiText(746), cx, top + icon + 80);
   x.textAlign = "left";
+  x.restore();
 }
 
 const tabText = (color: string) =>

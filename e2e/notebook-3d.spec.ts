@@ -27,6 +27,16 @@ async function openNewNotebook(page: Page, mobile: boolean, enabled = true) {
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
 }
 
+/** O "+" mora na bandeja de ferramentas: abre a bandeja (se estiver fechada) e cria a folha. */
+async function createViaTray(page: Page, first: boolean) {
+  const show = page.getByRole("button", { name: "Mostrar ferramentas do caderno" });
+  if (await show.count()) await show.click();
+  await page
+    .getByRole("button", { name: first ? "Criar primeira folha" : "Criar nova folha" })
+    .last()
+    .click();
+}
+
 test("caderno em 3D abre a capa, cria folhas e volta da folha 2D", async ({ page }, info) => {
   test.slow();
   await openNewNotebook(page, info.project.name === "mobile");
@@ -52,29 +62,48 @@ test("caderno em 3D abre a capa, cria folhas e volta da folha 2D", async ({ page
   expect(bounds!.height).toBeGreaterThan(250);
   await expect(page.getByRole("button", { name: "Personalizar", exact: true })).toHaveCount(0);
   await expect(page.locator(".notebook-cover-inventory")).toHaveCount(0);
+  // As ferramentas e o "+" ficam atrás da seta de baixo e só têm ícone, sem texto. Sem folhas a
+  // bandeja já abre, para a pessoa ver onde criar a primeira.
   const toolbar = page.getByRole("toolbar", { name: "Ferramentas do caderno" });
-  await expect(toolbar.getByRole("button")).toHaveCount(4);
+  await expect(toolbar).toBeVisible();
+  await expect(toolbar.getByRole("button")).toHaveCount(5);
+  for (const tool of await toolbar.getByRole("button").all())
+    await expect(tool.locator("span:not(.paper-tab-icon)")).toBeHidden();
+  // A seta amarela de voltar fica no canto esquerdo, não no meio da tela.
+  const back = await page.getByRole("button", { name: "Meus Cadernos", exact: true }).boundingBox();
+  const area = await scene.boundingBox();
+  expect(back!.x).toBeLessThan(area!.x + area!.width * 0.25);
+  // O nome do caderno já está na capa: o título da tela fica só para leitores de tela.
+  await expect(page.getByRole("heading", { level: 1, name: "Meu caderno" })).toHaveClass(
+    /visually-hidden/,
+  );
 
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
   for (let created = 0; created < 3; created++) {
-    await page
-      .getByRole("button", { name: created ? "Criar nova folha" : "Criar primeira folha" })
-      .last()
-      .click();
+    await createViaTray(page, created === 0);
     await expect(editor).toBeVisible({ timeout: 20_000 });
     await editor.getByRole("button", { name: "Fechar", exact: true }).click();
     await expect(editor).toHaveCount(0);
     await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 30_000 });
   }
   await expect(page.getByText("3 folhas guardadas")).toBeVisible();
+  // Com folhas, a bandeja começa fechada e a seta a abre e fecha.
+  await expect(toolbar).toBeHidden();
+  await page.getByRole("button", { name: "Mostrar ferramentas do caderno" }).click();
+  await expect(toolbar).toBeVisible();
+  await page.getByRole("button", { name: "Esconder ferramentas do caderno" }).click();
+  await expect(toolbar).toBeHidden();
 
   // Capa e contracapa ficam nas setas de papel, com nomes para teclado e leitor de tela.
-  await page.getByRole("button", { name: "Contracapa ›" }).click();
+  await page.getByRole("button", { name: "Contracapa ›" }).focus();
+  await page.keyboard.press("Enter");
   await expect(page.getByText("Contracapa", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "‹ Última folha" }).click();
+  await page.getByRole("button", { name: "‹ Última folha" }).focus();
+  await page.keyboard.press("Enter");
   await expect(page.getByText(/Folhas \d/)).toBeVisible();
 
   // Índice: folheia até a folha escolhida e entra nela com o editor 2D de sempre.
+  await page.getByRole("button", { name: "Mostrar ferramentas do caderno" }).click();
   await page.getByRole("button", { name: "Índice de folhas", exact: true }).click();
   const index = page.getByRole("dialog", { name: "Índice de folhas" });
   await index
@@ -106,14 +135,14 @@ test("pôr marca mostra onde ela cai, a edição destaca a escolhida e a estante
   await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 30_000 });
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
   for (let created = 0; created < 2; created++) {
-    await page
-      .getByRole("button", { name: created ? "Criar nova folha" : "Criar primeira folha" })
-      .last()
-      .click();
+    await createViaTray(page, created === 0);
     await expect(editor).toBeVisible({ timeout: 20_000 });
     await editor.getByRole("button", { name: "Fechar", exact: true }).click();
     await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 30_000 });
   }
+  // A barra de baixo cabe na tela de 720 de altura sem precisar rolar a página.
+  const dock = await page.locator(".notebook-3d-dock").boundingBox();
+  expect(dock!.y + dock!.height).toBeLessThanOrEqual(page.viewportSize()!.height);
   const project = (x: number, z: number) =>
     scene.evaluate(
       (canvas, point) =>
@@ -129,6 +158,7 @@ test("pôr marca mostra onde ela cai, a edição destaca a escolhida e a estante
   const middle = await project(1.3, 0);
   await page.mouse.move(middle.x, middle.y);
   await expect(hint).toContainText("Abrir folha 2");
+  await page.getByRole("button", { name: "Mostrar ferramentas do caderno" }).click();
   // Divisória: no meio da folha não pode; na borda direita, o fantasma e a dica confirmam.
   await page.getByRole("button", { name: "Colocar divisória" }).click();
   await page.mouse.move(middle.x - 5, middle.y);
@@ -152,7 +182,7 @@ test("pôr marca mostra onde ela cai, a edição destaca a escolhida e a estante
   await expect(page.getByRole("button", { name: "Remover marcação" })).toBeVisible();
   await page.getByRole("button", { name: "Remover marcação" }).click();
   await expect(page.getByRole("button", { name: /^Divisória .*folha 2/ })).toHaveCount(0);
-  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "Concluir edição" }).click();
   // Voltar: o caderno fecha na capa e só então a capa viaja até a estante.
   await page.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
   await expect(page.getByText("Capa fechada")).toBeVisible();
