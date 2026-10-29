@@ -296,8 +296,11 @@ controles continuam com foco visível.
 
 X colorido de fechamento usa agenda-close.svg sem placa roxa, fundo ou sombra
 de botão, com área de 44px e sublinhado amarelo no teclado. A regra global em
-paper-controls.css aplica-se a AgendaCloseIcon e PaperCloseIcon. Os SVGs
-monocromáticos grafite/creme de PaperEditorIcon são exceção e permanecem intactos.
+paper-controls.css aplica-se a AgendaCloseIcon e PaperCloseIcon. Desde 2026-10-29
+esse é o único X do app: todo botão de fechar ou remover usa PaperCloseIcon, e um X
+ao lado de texto dentro de um botão usa PaperCloseGlyph (mesmo SVG, sem a regra do
+botão só de ícone). PaperEditorIcon name="close" e o X de HelenaRoomIcon não são mais
+usados; o SVG monocromático continua no repositório, intacto, mas fora das telas.
 
 Agenda usa PaperChoice para menus, PaperDateField para calendário e PaperTimeField
 para horas/minutos, com painéis de papel no top layer do navegador. Sem dropdowns

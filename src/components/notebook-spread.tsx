@@ -23,7 +23,7 @@ import type {
   WorkspaceState,
 } from "../domain/workspace";
 import { PaperActionIcon } from "./paper-action-icon";
-import { PaperEditorIcon } from "./paper-editor-icon";
+import { PaperCloseIcon } from "./paper-close-icon";
 import { NotebookPaperTools, notebookPaperTabs } from "./notebook-paper-tools";
 import { NotebookCover } from "./notebook-cover";
 import { FocusPaperArrow } from "./focus-paper-arrow";
@@ -533,7 +533,7 @@ export function NotebookSpread({
                               aria-label={uiText(1856, [pages.indexOf(page) + 1])}
                               onClick={() => remove(page, side)}
                             >
-                              <PaperEditorIcon name="close" />
+                              <PaperCloseIcon />
                             </button>
                           )}
                         </footer>
@@ -598,13 +598,13 @@ export function NotebookSpread({
           <nav className="notebook-preview-controls" aria-label={uiText(695)}>
             {(!readOnly || compactPreview || current > 0) && (
               <button
-                className={compactPreview ? "student-page-arrow" : "secondary-button"}
+                className={compactPreview ? "student-page-arrow" : "notebook-flip-arrow"}
                 aria-label={current === 0 ? uiText(1857) : uiText(1858)}
                 type="button"
                 disabled={busy}
                 onClick={() => (current === 0 ? changeCover(true) : turnTo(current - 1))}
               >
-                {compactPreview ? <FocusPaperArrow /> : current === 0 ? uiText(1857) : uiText(1858)}
+                <FocusPaperArrow />
               </button>
             )}
             <span aria-live="polite">
@@ -617,13 +617,13 @@ export function NotebookSpread({
                 : uiText(1860)}
             </span>
             <button
-              className={compactPreview ? "student-page-arrow is-next" : "secondary-button"}
+              className={`${compactPreview ? "student-page-arrow" : "notebook-flip-arrow"} is-next`}
               aria-label={uiText(744)}
               type="button"
               disabled={current >= lastSpread || busy}
               onClick={() => turnTo(current + 1)}
             >
-              {compactPreview ? <FocusPaperArrow /> : uiText(744)}
+              <FocusPaperArrow />
             </button>
           </nav>
           {hasDock && <div className="notebook-2d-dock" ref={setDockHost} />}

@@ -597,9 +597,8 @@
   display: grid;
   place-items: center;
   border: 0;
-  border-radius: 5px 10px 5px 8px;
-  background: #f4ecdd;
-  box-shadow: 0 3px #d5ccba;
+  background: transparent;
+  box-shadow: none;
 }
 .notebook-sheet-remove .paper-editor-icon {
   width: 22px;
@@ -1284,8 +1283,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    /* O caderno aberto fica no meio da área livre, não colado no topo. */
+    justify-content: center;
     gap: 8px;
+  }
+  /* As abas saem pela direita: um pequeno deslocamento do caderno (sem a barra de baixo) o centraliza com elas, sem mexer no tamanho. */
+  .notebook-spread-workspace .notebook-spread-shell {
+    position: relative;
+    left: min(4vw, 16px);
+  }
+  /* Com o caderno aberto a barra móvel some: sem a folga dela embaixo o conteúdo centraliza de verdade. */
+  :root .app-shell .notebooks-main:has(.notebook-entry-preview) {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
   }
   :root .notebook-spread-workspace .notebook-spread-options {
     flex-shrink: 0;
@@ -1801,4 +1810,50 @@
 }
 .notebook-spread-workspace:has(.notebook-2d-dock) .notebook-preview-controls {
   margin: 12px 0 4px;
+}
+
+/* Virar a folha: as setas roxas de Foco, sem placa, com o nome no aria-label. */
+.notebook-flip-arrow {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  min-width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+.notebook-flip-arrow .focus-paper-arrow {
+  width: 44px;
+  height: 44px;
+  transition: transform 160ms ease;
+}
+.notebook-flip-arrow.is-next .focus-paper-arrow {
+  transform: rotate(180deg);
+}
+.notebook-flip-arrow:hover:not(:disabled) .focus-paper-arrow {
+  transform: translateX(-3px);
+}
+.notebook-flip-arrow.is-next:hover:not(:disabled) .focus-paper-arrow {
+  transform: rotate(180deg) translateX(-3px);
+}
+.notebook-flip-arrow:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+.notebook-flip-arrow:focus-visible {
+  outline: none;
+  border-bottom: 3px solid #facc15;
+  background: rgb(250 204 21 / 18%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .notebook-flip-arrow .focus-paper-arrow {
+    transition: none;
+  }
+}
+:root[data-reduce-motion="true"] .notebook-flip-arrow .focus-paper-arrow {
+  transition: none;
 }

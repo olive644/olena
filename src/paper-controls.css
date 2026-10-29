@@ -786,3 +786,8 @@
   -webkit-user-select: text;
   user-select: text;
 }
+.paper-close-glyph {
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+}

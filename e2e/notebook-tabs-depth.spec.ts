@@ -79,3 +79,35 @@ test("com movimento reduzido o marcador fica parado", async ({ page }) => {
     .evaluate((node) => getComputedStyle(node).animationName);
   expect(name).toBe("none");
 });
+
+test("o X de remover folha é o colorido sem placa e as setas de virar são as roxas de Foco", async ({
+  page,
+}, info) => {
+  await openVolume(page, {});
+  const remove = page.getByRole("button", { name: /^Remover folha 1/ });
+  await expect(remove).toBeVisible({ timeout: 20_000 });
+  // O mesmo X do perfil (agenda-close.svg), sem fundo nem sombra de botão.
+  await expect(remove.locator("img.agenda-close-icon")).toHaveAttribute(
+    "src",
+    "/navigation-icons/paper/agenda-close.svg",
+  );
+  await expect(remove).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+  await expect(remove).toHaveCSS("box-shadow", "none");
+  // Virar a folha: seta roxa de Foco sem texto, com o nome no aria-label.
+  const next = page.getByRole("button", { name: "Próxima ›", exact: true });
+  await expect(next.locator("svg.focus-paper-arrow")).toBeVisible();
+  await expect(next).toHaveText("");
+  await next.click();
+  await expect(page.getByText("Folhas 3 e 4 de 6")).toBeVisible();
+  // No celular o caderno (com as abas) e a barra de baixo ficam centralizados na tela.
+  if (info.project.name === "mobile") {
+    const width = page.viewportSize()!.width;
+    const dock = (await page.locator(".notebook-2d-dock").boundingBox())!;
+    expect(Math.abs(dock.x + dock.width / 2 - width / 2)).toBeLessThan(6);
+    const book = (await page.locator(".notebook-paper-spread").boundingBox())!;
+    const tab = (await page.locator(".notebook-attached-tab.is-exposed").first().boundingBox())!;
+    const left = book.x;
+    const right = Math.max(book.x + book.width, tab.x + tab.width);
+    expect(Math.abs((left + right) / 2 - width / 2)).toBeLessThan(14);
+  }
+});
