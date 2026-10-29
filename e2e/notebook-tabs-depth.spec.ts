@@ -105,9 +105,12 @@ test("o X de remover folha é o colorido sem placa e as setas de virar são as r
     const dock = (await page.locator(".notebook-2d-dock").boundingBox())!;
     expect(Math.abs(dock.x + dock.width / 2 - width / 2)).toBeLessThan(6);
     const book = (await page.locator(".notebook-paper-spread").boundingBox())!;
-    const tab = (await page.locator(".notebook-attached-tab.is-exposed").first().boundingBox())!;
-    const left = book.x;
-    const right = Math.max(book.x + book.width, tab.x + tab.width);
-    expect(Math.abs((left + right) / 2 - width / 2)).toBeLessThan(14);
+    expect(Math.abs(book.x + book.width / 2 - width / 2)).toBeLessThan(6);
+    // As abas das duas pilhas cabem na tela, sem cortar o rótulo.
+    for (const tab of await page.locator(".notebook-attached-tab.is-divider").all()) {
+      const box = await tab.boundingBox();
+      if (!box) continue;
+      expect(box.x).toBeGreaterThanOrEqual(0);
+    }
   }
 });

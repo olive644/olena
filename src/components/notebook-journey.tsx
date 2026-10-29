@@ -4,6 +4,7 @@ import { isMotionReduced } from "../data/accessibility-preferences";
 import { createPortal } from "react-dom";
 import type { NotebookTab, StudyNotebook } from "../domain/workspace";
 import { NotebookCover } from "./notebook-cover";
+import { NotebookBackCover } from "./notebook-back-cover";
 import { NOTEBOOK_TURN_MS, NOTEBOOK_TURN_EASING } from "./notebook-motion";
 
 export type NotebookJourneyState = {
@@ -13,6 +14,8 @@ export type NotebookJourneyState = {
   returning: boolean;
   closed?: boolean;
   destination?: "shelf" | "cover" | "spread";
+  /** "back" é a contracapa: o espelho da capa, presa à lombada pelo lado direito. */
+  side?: "front" | "back";
   pages?: HTMLElement | undefined;
 };
 
@@ -62,6 +65,7 @@ export function NotebookJourney({
       ? null
       : document.querySelector<HTMLElement>("[data-notebook-3d] .notebook-3d");
     const closed = Boolean(journey.closed || scene3d);
+    const back = journey.side === "back";
     if (element && scene3d) element.dataset["closed"] = "true";
     const target = scene3d
       ? scene3d
@@ -79,14 +83,20 @@ export function NotebookJourney({
       : notebookPageSnapshot();
     if (snapshot && paper.current) {
       snapshot.style.transformOrigin = "top left";
-      snapshot.style.transform = `scale(${(journey.from.width * 2) / parseFloat(snapshot.style.width)}, ${journey.from.height / parseFloat(snapshot.style.height)})`;
+      const fit = `scale(${(journey.from.width * 2) / parseFloat(snapshot.style.width)}, ${journey.from.height / parseFloat(snapshot.style.height)})`;
+      snapshot.style.transform = fit;
       snapshot.setAttribute("inert", "");
       snapshot.setAttribute("aria-hidden", "true");
       snapshot.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
       paper.current.replaceChildren(snapshot);
       // O verso leva a primeira folha na mesma escala do miolo. Ao completar
       // a volta, ela coincide com a folha fixa, como no folheamento das demais.
-      if (lining.current) lining.current.replaceChildren(snapshot.cloneNode(true));
+      if (lining.current) {
+        const linedPage = snapshot.cloneNode(true) as HTMLElement;
+        // O verso da contracapa leva a folha da direita: o miolo anda meia largura.
+        if (back) linedPage.style.transform = `translateX(-${journey.from.width}px) ${fit}`;
+        lining.current.replaceChildren(linedPage);
+      }
     }
     const animations: Animation[] = [];
     let cancelled = false;
@@ -101,7 +111,7 @@ export function NotebookJourney({
         : journey.returning
           ? rect
           : {
-              x: rect.x + rect.width / 2,
+              x: back ? rect.x : rect.x + rect.width / 2,
               y: rect.y,
               width: rect.width / 2,
               height: rect.height,
@@ -141,21 +151,30 @@ export function NotebookJourney({
               { transform: transport },
             ],
       );
-      animate(
-        element.querySelector(".notebook-journey-leaf"),
-        journey.returning
-          ? [
-              { transform: "rotateY(-180deg)", easing: NOTEBOOK_TURN_EASING },
-              { transform: "rotateY(0deg)", offset: closingEnd },
-              { transform: "rotateY(0deg)" },
-            ]
-          : [
-              { transform: "rotateY(0deg)" },
-              { transform: "rotateY(0deg)", offset: openingStart, easing: NOTEBOOK_TURN_EASING },
-              { transform: "rotateY(-180deg)", offset: openingEnd },
-              { transform: "rotateY(-180deg)" },
-            ],
-      );
+      // O ângulo é uma propriedade registrada: brilho, sombra e elevação saem dele no CSS.
+      const open = back ? "180deg" : "-180deg";
+      if (!closed)
+        animations.push(
+          element.animate(
+            journey.returning
+              ? [
+                  { "--cover-angle": open, easing: NOTEBOOK_TURN_EASING },
+                  { "--cover-angle": "0deg", offset: closingEnd },
+                  { "--cover-angle": "0deg" },
+                ]
+              : [
+                  { "--cover-angle": "0deg" },
+                  {
+                    "--cover-angle": "0deg",
+                    offset: openingStart,
+                    easing: NOTEBOOK_TURN_EASING,
+                  },
+                  { "--cover-angle": open, offset: openingEnd },
+                  { "--cover-angle": open },
+                ],
+            timing,
+          ),
+        );
       animate(
         element.querySelector(".notebook-journey-clasp"),
         journey.returning
@@ -172,28 +191,23 @@ export function NotebookJourney({
               { transform: "rotateY(-180deg)" },
             ],
       );
+      const held = back ? "inset(-80px 50% -80px -100px)" : "inset(-80px -100px -80px 50%)";
+      const freed = back ? "inset(-80px -30px -80px -100px)" : "inset(-80px -100px -80px -30px)";
+      const hidden = back ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)";
       animate(
         paper.current,
         journey.returning
           ? [
-              { clipPath: "inset(-80px -100px -80px 50%)", easing: "steps(1, end)" },
-              {
-                clipPath: "inset(-80px -100px -80px 50%)",
-                offset: closingEnd,
-                easing: "steps(1, start)",
-              },
-              { clipPath: "inset(0 0 0 100%)", offset: closingEnd + 0.001 },
-              { clipPath: "inset(0 0 0 100%)" },
+              { clipPath: held, easing: "steps(1, end)" },
+              { clipPath: held, offset: closingEnd, easing: "steps(1, start)" },
+              { clipPath: hidden, offset: closingEnd + 0.001 },
+              { clipPath: hidden },
             ]
           : [
-              { clipPath: "inset(-80px -100px -80px 50%)" },
-              {
-                clipPath: "inset(-80px -100px -80px 50%)",
-                offset: openingEnd,
-                easing: "steps(1, start)",
-              },
-              { clipPath: "inset(-80px -100px -80px -30px)", offset: openingEnd + 0.001 },
-              { clipPath: "inset(-80px -100px -80px -30px)" },
+              { clipPath: held },
+              { clipPath: held, offset: openingEnd, easing: "steps(1, start)" },
+              { clipPath: freed, offset: openingEnd + 0.001 },
+              { clipPath: freed },
             ],
       );
       void animations[0]!.finished
@@ -222,6 +236,7 @@ export function NotebookJourney({
       className="notebook-journey"
       data-returning={journey.returning}
       data-closed={journey.closed ?? false}
+      data-side={journey.side ?? "front"}
       ref={carrier}
       aria-hidden="true"
       style={{
@@ -232,14 +247,21 @@ export function NotebookJourney({
       }}
     >
       <div className="notebook-journey-pages" ref={paper} />
+      <i className="notebook-journey-cast" />
       <div className="notebook-journey-leaf">
-        <NotebookCover
-          subjectColor="#7C3AED"
-          title={journey.notebook.title}
-          tabs={journey.tabs}
-          clasp={false}
-        />
+        {journey.side === "back" ? (
+          <NotebookBackCover subjectColor="#7C3AED" />
+        ) : (
+          <NotebookCover
+            subjectColor="#7C3AED"
+            title={journey.notebook.title}
+            tabs={journey.tabs}
+            clasp={false}
+          />
+        )}
+        <i className="notebook-journey-shade is-front" />
         <div className="notebook-journey-lining" ref={lining} />
+        <i className="notebook-journey-shade is-lining" />
       </div>
       <span className="book-cover__clasp notebook-journey-clasp">
         <i />

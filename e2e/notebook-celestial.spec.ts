@@ -114,7 +114,8 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   await page.getByRole("button", { name: "Pronto", exact: true }).click();
   await expect(page.locator('.notebook-attached-tab svg[data-motif="sun"]')).toHaveCount(1);
   await page.getByRole("button", { name: "Colocar marcador" }).click();
-  await page.locator('.notebook-sheet[data-page-id="two"]').click();
+  // Perto da lombada, para os dois marcadores não caírem no mesmo ponto da pilha da esquerda.
+  await page.locator('.notebook-sheet[data-page-id="two"]').click({ position: { x: 40, y: 120 } });
   await page.getByRole("button", { name: "Pronto", exact: true }).click();
   await expect(page.locator('.notebook-attached-tab svg[data-motif="moon"]')).toHaveCount(1);
   await page.getByRole("button", { name: "Colocar divisória" }).click();
@@ -131,9 +132,16 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
       await mark.evaluate((node) => {
         const bounds = node.getBoundingClientRect();
         const divider = node.classList.contains("is-divider");
-        const x = divider ? bounds.right - 12 : bounds.x + bounds.width / 2;
+        // A divisória sai pela borda do lado da pilha da folha dela: aponta para a ponta livre.
+        const left = node.classList.contains("is-left");
+        const x = divider
+          ? left
+            ? bounds.x + 12
+            : bounds.right - 12
+          : bounds.x + bounds.width / 2;
         const y = divider ? bounds.y + bounds.height / 2 : bounds.bottom - 16;
-        return node.contains(document.elementFromPoint(x, y));
+        const hit = document.elementFromPoint(x, y);
+        return node.contains(hit);
       }),
     ).toBe(true);
   }

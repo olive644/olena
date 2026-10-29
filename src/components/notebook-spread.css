@@ -100,7 +100,14 @@
   transform-origin: right center;
   pointer-events: none;
 }
+/* Ângulo da capa que gira: o brilho, a sombra e a elevação saem dele, para ficarem sempre em sincronia. */
+@property --cover-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
 .notebook-journey {
+  --cover-angle: 0deg;
   position: fixed;
   z-index: 1000;
   pointer-events: none;
@@ -141,7 +148,50 @@
   inset: 0;
   transform-origin: left center;
   transform-style: preserve-3d;
+  transform: translateZ(calc(abs(sin(var(--cover-angle))) * 34px)) rotateY(var(--cover-angle));
   z-index: 5;
+}
+.notebook-journey[data-side="back"] .notebook-journey-leaf {
+  transform-origin: right center;
+}
+/* Escurece a face que se afasta da luz e clareia a que chega, como papel grosso virando. */
+.notebook-journey-shade {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  backface-visibility: hidden;
+}
+.notebook-journey-shade.is-front {
+  transform: translateZ(2px);
+  background: linear-gradient(to right, #1d1426e6, #1d142600 75%);
+  opacity: calc(abs(sin(var(--cover-angle))) * 0.7);
+}
+.notebook-journey-shade.is-lining {
+  transform: rotateY(180deg) translateZ(1px);
+  background: linear-gradient(to left, #1d1426cc, #1d142600 80%);
+  opacity: calc(abs(sin(var(--cover-angle))) * 0.5);
+}
+.notebook-journey[data-side="back"] .notebook-journey-shade.is-front {
+  background: linear-gradient(to left, #1d1426e6, #1d142600 75%);
+}
+.notebook-journey[data-side="back"] .notebook-journey-shade.is-lining {
+  background: linear-gradient(to right, #1d1426cc, #1d142600 80%);
+}
+/* Sombra que a capa lança nas folhas: acompanha a borda livre, de um lado ao outro da lombada. */
+.notebook-journey-cast {
+  position: absolute;
+  inset: -6px 0;
+  z-index: 4;
+  transform-origin: left center;
+  transform: scaleX(cos(var(--cover-angle)));
+  opacity: calc(abs(sin(var(--cover-angle))) * 0.85);
+  background: linear-gradient(to right, #29243200 0%, #29243273 100%);
+  filter: blur(5px);
+}
+.notebook-journey[data-side="back"] .notebook-journey-cast {
+  transform-origin: right center;
+  background: linear-gradient(to left, #29243200 0%, #29243273 100%);
 }
 .notebook-journey-leaf > .book-cover {
   position: absolute;
@@ -178,16 +228,34 @@
 .notebook-journey[data-returning="true"] .notebook-journey-pages {
   clip-path: inset(-80px -100px -80px 50%);
 }
-.notebook-journey[data-returning="true"] .notebook-journey-leaf,
+.notebook-journey[data-returning="true"] {
+  --cover-angle: -180deg;
+}
+.notebook-journey[data-returning="true"][data-side="back"] {
+  --cover-angle: 180deg;
+}
 .notebook-journey[data-returning="true"] .notebook-journey-clasp {
   transform: rotateY(-180deg);
+}
+.notebook-journey[data-closed="true"] {
+  --cover-angle: 0deg;
 }
 .notebook-journey[data-closed="true"] .notebook-journey-pages {
   display: none;
 }
-.notebook-journey[data-closed="true"] .notebook-journey-leaf,
 .notebook-journey[data-closed="true"] .notebook-journey-clasp {
   transform: none;
+}
+/* Contracapa: o espelho da capa, preso à lombada pelo lado direito. */
+.notebook-journey[data-side="back"] .notebook-journey-pages {
+  left: 0;
+  clip-path: inset(-80px 50% -80px -100px);
+}
+.notebook-journey[data-side="back"][data-returning="true"] .notebook-journey-pages {
+  clip-path: inset(-80px 50% -80px -100px);
+}
+.notebook-journey[data-side="back"] .notebook-journey-clasp {
+  display: none;
 }
 .notebook-journey-pages .notebook-spread-shell,
 .notebook-journey-pages .notebook-paper-spread,
@@ -357,9 +425,10 @@
   perspective: 1800px;
 }
 .notebook-paper-spread {
+  --spread-border: 10px;
   position: relative;
   background: transparent;
-  border: 10px solid transparent;
+  border: var(--spread-border) solid transparent;
   border-radius: 12px 22px 22px 12px;
   box-shadow:
     0 5px #51259b,
@@ -656,33 +725,95 @@
 .notebook-binding i:nth-child(3) {
   top: 84%;
 }
-/* Movimento pela lombada inspirado na referência de anand_4957, Uiverse.io. */
+/*
+ * Folha que vira: a folha é cortada em fatias (`.notebook-turn-slice`), cada uma presa à anterior
+ * pela borda e girada um pouco mais, então o papel dobra em vez de girar como uma tábua. A dobra
+ * vem do próprio ângulo da folha (`--turn-angle`, animado por @property): sobe na frente, cai
+ * atrás e some quando a folha para. Sombra e luz também seguem o ângulo.
+ */
+@property --turn-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+.notebook-turn {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  --bend: calc(sin(var(--turn-angle)) * cos(var(--turn-angle)) * 15deg);
+  --lit: calc(abs(sin(var(--turn-angle))));
+}
+.notebook-turn.is-settling {
+  transition: --turn-angle var(--turn-duration) var(--turn-easing);
+}
+.notebook-turn.is-automatic {
+  animation: notebook-leaf-turn var(--turn-duration) var(--turn-easing) both;
+}
+@keyframes notebook-leaf-turn {
+  from {
+    --turn-angle: 0deg;
+  }
+  to {
+    --turn-angle: var(--turn-final);
+  }
+}
 .notebook-turn-leaf {
   position: absolute;
-  z-index: 5;
   left: 50%;
   top: 0;
   bottom: 0;
   width: 50%;
   transform-origin: left center;
   transform-style: preserve-3d;
-  transform: rotateY(var(--turn-angle));
-  pointer-events: none;
+  /* A folha sobe um pouco no meio da virada, como se a mão a levantasse. */
+  transform: translateZ(calc(var(--lit) * 26px)) rotateY(var(--turn-angle));
   will-change: transform;
 }
-.notebook-turn-leaf.is-backward {
+.notebook-turn.is-backward .notebook-turn-leaf {
   left: 0;
   transform-origin: right center;
 }
-.notebook-turn-leaf.is-settling {
-  transition: transform var(--turn-duration) var(--turn-easing);
+.notebook-turn-slice {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(100% / var(--n));
+  transform-style: preserve-3d;
 }
-.notebook-turn-leaf.is-automatic {
-  animation: notebook-leaf-turn var(--turn-duration) var(--turn-easing) both;
+.notebook-turn-slice > .notebook-turn-slice {
+  left: 100%;
+  width: 100%;
+  transform-origin: left center;
+  transform: rotateY(var(--bend));
+}
+.notebook-turn.is-backward .notebook-turn-slice {
+  left: auto;
+  right: 0;
+}
+.notebook-turn.is-backward .notebook-turn-slice > .notebook-turn-slice {
+  left: auto;
+  right: 100%;
+  transform-origin: right center;
+}
+.notebook-turn-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+.notebook-turn-clip.is-back {
+  transform: rotateY(180deg);
 }
 .notebook-turn-face {
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--portion) * -100%);
+  width: calc(var(--n) * 100%);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -690,39 +821,120 @@
   gap: 8px;
   background: #fff9ef;
   color: #292432;
-  backface-visibility: hidden;
   border-radius: 2px 8px 8px 2px;
-  box-shadow:
-    inset 8px 0 #ede3d0,
-    5px 5px 18px #29243230;
+  box-shadow: inset 8px 0 #ede3d0;
   overflow: hidden;
 }
 .notebook-turn-face.is-back {
-  transform: rotateY(180deg);
-  box-shadow:
-    inset -8px 0 #ede3d0,
-    -5px 5px 18px #29243225;
+  box-shadow: inset -8px 0 #ede3d0;
+}
+/* Luz que passa pelo papel: um degradê só por face, então as fatias não listram. */
+.notebook-turn-face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: calc(var(--lit) * 0.9);
+  background: linear-gradient(
+    90deg,
+    rgb(41 36 50 / 26%),
+    rgb(41 36 50 / 4%) 55%,
+    rgb(255 249 239 / 14%)
+  );
 }
 .notebook-turn-face > span {
   font-size: 11px;
 }
-.notebook-turn-face::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 7%;
-  height: 100%;
-  background: #d5ccba;
-  opacity: 0.15;
-  clip-path: polygon(100% 0, 100% 100%, 0 80%, 40% 32%);
+.notebook-turn-face > img,
+.notebook-turn-face > .notebook-empty-paper {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  object-fit: contain;
+  pointer-events: none;
 }
-@keyframes notebook-leaf-turn {
-  from {
-    transform: rotateY(0);
+.notebook-turn-face > strong {
+  order: -1;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: #51465d;
+}
+/* Sombra que a folha joga na página de baixo: cresce com a folha e some ao pousar. */
+.notebook-turn-shadow {
+  position: absolute;
+  top: 1%;
+  bottom: 1%;
+  left: calc(50% + min(0, cos(var(--turn-angle))) * 50%);
+  width: calc(abs(cos(var(--turn-angle))) * 50%);
+  opacity: calc(var(--lit) * 0.85);
+  background: linear-gradient(90deg, transparent, rgb(41 36 50 / 30%));
+  filter: blur(7px);
+}
+.notebook-turn.is-backward .notebook-turn-shadow {
+  background: linear-gradient(270deg, transparent, rgb(41 36 50 / 30%));
+}
+/* Abas que viajam na folha: a frente mostra a aba saindo pela borda e o verso, depois dos 90 graus. */
+.notebook-ride {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+:root .notebook-attached-tab.notebook-ride-tab {
+  pointer-events: none;
+  backface-visibility: hidden;
+}
+:root .notebook-attached-tab.notebook-ride-tab.is-back {
+  transform: rotateY(180deg);
+}
+:root .notebook-attached-tab.notebook-ride-tab.is-bookmark {
+  right: auto;
+  bottom: calc(-44px - var(--spread-border));
+}
+/* A folha que vira mede o miolo; a camada fixa mede o caderno com a borda: a conta soma a borda de volta. */
+:root .notebook-attached-tab.notebook-ride-tab.is-divider {
+  top: calc(
+    22px - var(--spread-border) + (100% + 2 * var(--spread-border) - 66px) * var(--tab-position)
+  );
+}
+:root .notebook-attached-tab.notebook-ride-tab.is-divider.is-right {
+  right: calc(-62px - var(--spread-border));
+}
+:root .notebook-attached-tab.notebook-ride-tab.is-divider.is-left {
+  left: calc(-62px - var(--spread-border));
+}
+/*
+ * O verso da aba tem o desenho do lado de chegada (a luz fica junto da lombada) mas fica no mesmo
+ * lugar da frente, preso à borda livre da folha.
+ */
+:root .notebook-attached-tab.notebook-ride-tab.is-divider.is-back.is-left {
+  left: auto;
+  right: calc(-62px - var(--spread-border));
+}
+:root .notebook-attached-tab.notebook-ride-tab.is-divider.is-back.is-right {
+  right: auto;
+  left: calc(-62px - var(--spread-border));
+}
+@media (max-width: 600px) {
+  :root .notebook-attached-tab.notebook-ride-tab.is-divider.is-back.is-left {
+    left: auto;
+    right: calc(-26px - var(--spread-border));
   }
-  to {
-    transform: rotateY(var(--turn-angle));
+  :root .notebook-attached-tab.notebook-ride-tab.is-divider.is-back.is-right {
+    right: auto;
+    left: calc(-26px - var(--spread-border));
+  }
+  :root .notebook-attached-tab.notebook-ride-tab.is-divider.is-right {
+    right: calc(-26px - var(--spread-border));
+  }
+  :root .notebook-attached-tab.notebook-ride-tab.is-divider.is-left {
+    left: calc(-26px - var(--spread-border));
+  }
+  :root .notebook-attached-tab.notebook-ride-tab.is-bookmark {
+    bottom: calc(-34px - var(--spread-border));
   }
 }
 .notebook-crumple {
@@ -1059,7 +1271,7 @@
   width: 56px;
   height: 158px;
   bottom: -44px;
-  left: calc((var(--tab-side) * 50%) + 7% + (var(--tab-position) * 36%) - 28px);
+  left: calc(50% + (var(--tab-side) * 2 - 1) * var(--tab-h) * 100% - 28px);
   padding: 0;
   font-size: 12px;
   font-weight: 800;
@@ -1287,11 +1499,6 @@
     justify-content: center;
     gap: 8px;
   }
-  /* As abas saem pela direita: um pequeno deslocamento do caderno (sem a barra de baixo) o centraliza com elas, sem mexer no tamanho. */
-  .notebook-spread-workspace .notebook-spread-shell {
-    position: relative;
-    left: min(4vw, 16px);
-  }
   /* Com o caderno aberto a barra móvel some: sem a folga dela embaixo o conteúdo centraliza de verdade. */
   :root .app-shell .notebooks-main:has(.notebook-entry-preview) {
     padding-bottom: calc(16px + env(safe-area-inset-bottom));
@@ -1312,7 +1519,7 @@
     max-height: none;
     display: flex;
     flex-direction: column;
-    padding: 0 62px 46px 0;
+    padding: 0 31px 46px;
     width: min(100%, 560px);
   }
   .notebook-paper-toolbox {
@@ -1353,6 +1560,7 @@
   .notebook-paper-spread {
     box-sizing: border-box;
     height: 100%;
+    --spread-border: 7px;
     border-width: 7px;
   }
   .notebook-spread-shell {
@@ -1405,16 +1613,21 @@
     height: 34px;
   }
   :root .notebook-attached-tab.is-divider {
-    width: 84px;
-    right: -54px;
-    padding-left: 32px;
+    width: 58px;
+    right: -26px;
+    padding-left: 28px;
+  }
+  :root .notebook-attached-tab.is-divider.is-left {
+    right: auto;
+    left: -26px;
+    padding: 4px 28px 4px 4px;
   }
   .notebook-attached-tab.is-divider span {
     font-size: 10px;
   }
   :root .notebook-attached-tab.is-bookmark {
     width: 48px;
-    left: calc((var(--tab-side) * 50%) + 7% + (var(--tab-position) * 36%) - 24px);
+    left: calc(50% + (var(--tab-side) * 2 - 1) * var(--tab-h) * 100% - 24px);
     bottom: -34px;
     height: 92px;
   }
@@ -1540,7 +1753,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .notebook-turn-leaf,
+  .notebook-turn,
   .notebook-crumple-sheet,
   .notebook-paper-ball,
   .notebook-paper-creases,
@@ -1856,4 +2069,172 @@
 }
 :root[data-reduce-motion="true"] .notebook-flip-arrow .focus-paper-arrow {
   transition: none;
+}
+
+/* Pilha da esquerda: a divisória sai pela borda esquerda, espelhada. */
+:root .notebook-attached-tab.is-divider.is-left {
+  right: auto;
+  left: -62px;
+  padding: 4px 36px 4px 6px;
+}
+.notebook-attached-tab.is-divider.is-left::before {
+  clip-path: polygon(100% 7%, 10% 0, 0 12%, 0 90%, 100% 100%);
+  border-left: 0;
+  border-right: 12px solid #ffffff65;
+}
+.notebook-attached-tab.is-divider.is-left::after {
+  left: auto;
+  right: 8px;
+  transform: skewY(6deg);
+  border-left: 0;
+  border-right: 1px solid #fff9ef80;
+}
+:root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-divider.is-left {
+  transform-origin: calc(100% - 34px) 50%;
+  transform: perspective(700px) rotateY(22deg);
+}
+:root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-divider.is-left.is-exposed {
+  transform: perspective(700px) rotateY(12deg) translateX(3px);
+}
+:root
+  .notebook-attached-tabs:not(.is-scene)
+  .notebook-attached-tab.is-divider.is-left:is(:hover, :focus-visible) {
+  transform: perspective(700px) rotateY(3deg) translateX(8px);
+}
+.notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-divider.is-left::before {
+  background:
+    linear-gradient(270deg, #ffffff48 0%, #ffffff00 30%, #0000002b 100%),
+    linear-gradient(180deg, #ffffff3a 0%, #ffffff00 46%, #00000024 100%), var(--tab-color);
+  box-shadow:
+    inset 4px -4px #29243228,
+    inset 0 -3px #00000026;
+}
+
+/* Aba que acabou de pousar: a divisória se inclina até o ângulo dela e o marcador balança uma vez. */
+@keyframes notebook-tab-land {
+  from {
+    transform: perspective(700px) rotateY(0deg);
+  }
+}
+:root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-divider.is-landed {
+  animation: notebook-tab-land 360ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+:root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-bookmark.is-landed {
+  animation: notebook-bookmark-sway 900ms ease-in-out 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-landed {
+    animation: none;
+  }
+}
+:root[data-reduce-motion="true"]
+  .notebook-attached-tabs:not(.is-scene)
+  .notebook-attached-tab.is-landed {
+  animation: none;
+}
+
+/* Celular: a divisória da pilha esquerda sai menos para fora, para caber na tela. */
+@media (max-width: 600px) {
+  :root .notebook-attached-tab.is-divider.is-left {
+    left: -26px;
+    padding: 4px 28px 4px 4px;
+  }
+}
+
+/* Celular: a inclinação é menor para a aba não crescer para fora da tela. */
+@media (max-width: 600px) {
+  :root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-divider.is-right {
+    transform: perspective(900px) rotateY(-9deg);
+  }
+  :root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-divider.is-left {
+    transform: perspective(900px) rotateY(9deg);
+  }
+  :root
+    .notebook-attached-tabs:not(.is-scene)
+    .notebook-attached-tab.is-divider.is-exposed.is-right {
+    transform: perspective(900px) rotateY(-5deg);
+  }
+  :root
+    .notebook-attached-tabs:not(.is-scene)
+    .notebook-attached-tab.is-divider.is-exposed.is-left {
+    transform: perspective(900px) rotateY(5deg);
+  }
+}
+
+/* Contracapa: espelho da capa, com a lombada à direita e a etiqueta de dono. */
+.book-cover.is-back .book-cover__backboard {
+  inset: 9px 6px -12px -8px;
+  border-radius: 17px 4px 4px 16px;
+  box-shadow: -2px 3px #292432;
+}
+.book-cover.is-back .book-cover__pages {
+  border-right: 0;
+  border-left: 3px double #c7b99f;
+  box-shadow:
+    -1px 2px #fffdf7,
+    -2px 4px #d5ccba,
+    -3px 6px #fff9ef;
+}
+.book-cover.is-back .book-cover__face {
+  align-items: center;
+  padding: 18px 30px 18px 15px;
+  border-radius: 12px 4px 4px 14px;
+  box-shadow:
+    inset 3px 0 #51259b,
+    inset 0 -4px #51259b;
+}
+.book-cover.is-back .book-cover__face::after {
+  content: "";
+  position: absolute;
+  inset: 8px 20px 8px 8px;
+  border: 1px solid #a779ef;
+  opacity: 0.65;
+}
+.book-cover.is-back .book-cover__spine {
+  inset: 0 0 0 auto;
+  border-right: 0;
+  border-left: 3px solid #51465d;
+  border-radius: 0 5px 4px 0;
+  box-shadow: -3px 0 #29243226;
+}
+.book-cover.is-back .book-cover__spine::after {
+  border-left: 0;
+  border-right: 1px dashed #a779ef;
+}
+.book-cover__medal {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 34%;
+  aspect-ratio: 1;
+  margin-top: 14%;
+  border-radius: 50%;
+  background: #fff9ef;
+  box-shadow: 3px 4px #51259b;
+}
+.book-cover__medal svg {
+  width: 70%;
+  height: 70%;
+}
+.book-cover.is-back .book-cover__label {
+  left: 14%;
+  right: 20%;
+  text-align: center;
+}
+.book-cover.is-back .book-cover__title {
+  margin-top: 4px;
+  font-size: clamp(9px, 1.4vw, 12px);
+  letter-spacing: 0.08em;
+  color: #51465d;
+}
+.book-cover__lines {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+.book-cover__lines i {
+  display: block;
+  height: 1px;
+  background: #b9ad95;
 }

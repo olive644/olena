@@ -26,6 +26,9 @@ import { PaperActionIcon } from "./paper-action-icon";
 import { PaperCloseIcon } from "./paper-close-icon";
 import { NotebookPaperTools, notebookPaperTabs } from "./notebook-paper-tools";
 import { NotebookCover } from "./notebook-cover";
+import { NotebookBackCover } from "./notebook-back-cover";
+import { NotebookTurnLeaf, type RidingTab } from "./notebook-turn-leaf";
+import { tabsChangingSide } from "./notebook-tab-stack";
 import { FocusPaperArrow } from "./focus-paper-arrow";
 import { NotebookPageThumbnail } from "./notebook-page-thumbnail";
 import { NotebookToolIcon } from "./notebook-tool-icon";
@@ -153,6 +156,25 @@ export function NotebookSpread({
       });
     setShowCover(next);
   }
+  function changeBack(next: boolean) {
+    if (readOnly || compactPreview || busy || next === showBack) return;
+    suppressClick.current = false;
+    const source = document.querySelector<HTMLElement>(
+      next ? ".notebook-spread-shell" : ".notebook-concept-cover .book-cover",
+    );
+    const rect = source?.getBoundingClientRect();
+    if (rect && canAnimateNotebook())
+      setCoverJourney({
+        notebook,
+        tabs: [],
+        side: "back",
+        returning: next,
+        destination: next ? "cover" : "spread",
+        pages: next ? notebookPageSnapshot() : undefined,
+        from: next ? { x: rect.x, y: rect.y, width: rect.width / 2, height: rect.height } : rect,
+      });
+    setShowBack(next);
+  }
   const [turning, setTurning] = useState<Turn | null>(null);
   const [removing, setRemoving] = useState<{ page: StudyNote; side: number } | null>(null);
   const drag = useRef<{ x: number; y: number; id: number; width: number; moved: boolean } | null>(
@@ -163,11 +185,20 @@ export function NotebookSpread({
   const current = Math.min(spreadIndex, lastSpread);
   const visible = pages.slice(current * 2, current * 2 + 2);
   const busy = Boolean(turning || removing || coverJourney || transitioning);
+  const canOpenBack = !readOnly && !compactPreview && pages.length > 0;
+  // Abas que acabaram de pousar na pilha nova: assentam com um pequeno movimento.
+  const ridingRef = useRef<ReadonlySet<string> | undefined>(undefined);
+  const [landedTabIds, setLandedTabIds] = useState<ReadonlySet<string> | undefined>();
   useEffect(() => {
     if (!turning?.settling) return;
     const timer = window.setTimeout(() => {
+      const arrived = turning.progress === 1 ? ridingRef.current : undefined;
       setSpreadIndex(turning.progress === 1 ? turning.to : turning.from);
       setTurning(null);
+      if (arrived) {
+        setLandedTabIds(arrived);
+        window.setTimeout(() => setLandedTabIds(undefined), 900);
+      }
     }, NOTEBOOK_TURN_MS + 40);
     return () => window.clearTimeout(timer);
   }, [turning]);
@@ -204,6 +235,20 @@ export function NotebookSpread({
       ]
     : [visible[0], visible[1]];
   const front = turning ? pages[turning.from * 2 + (turning.direction > 0 ? 1 : 0)] : undefined;
+  // Abas que trocam de lado com a folha que vira: viajam nela em vez de ficarem na camada fixa.
+  const pageIds = pages.map((page) => page.id);
+  const ridingTabs: RidingTab[] = turning
+    ? tabsChangingSide(
+        notebookPaperTabs(notebook, pages, subjects),
+        pageIds,
+        turning.from,
+        turning.to,
+      ).map((tab) => ({ tab, pageIndex: pageIds.indexOf(tab.pageId) }))
+    : [];
+  const ridingIds = ridingTabs.length ? new Set(ridingTabs.map(({ tab }) => tab.id)) : undefined;
+  useEffect(() => {
+    ridingRef.current = ridingIds;
+  });
   if (use3d)
     return (
       <Suspense fallback={<HelenaLoading label={uiText(3176)} compact />}>
@@ -256,7 +301,33 @@ export function NotebookSpread({
           </button>
         </div>
       )}
-      {showCover ? (
+      {showBack && !use3d && (
+        <div className="notebook-spread-options notebook-paper-toolbox">
+          <button
+            type="button"
+            className="notebook-paper-tool"
+            aria-label={uiText(737)}
+            disabled={busy}
+            onClick={() => changeBack(false)}
+          >
+            <NotebookToolIcon name="index" />
+            <span>{uiText(737)}</span>
+          </button>
+        </div>
+      )}
+      {showBack ? (
+        <div className="notebook-cover-customizer">
+          <button
+            type="button"
+            className="notebook-concept-cover is-back"
+            disabled={busy}
+            aria-label={uiText(3170)}
+            onClick={() => changeBack(false)}
+          >
+            <NotebookBackCover subjectColor="#7C3AED" />
+          </button>
+        </div>
+      ) : showCover ? (
         <div className="notebook-cover-customizer">
           <button
             type="button"
@@ -331,6 +402,9 @@ export function NotebookSpread({
             dispatch={dispatch}
             disabled={busy || readOnly}
             toolbarHost={hasDock ? dockHost : null}
+            spread={current}
+            {...(ridingIds ? { hiddenTabIds: ridingIds } : {})}
+            {...(landedTabIds ? { landedTabIds } : {})}
             endControl={
               hasDock && pages.length > 0 ? (
                 <button
@@ -375,6 +449,8 @@ export function NotebookSpread({
                 ) {
                   event.preventDefault();
                   if (event.key === "ArrowLeft" && current === 0) changeCover(true);
+                  else if (event.key === "ArrowRight" && current >= lastSpread && canOpenBack)
+                    changeBack(true);
                   else turnTo(current + (event.key === "ArrowLeft" ? -1 : 1));
                 }
               }}
@@ -561,24 +637,17 @@ export function NotebookSpread({
                 <i />
               </div>
               {turning && (
-                <div
-                  className={`notebook-turn-leaf ${turning.direction < 0 ? "is-backward" : ""} ${turning.settling ? "is-settling" : "is-dragging"} ${turning.automatic ? "is-automatic" : ""}`}
-                  aria-hidden="true"
-                  style={
-                    {
-                      "--turn-angle": `${turning.direction * -180 * turning.progress}deg`,
-                    } as CSSProperties
-                  }
-                >
-                  <div className="notebook-turn-face is-front">
-                    <PageImage page={front} />
-                    <span>{front ? pages.indexOf(front) + 1 : ""}</span>
-                  </div>
-                  <div className="notebook-turn-face is-back">
-                    <PageImage page={back} />
-                    <span>{back ? pages.indexOf(back) + 1 : ""}</span>
-                  </div>
-                </div>
+                <NotebookTurnLeaf
+                  direction={turning.direction}
+                  settling={turning.settling}
+                  automatic={Boolean(turning.automatic)}
+                  angle={turning.direction * -180 * turning.progress}
+                  front={front}
+                  back={back}
+                  frontNumber={front ? pages.indexOf(front) + 1 : undefined}
+                  backNumber={back ? pages.indexOf(back) + 1 : undefined}
+                  riding={ridingTabs}
+                />
               )}
               {removing && (
                 <div className={`notebook-crumple is-side-${removing.side}`} aria-hidden="true">
@@ -618,10 +687,10 @@ export function NotebookSpread({
             </span>
             <button
               className={`${compactPreview ? "student-page-arrow" : "notebook-flip-arrow"} is-next`}
-              aria-label={uiText(744)}
+              aria-label={current >= lastSpread && canOpenBack ? uiText(3169) : uiText(744)}
               type="button"
-              disabled={current >= lastSpread || busy}
-              onClick={() => turnTo(current + 1)}
+              disabled={(current >= lastSpread && !canOpenBack) || busy}
+              onClick={() => (current >= lastSpread ? changeBack(true) : turnTo(current + 1))}
             >
               <FocusPaperArrow />
             </button>
@@ -629,7 +698,7 @@ export function NotebookSpread({
           {hasDock && <div className="notebook-2d-dock" ref={setDockHost} />}
         </>
       )}
-      {!readOnly && !hasDock && !showCover && pages.length > 0 && (
+      {!readOnly && !hasDock && !showCover && !showBack && pages.length > 0 && (
         <div className="notebook-preview-actions">
           <button
             className="notebook-preview-create"
