@@ -4,11 +4,11 @@ import type { NotebookTab, StudyNote } from "../../domain/workspace";
 import { useMotionReduced } from "../../data/accessibility-preferences";
 import type { createNotebookSound } from "../../data/notebook-sound";
 import { HelenaLoading } from "../helena-loading";
-import { NOTEBOOK_COVER_ART } from "../notebook-cover-art";
 import { renderPagePreview } from "../notebook-page-preview";
 import type { BookView, PlacementResult } from "./notebook-3d-model";
 import type { PlacementResolver } from "../notebook-paper-tools";
-import type { NotebookScene, ScenePage } from "./notebook-3d-scene";
+import type { NotebookScene, SceneHint, ScenePage } from "./notebook-3d-scene";
+import { registerNotebook3dCloser } from "./notebook-3d-support";
 import "./notebook-3d.css";
 
 export type Notebook3dProps = {
@@ -18,6 +18,7 @@ export type Notebook3dProps = {
   view: BookView;
   placing: "divider" | "bookmark" | null;
   editingTabs: boolean;
+  selectedTabId?: string | null | undefined;
   busy: boolean;
   returningFromPageId?: string | undefined;
   jump?: { pageId: string; nonce: number } | undefined;
@@ -34,16 +35,9 @@ export type Notebook3dProps = {
   resolverRef?: RefObject<PlacementResolver | null> | undefined;
 };
 
-type Proxy = { pageId: string; rect: DOMRect; image: string };
+const PREVIEW_REACH = 8;
 
-function loadImage(src: string) {
-  return new Promise<HTMLImageElement | null>((resolve) => {
-    const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = () => resolve(null);
-    image.src = src;
-  });
-}
+type Proxy = { pageId: string; rect: DOMRect; image: string };
 
 /** Caderno 3D: a cena WebGL só é baixada aqui, quando o caderno abre em 3D. */
 export function Notebook3dView(props: Notebook3dProps) {
@@ -55,23 +49,20 @@ export function Notebook3dView(props: Notebook3dProps) {
   latest.current = props;
   const sound = useRef<ReturnType<typeof createNotebookSound> | null>(null);
   const [ready, setReady] = useState(false);
-  const [peek, setPeek] = useState<{ page: number; title: string; x: number; y: number } | null>(
-    null,
-  );
+  const [hint, setHint] = useState<SceneHint | null>(null);
   const [proxy, setProxy] = useState<Proxy | null>(null);
   const [previews, setPreviews] = useState<Record<string, string>>({});
   const opening = useRef(false);
+  const cache = useRef(new Set<string>());
 
   useEffect(() => {
     let cancelled = false;
     let disposeSound: (() => void) | null = null;
     void (async () => {
       try {
-        const [module, soundModule, cover, olena, sprite] = await Promise.all([
+        const [module, soundModule, sprite] = await Promise.all([
           import("./notebook-3d-scene"),
           import("../../data/notebook-sound"),
-          loadImage(NOTEBOOK_COVER_ART),
-          loadImage("/notebook-covers/olena-mesa.webp"),
           fetch("/navigation-icons/paper/paper-bookmark.svg")
             .then((response) => (response.ok ? response.text() : ""))
             .catch(() => ""),
@@ -83,7 +74,7 @@ export function Notebook3dView(props: Notebook3dProps) {
         disposeSound = () => notebookSound.dispose();
         const instance = new module.NotebookScene(
           canvas.current,
-          { cover, olena, bookmarkSprite: sprite },
+          { bookmarkSprite: sprite },
           {
             onView: (view) => latest.current.onView(view),
             onOpenPage: (index) => open(index),
@@ -91,7 +82,7 @@ export function Notebook3dView(props: Notebook3dProps) {
             onTabActivate: (id) => latest.current.onTabActivate(id),
             onTabMoved: (id, result) => latest.current.onTabMoved(id, result),
             onPlace: (kind, result) => latest.current.onPlace(kind, result),
-            onPeek: setPeek,
+            onHint: setHint,
             onSound: (cue) => notebookSound.play(cue),
           },
         );
@@ -111,26 +102,50 @@ export function Notebook3dView(props: Notebook3dProps) {
     // A cena nasce uma vez por caderno; as mudanças de dados chegam pelos efeitos abaixo.
   }, []);
 
-  // Miniaturas reais das folhas, desenhadas pelo mesmo renderizador do editor.
+  // Miniaturas reais das folhas, desenhadas pelo mesmo renderizador do editor. Só as folhas perto
+  // da dupla aberta são desenhadas, uma por vez e começando pelas mais próximas: abrir um caderno
+  // grande não trava a tela, e as folhas distantes nem ocupam memória.
+  const center = props.view.cover
+    ? 0
+    : props.view.back
+      ? props.pages.length - 1
+      : props.view.spread * 2;
   useEffect(() => {
     let cancelled = false;
-    for (const page of props.pages) {
-      const asset = page.assets[0];
-      if (!asset) continue;
-      const key = `${page.id}:${page.updatedAt}`;
-      if (previews[key] !== undefined) continue;
-      renderPagePreview(asset, 900)
-        .then((url) => {
-          if (!cancelled) setPreviews((current) => ({ ...current, [key]: url }));
-        })
-        .catch(() => {
-          if (!cancelled) setPreviews((current) => ({ ...current, [key]: "" }));
-        });
-    }
+    const wanted = props.pages
+      .map((page, index) => ({ page, index }))
+      .filter(({ index }) => Math.abs(index - center) <= PREVIEW_REACH)
+      .sort((a, b) => Math.abs(a.index - center) - Math.abs(b.index - center));
+    const keys = new Set(wanted.map(({ page }) => `${page.id}:${page.updatedAt}`));
+    const seen = cache.current;
+    // Junto de cada miniatura nova saem as que ficaram fora da janela.
+    const keep = (current: Record<string, string>, key: string, url: string) => {
+      const next: Record<string, string> = { [key]: url };
+      for (const [name, value] of Object.entries(current)) if (keys.has(name)) next[name] = value;
+      return next;
+    };
+    void (async () => {
+      for (const { page } of wanted) {
+        if (cancelled) return;
+        const asset = page.assets[0];
+        const key = `${page.id}:${page.updatedAt}`;
+        if (!asset || seen.has(key)) continue;
+        seen.add(key);
+        try {
+          const url = await renderPagePreview(asset, 768);
+          if (!cancelled) setPreviews((current) => keep(current, key, url));
+        } catch {
+          if (!cancelled) setPreviews((current) => keep(current, key, ""));
+        }
+        await new Promise((resolve) => window.setTimeout(resolve, 24));
+      }
+    })();
     return () => {
       cancelled = true;
+      // O que não terminou volta para a fila na próxima janela.
+      for (const key of [...seen]) if (!keys.has(key)) seen.delete(key);
     };
-  }, [props.pages, previews]);
+  }, [props.pages, center]);
 
   useEffect(() => {
     scene.current?.setReducedMotion(reduced);
@@ -163,6 +178,21 @@ export function Notebook3dView(props: Notebook3dProps) {
       target.current = null;
     };
   }, [ready, props.resolverRef]);
+  // Voltar para a estante: o caderno folheia até a capa, fecha e só então a capa viaja.
+  useEffect(() => {
+    const instance = scene.current;
+    if (!instance) return;
+    return registerNotebook3dCloser(async () => {
+      const closed: BookView = { cover: true, back: false, spread: 0 };
+      instance.setView(closed);
+      latest.current.onView(closed);
+      await instance.whenSettled();
+      return instance.coverScreenRect();
+    });
+  }, [ready]);
+  useEffect(() => {
+    scene.current?.setSelectedTab(props.selectedTabId ?? null);
+  }, [ready, props.selectedTabId]);
   useEffect(() => {
     scene.current?.setPlacing(props.placing);
   }, [ready, props.placing]);
@@ -176,8 +206,7 @@ export function Notebook3dView(props: Notebook3dProps) {
       const returning = props.pages.findIndex((page) => page.id === props.returningFromPageId);
       if (returning >= 0) {
         instance.setView(props.view, { instant: true });
-        instance.startFromPage(returning);
-        sound.current?.play("exit");
+        instance.returnPage(returning);
         return;
       }
       instance.setView({ cover: true, back: false, spread: 0 }, { instant: true });
@@ -191,18 +220,29 @@ export function Notebook3dView(props: Notebook3dProps) {
     const page = latest.current.pages[index];
     if (!instance || !page || opening.current || latest.current.busy) return;
     opening.current = true;
-    sound.current?.play("enter");
-    void instance.focusPage(index).then(() => {
-      const rect = instance.pageScreenRect(index);
+    // O arquivo da imagem é gerado enquanto a folha sobe do caderno.
+    const image = instance.pageImageUrl(index);
+    void instance.liftPage(index).then(async (rect) => {
       if (!rect) {
         opening.current = false;
         latest.current.onOpen(page.id);
         return;
       }
-      setProxy({ pageId: page.id, rect, image: instance.pageImage(index) });
+      // O fundo da jornada até o editor é a foto do caderno escurecido, sem a folha que saiu.
+      const shot = await instance.snapshot();
+      if (canvas.current) canvas.current.dataset["snapshot"] = shot;
+      if (shot) window.setTimeout(() => URL.revokeObjectURL(shot), 6000);
+      setProxy({ pageId: page.id, rect, image: await image });
     });
   }
   // A jornada da folha até o editor parte do cartão posicionado sobre a folha da cena.
+  useEffect(() => {
+    const url = proxy?.image;
+    // A jornada copia a imagem logo ao abrir; o arquivo temporário sai depois que ela terminou.
+    return () => {
+      if (url?.startsWith("blob:")) window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+    };
+  }, [proxy?.image]);
   useEffect(() => {
     if (!proxy) return;
     const frame = requestAnimationFrame(() => {
@@ -253,13 +293,13 @@ export function Notebook3dView(props: Notebook3dProps) {
           <HelenaLoading label={uiText(3176)} compact />
         </div>
       )}
-      {peek && (
+      {hint && (
         <span
-          className="notebook-3d__peek"
-          style={{ left: peek.x, top: peek.y }}
+          className={`notebook-3d__peek${hint.warn ? " is-warn" : ""}`}
+          style={{ left: hint.x, top: hint.y }}
           aria-hidden="true"
         >
-          {uiText(3174, [peek.page + 1, peek.title || uiText(3177)])}
+          {hint.text}
         </span>
       )}
       {proxy && (

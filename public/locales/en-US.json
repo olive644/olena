@@ -3164,7 +3164,7 @@
   "For your security, confirm your access before linking Discord.",
   "This ends every session on this account, including this device. Your studies stay saved.",
   "We could not end the sessions right now. Please try again shortly.",
-  "OLENA STUDY NOTEBOOK",
+  "STUDY NOTEBOOK",
   "THIS NOTEBOOK BELONGS TO",
   "PAGE {0}",
   "Back cover",
@@ -3178,6 +3178,8 @@
   "Loading 3D notebook",
   "Untitled",
   "Closed cover",
+  "Place here · page {0}",
+  "Edit mark: {0}",
   "Olena arcana card back",
   "Symmetrical back with paper moons and star"
 ]

@@ -5,16 +5,18 @@
 export const BOOK = {
   pageWidth: 3,
   pageHeight: 4,
-  boardThickness: 0.075,
-  sheetThickness: 0.026,
-  boardWidth: 3.12,
-  boardHeight: 4.22,
+  boardThickness: 0.11,
+  sheetThickness: 0.05,
+  boardWidth: 3.24,
+  boardHeight: 4.38,
   segmentsX: 40,
   segmentsZ: 10,
 } as const;
 
 /** Divisória com a proporção do app (96 x 44 px sobre uma folha de 380 x 507 px). */
-export const DIVIDER = { outside: 0.56, inside: 0.3, height: 0.42 } as const;
+// A parte de dentro é curta: a divisória fica presa na borda e não atravessa as folhas de cima
+// quando elas levantam ao espiar ou virar.
+export const DIVIDER = { outside: 0.56, inside: 0.08, height: 0.42 } as const;
 /** Marcador com a proporção do app (56 x 158 px, 44 px para fora da borda de baixo). */
 export const RIBBON = { width: 0.42, length: (0.42 * 158) / 56, outside: 0.42 } as const;
 
@@ -60,8 +62,16 @@ export function leafOfPage(index: number): { leaf: number; front: boolean } {
   return { leaf: 1 + Math.floor((index - 1) / 2), front: index % 2 === 1 };
 }
 
+/**
+ * Espessura de uma folha solta. Cadernos finos ganham folhas mais grossas para a pilha aparecer;
+ * cadernos grossos afinam cada folha para o bloco não virar um tijolo (cerca de 0,7 até umas 60
+ * folhas soltas; depois disso cada folha para em 0,012).
+ */
+export function sheetThickness(leaves: number) {
+  return clamp(0.7 / Math.max(1, leaves - 2), 0.012, BOOK.sheetThickness);
+}
 export function thickness(leaf: number, leaves: number) {
-  return leaf === 0 || leaf === leaves - 1 ? BOOK.boardThickness : BOOK.sheetThickness;
+  return leaf === 0 || leaf === leaves - 1 ? BOOK.boardThickness : sheetThickness(leaves);
 }
 
 /** Altura do centro da peça parada: à direita ficam as de índice maior embaixo, à esquerda as de índice menor. */
@@ -78,22 +88,34 @@ export type BendPoint = [x: number, y: number, angle: number];
  * Curva da folha: cada linha da malha dobra um pouco diferente, então o canto puxado vai na frente
  * e a dobra fica levemente diagonal. O ângulo nunca passa do plano da mesa.
  */
-export function bendSheet(theta: number, curl: number, bias: number, hingeY: number) {
-  const rows: BendPoint[][] = [];
+export function bendSheet(
+  theta: number,
+  curl: number,
+  bias: number,
+  hingeY: number,
+  /** Linhas de uma chamada anterior: são reescritas no lugar, sem criar lixo a cada quadro. */
+  rows: BendPoint[][] = [],
+) {
   const step = BOOK.pageWidth / BOOK.segmentsX;
   for (let row = 0; row <= BOOK.segmentsZ; row++) {
     const weight = 1 + 0.55 * bias * ((row / BOOK.segmentsZ) * 2 - 1);
     let x = 0;
     let y = hingeY;
-    const points: BendPoint[] = [[x, y, theta]];
+    const points = (rows[row] ??= []);
+    const first = (points[0] ??= [0, 0, 0]);
+    first[0] = x;
+    first[1] = y;
+    first[2] = theta;
     for (let index = 1; index <= BOOK.segmentsX; index++) {
       const fraction = index / BOOK.segmentsX;
       const angle = clamp(theta + curl * weight * fraction ** 1.25, -0.015, Math.PI + 0.015);
       x += Math.cos(angle) * step;
       y += Math.sin(angle) * step;
-      points.push([x, y, angle]);
+      const point = (points[index] ??= [0, 0, 0]);
+      point[0] = x;
+      point[1] = y;
+      point[2] = angle;
     }
-    rows.push(points);
   }
   return rows;
 }
@@ -202,7 +224,8 @@ export function peekFan(stackSize: number, pointerZ: number) {
     0,
     stackSize - 1,
   );
-  const angles = Array.from({ length: depth }, (_, index) => 0.34 + 0.05 * (depth - index));
+  // Ângulos baixos: as folhas abrem um leque curto, sem esconder a dupla aberta.
+  const angles = Array.from({ length: depth }, (_, index) => 0.16 + 0.03 * (depth - index));
   return { depth, angles };
 }
 

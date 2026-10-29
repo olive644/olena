@@ -30,7 +30,7 @@ import { FocusPaperArrow } from "./focus-paper-arrow";
 import { NotebookPageThumbnail } from "./notebook-page-thumbnail";
 import { NotebookToolIcon } from "./notebook-tool-icon";
 import { NOTEBOOK_TURN_MS, NOTEBOOK_TURN_EASING } from "./notebook-motion";
-import { useNotebook3d } from "./notebook-3d/notebook-3d-support";
+import { prefetchNotebook3d, useNotebook3d } from "./notebook-3d/notebook-3d-support";
 import { HelenaLoading } from "./helena-loading";
 import "./notebook-spread.css";
 import "./notebook-binding-finish.css";
@@ -120,6 +120,9 @@ export function NotebookSpread({
   const [unavailable3d, setUnavailable3d] = useState(false);
   const use3d = prefers3d && !unavailable3d && !compactPreview && !readOnly;
   const [showBack, setShowBack] = useState(false);
+  useEffect(() => {
+    if (use3d) prefetchNotebook3d(true);
+  }, [use3d]);
 
   const [spreadIndex, setSpreadIndex] = useState(() =>
     Math.max(0, Math.floor(pages.findIndex((page) => page.id === initialPageId) / 2)),

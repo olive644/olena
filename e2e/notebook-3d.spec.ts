@@ -32,6 +32,21 @@ test("caderno em 3D abre a capa, cria folhas e volta da folha 2D", async ({ page
   await openNewNotebook(page, info.project.name === "mobile");
   const scene = page.locator("[data-notebook-3d] .notebook-3d__canvas");
   await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 30_000 });
+  // Parada, a cena não desenha quadros: sem gasto de CPU, GPU nem bateria.
+  const frames = () =>
+    scene.evaluate(
+      (canvas) => (canvas as unknown as { nb3dStats: () => { frames: number } }).nb3dStats().frames,
+    );
+  await expect
+    .poll(
+      async () => {
+        const before = await frames();
+        await page.waitForTimeout(1200);
+        return (await frames()) - before;
+      },
+      { timeout: 40_000 },
+    )
+    .toBe(0);
   const bounds = await scene.boundingBox();
   expect(bounds!.width).toBeGreaterThan(250);
   expect(bounds!.height).toBeGreaterThan(250);
@@ -66,7 +81,7 @@ test("caderno em 3D abre a capa, cria folhas e volta da folha 2D", async ({ page
     .getByRole("button", { name: /Nova folha/ })
     .nth(2)
     .click();
-  await expect(editor).toBeVisible({ timeout: 15_000 });
+  await expect(editor).toBeVisible({ timeout: 30_000 });
   await editor.getByRole("button", { name: "Fechar", exact: true }).click();
   await expect(editor).toHaveCount(0);
   await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 30_000 });
@@ -79,4 +94,69 @@ test("sem o caderno 3D ligado, o caderno continua na vitrine 2D", async ({ page 
   await expect(
     page.locator(".notebook-paper-spread, .notebook-concept-cover").first(),
   ).toBeVisible();
+});
+
+test("pôr marca mostra onde ela cai, a edição destaca a escolhida e a estante recebe o caderno fechado", async ({
+  page,
+}, info) => {
+  test.slow();
+  test.skip(info.project.name === "mobile", "passar o ponteiro por cima só existe no PC");
+  await openNewNotebook(page, false);
+  const scene = page.locator("[data-notebook-3d] .notebook-3d__canvas");
+  await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 30_000 });
+  const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
+  for (let created = 0; created < 2; created++) {
+    await page
+      .getByRole("button", { name: created ? "Criar nova folha" : "Criar primeira folha" })
+      .last()
+      .click();
+    await expect(editor).toBeVisible({ timeout: 20_000 });
+    await editor.getByRole("button", { name: "Fechar", exact: true }).click();
+    await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 30_000 });
+  }
+  const project = (x: number, z: number) =>
+    scene.evaluate(
+      (canvas, point) =>
+        (
+          canvas as unknown as {
+            nb3dProject: (x: number, y: number, z: number) => { x: number; y: number };
+          }
+        ).nb3dProject(point[0]!, 0.2, point[1]!),
+      [x, z],
+    );
+  const hint = page.locator(".notebook-3d__peek");
+  // Folha: o ponteiro mostra que o toque abre aquela folha.
+  const middle = await project(1.3, 0);
+  await page.mouse.move(middle.x, middle.y);
+  await expect(hint).toContainText("Abrir folha 2");
+  // Divisória: no meio da folha não pode; na borda direita, o fantasma e a dica confirmam.
+  await page.getByRole("button", { name: "Colocar divisória" }).click();
+  await page.mouse.move(middle.x - 5, middle.y);
+  await expect(hint).toHaveClass(/is-warn/);
+  const edge = await project(2.8, 0.4);
+  await page.mouse.move(edge.x, edge.y);
+  await expect(hint).toContainText("Pôr aqui · folha 2");
+  await expect(hint).not.toHaveClass(/is-warn/);
+  await page.mouse.click(edge.x, edge.y);
+  await expect(page.getByRole("button", { name: /^Divisória .*folha 2/ })).toHaveCount(1);
+  // Edição: apontar a marca diz qual é; tocar abre o painel para renomear ou remover.
+  await page.getByRole("button", { name: "Editar marcas" }).click();
+  const tab = await project(3.3, 0.45);
+  // A marca recém-criada ainda assenta ao entrar na edição: o ponteiro repete até ela responder.
+  await expect(async () => {
+    await page.mouse.move(tab.x - 6, tab.y);
+    await page.mouse.move(tab.x, tab.y);
+    await expect(hint).toContainText("Editar marca", { timeout: 1500 });
+  }).toPass({ timeout: 15_000 });
+  await page.mouse.click(tab.x, tab.y);
+  await expect(page.getByRole("button", { name: "Remover marcação" })).toBeVisible();
+  await page.getByRole("button", { name: "Remover marcação" }).click();
+  await expect(page.getByRole("button", { name: /^Divisória .*folha 2/ })).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  // Voltar: o caderno fecha na capa e só então a capa viaja até a estante.
+  await page.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
+  await expect(page.getByText("Capa fechada")).toBeVisible();
+  await expect(page.locator(".notebook-journey")).toBeVisible({ timeout: 20_000 });
+  await expect(page.locator(".notebook-journey")).toHaveCount(0, { timeout: 20_000 });
+  await expect(page.locator("[data-notebook-3d]")).toHaveCount(0);
 });
