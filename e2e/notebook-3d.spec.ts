@@ -177,22 +177,29 @@ test("pôr marca mostra onde ela cai, a edição destaca a escolhida e a estante
   // Divisória: no meio da folha não pode; na borda direita, o fantasma e a dica confirmam.
   await page.getByRole("button", { name: "Colocar divisória" }).click();
   // A ferramenta chega à cena num efeito do React: o ponteiro repete até a dica de aviso aparecer.
+  // O ponto é projetado de novo a cada tentativa: abrir a bandeja pode mexer no enquadramento.
   await expect(async () => {
-    await page.mouse.move(middle.x - 5, middle.y);
-    await page.mouse.move(middle.x - 4, middle.y);
+    const point = await project(1.3, 0);
+    await page.mouse.move(point.x - 5, point.y);
+    await page.mouse.move(point.x - 4, point.y);
     await expect(hint).toHaveClass(/is-warn/, { timeout: 1500 });
   }).toPass({ timeout: 15_000 });
-  const edge = await project(2.8, 0.4);
-  await page.mouse.move(edge.x, edge.y);
-  await expect(hint).toContainText("Pôr aqui · folha 2");
+  let edge = { x: 0, y: 0 };
+  await expect(async () => {
+    edge = await project(2.8, 0.4);
+    await page.mouse.move(edge.x - 4, edge.y);
+    await page.mouse.move(edge.x, edge.y);
+    await expect(hint).toContainText("Pôr aqui · folha 2", { timeout: 1500 });
+  }).toPass({ timeout: 15_000 });
   await expect(hint).not.toHaveClass(/is-warn/);
   await page.mouse.click(edge.x, edge.y);
   await expect(page.getByRole("button", { name: /^Divisória .*folha 2/ })).toHaveCount(1);
   // Edição: apontar a marca diz qual é; tocar abre o painel para renomear ou remover.
   await page.getByRole("button", { name: "Editar marcas" }).click();
-  const tab = await project(3.3, 0.45);
+  let tab = { x: 0, y: 0 };
   // A marca recém-criada ainda assenta ao entrar na edição: o ponteiro repete até ela responder.
   await expect(async () => {
+    tab = await project(3.3, 0.45);
     await page.mouse.move(tab.x - 6, tab.y);
     await page.mouse.move(tab.x, tab.y);
     await expect(hint).toContainText("Editar marca", { timeout: 1500 });
