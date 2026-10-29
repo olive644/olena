@@ -1221,7 +1221,7 @@ export function NotesView({
         />
       ) : !activePage && activeNotebook.kind !== "folder" ? (
         <section className="notebook-entry-preview" aria-label={uiText(1370)}>
-          <div className="notebook-preview-heading">
+          <div className={`notebook-preview-heading${notebook3d ? " is-3d" : ""}`}>
             <button
               type="button"
               className="notebook-paper-tool notebook-back-tool"
@@ -1232,7 +1232,8 @@ export function NotesView({
             >
               <img src="/paper-arrow.svg" alt="" />
             </button>
-            <h1>{activeNotebook.title}</h1>
+            {/* No 3D o nome do caderno está na capa; o título fica só para leitores de tela. */}
+            <h1 className={notebook3d ? "visually-hidden" : undefined}>{activeNotebook.title}</h1>
           </div>
           <p>
             {notebookPages.length} {notebookPages.length === 1 ? uiText(1993) : uiText(1994)}

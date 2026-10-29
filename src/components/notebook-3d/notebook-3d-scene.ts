@@ -102,7 +102,7 @@ const {
   segmentsX: NX,
   segmentsZ: NZ,
 } = BOOK;
-const TEXTURE = { width: 1024, height: Math.round((1024 * PAGE_UNITS.height) / PAGE_UNITS.width) };
+const TEXTURE = { width: 1280, height: Math.round((1280 * PAGE_UNITS.height) / PAGE_UNITS.width) };
 const CLASP = { z: -H / 2 + 0.56 * H + 0.34, depth: 0.68, length: 0.86 };
 
 type Board = {
@@ -353,12 +353,12 @@ export class NotebookScene {
   private title = "";
   private camState = {
     yaw: 0,
-    tilt: 0.48,
+    tilt: 0.3,
     zoom: 1,
     x: 0,
     z: 0,
     distance: 14,
-    tiltNow: 0.48,
+    tiltNow: 0.3,
     yawNow: 0,
     ready: false,
   };
@@ -389,11 +389,11 @@ export class NotebookScene {
     private readonly callbacks: SceneCallbacks,
   ) {
     const device = window.devicePixelRatio || 1;
-    // Acima de 1,5 a pessoa não percebe os pixels extras, mas a placa de vídeo paga por eles.
-    this.maxRatio = this.ratio = Math.min(1.5, device);
+    // Telas de celular passam de 2,5x; acima de 2 o ganho some e a placa de vídeo paga por isso.
+    this.maxRatio = this.ratio = Math.min(2, device);
     this.renderer = new WebGLRenderer({
       canvas: canvasElement,
-      antialias: device < 1.5,
+      antialias: device < 2,
       alpha: true,
       powerPreference: "high-performance",
     });
@@ -402,7 +402,7 @@ export class NotebookScene {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = PCFShadowMap;
     this.renderer.setClearColor(new Color(0x000000), 0);
-    this.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
+    this.anisotropy = Math.min(8, this.renderer.capabilities.getMaxAnisotropy());
     this.scene.add(this.book);
     const desk = new Mesh(
       new PlaneGeometry(80, 80),
@@ -430,9 +430,9 @@ export class NotebookScene {
       base: light.intensity,
     }));
     const owned = (value: CanvasTexture) => ((value.userData["owned"] = false), value);
-    const coverCanvas = canvas(1024, Math.round((1024 * BH) / BW));
+    const coverCanvas = canvas(1400, Math.round((1400 * BH) / BW));
     this.coverTexture = owned(texture(coverCanvas, this.anisotropy));
-    const backCanvas = canvas(1024, Math.round((1024 * BH) / BW));
+    const backCanvas = canvas(1400, Math.round((1400 * BH) / BW));
     drawBackCover(backCanvas.getContext("2d")!, backCanvas.width, backCanvas.height);
     this.backTexture = owned(texture(backCanvas, this.anisotropy));
     const end = canvas(512, Math.round((512 * BH) / BW));
@@ -445,7 +445,12 @@ export class NotebookScene {
     drawPageEdges(edges.getContext("2d")!, edges.width, edges.height);
     this.edgeTexture = owned(texture(edges, this.anisotropy));
     this.edgeTexture.wrapS = this.edgeTexture.wrapT = RepeatWrapping;
-    this.createTexture = owned(texture(canvas(TEXTURE.width, TEXTURE.height), this.anisotropy));
+    this.createTexture = owned(
+      texture(
+        canvas(768, Math.round((768 * PAGE_UNITS.height) / PAGE_UNITS.width)),
+        this.anisotropy,
+      ),
+    );
     const blankCanvas = canvas(16, 16);
     const blankContext = blankCanvas.getContext("2d")!;
     blankContext.fillStyle = "#fffdf7";
@@ -1015,7 +1020,7 @@ export class NotebookScene {
     return near;
   }
   private syncPages() {
-    for (const index of this.pageWindow(3)) {
+    for (const index of this.pageWindow(2)) {
       const page = this.pages[index]!;
       this.loadPreview(page);
       this.paintPage(page);
@@ -1027,7 +1032,7 @@ export class NotebookScene {
   }
   private releaseFar() {
     if (this.disposed) return;
-    const keep = new Set([...this.pageWindow(5)].map((index) => this.pages[index]?.id));
+    const keep = new Set([...this.pageWindow(4)].map((index) => this.pages[index]?.id));
     for (const [id, entry] of this.pageTextures) {
       if (keep.has(id)) continue;
       entry.front.dispose();
@@ -1077,7 +1082,12 @@ export class NotebookScene {
   private refreshTextures() {
     this.syncPages();
     const context = (this.createTexture.image as HTMLCanvasElement).getContext("2d")!;
-    drawCreateCard(context, TEXTURE.width, TEXTURE.height, this.pages.length === 0);
+    drawCreateCard(
+      context,
+      this.createTexture.image.width,
+      this.createTexture.image.height,
+      this.pages.length === 0,
+    );
     this.createTexture.needsUpdate = true;
     this.rebuildTabs();
     this.wake();
@@ -1449,6 +1459,13 @@ export class NotebookScene {
       // Dois quadros extras deixam texturas e sombras assentarem antes de dormir.
       if (++this.idleFrames >= 2) {
         this.running = false;
+        // Parado, o quadro volta à resolução cheia: a baixa só vale enquanto algo se move.
+        if (this.ratio !== this.maxRatio) {
+          this.ratio = this.maxRatio;
+          this.renderer.setPixelRatio(this.ratio);
+          this.renderer.setSize(this.size.width, this.size.height, false);
+          this.renderer.render(this.scene, this.camera);
+        }
         const waiters = this.settleWaiters;
         this.settleWaiters = [];
         for (const resolve of waiters) resolve();
@@ -1468,8 +1485,8 @@ export class NotebookScene {
     if (++this.slowFrames < 24) return;
     this.slowFrames = 0;
     this.averageDelta = 0;
-    if (this.ratio > 1) {
-      this.ratio = Math.max(1, this.ratio - 0.25);
+    if (this.ratio > 1.25) {
+      this.ratio = Math.max(1.25, this.ratio - 0.25);
       this.renderer.setPixelRatio(this.ratio);
       this.renderer.setSize(this.size.width, this.size.height, false);
     } else if (this.shadows) {
@@ -1689,13 +1706,26 @@ export class NotebookScene {
     const count = this.leaves.length;
     const closedFront = this.flipped === 0;
     const closedBack = this.flipped === count && count > 0;
+    // Marcas que saem do caderno entram no enquadramento: o marcador pende por baixo e as
+    // divisórias saem pelo lado de fora das folhas (direita ou, nas já viradas, esquerda).
+    const hasRibbon = this.tabs.some((tab) => tab.kind === "bookmark" && tab.pageIndex >= 0);
+    const firstVisible = this.flipped >= 1 ? (this.flipped - 1) * 2 : 0;
+    const hasLeftDivider =
+      !closedFront &&
+      !closedBack &&
+      this.tabs.some(
+        (tab) => tab.kind === "divider" && tab.pageIndex >= 0 && tab.pageIndex < firstVisible,
+      );
+    const bottom = hasRibbon ? RIBBON.outside + 0.36 : 0.2;
     let xr: [number, number] = closedFront
       ? [-0.4, BW + 0.75]
       : closedBack
         ? [-BW - 0.75, 0.4]
-        : [-BW - 0.85, BW + 0.85];
+        : [-BW - (hasLeftDivider ? DIVIDER.outside + 0.15 : 0.2), BW + 0.95];
     let zr: [number, number] =
-      closedFront || closedBack ? [-BH / 2 - 0.15, BH / 2 + 0.55] : [-H / 2 - 0.35, H / 2 + 0.45];
+      closedFront || closedBack
+        ? [-BH / 2 - 0.1, BH / 2 + (hasRibbon ? 0.9 : 0.3)]
+        : [-H / 2 - 0.2, H / 2 + bottom];
     const focus = this.focus ? easeInOut(this.focus.amount) : 0;
     if (focus > 0 && this.focus) {
       const side = this.focus.index % 2 === 0 ? -1 : 1;
@@ -1780,7 +1810,7 @@ export class NotebookScene {
     let used = 0;
     for (const x of xr)
       for (const z of zr) for (const y of [0, 0.4]) this.corners[used++]!.set(x, y, z);
-    const limit = { x: 0.95 - focus * 0.05, y: 0.9 - focus * 0.04 };
+    const limit = { x: 0.98 - focus * 0.05, y: 0.96 - focus * 0.04 };
     const point = this.scratch.point;
     const fit = (distance: number) => {
       this.probe.position.set(

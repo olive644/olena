@@ -1,4 +1,4 @@
-import { useRef, useState, type Dispatch } from "react";
+import { useId, useRef, useState, type Dispatch } from "react";
 import { uiText } from "../../i18n/runtime";
 import type {
   StudyNote,
@@ -14,7 +14,6 @@ import {
 } from "../notebook-paper-tools";
 import { NotebookToolIcon } from "../notebook-tool-icon";
 import { PaperActionIcon } from "../paper-action-icon";
-import { PaperEditorIcon } from "../paper-editor-icon";
 import { Notebook3dView } from "./notebook-3d-view";
 import type { BookView } from "./notebook-3d-model";
 
@@ -64,6 +63,9 @@ export function NotebookSpread3d({
   onUnavailable,
 }: NotebookSpread3dProps) {
   const sceneResolver = useRef<PlacementResolver | null>(null);
+  // Sem folhas a barra já abre, para o "+" de criar a primeira folha estar à vista.
+  const [toolsOpen, setToolsOpen] = useState(pages.length === 0);
+  const toolsId = useId();
   const [openRequest, setOpenRequest] = useState<{ pageId: string; nonce: number } | undefined>();
   const view: BookView = { cover: showCover, back: showBack, spread: current };
   const setView = (next: BookView) => {
@@ -74,6 +76,29 @@ export function NotebookSpread3d({
   const closed = showCover || showBack;
   const previousLabel = showBack ? uiText(3170) : current === 0 ? uiText(1857) : uiText(1858);
   const nextLabel = !showCover && current >= lastSpread ? uiText(3169) : uiText(744);
+  const status = showCover
+    ? uiText(3178)
+    : showBack
+      ? uiText(3168)
+      : pages.length
+        ? uiText(1859, [
+            current * 2 + 1,
+            visible.length > 1 ? uiText(2570, [current * 2 + 2]) : "",
+            pages.length,
+          ])
+        : uiText(1860);
+  const goPrevious = () =>
+    showBack
+      ? setShowBack(false)
+      : current === 0
+        ? setShowCover(true)
+        : setSpreadIndex(current - 1);
+  const goNext = () =>
+    showCover
+      ? setShowCover(false)
+      : current >= lastSpread
+        ? setShowBack(true)
+        : setSpreadIndex(current + 1);
   return (
     <div className="notebook-spread-workspace is-3d" data-notebook-3d="">
       <NotebookPaperTools
@@ -100,6 +125,18 @@ export function NotebookSpread3d({
             </button>
           )
         }
+        endControl={
+          <button
+            type="button"
+            className="notebook-paper-tool"
+            disabled={Boolean(transitioning)}
+            onClick={() => onCreate(notebook.subjectId)}
+            aria-label={pages.length ? uiText(745) : uiText(1391)}
+            title={pages.length ? uiText(745) : uiText(1391)}
+          >
+            <PaperActionIcon name="plus" />
+          </button>
+        }
         coverControl={null}
         onJump={(id) => {
           setShowCover(false);
@@ -108,113 +145,94 @@ export function NotebookSpread3d({
         }}
       >
         {(tools) => (
-          <Notebook3dView
-            title={notebook.title}
-            pages={pages}
-            tabs={notebookPaperTabs(notebook, pages, subjects)}
-            view={view}
-            placing={tools.tool}
-            editingTabs={tools.editing}
-            selectedTabId={tools.selectedId}
-            busy={Boolean(transitioning)}
-            returningFromPageId={returningFromPageId}
-            jump={jump}
-            openRequest={openRequest}
-            resolverRef={sceneResolver}
-            onView={setView}
-            onOpen={onOpen}
-            onCreate={() => onCreate(notebook.subjectId)}
-            onTabActivate={tools.activateTab}
-            onTabMoved={(id, result) => {
-              const tab = notebookPaperTabs(notebook, pages, subjects).find(
-                (item) => item.id === id,
-              );
-              if (tab) tools.placeResolved(tab.kind, result, id);
-            }}
-            onPlace={(kind, result) => tools.placeResolved(kind, result)}
-            onUnavailable={() => onUnavailable()}
-          />
+          <>
+            <Notebook3dView
+              title={notebook.title}
+              pages={pages}
+              tabs={notebookPaperTabs(notebook, pages, subjects)}
+              view={view}
+              placing={tools.tool}
+              editingTabs={tools.editing}
+              selectedTabId={tools.selectedId}
+              busy={Boolean(transitioning)}
+              returningFromPageId={returningFromPageId}
+              jump={jump}
+              openRequest={openRequest}
+              resolverRef={sceneResolver}
+              onView={setView}
+              onOpen={onOpen}
+              onCreate={() => onCreate(notebook.subjectId)}
+              onTabActivate={tools.activateTab}
+              onTabMoved={(id, result) => {
+                const tab = notebookPaperTabs(notebook, pages, subjects).find(
+                  (item) => item.id === id,
+                );
+                if (tab) tools.placeResolved(tab.kind, result, id);
+              }}
+              onPlace={(kind, result) => tools.placeResolved(kind, result)}
+              onUnavailable={() => onUnavailable()}
+            />
+            <div className="notebook-3d-dock">
+              <p className="notebook-3d-status" aria-live="polite">
+                {tools.tool || tools.editing ? tools.hint : status}
+              </p>
+              <div className="notebook-3d-bar">
+                <button
+                  className="focus-mode-arrow notebook-3d-tools-toggle"
+                  type="button"
+                  aria-label={uiText(toolsOpen ? 3181 : 3182)}
+                  title={uiText(toolsOpen ? 3181 : 3182)}
+                  aria-expanded={toolsOpen}
+                  aria-controls={toolsId}
+                  onClick={() => {
+                    if (toolsOpen) tools.cancel();
+                    setToolsOpen(!toolsOpen);
+                  }}
+                >
+                  <FocusPaperArrow />
+                </button>
+                <div className="notebook-3d-tray" id={toolsId} hidden={!toolsOpen}>
+                  {tools.toolbar}
+                </div>
+              </div>
+              {/* Virar a folha é arrastar ou tocar na borda; estes botões servem ao teclado e ao leitor de tela. */}
+              <nav className="notebook-3d-keys" aria-label={uiText(695)}>
+                <button
+                  type="button"
+                  disabled={showCover || Boolean(transitioning)}
+                  onClick={goPrevious}
+                >
+                  {previousLabel}
+                </button>
+                <button
+                  type="button"
+                  disabled={showBack || Boolean(transitioning)}
+                  onClick={goNext}
+                >
+                  {nextLabel}
+                </button>
+                {!closed &&
+                  visible.map((page) => (
+                    <button
+                      key={page.id}
+                      type="button"
+                      disabled={Boolean(transitioning)}
+                      aria-label={uiText(1855, [page.title, pages.indexOf(page) + 1])}
+                      onClick={() =>
+                        setOpenRequest((previous) => ({
+                          pageId: page.id,
+                          nonce: (previous?.nonce ?? 0) + 1,
+                        }))
+                      }
+                    >
+                      {uiText(3171, [pages.indexOf(page) + 1])}
+                    </button>
+                  ))}
+              </nav>
+            </div>
+          </>
         )}
       </NotebookPaperTools>
-      <nav className="notebook-preview-controls is-3d" aria-label={uiText(695)}>
-        <button
-          className="focus-mode-arrow focus-mode-arrow--previous notebook-3d-arrow"
-          type="button"
-          disabled={showCover || Boolean(transitioning)}
-          aria-label={previousLabel}
-          title={previousLabel}
-          onClick={() =>
-            showBack
-              ? setShowBack(false)
-              : current === 0
-                ? setShowCover(true)
-                : setSpreadIndex(current - 1)
-          }
-        >
-          <FocusPaperArrow />
-        </button>
-        <span aria-live="polite">
-          {showCover
-            ? uiText(3178)
-            : showBack
-              ? uiText(3168)
-              : pages.length
-                ? uiText(1859, [
-                    current * 2 + 1,
-                    visible.length > 1 ? uiText(2570, [current * 2 + 2]) : "",
-                    pages.length,
-                  ])
-                : uiText(1860)}
-        </span>
-        <button
-          className="focus-mode-arrow focus-mode-arrow--next notebook-3d-arrow"
-          type="button"
-          disabled={showBack || Boolean(transitioning)}
-          aria-label={nextLabel}
-          title={nextLabel}
-          onClick={() =>
-            showCover
-              ? setShowCover(false)
-              : current >= lastSpread
-                ? setShowBack(true)
-                : setSpreadIndex(current + 1)
-          }
-        >
-          <FocusPaperArrow />
-        </button>
-      </nav>
-      <div className="notebook-preview-actions">
-        {/* Abrir é tocar na folha; estes botões só aparecem para quem navega pelo teclado. */}
-        {!closed &&
-          visible.map((page) => (
-            <button
-              key={page.id}
-              className="notebook-preview-open"
-              type="button"
-              disabled={Boolean(transitioning)}
-              aria-label={uiText(1855, [page.title, pages.indexOf(page) + 1])}
-              onClick={() =>
-                setOpenRequest((previous) => ({
-                  pageId: page.id,
-                  nonce: (previous?.nonce ?? 0) + 1,
-                }))
-              }
-            >
-              <PaperEditorIcon name="pen" />
-              <span>{uiText(3171, [pages.indexOf(page) + 1])}</span>
-            </button>
-          ))}
-        <button
-          className="notebook-preview-create"
-          type="button"
-          disabled={Boolean(transitioning)}
-          onClick={() => onCreate(notebook.subjectId)}
-          aria-label={pages.length ? uiText(745) : uiText(1391)}
-        >
-          <PaperActionIcon name="plus" />
-          <span>{pages.length ? uiText(746) : uiText(1391)}</span>
-        </button>
-      </div>
     </div>
   );
 }
