@@ -50,6 +50,7 @@ export function Notebook3dView(props: Notebook3dProps) {
   latest.current = props;
   const sound = useRef<ReturnType<typeof createNotebookSound> | null>(null);
   const [ready, setReady] = useState(false);
+  const [painted, setPainted] = useState(false);
   const [hint, setHint] = useState<SceneHint | null>(null);
   const [proxy, setProxy] = useState<Proxy | null>(null);
   const [previews, setPreviews] = useState<Record<string, string>>({});
@@ -67,7 +68,12 @@ export function Notebook3dView(props: Notebook3dProps) {
           fetch("/navigation-icons/paper/paper-bookmark.svg")
             .then((response) => (response.ok ? response.text() : ""))
             .catch(() => ""),
-          document.fonts?.ready,
+          // As fontes do app não seguram a abertura: passado meio segundo a cena nasce com o que
+          // houver e redesenha os textos quando elas chegam.
+          Promise.race([
+            document.fonts?.ready,
+            new Promise((resolve) => window.setTimeout(resolve, 500)),
+          ]),
         ]);
         if (cancelled || !canvas.current) return;
         const notebookSound = soundModule.createNotebookSound();
@@ -88,7 +94,14 @@ export function Notebook3dView(props: Notebook3dProps) {
           },
         );
         scene.current = instance;
+        if (document.fonts && document.fonts.status !== "loaded")
+          void document.fonts.ready.then(() => {
+            if (!cancelled) instance.redrawText();
+          });
         setReady(true);
+        void instance.firstFrame().then(() => {
+          if (!cancelled) setPainted(true);
+        });
       } catch {
         if (!cancelled) latest.current.onUnavailable();
       }
@@ -287,9 +300,9 @@ export function Notebook3dView(props: Notebook3dProps) {
         className="notebook-3d__canvas"
         role="img"
         aria-label={uiText(3175)}
-        data-ready={ready}
+        data-ready={painted}
       />
-      {!ready && (
+      {!painted && (
         <div className="notebook-3d__loading">
           <HelenaLoading label={uiText(3176)} compact />
         </div>

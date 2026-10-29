@@ -343,18 +343,6 @@ export function drawPage(x: Ctx, page: PageArt | null) {
   x.fillRect(side ? width - 60 : 0, 0, 60, height);
 }
 
-/** Moldura de destaque da folha que abre com o toque: sublinhado amarelo do app, em volta. */
-export function drawHoverFrame(x: Ctx, width: number, height: number) {
-  x.clearRect(0, 0, width, height);
-  x.fillStyle = "rgba(250,204,21,0.07)";
-  x.fillRect(0, 0, width, height);
-  x.strokeStyle = "rgba(250,204,21,0.95)";
-  x.lineWidth = 7;
-  x.beginPath();
-  x.roundRect(5, 5, width - 10, height - 10, 10);
-  x.stroke();
-}
-
 /** Mesmo convite da vitrine 2D: ícone "+" de papel e o nome em roxo, centralizados na folha. */
 export function drawCreateCard(x: Ctx, canvasWidth: number, canvasHeight: number, first: boolean) {
   x.clearRect(0, 0, canvasWidth, canvasHeight);
