@@ -1,14 +1,12 @@
 import { expect, test, type Page } from "@playwright/test";
 
-// O caderno 3D é o padrão do app. A configuração global das outras suítes o desliga
-// para testar a vitrine 2D; aqui ele volta ao padrão.
+// O caderno 3D é opcional (o 2D é o padrão). Cada teste liga ou desliga a opção pelo armazenamento.
 test.use({ launchOptions: { args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"] } });
 
 async function openNewNotebook(page: Page, mobile: boolean, enabled = true) {
   await page.addInitScript((value) => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
-    if (value) localStorage.removeItem("olena:accessibility:v1");
-    else localStorage.setItem("olena:accessibility:v1", JSON.stringify({ notebook3d: false }));
+    localStorage.setItem("olena:accessibility:v1", JSON.stringify({ notebook3dOptIn: value }));
   }, enabled);
   await page.goto("/");
   if (mobile) {

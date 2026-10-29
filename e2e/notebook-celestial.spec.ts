@@ -53,6 +53,8 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
     "Marcador",
     "Editar marcas",
     "Índice de folhas",
+    // O "+" de nova folha só tem ícone.
+    "",
   ]);
   await page.getByRole("button", { name: "‹ Capa" }).click();
   await expect(page.locator(".notebook-journey")).toHaveCount(0);

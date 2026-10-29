@@ -354,8 +354,10 @@ export function ProfileView({
                 </span>
                 <input
                   type="checkbox"
-                  checked={accessibility.notebook3d}
-                  onChange={(event) => changeAccessibility({ notebook3d: event.target.checked })}
+                  checked={accessibility.notebook3dOptIn}
+                  onChange={(event) =>
+                    changeAccessibility({ notebook3dOptIn: event.target.checked })
+                  }
                 />
               </label>
             </section>

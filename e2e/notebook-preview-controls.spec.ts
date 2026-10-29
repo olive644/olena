@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test("o botão do preview cresce com o rótulo dentro e a navegação retorna à vitrine", async ({
+test("a barra de baixo tem só ícones, a seta de voltar fica à esquerda e a navegação retorna à vitrine", async ({
   page,
 }, info) => {
   await page.goto("/cadernos");
@@ -24,31 +24,19 @@ test("o botão do preview cresce com o rótulo dentro e a navegação retorna à
   if (info.project.name === "mobile") await expect(page.locator(".mobile-nav")).toBeHidden();
   const button = preview.getByRole("button", { name: "Índice de folhas", exact: true });
   await expect(button).toBeEnabled();
-  const heading = await preview.locator(".notebook-preview-heading h1").boundingBox();
+  // A seta amarela de voltar fica à esquerda e o nome do caderno só existe para leitores de tela.
   const back = await preview
     .getByRole("button", { name: "Meus Cadernos", exact: true })
     .boundingBox();
-  expect(back!.x + back!.width).toBeLessThanOrEqual(heading!.x);
-  await page.mouse.move(0, 0);
-  const compact = await button.evaluate((element) => element.getBoundingClientRect().width);
-  await page.keyboard.press("Tab");
-  await button.focus();
-  await expect
-    .poll(() => button.evaluate((element) => element.getBoundingClientRect().width))
-    .toBeGreaterThan(compact + 35);
-  const positions = await button.evaluate((element) => {
-    const bounds = element.getBoundingClientRect();
-    const label = element.querySelector("span")!.getBoundingClientRect();
-    return {
-      left: bounds.left,
-      right: bounds.right,
-      labelLeft: label.left,
-      labelRight: label.right,
-    };
-  });
-  expect(positions.labelLeft).toBeGreaterThan(positions.left);
-  expect(positions.labelRight).toBeLessThanOrEqual(positions.right);
-  await page.screenshot({ path: info.outputPath("preview-expandido.png") });
+  const area = await preview.boundingBox();
+  expect(back!.x).toBeLessThan(area!.x + area!.width * 0.25);
+  await expect(preview.locator(".notebook-preview-heading h1")).toHaveClass(/visually-hidden/);
+  // Ferramentas só com ícone, na barra de baixo; o nome fica no aria-label.
+  await expect(button.locator("span:not(.paper-tab-icon)")).toBeHidden();
+  const dock = await preview.locator(".notebook-2d-dock").boundingBox();
+  const book = await preview.locator(".notebook-paper-spread").boundingBox();
+  expect(dock!.y).toBeGreaterThan(book!.y + book!.height);
+  await page.screenshot({ path: info.outputPath("preview-barra-de-baixo.png") });
   await preview.getByRole("button", { name: "‹ Capa", exact: true }).click();
   await expect(preview.getByRole("button", { name: "Criar nova folha" })).toHaveCount(0);
   const leaves = preview.getByRole("button", { name: "Ver folhas", exact: true });

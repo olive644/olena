@@ -120,6 +120,9 @@ export function NotebookSpread({
   const [unavailable3d, setUnavailable3d] = useState(false);
   const use3d = prefers3d && !unavailable3d && !compactPreview && !readOnly;
   const [showBack, setShowBack] = useState(false);
+  // Barra de baixo do caderno 2D: ferramentas só com ícone, junto do "+" de nova folha.
+  const [dockHost, setDockHost] = useState<HTMLElement | null>(null);
+  const hasDock = !compactPreview && !readOnly;
   useEffect(() => {
     if (use3d) prefetchNotebook3d(true);
   }, [use3d]);
@@ -327,6 +330,21 @@ export function NotebookSpread({
             visible={visible}
             dispatch={dispatch}
             disabled={busy || readOnly}
+            toolbarHost={hasDock ? dockHost : null}
+            endControl={
+              hasDock && pages.length > 0 ? (
+                <button
+                  type="button"
+                  className="notebook-paper-tool"
+                  disabled={busy}
+                  onClick={() => onCreate(notebook.subjectId)}
+                  aria-label={uiText(745)}
+                  title={uiText(745)}
+                >
+                  <PaperActionIcon name="plus" />
+                </button>
+              ) : undefined
+            }
             indexControl={
               onIndex && (
                 <button
@@ -608,9 +626,10 @@ export function NotebookSpread({
               {compactPreview ? <FocusPaperArrow /> : uiText(744)}
             </button>
           </nav>
+          {hasDock && <div className="notebook-2d-dock" ref={setDockHost} />}
         </>
       )}
-      {!readOnly && !showCover && pages.length > 0 && (
+      {!readOnly && !hasDock && !showCover && pages.length > 0 && (
         <div className="notebook-preview-actions">
           <button
             className="notebook-preview-create"
