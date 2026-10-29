@@ -16,8 +16,8 @@ export function supportsNotebook3d(): boolean {
 
 /** Caderno 3D ligado: preferência da pessoa e suporte do aparelho. */
 export function useNotebook3d(): boolean {
-  const { notebook3d } = useAccessibility();
-  return notebook3d && supportsNotebook3d();
+  const { notebook3dOptIn } = useAccessibility();
+  return notebook3dOptIn && supportsNotebook3d();
 }
 
 export function resetNotebook3dSupportForTests() {

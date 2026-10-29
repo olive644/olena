@@ -2,7 +2,7 @@ import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import { useEffect, useRef } from "react";
 import type { ShapeKind } from "./handwriting-shapes";
 import { PaperObjectIcon } from "./paper-object-icon";
-import { PaperEditorIcon } from "./paper-editor-icon";
+import { PaperCloseIcon } from "./paper-close-icon";
 
 export type InsertKind = Exclude<ShapeKind, "line">;
 
@@ -44,7 +44,7 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
       <header>
         <h2>{uiText(229)}</h2>
         <button type="button" aria-label={uiText(230)} onClick={onClose}>
-          <PaperEditorIcon name="close" />
+          <PaperCloseIcon />
         </button>
       </header>
       <p>{uiText(231)}</p>

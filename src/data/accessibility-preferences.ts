@@ -6,14 +6,15 @@ export type AccessibilityPreferences = {
   highlightSelections: boolean;
   soundEffects: boolean;
   haptics: boolean;
-  notebook3d: boolean;
+  /** Caderno em 3D: opção experimental, desligada por padrão (o 2D é o caderno de sempre). */
+  notebook3dOptIn: boolean;
 };
 const defaults: AccessibilityPreferences = {
   reduceMotion: false,
   highlightSelections: false,
   soundEffects: true,
   haptics: true,
-  notebook3d: true,
+  notebook3dOptIn: false,
 };
 let current = defaults;
 const listeners = new Set<() => void>();
@@ -27,7 +28,7 @@ function read(): AccessibilityPreferences {
         highlightSelections: "highlightSelections" in data && data["highlightSelections"] === true,
         soundEffects: !("soundEffects" in data) || data["soundEffects"] !== false,
         haptics: !("haptics" in data) || data["haptics"] !== false,
-        notebook3d: !("notebook3d" in data) || data["notebook3d"] !== false,
+        notebook3dOptIn: "notebook3dOptIn" in data && data["notebook3dOptIn"] === true,
       };
   } catch {
     /* Preferências indisponíveis: mantém a configuração padrão. */
@@ -90,7 +91,7 @@ export function areSoundEffectsEnabled() {
 }
 
 export function isNotebook3dPreferred() {
-  return current.notebook3d;
+  return current.notebook3dOptIn;
 }
 
 export function areHapticsEnabled() {

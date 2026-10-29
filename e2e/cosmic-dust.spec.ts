@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("rare and epic paper cards stay readable in both themes and support reduced motion", async ({
+test("common and epic paper cards stay readable in both themes and support reduced motion", async ({
   page,
 }, info) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -13,8 +13,8 @@ test("rare and epic paper cards stay readable in both themes and support reduced
           points: 200,
           receipts: ["rare", "epic"],
           chests: [
-            { id: "rare", unlockAt: 0, opened: true, cards: ["third-bridge"], revealed: 0 },
-            { id: "epic", unlockAt: 0, opened: true, cards: ["last-note"], revealed: 0 },
+            { id: "rare", unlockAt: 0, opened: true, cards: ["wands-01"], revealed: 0 },
+            { id: "epic", unlockAt: 0, opened: true, cards: ["major-02"], revealed: 0 },
           ],
         },
       }),
@@ -23,7 +23,8 @@ test("rare and epic paper cards stay readable in both themes and support reduced
   await page.goto("/aprender");
   await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
   for (const [id, rarity] of [
-    ["rare", "Rara"],
+    // A raridade vem da carta do Arcano (arcana minor é Comum), não do nome do baú.
+    ["rare", "Comum"],
     ["epic", "Épica"],
   ]) {
     await page.locator(`[data-chest-id="${id}"]`).click();

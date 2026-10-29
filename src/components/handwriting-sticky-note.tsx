@@ -1,3 +1,4 @@
+import { PaperCloseGlyph } from "./paper-close-icon";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { reviewPortugueseText } from "../domain/text-review";
 import { PaperCheckIcon } from "./paper-check-icon";
@@ -206,7 +207,7 @@ export function HandwritingStickyNote({
             </>
           )}
           <button type="button" className="handwriting-sticky__menu-danger" onClick={onRemove}>
-            <PaperEditorIcon name="close" /> {uiText(44)}
+            <PaperCloseGlyph /> {uiText(44)}
           </button>
         </div>
       )}

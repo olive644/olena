@@ -2,7 +2,7 @@ import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import type { StudyNote } from "../domain/workspace";
 import { NotebookToolIcon } from "./notebook-tool-icon";
-import { PaperEditorIcon } from "./paper-editor-icon";
+import { PaperCloseIcon } from "./paper-close-icon";
 import { NotebookPageThumbnail } from "./notebook-page-thumbnail";
 
 type NotebookPageIndexProps = {
@@ -163,7 +163,7 @@ export function NotebookPageIndex({
           onClick={onClose}
           aria-label={uiText(230)}
         >
-          <PaperEditorIcon name="close" />
+          <PaperCloseIcon />
         </button>
       </header>
       {onToggleFavorite && (

@@ -54,14 +54,20 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   if (testInfo.project.name === "mobile") {
     await page.setViewportSize({ width: 320, height: 640 });
     await page.keyboard.press("Tab");
-    for (const name of ["Colocar divisória", "Colocar marcador", "Índice de folhas"]) {
+    // Só ícones: todos cabem em 320 de largura, com área de toque e nome acessível.
+    for (const name of [
+      "Colocar divisória",
+      "Colocar marcador",
+      "Índice de folhas",
+      "Criar nova folha",
+    ]) {
       const control = preview.getByRole("button", { name, exact: true });
       await control.focus();
       await expect
         .poll(() =>
           control.evaluate((element) => {
-            const label = element.querySelector("span")!.getBoundingClientRect();
-            return label.width > 30 && label.left >= 0 && label.right <= innerWidth;
+            const box = element.getBoundingClientRect();
+            return box.width >= 40 && box.height >= 40 && box.left >= 0 && box.right <= innerWidth;
           }),
         )
         .toBe(true);

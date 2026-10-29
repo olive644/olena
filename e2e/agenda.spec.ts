@@ -270,9 +270,7 @@ test("paper form offers all islands, custom date/time, icon repeat and yellow co
   await expect(page.locator(".agenda-month-grid .is-selected")).toHaveCSS("animation-name", "none");
 });
 
-test("monochrome editor close artwork is preserved by the global colored close rule", async ({
-  page,
-}) => {
+test("editor close button uses the single colored close icon without a plate", async ({ page }) => {
   await page.goto("/cadernos");
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
@@ -280,14 +278,13 @@ test("monochrome editor close artwork is preserved by the global colored close r
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
   await editor.getByRole("button", { name: "Configurações do editor" }).click();
   const close = page.getByRole("button", { name: "Fechar configurações" });
-  await expect(close.locator('svg[data-paper-editor-icon="close"]')).toHaveCount(1);
+  // O X é o mesmo do perfil (agenda-close.svg), sem placa; o SVG monocromático antigo não é mais usado.
+  await expect(close.locator("img.agenda-close-icon")).toHaveCount(1);
+  await expect(close.locator('svg[data-paper-editor-icon="close"]')).toHaveCount(0);
   expect(
-    await close.evaluate((element) =>
-      element.matches(
-        'button:has(> .agenda-close-icon), button:has(> img[src="/navigation-icons/paper/close.svg"])',
-      ),
-    ),
-  ).toBe(false);
+    await close.evaluate((element) => element.matches("button:has(> .agenda-close-icon)")),
+  ).toBe(true);
+  await expect(close).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
   await close.click();
   await expect(page.getByRole("dialog", { name: "Configurações do editor" })).not.toBeVisible();
 });

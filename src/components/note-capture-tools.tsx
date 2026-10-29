@@ -1,6 +1,7 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import { Camera, RotateCw } from "lucide-react";
 import { PaperEditorIcon } from "./paper-editor-icon";
+import { PaperCloseIcon } from "./paper-close-icon";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
@@ -516,7 +517,7 @@ export function NoteCaptureTools({
                     aria-label={uiText(230)}
                     onClick={() => close()}
                   >
-                    <PaperEditorIcon name="close" />
+                    <PaperCloseIcon />
                   </button>
                 </div>
               </header>
@@ -532,7 +533,7 @@ export function NoteCaptureTools({
                       aria-label={uiText(656)}
                       onClick={() => setCollaborationPanelOpen(false)}
                     >
-                      <PaperEditorIcon name="close" />
+                      <PaperCloseIcon />
                     </button>
                   </div>
                   {!cloud?.authenticated ? (

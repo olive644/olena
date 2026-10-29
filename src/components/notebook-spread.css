@@ -597,9 +597,8 @@
   display: grid;
   place-items: center;
   border: 0;
-  border-radius: 5px 10px 5px 8px;
-  background: #f4ecdd;
-  box-shadow: 0 3px #d5ccba;
+  background: transparent;
+  box-shadow: none;
 }
 .notebook-sheet-remove .paper-editor-icon {
   width: 22px;
@@ -856,9 +855,16 @@
   gap: 10px;
   max-width: 100%;
 }
-/* No caderno 3D o título sai e a seta amarela de voltar fica no canto esquerdo. */
-.notebook-preview-heading.is-3d {
-  width: 100%;
+/* O título sai e a seta amarela de voltar fica no canto esquerdo. */
+.notebook-entry-preview {
+  position: relative;
+}
+.notebook-preview-heading.is-left {
+  position: absolute;
+  top: 24px;
+  left: 8px;
+  z-index: 2;
+  width: auto;
   justify-content: flex-start;
 }
 .notebook-preview-heading h1 {
@@ -1277,8 +1283,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    /* O caderno aberto fica no meio da área livre, não colado no topo. */
+    justify-content: center;
     gap: 8px;
+  }
+  /* As abas saem pela direita: um pequeno deslocamento do caderno (sem a barra de baixo) o centraliza com elas, sem mexer no tamanho. */
+  .notebook-spread-workspace .notebook-spread-shell {
+    position: relative;
+    left: min(4vw, 16px);
+  }
+  /* Com o caderno aberto a barra móvel some: sem a folga dela embaixo o conteúdo centraliza de verdade. */
+  :root .app-shell .notebooks-main:has(.notebook-entry-preview) {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
   }
   :root .notebook-spread-workspace .notebook-spread-options {
     flex-shrink: 0;
@@ -1668,4 +1684,176 @@
     aspect-ratio: 3 / 4;
     margin: 0;
   }
+}
+
+/*
+ * Divisórias e marcadores com volume (caderno em 2D): a divisória sai da borda da folha com um
+ * leve ângulo e sombra que cai sobre a página, o marcador pende da folha e balança de leve.
+ * É só aparência: abrir, arrastar e editar continuam iguais, e nada depende de apontar.
+ */
+:root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab {
+  transition:
+    transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    filter 240ms ease;
+}
+:root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-divider {
+  transform-origin: 34px 50%;
+  transform: perspective(700px) rotateY(-22deg);
+  filter: drop-shadow(1px 1px 0 #29243255) drop-shadow(6px 8px 5px #29243240);
+}
+:root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-divider.is-exposed {
+  transform: perspective(700px) rotateY(-12deg) translateX(-3px);
+}
+:root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-divider:hover,
+:root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-divider:focus-visible {
+  transform: perspective(700px) rotateY(-3deg) translateX(-8px);
+  filter: drop-shadow(1px 1px 0 #29243255) drop-shadow(9px 11px 6px #2924323d);
+}
+.notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-divider::before {
+  background:
+    linear-gradient(90deg, #ffffff48 0%, #ffffff00 30%, #0000002b 100%),
+    linear-gradient(180deg, #ffffff3a 0%, #ffffff00 46%, #00000024 100%), var(--tab-color);
+  box-shadow:
+    inset -4px -4px #29243228,
+    inset 0 -3px #00000026;
+}
+:root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-bookmark {
+  transform-origin: 50% 6%;
+  filter: drop-shadow(0 2px 0 #29243244) drop-shadow(3px 9px 5px #29243238);
+}
+:root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-bookmark:hover,
+:root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab.is-bookmark:focus-visible {
+  animation: notebook-bookmark-sway 900ms ease-in-out 1;
+}
+@keyframes notebook-bookmark-sway {
+  25% {
+    transform: rotate(2.4deg);
+  }
+  55% {
+    transform: rotate(-1.8deg);
+  }
+  80% {
+    transform: rotate(1deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab {
+    transition: none;
+  }
+  :root
+    .notebook-attached-tabs:not(.is-scene)
+    .notebook-attached-tab.is-bookmark:is(:hover, :focus-visible) {
+    animation: none;
+  }
+}
+:root[data-reduce-motion="true"] .notebook-attached-tabs:not(.is-scene) .notebook-attached-tab {
+  transition: none;
+}
+:root[data-reduce-motion="true"]
+  .notebook-attached-tabs:not(.is-scene)
+  .notebook-attached-tab.is-bookmark:is(:hover, :focus-visible) {
+  animation: none;
+}
+
+/* Barra de baixo do caderno 2D: ferramentas só com ícone, junto do "+" de nova folha. */
+.notebook-2d-dock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 4px 0 0;
+}
+.notebook-2d-dock:empty {
+  display: none;
+}
+.notebook-2d-dock .notebook-paper-toolbox,
+.notebook-2d-dock .notebook-toolbar-secondary {
+  display: contents;
+}
+/* O nome da ferramenta fica no aria-label e na instrução abaixo. */
+.notebook-2d-dock .notebook-paper-toolbox .notebook-paper-tool > span:not(.paper-tab-icon) {
+  display: none;
+}
+.notebook-2d-dock .notebook-paper-toolbox .notebook-paper-tool > .paper-action-icon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+}
+.notebook-2d-dock .notebook-tool-hint {
+  order: -1;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  color: var(--muted, #6f6682);
+  font-size: 13px;
+  font-weight: 700;
+}
+@media (max-width: 700px) {
+  :root .notebook-2d-dock .notebook-paper-toolbox .notebook-paper-tool {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 2px 4px;
+  }
+  .notebook-2d-dock .notebook-paper-toolbox .notebook-paper-tool .paper-tab-icon,
+  .notebook-2d-dock .notebook-paper-toolbox .notebook-paper-tool > .paper-editor-icon,
+  .notebook-2d-dock .notebook-paper-toolbox .notebook-paper-tool > .paper-action-icon {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
+}
+/* A instrução da ferramenta só aparece com uma ferramenta ligada; a barra cabe na tela de 720 de altura. */
+.notebook-2d-dock:not(:has(.notebook-paper-tool[aria-pressed="true"])) .notebook-tool-hint {
+  display: none;
+}
+.notebook-spread-workspace:has(.notebook-2d-dock) .notebook-preview-controls {
+  margin: 12px 0 4px;
+}
+
+/* Virar a folha: as setas roxas de Foco, sem placa, com o nome no aria-label. */
+.notebook-flip-arrow {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  min-width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+.notebook-flip-arrow .focus-paper-arrow {
+  width: 44px;
+  height: 44px;
+  transition: transform 160ms ease;
+}
+.notebook-flip-arrow.is-next .focus-paper-arrow {
+  transform: rotate(180deg);
+}
+.notebook-flip-arrow:hover:not(:disabled) .focus-paper-arrow {
+  transform: translateX(-3px);
+}
+.notebook-flip-arrow.is-next:hover:not(:disabled) .focus-paper-arrow {
+  transform: rotate(180deg) translateX(-3px);
+}
+.notebook-flip-arrow:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+.notebook-flip-arrow:focus-visible {
+  outline: none;
+  border-bottom: 3px solid #facc15;
+  background: rgb(250 204 21 / 18%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .notebook-flip-arrow .focus-paper-arrow {
+    transition: none;
+  }
+}
+:root[data-reduce-motion="true"] .notebook-flip-arrow .focus-paper-arrow {
+  transition: none;
 }

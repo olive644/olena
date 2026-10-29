@@ -1,3 +1,4 @@
+import { PaperCloseGlyph } from "./paper-close-icon";
 import { uiText, useLanguage } from "../i18n/runtime";
 import {
   RoomAudioIcon,
@@ -2264,7 +2265,7 @@ export function LocalRoom({
                   confirmLabel={uiText(579)}
                   onConfirm={() => void room.endRoom()}
                 >
-                  <HelenaRoomIcon name="close" size={18} /> {uiText(579)}
+                  <PaperCloseGlyph size={18} /> {uiText(579)}
                 </RoomConfirmButton>
               </div>
             ) : null}
@@ -2272,7 +2273,7 @@ export function LocalRoom({
         ) : (
           <div className="local-room-finished">
             <div className="local-room-waiting" role="status">
-              <HelenaRoomIcon name="close" size={24} />
+              <PaperCloseGlyph size={24} />
               <h3>{uiText(592)}</h3>
             </div>
             {state.settings.activity !== "bingo" && <Podium participants={state.participants} />}

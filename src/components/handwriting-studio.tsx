@@ -5,6 +5,7 @@ import { isMotionReduced } from "../data/accessibility-preferences";
 import { NotebookSettings } from "./notebook-settings";
 import { NotebookFileActions } from "./notebook-file-actions";
 import { PaperEditorIcon } from "./paper-editor-icon";
+import { PaperCloseIcon } from "./paper-close-icon";
 import type { StudyNote } from "../domain/workspace";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import {
@@ -2732,7 +2733,7 @@ export function HandwritingStudio({
           </button>
           {mobileDrawer && (
             <button type="button" aria-label={uiText(314)} onClick={() => setMobileDrawer(null)}>
-              <PaperEditorIcon name="close" />
+              <PaperCloseIcon />
             </button>
           )}
         </div>

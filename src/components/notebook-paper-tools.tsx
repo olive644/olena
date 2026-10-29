@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { uiText, useLanguage } from "../i18n/runtime";
 import {
   useRef,
@@ -90,6 +91,8 @@ type Props = {
   indexControl?: ReactNode;
   /** Último botão da caixa de ferramentas (no caderno 3D, o de nova folha). */
   endControl?: ReactNode;
+  /** Elemento onde a caixa de ferramentas aparece (por exemplo a barra de baixo do caderno 2D). */
+  toolbarHost?: HTMLElement | null;
   /** No caderno 3D, a cena desenha as marcas e resolve onde cada toque cai. */
   scene?: boolean;
   resolverRef?: RefObject<PlacementResolver | null>;
@@ -127,6 +130,7 @@ export function NotebookPaperTools({
   backControl,
   indexControl,
   endControl,
+  toolbarHost = null,
   scene = false,
   resolverRef,
   children,
@@ -345,7 +349,7 @@ export function NotebookPaperTools({
         }
       }}
     >
-      {!scene && toolbox}
+      {!scene && (toolbarHost ? createPortal(toolbox, toolbarHost) : toolbox)}
       {selected && (
         <div className="notebook-tab-inspector" role="group" aria-label={uiText(712)}>
           <label>

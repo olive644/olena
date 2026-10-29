@@ -1,6 +1,7 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { PaperEditorIcon } from "./paper-editor-icon";
+import { PaperCloseIcon } from "./paper-close-icon";
 import type { NotebookPreferences } from "../data/notebook-preferences";
 
 export function NotebookPreferenceFields({
@@ -99,7 +100,7 @@ export function NotebookSettings({
               aria-label={uiText(736)}
               onClick={() => setOpen(false)}
             >
-              <PaperEditorIcon name="close" />
+              <PaperCloseIcon />
             </button>
           </header>
           <NotebookPreferenceFields preferences={preferences} onChange={onChange} />

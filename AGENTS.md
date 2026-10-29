@@ -37,7 +37,7 @@ Estas regras herdam o padrão de engenharia do OliQualidade e valem para todo o 
 
 - Seguir docs/DESIGN_SYSTEM.md: Olena, ícones e novos elementos visuais usam o padrão aprovado de papel recortado. Loadings usam HelenaLoading.
 - São proibidas molduras de foco/seleção por outline e contornos automáticos roxos ou pretos. Usar a regra compartilhada de foco em papel: sublinhado e destaque amarelo, sem ocultar a indicação de navegação por teclado. Bordas estruturais dos cartões não são molduras de foco.
-- Controles de fechar com X colorido usam o recorte aprovado sem placa, fundo ou sombra de botão. Preservar área de toque e sublinhado amarelo no teclado. Não alterar os X monocromáticos grafite/creme de PaperEditorIcon.
+- Controles de fechar com X colorido usam o recorte aprovado sem placa, fundo ou sombra de botão. Preservar área de toque e sublinhado amarelo no teclado. Esse é o único X do app: todo botão de fechar ou remover usa PaperCloseIcon (ou PaperCloseGlyph ao lado de texto), nunca PaperEditorIcon name="close". Não editar os SVGs monocromáticos de PaperEditorIcon.
 
 - É proibido usar travessões em textos da interface, documentação, comentários ou qualquer outro conteúdo do repositório. Reescrever a frase com vírgula, ponto, dois-pontos ou parênteses.
 - Registrar decisões arquiteturais e mudanças de estado em `docs/CURRENT_STATE_AUDIT.md`.
