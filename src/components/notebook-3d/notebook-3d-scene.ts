@@ -66,7 +66,6 @@ import {
   drawClaspStrap,
   drawCover,
   drawCreateCard,
-  drawHoverFrame,
   drawDivider,
   drawEndpaper,
   drawPage,
@@ -320,11 +319,9 @@ export class NotebookScene {
   private hoverPage: number | null = null;
   private hoverTab: string | null = null;
   private selectedTab: string | null = null;
-  private readonly hoverFrame: Mesh;
   private readonly ghosts = new Map<"divider" | "bookmark", Group>();
   /** Recorte amarelo por baixo da marca apontada (claro) e da escolhida (forte). */
   private readonly marks = {
-    hover: new MeshBasicMaterial({ color: "#fde68a", side: DoubleSide }),
     selected: new MeshBasicMaterial({ color: "#FACC15", side: DoubleSide }),
   };
   private flapOpen = 0;
@@ -495,20 +492,6 @@ export class NotebookScene {
       ]),
       new MeshBasicMaterial({ map: this.createTexture, transparent: true }),
     );
-    const frameArt = canvas(300, 400);
-    drawHoverFrame(frameArt.getContext("2d")!, frameArt.width, frameArt.height);
-    this.hoverFrame = new Mesh(
-      new PlaneGeometry(W - 0.04, H - 0.04),
-      new MeshBasicMaterial({
-        map: owned(texture(frameArt, 1)),
-        transparent: true,
-        depthWrite: false,
-      }),
-    );
-    this.hoverFrame.rotation.x = -Math.PI / 2;
-    this.hoverFrame.visible = false;
-    this.hoverFrame.renderOrder = 2;
-    this.book.add(this.hoverFrame);
     this.drawCoverTexture();
     this.canvasElement.addEventListener("pointerdown", this.pointerDown);
     this.canvasElement.addEventListener("pointermove", this.pointerMove);
@@ -527,6 +510,13 @@ export class NotebookScene {
     });
   }
   frames = 0;
+  private compiled = false;
+  private paintWaiters: Array<() => void> = [];
+  /** Resolve quando o primeiro quadro já foi desenhado (shaders compilados e livro na tela). */
+  firstFrame(): Promise<void> {
+    if (this.frames > 0) return Promise.resolve();
+    return new Promise((resolve) => this.paintWaiters.push(resolve));
+  }
   /** Acorda o laço de quadros; ele volta a dormir sozinho quando nada mais se move. */
   private wake() {
     if (this.disposed || this.running) return;
@@ -552,6 +542,7 @@ export class NotebookScene {
       triangles: info.render.triangles,
       textures: info.memory.textures,
       geometries: info.memory.geometries,
+      programs: info.programs?.length ?? 0,
     };
   }
 
@@ -960,7 +951,6 @@ export class NotebookScene {
       star.material.dispose();
     }
     this.starGeometry.dispose();
-    this.marks.hover.dispose();
     this.marks.selected.dispose();
     window.clearTimeout(this.releaseTimer);
     this.resizeObserver?.disconnect();
@@ -1440,6 +1430,17 @@ export class NotebookScene {
       this.running = false;
       return;
     }
+    if (!this.compiled) {
+      // Os shaders compilam em paralelo, sem travar a tela, antes do primeiro quadro.
+      this.compiled = true;
+      const resume = () => {
+        if (this.disposed) return;
+        this.last = performance.now();
+        this.frame = requestAnimationFrame(this.tick);
+      };
+      this.renderer.compileAsync(this.scene, this.camera).then(resume, resume);
+      return;
+    }
     const delta = (now - this.last) / 1000;
     const dt = Math.min(0.05, delta);
     this.last = now;
@@ -1451,6 +1452,11 @@ export class NotebookScene {
     this.updateFlight(now);
     this.renderer.render(this.scene, this.camera);
     this.frames++;
+    if (this.paintWaiters.length) {
+      const waiters = this.paintWaiters;
+      this.paintWaiters = [];
+      for (const resolve of waiters) resolve();
+    }
     if (this.moving || this.sparks.length) {
       this.idleFrames = 0;
       this.watchSpeed(delta);
@@ -2074,9 +2080,8 @@ export class NotebookScene {
   private clearHover() {
     this.hideGhosts();
     this.setHoverTab(null);
-    if (this.hoverPage !== null || this.hoverFrame.visible) {
+    if (this.hoverPage !== null) {
       this.hoverPage = null;
-      this.hoverFrame.visible = false;
       this.wake();
     }
     this.setCursor("");
@@ -2187,16 +2192,10 @@ export class NotebookScene {
     const page = this.pages[index];
     this.hint(`${uiText(3171, [index + 1])} · ${page?.title || uiText(3177)}`, event);
   }
-  /** Moldura amarela sobre a folha que abre com o toque. */
+  /** Folha sob o ponteiro: só o cursor e a dica mudam, sem moldura por cima do caderno. */
   private setPageHover(side: 0 | 1 | null) {
     if (side === this.hoverPage) return;
     this.hoverPage = side;
-    this.hoverFrame.visible = side !== null;
-    if (side !== null) {
-      const top = side ? this.stackTop.right : this.stackTop.left;
-      this.hoverFrame.position.set(side ? W / 2 : -W / 2, top + 0.012, 0);
-    }
-    this.wake();
   }
   private setHoverTab(id: string | null) {
     if (id === this.hoverTab) return;
@@ -2204,13 +2203,12 @@ export class NotebookScene {
     this.highlightTabs();
     this.wake();
   }
-  /** A marca apontada ganha um recorte amarelo claro por baixo; a escolhida, amarelo forte e maior. */
+  /** Só a marca escolhida na edição ganha o recorte amarelo; apontar uma marca só muda a dica. */
   private highlightTabs() {
     for (const leaf of this.leaves)
       for (const object of leaf.tabs.children) {
         const tab = object.userData["tab"] as SceneTab;
         const selected = tab.id === this.selectedTab;
-        const hovered = tab.id === this.hoverTab;
         const old = object.userData["mark"] as Mesh | undefined;
         if (old) {
           object.remove(old);
@@ -2221,8 +2219,8 @@ export class NotebookScene {
           (mesh.material as MeshLambertMaterial).emissive.setHex(
             this.editingTabs && !selected ? 0x0d0a00 : 0,
           );
-        if (!selected && !hovered) continue;
-        const pad = selected ? 0.07 : 0.045;
+        if (!selected) continue;
+        const pad = 0.07;
         const geometry =
           tab.kind === "divider"
             ? quad(
@@ -2243,7 +2241,7 @@ export class NotebookScene {
                 true,
                 () => [0, 0],
               );
-        const mark = new Mesh(geometry, selected ? this.marks.selected : this.marks.hover);
+        const mark = new Mesh(geometry, this.marks.selected);
         object.add(mark);
         object.userData["mark"] = mark;
       }

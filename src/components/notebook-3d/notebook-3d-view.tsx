@@ -50,6 +50,7 @@ export function Notebook3dView(props: Notebook3dProps) {
   latest.current = props;
   const sound = useRef<ReturnType<typeof createNotebookSound> | null>(null);
   const [ready, setReady] = useState(false);
+  const [painted, setPainted] = useState(false);
   const [hint, setHint] = useState<SceneHint | null>(null);
   const [proxy, setProxy] = useState<Proxy | null>(null);
   const [previews, setPreviews] = useState<Record<string, string>>({});
@@ -89,6 +90,9 @@ export function Notebook3dView(props: Notebook3dProps) {
         );
         scene.current = instance;
         setReady(true);
+        void instance.firstFrame().then(() => {
+          if (!cancelled) setPainted(true);
+        });
       } catch {
         if (!cancelled) latest.current.onUnavailable();
       }
@@ -287,9 +291,9 @@ export function Notebook3dView(props: Notebook3dProps) {
         className="notebook-3d__canvas"
         role="img"
         aria-label={uiText(3175)}
-        data-ready={ready}
+        data-ready={painted}
       />
-      {!ready && (
+      {!painted && (
         <div className="notebook-3d__loading">
           <HelenaLoading label={uiText(3176)} compact />
         </div>

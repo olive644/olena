@@ -2,17 +2,15 @@ import { useAccessibility } from "../../data/accessibility-preferences";
 
 let cached: boolean | undefined;
 
-/** WebGL disponível neste aparelho. Sem ele (ou no jsdom), o caderno continua em 2D. */
+/**
+ * WebGL disponível neste aparelho. Sem ele (ou no jsdom), o caderno continua em 2D. Criar um
+ * contexto só para testar custava centenas de milissegundos ao abrir o caderno: aqui só se
+ * confere a API, e se a cena não conseguir o contexto ela mesma devolve o caderno ao 2D.
+ */
 export function supportsNotebook3d(): boolean {
   if (cached !== undefined) return cached;
-  try {
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
-    cached = Boolean(context);
-    context?.getExtension("WEBGL_lose_context")?.loseContext();
-  } catch {
-    cached = false;
-  }
+  cached =
+    typeof WebGL2RenderingContext !== "undefined" || typeof WebGLRenderingContext !== "undefined";
   return cached;
 }
 
