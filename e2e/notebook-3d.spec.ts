@@ -140,6 +140,21 @@ test("pôr marca mostra onde ela cai, a edição destaca a escolhida e a estante
     await editor.getByRole("button", { name: "Fechar", exact: true }).click();
     await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 30_000 });
   }
+  // As coordenadas só valem com a cena parada: câmera e folheio já assentaram.
+  const frames = () =>
+    scene.evaluate(
+      (canvas) => (canvas as unknown as { nb3dStats: () => { frames: number } }).nb3dStats().frames,
+    );
+  await expect
+    .poll(
+      async () => {
+        const before = await frames();
+        await page.waitForTimeout(600);
+        return (await frames()) - before;
+      },
+      { timeout: 40_000 },
+    )
+    .toBe(0);
   // A barra de baixo cabe na tela de 720 de altura sem precisar rolar a página.
   const dock = await page.locator(".notebook-3d-dock").boundingBox();
   expect(dock!.y + dock!.height).toBeLessThanOrEqual(page.viewportSize()!.height);
