@@ -3748,6 +3748,54 @@ O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) at
 - A etapa 1 foi confirmada pela proprietária: o portal do Discord aceitou o endereço de interações (PING respondido). Não verificado por esta sessão, que não alcança o Discord.
 - Não verificado: o registro dos comandos e a resposta no servidor de testes.
 
+## Preview das cartas de arcano, 27/10/2026
+
+Arte aprovada de A Estrela preservada sem regeneração (arcana-star-prototype-v3.webp). Frente refinada em React/CSS, verso comum vetorial e regras em ARCANA_CARD_DESIGN.md. Preview isolado em /previews/arcana.html, sem substituir coleção ou dados existentes. Validação: TypeScript e ESLint dos componentes sem erros; quatro renders Chromium/Edge em desktop 1100x820 e celular 390x844, claro/escuro, sem erros de navegador ou overflow horizontal. Frente e verso conferidos no render desktop. No celular as faces seguem em coluna, com rolagem vertical natural. Verify integral e integração na coleção não executados nesta revisão visual.
+
+## Revisão de identidade das cartas, 27/10/2026
+
+Lote de expansão interrompido por rejeição do proprietário: personagens deformados e arte afastada do app. O preview expõe somente as duas referências aprovadas e oito composições corrigidas, ainda em avaliação. Recortes oficiais embutidos em SVG garantem preservação dos rostos; não são poses novas. XII usa Leo. Verificação Chromium/Edge: 32 inspeções das oito cartas, desktop/celular, claro/escuro, carregamento sem erro e sem overflow horizontal. TypeScript do preview passou. Coleção e recompensas permanecem intactas; não há PR ou merge desta revisão.
+
+### Substituição do estudo com recorte de avatar
+
+A montagem SVG de avatares foi rejeitada. Nova proposta integral de O Mago em mago-olena-v3.webp, com ilustração nova e moldura do componente original. Manifesto expõe somente A Estrela, O Louco corrigido e a nova proposta de O Mago. Sem aprovação implícita das outras cartas. Preview TypeScript/ESLint e quatro cenários Chromium PC/celular claro/escuro passaram, incluindo troca frente/verso. Não houve integração da coleção, publicação ou merge.
+
+### II, A Sacerdotisa, novo estudo visual
+
+Criada uma ilustração integral nova em priestess-olena-v3.webp, com miniatura própria e moldura reutilizada. Preview inspecionado em quatro combinações PC/celular e claro/escuro, inclusive carregar arte e alternar frente/verso, sem erro de navegador ou overflow. TypeScript do preview passou. Não houve integração na coleção ou merge.
+
+## Nova direção restrita das cartas, 28/10/2026
+
+Por direção explícita, substituído o preview multicolorido por O Mago em fundo preto, roxos e amarelo do app, com nova moldura e verso mais contidos. O manifesto exibe somente uma proposta, não as 78 como concluídas. TypeScript passou; oito renders Chromium/Edge, frente/verso PC/celular claro/escuro sem erros ou overflow. Arte raster pode ter variações tonais/antialiasing. Sem integração de coleção, publicação ou merge.
+
+### Moldura anterior com paleta restrita
+
+Restaurada estrutura de papel amarela com faixa de título preta/amarela e cantos assimétricos, mantendo arte e cores aprovadas. CSS consolidado, removidas regras sobrepostas dos estudos anteriores. Oito renders PC/celular claro/escuro frente/verso e TypeScript do preview passaram. Sem integração ou publicação.
+
+## Contrato visual consolidado, 28/10/2026
+
+Proprietário aprovou a combinação atual de paleta restrita e moldura anterior de papel. ARCANA_CARD_DESIGN.md foi reescrito como contrato único vigente, retirando instruções antigas contraditórias. DESIGN_SYSTEM e SECOND_BRAIN apontam para essa referência. Sem mudanças de produto ou novas artes nesta etapa de documentação; provas anteriores do preview permanecem válidas.
+
+### Continuidade da direção restrita
+
+Adicionada Sacerdotisa com arte nova priestess-ink-v1.webp e miniatura, preservando a moldura aprovada. Oito renders e TypeScript do preview passaram. Galeria tem dois estudos na paleta vigente; demais artes continuam planejamento.
+
+### Correção dos Enamorados
+
+Catálogo alterado para Alice e Leo. Leo redesenhado com anatomia compacta após rejeição da primeira versão; public/arcana/ink/major-06-v2.webp e miniatura, sem substituir arquivo anterior. Preview abre VI para inspeção. Sem alteração da coleção real.
+
+### Soso reconstruída em O Julgamento
+
+Nova proposta major-20-v3.webp substitui no preview a versão rejeitada; originais preservados fora do manifesto. Face preta e recortes roxos retomam a linguagem restrita aprovada. Preview abre XX. Oito renders PC/celular claro/escuro frente/verso e TypeScript passaram. A proposta aguarda avaliação artística, sem merge/publicação ou modificação da coleção.
+
+### VI reconstruído novamente
+
+Novo arquivo major-06-v4.webp e miniatura, baseado nas referências oficiais e no Mago restrito. Sem reutilizar composição deformada. Preview abre VI; oito renders claro/escuro PC/celular frente/verso passaram. A validação técnica não equivale à aprovação artística. Coleção real intacta.
+
+### Baralho arcano completo no preview
+
+78 artes disponíveis, variantes finais style-v3 priorizadas para Oliver e Miau. Conferência Edge Chromium: 312 inspeções PC/mobile claro/escuro, sem erros ou overflow. Publicação autorizada do preview e documentação, sem migração da coleção existente. Verify integral será registrado após execução.
+
 ## Oliver espiando animado em Rive, 2026-10-27
 
 - `public/oliver-peeking-widget/oliver.riv` (cerca de 438 KiB) anima a arte nova do widget de Matemática por camadas recortadas da própria imagem, sem redesenho: respiração do corpo, piscadas e batimentos nos olhos em forma de coração, boca, mãos que apertam o chão, sinal de mais e divisão flutuando com halo que respira. Cliques disparam pulo, balanço e coração; o mouse inclina o conjunto.
@@ -3788,6 +3836,8 @@ O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) at
 - Validação visual feita com Chromium e WebGL por software (SwiftShader): PC (1366 x 860) e celular (iPhone 13), modos claro e escuro, capa fechada, caderno aberto, folha de criação, folhas criadas, índice e volta do editor. Contraste do texto e das setas conferido nas capturas. Limites: SwiftShader é lento e as capturas de animação mostram quadros, não a fluidez real; a fluidez em celular de entrada, a iluminação em telas diferentes e o som real não foram verificados em aparelho. Para conferir: abrir um caderno com folhas num celular e folhear, entrar e sair de uma folha e usar o índice.
 - Testes: `notebook-3d-model.test.ts` (estrutura, regras de marcação e física), `notebook-sound.test.ts`, `accessibility-preferences.test.ts`, `profile-view.guest.test.tsx` e `e2e/notebook-3d.spec.ts` (PC e celular). As suítes de e2e do caderno 2D rodam com `notebook3d: false` no storageState global do Playwright; as que usavam Personalizar e o inventário foram ajustadas à capa única.
 - Falhas que já existiam na main e não foram tocadas: `listening-audio.test.ts` (8 testes, `object.stream is not a function` neste Node 22) e `student-resume.spec.ts` no celular (altura de `.math-hero-slide` 425 px contra 420 px).
+
+Validação de publicação do preview arcano: lint sem erros (24 avisos existentes), formatação, API e idiomas aprovados; 363 arquivos e 2382 testes passaram. Build inicialmente encontrou three ausente no checkout após sincronização do caderno 3D. npm ci do lockfile vigente concluiu com zero vulnerabilidades; build e performance repetidos passaram, JS inicial 220,5 KiB e aplicação 1599,7 KiB. Sem alteração de dependências, teto ou CI nesta entrega. TypeScript do preview e catálogo 78/78 aprovados. Logs externos arcana-release-final-verify.log e arcana-release-build.log. Preview isolado com 312 inspeções PC/mobile claro/escuro, sem erros de navegador ou overflow.
 
 ## Caderno em 3D: otimização de desempenho, 2026-10-28
 
