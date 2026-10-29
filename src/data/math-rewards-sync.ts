@@ -1,9 +1,4 @@
-import {
-  chestCards,
-  parseMathRewards,
-  type MathChest,
-  type MathPlaceRewards,
-} from "./math-place-rewards";
+import { parseMathRewards, type MathChest, type MathPlaceRewards } from "./math-place-rewards";
 
 /** Receipts identify rounds across devices; chest deadlines and reveals only advance. */
 export function mergeMathRewards(baseRaw: string | undefined, localRaw: string, remoteRaw: string) {
@@ -100,7 +95,7 @@ export function mergeMathRewards(baseRaw: string | undefined, localRaw: string, 
           : {}),
         opened: previous.opened || chest.opened,
         unlockAt: deadlines.length ? Math.min(...deadlines) : null,
-        ...(chestCards(selected).length
+        ...(selected.arcana || selected.cards?.length
           ? {
               revealed: differentLoot
                 ? selected.revealed

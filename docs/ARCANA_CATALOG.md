@@ -1,8 +1,8 @@
 # Catálogo do baralho de arcano
 
-Estudo de 78 cartas: 22 maiores e quatro naipes de 14 menores. Os elementos pertencem aos naipes, sem quatro cartas adicionais. Convenção editorial: Força VIII, Justiça XI; Louco 0. Figuras usam P (Pajem), C (Cavaleiro), Q (Rainha) e K (Rei), sempre acompanhadas pelo nome completo.
+Baralho ativo de 78 cartas: 22 maiores e quatro naipes de 14 menores. Os elementos pertencem aos naipes, sem quatro cartas adicionais. Convenção editorial: Força VIII, Justiça XI; Louco 0. Figuras usam P (Pajem), C (Cavaleiro), Q (Rainha) e K (Rei), sempre acompanhadas pelo nome completo.
 
-As associações dos personagens são escolhas simbólicas para esta proposta visual, não biografias oficiais nem atributos reais dos colaboradores. Cada um dos 15 personagens oficiais tem pelo menos um arcano maior. A Estrela e a segunda proposta de O Louco são as referências aprovadas.
+As associações dos personagens são escolhas simbólicas para esta proposta visual, não biografias oficiais nem atributos reais dos colaboradores. Cada um dos 15 personagens oficiais tem pelo menos um arcano maior. O conjunto completo foi aprovado pelo proprietário. O catálogo de runtime é public/arcana/catalog.json e a transição está em [ARCANA_INTEGRATION.md](ARCANA_INTEGRATION.md).
 
 Estrutura histórica: [Metropolitan Museum of Art](https://www.metmuseum.org/exhibitions/listings/2016/world-in-play/exhibition-galleries) e [V&A](https://www.vam.ac.uk/articles/tarot-cards). A associação Paus/Fogo, Copas/Água, Espadas/Ar, Ouros/Terra é a convenção editorial deste baralho.
 

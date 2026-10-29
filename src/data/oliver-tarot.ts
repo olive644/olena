@@ -1,12 +1,10 @@
-import { localizeResource, uiText } from "../i18n/runtime.js";
-import type { OliverCardId } from "./oliver-cards";
-
-export type OliverArtworkId = OliverCardId | "oliver-star-tarot";
-export const OLIVER_TAROT = localizeResource({
-  id: "oliver-star-tarot",
-  title: uiText("A Estrela"),
-  arcana: "XVII",
-  get lore() {
-    return uiText(2126);
+import type { ArcanaId, LegacyCardId } from "./arcana-ids";
+import { uiText } from "../i18n/runtime";
+export type OliverArtworkId = ArcanaId | LegacyCardId | "oliver-star-tarot";
+export const OLIVER_TAROT = {
+  id: "major-17" as const,
+  get title() {
+    return uiText("A Estrela");
   },
-} as const);
+  arcana: "XVII",
+};

@@ -135,6 +135,7 @@ describe("página da Política de Privacidade", () => {
       "www.googleapis.com": "Google",
       "apis.google.com": "Google",
       "api.datamuse.com": "consulta de vocabulário",
+      "tarotapi.dev": "consulta dos significados das cartas",
       "www.google.com": "verificação de segurança",
     };
     for (const host of hosts) {

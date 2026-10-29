@@ -4,7 +4,7 @@ import { uiText } from "../i18n/runtime";
 import { type CSSProperties } from "react";
 import "./arcana-card-prototype.css";
 
-/** Isolated visual prototype. Earned cards and collection data are unchanged. */
+/** Approved paper tarot frame shared by the preview and the active collection. */
 export function ArcanaCardPrototype({
   back = false,
   title = "O Mago",
@@ -54,6 +54,7 @@ export function ArcanaCardPrototype({
   return (
     <article
       className="arcana-paper"
+      onDragStart={(event) => event.preventDefault()}
       aria-label={`${mark}, ${title}.`}
       style={{ "--arcana-title-size": `${Math.min(26, 430 / title.length)}px` } as CSSProperties}
     >

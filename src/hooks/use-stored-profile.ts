@@ -4,8 +4,7 @@ import type { StoredProfile } from "../domain/profile-identity";
 import { profileCover } from "../domain/profile-covers";
 import { validAchievementFavorites } from "../domain/math-achievements";
 import { generalAchievementHistory } from "../domain/general-achievement-catalog";
-import { isOliverCard } from "../data/oliver-cards";
-import { OLIVER_TAROT } from "../data/oliver-tarot";
+import { activeArcanaId } from "../data/arcana-ids";
 export type { StoredProfile } from "../domain/profile-identity";
 export function readStoredProfile(): StoredProfile {
   try {
@@ -17,9 +16,13 @@ export function readStoredProfile(): StoredProfile {
       (!Array.isArray(profile.cardFavorites) ||
         profile.cardFavorites.length > 3 ||
         new Set(profile.cardFavorites).size !== profile.cardFavorites.length ||
-        !profile.cardFavorites.every((id) => isOliverCard(id) || id === OLIVER_TAROT.id))
+        !profile.cardFavorites.every((id) => typeof id === "string"))
     )
       delete profile.cardFavorites;
+    if (profile.cardFavorites)
+      profile.cardFavorites = [
+        ...new Set(profile.cardFavorites.map(activeArcanaId).filter((id) => id !== undefined)),
+      ];
     if (!validAchievementFavorites(profile.achievementFavorites))
       delete profile.achievementFavorites;
     if ("achievementHistory" in profile)

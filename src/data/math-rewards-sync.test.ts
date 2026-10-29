@@ -88,7 +88,7 @@ it("preserves cloud countdown, loot and reveals after a stale device returns", (
     unlockAt: 11000,
     opened: true,
     revealed: 1,
-    cards: ["first-star"],
+    cards: ["major-00"],
   });
 });
 it("migrates legacy totals without recrediting receipts already present in the ledger", () => {
@@ -111,7 +111,7 @@ it("backs up conflicting loot through the existing conflict signal instead of re
   const merged = mergeSyncedItems(base, local, snapshot());
   expect(merged.conflicts).toEqual([MATH_PLACE_REWARDS_KEY]);
   expect(JSON.parse(merged.items[MATH_PLACE_REWARDS_KEY]!).foundations.chests[0].cards).toEqual([
-    "first-star",
+    "major-00",
   ]);
 });
 it("keeps invalid remote data recoverable and clears rewards on account storage reset", () => {
@@ -135,7 +135,7 @@ it("syncs arcane identity, deadline and single tarot reveal without rerolling", 
   applySyncedStorage(merged.items);
   expect(mathPlaceRewards("foundations").chests[0]).toMatchObject({
     kind: "arcane",
-    arcana: "oliver-star-tarot",
+    arcana: "major-17",
     opened: true,
     unlockAt: 11000,
     revealed: 1,
@@ -150,6 +150,6 @@ it("signals different chest kinds for the same receipt and preserves arcane iden
   const merged = mergeSyncedItems({}, arcane, snapshot());
   expect(merged.conflicts).toEqual([MATH_PLACE_REWARDS_KEY]);
   expect(JSON.parse(merged.items[MATH_PLACE_REWARDS_KEY]!).foundations.chests[0].arcana).toBe(
-    "oliver-star-tarot",
+    "major-17",
   );
 });

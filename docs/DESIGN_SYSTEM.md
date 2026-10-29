@@ -383,8 +383,8 @@ pendente, erro, conclusão ou dispensa não montam ficha nem espaço vazio. A AP
 continua conferindo em segundo plano, sem cobrar campos durante sincronização.
 Pronomes, bio e redes continuam opcionais.
 
-Cartas de arcano em estudo: seguir [ARCANA_CARD_DESIGN.md](ARCANA_CARD_DESIGN.md). Arte de A Estrela aprovada; moldura e verso em preview isolado, sem substituir a coleção atual.
+Coleção Arcano: seguir [ARCANA_CARD_DESIGN.md](ARCANA_CARD_DESIGN.md) e [ARCANA_INTEGRATION.md](ARCANA_INTEGRATION.md). As 78 artes aprovadas, moldura e verso nativos substituem as cartas antigas no runtime. Somente a Estrela já obtida é convertida para sua arte nova.
 
 ## Padrão vigente das cartas, aprovado em 28/10/2026
 
-Cartas de arcano seguem exclusivamente [ARCANA_CARD_DESIGN.md](ARCANA_CARD_DESIGN.md). Arte nova contida em preto #17151c, amarelo #facc15 e roxos #6d28d9/#8b5cf6. Moldura sólida amarela de papel, título preto na faixa amarela, índice amarelo, base e recorte roxos. Referência atual: mago-ink-v1.webp no ArcanaCardPrototype. Estudos multicoloridos e colagens de avatar anteriores não representam o padrão vigente. Catálogo completo de 78 artes no preview, aprovado pelo proprietário para publicação. Moldura, índice, título e verso são componentes nativos. A coleção de produção não é migrada nesta entrega.
+Cartas de arcano seguem exclusivamente [ARCANA_CARD_DESIGN.md](ARCANA_CARD_DESIGN.md). Arte nova contida em preto #17151c, amarelo #facc15 e roxos #6d28d9/#8b5cf6. Moldura sólida amarela de papel, título preto na faixa amarela, índice amarelo, base e recorte roxos. Referência atual: mago-ink-v1.webp no ArcanaCardPrototype. Estudos multicoloridos e colagens de avatar anteriores não representam o padrão vigente. Catálogo completo de 78 artes aprovado pelo proprietário e integrado à coleção, aos baús e à inspeção. Moldura, índice, título e verso são componentes nativos. A migração mantém pontos/recibos e converte somente oliver-star-tarot revelada para major-17. Favoritos exigem obtenção e têm limite de três; significados seguem o contrato de fonte e fallback da integração.

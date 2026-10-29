@@ -2,6 +2,7 @@ import { isMathCourse, type MathCourseId } from "./math-courses";
 import { drawOliverCards, isOliverCard, randomCardRoll, type OliverCardId } from "./oliver-cards";
 import { OLIVER_TAROT, type OliverArtworkId } from "./oliver-tarot";
 import { writeSyncedStorage } from "./synced-storage";
+import { activeArcanaId } from "./arcana-ids";
 
 export const MATH_PLACE_REWARDS_KEY = "helena.mathPlaceRewards.v1";
 export const COMMON_CHEST_POINTS = 100;
@@ -16,10 +17,12 @@ export type MathChest = {
   revealed?: number;
   revealedAt?: (number | null)[];
   kind?: "common" | "arcane";
-  arcana?: typeof OLIVER_TAROT.id;
+  arcana?: typeof OLIVER_TAROT.id | "oliver-star-tarot";
 };
 export function chestCards(chest: MathChest): OliverArtworkId[] {
-  return chest.arcana ? [chest.arcana] : (chest.cards ?? []);
+  return (chest.arcana ? [chest.arcana] : (chest.cards ?? []))
+    .map(activeArcanaId)
+    .filter((id) => id !== undefined);
 }
 export function isChestCollected(chest: MathChest) {
   return (
@@ -75,12 +78,14 @@ export function parseMathRewards(
               (chest.kind === undefined || chest.kind === "common" || chest.kind === "arcane") &&
               (chest.arcana === undefined ||
                 (chest.kind === "arcane" &&
-                  chest.arcana === OLIVER_TAROT.id &&
+                  (chest.arcana === OLIVER_TAROT.id || chest.arcana === "oliver-star-tarot") &&
                   (!chest.opened ||
                     (Number.isInteger(chest.revealed) &&
                       chest.revealed! >= 0 &&
                       chest.revealed! <= 2)))) &&
-              (chest.kind !== "arcane" || chest.arcana === OLIVER_TAROT.id) &&
+              (chest.kind !== "arcane" ||
+                chest.arcana === OLIVER_TAROT.id ||
+                chest.arcana === "oliver-star-tarot") &&
               (chest.cards === undefined ||
                 (Array.isArray(chest.cards) &&
                   chest.cards.length >= 1 &&

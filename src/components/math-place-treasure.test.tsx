@@ -91,6 +91,15 @@ it("counts each revealed copy once and resumes unrevealed cards on reopening", (
   expect(document.querySelectorAll(".oliver-store-flight > div")).toHaveLength(2);
   act(() => vi.advanceTimersByTime(900));
   expect(screen.getAllByLabelText("Espaço de Poeira cósmica vazio")).toHaveLength(3);
-  expect(screen.getByRole("dialog", { name: "Coleção do Oliver" })).toBeTruthy();
-  expect(screen.getByRole("button", { name: "A primeira estrela, 2 cópias" })).toBeTruthy();
+  expect(screen.getByRole("dialog", { name: "Arcano" })).toBeTruthy();
+  expect(
+    screen.getAllByRole("button", { name: "Inspecionar carta O Louco" }).length,
+  ).toBeGreaterThan(0);
+});
+
+vi.mock("../data/arcana-catalog", async () => {
+  const original =
+    await vi.importActual<typeof import("../data/arcana-catalog")>("../data/arcana-catalog");
+  const data = await import("../../public/arcana/catalog.json");
+  return { ...original, useArcanaCatalog: () => ({ cards: data.default, error: false }) };
 });

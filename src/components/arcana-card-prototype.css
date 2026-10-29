@@ -117,3 +117,9 @@
   min-height: 0;
   border-radius: 3px 5px 3px 5px;
 }
+:root .arcana-paper .paper-digits {
+  --digit-face: var(--arcana-index-color, #facc15);
+  --digit-fold: var(--arcana-index-color, #facc15);
+  --digit-edge: #6d28d9;
+  --digit-depth: #6d28d9;
+}
