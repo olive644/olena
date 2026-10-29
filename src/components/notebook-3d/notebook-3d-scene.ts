@@ -1706,13 +1706,26 @@ export class NotebookScene {
     const count = this.leaves.length;
     const closedFront = this.flipped === 0;
     const closedBack = this.flipped === count && count > 0;
+    // Marcas que saem do caderno entram no enquadramento: o marcador pende por baixo e as
+    // divisórias saem pelo lado de fora das folhas (direita ou, nas já viradas, esquerda).
+    const hasRibbon = this.tabs.some((tab) => tab.kind === "bookmark" && tab.pageIndex >= 0);
+    const firstVisible = this.flipped >= 1 ? (this.flipped - 1) * 2 : 0;
+    const hasLeftDivider =
+      !closedFront &&
+      !closedBack &&
+      this.tabs.some(
+        (tab) => tab.kind === "divider" && tab.pageIndex >= 0 && tab.pageIndex < firstVisible,
+      );
+    const bottom = hasRibbon ? RIBBON.outside + 0.36 : 0.2;
     let xr: [number, number] = closedFront
       ? [-0.4, BW + 0.75]
       : closedBack
         ? [-BW - 0.75, 0.4]
-        : [-BW - 0.2, BW + 0.95];
+        : [-BW - (hasLeftDivider ? DIVIDER.outside + 0.15 : 0.2), BW + 0.95];
     let zr: [number, number] =
-      closedFront || closedBack ? [-BH / 2 - 0.1, BH / 2 + 0.3] : [-H / 2 - 0.2, H / 2 + 0.2];
+      closedFront || closedBack
+        ? [-BH / 2 - 0.1, BH / 2 + (hasRibbon ? 0.9 : 0.3)]
+        : [-H / 2 - 0.2, H / 2 + bottom];
     const focus = this.focus ? easeInOut(this.focus.amount) : 0;
     if (focus > 0 && this.focus) {
       const side = this.focus.index % 2 === 0 ? -1 : 1;

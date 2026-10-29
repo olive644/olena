@@ -140,6 +140,9 @@ test("pôr marca mostra onde ela cai, a edição destaca a escolhida e a estante
     await editor.getByRole("button", { name: "Fechar", exact: true }).click();
     await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 30_000 });
   }
+  // A barra de baixo cabe na tela de 720 de altura sem precisar rolar a página.
+  const dock = await page.locator(".notebook-3d-dock").boundingBox();
+  expect(dock!.y + dock!.height).toBeLessThanOrEqual(page.viewportSize()!.height);
   const project = (x: number, z: number) =>
     scene.evaluate(
       (canvas, point) =>
@@ -169,13 +172,17 @@ test("pôr marca mostra onde ela cai, a edição destaca a escolhida e a estante
   // Edição: apontar a marca diz qual é; tocar abre o painel para renomear ou remover.
   await page.getByRole("button", { name: "Editar marcas" }).click();
   const tab = await project(3.3, 0.45);
-  await page.mouse.move(tab.x, tab.y);
-  await expect(hint).toContainText("Editar marca");
+  // A marca recém-criada ainda assenta ao entrar na edição: o ponteiro repete até ela responder.
+  await expect(async () => {
+    await page.mouse.move(tab.x - 6, tab.y);
+    await page.mouse.move(tab.x, tab.y);
+    await expect(hint).toContainText("Editar marca", { timeout: 1500 });
+  }).toPass({ timeout: 15_000 });
   await page.mouse.click(tab.x, tab.y);
   await expect(page.getByRole("button", { name: "Remover marcação" })).toBeVisible();
   await page.getByRole("button", { name: "Remover marcação" }).click();
   await expect(page.getByRole("button", { name: /^Divisória .*folha 2/ })).toHaveCount(0);
-  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "Concluir edição" }).click();
   // Voltar: o caderno fecha na capa e só então a capa viaja até a estante.
   await page.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
   await expect(page.getByText("Capa fechada")).toBeVisible();

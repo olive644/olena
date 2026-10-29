@@ -102,6 +102,8 @@ export type PaperToolsScene = {
   selectedId: string | null;
   /** A caixa de ferramentas pronta, para o caderno 3D encaixar onde quiser. */
   toolbar: ReactNode;
+  /** Instrução da ferramenta ativa, ou da ação padrão quando não há nenhuma. */
+  hint: string;
   /** Sai de qualquer ferramenta ativa (marcar, editar). */
   cancel: () => void;
   placeResolved: (kind: NotebookTab["kind"], result: PlacementResult, id?: string) => void;
@@ -270,6 +272,14 @@ export function NotebookPaperTools({
       suppressClick.current = true;
     },
   };
+  const toolHint =
+    tool === "divider"
+      ? uiText(1834)
+      : tool === "bookmark"
+        ? uiText(1835)
+        : editing
+          ? uiText(710)
+          : uiText(711);
   const toolbox = (
     <div
       className={`notebook-paper-toolbox${scene ? " is-scene" : ""}`}
@@ -320,15 +330,7 @@ export function NotebookPaperTools({
         {indexControl}
         {endControl}
       </div>
-      <span className="notebook-tool-hint">
-        {tool === "divider"
-          ? uiText(1834)
-          : tool === "bookmark"
-            ? uiText(1835)
-            : editing
-              ? uiText(710)
-              : uiText(711)}
-      </span>
+      <span className="notebook-tool-hint">{toolHint}</span>
     </div>
   );
   return (
@@ -434,6 +436,7 @@ export function NotebookPaperTools({
               editing,
               selectedId,
               toolbar: toolbox,
+              hint: toolHint,
               cancel: () => {
                 setTool(null);
                 setSelectedId(null);

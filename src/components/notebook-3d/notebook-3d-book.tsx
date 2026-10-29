@@ -174,7 +174,7 @@ export function NotebookSpread3d({
             />
             <div className="notebook-3d-dock">
               <p className="notebook-3d-status" aria-live="polite">
-                {status}
+                {tools.tool || tools.editing ? tools.hint : status}
               </p>
               <div className="notebook-3d-bar">
                 <button

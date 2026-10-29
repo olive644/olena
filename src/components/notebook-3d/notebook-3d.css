@@ -2,7 +2,7 @@
 .notebook-3d {
   position: relative;
   width: 100%;
-  height: clamp(360px, min(62vh, 60vw), 760px);
+  height: clamp(300px, min(calc(100vh - 290px), 62vw), 900px);
   touch-action: none;
   user-select: none;
 }
@@ -83,7 +83,7 @@
 }
 /* Em 3D o caderno usa a largura da vitrine: a cena calcula o enquadramento sozinha. */
 .notebook-spread-workspace.is-3d .notebook-workbench {
-  width: min(100%, 1120px);
+  width: min(100%, 1500px);
   max-height: none;
   padding: 0 0 18px;
 }
@@ -155,13 +155,9 @@
 .notebook-3d-tray .notebook-toolbar-secondary {
   display: contents;
 }
+/* A instrução da ferramenta aparece no lugar da linha "Folhas 1 e 2 de N", sem cobrir o caderno. */
 .notebook-3d-tray .notebook-tool-hint {
-  position: absolute;
-  inset: auto 0 calc(100% + 6px) 0;
-  margin: 0;
-  text-align: center;
-  font-weight: 700;
-  pointer-events: none;
+  display: none;
 }
 .notebook-3d-dock {
   position: relative;
