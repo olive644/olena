@@ -49,7 +49,7 @@ Biblioteca, Praticar e o planejador de aulas são carregados sob demanda. As fer
 captura do Caderno também usam um chunk separado. O manifesto do Vite
 permite medir separadamente o JavaScript inicial e o total assíncrono. O orçamento atual está em
 `scripts/check-performance-budget.mjs`: 278 KiB para a entrada e 1190 KiB para o conjunto, com tetos
-absolutos de 400 KiB e 1600 KiB (o total subiu de 1500 em 2026-10-23). Subir um orçamento exige justificativa registrada no próprio script.
+absolutos de 400 KiB e 1608 KiB (o total subiu de 1500 em 2026-10-23, 1602 em 2026-10-29 e 1608 no mesmo dia para as abas e a contracapa do caderno 2D). Subir um orçamento exige justificativa registrada no próprio script.
 
 O gerador de planos continua independente da interface e da central de estudos. Uma futura IA
 poderá implementar outra estratégia sem substituir o fluxo determinístico existente.

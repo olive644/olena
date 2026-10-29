@@ -1,4 +1,6 @@
 import { createPortal } from "react-dom";
+import { tabSide } from "./notebook-tab-stack";
+import { tabStyle } from "./notebook-tab-art";
 import { uiText, useLanguage } from "../i18n/runtime";
 import {
   useRef,
@@ -91,6 +93,12 @@ type Props = {
   indexControl?: ReactNode;
   /** Último botão da caixa de ferramentas (no caderno 3D, o de nova folha). */
   endControl?: ReactNode;
+  /** Par de folhas aberto (0 é o primeiro): define de que lado da pilha cada aba sai. */
+  spread?: number;
+  /** Abas que viajam na folha que está virando: a camada fixa não as desenha por enquanto. */
+  hiddenTabIds?: ReadonlySet<string>;
+  /** Abas que acabaram de pousar depois de viajar na folha: ganham um pequeno movimento de assentar. */
+  landedTabIds?: ReadonlySet<string>;
   /** Elemento onde a caixa de ferramentas aparece (por exemplo a barra de baixo do caderno 2D). */
   toolbarHost?: HTMLElement | null;
   /** No caderno 3D, a cena desenha as marcas e resolve onde cada toque cai. */
@@ -131,6 +139,9 @@ export function NotebookPaperTools({
   indexControl,
   endControl,
   toolbarHost = null,
+  spread,
+  hiddenTabIds,
+  landedTabIds,
   scene = false,
   resolverRef,
   children,
@@ -458,25 +469,23 @@ export function NotebookPaperTools({
           aria-label={uiText(719)}
         >
           {tabs.map((tab) => {
+            if (hiddenTabIds?.has(tab.id)) return null;
             const pageIndex = pages.findIndex((page) => page.id === tab.pageId);
+            const side =
+              spread === undefined
+                ? pageIndex % 2
+                  ? "right"
+                  : "left"
+                : tabSide(pageIndex, spread);
             const exposed = !disabled && visible.some((page) => page.id === tab.pageId);
             return (
               <button
                 type="button"
                 key={tab.id}
-                className={`notebook-attached-tab is-${tab.kind} ${exposed ? "is-exposed" : "is-buried"}`}
+                className={`notebook-attached-tab is-${tab.kind} is-${side} ${exposed ? "is-exposed" : "is-buried"}${landedTabIds?.has(tab.id) ? " is-landed" : ""}`}
                 aria-current={exposed ? "page" : undefined}
                 disabled={disabled}
-                style={
-                  {
-                    "--tab-color": tab.color,
-                    "--tab-text": ["#FACC15", "#5887C9"].includes(tab.color.toUpperCase())
-                      ? "#17151C"
-                      : "#FFF9EF",
-                    "--tab-position": tab.position,
-                    "--tab-side": pageIndex % 2,
-                  } as CSSProperties
-                }
+                style={tabStyle(tab, pageIndex, side)}
                 title={uiText(1838, [tab.label || uiText(1831), pageIndex + 1])}
                 aria-label={uiText(1839, [
                   tab.kind === "divider" ? uiText(705) : uiText(1831),
