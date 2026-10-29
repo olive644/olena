@@ -317,7 +317,7 @@ export function NotebookPaperTools({
           aria-pressed={editing}
           aria-label={editing ? uiText(709) : uiText(1833)}
           title={editing ? uiText(709) : uiText(1833)}
-          disabled={!tabs.length || disabled}
+          disabled={(!tabs.length && !editing) || disabled}
           onClick={() => {
             setEditing(!editing);
             setSelectedId(null);
