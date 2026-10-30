@@ -32,6 +32,7 @@ export function LibraryDialog({
       className={`library-dialog${className ? " " + className : ""}`}
       onCancel={(event) => {
         event.preventDefault();
+        event.stopPropagation();
         onClose();
       }}
       aria-label={title}
