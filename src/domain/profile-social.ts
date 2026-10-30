@@ -4,6 +4,9 @@ export type SocialProfile = {
   achievements?: string[];
   achievementDates?: Record<string, string>;
   achievementFavorites?: string[];
+  cards?: string[];
+  cardDates?: Record<string, string>;
+  cardFavorites?: string[];
   username: string;
   name: string;
   photoUrl: string;
@@ -17,7 +20,9 @@ export type SocialProfile = {
 };
 export type SocialActivitySummary = {
   id: string;
-  kind: "practice" | "focus" | "quiz" | "streak" | "module";
+  kind: "practice" | "focus" | "quiz" | "streak" | "module" | "card" | "achievement";
+  // ID de carta ou conquista (kind card/achievement). Raridade e arte vêm do catálogo local.
+  ref?: string;
   course?: string;
   level?: number;
   value: number;
@@ -68,4 +73,7 @@ export type SocialAction =
       achievements?: string[];
       achievementDates?: Record<string, string>;
       achievementFavorites?: string[];
+      cards?: string[];
+      cardDates?: Record<string, string>;
+      cardFavorites?: string[];
     };

@@ -16,8 +16,20 @@ import {
   validAchievementDates,
   validAchievementFavorites,
 } from "../domain/math-achievements.js";
+import {
+  isPublicCardId,
+  validCardDates,
+  validCardFavorites,
+  validCardIds,
+} from "../domain/arcana-profile.js";
+import { achievementActivities } from "./reward-activity-summary.js";
 
 type Account = {
+  cards?: Record<string, true>;
+  cardDates?: Record<string, string>;
+  cardFavorites?: Record<string, number>;
+  cardsUpdatedAt?: number;
+  cardFavoritesUpdatedAt?: number;
   blocked?: Record<string, number>;
   achievements?: Record<string, true>;
   achievementDates?: Record<string, string>;
@@ -121,6 +133,9 @@ export function createProfileSocialHandler(options: {
                       "achievements",
                       "achievementDates",
                       "achievementFavorites",
+                      "cards",
+                      "cardDates",
+                      "cardFavorites",
                     ]
                   : body["action"] === "read"
                     ? ["action"]
@@ -182,8 +197,18 @@ export function createProfileSocialHandler(options: {
           !validAchievementDates(body["achievementDates"])
         )
           return reply(400, { error: "Conquistas inválidas." });
+        if (
+          (body["cards"] !== undefined && !validCardIds(body["cards"])) ||
+          (body["cardFavorites"] !== undefined && !validCardFavorites(body["cardFavorites"])) ||
+          (body["cardDates"] !== undefined && !validCardDates(body["cardDates"]))
+        )
+          return reply(400, { error: "Cartas inválidas." });
       }
       const params = new URL(request.url).searchParams;
+      // Cliente novo avisa que entende os eventos card/achievement; os antigos nunca os recebem.
+      const rewards = params.get("rewards") === "1";
+      const visible = (activity?: { kind: string }) =>
+        !activity || rewards || (activity.kind !== "card" && activity.kind !== "achievement");
       const query = params.get("search");
       const list = params.get("list");
       const offset = Number(params.get("offset") ?? 0);
@@ -299,6 +324,39 @@ export function createProfileSocialHandler(options: {
                     : {}),
                 }
               : {}),
+            // Visitante recebe só os destaques (até 3 obtidos). O inventário fica privado.
+            ...(!blocked(id) &&
+            account.display &&
+            account.cardsUpdatedAt !== undefined &&
+            account.cardFavoritesUpdatedAt !== undefined
+              ? (() => {
+                  const favorites = Object.entries(account.cardFavorites ?? {})
+                    .filter(
+                      ([card, rank]) =>
+                        isPublicCardId(card) &&
+                        account.cards?.[card] &&
+                        Number.isInteger(rank) &&
+                        rank > 0 &&
+                        rank <= 3,
+                    )
+                    .sort((a, b) => a[1] - b[1])
+                    .slice(0, 3)
+                    .map(([card]) => card);
+                  return {
+                    cards: favorites,
+                    cardFavorites: favorites,
+                    ...(validCardDates(account.cardDates)
+                      ? {
+                          cardDates: Object.fromEntries(
+                            Object.entries(account.cardDates).filter(([card]) =>
+                              favorites.includes(card),
+                            ),
+                          ),
+                        }
+                      : {}),
+                  };
+                })()
+              : {}),
             ...(details ? { details } : {}),
           };
         };
@@ -317,13 +375,16 @@ export function createProfileSocialHandler(options: {
               Object.values(account.activities ?? {})
                 .filter(
                   (activity) =>
-                    activity.at >= account.activitySince! && now - activity.at < RETENTION,
+                    visible(activity) &&
+                    activity.at >= account.activitySince! &&
+                    now - activity.at < RETENTION,
                 )
                 .map((activity) => ({
                   id: activity.id,
                   kind: activity.kind,
                   value: activity.value,
                   at: activity.at,
+                  ...(activity.ref ? { ref: activity.ref } : {}),
                   ...(activity.course ? { course: activity.course } : {}),
                   ...(activity.level !== undefined ? { level: activity.level } : {}),
                   person: profile(id),
@@ -344,6 +405,7 @@ export function createProfileSocialHandler(options: {
                 live(notice.actor ?? id) &&
                 !blocked(notice.actor ?? id) &&
                 (!notice.owner || !blocked(notice.owner)) &&
+                visible(notice.activity) &&
                 (!notice.owner || state.accounts[notice.owner]?.activitySince !== undefined) &&
                 now - notice.at >= 0 &&
                 now - notice.at < RETENTION,
@@ -447,7 +509,14 @@ export function createProfileSocialHandler(options: {
               self.activitySince ??= now;
               completed ??= (await options.completedActivities?.(identity.uid)) ?? [];
               self.activities ??= {};
-              for (const activity of completed.slice(0, 12)) {
+              // Conquistas vêm do que a própria conta já publicou, sem leitura extra.
+              const events = [
+                ...completed,
+                ...achievementActivities(self.achievements, self.achievementDates, now),
+              ]
+                .sort((a, b) => b.at - a.at)
+                .slice(0, 12);
+              for (const activity of events) {
                 if (activity.at < self.activitySince) continue;
                 const previous = self.activities[activity.id];
                 if (previous && previous.value === activity.value) continue;
@@ -497,6 +566,7 @@ export function createProfileSocialHandler(options: {
                     kind: activity.kind,
                     value: activity.value,
                     at: activity.at,
+                    ...(activity.ref ? { ref: activity.ref } : {}),
                     ...(activity.course ? { course: activity.course } : {}),
                     ...(activity.level !== undefined ? { level: activity.level } : {}),
                   },
@@ -528,6 +598,22 @@ export function createProfileSocialHandler(options: {
                   .map((id, index) => [id, index + 1]),
               );
               self.achievementFavoritesUpdatedAt = now;
+            }
+            if (body["cards"] !== undefined && validCardIds(body["cards"])) {
+              self.cards = Object.fromEntries(body["cards"].map((id) => [id, true as const]));
+              self.cardsUpdatedAt = now;
+              if (validCardDates(body["cardDates"]))
+                self.cardDates = Object.fromEntries(
+                  Object.entries(body["cardDates"]).filter(([id]) => self.cards?.[id]),
+                );
+            }
+            if (validCardFavorites(body["cardFavorites"])) {
+              self.cardFavorites = Object.fromEntries(
+                body["cardFavorites"]
+                  .filter((id) => self.cards?.[id])
+                  .map((id, index) => [id, index + 1]),
+              );
+              self.cardFavoritesUpdatedAt = now;
             }
             if (validSocialProfileDetails(body["details"])) {
               const details = body["details"];

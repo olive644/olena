@@ -11,6 +11,9 @@ export function activityLabel(activity: SocialActivitySummary) {
       course?.topics[activity.level ?? -1] ?? uiText(1406),
       course?.title ?? uiText(1406),
     ]);
+  // Texto provisório de dados: a copy e a arte finais ficam com a direção visual.
+  if (activity.kind === "card") return uiText("Conquistou uma nova carta do Arcano.");
+  if (activity.kind === "achievement") return uiText("Desbloqueou uma nova conquista.");
   const labels = {
     practice: "Avançou em Matemática: {0} respostas praticadas.",
     focus: "Completou {0} minutos de foco.",

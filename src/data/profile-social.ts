@@ -9,7 +9,9 @@ import {
   validAchievementIds,
   validAchievementDates,
   validAchievementFavorites,
+  isAchievementId,
 } from "../domain/math-achievements";
+import { isPublicCardId, validCardDates, validCardFavorites } from "../domain/arcana-profile";
 export const SOCIAL_CHANGED = "olena:social-changed";
 export const SOCIAL_VISIT = "olena:social-visit";
 function isActivity(value: unknown): boolean {
@@ -18,7 +20,14 @@ function isActivity(value: unknown): boolean {
   return (
     typeof item["id"] === "string" &&
     /^[a-f0-9]{32}$/.test(item["id"]) &&
-    ["focus", "practice", "quiz", "streak", "module"].includes(String(item["kind"])) &&
+    ["focus", "practice", "quiz", "streak", "module", "card", "achievement"].includes(
+      String(item["kind"]),
+    ) &&
+    (item["kind"] === "card"
+      ? isPublicCardId(item["ref"])
+      : item["kind"] === "achievement"
+        ? isAchievementId(item["ref"])
+        : item["ref"] === undefined) &&
     (item["course"] === undefined || isMathCourse(item["course"])) &&
     (item["level"] === undefined ||
       (Number.isInteger(item["level"]) &&
@@ -43,6 +52,9 @@ function isProfile(value: unknown): value is SocialProfile {
     (item["achievementDates"] === undefined || validAchievementDates(item["achievementDates"])) &&
     (item["achievementFavorites"] === undefined ||
       validAchievementFavorites(item["achievementFavorites"])) &&
+    (item["cards"] === undefined || validCardFavorites(item["cards"])) &&
+    (item["cardDates"] === undefined || validCardDates(item["cardDates"])) &&
+    (item["cardFavorites"] === undefined || validCardFavorites(item["cardFavorites"])) &&
     typeof item["username"] === "string" &&
     /^[a-z0-9._]{1,30}$/.test(item["username"]) &&
     typeof item["name"] === "string" &&
@@ -65,7 +77,8 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
   if (!user || user.isAnonymous) throw new Error(uiText(1080));
   const token = await user.getIdToken();
   const send = () =>
-    fetch(`/api/profile-social${query ? `?${query}` : ""}`, {
+    // rewards=1: esta versão entende eventos de carta e conquista; as antigas não os recebem.
+    fetch(`/api/profile-social?${query ? `${query}&` : ""}rewards=1`, {
       method: action ? "POST" : "GET",
       signal: AbortSignal.timeout(15000),
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },

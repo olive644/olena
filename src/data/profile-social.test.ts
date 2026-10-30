@@ -27,7 +27,7 @@ it("não consulta sem conta e rejeita resposta após troca de conta", async () =
   mocks.auth.currentUser = mocks.user;
   await expect(requestSocial()).rejects.toThrow("conta mudou");
   expect(fetch).toHaveBeenCalledWith(
-    "/api/profile-social",
+    "/api/profile-social?rewards=1",
     expect.objectContaining({
       headers: expect.objectContaining({ Authorization: "Bearer token" }),
     }),
@@ -152,4 +152,49 @@ it("resposta sem JSON não vaza o erro do navegador", async () => {
   );
   const failure = await requestSocial().catch((cause: Error) => cause.message);
   expect(failure).not.toMatch(/JSON|Unexpected|token/i);
+});
+it("aceita eventos de carta e conquista conhecidos e recusa referências inventadas", async () => {
+  const person = {
+    username: "helena",
+    name: "Helena",
+    photoUrl: "/profile-avatars/helena.webp",
+    followers: 0,
+    following: 0,
+    followed: false,
+    followsYou: true,
+    shared: true,
+    cards: ["major-17"],
+    cardDates: { "major-17": "2026-10-10T10:00:00.000Z" },
+    cardFavorites: ["major-17"],
+  };
+  const event = (kind: string, ref: string) => ({
+    id: "b".repeat(32),
+    kind,
+    ref,
+    value: 1,
+    at: Date.now(),
+    person,
+    liked: false,
+    likes: [],
+  });
+  const reply = (activities: unknown[]) =>
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () => new Response(JSON.stringify({ self: person, notifications: [], activities })),
+      ),
+    );
+  reply([event("card", "major-17"), event("achievement", "correct-1")]);
+  expect((await requestSocial()).activities).toHaveLength(2);
+  for (const bad of [
+    event("card", "inventada"),
+    event("achievement", "major-17"),
+    event("focus", "major-17"),
+  ]) {
+    reply([bad]);
+    await expect(requestSocial()).rejects.toThrow("Resposta inválida");
+  }
+  reply([event("card", "major-17")]);
+  person.cardFavorites = ["major-17", "major-17"];
+  await expect(requestSocial()).rejects.toThrow("Resposta inválida");
 });
