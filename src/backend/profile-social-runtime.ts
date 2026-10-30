@@ -9,6 +9,7 @@ import { checkRateLimit } from "./rate-limit.js";
 import { createFirebaseSocialWatcher } from "./firebase-social-events.js";
 import { createProfileSocialEvents } from "./profile-social-events.js";
 import { studyActivitySummary } from "./study-activity-summary.js";
+import { cardActivities } from "./reward-activity-summary.js";
 import { resolveBrazilianZone } from "../data/agenda-time-zone.js";
 const config = {
   databaseUrl: process.env["FIREBASE_DATABASE_URL"] ?? "",
@@ -47,11 +48,34 @@ const handleFeed = createProfileSocialHandler({
     );
     if (!zoneResponse.ok) throw new Error("activity-zone");
     const zone: unknown = await zoneResponse.json();
-    return studyActivitySummary(
-      typeof raw === "string" ? raw : null,
-      Date.now(),
-      resolveBrazilianZone(typeof zone === "string" ? zone : null, "America/Sao_Paulo"),
-    );
+    const now = Date.now();
+    // Uma leitura extra por publicação (mesmas cotas acima), nunca por GET. Se falhar, só as
+    // cartas ficam de fora: os resumos de estudo continuam saindo.
+    const cards = await (async () => {
+      try {
+        const rewardsKey = `k_${Buffer.from("helena.mathPlaceRewards.v1").toString("base64url")}`;
+        const response = await fetch(
+          `${config.databaseUrl}/users/${uid}/stateV2/items/${rewardsKey}.json`,
+          {
+            signal: AbortSignal.timeout(10000),
+            headers: { Authorization: `Bearer ${await token()}` },
+          },
+        );
+        if (!response.ok) return [];
+        const value: unknown = await response.json();
+        return cardActivities(typeof value === "string" ? value : null, now);
+      } catch {
+        return [];
+      }
+    })();
+    return [
+      ...studyActivitySummary(
+        typeof raw === "string" ? raw : null,
+        now,
+        resolveBrazilianZone(typeof zone === "string" ? zone : null, "America/Sao_Paulo"),
+      ),
+      ...cards,
+    ];
   },
   async handles() {
     const response = await fetch(`${config.databaseUrl}/privateProfileHandles.json`, {

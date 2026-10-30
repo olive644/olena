@@ -515,3 +515,127 @@ it("aceita objetos vazios omitidos pelo transporte do Firebase", async () => {
   expect((await app.feed("a")).self.followers).toBe(0);
   expect((await app.request("a", { action: "follow", username: "bob" })).status).toBe(200);
 });
+
+const iso = (ms: number) => new Date(ms).toISOString();
+it("publica até três cartas favoritas obtidas, preserva ordem e [] removido, e oculta no bloqueio", async () => {
+  const app = setup();
+  const share = {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    cards: ["major-17", "cups-01", "wands-05"],
+    cardDates: { "major-17": "2026-10-10T10:00:00.000Z", "cups-01": "2026-10-11T10:00:00Z" },
+    cardFavorites: ["wands-05", "major-17", "major-18"],
+  };
+  expect((await app.request("a", share)).status).toBe(200);
+  const profile = (await app.feed("b", "username=alice")).profile;
+  // major-18 não foi obtida, então não vira destaque público.
+  expect(profile?.cardFavorites).toEqual(["wands-05", "major-17"]);
+  for (const bad of [
+    { cards: ["inexistente"] },
+    { cards: ["major-17", "major-17"] },
+    { cardFavorites: ["major-17", "cups-01", "wands-05", "major-00"] },
+    { cardFavorites: ["major-17", "major-17"] },
+    { cardDates: { "major-17": "ontem" } },
+    { cardDates: { inexistente: "2026-10-10T10:00:00Z" } },
+    { uid: "a" },
+  ])
+    expect((await app.request("a", { ...share, ...bad })).status).toBe(400);
+  expect((await app.request("a", { ...share, cardFavorites: [] })).status).toBe(200);
+  expect((await app.feed("b", "username=alice")).profile?.cardFavorites).toEqual([]);
+  await app.request("b", { action: "block", username: "alice" });
+  const blockedView = (await app.feed("b", "username=alice")).profile;
+  expect([blockedView?.cards, blockedView?.cardDates, blockedView?.cardFavorites]).toEqual([
+    undefined,
+    undefined,
+    undefined,
+  ]);
+  await app.request("b", { action: "unblock", username: "alice" });
+  await app.request("a", { action: "block", username: "bob" });
+  expect((await app.feed("b", "username=alice")).profile).toBeUndefined();
+});
+
+it("cartas e conquistas viram eventos com ID estável, só para a versão nova", async () => {
+  const start = Date.parse("2026-10-17T12:00:00Z");
+  const card = {
+    id: "e".repeat(32),
+    kind: "card" as const,
+    ref: "major-17",
+    value: 1,
+    at: start + 3000,
+  };
+  const app = setup(async () => [card]);
+  await app.request("b", { action: "follow", username: "alice" });
+  await app.request("a", { action: "publish-activities" });
+  app.advance(5000);
+  await app.request("a", {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    achievements: ["correct-1"],
+    achievementDates: { "correct-1": iso(start + 2000) },
+  });
+  await app.request("a", { action: "publish-activities" });
+  const modern = await app.feed("b", "rewards=1");
+  expect(modern.activities?.map((a) => [a.kind, a.ref])).toEqual(
+    expect.arrayContaining([
+      ["card", "major-17"],
+      ["achievement", "correct-1"],
+    ]),
+  );
+  expect(modern.activities).toHaveLength(2);
+  expect(modern.activities?.find((a) => a.kind === "card")?.at).toBe(card.at);
+  expect(JSON.stringify(modern.activities)).not.toContain(key("a"));
+  // Cliente antigo não recebe kind novo nem avisos dele, e o feed segue utilizável.
+  const legacy = await app.feed("b");
+  expect(legacy.activities).toEqual([]);
+  expect(legacy.notifications.every((n) => n.kind === undefined)).toBe(true);
+  expect(legacy.self.username).toBe("bob");
+  expect(modern.notifications.filter((n) => n.kind === "activity")).toHaveLength(2);
+  // Republicar não duplica evento nem reabre o aviso lido.
+  await app.request("b", { action: "read" });
+  await app.request("a", { action: "publish-activities" });
+  const again = await app.feed("b", "rewards=1");
+  expect(again.activities).toHaveLength(2);
+  expect(again.notifications.every((n) => n.read)).toBe(true);
+  // Curtir é idempotente, e o aviso de curtida também é filtrado para o cliente antigo.
+  const like = { action: "like-activity", username: "alice", activityId: card.id, liked: true };
+  await app.request("b", like, "rewards=1");
+  await app.request("b", like, "rewards=1");
+  const liked = await app.feed("a", "rewards=1");
+  expect(liked.notifications.filter((n) => n.kind === "like")).toHaveLength(1);
+  expect(liked.notifications.find((n) => n.kind === "like")?.activity?.ref).toBe("major-17");
+  expect((await app.feed("a")).notifications.some((n) => n.kind === "like")).toBe(false);
+});
+
+it("eventos de prêmio respeitam janela, consentimento e bloqueio", async () => {
+  const start = Date.parse("2026-10-17T12:00:00Z");
+  const old = {
+    id: "1".repeat(32),
+    kind: "card" as const,
+    ref: "cups-01",
+    value: 1,
+    at: start - 1000,
+  };
+  const fresh = {
+    id: "2".repeat(32),
+    kind: "card" as const,
+    ref: "cups-02",
+    value: 1,
+    at: start + 1000,
+  };
+  const app = setup(async () => [old, fresh]);
+  await app.request("b", { action: "follow", username: "alice" });
+  await app.request("a", { action: "publish-activities" });
+  app.advance(2000);
+  await app.request("a", { action: "publish-activities" });
+  // Obtido antes de ativar o compartilhamento não é publicado retroativamente.
+  expect((await app.feed("b", "rewards=1")).activities?.map((a) => a.ref)).toEqual(["cups-02"]);
+  await app.request("b", { action: "block", username: "alice" });
+  expect((await app.feed("b", "rewards=1")).activities).toEqual([]);
+  await app.request("b", { action: "unblock", username: "alice" });
+  await app.request("a", { action: "activity-privacy", enabled: false });
+  expect((await app.feed("b", "rewards=1")).activities).toEqual([]);
+});
