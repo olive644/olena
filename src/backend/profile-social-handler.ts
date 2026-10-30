@@ -16,12 +16,7 @@ import {
   validAchievementDates,
   validAchievementFavorites,
 } from "../domain/math-achievements.js";
-import {
-  isPublicCardId,
-  validCardDates,
-  validCardFavorites,
-  validCardIds,
-} from "../domain/arcana-profile.js";
+import { isPublicCardId, validCardDates, validCardFavorites } from "../domain/arcana-profile.js";
 import { achievementActivities } from "./reward-activity-summary.js";
 
 type Account = {
@@ -198,9 +193,10 @@ export function createProfileSocialHandler(options: {
         )
           return reply(400, { error: "Conquistas inválidas." });
         if (
-          (body["cards"] !== undefined && !validCardIds(body["cards"])) ||
+          (body["cards"] !== undefined && !validCardFavorites(body["cards"])) ||
           (body["cardFavorites"] !== undefined && !validCardFavorites(body["cardFavorites"])) ||
-          (body["cardDates"] !== undefined && !validCardDates(body["cardDates"]))
+          (body["cardDates"] !== undefined &&
+            (!validCardDates(body["cardDates"]) || Object.keys(body["cardDates"]).length > 3))
         )
           return reply(400, { error: "Cartas inválidas." });
       }
@@ -599,7 +595,7 @@ export function createProfileSocialHandler(options: {
               );
               self.achievementFavoritesUpdatedAt = now;
             }
-            if (body["cards"] !== undefined && validCardIds(body["cards"])) {
+            if (body["cards"] !== undefined && validCardFavorites(body["cards"])) {
               self.cards = Object.fromEntries(body["cards"].map((id) => [id, true as const]));
               self.cardsUpdatedAt = now;
               if (validCardDates(body["cardDates"]))

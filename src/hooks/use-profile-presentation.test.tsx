@@ -1,6 +1,7 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, renderHook, waitFor } from "@testing-library/react";
 import { useProfilePresentation } from "./use-profile-presentation";
+import { ARCANA_IDS } from "../data/arcana-ids";
 import { createInitialWorkspace } from "../domain/workspace";
 import { upgradeMasteryProgress } from "../domain/math-mastery-progress";
 const mocks = vi.hoisted(() => ({
@@ -122,12 +123,11 @@ it("publica cartas obtidas, datas conhecidas e sugere três destaques quando nã
   renderHook(() => useProfilePresentation("alice", "Aluno"));
   await waitFor(() => expect(mocks.request).toHaveBeenCalled());
   const sent = mocks.request.mock.calls[0]?.[0];
-  expect(sent.cards).toEqual(["wands-02", "cups-01", "swords-03", "pentacles-04"]);
+  expect(sent.cards).toEqual(["wands-02", "cups-01", "swords-03"]);
   expect(sent.cardFavorites).toEqual(["wands-02", "cups-01", "swords-03"]);
   expect(sent.cardDates).toEqual({
     "cups-01": new Date(REVEALED).toISOString(),
     "wands-02": new Date(REVEALED + 1000).toISOString(),
-    "pentacles-04": new Date(REVEALED + 2000).toISOString(),
   });
 });
 it("publica a escolha explícita na ordem, descarta não obtidas e mantém [] vazio", async () => {
@@ -146,4 +146,34 @@ it("publica a escolha explícita na ordem, descarta não obtidas e mantém [] va
   renderHook(() => useProfilePresentation("alice", "Aluno"));
   await waitFor(() => expect(mocks.request).toHaveBeenCalled());
   expect(mocks.request.mock.calls[0]?.[0].cardFavorites).toEqual([]);
+});
+it("com as 78 cartas obtidas publica só três destaques e um payload compacto", async () => {
+  mocks.request.mockResolvedValue({});
+  localStorage.setItem("helena.account.v1", "alice-id");
+  const ids = ARCANA_IDS;
+  const chests = Array.from({ length: 39 }, (_, i) => ({
+    id: String(i),
+    unlockAt: null,
+    opened: true,
+    cards: [ids[i * 2], ids[i * 2 + 1]],
+    revealed: 2,
+    revealedAt: [REVEALED + i, REVEALED + i + 1],
+  }));
+  localStorage.setItem(
+    "helena.mathPlaceRewards.v1",
+    JSON.stringify({ foundations: { points: 0, receipts: [], chests } }),
+  );
+  localStorage.setItem(
+    "helena.profile.v1",
+    JSON.stringify({ name: "Alice", cardFavorites: ["pentacles-14", "major-00"] }),
+  );
+  const ledgerBefore = localStorage.getItem("helena.mathPlaceRewards.v1");
+  renderHook(() => useProfilePresentation("alice", "Aluno"));
+  await waitFor(() => expect(mocks.request).toHaveBeenCalled());
+  const sent = mocks.request.mock.calls[0]?.[0];
+  expect(sent.cards).toEqual(["pentacles-14", "major-00"]);
+  expect(sent.cardFavorites).toEqual(sent.cards);
+  expect(Object.keys(sent.cardDates).sort()).toEqual(["major-00", "pentacles-14"]);
+  expect(new TextEncoder().encode(JSON.stringify(sent)).length).toBeLessThan(2048);
+  expect(localStorage.getItem("helena.mathPlaceRewards.v1")).toBe(ledgerBefore);
 });

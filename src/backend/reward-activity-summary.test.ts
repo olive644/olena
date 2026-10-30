@@ -3,7 +3,7 @@ import { expect, it } from "vitest";
 import { achievementActivities, cardActivities } from "./reward-activity-summary";
 
 const now = Date.parse("2026-10-20T12:00:00Z");
-const at = (day: number) => Date.parse(`2026-10-${day}T10:00:00Z`);
+const at = (day: number) => Date.parse(`2026-10-${String(day).padStart(2, "0")}T10:00:00Z`);
 const ledger = (chests: unknown[]) =>
   JSON.stringify({ school: { points: 0, receipts: [], chests } });
 
@@ -32,8 +32,6 @@ it("gera um evento por carta na primeira obtenção, sem cópias nem datas inven
         revealed: 1,
         revealedAt: [at(11)],
       },
-      { id: "w", opened: true, cards: ["pentacles-01"], revealed: 1, revealedAt: [null] },
-      { id: "v", opened: true, cards: ["pentacles-02"], revealed: 1, revealedAt: [at(25)] },
       {
         id: "s",
         opened: true,
@@ -65,7 +63,81 @@ it("gera um evento por carta na primeira obtenção, sem cópias nem datas inven
   expect(cardActivities(null, now)).toEqual([]);
   expect(cardActivities(JSON.stringify({ hacker: { chests: [] } }), now)).toEqual([]);
 });
-
+it("com mais de 1000 baús preserva a data realmente mais antiga", () => {
+  const filler = Array.from({ length: 1200 }, (_, i) => ({
+    id: String(i),
+    opened: true,
+    cards: ["wands-03"],
+    revealed: 1,
+    revealedAt: [at(15) + i],
+  }));
+  const chests = [
+    { id: "old", opened: true, cards: ["cups-05"], revealed: 1, revealedAt: [at(1)] },
+    ...filler,
+    { id: "new", opened: true, cards: ["cups-05"], revealed: 1, revealedAt: [at(18)] },
+  ];
+  expect(cardActivities(ledger(chests), now).find((e) => e.ref === "cups-05")?.at).toBe(at(1));
+  // Acima do teto explícito de baús não há eventos, em vez de inventar uma primeira data.
+  expect(cardActivities(ledger(Array.from({ length: 5001 }, () => chests[1])), now)).toEqual([]);
+  expect(cardActivities(" ".repeat(5_000_001), now)).toEqual([]);
+});
+it("carta com alguma cópia sem data conhecida não vira evento", () => {
+  const events = cardActivities(
+    ledger([
+      {
+        id: "a",
+        opened: true,
+        cards: ["cups-01", "cups-02"],
+        revealed: 2,
+        revealedAt: [null, at(12)],
+      },
+      { id: "b", opened: true, cards: ["cups-01"], revealed: 1, revealedAt: [at(13)] },
+    ]),
+    now,
+  );
+  expect(events.map((e) => e.ref)).toEqual(["cups-02"]);
+});
+it("revealed fora de 0..tamanho ou baú incoerente não expõe carta nem gera evento", () => {
+  const good = { id: "g", opened: true, cards: ["cups-01"], revealed: 1, revealedAt: [at(10)] };
+  for (const bad of [
+    {
+      id: "n",
+      opened: true,
+      cards: ["wands-01", "wands-02"],
+      revealed: -1,
+      revealedAt: [at(1), at(2)],
+    },
+    { id: "e", opened: true, cards: ["wands-01"], revealed: 2, revealedAt: [at(1), at(2)] },
+    { id: "f", opened: true, cards: ["wands-01"], revealed: 0.5, revealedAt: [at(1)] },
+    {
+      id: "k",
+      opened: true,
+      cards: ["wands-01"],
+      arcana: "major-17",
+      revealed: 1,
+      revealedAt: [at(1)],
+    },
+    { id: "m", opened: true, kind: "arcane", arcana: "major-05", revealed: 1, revealedAt: [at(1)] },
+    {
+      id: "c",
+      opened: true,
+      kind: "arcane",
+      cards: ["wands-01"],
+      revealed: 1,
+      revealedAt: [at(1)],
+    },
+    {
+      id: "l",
+      opened: true,
+      cards: ["wands-01", "wands-02", "wands-03"],
+      revealed: 3,
+      revealedAt: [at(1)],
+    },
+    { id: "q", opened: true, cards: ["inexistente"], revealed: 1, revealedAt: [at(1)] },
+  ])
+    expect(cardActivities(ledger([good, bad]), now)).toEqual([]);
+  expect(cardActivities(ledger([good]), now).map((e) => e.ref)).toEqual(["cups-01"]);
+});
 it("conquistas só geram evento com data comprovada e ID conhecido", () => {
   const events = achievementActivities(
     { "correct-1": true, "correct-10": true, desconhecida: true } as Record<string, true>,

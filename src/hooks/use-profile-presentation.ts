@@ -43,19 +43,19 @@ export function useProfilePresentation(
   );
   const owned = oliverCollection();
   const ownedCards = ARCANA_IDS.filter((id) => owned[id] && isPublicCardId(id));
-  const cards = JSON.stringify(ownedCards);
+  // Só os destaques efetivos saem do aparelho (cabem no limite de 4096 bytes do share).
+  const featured = effectiveFavorites(profile.cardFavorites, new Set(ownedCards), ownedCards);
+  const cardFavorites = JSON.stringify(featured);
+  const cards = cardFavorites;
   const cardDates = JSON.stringify(
     Object.fromEntries(
-      ownedCards.flatMap((id) => {
-        const at = oliverCardDates()[id];
+      featured.flatMap((id) => {
+        const at = oliverCardDates()[id as (typeof ARCANA_IDS)[number]];
         return at !== undefined && at > 0 && at <= 253402300799999
           ? [[id, new Date(at).toISOString()]]
           : [];
       }),
     ),
-  );
-  const cardFavorites = JSON.stringify(
-    effectiveFavorites(profile.cardFavorites, new Set(ownedCards), ownedCards),
   );
   const achievements = JSON.stringify(earned.map((item) => item.id));
   const achievementDates = JSON.stringify(
