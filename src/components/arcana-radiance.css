@@ -1,0 +1,138 @@
+.arcana-radiance {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  --glint-color: #85bd9c;
+  --glint-size: 9px;
+}
+.arcana-radiance > .arcana-paper {
+  position: relative;
+  z-index: 1;
+}
+.arcana-radiance__glints {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.arcana-radiance__glints i {
+  position: absolute;
+  width: var(--glint-size);
+  height: calc(var(--glint-size) * 1.7);
+  background: var(--glint-color);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  opacity: 0;
+  animation: arcana-glint-common 2800ms calc(var(--glint) * 140ms) ease-in-out 2;
+}
+.arcana-radiance[data-rarity="1"] {
+  --glint-color: #85b6ff;
+  --glint-size: 11px;
+}
+.arcana-radiance[data-rarity="1"] i {
+  clip-path: polygon(50% 0, 64% 38%, 100% 50%, 64% 62%, 50% 100%, 36% 62%, 0 50%, 36% 38%);
+  animation-name: arcana-glint-rare;
+}
+.arcana-radiance[data-rarity="2"] {
+  --glint-color: #b99aff;
+  --glint-size: 14px;
+}
+.arcana-radiance[data-rarity="2"] i {
+  clip-path: polygon(
+    50% 0,
+    62% 28%,
+    94% 18%,
+    72% 50%,
+    94% 82%,
+    62% 72%,
+    50% 100%,
+    38% 72%,
+    6% 82%,
+    28% 50%,
+    6% 18%,
+    38% 28%
+  );
+  animation-name: arcana-glint-epic;
+}
+.arcana-radiance[data-rarity="3"] {
+  --glint-color: #facc15;
+  --glint-size: 17px;
+}
+.arcana-radiance[data-rarity="3"] i {
+  clip-path: polygon(
+    50% 0,
+    61% 34%,
+    86% 14%,
+    66% 39%,
+    100% 50%,
+    66% 61%,
+    86% 86%,
+    61% 66%,
+    50% 100%,
+    39% 66%,
+    14% 86%,
+    34% 61%,
+    0 50%,
+    34% 39%,
+    14% 14%,
+    39% 34%
+  );
+  animation-name: arcana-glint-legendary;
+}
+.arcana-radiance[data-rarity="3"] i:nth-child(even) {
+  background: #fff1b7;
+}
+@keyframes arcana-glint-common {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  40%,
+  60% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+}
+@keyframes arcana-glint-rare {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateY(5px) scale(0.4);
+  }
+  40%,
+  60% {
+    opacity: 0.8;
+    transform: translateY(-3px) scale(1);
+  }
+}
+@keyframes arcana-glint-epic {
+  0%,
+  100% {
+    opacity: 0;
+    transform: rotate(-25deg) scale(0.4);
+  }
+  40%,
+  60% {
+    opacity: 0.85;
+    transform: rotate(25deg) scale(1);
+  }
+}
+@keyframes arcana-glint-legendary {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateY(6px) rotate(-20deg) scale(0.4);
+  }
+  40%,
+  60% {
+    opacity: 0.9;
+    transform: translateY(-5px) rotate(30deg) scale(1.2);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arcana-radiance__glints {
+    display: none;
+  }
+}
+:root[data-reduce-motion="true"] .arcana-radiance__glints {
+  display: none;
+}

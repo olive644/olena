@@ -7,10 +7,14 @@ export function LibraryDialog({
   title,
   onClose,
   children,
+  headerContent,
+  className,
 }: {
   title: string;
   onClose: () => void;
   children: ReactNode;
+  headerContent?: ReactNode;
+  className?: string;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -25,7 +29,7 @@ export function LibraryDialog({
   return (
     <dialog
       ref={ref}
-      className="library-dialog"
+      className={`library-dialog${className ? " " + className : ""}`}
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -42,6 +46,7 @@ export function LibraryDialog({
         >
           <PaperCloseIcon />
         </button>
+        {headerContent && <div className="library-dialog__header-content">{headerContent}</div>}
       </header>
       {children}
     </dialog>

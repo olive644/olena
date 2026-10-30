@@ -38,3 +38,12 @@ it("mais de três seguidores viram um grupo expansível, sem misturar curtidas",
   expect(groupedNotices(notices)).toHaveLength(1);
   expect(groupedNotices(notices)[0]).toHaveLength(4);
 });
+it("mantém cada prêmio diferente no mesmo dia, sem filtrar o valor unitário", () => {
+  const base = { person, kind: "card" as const, value: 1, at: Date.now(), liked: false, likes: [] };
+  const rows = [
+    { ...base, id: "card-a", ref: "major-17" },
+    { ...base, id: "card-b", ref: "wands-06" },
+    { ...base, id: "badge-a", kind: "achievement" as const, ref: "rounds-1" },
+  ];
+  expect(groupedActivities([...rows, rows[0]!])).toHaveLength(3);
+});

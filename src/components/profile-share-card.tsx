@@ -13,6 +13,10 @@ import { ProfileLevelBadge } from "./profile-study-widgets";
 import { useProfileStudy } from "../hooks/use-profile-study";
 import { AchievementArt } from "./math-achievements";
 import { ALL_ACHIEVEMENTS } from "../domain/math-achievements";
+import { activeArcanaId, useArcanaCatalog } from "../data/arcana-catalog";
+import { effectiveCardFavorites } from "../domain/arcana-profile";
+import { OliverCard } from "./oliver-card";
+import "./profile-cards.css";
 
 // Etiquetas e selo de nível desenhados com as mesmas formas e cores do perfil (profile-labels.css
 // e profile-study-widgets.css). Fundo, texto e sombra interna de cada etiqueta, no papel creme.
@@ -33,12 +37,18 @@ export function ProfileShareCard({
   useLanguage();
 
   const { level } = useProfileStudy();
+  const { cards: catalog, error: catalogError, retry } = useArcanaCatalog();
   const labels = profileLabelNames(person.username, person.username === "oliver644");
   const highlights = featured
     .flatMap((id) => ALL_ACHIEVEMENTS.find((item) => item.id === id) ?? [])
     .slice(0, 3);
 
   const [status, setStatus] = useState("");
+  const cards = effectiveCardFavorites(
+    person.cardFavorites,
+    new Set(person.cards ?? []),
+    person.cards ?? [],
+  ).flatMap((id) => activeArcanaId(id) ?? []);
   const [saving, setSaving] = useState(false);
   const qrElement = useRef<HTMLDivElement>(null);
   const url = new URL(
@@ -65,6 +75,7 @@ export function ProfileShareCard({
     }
   }
   async function save() {
+    if (saving || (cards.length > 0 && catalog.length !== 78)) return;
     setSaving(true);
     setStatus("");
     try {
@@ -77,11 +88,13 @@ export function ProfileShareCard({
       await cover.decode();
       const canvas = document.createElement("canvas");
       canvas.width = 720;
-      canvas.height = 960;
+      canvas.height = cards.length ? 1160 : 960;
       const context = canvas.getContext("2d");
       if (!context) throw new Error();
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = "high";
       context.fillStyle = "#FFF9EF";
-      context.fillRect(0, 0, 720, 960);
+      context.fillRect(0, 0, 720, canvas.height);
       const coverScale = Math.max(720 / cover.naturalWidth, 220 / cover.naturalHeight);
       const coverWidth = 720 / coverScale,
         coverHeight = 220 / coverScale;
@@ -259,8 +272,10 @@ export function ProfileShareCard({
         const { inlineAchievementArt } = await import("../data/achievement-png");
         for (const [index, art] of arts.entries()) {
           const clone = art.cloneNode(true) as SVGSVGElement;
+          for (const image of clone.querySelectorAll("image"))
+            image.setAttribute("href", (image.getAttribute("href") ?? "").replace("/thumb/", "/"));
           await inlineAchievementArt(clone, (path) =>
-            /^\/achievement-badges\/(math|general)\/thumb\/[a-z0-9-]+\.webp$/.test(path),
+            /^\/achievement-badges\/(math|general)\/[a-z0-9-]+\.webp$/.test(path),
           );
           clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
           const badge = new Image();
@@ -269,9 +284,26 @@ export function ProfileShareCard({
           context.drawImage(badge, 40 + index * 98, 816, 88, 88);
         }
       }
+      if (cards.length) {
+        const sources = qrElement.current
+          ?.closest(".social-share-card")
+          ?.querySelectorAll<HTMLElement>(".social-share-cards .arcana-paper");
+        if (sources?.length !== cards.length) throw new Error("Cards unavailable");
+        const { arcanaThumbnailPng } = await import("../data/arcana-png");
+        for (const [index, source] of [...sources].entries()) {
+          const image = await arcanaThumbnailPng(source);
+          const x = 40 + index * 108,
+            y = 930,
+            width = 90,
+            height = (width * 598) / 348;
+          context.fillStyle = "#6d28d9";
+          context.fillRect(x + 1, y + 4, width, height);
+          context.drawImage(image, x, y, width, height);
+        }
+      }
       context.fillStyle = "#51465D";
       context.font = "700 18px Manrope, sans-serif";
-      context.fillText(uiText(904), 40, 926);
+      context.fillText(uiText(904), 40, canvas.height - 34);
       const blob = await new Promise<Blob>((resolve, reject) =>
         canvas.toBlob((value) => (value ? resolve(value) : reject(new Error())), "image/png"),
       );
@@ -315,6 +347,15 @@ export function ProfileShareCard({
             ))}
           </div>
         )}
+        {cards.length > 0 && (
+          <div className="social-share-cards" aria-label={uiText("Cartas destacadas")}>
+            {cards.map((id) => (
+              <span key={id} className="profile-cards__miniature">
+                <OliverCard id={id} thumbnail />
+              </span>
+            ))}
+          </div>
+        )}
         <div ref={qrElement}>
           <RoomQrCode value={url} size={180} bare label={uiText(907)} />
         </div>
@@ -346,12 +387,20 @@ export function ProfileShareCard({
           className="secondary-button icon-only"
           aria-label={saving ? uiText(1911) : uiText(909)}
           title={saving ? uiText(1911) : uiText(909)}
-          disabled={saving}
+          disabled={saving || (cards.length > 0 && catalog.length !== 78)}
           onClick={() => void save()}
         >
           <PaperEditorIcon name="download" />
         </button>
       </div>
+      {cards.length > 0 && catalogError && (
+        <p role="alert">
+          {uiText("Não foi possível carregar o baralho.")}{" "}
+          <button className="secondary-button" onClick={retry}>
+            {uiText("Tentar novamente")}
+          </button>
+        </p>
+      )}
       {status && <p role="status">{uiText(status)}</p>}
     </section>
   );

@@ -1669,3 +1669,13 @@ Arcano substitui Cartas do Oliver no runtime. public/arcana/catalog.json fornece
 ## 29/10/2026, contagens e traduções Arcano
 
 A inspeção lê apenas public/arcana/tarot-ptbr.json, tradução completa das 78 entradas de Waite. Não depende de tarotapi.dev para exibir significados. Os manifests público e de estudo usam variantes count-v3 para Cinco, Seis, Oito, Nove e Dez de Paus, mantendo IDs e recompensas. A revisão local está em artifacts/arcana-review/README.md: app na porta 4186, página de provas na 4187, screenshots reais identificados e ampliação. Aceite da amostra não autoriza merge; a PR e seu SHA precisam passar pelos gates e pela autorização explícita da proprietária.
+
+### Preview local de perfil e Arcano, 2026-10-29
+
+Worktree `.worktrees/profile-arcana-social`, branch `feat/profile-arcana-social`. Servidor de desenvolvimento na porta 4190. Revisão navegável: `/artifacts/profile-rewards-review/`, com componentes reais e fixtures identificadas. O app real continua em `/perfil`. `capture.mjs` registra capturas de PC/mobile claro/escuro e hash da fonte; `interactions.mjs` confere arraste; `radiance-check.mjs` confere revelação simulada e movimento reduzido. Executar esses scripts com Node dentro da worktree. Não usar captura do desktop ou controle nativo do mouse.
+
+Destaques públicos e atividades seguem `PROFILE_REWARDS_CONTRACT.md`. Catálogo localizado é reutilizado por revisão do idioma; miniaturas da galeria são lazy, imagens completas continuam para inspeção. Painel de interpretação e categorias usam `ArcanaIcon`; brilhos de inspeção/revelação compartilham `ArcanaRadiance`, sem alteração nas artes, classificações ou chances. Fluxo permanece em amostra aguardando aprovação, com PNG e FX/áudio de conquistas pendentes. Não foi criada nova autorização de merge.
+
+### Compartilhamento e inspeção de recompensas
+
+ProfileShareCard inclui somente cartas públicas destacadas recebidas, até três. Export PNG usa arcanaThumbnailPng sob demanda, arte completa da mesma origem, sem serviços externos. Desabilita Salvar até o catálogo estar pronto. Conquistas inspecionadas usam PaperRadiance e sons do motor existente, mantendo arte estática e sem brilho em bloqueadas. UI social de prêmio é carregada sob demanda no feed. Rotina CI perfil e Arcano 5min acompanha PR547 e a PR dependente, uma consulta por disparo, sem autorização de merge.

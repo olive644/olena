@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { uiText } from "../i18n/runtime";
+import { uiText, uiTextRevision, useLanguage } from "../i18n/runtime";
 import { isArcanaId, type ArcanaId } from "./arcana-ids";
 export { activeArcanaId, type ArcanaId } from "./arcana-ids";
 export type ArcanaCard = {
@@ -15,6 +15,20 @@ export type ArcanaCard = {
 let stored: ArcanaCard[] = [];
 const listeners = new Set<() => void>();
 let pending: Promise<ArcanaCard[]> | undefined;
+let localized: { source: ArcanaCard[]; revision: number; cards: ArcanaCard[] } | undefined;
+function localizedCards(source: ArcanaCard[], revision: number) {
+  if (localized?.source !== source || localized.revision !== revision)
+    localized = {
+      source,
+      revision,
+      cards: source.map((card) => ({
+        ...card,
+        title: uiText(card.title),
+        meaning: uiText(card.meaning),
+      })),
+    };
+  return localized.cards;
+}
 export function loadArcanaCatalog() {
   return (pending ??= fetch("/arcana/catalog.json")
     .then(async (response) => {
@@ -47,6 +61,7 @@ export function loadArcanaCatalog() {
     }));
 }
 export function useArcanaCatalog() {
+  useLanguage();
   const [rows, setRows] = useState(stored);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -70,7 +85,7 @@ export function useArcanaCatalog() {
     };
   }, [attempt]);
   return {
-    cards: rows.map((c) => ({ ...c, title: uiText(c.title), meaning: uiText(c.meaning) })),
+    cards: localizedCards(rows, uiTextRevision()),
     error,
     retry: () => {
       setError(false);

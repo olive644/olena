@@ -9,8 +9,10 @@ import {
   writeSyncedStorage,
 } from "../data/synced-storage";
 import { createMathSound } from "../data/math-sound";
-import { placeAchievementFavorite } from "../domain/achievement-presentation";
-import { OliverCard } from "./oliver-card";
+import { effectiveCardFavorites } from "../domain/arcana-profile";
+import { ARCANA_IDS } from "../data/arcana-ids";
+import { useCardHighlightDrag } from "../hooks/use-card-highlight-drag";
+import { OliverCard, ArcanaRarity } from "./oliver-card";
 import { OliverCardInspection } from "./oliver-card-inspection";
 import { LibraryDialog } from "./library-dialog";
 import { PaperDigits } from "./paper-digits";
@@ -18,6 +20,7 @@ import { PaperArrow } from "./paper-arrow";
 import { PaperCloseIcon } from "./paper-close-icon";
 import { RoomPointsIcon } from "./room-paper-icons";
 import { HelenaLoading } from "./helena-loading";
+import { ArcanaIcon } from "./arcana-icon";
 import "./oliver-card.css";
 import "./profile-cards.css";
 const groups = [
@@ -44,13 +47,9 @@ export function ProfileCards({
   const [selected, setSelected] = useState<ArcanaId>();
   const [group, setGroup] = useState("all");
   const [error, setError] = useState("");
-  const [dragging, setDragging] = useState<ArcanaId>();
-  const [target, setTarget] = useState<number>();
   const sound = useRef<ReturnType<typeof createMathSound> | null>(null);
   const origin = useRef<HTMLButtonElement | null>(null);
   const content = useRef<HTMLDivElement>(null);
-  const moved = useRef(false);
-  const dragStart = useRef({ x: 0, y: 0 });
   useEffect(() => {
     const update = () => refresh((n) => n + 1);
     window.addEventListener(SYNCED_STORAGE_EVENT, update);
@@ -59,6 +58,7 @@ export function ProfileCards({
       window.removeEventListener(SYNCED_STORAGE_EVENT, update);
       window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, update);
       sound.current?.dispose();
+      sound.current = null;
     };
   }, []);
   useEffect(() => {
@@ -73,15 +73,10 @@ export function ProfileCards({
   const owned = oliverCollection(),
     dates = oliverCardDates(),
     earned = new Set(Object.keys(owned));
-  const favorites = (
-    profile.cardFavorites ??
-    catalog
-      .filter((c) => owned[c.id])
-      .map((c) => c.id)
-      .slice(0, 3)
-  )
+  const favorites = effectiveCardFavorites(profile.cardFavorites, earned, ARCANA_IDS)
     .map(activeArcanaId)
-    .filter((id): id is ArcanaId => !!id && !!owned[id]);
+    .filter((id): id is ArcanaId => !!id);
+  const drag = useCardHighlightDrag(favorites, earned, saveFavorites);
   const current = catalog.find((c) => c.id === selected);
   function cue(place = false) {
     sound.current ??= createMathSound();
@@ -131,17 +126,19 @@ export function ProfileCards({
         return (
           <div
             key={index}
-            className={`arcana-feature-slot${target === index ? " is-target" : ""}`}
+            className={`arcana-feature-slot${drag.target === index ? " is-target" : ""}`}
             data-arcana-slot={index}
           >
             <button
               className="profile-cards__tile"
+              {...(id ? drag.events(id) : {})}
               aria-label={
                 card
                   ? uiText("Inspecionar carta {0}", [card.title])
                   : uiText("Escolher carta favorita")
               }
               onClick={(e) => {
+                if (drag.suppressClick()) return;
                 if (id) inspect(id, e.currentTarget);
                 else {
                   setSelected(undefined);
@@ -209,7 +206,27 @@ export function ProfileCards({
         </>
       )}
       {open && (
-        <LibraryDialog title={current?.title ?? uiText("Arcano")} onClose={close}>
+        <LibraryDialog
+          title={current?.title ?? uiText("Arcano")}
+          onClose={close}
+          className="arcana-collection"
+          headerContent={
+            !current && (
+              <section className="arcana-highlights" aria-label={uiText("Destaques do perfil")}>
+                <h3>{uiText("Destaques do perfil")}</h3>
+                {highlights}
+                {drag.ghost && favorites.includes(drag.ghost.id) && (
+                  <div
+                    data-arcana-remove
+                    className={`arcana-remove-target${drag.target === "remove" ? " is-target" : ""}`}
+                  >
+                    {uiText("Solte aqui para remover dos destaques")}
+                  </div>
+                )}
+              </section>
+            )
+          }
+        >
           <div className="profile-cards__dialog" ref={content}>
             {current && selected ? (
               <>
@@ -264,10 +281,6 @@ export function ProfileCards({
               </>
             ) : (
               <>
-                <section className="arcana-highlights" aria-label={uiText("Destaques do perfil")}>
-                  <h3>{uiText("Destaques do perfil")}</h3>
-                  {highlights}
-                </section>
                 {catalogError && (
                   <p role="alert">
                     {uiText("Não foi possível carregar o baralho.")}
@@ -282,13 +295,20 @@ export function ProfileCards({
                     <button
                       className="secondary-button"
                       key={id}
+                      aria-label={uiText(label)}
+                      title={uiText(label)}
                       aria-pressed={group === id}
                       onClick={() => setGroup(id)}
                     >
-                      {uiText(label)}
+                      <ArcanaIcon name={id} />
                     </button>
                   ))}
                 </nav>
+                <p className="arcana-drag-help">
+                  {uiText(
+                    "Arraste as cartas para os destaques. No celular, arraste pela estrela e deslize sobre a carta para rolar.",
+                  )}
+                </p>
                 <div className="profile-cards__gallery">
                   {catalog
                     .filter(
@@ -300,16 +320,20 @@ export function ProfileCards({
                     .map((card) => (
                       <div
                         key={card.id}
-                        className={`profile-cards__gallery-item${owned[card.id] ? " is-owned" : " is-unowned"}${dragging === card.id ? " is-dragging" : ""}`}
+                        className={`profile-cards__gallery-item${owned[card.id] ? " is-owned" : " is-unowned"}${drag.ghost?.id === card.id ? " is-dragging" : ""}`}
                       >
                         <button
                           className="profile-cards__tile"
                           aria-label={uiText("Inspecionar carta {0}", [card.title])}
-                          onClick={(e) => inspect(card.id, e.currentTarget)}
+                          onClick={(e) => {
+                            if (!drag.suppressClick()) inspect(card.id, e.currentTarget);
+                          }}
+                          {...drag.events(card.id)}
                         >
                           {miniature(card.id)}
                           <strong>{card.title}</strong>
                         </button>
+                        <ArcanaRarity id={card.id} />
                         {owned[card.id] ? (
                           <button
                             className="profile-cards__bare arcana-favorite-handle"
@@ -320,55 +344,9 @@ export function ProfileCards({
                             )}
                             aria-pressed={favorites.includes(card.id)}
                             onClick={() => {
-                              if (moved.current) {
-                                moved.current = false;
-                                return;
-                              }
-                              favorite(card.id);
+                              if (!drag.suppressClick()) favorite(card.id);
                             }}
-                            onPointerDown={(e) => {
-                              if (e.button !== 0) return;
-                              dragStart.current = { x: e.clientX, y: e.clientY };
-                              moved.current = false;
-                              setDragging(card.id);
-                              e.currentTarget.setPointerCapture(e.pointerId);
-                            }}
-                            onPointerMove={(e) => {
-                              if (!dragging) return;
-                              if (
-                                Math.hypot(
-                                  e.clientX - dragStart.current.x,
-                                  e.clientY - dragStart.current.y,
-                                ) > 7
-                              )
-                                moved.current = true;
-                              const node = document
-                                .elementFromPoint(e.clientX, e.clientY)
-                                ?.closest<HTMLElement>("[data-arcana-slot]");
-                              if (node && content.current?.contains(node)) {
-                                moved.current = true;
-                                setTarget(Number(node.dataset["arcanaSlot"]));
-                              } else setTarget(undefined);
-                            }}
-                            onPointerUp={(event) => {
-                              const node = document
-                                .elementFromPoint(event.clientX, event.clientY)
-                                ?.closest<HTMLElement>("[data-arcana-slot]");
-                              const slot =
-                                node && content.current?.contains(node)
-                                  ? Number(node.dataset["arcanaSlot"])
-                                  : undefined;
-                              if (dragging && slot !== undefined)
-                                saveFavorites(
-                                  placeAchievementFavorite(favorites, dragging, slot, earned),
-                                );
-                              setDragging(undefined);
-                              setTarget(undefined);
-                            }}
-                            onPointerCancel={() => {
-                              setDragging(undefined);
-                              setTarget(undefined);
-                            }}
+                            {...drag.events(card.id)}
                           >
                             <RoomPointsIcon />
                           </button>
@@ -379,6 +357,15 @@ export function ProfileCards({
                     ))}
                 </div>
               </>
+            )}
+            {drag.ghost && (
+              <div
+                className="arcana-drag-ghost"
+                aria-hidden="true"
+                style={{ left: drag.ghost.x, top: drag.ghost.y }}
+              >
+                {miniature(drag.ghost.id)}
+              </div>
             )}
             {error && <p role="alert">{error}</p>}
           </div>
