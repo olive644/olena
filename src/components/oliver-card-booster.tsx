@@ -233,13 +233,6 @@ export function OliverCardBooster({
             >
               <PaperDigits value={String(cards.length - index - Number(flipped))} />
             </span>
-            {flipped && (
-              <div className="oliver-reveal-sparks" aria-hidden="true">
-                {Array.from({ length: 12 }, (_, i) => (
-                  <i key={i} style={{ rotate: `${i * 30}deg` }} />
-                ))}
-              </div>
-            )}
           </div>
           <div className="oliver-booster-actions">
             {saveError && <p role="alert">{uiText(saveError)}</p>}

@@ -39,9 +39,18 @@ for (const theme of ["light", "dark"]) {
     const covers = page.getByRole("group", { name: "Temas de capa" });
     const ocean = covers.getByRole("button", { name: "Oceano", exact: true });
     const art = ocean.locator("img");
-    const frame = await ocean.boundingBox(),
-      image = await art.boundingBox();
-    expect(Math.abs(frame!.width - image!.width)).toBeLessThan(5);
+    // Mede as duas caixas no mesmo frame e aguarda a geometria estabilizar após abrir o diálogo.
+    await expect
+      .poll(() =>
+        ocean.evaluate((button) =>
+          Math.abs(
+            button.getBoundingClientRect().width -
+              button.querySelector("img")!.getBoundingClientRect().width,
+          ),
+        ),
+      )
+      .toBeLessThan(5);
+    await expect(art).toBeVisible();
     await expect(ocean.locator("span")).toHaveCSS("position", "absolute");
     await page
       .getByRole("dialog", { name: "Capa do perfil" })

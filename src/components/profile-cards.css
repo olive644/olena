@@ -149,10 +149,17 @@
   min-width: 0;
 }
 .library-dialog:has(.profile-cards__dialog) > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   position: sticky;
   top: -24px;
   z-index: 4;
   background: var(--surface);
+  padding: 8px 0;
+  gap: 8px 16px;
+}
+.arcana-collection .library-dialog__header-content {
+  grid-column: 1 / -1;
 }
 .arcana-highlights {
   padding: 16px;
@@ -189,8 +196,8 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   background: none;
   border: 0;
@@ -203,6 +210,35 @@
   gap: 8px;
   flex-wrap: wrap;
   margin: 18px 0 26px;
+}
+.arcana-icon {
+  display: block;
+  width: 32px;
+  height: 34px;
+  flex: 0 0 auto;
+}
+:root body .arcana-category-tabs button {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 8px;
+  background: var(--soft);
+  border: 0;
+  border-radius: 3px 11px 3px 8px;
+  box-shadow: 0 3px var(--line);
+}
+:root body .arcana-category-tabs button[aria-pressed="true"] {
+  background: #facc15;
+  box-shadow: 0 4px #b28b0b;
+}
+.arcana-category-tabs button:hover .arcana-icon {
+  transform: translateY(-2px);
+}
+.arcana-drag-help {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.5;
 }
 .arcana-category-tabs button {
   font-size: 0.8rem;
@@ -223,6 +259,8 @@
   flex-direction: column;
   align-items: center;
   min-width: 0;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 340px;
   animation: arcana-enter 300ms ease-out both;
 }
 .profile-cards__gallery-item.is-unowned .profile-cards__miniature {
@@ -242,10 +280,66 @@
   touch-action: none;
   cursor: grab;
 }
+.arcana-collection .profile-cards__tile {
+  touch-action: pan-y;
+  cursor: grab;
+}
+.arcana-collection .arcana-feature-slot .profile-cards__tile {
+  touch-action: none;
+}
+.arcana-drag-ghost {
+  position: fixed;
+  z-index: 12;
+  width: 76px;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(-4deg);
+  filter: drop-shadow(0 4px 5px #17132066);
+}
+.arcana-remove-target {
+  text-align: center;
+  padding: 12px;
+  margin-top: 8px;
+  min-height: 44px;
+  box-sizing: border-box;
+  background: var(--surface);
+  border-bottom: 3px solid var(--line);
+  font-size: 0.8rem;
+}
+.arcana-remove-target.is-target {
+  border-bottom-color: #facc15;
+  background: #facc1533;
+}
 .profile-cards__actions {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
+}
+.profile-cards__tools,
+.arcana-share-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.arcana-share-actions {
+  justify-content: center;
+  margin-top: 16px;
+}
+.arcana-share-dialog {
+  width: min(600px, calc(100vw - 24px));
+}
+.arcana-share-preview {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(100dvh - 230px);
+  object-fit: contain;
+}
+.arcana-share-dialog .paper-editor-icon {
+  color: var(--text);
+}
+.arcana-share-dialog .profile-cards__bare:focus-visible {
+  outline: none;
+  box-shadow: 0 3px #facc15;
 }
 .profile-cards__inspection {
   animation: arcana-enter 260ms ease-out both;
@@ -273,12 +367,100 @@
   aspect-ratio: 348/598;
 }
 .arcana-interpretation {
-  padding: 20px;
+  padding: 24px;
   color: var(--text);
   background: var(--soft);
-  border-bottom: 4px solid var(--line);
-  border-radius: 3px 16px 3px 10px;
+  border-bottom: 5px solid #6d28d9;
+  border-radius: 0;
+  clip-path: polygon(
+    16px 0,
+    100% 0,
+    100% calc(100% - 16px),
+    calc(100% - 16px) 100%,
+    0 100%,
+    0 16px
+  );
   overflow-wrap: anywhere;
+}
+.arcana-interpretation__heading {
+  position: relative;
+  border-bottom: 3px solid var(--line);
+  padding: 0 0 18px;
+}
+.arcana-interpretation__heading::after {
+  content: "";
+  position: absolute;
+  right: -24px;
+  top: -24px;
+  width: 26px;
+  height: 26px;
+  background: #6d28d9;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+.arcana-eyebrow,
+.arcana-interpretation__characters,
+.arcana-interpretation__source {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.arcana-interpretation__characters .arcana-icon,
+.arcana-eyebrow .arcana-icon,
+.arcana-interpretation__source .arcana-icon {
+  width: 26px;
+  height: 28px;
+}
+.arcana-interpretation__topic {
+  background: var(--surface);
+  padding: 12px 16px;
+  margin-top: 14px;
+  border-bottom: 3px solid var(--line);
+  border-radius: 2px 12px 2px 8px;
+}
+.arcana-interpretation__topic h4 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+.arcana-interpretation__topic p:last-child {
+  margin-bottom: 2px;
+}
+.arcana-interpretation summary {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  min-height: 44px;
+  padding: 8px 32px 8px 0;
+  font-weight: 700;
+  list-style: none;
+}
+.arcana-interpretation summary::-webkit-details-marker {
+  display: none;
+}
+.arcana-interpretation summary::after {
+  content: "";
+  position: absolute;
+  right: 5px;
+  width: 12px;
+  height: 9px;
+  background: #6d28d9;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.arcana-interpretation details[open] summary::after {
+  transform: rotate(180deg);
+}
+.arcana-interpretation summary:focus-visible {
+  outline: none;
+  box-shadow: 0 3px #facc15;
+}
+.arcana-interpretation__source {
+  align-items: flex-start;
+  line-height: 1.6;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
 }
 .arcana-interpretation h3 {
   font-size: 1.4rem;
@@ -358,6 +540,9 @@
   .arcana-highlights {
     padding: 12px 6px;
   }
+  .library-dialog:has(.profile-cards__dialog) > header {
+    top: -16px;
+  }
   .arcana-inspection .oliver-inspection-stage {
     width: min(270px, calc(100vw - 80px));
   }
@@ -383,9 +568,7 @@
   font-size: 4cqw;
 }
 .arcana-highlights {
-  position: sticky;
-  top: 58px;
-  z-index: 3;
+  margin: 0;
 }
 .arcana-highlights .profile-cards__miniature,
 .arcana-highlights .profile-cards__empty {
@@ -397,4 +580,73 @@
 .arcana-feature-remove .agenda-close-icon {
   width: 18px;
   height: 18px;
+}
+.arcana-rarity {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 3px 8px;
+  color: #fff9ef;
+  background: var(--arcana-rarity-shade);
+  border-radius: 2px 7px 2px 5px;
+  font-size: 0.72rem;
+}
+.arcana-rarity > span {
+  color: var(--arcana-rarity-color);
+}
+.arcana-rarity > .arcana-icon {
+  width: 16px;
+  height: 18px;
+}
+.public-profile-cards .profile-cards__featured {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+.public-profile-cards .profile-cards__tile {
+  max-width: 130px;
+}
+.public-profile-cards .profile-cards__miniature {
+  max-width: 100px;
+}
+.reward-date > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.reward-date .paper-digits {
+  font-size: 0.8rem;
+}
+.social-reward {
+  width: min(150px, 100%);
+  margin: 12px 0;
+}
+.social-reward .profile-cards__miniature {
+  max-width: 88px;
+}
+.social-reward .math-achievement-art {
+  width: 96px;
+  height: 96px;
+}
+.social-share-cards {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 12px auto;
+}
+.social-share-cards .profile-cards__miniature {
+  width: 56px;
+}
+.social-share-card .social-share-cards svg {
+  margin: 0;
+}
+@media (max-height: 560px) {
+  .arcana-highlights :is(.profile-cards__miniature, .profile-cards__empty) {
+    max-width: 42px;
+  }
+  .arcana-highlights {
+    padding: 6px;
+  }
 }

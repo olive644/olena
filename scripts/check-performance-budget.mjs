@@ -333,10 +333,13 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // 1601,5 KiB da main (1606,5 KiB medidos). É código do caderno 2D, que é o padrão e roda em toda
 // abertura de caderno, então não cabe no orçamento opcional do 3D. Sem dependência nova, entrada
 // inicial intacta. Teto subido de 1602 para 1608 KiB: PRECISA da aprovação da dona do projeto.
-const MAX_TOTAL_JS_BYTES = 1608 * 1024;
+// Perfil e Arcano: total medido 1624,7 KiB, entrada inicial preservada em 220,6 KiB.
+// A proprietária autorizou explicitamente aumentar o teto em vez de reduzir a implementação.
+// Novo teto total de 1630 KiB, com pequena margem para variação entre Windows e Linux.
+const MAX_TOTAL_JS_BYTES = 1630 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
-const HARD_CEILING_TOTAL_JS_BYTES = 1608 * 1024;
+const HARD_CEILING_TOTAL_JS_BYTES = 1630 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 // Cena do caderno 3D (three.js e o código da cena): medida em 528.8 KiB, mais a tela e os sons. É baixada somente quando
 // a pessoa abre um caderno com o recurso ligado e vale o mesmo precedente do leitor PDF: orçamento

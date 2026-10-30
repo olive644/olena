@@ -37,6 +37,9 @@ export function installUiCatalog(locale: UiLanguage, messages: readonly string[]
 export function uiLocale(): UiLanguage {
   return language;
 }
+export function uiTextRevision() {
+  return revision;
+}
 export function uiWeekdays(mondayFirst = false): string[] {
   const formatter = new Intl.DateTimeFormat(language, { weekday: "narrow", timeZone: "UTC" });
   return Array.from({ length: 7 }, (_, index) =>

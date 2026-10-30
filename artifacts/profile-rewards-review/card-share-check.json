@@ -1,0 +1,72 @@
+{
+  "sha": "69e69b48e03584e19f95c78cfafb9a02b2b11f98",
+  "workingTree": true,
+  "sourceSha256": "e40a28d331d6dd62cccb3c9b46bef7c6346fb2a07566df85507913d24c453b1c",
+  "capturedAt": "2026-10-30T02:47:50.812Z",
+  "evidence": [
+    {
+      "name": "card-share-desktop-light",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "card": "major-17",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 377347,
+      "adjacentToStar": true,
+      "focusRestored": true,
+      "exportedFrontFromRotatedInspection": true,
+      "source": "Real local PNG export with fixture collection, no delivery or real reward"
+    },
+    {
+      "name": "card-share-desktop-dark",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "card": "major-17",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 377347,
+      "adjacentToStar": true,
+      "focusRestored": true,
+      "exportedFrontFromRotatedInspection": true,
+      "source": "Real local PNG export with fixture collection, no delivery or real reward"
+    },
+    {
+      "name": "card-share-mobile-light",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "card": "major-17",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 377347,
+      "adjacentToStar": true,
+      "focusRestored": true,
+      "exportedFrontFromRotatedInspection": true,
+      "source": "Real local PNG export with fixture collection, no delivery or real reward"
+    },
+    {
+      "name": "card-share-mobile-dark",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "card": "major-17",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 377347,
+      "adjacentToStar": true,
+      "focusRestored": true,
+      "exportedFrontFromRotatedInspection": true,
+      "source": "Real local PNG export with fixture collection, no delivery or real reward"
+    }
+  ]
+}
