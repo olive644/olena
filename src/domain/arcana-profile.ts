@@ -1,4 +1,4 @@
-import { ARCANA_IDS } from "../data/arcana-ids.js";
+import { ARCANA_IDS, activeArcanaId } from "../data/arcana-ids.js";
 
 // Metadados públicos do baralho: somente IDs do catálogo, datas ISO e até três favoritas.
 const KNOWN = new Set<string>(ARCANA_IDS);
@@ -39,4 +39,15 @@ export function effectiveFavorites(
   return (stored ?? suggestion.filter((id) => owned.has(id)))
     .filter((id, index, all) => owned.has(id) && all.indexOf(id) === index)
     .slice(0, 3);
+}
+export function effectiveCardFavorites(
+  stored: readonly string[] | undefined,
+  owned: ReadonlySet<string>,
+  suggestion: readonly string[],
+) {
+  return effectiveFavorites(
+    stored?.flatMap((id) => activeArcanaId(id) ?? []),
+    owned,
+    suggestion,
+  );
 }
