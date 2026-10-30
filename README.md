@@ -2,20 +2,26 @@
 
 Central de estudos, foco e rotina da marca Oli.
 
-O OlenaStudy reúne agenda, tarefas, hábitos, temporizador de foco, cadernos (com digitalização,
-escrita à mão e reconhecimento local opcional de texto), materiais, flashcards, quizzes, bingo e
-planejamento de aulas em um único espaço. O workspace fica no dispositivo por padrão. Com login
+O OlenaStudy reúne agenda, tarefas, temporizador de foco, cadernos (com digitalização, escrita à
+mão e reconhecimento local opcional de texto), biblioteca, flashcards, quizzes, bingo, cartas do
+Arcano, conquistas, amigos e planejamento de aulas em um único espaço. O workspace fica no dispositivo por padrão. Com login
 opcional pelo Google, o progresso e as preferências sincronizam entre dispositivos via Firebase;
 quem não quer logar pode entrar como convidado.
 
 ## O que existe hoje
 
-- **Espaço do aluno, Agenda, Foco e Hábitos:** o início da experiência e a rotina de estudos.
+- **Espaço do aluno, Agenda e Foco:** o início da experiência e a rotina de estudos.
 - **Cadernos e Biblioteca:** anotações, digitalização local, estúdio de escrita à mão, materiais e
-  compartilhamento de cadernos por link.
+  compartilhamento de cadernos por link. O caderno 2D é o padrão, com divisórias e marcadores que
+  acompanham a folha, folheio realista e contracapa. O caderno 3D é opcional (Perfil, Aparência e
+  acessibilidade).
 - **Praticar:** ilhas temáticas de papel. A trilha de Idiomas e o minigame de Matemática, que
-  adapta os assuntos ao desempenho, estão disponíveis. Os baús de recompensa dão cartas do Oliver,
-  e esse progresso sincroniza com a conta.
+  adapta os assuntos ao desempenho, estão disponíveis. Uma partida de Matemática com 100 pontos ou
+  mais pode render uma Poeira Cósmica, que entrega cartas do Arcano (o progresso sincroniza com a
+  conta).
+- **Arcano e conquistas:** baralho de 78 cartas (22 maiores e 56 menores, em quatro naipes), com
+  significados, inspeção em 3D e compartilhamento. Até três cartas e três conquistas ficam em
+  destaque no Perfil, ao lado de amigos e feed de atividades.
 - **Modo Sala:** o professor cria uma sala com código e os alunos entram pelo celular. Há a escuta
   coletiva e o bingo de números com globo, cartela e pódio. O anfitrião pode remover participantes
   e fechar a entrada. O Firebase Realtime Database guarda o estado temporário da sala, com App
@@ -41,7 +47,9 @@ distribuição ou uso comercial é permitido sem autorização prévia e por esc
 
 ## Desenvolvimento
 
-Requer Node.js 24 ou superior (em versões anteriores alguns testes de escuta falham).
+Requer Node.js 24 ou superior (em versões anteriores alguns testes de escuta falham). A visão
+geral completa do produto, da arquitetura e da operação está em
+[`docs/DOCUMENTACAO.md`](docs/DOCUMENTACAO.md).
 
 ```bash
 npm ci
@@ -88,8 +96,9 @@ separados e em paralelo.
 npm run verify
 ```
 
-O contexto do produto e as decisões técnicas ficam em
-[`docs/SECOND_BRAIN.md`](docs/SECOND_BRAIN.md).
+A documentação completa fica em [`docs/DOCUMENTACAO.md`](docs/DOCUMENTACAO.md). O contexto do
+produto e as decisões técnicas ficam em [`docs/SECOND_BRAIN.md`](docs/SECOND_BRAIN.md), e o histórico
+de estados em [`docs/CURRENT_STATE_AUDIT.md`](docs/CURRENT_STATE_AUDIT.md).
 
 O [mapa mental do produto](docs/PRODUCT_MIND_MAP.md) conecta todas as áreas planejadas. O
 [roadmap de implementação](docs/IMPLEMENTATION_ROADMAP.md) separa as entregas em fases e registra

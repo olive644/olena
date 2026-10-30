@@ -1,5 +1,7 @@
 # Arquitetura atual
 
+Visão geral do produto e dos demais assuntos em [`DOCUMENTACAO.md`](DOCUMENTACAO.md).
+
 ```text
 Views React
   -> dispatch de ações tipadas
@@ -45,11 +47,11 @@ O Perfil expõe carregando, sincronizando, sincronizado ou aguardando conexão, 
 última confirmação. O logout explícito encerra a sessão persistida e remove deste dispositivo as
 chaves sincronizadas da conta anterior.
 
-Biblioteca, Praticar e o planejador de aulas são carregados sob demanda. As ferramentas de
+Biblioteca, Praticar, o planejador de aulas e a cena do caderno 3D (opcional) são carregados sob demanda. As ferramentas de
 captura do Caderno também usam um chunk separado. O manifesto do Vite
 permite medir separadamente o JavaScript inicial e o total assíncrono. O orçamento atual está em
-`scripts/check-performance-budget.mjs`: 278 KiB para a entrada e 1190 KiB para o conjunto, com tetos
-absolutos de 400 KiB e 1608 KiB (o total subiu de 1500 em 2026-10-23, 1602 em 2026-10-29 e 1608 no mesmo dia para as abas e a contracapa do caderno 2D). Subir um orçamento exige justificativa registrada no próprio script.
+`scripts/check-performance-budget.mjs`: 286,5 KiB para a entrada e 1630 KiB para a aplicação, com tetos
+absolutos de 400 KiB e 1630 KiB. O leitor de PDF (1800 KiB) e a cena do caderno 3D (600 KiB) têm orçamento próprio, fora do total. O histórico de cada subida está nos comentários do script. Subir um orçamento exige justificativa registrada no próprio script.
 
 O gerador de planos continua independente da interface e da central de estudos. Uma futura IA
 poderá implementar outra estratégia sem substituir o fluxo determinístico existente.

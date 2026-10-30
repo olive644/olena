@@ -4042,3 +4042,9 @@ Capturas identificam a fonte69e69b4 e seus hashes; a correção posterior de Esc
 
 - Quatro textos em português do compartilhamento de carta do Arcano (ids 3321 a 3324 do catálogo) estavam gravados com "?" no lugar das letras acentuadas: "Pr?via da carta para compartilhar", "Voltar ? carta" e as duas mensagens "N?o foi poss?vel ...". O app só mostrava o texto certo porque o código passa o texto com acento como chave; os leitores de tela e o inglês dependem do id. Corrigidos em `public/locales/pt-BR.json`, manifesto do catálogo regenerado (`3d7cf26d0b0fad4b`, 3325 entradas).
 - Teste novo em `src/i18n/catalog-budget.test.ts`: nenhum texto em português pode ter "?" entre letras nem o caractere de substituição. Falha sem a correção (reproduzido com o catálogo antigo). Nenhuma mudança de texto em inglês, de interface ou de dependência.
+
+### Documentação completa consolidada, 2026-10-30
+
+- Novo `docs/DOCUMENTACAO.md`: ponto de entrada único com produto, mapa de abas e módulos, Arcano, Poeira Cósmica e conquistas, arquitetura, dados e sincronização, funções de `api/`, segurança, voz e Olena, idiomas, design system, orçamentos, CI, operação e custos, variáveis de ambiente, regras do repositório e índice de todos os documentos. Escrito a partir do código e dos documentos vigentes, com os pontos não conferidos marcados como "não verificado".
+- `README.md` e `docs/ARCHITECTURE.md` atualizados: saiu a menção a baús e a Hábitos, entrou a Poeira Cósmica, o caderno 2D como padrão e os orçamentos atuais (286,5 KiB de entrada, 1630 KiB de aplicação). O PDF da documentação é gerado a partir de `docs/DOCUMENTACAO.md` e não é versionado.
+- Divergência registrada, sem resolver: README cita reconhecimento local de texto, enquanto o catálogo de módulos marca esse recurso como planejado. Só texto e documentação; nenhuma mudança de código, interface, dependência ou orçamento.
