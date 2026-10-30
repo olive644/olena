@@ -21,6 +21,7 @@ import { PaperCloseIcon } from "./paper-close-icon";
 import { RoomPointsIcon } from "./room-paper-icons";
 import { HelenaLoading } from "./helena-loading";
 import { ArcanaIcon } from "./arcana-icon";
+import { ArcanaShare } from "./arcana-share";
 import "./oliver-card.css";
 import "./profile-cards.css";
 const groups = [
@@ -241,19 +242,33 @@ export function ProfileCards({
                   >
                     <PaperArrow back />
                   </button>
-                  <button
-                    className="profile-cards__bare"
-                    disabled={!owned[selected]}
-                    aria-label={uiText(
-                      favorites.includes(selected)
-                        ? "Remover carta dos destaques"
-                        : "Destacar carta no perfil",
-                    )}
-                    aria-pressed={favorites.includes(selected)}
-                    onClick={() => favorite(selected)}
-                  >
-                    <RoomPointsIcon />
-                  </button>
+                  <div className="profile-cards__tools">
+                    <button
+                      className="profile-cards__bare"
+                      disabled={!owned[selected]}
+                      aria-label={uiText(
+                        favorites.includes(selected)
+                          ? "Remover carta dos destaques"
+                          : "Destacar carta no perfil",
+                      )}
+                      aria-pressed={favorites.includes(selected)}
+                      onClick={() => favorite(selected)}
+                    >
+                      <RoomPointsIcon />
+                    </button>
+                    <ArcanaShare
+                      key={selected}
+                      id={selected}
+                      owner={profile.name ?? profile.username ?? ""}
+                      earnedAt={at}
+                      obtained={!!owned[selected]}
+                      source={() =>
+                        content.current?.querySelector<HTMLElement>(
+                          ".oliver-inspection-front .arcana-paper",
+                        ) ?? null
+                      }
+                    />
+                  </div>
                 </div>
                 <div key={selected} className="profile-cards__inspection">
                   <OliverCardInspection id={selected} />

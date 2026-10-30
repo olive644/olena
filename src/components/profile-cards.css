@@ -314,6 +314,33 @@
   justify-content: space-between;
   margin-bottom: 8px;
 }
+.profile-cards__tools,
+.arcana-share-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.arcana-share-actions {
+  justify-content: center;
+  margin-top: 16px;
+}
+.arcana-share-dialog {
+  width: min(600px, calc(100vw - 24px));
+}
+.arcana-share-preview {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(100dvh - 230px);
+  object-fit: contain;
+}
+.arcana-share-dialog .paper-editor-icon {
+  color: var(--text);
+}
+.arcana-share-dialog .profile-cards__bare:focus-visible {
+  outline: none;
+  box-shadow: 0 3px #facc15;
+}
 .profile-cards__inspection {
   animation: arcana-enter 260ms ease-out both;
 }

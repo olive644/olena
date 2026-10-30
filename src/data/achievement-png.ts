@@ -114,43 +114,12 @@ export async function achievementPng(
     line(description, 965, 28, 500);
     if (owner) line(owner.slice(0, 80), 1030, 30);
     if (earnedAt) line(new Date(earnedAt).toLocaleDateString(uiLocale()), 1080, 26, 500);
-    // O mesmo alfabeto facetado de PaperCardTitle, nunca uma fonte substituta.
-    const response = await fetch("/paper-monochrome-alphabet.svg");
-    if (!response.ok) throw new Error("Artwork unavailable");
-    const alphabet = new DOMParser().parseFromString(await response.text(), "image/svg+xml");
-    const brand = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    brand.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    brand.setAttribute("viewBox", "0 0 660 104");
-    brand.setAttribute(
-      "style",
-      `--digit-face:${theme.face};--digit-depth:${theme.depth};--digit-fold:${theme.accent};--digit-edge:${theme.depth}`,
-    );
-    [..."OLENASTUDY"].forEach((letter, index) => {
-      const symbol = alphabet.getElementById("letter-" + letter);
-      if (!symbol) throw new Error("Artwork missing");
-      const glyph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      glyph.setAttribute("x", String(index * 66));
-      glyph.setAttribute("width", "66");
-      glyph.setAttribute("height", "98");
-      glyph.setAttribute("viewBox", symbol.getAttribute("viewBox") ?? "0 0 66 98");
-      glyph.append(...[...symbol.childNodes].map((node) => document.importNode(node, true)));
-      brand.append(glyph);
-    });
-    const logo = new Image();
-    const logoUrl = URL.createObjectURL(
-      new Blob([new XMLSerializer().serializeToString(brand)], { type: "image/svg+xml" }),
-    );
-    try {
-      logo.src = logoUrl;
-      await logo.decode();
-      const mark = new Image();
-      mark.src = "/olena-favicon-180.png";
-      await mark.decode();
-      ctx.drawImage(mark, 220, 1162, 90, 90);
-      ctx.drawImage(logo, 330, 1170, 530, 84);
-    } finally {
-      URL.revokeObjectURL(logoUrl);
-    }
+    const logo = await paperBrandImage(theme);
+    const mark = new Image();
+    mark.src = "/olena-favicon-180.png";
+    await mark.decode();
+    ctx.drawImage(mark, 220, 1162, 90, 90);
+    ctx.drawImage(logo, 330, 1170, 530, 84);
     const png = await new Promise<Blob>((resolve, reject) =>
       canvas.toBlob(
         (blob) => (blob ? resolve(blob) : reject(new Error("PNG unavailable"))),
@@ -161,4 +130,37 @@ export async function achievementPng(
   } finally {
     URL.revokeObjectURL(url);
   }
+}
+
+export async function paperBrandImage(theme: {
+  face: string;
+  depth: string;
+  accent: string;
+}): Promise<HTMLImageElement> {
+  // O mesmo alfabeto facetado de PaperCardTitle, nunca uma fonte substituta.
+  const response = await fetch("/paper-monochrome-alphabet.svg");
+  if (!response.ok) throw new Error("Artwork unavailable");
+  const alphabet = new DOMParser().parseFromString(await response.text(), "image/svg+xml");
+  const brand = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  brand.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  brand.setAttribute("viewBox", "0 0 660 104");
+  brand.setAttribute(
+    "style",
+    `--digit-face:${theme.face};--digit-depth:${theme.depth};--digit-fold:${theme.accent};--digit-edge:${theme.depth}`,
+  );
+  [..."OLENASTUDY"].forEach((letter, index) => {
+    const symbol = alphabet.getElementById("letter-" + letter);
+    if (!symbol) throw new Error("Artwork missing");
+    const glyph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    glyph.setAttribute("x", String(index * 66));
+    glyph.setAttribute("width", "66");
+    glyph.setAttribute("height", "98");
+    glyph.setAttribute("viewBox", symbol.getAttribute("viewBox") ?? "0 0 66 98");
+    glyph.append(...[...symbol.childNodes].map((node) => document.importNode(node, true)));
+    brand.append(glyph);
+  });
+  const logo = new Image();
+  logo.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(brand))}`;
+  await logo.decode();
+  return logo;
 }
