@@ -1,0 +1,79 @@
+{
+  "label": "baseline",
+  "measuredAt": "2026-10-30T00:36:04.464Z",
+  "environment": "Edge headless, CPU 4x, cache disabled, local dev server; fixture with 78 earned cards, external network blocked",
+  "measurements": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "run": 1,
+      "firstRowMs": 5731,
+      "requestedImages": 78,
+      "imageBytes": 1430350,
+      "decoded": 78,
+      "domNodes": 3771
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "run": 2,
+      "firstRowMs": 5864,
+      "requestedImages": 78,
+      "imageBytes": 1430350,
+      "decoded": 78,
+      "domNodes": 3771
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "run": 3,
+      "firstRowMs": 6121,
+      "requestedImages": 78,
+      "imageBytes": 1430350,
+      "decoded": 78,
+      "domNodes": 3771
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "run": 1,
+      "firstRowMs": 5590,
+      "requestedImages": 78,
+      "imageBytes": 1430350,
+      "decoded": 78,
+      "domNodes": 3771
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "run": 2,
+      "firstRowMs": 5693,
+      "requestedImages": 78,
+      "imageBytes": 1430350,
+      "decoded": 78,
+      "domNodes": 3771
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "run": 3,
+      "firstRowMs": 5613,
+      "requestedImages": 78,
+      "imageBytes": 1430350,
+      "decoded": 78,
+      "domNodes": 3771
+    }
+  ]
+}

@@ -1,0 +1,366 @@
+{
+  "sha": "46045d0dc6d7790e8894765ae7e1157d0323de45",
+  "workingTree": true,
+  "sourceSha256": "6e14c2f20a6d10d630b222c0ebd02ed9071a2d3105c86a25b2cdc4c5da2e75c6",
+  "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "capturedAt": "2026-10-30T02:03:59.451Z",
+  "source": "Real app, Edge headless. Local fixture. External network blocked. No authentication, real delivery, production sync or creative approval verified.",
+  "evidence": [
+    {
+      "name": "desktop-light",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "stickyHeader": true,
+      "horizontalOverflow": false
+    },
+    {
+      "name": "desktop-light-common",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app inspection",
+      "card": "Seis de Paus"
+    },
+    {
+      "name": "desktop-light-epic",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app inspection",
+      "card": "O Mago"
+    },
+    {
+      "name": "desktop-light-legendary",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app inspection",
+      "card": "A Estrela"
+    },
+    {
+      "name": "desktop-dark",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "stickyHeader": true,
+      "horizontalOverflow": false
+    },
+    {
+      "name": "desktop-dark-common",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app inspection",
+      "card": "Seis de Paus"
+    },
+    {
+      "name": "desktop-dark-epic",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app inspection",
+      "card": "O Mago"
+    },
+    {
+      "name": "desktop-dark-legendary",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app inspection",
+      "card": "A Estrela"
+    },
+    {
+      "name": "mobile-light",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "stickyHeader": true,
+      "horizontalOverflow": false
+    },
+    {
+      "name": "mobile-light-common",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app inspection",
+      "card": "Seis de Paus"
+    },
+    {
+      "name": "mobile-light-epic",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app inspection",
+      "card": "O Mago"
+    },
+    {
+      "name": "mobile-light-legendary",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app inspection",
+      "card": "A Estrela"
+    },
+    {
+      "name": "mobile-light-panel",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app interpretation panel, scrolled"
+    },
+    {
+      "name": "mobile-dark",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "stickyHeader": true,
+      "horizontalOverflow": false
+    },
+    {
+      "name": "mobile-dark-common",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app inspection",
+      "card": "Seis de Paus"
+    },
+    {
+      "name": "mobile-dark-epic",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app inspection",
+      "card": "O Mago"
+    },
+    {
+      "name": "mobile-dark-legendary",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app inspection",
+      "card": "A Estrela"
+    },
+    {
+      "name": "mobile-dark-panel",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "url": "http://127.0.0.1:4190/perfil",
+      "surface": "real app interpretation panel, scrolled"
+    },
+    {
+      "name": "desktop-light-public",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "light",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "real components with local fixture, no auth or production sync"
+    },
+    {
+      "name": "desktop-light-activity",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "light",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "real components with local fixture, no auth or production sync"
+    },
+    {
+      "name": "desktop-light-badge-inspection",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "light",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "static badge, real component with fixture"
+    },
+    {
+      "name": "desktop-light-share",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "light",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "real components with local fixture, no auth or production sync"
+    },
+    {
+      "name": "desktop-dark-public",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "dark",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "real components with local fixture, no auth or production sync"
+    },
+    {
+      "name": "desktop-dark-activity",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "dark",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "real components with local fixture, no auth or production sync"
+    },
+    {
+      "name": "desktop-dark-badge-inspection",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "dark",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "static badge, real component with fixture"
+    },
+    {
+      "name": "desktop-dark-share",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "dark",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "real components with local fixture, no auth or production sync"
+    },
+    {
+      "name": "mobile-light-public",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme": "light",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "real components with local fixture, no auth or production sync"
+    },
+    {
+      "name": "mobile-light-activity",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme": "light",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "real components with local fixture, no auth or production sync"
+    },
+    {
+      "name": "mobile-light-badge-inspection",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme": "light",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "static badge, real component with fixture"
+    },
+    {
+      "name": "mobile-light-share",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme": "light",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "real components with local fixture, no auth or production sync"
+    },
+    {
+      "name": "mobile-dark-public",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme": "dark",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "real components with local fixture, no auth or production sync"
+    },
+    {
+      "name": "mobile-dark-activity",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme": "dark",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "real components with local fixture, no auth or production sync"
+    },
+    {
+      "name": "mobile-dark-badge-inspection",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme": "dark",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "static badge, real component with fixture"
+    },
+    {
+      "name": "mobile-dark-share",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme": "dark",
+      "url": "http://127.0.0.1:4190/artifacts/profile-rewards-review/",
+      "surface": "real components with local fixture, no auth or production sync"
+    }
+  ]
+}
