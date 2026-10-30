@@ -13,7 +13,11 @@ import { agendaTimeZone } from "../data/agenda-time-zone";
 import { recognizeSocialLink } from "../domain/profile-identity";
 import { ALL_ACHIEVEMENTS, mathAchievements } from "../domain/math-achievements";
 import { achievementFamilies } from "../domain/achievement-presentation";
-import { effectiveFavorites, isPublicCardId } from "../domain/arcana-profile";
+import {
+  effectiveFavorites,
+  effectiveCardFavorites,
+  isPublicCardId,
+} from "../domain/arcana-profile";
 import { ARCANA_IDS } from "../data/arcana-ids";
 import { oliverCardDates, oliverCollection } from "../data/math-place-rewards";
 import { readMathGame } from "../data/math-game-learning";
@@ -44,7 +48,7 @@ export function useProfilePresentation(
   const owned = oliverCollection();
   const ownedCards = ARCANA_IDS.filter((id) => owned[id] && isPublicCardId(id));
   // Só os destaques efetivos saem do aparelho (cabem no limite de 4096 bytes do share).
-  const featured = effectiveFavorites(profile.cardFavorites, new Set(ownedCards), ownedCards);
+  const featured = effectiveCardFavorites(profile.cardFavorites, new Set(ownedCards), ownedCards);
   const cardFavorites = JSON.stringify(featured);
   const cards = cardFavorites;
   const cardDates = JSON.stringify(
