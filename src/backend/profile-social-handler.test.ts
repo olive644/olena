@@ -534,6 +534,24 @@ it("publica até três cartas favoritas obtidas, preserva ordem e [] removido, e
   expect(profile?.cardFavorites).toEqual(["wands-05", "major-17"]);
   for (const bad of [
     { cards: ["inexistente"] },
+    { cards: ["major-00", "major-01", "major-02", "major-03"] },
+    {
+      cards: Array.from(
+        { length: 78 },
+        (_, i) =>
+          ["major", "wands", "cups", "swords", "pentacles"][Math.floor(i / 20)] +
+          "-" +
+          String(i % 14).padStart(2, "0"),
+      ),
+    },
+    {
+      cardDates: {
+        "major-17": "2026-10-10T10:00:00Z",
+        "cups-01": "2026-10-10T10:00:00Z",
+        "wands-05": "2026-10-10T10:00:00Z",
+        "major-00": "2026-10-10T10:00:00Z",
+      },
+    },
     { cards: ["major-17", "major-17"] },
     { cardFavorites: ["major-17", "cups-01", "wands-05", "major-00"] },
     { cardFavorites: ["major-17", "major-17"] },
@@ -638,4 +656,22 @@ it("eventos de prêmio respeitam janela, consentimento e bloqueio", async () => 
   await app.request("b", { action: "unblock", username: "alice" });
   await app.request("a", { action: "activity-privacy", enabled: false });
   expect((await app.feed("b", "rewards=1")).activities).toEqual([]);
+});
+
+it("isola os destaques de cada conta e limpa com [] sem tocar nas outras", async () => {
+  const app = setup();
+  const base = { action: "share", enabled: true, photoUrl: "/profile-avatars/alice.svg" };
+  await app.request("a", {
+    ...base,
+    name: "Alice",
+    cards: ["major-17"],
+    cardFavorites: ["major-17"],
+  });
+  await app.request("b", { ...base, name: "Bob", cards: ["cups-01"], cardFavorites: ["cups-01"] });
+  expect((await app.feed("c", "username=alice")).profile?.cardFavorites).toEqual(["major-17"]);
+  expect((await app.feed("c", "username=bob")).profile?.cardFavorites).toEqual(["cups-01"]);
+  await app.request("a", { ...base, name: "Alice", cards: [], cardFavorites: [] });
+  const cleared = (await app.feed("c", "username=alice")).profile;
+  expect([cleared?.cards, cleared?.cardFavorites]).toEqual([[], []]);
+  expect((await app.feed("c", "username=bob")).profile?.cardFavorites).toEqual(["cups-01"]);
 });
