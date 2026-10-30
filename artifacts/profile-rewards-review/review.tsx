@@ -67,8 +67,11 @@ const manifest: {
   sha: string;
   evidence: { name: string; theme: string; viewport: { width: number; height: number } }[];
 } = await (await fetch("./manifest.json")).json();
+const cardShare: { sha: string; sourceSha256: string; capturedAt: string } = await (
+  await fetch("./card-share-check.json")
+).json();
 function Review() {
-  const [tab, setTab] = useState("inspection");
+  const [tab, setTab] = useState("card-share");
   const [sample, setSample] = useState<ArcanaId>("major-17");
   const [reward, setReward] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem("helenastudy.theme") ?? "dark");
@@ -107,6 +110,7 @@ function Review() {
       <nav className="review-tabs">
         {[
           ["gallery", "Galeria"],
+          ["card-share", "Compartilhar carta"],
           ["inspection", "Interpretação e brilho"],
           ["profile", "Outro perfil"],
           ["activity", "Atividades"],
@@ -123,6 +127,43 @@ function Review() {
           </button>
         ))}
       </nav>
+      {tab === "card-share" && (
+        <>
+          <h2>Compartilhamento individual do Arcano</h2>
+          <p>
+            PNG real de 1080×1350, arte completa, alfabeto original OLENASTUDY e favicon oficial.
+            Perfil e obtenção são fixtures locais. O ícone de compartilhar fica ao lado da estrela
+            ao inspecionar uma carta obtida na galeria.
+          </p>
+          <p>
+            Versão {cardShare.sha.slice(0, 7)} + alterações locais, hash da fonte{" "}
+            <code>{cardShare.sourceSha256.slice(0, 16)}</code>.{" "}
+            <a href="./card-share-check.json" target="_blank">
+              Relatório verificável
+            </a>
+          </p>
+          {["desktop-light", "desktop-dark", "mobile-light", "mobile-dark"].map((name) => (
+            <figure key={name}>
+              <figcaption>
+                {name}, {name.startsWith("mobile") ? "390×844" : "1440×1000"}, captura da prévia e
+                PNG exportado. Clique para ampliar.
+              </figcaption>
+              <a href={`./card-share-${name}.png`} target="_blank">
+                <img
+                  className="review-proof"
+                  src={`./card-share-${name}.png`}
+                  alt={`Card individual Arcano, ${name}`}
+                />
+              </a>
+              <p>
+                <a href={`./card-share-${name}-preview.png`} target="_blank">
+                  Ver a prévia no app
+                </a>
+              </p>
+            </figure>
+          ))}
+        </>
+      )}
       {tab === "inspection" && (
         <>
           <div className="review-tabs">

@@ -1,9 +1,9 @@
 {
-  "sha": "46045d0dc6d7790e8894765ae7e1157d0323de45",
+  "sha": "69e69b48e03584e19f95c78cfafb9a02b2b11f98",
   "workingTree": true,
-  "sourceSha256": "6e14c2f20a6d10d630b222c0ebd02ed9071a2d3105c86a25b2cdc4c5da2e75c6",
+  "sourceSha256": "e40a28d331d6dd62cccb3c9b46bef7c6346fb2a07566df85507913d24c453b1c",
   "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "capturedAt": "2026-10-30T02:03:59.451Z",
+  "capturedAt": "2026-10-30T02:47:26.104Z",
   "source": "Real app, Edge headless. Local fixture. External network blocked. No authentication, real delivery, production sync or creative approval verified.",
   "evidence": [
     {
