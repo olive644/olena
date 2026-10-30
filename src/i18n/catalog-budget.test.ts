@@ -25,3 +25,10 @@ it("mantém os mesmos textos e parâmetros ao reutilizar os IDs existentes do ca
     await changeLanguage("pt-BR");
   }
 });
+
+it("não deixa interrogações no lugar de letras acentuadas nos textos em português", () => {
+  const broken = portuguese
+    .map((text, id) => ({ id, text }))
+    .filter(({ text }) => /\p{L}\?\p{L}|�/u.test(text));
+  expect(broken).toEqual([]);
+});
