@@ -11,7 +11,15 @@ import { profileLevel } from "../domain/profile-study";
 import { readRoomXp } from "../data/room-xp";
 import { agendaTimeZone } from "../data/agenda-time-zone";
 import { recognizeSocialLink } from "../domain/profile-identity";
-import { mathAchievements } from "../domain/math-achievements";
+import { ALL_ACHIEVEMENTS, mathAchievements } from "../domain/math-achievements";
+import { achievementFamilies } from "../domain/achievement-presentation";
+import {
+  effectiveFavorites,
+  effectiveCardFavorites,
+  isPublicCardId,
+} from "../domain/arcana-profile";
+import { ARCANA_IDS } from "../data/arcana-ids";
+import { oliverCardDates, oliverCollection } from "../data/math-place-rewards";
 import { readMathGame } from "../data/math-game-learning";
 import type { AchievementProgress } from "./use-math-achievements";
 
@@ -28,7 +36,31 @@ export function useProfilePresentation(
   const earned = (
     values ?? mathAchievements(readMathGame(), workspace?.practiceActivities, agendaTimeZone())
   ).filter((item) => item.earned);
-  const favorites = JSON.stringify(profile.achievementFavorites ?? null);
+  // Publica os destaques que o próprio perfil mostra: ausência sugere três, [] segue vazio.
+  const earnedIds = new Set(earned.map((item) => item.id));
+  const favorites = JSON.stringify(
+    effectiveFavorites(
+      profile.achievementFavorites,
+      earnedIds,
+      achievementFamilies(ALL_ACHIEVEMENTS, earnedIds).map((item) => item.id),
+    ),
+  );
+  const owned = oliverCollection();
+  const ownedCards = ARCANA_IDS.filter((id) => owned[id] && isPublicCardId(id));
+  // Só os destaques efetivos saem do aparelho (cabem no limite de 4096 bytes do share).
+  const featured = effectiveCardFavorites(profile.cardFavorites, new Set(ownedCards), ownedCards);
+  const cardFavorites = JSON.stringify(featured);
+  const cards = cardFavorites;
+  const cardDates = JSON.stringify(
+    Object.fromEntries(
+      featured.flatMap((id) => {
+        const at = oliverCardDates()[id as (typeof ARCANA_IDS)[number]];
+        return at !== undefined && at > 0 && at <= 253402300799999
+          ? [[id, new Date(at).toISOString()]]
+          : [];
+      }),
+    ),
+  );
   const achievements = JSON.stringify(earned.map((item) => item.id));
   const achievementDates = JSON.stringify(
     Object.fromEntries(
@@ -73,9 +105,10 @@ export function useProfilePresentation(
           expectedUsername: username,
           achievements: JSON.parse(achievements) as string[],
           achievementDates: JSON.parse(achievementDates) as Record<string, string>,
-          ...(favorites !== "null"
-            ? { achievementFavorites: JSON.parse(favorites) as string[] }
-            : {}),
+          achievementFavorites: JSON.parse(favorites) as string[],
+          cards: JSON.parse(cards) as string[],
+          cardDates: JSON.parse(cardDates) as Record<string, string>,
+          cardFavorites: JSON.parse(cardFavorites) as string[],
           ...(details
             ? {
                 details: JSON.parse(
@@ -89,5 +122,17 @@ export function useProfilePresentation(
     return () => {
       active = false;
     };
-  }, [username, name, photoUrl, cover, details, achievements, achievementDates, favorites]);
+  }, [
+    username,
+    name,
+    photoUrl,
+    cover,
+    details,
+    achievements,
+    achievementDates,
+    favorites,
+    cards,
+    cardDates,
+    cardFavorites,
+  ]);
 }
