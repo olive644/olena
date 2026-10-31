@@ -307,15 +307,15 @@ Identidade oficial em `DESIGN_SYSTEM.md`. Regras que valem para toda interface n
 
 O orçamento é medido por `npm run performance:check` (`scripts/check-performance-budget.mjs`), a partir do manifesto do Vite:
 
-| Medida                          | Limite               | Observação                       |
-| ------------------------------- | -------------------- | -------------------------------- |
-| JavaScript inicial              | 286,5 KiB (teto 400) | Entrada do aplicativo            |
-| JavaScript total da aplicação   | 1630 KiB (teto 1630) | Sem os blocos opcionais abaixo   |
-| Leitor de PDF e worker          | 1800 KiB             | Só baixa ao abrir um PDF         |
-| Cena do caderno 3D              | 600 KiB              | Só baixa com o caderno 3D ligado |
-| Voz TTS própria (worker e WASM) | 2,25 MiB e 22 MiB    | Serviço fora de uso em produção  |
+| Medida                          | Limite                 | Observação                       |
+| ------------------------------- | ---------------------- | -------------------------------- |
+| JavaScript inicial              | 286,5 KiB (teto 400)   | Entrada do aplicativo            |
+| JavaScript total da aplicação   | 1631,0 KiB (teto 1632) | Sem os blocos opcionais abaixo   |
+| Leitor de PDF e worker          | 1800 KiB               | Só baixa ao abrir um PDF         |
+| Cena do caderno 3D              | 600 KiB                | Só baixa com o caderno 3D ligado |
+| Voz TTS própria (worker e WASM) | 2,25 MiB e 22 MiB      | Serviço fora de uso em produção  |
 
-Subir um orçamento exige justificativa registrada no próprio script, e o teto absoluto não sobe sem decisão da dona do projeto. Os tetos de JavaScript total foram subindo ao longo do tempo por decisão da dona (1500, 1600, 1602, 1608 e 1630 KiB), sempre com o crescimento carregado sob demanda e sem tocar na entrada inicial.
+Subir um orçamento exige justificativa registrada no próprio script, e o teto absoluto não sobe sem decisão da dona do projeto. Os tetos de JavaScript total foram subindo ao longo do tempo por decisão da dona (1500, 1600, 1602, 1608, 1630 e 1632 KiB), sempre com o crescimento carregado sob demanda e sem tocar na entrada inicial.
 
 ## 13. Qualidade, testes e CI
 

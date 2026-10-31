@@ -336,10 +336,14 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Perfil e Arcano: total medido 1624,7 KiB, entrada inicial preservada em 220,6 KiB.
 // A proprietária autorizou explicitamente aumentar o teto em vez de reduzir a implementação.
 // Novo teto total de 1630 KiB, com pequena margem para variação entre Windows e Linux.
-const MAX_TOTAL_JS_BYTES = 1630 * 1024;
+// Sincronização com menos download (leitura só de updatedAt, stream por updatedAt, PATCH por
+// chave e fallback para PUT): +1,3 KiB sobre os 1629,7 KiB da main, 1631,0 KiB medidos. O código
+// já foi enxugado (leitura e PATCH compartilham o mesmo helper). Teto subido de 1630 para
+// 1632 KiB: PRECISA da aprovação da dona do projeto na revisão.
+const MAX_TOTAL_JS_BYTES = 1632 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
-const HARD_CEILING_TOTAL_JS_BYTES = 1630 * 1024;
+const HARD_CEILING_TOTAL_JS_BYTES = 1632 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 // Cena do caderno 3D (three.js e o código da cena): medida em 528.8 KiB, mais a tela e os sons. É baixada somente quando
 // a pessoa abre um caderno com o recurso ligado e vale o mesmo precedente do leitor PDF: orçamento

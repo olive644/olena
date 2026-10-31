@@ -16,7 +16,7 @@ import { mergeReadUpdates, SYSTEM_UPDATES_READ_KEY } from "../data/system-update
 import { FOCUS_SESSION_KEY } from "../domain/focus-session";
 import { ACCOUNT_PROFILE_KEY, mergeProfileProgress } from "../domain/profile-progress";
 import { readPendingOnboardingConfiguration } from "../data/onboarding-client";
-import { encodeCloudItems, decodeCloudItems } from "../data/cloud-state-codec";
+import { encodeCloudItems, decodeCloudItems, cloudWireName } from "../data/cloud-state-codec";
 
 type CloudState = { version?: number; updatedAt?: number; items?: Record<string, string> };
 const SYNC_CONFLICT_STORAGE_KEY = "helenastudy.sync-conflict.v1";
@@ -52,6 +52,14 @@ async function mergeItems(
   return result;
 }
 
+// Chaves que mudaram entre o que a conta tinha e o que está no aparelho (null = removida).
+function itemsDelta(base: SyncedItems, next: SyncedItems): Record<string, string | null> {
+  const delta: Record<string, string | null> = {};
+  for (const [key, value] of Object.entries(next)) if (base[key] !== value) delta[key] = value;
+  for (const key of Object.keys(base)) if (!(key in next)) delta[key] = null;
+  return delta;
+}
+
 export type CloudSyncState = {
   ready: boolean;
   revision: number;
@@ -68,10 +76,12 @@ export type CloudSyncState = {
   passwordAccount?: boolean | undefined;
 };
 
-// O estado inteiro da conta sobe a cada salvamento e volta pelo stream em tempo real, então cada
-// salvamento custa o tamanho do estado em download no Realtime Database (plano gratuito: 10 GB
-// por mês). Juntar as mudanças de poucos segundos num só envio corta esse consumo, e o envio
-// imediato ao esconder a página impede que a espera perca o que foi feito.
+// Cada download do estado inteiro conta no Realtime Database (plano gratuito: 10 GB por mês), e
+// o estado da conta pode ter megabytes. Por isso o envio só manda as chaves que mudaram, a
+// conferência antes de salvar lê só o `updatedAt` (alguns bytes) e o stream escuta só esse campo.
+// O estado completo só é baixado quando outro aparelho de fato gravou algo novo. Juntar as
+// mudanças de poucos segundos num só envio reduz ainda mais, e o envio imediato ao esconder a
+// página impede que a espera perca o que foi feito.
 const CLOUD_UPLOAD_DELAY_MS = 4000;
 
 export function useCloudSync() {
@@ -282,10 +292,10 @@ export function useCloudSync() {
           // Outra conta já usou este aparelho: os dados dela não podem ir para a conta nova.
           if (claimDeviceForAccount(localStorage, user.uid))
             setState((current) => ({ ...current, revision: current.revision + 1 }));
-          const url = `${databaseURL}/users/${user.uid}/stateV2.json`;
+          const stateUrl = `${databaseURL}/users/${user.uid}/stateV2`;
+          const url = `${stateUrl}.json`;
           const legacyUrl = `${databaseURL}/users/${user.uid}/state.json`;
-          const request = async (method: "GET" | "PUT", body?: CloudState, legacy = false) => {
-            const signal = AbortSignal.timeout(12000);
+          const accessToken = async (signal: AbortSignal) => {
             const token = await new Promise<string>((resolve, reject) => {
               const timeout = () => reject(new Error("sync-timeout"));
               signal.addEventListener("abort", timeout, { once: true });
@@ -302,6 +312,11 @@ export function useCloudSync() {
             });
             signal.throwIfAborted();
             if (!currentAccount()) throw new Error("Account changed");
+            return token;
+          };
+          const request = async (method: "GET" | "PUT", body?: CloudState, legacy = false) => {
+            const signal = AbortSignal.timeout(12000);
+            const token = await accessToken(signal);
             const init: RequestInit = { method, signal };
             if (body) {
               init.body = JSON.stringify({ ...body, items: encodeCloudItems(body.items ?? {}) });
@@ -319,6 +334,36 @@ export function useCloudSync() {
             if (!currentAccount()) throw new Error("Account changed");
             return result?.items ? { ...result, items: decodeCloudItems(result.items) } : result;
           };
+          const rest = async (target: string, init: RequestInit, query = "") => {
+            const signal = AbortSignal.timeout(12000);
+            const token = await accessToken(signal);
+            const response = await fetch(`${target}?auth=${encodeURIComponent(token)}${query}`, {
+              ...init,
+              signal,
+            });
+            if (!response.ok) throw new Error("sync");
+            return response;
+          };
+          // Lê só o campo `updatedAt` (um número), em vez do estado inteiro. Devolve undefined
+          // quando a resposta não é um número válido: quem chama então confere por completo.
+          const requestUpdatedAt = async (): Promise<number | undefined> => {
+            const value: unknown = await (
+              await rest(`${stateUrl}/updatedAt.json`, { method: "GET" })
+            ).json();
+            if (!currentAccount()) throw new Error("Account changed");
+            return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+          };
+          // Grava só as chaves informadas (PATCH com caminhos), sem reenviar o resto do estado.
+          const patchState = (patch: Record<string, string | number | null>) =>
+            rest(
+              url,
+              {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(patch),
+              },
+              "&print=silent",
+            );
           // O login com Google (GoogleLogin) grava localmente que o
           // onboarding foi concluido assim que a autenticacao termina, no
           // mesmo instante em que onAuthStateChanged dispara esta funcao.
@@ -463,6 +508,13 @@ export function useCloudSync() {
             changeRevision += 1;
           }
           let saving = false;
+          // updatedAt que este aparelho está gravando agora: o stream avisa dele logo depois, e
+          // isso não é uma mudança de outro aparelho.
+          let inflightUpdatedAt: number | undefined;
+          const remoteHasNewer = async () => {
+            const remote = await requestUpdatedAt();
+            return remote === undefined || remote > cloudUpdatedAt;
+          };
           saveCloud = async () => {
             if (!currentAccount()) return;
             if (saving) {
@@ -483,7 +535,11 @@ export function useCloudSync() {
             saving = true;
             setState((current) => ({ ...current, status: "syncing" }));
             try {
-              if (lastItems) {
+              // Estado da conta que serve de base para saber o que mudou neste aparelho.
+              let baseline = lastItems;
+              // Só baixa o estado inteiro quando outro aparelho gravou algo mais novo: a conferência
+              // comum custa alguns bytes (o campo updatedAt), não o tamanho do estado.
+              if (lastItems && (await remoteHasNewer())) {
                 const latest = await request("GET");
                 const latestItems = latest?.items;
                 const latestSerialized = latestItems ? JSON.stringify(latestItems) : "";
@@ -504,6 +560,7 @@ export function useCloudSync() {
                   items = merged.items;
                   serialized = JSON.stringify(items);
                   applySyncedStorage(items);
+                  baseline = latestSerialized;
                 }
                 if (Number.isFinite(latest?.updatedAt))
                   cloudUpdatedAt = Math.max(cloudUpdatedAt, latest!.updatedAt!);
@@ -511,8 +568,36 @@ export function useCloudSync() {
               if (!currentAccount()) return;
               items = readSyncedStorage();
               serialized = JSON.stringify(items);
-              const updatedAt = Math.max(Date.now(), cloudUpdatedAt + 1);
-              await request("PUT", { version: 2, updatedAt, items });
+              const fullUpdatedAt = Math.max(Date.now(), cloudUpdatedAt + 1);
+              // Depois da primeira gravação, só as chaves que mudaram vão para a conta. A sessão de
+              // Foco muda a cada 30 s e não deve reenviar (nem fazer os outros aparelhos baixarem)
+              // o estado inteiro: ela é gravada sozinha e sem mexer em updatedAt.
+              const delta =
+                baseline && !migrationPending ? itemsDelta(parseItems(baseline), items) : undefined;
+              const changedKeys = delta ? Object.keys(delta) : [];
+              const sessionOnly =
+                changedKeys.length > 0 && changedKeys.every((key) => key === FOCUS_SESSION_KEY);
+              const updatedAt = sessionOnly ? cloudUpdatedAt : fullUpdatedAt;
+              inflightUpdatedAt = updatedAt;
+              try {
+                if (!delta) await request("PUT", { version: 2, updatedAt, items });
+                else if (changedKeys.length > 0) {
+                  const patch: Record<string, string | number | null> = {};
+                  for (const key of changedKeys) patch[`items/${cloudWireName(key)}`] = delta[key]!;
+                  if (!sessionOnly) patch["updatedAt"] = updatedAt;
+                  try {
+                    await patchState(patch);
+                  } catch (cause) {
+                    if (!currentAccount()) throw cause;
+                    // Caminho de reserva: se o envio parcial falhar, repete com o estado inteiro.
+                    inflightUpdatedAt = fullUpdatedAt;
+                    await request("PUT", { version: 2, updatedAt: fullUpdatedAt, items });
+                    cloudUpdatedAt = Math.max(cloudUpdatedAt, fullUpdatedAt);
+                  }
+                }
+              } finally {
+                inflightUpdatedAt = undefined;
+              }
               if (!currentAccount()) return;
               cloudUpdatedAt = Math.max(cloudUpdatedAt, updatedAt);
               lastItems = serialized;
@@ -623,25 +708,50 @@ export function useCloudSync() {
           // público); como o token expira, a conexão precisa ser reaberta com um token novo
           // sempre que ele for renovado (onIdTokenChanged), e também se o próprio Firebase
           // avisar que o token usado na conexão não vale mais (auth_revoked).
+          //
+          // O stream escuta só o campo updatedAt (um número). Assim reabrir a conexão, e o eco
+          // das gravações deste mesmo aparelho, custam alguns bytes e não o estado inteiro. O
+          // estado completo só é baixado quando o número é mais novo que o que já temos.
+          let fetchingRemote = false;
+          let fetchAgain = false;
+          const fetchRemote = async () => {
+            if (fetchingRemote) {
+              fetchAgain = true;
+              return;
+            }
+            fetchingRemote = true;
+            try {
+              do {
+                fetchAgain = false;
+                await receiveCloud(await request("GET"));
+              } while (fetchAgain && currentAccount());
+            } catch {
+              if (currentAccount()) setState((current) => ({ ...current, status: "offline" }));
+            } finally {
+              fetchingRemote = false;
+            }
+          };
+          const receiveRemoteUpdatedAt = (remote: unknown) => {
+            if (typeof remote !== "number" || !Number.isFinite(remote)) return;
+            if (remote <= cloudUpdatedAt || remote === inflightUpdatedAt) return;
+            void fetchRemote();
+          };
           function openStream(streamUser: NonNullable<(typeof auth)["currentUser"]>) {
             if (!currentAccount()) return;
             eventSource?.close();
             eventSource = undefined;
             void streamUser.getIdToken().then((token) => {
               if (!currentAccount()) return;
-              const source = new EventSource(`${url}?auth=${encodeURIComponent(token)}`);
+              const source = new EventSource(
+                `${stateUrl}/updatedAt.json?auth=${encodeURIComponent(token)}`,
+              );
               source.addEventListener("put", (event) => {
                 try {
                   const payload = JSON.parse((event as MessageEvent<string>).data) as {
                     path: string;
-                    data: CloudState | null;
+                    data: unknown;
                   };
-                  if (payload.path === "/")
-                    void receiveCloud(
-                      payload.data?.items
-                        ? { ...payload.data, items: decodeCloudItems(payload.data.items) }
-                        : payload.data,
-                    );
+                  if (payload.path === "/") receiveRemoteUpdatedAt(payload.data);
                 } catch {
                   // Evento malformado: ignora e espera o próximo.
                 }

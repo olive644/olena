@@ -17,7 +17,7 @@ As variáveis `VITE_` identificam o projeto Firebase e são públicas por defini
 
 - A primeira conta sem dados recebe o conteúdo local do dispositivo.
 - Quando a conta já tem dados, a nuvem é a fonte inicial naquele dispositivo.
-- Mudanças são enviadas após uma pausa curta e recebidas por stream autenticado. Sessões de Foco publicam controles e snapshots a cada 30 segundos, mantendo recuperação local mais frequente.
+- Mudanças são enviadas após uma pausa curta e recebidas por stream autenticado que escuta só o carimbo `updatedAt` e baixa o estado quando ele muda. O envio é um PATCH só das chaves alteradas. Sessões de Foco publicam controles e snapshots a cada 30 segundos, mantendo recuperação local mais frequente.
 - Se a rede falhar, a cópia local continua funcionando e o envio permanece pendente para nova tentativa automática ou manual.
 - O Perfil mostra o estado da sincronização, permite sincronizar agora e sair da conta.
 
