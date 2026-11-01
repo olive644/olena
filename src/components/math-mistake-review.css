@@ -1,0 +1,545 @@
+.oliver-review {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 28px 32px 40px;
+  min-height: calc(100dvh - 75px);
+  position: relative;
+}
+.oliver-review__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.oliver-review__header button {
+  font-size: 13px;
+}
+.oliver-review__header .onboarding-paper-arrow {
+  width: 24px;
+}
+.oliver-review__count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.oliver-review__count .paper-digits {
+  height: 22px;
+  width: auto;
+}
+.oliver-review__trail {
+  display: flex;
+  gap: 7px;
+  width: 150px;
+  margin: 20px 0 16px auto;
+}
+.oliver-review__trail span {
+  width: 45px;
+  height: 8px;
+  background: var(--line);
+  clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+}
+.oliver-review__trail .is-current {
+  background: #facc15;
+}
+.oliver-review__trail .is-done {
+  background: #8b5cf6;
+}
+.oliver-review__lesson {
+  display: grid;
+  grid-template-columns: 330px 1fr;
+  gap: 22px;
+  align-items: center;
+  margin: 26px 0;
+}
+.oliver-review__character img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.oliver-review__speech {
+  position: relative;
+  background: var(--surface);
+  color: var(--text);
+  padding: 30px 34px;
+  border-radius: 6px 26px 8px 18px;
+  box-shadow: 0 6px 0 var(--line);
+}
+.oliver-review__speech::before {
+  content: "";
+  position: absolute;
+  left: -19px;
+  top: 56%;
+  width: 22px;
+  height: 28px;
+  background: var(--surface);
+  clip-path: polygon(100% 0, 100% 100%, 0 35%);
+}
+.oliver-review__speaker {
+  display: block;
+  color: #147381;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+:root[data-theme="dark"] .oliver-review__speaker {
+  color: #8adcd5;
+}
+.oliver-review h1 {
+  font-size: 32px;
+  margin: 0 0 13px;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+.oliver-review__reason {
+  font-size: 13px;
+  opacity: 0.8;
+  margin: 0 0 15px;
+}
+.oliver-review__explanation {
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 0 0 18px;
+}
+.oliver-review__calculation {
+  width: fit-content;
+  max-width: 100%;
+  padding: 12px 20px;
+  background: #fbdb77;
+  color: #241d30;
+  border-radius: 3px 10px 5px 3px;
+  transform: rotate(-1deg);
+  margin: 10px 0 22px;
+}
+.oliver-review__calculation .math-expression {
+  font-size: 29px;
+  align-items: center;
+  gap: 5px;
+}
+.oliver-review .math-expression .paper-digits {
+  height: 31px;
+}
+.oliver-review .primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 48px;
+  font-size: 14px;
+}
+.oliver-review .primary-button .onboarding-paper-arrow {
+  width: 25px;
+}
+.oliver-review__practice {
+  padding: 15px 0 0;
+}
+.oliver-review__practice-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.oliver-review h2 {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.3;
+}
+.oliver-review__practice-heading p {
+  font-size: 14px;
+  max-width: 260px;
+  margin: 0;
+}
+.oliver-review__answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 20px;
+}
+.oliver-review__answers button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 94px;
+  background: #8adcd5;
+  color: #241d30;
+  border: 0;
+  border-radius: 5px 18px 4px 11px;
+  box-shadow: 0 5px 0 #58958f;
+  cursor: pointer;
+}
+.oliver-review__answers button[data-tone="1"] {
+  background: #ffcbab;
+  box-shadow: 0 5px 0 #b97f62;
+}
+.oliver-review__answers button[data-tone="2"] {
+  background: #fbdb77;
+  box-shadow: 0 5px 0 #b69a43;
+}
+.oliver-review__answers button[data-tone="3"] {
+  background: #e6b9eb;
+  box-shadow: 0 5px 0 #aa7caf;
+}
+.oliver-review__answers button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: #ffffff30;
+  clip-path: polygon(0 0, 45% 0, 20% 35%);
+  border-radius: inherit;
+}
+.oliver-review__answers .math-number {
+  font-size: 34px;
+  display: flex;
+}
+.oliver-review__answers .math-number .paper-digits {
+  height: 40px;
+}
+.oliver-review__key {
+  position: absolute;
+  left: 13px;
+  top: 10px;
+  opacity: 0.7;
+}
+.oliver-review__key .paper-digits {
+  height: 14px;
+}
+.oliver-review__answers button[data-result="wrong"] {
+  box-shadow: 0 5px 0 #b95263;
+}
+.oliver-review__answers button[data-result="correct"] {
+  box-shadow: 0 5px 0 #174b3b;
+}
+.oliver-review__feedback {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  font-size: 15px;
+}
+
+@media (max-width: 650px) {
+  .oliver-review {
+    padding: 18px 18px 28px;
+    min-height: calc(100dvh - 105px);
+  }
+  .oliver-review__header {
+    gap: 12px;
+    align-items: center;
+  }
+  .oliver-review__header button {
+    font-size: 11px;
+    padding: 8px 10px;
+    min-height: 44px;
+  }
+  .oliver-review__header .onboarding-paper-arrow {
+    width: 18px;
+  }
+  .oliver-review__count {
+    font-size: 12px;
+    gap: 5px;
+    white-space: nowrap;
+  }
+  .oliver-review__count .paper-digits {
+    height: 18px;
+  }
+  .oliver-review__trail {
+    margin: 15px 0 12px auto;
+    width: 112px;
+  }
+  .oliver-review__lesson {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin: 8px 0 18px;
+  }
+  .oliver-review__character {
+    width: 155px;
+    margin: 0 0 -13px 5px;
+    z-index: 1;
+  }
+  .oliver-review__speech {
+    padding: 20px 22px 23px;
+    border-radius: 5px 22px 6px 14px;
+  }
+  .oliver-review__speech::before {
+    left: 115px;
+    top: -15px;
+    width: 23px;
+    height: 20px;
+    clip-path: polygon(0 100%, 100% 100%, 5% 0);
+  }
+  .oliver-review__speaker {
+    font-size: 12px;
+  }
+  .oliver-review h1 {
+    font-size: 24px;
+  }
+  .oliver-review__reason {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .oliver-review__explanation {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .oliver-review__calculation {
+    padding: 10px 13px;
+    margin-bottom: 17px;
+  }
+  .oliver-review__calculation .math-expression {
+    font-size: 24px;
+  }
+  .oliver-review .math-expression .paper-digits {
+    height: 26px;
+  }
+  .oliver-review .primary-button {
+    font-size: 13px;
+    min-height: 46px;
+  }
+  .oliver-review__practice-heading {
+    display: block;
+  }
+  .oliver-review__practice-heading p {
+    margin-top: 12px;
+    max-width: 100%;
+    font-size: 13px;
+  }
+  .oliver-review__answers {
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .oliver-review__answers button {
+    min-height: 82px;
+  }
+  .oliver-review__feedback {
+    display: block;
+    min-height: 95px;
+    padding-top: 10px;
+  }
+  .oliver-review__feedback .primary-button {
+    width: 100%;
+  }
+}
+
+.oliver-review button .onboarding-paper-arrow {
+  position: static;
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  flex: 0 0 24px;
+}
+.oliver-review__header button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.oliver-review .primary-button {
+  background-color: #7433e0;
+  background-image:
+    linear-gradient(135deg, #8a4ce5 0 9%, transparent 9%),
+    linear-gradient(315deg, #5924b4 0 12%, transparent 12%);
+  color: #fff9ef;
+  border: 0;
+  border-radius: 5px 13px 6px 11px;
+  box-shadow: 0 4px 0 #4b209b;
+}
+
+.oliver-review :is(.oliver-review__calculation, .oliver-review__answers) .paper-digits {
+  --digit-face: #292432;
+  --digit-depth: #17131d;
+  --digit-fold: #51465d;
+  --digit-edge: #211b29;
+}
+
+.oliver-review__character {
+  position: relative;
+}
+.oliver-review__speech {
+  animation: review-bubble-in 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  border-radius: 22px 34px 16px 26px;
+}
+.oliver-review__speech::before {
+  width: 30px;
+  height: 36px;
+  left: -25px;
+  top: 42%;
+}
+.oliver-review__practice {
+  animation: review-question-in 300ms ease-out both;
+}
+.oliver-review__answers button {
+  transition:
+    translate 140ms ease,
+    box-shadow 140ms ease;
+}
+.oliver-review__answers button:hover:not(:disabled) {
+  translate: 0 -2px;
+}
+.oliver-review__answers button:active:not(:disabled) {
+  translate: 0 3px;
+}
+.oliver-review__answers button[data-result="wrong"] {
+  animation: review-retry 300ms ease both;
+}
+.oliver-review__answers button[data-result="correct"] {
+  animation: review-correct 450ms ease both;
+}
+.oliver-review__fx {
+  position: absolute;
+  inset: 20% 14%;
+  pointer-events: none;
+}
+.oliver-review__fx i {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 10px;
+  height: 14px;
+  background: #facc15;
+  clip-path: polygon(0 0, 100% 20%, 80% 100%, 15% 80%);
+  opacity: 0;
+  animation: review-paper-burst 900ms ease-out both;
+  --angle: calc(var(--particle) * 30deg);
+}
+.oliver-review__fx i:nth-child(3n) {
+  background: #8b5cf6;
+}
+.oliver-review__fx i:nth-child(3n + 1) {
+  background: #57c8bc;
+}
+.oliver-review__fx.is-retry i {
+  background: #f5b777;
+  --angle: calc(40deg + var(--particle) * 32deg);
+  width: 6px;
+  height: 9px;
+}
+@keyframes review-bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes review-question-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes review-retry {
+  25% {
+    transform: translateX(-4px);
+  }
+  65% {
+    transform: translateX(3px);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes review-correct {
+  45% {
+    transform: scale(1.025);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes review-paper-burst {
+  5% {
+    opacity: 1;
+    transform: rotate(var(--angle)) translateY(-15px) rotate(0);
+  }
+  70% {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(-85px) rotate(130deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oliver-review__speech,
+  .oliver-review__practice,
+  .oliver-review__answers button {
+    animation: none !important;
+    transition: none !important;
+  }
+  .oliver-review__fx {
+    display: none;
+  }
+}
+:root[data-reduce-motion="true"]
+  :is(.oliver-review__speech, .oliver-review__practice, .oliver-review__answers button) {
+  animation: none !important;
+  transition: none !important;
+}
+:root[data-reduce-motion="true"] .oliver-review__fx {
+  display: none;
+}
+@media (max-width: 650px) {
+  .oliver-review__speech::before {
+    left: 100px;
+    top: -19px;
+    width: 26px;
+    height: 24px;
+    clip-path: polygon(0 100%, 100% 100%, 5% 0);
+  }
+}
+.oliver-review .math-question-mark {
+  width: 0.65em;
+  height: 0.95em;
+  max-width: 32px;
+  max-height: 40px;
+  flex: none;
+  object-fit: contain;
+}
+.oliver-review__practice {
+  position: relative;
+}
+
+.math-arcade.is-reviewing {
+  background: var(--bg);
+  color: var(--text);
+}
+.math-arcade.is-reviewing .math-arcade-stage {
+  width: min(1160px, 100%);
+  max-width: none;
+  display: block;
+  padding: 0;
+}
+.math-arcade.is-reviewing::before,
+.math-arcade.is-reviewing .math-game-floor {
+  opacity: 0.04;
+}
+.oliver-review__speech {
+  min-width: 0;
+}
+.oliver-review__explanation {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.oliver-review__calculation .math-expression {
+  flex-wrap: wrap;
+  overflow-wrap: anywhere;
+}
+.oliver-review__calculation {
+  overflow-wrap: anywhere;
+}
+.oliver-review__header {
+  font-size: 13px;
+}
+.oliver-review__answers button:disabled {
+  cursor: default;
+}

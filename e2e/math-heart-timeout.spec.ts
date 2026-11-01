@@ -39,7 +39,9 @@ for (const theme of ["light", "dark"]) {
           });
       }
     }
-    await expect(page.getByRole("button", { name: "Tentar de novo" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Vamos entender juntos?" })).toBeVisible();
+    await expect(page.getByRole("progressbar")).toHaveCount(0);
+    await expect(page.getByText("Você deixou esta questão passar.", { exact: true })).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
     expect(overflow).toBe(false);
   });

@@ -15,7 +15,7 @@ export function OliverReviewArt({
   reaction: "explain" | "correct" | "retry" | "greet" | "think" | "listen";
   label: string;
   speaking?: boolean;
-  word?: { index: number; word: string; durationMs: number };
+  word?: { index: number; word: string; durationMs: number } | undefined;
   variant?: number;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);

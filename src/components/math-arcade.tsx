@@ -34,6 +34,7 @@ import { COMMON_CHEST_POINTS, finishMathPlace, type MathChest } from "../data/ma
 import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
 import { SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
 import { CommonMathChest } from "./math-place-treasure";
+import { MathMistakeReview, type MissedMathQuestion } from "./math-mistake-review";
 import "./math-arcade.css";
 import "./math-island-journey.css";
 import "../paper-buttons.css";
@@ -87,6 +88,8 @@ export function MathArcade({
   const [error, setError] = useState("");
   const [milestone, setMilestone] = useState<MathApiResult["milestone"]>(null);
   const [completedCourse, setCompletedCourse] = useState(false);
+  const [missedQuestions, setMissedQuestions] = useState<MissedMathQuestion[]>([]);
+  const [reviewDone, setReviewDone] = useState(false);
   const nextCourse = MATH_COURSES[MATH_COURSES.findIndex((item) => item.id === courseId) + 1];
   const [storageWarning, setStorageWarning] = useState(false);
   const [earnedChest, setEarnedChest] = useState<MathChest | undefined>();
@@ -104,6 +107,7 @@ export function MathArcade({
     null,
   );
   const finished = status === "playing" && !feedback && (round.lives === 0 || completedCourse);
+  const reviewing = finished && round.lives === 0 && missedQuestions.length > 0 && !reviewDone;
   const question = round.question;
   const expression = question ? formatMathNotation(question.expression) : "";
   const questionClock = question
@@ -119,6 +123,7 @@ export function MathArcade({
       if (owner === localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
       controller.current?.abort();
       if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+      setMissedQuestions([]);
       exitChangedAccount();
     }
     window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, checkOwner);
@@ -148,7 +153,7 @@ export function MathArcade({
         status === "playing" && !finished ? ".math-answer-button" : ".math-start-button",
       )
       ?.focus();
-  }, [status, finished, milestone]);
+  }, [status, finished, milestone, reviewing]);
   useEffect(() => {
     if (status !== "countdown" || pending) return;
     audio.current?.play(countdown as 1 | 2 | 3);
@@ -247,6 +252,8 @@ export function MathArcade({
     setError("");
     setMilestone(null);
     setCompletedCourse(false);
+    setMissedQuestions([]);
+    setReviewDone(false);
     retryChoice.current = null;
     if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
     try {
@@ -328,8 +335,20 @@ export function MathArcade({
           (round.progress.confirmed & (1 << level)) === 0,
       );
       setStorageWarning(!saveMathLearning(courseId, progress));
+      const attemptId = `${roundId.current}:${question.seed}:${++answerSequence.current}`;
+      if (!result.correct) {
+        const snapshot = { ...question, choices: [...question.choices] };
+        setMissedQuestions((items) => [
+          ...items,
+          {
+            id: attemptId,
+            question: snapshot,
+            choice: result.timedOut ? null : choice,
+          },
+        ]);
+      }
       onPractice?.({
-        id: `${roundId.current}:${question.seed}:${++answerSequence.current}`,
+        id: attemptId,
         islandId: `mathematics:${courseId}`,
         islandName: uiText(1782, [course.subject]),
         completedAt: new Date().toISOString(),
@@ -418,7 +437,10 @@ export function MathArcade({
       <section
         ref={root}
         className={
-          "math-arcade math-arcade--adaptive is-" + status + (finished ? " is-finished" : "")
+          "math-arcade math-arcade--adaptive is-" +
+          status +
+          (finished ? " is-finished" : "") +
+          (reviewing ? " is-reviewing" : "")
         }
         aria-label={uiText(597)}
         style={
@@ -550,6 +572,17 @@ export function MathArcade({
                 <PaperArrow />
               </button>
             </div>
+          ) : reviewing ? (
+            <MathMistakeReview
+              course={courseId}
+              items={missedQuestions}
+              onDone={() => setReviewDone(true)}
+              onSound={(cue) => {
+                audio.current ??= createMathSound();
+                audio.current.unlock();
+                audio.current.play(cue);
+              }}
+            />
           ) : finished ? (
             <div className="math-results" aria-live="polite">
               <div className="math-result-burst" aria-hidden="true">
@@ -814,7 +847,7 @@ export function MathArcade({
             </p>
           )}
         </main>
-        {finished && (
+        {finished && !reviewing && (
           <RoomRewardNotice
             reward={reward}
             activity="mathematics"

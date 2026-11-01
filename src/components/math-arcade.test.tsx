@@ -150,7 +150,8 @@ it("ends only after three consecutive expired questions", async () => {
     await tick(1300);
     if (remaining > 0) expect(screen.getAllByRole("button", { name: /^Resposta/ })).toHaveLength(4);
   }
-  expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Vamos entender juntos?" })).toBeTruthy();
+  expect(screen.queryByRole("progressbar")).toBeNull();
   expect(mathLearning("foundations").correct).toBe(0);
 });
 
@@ -261,13 +262,45 @@ it("uses the shared engine, scores once and retains progress on retry", async ()
   expect(mathLearning("foundations").level).toBe(0);
   expect(mathLearning("foundations").correct).toBe(4);
   expect(screen.getByText(/VOCÊ ESTÁ INSANO/)).toBeTruthy();
+  const reviewAnswers: number[] = [];
+  const originalChoices: string[][] = [];
   for (let index = 0; index < 3; index++) {
+    reviewAnswers.push(correctAnswer());
+    originalChoices.push(
+      screen
+        .getAllByRole("button", { name: /^Resposta/ })
+        .map((button) => button.getAttribute("aria-label")!),
+    );
     const wrong = screen
       .getAllByRole("button", { name: /^Resposta/ })
       .find((item) => item.getAttribute("aria-label") !== "Resposta " + correctAnswer())!;
     await click(wrong.getAttribute("aria-label")!);
     await tick(1300);
   }
+  expect(screen.getByRole("heading", { name: "Vamos entender juntos?" })).toBeTruthy();
+  const savedProgress = JSON.stringify(mathLearning("foundations"));
+  await tick(1);
+  const rewardsBefore = localStorage.getItem("helena.mathPlaceRewards.v1");
+  for (let index = 0; index < 3; index++) {
+    await click("Agora é sua vez");
+    expect(
+      screen
+        .getAllByRole("button", { name: /^Resposta/ })
+        .map((button) => button.getAttribute("aria-label")),
+    ).toEqual(originalChoices[index]);
+    const wrong = originalChoices[index]!.find(
+      (label) => label !== "Resposta " + reviewAnswers[index],
+    )!;
+    await click(wrong);
+    await tick(90000);
+    expect(screen.queryByRole("progressbar")).toBeNull();
+    expect(screen.queryByLabelText(/chances restantes/)).toBeNull();
+    await click("Resposta " + reviewAnswers[index]);
+    await click(index === 2 ? "Concluir revisão" : "Próxima questão");
+  }
+  expect(JSON.stringify(mathLearning("foundations"))).toBe(savedProgress);
+  expect(localStorage.getItem("helena.mathPlaceRewards.v1")).toBe(rewardsBefore);
+  await click("Ver resultado");
   expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeTruthy();
   await tick(32);
   await tick(1);
