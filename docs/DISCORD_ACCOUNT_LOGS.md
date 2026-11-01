@@ -51,3 +51,13 @@ Alternativa sem trazer o token para o computador: editar as permissões da categ
 - [Criação de mensagens, allowed_mentions e nonce](https://github.com/discord/discord-api-docs/blob/main/developers/resources/message.mdx).
 
 As telas do app preservam o design existente. Não há painel novo; validação do acesso continua cobrindo PC/celular, claro/escuro. Política tem versão legível e metadado iguais.
+
+## Teste protegido do ACCOUNT
+
+Em Configurações > Conta, a conta responsável vê Teste do Discord. O clique envia uma mensagem fixa identificada como TESTE, sem simular criação de conta ou alterar dados. O servidor exige token Firebase válido, conta atual não anônima, e-mail verificado igual a CREKS_OWNER_EMAIL e origem aprovada. O selo CREKS do cliente apenas controla visibilidade, nunca autorização.
+
+POST /api/olena?action=account-log-test aceita somente {"confirm":true}. GET consulta disponibilidade sem enviar. O destino permanece fixo e privado; as verificações de categoria, canal e permissões são as mesmas dos logs normais. O token do bot nunca sai da Vercel. Sucesso exige um ID de mensagem confirmado pelo Discord. Erros retornam códigos limitados e o local afetado, sem resposta bruta do serviço.
+
+Limites compartilhados: 30 consultas/minuto por origem, 1000/dia globais; envio 1/minuto e 3/hora por responsável, 10/dia globais. A interface bloqueia reenvio por um minuto. Não há reenvio automático. Esse teste comprova apenas o trecho servidor > Discord, não o evento automático de login.
+
+Validação local: 2452 testes em 381 arquivos e quatro cenários visuais Chromium/Edge (PC/celular, claro/escuro), com identidade e respostas Discord simuladas. Envio real ainda não verificado. Após deploy, entrar como responsável, clicar no botão e conferir o ID no ACCOUNT ou seguir o diagnóstico apresentado.
