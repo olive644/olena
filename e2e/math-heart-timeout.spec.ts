@@ -24,8 +24,6 @@ for (const theme of ["light", "dark"]) {
       await expect(page.getByText("Putz! Perdeu a vez!", { exact: true })).toBeVisible();
       await expect(page.getByRole("button", { name: "Tentar de novo" })).toHaveCount(0);
       await page.clock.runFor(200);
-      const celebration = page.getByRole("button", { name: "Fechar conquista", exact: true });
-      if (await celebration.isVisible()) await celebration.click();
       if (remaining === 2) {
         await page.screenshot({
           path: `artifacts/math-heart-timeout/${info.project.name}-${theme}-timeout.png`,
@@ -35,6 +33,10 @@ for (const theme of ["light", "dark"]) {
       if (remaining > 0) {
         await expect(page.getByRole("button", { name: /^Resposta/ })).toHaveCount(4);
         await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "60");
+        if (remaining === 2)
+          await page.screenshot({
+            path: `artifacts/math-heart-timeout/${info.project.name}-${theme}-continued.png`,
+          });
       }
     }
     await expect(page.getByRole("button", { name: "Tentar de novo" })).toBeVisible();

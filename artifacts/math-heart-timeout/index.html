@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Matemática: corações e prazo</title>
+  <style>
+    body {
+      margin: 24px auto;
+      padding: 0 20px;
+      max-width: 1440px;
+      font: 18px system-ui;
+      color: #241d30;
+      background: #fff9ef;
+    }
+    article {
+      margin: 40px 0;
+    }
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    a {
+      color: #51259b;
+    }
+    code {
+      overflow-wrap: anywhere;
+    }
+  </style>
+  <h1>Matemática: corações e prazo</h1>
+  <p>
+    App real, dados locais de teste e tempo acelerado por Playwright. Suspensão simulada dos
+    callbacks, sem validação em celular físico, conta ou sincronização real. Clique em cada imagem
+    para ampliar.
+  </p>
+  <p id="version">Versão em <a href="manifest.json">manifest.json</a>.</p>
+  <p>
+    <a href="/aprender" target="_blank">Abrir app funcionando</a>. Entre em Picos dos Padrões, Pátio
+    das Primeiras Contas e Vamos calcular.
+  </p>
+  <main></main>
+  <script type="module">
+    const manifest = await fetch("manifest.json").then((response) => response.json());
+    document.querySelector("#version").textContent =
+      `SHA da implementação: ${manifest.sha}. Motor: ${manifest.engineHash}.`;
+    for (const item of manifest.images) {
+      const article = document.createElement("article");
+      const title = document.createElement("h2");
+      title.textContent = `${item.viewport}, tema ${item.theme}: ${item.state}`;
+      const link = document.createElement("a");
+      link.href = item.file;
+      link.target = "_blank";
+      const image = document.createElement("img");
+      image.src = item.file;
+      image.alt = title.textContent;
+      link.append(image);
+      article.append(title, link);
+      document.querySelector("main").append(article);
+    }
+  </script>
+</html>

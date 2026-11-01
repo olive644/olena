@@ -4096,3 +4096,37 @@ Nenhum painel, segredo, mensagem real ou regra Firebase publicada pelo agente. A
 Validação final: npm run verify aprovado, 381 arquivos e 2456 testes, lint sem erros e 27 avisos existentes, idiomas/API/tipos/formatação/build/desempenho verdes. Aplicação 1632,2 KiB de 1640, entrada 220,6 KiB. Rodada focada final: 32 testes em seis arquivos aprovados. Edge/Chromium: 16 E2E de acesso/política em PC/mobile claro/escuro aprovados, 12 skips preexistentes da matriz. Screenshots reais do build local em test-results; login externo real indisponível nesse ambiente, sem alegar entrega ou conta criada. Conferidos mobile claro/escuro e ausência de overflow. A remoção do painel não altera estilos das configurações; busca confirmou ausência de referências ao endpoint/componente de teste em src. Logs externos account-events-verify-complete.log, account-events-final-focused.log e account-events-browser.log.
 
 Regras enviadas pelo proprietário comparadas estruturalmente: correspondem exatamente às vigentes no repositório sem privateAccountActivity. Arquivo entregue firebase-rules-account-activity-2026-11-01.json acrescenta somente esse nó privado e índice dueAt. JSON válido, sem publicação feita pelo agente. Referências oficiais da operação cron: https://vercel.com/docs/cron-jobs e https://vercel.com/docs/cron-jobs/manage-cron-jobs .
+
+# Matemática: prazo e três chances (2026-11-01)
+
+Na branch `fix/math-heart-timeout`, erro e expiração do prazo custam uma chance.
+A reserva zerada não encerra mais a partida diretamente: há feedback de tempo,
+perda de um coração e reserva renovada para 60 na próxima pergunta. O resultado
+final continua ocorrendo ao perder as três chances ou concluir o lugar.
+O prazo individual e a penalidade existente de quatro segundos permanecem;
+se a penalidade esgotar a reserva, ela também é renovada sem cobrar outra chance.
+
+O relógio mede duração desde o início da pergunta ativa, usando o maior avanço
+entre relógio monotônico e relógio de parede. Não ignora aba oculta nem limita
+atrasos a um segundo. `visibilitychange`, `pageshow` e o próprio envio da resposta
+reconciliam o prazo. Uma resposta correta atrasada vira timeout sem pontos.
+Uma pergunta suspensa expira uma vez, sem cobrar por perguntas ainda não exibidas.
+Feedback, consulta pendente e celebração de domínio continuam pausando o relógio.
+Isto não é proteção contra adulteração intencional do cliente nem autenticação
+de tempo por servidor. Nenhuma mudança de layout, arte, probabilidades ou serviços.
+
+Validação concluída: verify verde (381 arquivos, 2460 testes), tipos, build e
+orçamento de desempenho. Quatorze e2e Edge/Chromium desktop/mobile verdes,
+incluindo os dois temas. Atlas fez revisão estática independente do código
+`fb1350e21982b9299e031ed91dd50577f2e7d2c5`, sem achados bloqueantes.
+Oito screenshots reais em `artifacts/math-heart-timeout/`, manifesto com SHA e
+hashes da implementação e imagens. Preview: `http://127.0.0.1:4194/aprender`;
+revisão ampliável: `http://127.0.0.1:4194/artifacts/math-heart-timeout/`.
+Servidor Vite desta worktree, porta 4194. Nenhuma captura de desktop.
+O teste de timing anterior perdeu o feedback transitório de 650ms sob carga;
+ele agora pausa o relógio antes da resposta, preservando a mesma asserção.
+Os testes cobrem reserva, três expirações, suspensão dos
+callbacks, aba oculta, clique atrasado e preservação do erro comum. Capturas do
+app e testes de navegador identificam a suspensão como simulação, não toque
+físico ou troca de aplicativo em aparelho real. Sem aprovação visual presumida
+e sem autorização de merge nesta tarefa.

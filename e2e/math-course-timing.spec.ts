@@ -8,6 +8,7 @@ for (const course of [
   test(`${course.title} starts with its longer question clock and accepts answers`, async ({
     page,
   }) => {
+    await page.clock.install();
     await page.addInitScript((unlockedIndex) => {
       localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
       const ids = ["foundations", "school", "advanced", "calculus1", "calculus2", "calculus3"];
@@ -49,7 +50,10 @@ for (const course of [
     expect(remaining).toBeGreaterThan(0);
     expect(remaining).toBeLessThanOrEqual(question.budget);
     await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuemax", "60");
+    // Mantém o feedback de 650ms observável mesmo com a máquina ocupada.
+    await page.clock.pauseAt(new Date(Date.now() + 1000));
     await page.getByRole("button", { name: "Resposta " + question.answer, exact: true }).click();
+    await page.clock.runFor(200);
     await expect(page.locator(".math-answer-reaction")).toBeVisible();
   });
 }
