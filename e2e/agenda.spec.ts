@@ -1,6 +1,9 @@
 import { expect, test } from "@playwright/test";
 import { createInitialWorkspace } from "../src/domain/workspace";
 
+// Data das fixtures dos seis cenários que abrem dias específicos de outubro.
+const AGENDA_FIXTURE_NOW = new Date("2026-10-11T12:00:00Z");
+
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     if (!sessionStorage.getItem("agenda-test-initialized")) {
@@ -18,6 +21,7 @@ test("compact agenda keeps seven days and three actions in one row and desktop c
   page,
 }, info) => {
   const widths = info.project.name === "desktop" ? [1280, 1920] : [320, 390];
+  await page.clock.setFixedTime(AGENDA_FIXTURE_NOW);
   await page.goto("/planejador");
   for (const width of widths) {
     await page.setViewportSize({ width, height: 900 });
@@ -95,6 +99,7 @@ test("day panel matches its column, keeps a plain date and only text selectable"
   page,
 }, info) => {
   if (info.project.name === "desktop") await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.clock.setFixedTime(AGENDA_FIXTURE_NOW);
   await page.goto("/planejador");
   for (const theme of ["light", "dark"]) {
     await page.evaluate(
@@ -157,6 +162,7 @@ test("day panel matches its column, keeps a plain date and only text selectable"
 test("paper form offers all islands, custom date/time, icon repeat and yellow completion in both themes", async ({
   page,
 }, info) => {
+  await page.clock.setFixedTime(AGENDA_FIXTURE_NOW);
   await page.goto("/planejador");
   await expect(page.getByRole("button", { name: "Adicionar", exact: true })).toHaveCount(0);
   for (const theme of ["light", "dark"]) {
@@ -292,6 +298,7 @@ test("editor close button uses the single colored close icon without a plate", a
 test("day planning saves hours and marks Brazilian holidays in both themes", async ({
   page,
 }, info) => {
+  await page.clock.setFixedTime(AGENDA_FIXTURE_NOW);
   await page.goto("/planejador");
   await page.locator('button[data-date="2026-10-12"]').click();
   await expect(
@@ -378,6 +385,7 @@ test("update bell shows red unread counts, keyboard controls and synced reading 
 test("agenda displays compact filtered islands and Pomodoro weeks in both themes", async ({
   page,
 }, info) => {
+  await page.clock.setFixedTime(AGENDA_FIXTURE_NOW);
   const state = createInitialWorkspace();
   state.practiceActivities = [
     {
@@ -503,6 +511,7 @@ test("agenda displays compact filtered islands and Pomodoro weeks in both themes
 test("shelf charts count actual types and focus never infers an unchosen subject", async ({
   page,
 }, info) => {
+  await page.clock.setFixedTime(AGENDA_FIXTURE_NOW);
   const state = createInitialWorkspace();
   state.notebooks = [undefined, undefined, "collection", "note"].map((kind, index) => ({
     id: `shelf-${index}`,

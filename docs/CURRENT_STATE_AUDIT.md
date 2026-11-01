@@ -4140,3 +4140,17 @@ Repouso voltou ao recorte original. Fala usa poses discretas com transições Ri
 Conferência real em Edge headless: sete sequências de reação com amostragem por frame e quadros de comparação; interrupção fala/tristeza/acerto/fala/repouso registrou 162 quadros, 109 áreas de boca distintas e retorno dos inputs a zero. Tela React conferida em 1440x1000 e 390x844, claro/escuro: palavras e boca mudaram, reações consecutivas, erro, acerto, repouso, zero pageerrors/overflow horizontal. Vídeos WebM, PNGs, resultados e hashes em artifacts/math-oliver-review/motion-v5/index.html, portal Oliver: revisão sem corações. Testes focados: 17 verdes, TypeScript e ESLint verdes. O script inicial de tela falhou por seletor incorreto; corrigido o script e repetida a matriz.
 
 Limites: três fixtures, sem coleta real de erros, progresso, conta ou recompensas. Sem aparelho físico/Safari/Firefox, qualidade sonora ou voz. Capturas históricas v3 identificadas separadamente. Provas não significam aprovação humana; sem verify completo/build/e2e geral nesta correção de amostra.
+
+# PR557: fixture mensal da Agenda (2026-11-01)
+
+CI no SHA665e3ad, run41313708275: seis cenários da Agenda falharam no desktop
+e dois no mobile1/2 ao procurar dias de outubro em um calendário aberto em
+novembro. A tela usa a data atual corretamente; o teste não definia a data da
+fixture. `e2e/agenda.spec.ts` agora usa `page.clock.setFixedTime` em
+11/10/2026 antes da navegação apenas nos seis cenários com esses dias fixos.
+Os testes de fuso e notícias mantêm seus próprios relógios. Asserções, datas, testes,
+timeouts, shards e gates preservados. Sem mudança de produto ou workflow.
+Validação local: 32 e2e Agenda desktop/mobile verdes, incluindo notícias e
+fusos. Verify completo verde, 381 arquivos e 2460 testes, tipos, build e
+orçamento de desempenho. A correção terá seus próprios checks no novo SHA.
+Sem autorização de merge desta tarefa.
