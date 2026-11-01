@@ -333,6 +333,7 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // 1601,5 KiB da main (1606,5 KiB medidos). É código do caderno 2D, que é o padrão e roda em toda
 // abertura de caderno, então não cabe no orçamento opcional do 3D. Sem dependência nova, entrada
 // inicial intacta. Teto subido de 1602 para 1608 KiB: PRECISA da aprovação da dona do projeto.
+// ACCOUNT: autorização de 31/10 preservada; main já usa teto maior, 1632 KiB.
 // Perfil e Arcano: total medido 1624,7 KiB, entrada inicial preservada em 220,6 KiB.
 // A proprietária autorizou explicitamente aumentar o teto em vez de reduzir a implementação.
 // Novo teto total de 1630 KiB, com pequena margem para variação entre Windows e Linux.

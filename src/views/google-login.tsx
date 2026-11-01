@@ -18,7 +18,7 @@ import { readStoredOnboardingConfiguration } from "../data/onboarding-client";
 import { rememberReturningVisitor } from "../data/returning-visitor";
 import { EmailAuthForm } from "../components/email-auth-form";
 import { AccountProviderIcon } from "../components/account-provider-icon";
-import { accountAuthError, setAccountLanguage } from "../data/account-auth";
+import { prepareAccountLog, accountAuthError, setAccountLanguage } from "../data/account-auth";
 import type { AccountServices } from "../data/account-auth";
 import type { UserCredential } from "firebase/auth";
 
@@ -85,6 +85,16 @@ function applyGoogleLogin(
   configurationOwner?: string,
 ) {
   rememberReturningVisitor();
+  if (configurationOwner && configurationOwner !== "guest") {
+    void getFirebaseAccountServices()
+      .then(async ({ auth }) => {
+        if (auth.currentUser?.uid !== configurationOwner) return;
+        await (
+          await prepareAccountLog(auth.currentUser)
+        )?.("login");
+      })
+      .catch(() => {});
+  }
   // Login direto não cria conclusão fictícia nem substitui respostas da conta.
   if (answers.length === 0 && configurationOwner !== "guest") return;
   writeSyncedStorage(
@@ -184,8 +194,7 @@ export function GoogleLogin({
         if (url.searchParams.has("authError")) {
           window.history.replaceState(null, "", url.pathname);
           clearPendingAnswers();
-          if (active)
-            setError(uiText("A autorização do Discord não foi concluída. Tente novamente."));
+          if (active) setError(uiText(3116));
         }
         // Retorno de um login que precisou de redirecionamento de página
         // inteira (pop-up bloqueado): completa o fluxo com as respostas que
@@ -263,9 +272,7 @@ export function GoogleLogin({
       setError(
         cause && typeof cause === "object" && "code" in cause
           ? accountAuthError(cause)
-          : uiText(
-              "O acesso com Discord está indisponível. Tente outro método ou tente novamente mais tarde.",
-            ),
+          : uiText(3117),
       );
     }
   }

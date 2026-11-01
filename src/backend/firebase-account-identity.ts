@@ -30,6 +30,7 @@ export function createFirebaseAccountIdentity(projectId: string) {
         emailVerified: boolean;
         anonymous: boolean;
         authTime: number;
+        signInProvider?: string;
       }
     | undefined
   > => {
@@ -63,6 +64,10 @@ export function createFirebaseAccountIdentity(projectId: string) {
             uid: payload.sub,
             name,
             authTime: payload["auth_time"],
+            signInProvider: String(
+              (payload["firebase"] as { sign_in_provider?: string } | undefined)
+                ?.sign_in_provider ?? "",
+            ),
             ...(typeof payload["email"] === "string" ? { email: payload["email"] } : {}),
             emailVerified: payload["email_verified"] === true,
             anonymous:

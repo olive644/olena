@@ -121,3 +121,7 @@ Falhas de gate em execuções antigas aparecem como "failure" quando o e2e foi c
 - 18/10/2026: medição de referência, escopo "só backend roda só o desktop" e relatório de testes lentos no log.
 
 - 26/10/2026: os dois arquivos do bot do Discord em `scripts/` entram na lista de só backend, por caminho exato. Antes, um PR só com esses arquivos, o backend e a documentação rodava o mobile à toa (cerca de 26 minutos a mais) porque `scripts/` conta como interface. Qualquer outro arquivo de `scripts/` continua pedindo o e2e completo.
+
+- 31/10/2026: por autorização explícita do proprietário, teto total de JavaScript passa de 1608 para 1616 KiB na entrega ACCOUNT. Entrada inicial, limites opcionais, escopo e gates do CI preservados. Primeira medição 1608,7 KiB; reduções já prontas mantidas e textos equivalentes comprovados.
+
+- Integração PR553 com main c1ea388: preservado o teto maior já vigente de 1632 KiB, sem reduzir para 1616. Medição combinada 1631,6 KiB, entrada 220,6 KiB; nenhum workflow, timeout ou teste alterado.
