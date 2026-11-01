@@ -67,3 +67,23 @@ Validação local: 2452 testes em 381 arquivos e quatro cenários visuais Chromi
 O verificador anterior rejeitava qualquer permissão explícita de visualização além do membro do bot. Agora consulta o servidor e seus cargos quando encontra uma entrada adicional, permitindo somente a dona ou Administrator real (bit 8), inclusive membro com esse cargo. Nome de cargo não é autorização. Consultas falhas bloqueiam o envio. Metadados administrativos são mantidos apenas durante a requisição, sem registrar nomes ou IDs em logs. everyone continua explicitamente negado e o membro do bot mantém exigência de Ver canal/Enviar mensagens. Nenhuma permissão Discord ou regra Firebase alterada. Não é necessário habilitar novo provedor Firebase para este erro.
 
 Três regressões administrativas falharam antes e passaram após a correção. Casos negativos incluem cargo apenas chamado Administrador e consulta administrativa recusada. Envio real não verificado. A cota existente de três testes por hora permanece.
+
+## Eventos com nome e ausência, 01/11/2026
+
+O teste manual foi removido da interface e do backend. Os códigos de tradução antigos permanecem sem uso para preservar o catálogo append-only. Mensagens reais incluem nome de exibição consultado na conta Firebase atual; na exclusão confirmada, usam o nome do token assinado capturado antes de apagar a conta. Não usam e-mail como substituto. Sem nome disponível, mostram Nome não informado. Menções continuam desativadas e nomes são limitados a 100 caracteres, sem controles.
+
+Cores: criação verde #57F287; exclusão vermelha #ED4245; entrada, saída e ausência roxas #7839EE. A política foi atualizada para 2026-11-01, incluindo nome de exibição e acompanhamento mínimo de atividade. Aceites antigos não autorizam os eventos novos. Nenhuma conta histórica é importada.
+
+Atividade registrada: visita autenticada visível e eventos de interação no app, com no máximo uma tentativa por conta a cada 30 minutos nesta sessão do navegador. O servidor também limita observações pelas cotas ACCOUNT existentes. Abrir a mesma conta em outro aparelho não inicia nenhum contador. Não há garantia de presença online, nem rastreamento de conteúdo, teclas digitadas, estudos ou IP no registro de atividade. O aviso é Sem atividade registrada há 7 dias, uma vez por período de ausência, com o último método observado. Não significa sessão desconectada. O prazo tem resolução de 30 minutos e verificação diária, podendo atrasar por indisponibilidade ou backlog.
+
+O servidor guarda somente referência HMAC, nome, método, último horário e estado do aviso em privateAccountActivity, inacessível ao cliente. Não guarda UID bruto ou token. O cron GET /api/olena?action=account-inactivity exige CRON_SECRET, método GET e flag existente DISCORD_ACCOUNT_LOG_ENABLED. Limite de uma execução por hora, até 50 registros por execução e teto compartilhado ACCOUNT de 2000 mensagens/dia. CAS reserva a ausência antes de enviar, e confere novamente atividade; reabertura posterior à conferência pode coincidir com um aviso já em envio. Entrega é de melhor esforço: uma falha após reserva pode perder o aviso, sem repetição automática de entrega incerta. Atividade nova rearma o acompanhamento; exclusão confirmada remove o registro; após 30 dias sem atividade, a rotina remove o registro privado. O canal Discord conserva o procedimento manual de retenção de 30 dias.
+
+### Ativação pela responsável
+
+1. Publicar firebase-room.rules.json atualizado, com privateAccountActivity negado para leitura/escrita cliente e índice dueAt. Sem esse índice o cron pode falhar. Não há chave nova de workspace sincronizado.
+2. Confirmar CRON_SECRET já usado pela limpeza de salas também configurado no ambiente de produção. Não enviar seu valor no chat.
+3. Após merge e deploy, conferir a tarefa diária 0 5 * * * UTC (02:00 em São Paulo) declarada em vercel.json. Nenhum painel foi alterado pelo agente.
+4. Aceitar a política 2026-11-01 e validar criação/entrada/saída/exclusão no ACCOUNT. A ausência começa a ser contada somente após atividade com esse aceite; não gera avisos retroativos.
+5. Para rollback, desabilitar DISCORD_ACCOUNT_LOG_ENABLED pela responsável e reverter a PR. Isso interrompe todos os logs, não remove mensagens já entregues. A limpeza dos registros privados deve respeitar a retenção descrita.
+
+Entrega real dos novos nomes/cores e cron diário ainda não verificada. A correção administrativa anterior e as permissões atuais são preservadas.

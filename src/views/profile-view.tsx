@@ -1,4 +1,3 @@
-import { DiscordAccountTest } from "../components/discord-account-test";
 import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import { AccountAccessPanel } from "../components/account-access-panel";
 import { PomodoroDurationPicker } from "../components/pomodoro-duration-picker";
@@ -569,9 +568,6 @@ export function ProfileView({
               ))}
             </section>
 
-            {section === "account" && cloud.authenticated === true && (
-              <DiscordAccountTest key={cloud.email || cloud.displayName} />
-            )}
             {section === "account" && cloud.authenticated === true && (
               <AccountAccessPanel
                 {...(cloud.signOut ? { onSignOut: () => cloud.signOut!() } : {})}

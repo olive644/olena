@@ -1,5 +1,8 @@
 import { expect, it, vi } from "vitest";
-import { assertPrivateDiscordLogDestination } from "./discord-account-log-runtime";
+import {
+  assertPrivateDiscordLogDestination,
+  handleAccountInactivity,
+} from "./discord-account-log-runtime";
 
 function fixture(
   options: {
@@ -88,4 +91,22 @@ it("bloqueia envio se consulta administrativa falhar", async () => {
     String(input).endsWith("/roles") ? new Response(null, { status: 403 }) : original(input),
   );
   await expect(assertPrivateDiscordLogDestination()).rejects.toThrow();
+});
+it("cron rejeita chamada pública e método incorreto antes de acessar Discord", async () => {
+  const fetcher = fixture();
+  expect(
+    (
+      await handleAccountInactivity(
+        new Request("https://app.test/api/olena?action=account-inactivity"),
+      )
+    ).status,
+  ).toBe(401);
+  expect(
+    (
+      await handleAccountInactivity(
+        new Request("https://app.test/api/olena?action=account-inactivity", { method: "POST" }),
+      )
+    ).status,
+  ).toBe(405);
+  expect(fetcher).not.toHaveBeenCalled();
 });

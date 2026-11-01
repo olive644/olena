@@ -8,8 +8,10 @@ export type LogAccount = {
   provider: string;
   createdAt?: number;
   deleted: boolean;
+  name?: string;
 };
 type Dependencies = {
+  observe?: (account: LogAccount, reference: string, method: string) => Promise<void>;
   identify: (request: Request, deleted: boolean) => Promise<LogAccount | undefined>;
   consume: (request: Request, uid?: string) => Promise<boolean>;
   store: KvStore;
@@ -20,6 +22,8 @@ type Dependencies = {
     reference: string;
     nonce: string;
     timestamp: string;
+    name: string;
+    color: number;
   }) => Promise<void>;
   secret: string;
   now?: () => number;
@@ -50,7 +54,7 @@ export function createAccountLogHandler(deps: Dependencies) {
       }
       if (
         !body ||
-        !["login", "logout", "deleted"].includes(String(body.event)) ||
+        !["login", "logout", "deleted", "activity"].includes(String(body.event)) ||
         body.consent !== PRIVACY_POLICY_VERSION
       )
         return reply(400);
@@ -67,6 +71,8 @@ export function createAccountLogHandler(deps: Dependencies) {
       if (!(await deps.consume(request, account.uid))) return reply(429);
       const digest = (value: string) =>
         createHmac("sha256", deps.secret).update(value).digest("hex");
+      await deps.observe?.(account, digest(account.uid).slice(0, 16), methods[account.provider]!);
+      if (body.event === "activity") return reply(204);
       const created =
         body.event === "login" &&
         account.createdAt !== undefined &&
@@ -91,6 +97,8 @@ export function createAccountLogHandler(deps: Dependencies) {
                   ? "Conta criada"
                   : "Entrada na conta",
           method: methods[account.provider]!,
+          name: accountLogName(account.name),
+          color: body.event === "deleted" ? 0xed4245 : created ? 0x57f287 : 0x7839ee,
           reference: digest(account.uid).slice(0, 16),
           nonce: id.slice(0, 24),
           timestamp: new Date(clock()).toISOString(),
@@ -105,4 +113,17 @@ export function createAccountLogHandler(deps: Dependencies) {
       return reply(503);
     }
   };
+}
+
+export function accountLogName(name?: string) {
+  return (
+    [...(name ?? "")]
+      .map((char) => {
+        const code = char.codePointAt(0)!;
+        return code < 32 || code === 127 ? " " : char;
+      })
+      .join("")
+      .trim()
+      .slice(0, 100) || "Nome não informado"
+  );
 }

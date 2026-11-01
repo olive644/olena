@@ -1,6 +1,9 @@
 {
   "buildCommand": "npm run build && node scripts/generate-system-updates.mjs",
-  "crons": [{ "path": "/api/room-cleanup", "schedule": "0 4 * * *" }],
+  "crons": [
+    { "path": "/api/room-cleanup", "schedule": "0 4 * * *" },
+    { "path": "/api/olena?action=account-inactivity", "schedule": "0 5 * * *" }
+  ],
   "rewrites": [
     { "source": "/sala", "destination": "/index.html" },
     { "source": "/sala/:code/projetor", "destination": "/index.html" },
