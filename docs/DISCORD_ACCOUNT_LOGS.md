@@ -61,3 +61,9 @@ POST /api/olena?action=account-log-test aceita somente {"confirm":true}. GET con
 Limites compartilhados: 30 consultas/minuto por origem, 1000/dia globais; envio 1/minuto e 3/hora por responsável, 10/dia globais. A interface bloqueia reenvio por um minuto. Não há reenvio automático. Esse teste comprova apenas o trecho servidor > Discord, não o evento automático de login.
 
 Validação local: 2452 testes em 381 arquivos e quatro cenários visuais Chromium/Edge (PC/celular, claro/escuro), com identidade e respostas Discord simuladas. Envio real ainda não verificado. Após deploy, entrar como responsável, clicar no botão e conferir o ID no ACCOUNT ou seguir o diagnóstico apresentado.
+
+## Correção de acesso administrativo aos logs, 01/11/2026
+
+O verificador anterior rejeitava qualquer permissão explícita de visualização além do membro do bot. Agora consulta o servidor e seus cargos quando encontra uma entrada adicional, permitindo somente a dona ou Administrator real (bit 8), inclusive membro com esse cargo. Nome de cargo não é autorização. Consultas falhas bloqueiam o envio. Metadados administrativos são mantidos apenas durante a requisição, sem registrar nomes ou IDs em logs. everyone continua explicitamente negado e o membro do bot mantém exigência de Ver canal/Enviar mensagens. Nenhuma permissão Discord ou regra Firebase alterada. Não é necessário habilitar novo provedor Firebase para este erro.
+
+Três regressões administrativas falharam antes e passaram após a correção. Casos negativos incluem cargo apenas chamado Administrador e consulta administrativa recusada. Envio real não verificado. A cota existente de três testes por hora permanece.
