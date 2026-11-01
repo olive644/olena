@@ -40,6 +40,31 @@ for (const theme of ["light", "dark"]) {
       await page.clock.runFor(1300);
     }
     await expect(page.getByRole("heading", { name: "Vamos entender juntos?" })).toBeVisible();
+    await page.locator(".math-arcade").evaluate((node) => {
+      node.scrollTop = 0;
+    });
+    await page.screenshot({
+      path: `artifacts/math-oliver-review/integration/${info.project.name}-${theme}-intro.png`,
+    });
+    const presentation = await page.evaluate(() => {
+      const root = document.querySelector(".math-arcade")!;
+      const plate = document.querySelector(".oliver-review__calculation")!;
+      const symbol = plate.querySelector(".math-expression > span")!;
+      const header = document.querySelector(".oliver-review__header")!.getBoundingClientRect();
+      const back = document.querySelector(".math-world-back")!.getBoundingClientRect();
+      return {
+        background: getComputedStyle(root).backgroundColor,
+        plateInk: getComputedStyle(plate).color,
+        symbolInk: getComputedStyle(symbol).color,
+        symbolShadow: getComputedStyle(symbol).textShadow,
+        headerTop: header.top,
+        backBottom: back.bottom,
+      };
+    });
+    expect(presentation.background).not.toBe("rgba(0, 0, 0, 0)");
+    expect(presentation.symbolInk).toBe(presentation.plateInk);
+    expect(presentation.symbolShadow).toBe("none");
+    expect(presentation.headerTop).toBeGreaterThanOrEqual(presentation.backBottom);
     await page.clock.runFor(1);
     const saved = await page.evaluate(() => ({
       progress: localStorage.getItem("helena.mathGame.v5"),
