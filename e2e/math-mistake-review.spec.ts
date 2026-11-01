@@ -40,11 +40,16 @@ for (const theme of ["light", "dark"]) {
       await page.clock.runFor(1300);
     }
     await expect(page.getByRole("heading", { name: "Vamos entender juntos?" })).toBeVisible();
+    await page.clock.runFor(400);
+    await expect(page.getByRole("button", { name: "Mostrar tudo" })).toHaveCount(0);
+    await expect(page.locator(".oliver-review-art")).toHaveAttribute("data-speaking", "false");
+    await expect(page.getByText(/Fonte da questão:/)).toHaveCount(0);
+    await expect(page.getByText("Revisão sem vidas, tempo ou recompensas extras.")).toHaveCount(0);
     await page.locator(".math-arcade").evaluate((node) => {
       node.scrollTop = 0;
     });
     await page.screenshot({
-      path: `artifacts/math-oliver-review/integration/${info.project.name}-${theme}-intro.png`,
+      path: `artifacts/math-review-polish/${info.project.name}-${theme}-intro.png`,
     });
     const presentation = await page.evaluate(() => {
       const root = document.querySelector(".math-arcade")!;
@@ -55,6 +60,11 @@ for (const theme of ["light", "dark"]) {
       return {
         background: getComputedStyle(root).backgroundColor,
         plateInk: getComputedStyle(plate).color,
+        digitInk: getComputedStyle(plate.querySelector(".paper-digits")!)
+          .getPropertyValue("--digit-face")
+          .trim(),
+        textInk: getComputedStyle(plate).getPropertyValue("--text").trim(),
+        plateBackground: getComputedStyle(plate).backgroundColor,
         symbolInk: getComputedStyle(symbol).color,
         symbolShadow: getComputedStyle(symbol).textShadow,
         headerTop: header.top,
@@ -63,6 +73,8 @@ for (const theme of ["light", "dark"]) {
     });
     expect(presentation.background).not.toBe("rgba(0, 0, 0, 0)");
     expect(presentation.symbolInk).toBe(presentation.plateInk);
+    expect(presentation.digitInk).toBe(presentation.textInk);
+    expect(presentation.plateBackground).toBe("rgba(0, 0, 0, 0)");
     expect(presentation.symbolShadow).toBe("none");
     expect(presentation.headerTop).toBeGreaterThanOrEqual(presentation.backBottom);
     await page.clock.runFor(1);
@@ -75,6 +87,17 @@ for (const theme of ["light", "dark"]) {
       await expect(
         page.getByRole("heading", { name: missed[index]!.expression, exact: true }),
       ).toBeVisible();
+      await expect(
+        page.getByRole("heading", { name: missed[index]!.expression, exact: true }),
+      ).toHaveCount(1);
+      await expect(page.locator(".oliver-review__answers .math-answer-button")).toHaveCount(4);
+      if (index > 0)
+        await page.screenshot({
+          path: `artifacts/math-review-polish/${info.project.name}-${theme}-question-${index + 1}.png`,
+        });
+      await expect(
+        page.getByText("Sem tempo correndo. Pode tentar quantas vezes precisar."),
+      ).toHaveCount(0);
       expect(
         await page
           .locator(".oliver-review__answers button")
@@ -86,9 +109,13 @@ for (const theme of ["light", "dark"]) {
       await page.getByRole("button", { name: wrong, exact: true }).focus();
       await page.keyboard.press("Enter");
       await page.clock.runFor(900);
+      await expect(page.locator('.math-answer-button[data-feedback="wrong"]')).toHaveCSS(
+        "animation-name",
+        "math-sigh",
+      );
       if (index === 0)
         await page.screenshot({
-          path: `artifacts/math-oliver-review/integration/${info.project.name}-${theme}-wrong.png`,
+          path: `artifacts/math-review-polish/${info.project.name}-${theme}-wrong.png`,
         });
       await page.clock.fastForward(90000);
       await expect(page.getByRole("progressbar")).toHaveCount(0);
@@ -97,10 +124,14 @@ for (const theme of ["light", "dark"]) {
         .getByRole("button", { name: `Resposta ${missed[index]!.answer}`, exact: true })
         .click();
       await page.clock.runFor(480);
+      await expect(page.locator('.math-answer-button[data-feedback="correct"]')).toHaveCSS(
+        "animation-name",
+        "math-cheer",
+      );
       await expect(page.locator(".oliver-review__answers button:disabled")).toHaveCount(4);
       if (index === 0)
         await page.screenshot({
-          path: `artifacts/math-oliver-review/integration/${info.project.name}-${theme}-correct.png`,
+          path: `artifacts/math-review-polish/${info.project.name}-${theme}-correct.png`,
         });
       await page
         .getByRole("button", { name: index === 2 ? "Concluir revisão" : "Próxima questão" })

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { MathCourseId } from "../data/math-courses";
 import type { MasteryQuestion } from "../domain/math-mastery-engine";
 import { mathReviewExplanation } from "../domain/math-review-explanation";
@@ -6,8 +6,6 @@ import { uiText, useLanguage } from "../i18n/runtime";
 import { MathExpression, MathNumber } from "./math-paper-art";
 import { OliverReviewArt } from "./oliver-review-art";
 import { PaperArrow } from "./paper-arrow";
-import { PaperDigits } from "./paper-digits";
-import { PaperSpeech } from "./paper-speech";
 import "./math-mistake-review.css";
 
 export type MissedMathQuestion = {
@@ -32,24 +30,29 @@ export function MathMistakeReview({
   const [phase, setPhase] = useState<"explanation" | "question" | "complete">("explanation");
   const [choice, setChoice] = useState<number | null>(null);
   const [attempt, setAttempt] = useState(0);
-  const [speaking, setSpeaking] = useState(false);
-  const [word, setWord] = useState<{ index: number; word: string; durationMs: number }>();
+  const [feedbackVisible, setFeedbackVisible] = useState(false);
   const root = useRef<HTMLElement>(null);
   const item = items[position]!;
   const correct = choice === item.question.answer;
   const reaction =
     phase === "complete" || correct ? "correct" : choice !== null ? "retry" : "explain";
-  const onWord = useCallback(
-    (event: { index: number; word: string; durationMs: number }) => setWord(event),
-    [],
-  );
   const explanation = useMemo(() => {
     try {
-      return { text: mathReviewExplanation(course, item.question).join("\n"), failed: false };
+      return {
+        text: mathReviewExplanation(course, item.question)
+          .filter((line) => line !== `Fonte da questão: ${item.question.source}`)
+          .join("\n"),
+        failed: false,
+      };
     } catch {
       return { text: uiText(3359, [item.question.review]), failed: true };
     }
   }, [course, item]);
+  useEffect(() => {
+    if (!attempt) return;
+    const timer = window.setTimeout(() => setFeedbackVisible(false), 1200);
+    return () => window.clearTimeout(timer);
+  }, [attempt]);
   useEffect(() => {
     root.current?.scrollIntoView?.({ block: "start" });
     root.current
@@ -65,6 +68,7 @@ export function MathMistakeReview({
   function next() {
     if (!correct) return;
     setChoice(null);
+    setFeedbackVisible(false);
     setAttempt(0);
     if (position + 1 === items.length) {
       setPhase("complete");
@@ -78,7 +82,6 @@ export function MathMistakeReview({
   return (
     <section ref={root} className="oliver-review" aria-label={uiText(3343)}>
       <header className="oliver-review__header">
-        <span>{uiText(3360)}</span>
         <span className="oliver-review__count">{uiText(3344, [position + 1, items.length])}</span>
       </header>
       <div className="oliver-review__trail" aria-hidden="true">
@@ -101,8 +104,7 @@ export function MathMistakeReview({
             key={item.id}
             cue={`${item.id}:${attempt}:${phase}`}
             reaction={reaction}
-            speaking={speaking}
-            word={word}
+            speaking={false}
             variant={attempt % 2}
             label={uiText(3357)}
           />
@@ -116,12 +118,7 @@ export function MathMistakeReview({
           <h1>{uiText(phase === "complete" ? 3354 : 3345)}</h1>
           {phase === "complete" ? (
             <>
-              <PaperSpeech
-                text={uiText(3355)}
-                onWord={onWord}
-                onSpeakingChange={setSpeaking}
-                skipLabel={uiText(3361)}
-              />
+              <p>{uiText(3355)}</p>
               <button type="button" className="primary-button" onClick={onDone}>
                 {uiText(3356)}
                 <PaperArrow />
@@ -133,19 +130,12 @@ export function MathMistakeReview({
                 {item.choice === null ? uiText(3364) : uiText(3363, [item.choice])}
               </p>
               {explanation.failed && <p role="alert">{uiText(3358)}</p>}
-              <div lang="pt-BR">
-                <PaperSpeech
-                  text={explanation.text}
-                  immediate={phase === "question"}
-                  onWord={onWord}
-                  onSpeakingChange={setSpeaking}
-                  skipLabel={uiText(3361)}
-                  className="oliver-review__explanation"
-                />
-              </div>
-              <div className="oliver-review__calculation" aria-label={item.question.expression}>
+              <p lang="pt-BR" className="oliver-review__explanation">
+                {explanation.text}
+              </p>
+              <h2 className="oliver-review__calculation" aria-label={item.question.expression}>
                 <MathExpression value={item.question.expression} />
-              </div>
+              </h2>
               {phase === "explanation" && (
                 <button
                   className="primary-button"
@@ -165,46 +155,55 @@ export function MathMistakeReview({
       </section>
       {phase === "question" && (
         <section className="oliver-review__practice">
-          {choice !== null && (
-            <div key={attempt} className={`oliver-review__fx is-${reaction}`} aria-hidden="true">
-              {Array.from({ length: correct ? 12 : 4 }, (_, i) => (
-                <i key={i} style={{ "--particle": i } as CSSProperties} />
-              ))}
-            </div>
-          )}
-          <div className="oliver-review__practice-heading">
-            <h2 aria-label={item.question.expression}>
-              <MathExpression value={item.question.expression} />
-            </h2>
-            <p>{uiText(3349)}</p>
-          </div>
-          <div className="oliver-review__answers">
+          <div className="oliver-review__answers math-answers">
             {item.question.choices.map((value, index) => (
-              <button
-                key={index}
-                type="button"
-                disabled={correct}
-                data-tone={index}
-                data-result={choice === value ? (correct ? "correct" : "wrong") : undefined}
-                aria-label={uiText(2294) + value}
-                aria-pressed={choice === value}
-                onClick={() => {
-                  setChoice(value);
-                  setAttempt(attempt + 1);
-                  onSound(value === item.question.answer ? "correct" : "wrong");
-                }}
-              >
-                <span className="oliver-review__key">
-                  <PaperDigits value={String(index + 1)} />
-                </span>
-                <MathNumber value={value} />
-              </button>
+              <div className="math-answer-wrap" key={index}>
+                <button
+                  className="math-answer-button"
+                  type="button"
+                  disabled={correct}
+                  data-tone={index}
+                  data-long-answer={String(value).length > 4 || undefined}
+                  data-feedback={
+                    feedbackVisible && choice === value
+                      ? correct
+                        ? "correct"
+                        : "wrong"
+                      : undefined
+                  }
+                  aria-label={uiText(2294) + value}
+                  aria-pressed={choice === value}
+                  onClick={() => {
+                    setFeedbackVisible(true);
+                    setChoice(value);
+                    setAttempt(attempt + 1);
+                    onSound(value === item.question.answer ? "correct" : "wrong");
+                  }}
+                >
+                  <span className="math-answer-key" aria-hidden="true">
+                    {index + 1}
+                  </span>
+                  <MathNumber value={value} />
+                  <span className="math-answer-fold" aria-hidden="true" />
+                </button>
+                {feedbackVisible && choice === value && (
+                  <div
+                    key={attempt}
+                    className={`math-answer-reaction ${correct ? "is-correct" : "is-wrong"}`}
+                    aria-hidden="true"
+                  >
+                    <div>
+                      <b>{uiText(correct ? 3350 : 3351)}</b>
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
           <div className="oliver-review__feedback" role="status" aria-live="polite">
             {choice !== null && (
               <>
-                <p>{uiText(correct ? 3350 : 3351)}</p>
+                <p className="visually-hidden">{uiText(correct ? 3350 : 3351)}</p>
                 {correct && (
                   <button className="primary-button" type="button" onClick={next}>
                     {uiText(position + 1 === items.length ? 3353 : 3352)}
