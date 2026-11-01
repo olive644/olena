@@ -1699,3 +1699,7 @@ Compartilhamento individual: ArcanaShare fica ao lado da estrela na inspeção d
 ## Integração da PR553 com main c1ea388, 31/10/2026
 
 Conflitos de documentação resolvidos preservando ambos os históricos. Main já usa teto total 1632 KiB para perfil/Arcano e sincronização, preservado em vez de rebaixar para os 1616 desta branch antiga. Autenticação, eventos ACCOUNT e otimização de sincronização mantidos. Verify da versão combinada passou, 379 arquivos e 2443 testes, lint sem erros e 27 avisos, idiomas/API/formatação/tipos/build/desempenho verdes. Aplicação 1631,6 KiB de 1632, entrada 220,6 KiB. Edge/Chromium novamente passou 16 E2E de acesso e política em PC/mobile e claro/escuro, 12 skips preexistentes. Logs account-log-main-verify.log e account-log-main-browser.log fora do repositório. Resultados antigos não substituem checks do novo SHA. Discord real e permissões permanecem não verificados.
+
+## Teste manual ACCOUNT, 01/11/2026
+
+Conta inclui controle de teste para responsável; account-log-test usa identidade Firebase atual, CREKS_OWNER_EMAIL verificado, origem aprovada, quotas compartilhadas e mensagem fixa. GET não envia; POST exige confirmação exata e valida ID retornado. Diagnósticos não expõem segredos. Procedimento em DISCORD_ACCOUNT_LOGS.md. Verify 2452 testes aprovado; quatro cenários visuais PC/mobile claro/escuro simulados. Mensagem real e hook Google continuam não verificados. Teto JS autorizado 1640 KiB, medido 1635,0 KiB, sem novas dependências.

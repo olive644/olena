@@ -1,10 +1,15 @@
+import { randomUUID } from "node:crypto";
+import {
+  createDiscordAccountTestHandler,
+  DiscordAccountTestError,
+} from "./discord-account-test.js";
 import { createAccountLogHandler } from "./discord-account-log.js";
 import { createFirebaseAccountIdentity } from "./firebase-account-identity.js";
 import {
   createFirebaseAccessTokenProvider,
   createFirebaseRealtimeStore,
 } from "./firebase-realtime-store.js";
-import { profileAllowedOrigins } from "./profile-handle-runtime.js";
+import { identifyProfileAccount, profileAllowedOrigins } from "./profile-handle-runtime.js";
 import { checkRateLimit } from "./rate-limit.js";
 import { clientAddress } from "./client-address.js";
 
@@ -34,7 +39,23 @@ async function discord(path: string, init?: RequestInit) {
     headers: { Authorization: `Bot ${token}`, "Content-Type": "application/json" },
     signal: AbortSignal.timeout(4000),
   });
-  if (!response.ok) throw new Error("discord-account-log-unavailable");
+  if (!response.ok)
+    throw new DiscordAccountTestError(
+      response.status === 401
+        ? "discord-token-invalid"
+        : response.status === 429
+          ? "discord-rate-limit"
+          : response.status === 403 || response.status === 404
+            ? init?.method === "POST"
+              ? "discord-send-denied"
+              : "discord-channel-access"
+            : "discord-unavailable",
+      path === `/channels/${category}`
+        ? "category"
+        : path.startsWith(`/channels/${channel}`)
+          ? "channel"
+          : undefined,
+    );
   return response;
 }
 // Não envia antes de conferir o destino privado. Nenhuma resposta externa vai para logs.
@@ -52,13 +73,25 @@ export async function assertPrivateDiscordLogDestination() {
       target.guild_id !== guild ||
       (id === category ? target.type !== 4 : target.type !== 0 || target.parent_id !== category)
     )
-      throw new Error("discord-log-destination");
+      throw new DiscordAccountTestError(
+        "discord-log-destination",
+        id === category ? "category" : "channel",
+      );
     if (!rules.some((r) => r.id === guild && r.type === 0 && (BigInt(r.deny) & 1024n) !== 0n))
-      throw new Error("discord-log-public");
+      throw new DiscordAccountTestError(
+        "discord-log-public",
+        id === category ? "category" : "channel",
+      );
     if (rules.some((r) => r.id !== me.id && (BigInt(r.allow) & 1024n) !== 0n))
-      throw new Error("discord-log-extra-viewer");
+      throw new DiscordAccountTestError(
+        "discord-log-extra-viewer",
+        id === category ? "category" : "channel",
+      );
     if (!rules.some((r) => r.id === me.id && r.type === 1 && (BigInt(r.allow) & 3072n) === 3072n))
-      throw new Error("discord-log-bot-access");
+      throw new DiscordAccountTestError(
+        "discord-log-bot-access",
+        id === category ? "category" : "channel",
+      );
   }
 }
 export const handleAccountLog = createAccountLogHandler({
@@ -129,5 +162,49 @@ export const handleAccountLog = createAccountLogHandler({
         ],
       }),
     });
+  },
+});
+
+export const handleAccountLogTest = createDiscordAccountTestHandler({
+  ownerEmail: process.env["CREKS_OWNER_EMAIL"] ?? "",
+  allowedOrigins: profileAllowedOrigins,
+  enabled: () => enabled && !!token,
+  identify: identifyProfileAccount,
+  consume: async (request, uid) =>
+    uid
+      ? (await checkRateLimit(store, "account-test-minute", uid, 1, 60)) &&
+        (await checkRateLimit(store, "account-test-hour", uid, 3, 3600)) &&
+        (await checkRateLimit(store, "account-test-global", "all", 10, 86400))
+      : (await checkRateLimit(
+          store,
+          "account-test-origin",
+          clientAddress(request) ?? "unknown",
+          30,
+          60,
+        )) && (await checkRateLimit(store, "account-test-requests", "all", 1000, 86400)),
+  async send() {
+    await assertPrivateDiscordLogDestination();
+    const response = await discord(`/channels/${channel}/messages`, {
+      method: "POST",
+      body: JSON.stringify({
+        allowed_mentions: { parse: [] },
+        nonce: randomUUID().replace(/-/g, "").slice(0, 24),
+        enforce_nonce: true,
+        embeds: [
+          {
+            title: "Teste de integração ACCOUNT",
+            description:
+              "Mensagem de teste solicitada pela responsável. Não representa criação, entrada ou exclusão de uma conta.",
+            color: 0x7839ee,
+            timestamp: new Date().toISOString(),
+            footer: { text: "OlenaStudy • TESTE" },
+          },
+        ],
+      }),
+    });
+    const body = (await response.json()) as { id?: unknown };
+    if (typeof body.id !== "string" || !/^\d{17,22}$/.test(body.id))
+      throw new DiscordAccountTestError("discord-invalid-response");
+    return body.id;
   },
 });

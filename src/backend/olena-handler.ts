@@ -30,6 +30,10 @@ function error(status: number, code: OlenaErrorCode, message: string): Response 
 /** Catálogo e desafios matemáticos calculados, sem provedor de IA ou escrita no servidor. */
 export async function handleOlena(request: Request): Promise<Response> {
   const url = new URL(request.url);
+  if (url.searchParams.get("action") === "account-log-test") {
+    const { handleAccountLogTest } = await import("./discord-account-log-runtime.js");
+    return handleAccountLogTest(request);
+  }
   if (url.searchParams.get("action") === "account-log") {
     const { handleAccountLog } = await import("./discord-account-log-runtime.js");
     return handleAccountLog(request);
