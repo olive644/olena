@@ -1707,3 +1707,9 @@ Conta inclui controle de teste para responsável; account-log-test usa identidad
 ## ACCOUNT e administradores, 01/11/2026
 
 assertPrivateDiscordLogDestination permite entradas explícitas de owner_id e Administrator verificado por bit real, consultando guild/roles e membro somente quando necessário, com cache por requisição. Continua rejeitando acessos comuns e falha fechada. Não exige ativação Firebase nova. Diagnóstico externo e envio real pendentes de deploy.
+
+## ACCOUNT com nomes e ausência, 01/11/2026
+
+Removido account-log-test e componente de teste. Eventos usam nome verificado e cores por tipo; política 2026-11-01 exige novo aceite. account-activity no navegador envia evento activity sem mensagem imediata. createAccountInactivity persiste metadados mínimos privados e usa CAS; GET account-inactivity autorizado por CRON_SECRET faz varredura diária limitada a 50. Nova atividade rearma aviso de sete dias, exclusão remove, retenção privada 30 dias. Regras privadas e índice dueAt precisam ser publicados pela responsável. Procedimento, limites, rollback e limites de presença em DISCORD_ACCOUNT_LOGS.md. Não afirmar cron ou entrega dos novos embeds reais validados antes de operação.
+
+Validação final desta entrega: verify 2456 testes/381 arquivos, 32 focados e 16 E2E Edge PC/mobile claro/escuro aprovados (12 skips preexistentes). App 1632,2 KiB de 1640. Regras recebidas do proprietário são semanticamente iguais às atuais; foi entregue arquivo com somente privateAccountActivity e índice dueAt adicionados. Publicação continua da responsável; cron e novos embeds reais não verificados.

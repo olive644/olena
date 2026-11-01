@@ -74,7 +74,7 @@ export async function reauthenticateAccount(
 // Captura antes da saída/exclusão, envia somente depois da ação concluída.
 export async function prepareAccountLog(
   user: User,
-): Promise<((event: "login" | "logout" | "deleted") => Promise<void>) | undefined> {
+): Promise<((event: "login" | "logout" | "deleted" | "activity") => Promise<void>) | undefined> {
   if (user.isAnonymous || readPrivacyConsent(localStorage)?.version !== PRIVACY_POLICY_VERSION)
     return undefined;
   const token = await user.getIdToken();

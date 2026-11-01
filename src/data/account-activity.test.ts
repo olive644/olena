@@ -1,0 +1,27 @@
+import { expect, it, vi } from "vitest";
+import type { User } from "firebase/auth";
+import { startAccountActivity } from "./account-activity";
+import { recordPrivacyConsent } from "../domain/privacy-policy";
+it("atividade exige aceite, limita frequência, ignora convidado e para no cleanup", async () => {
+  localStorage.clear();
+  const getIdToken = vi.fn(async () => "test-token");
+  let user: User | null = { uid: "u", isAnonymous: false, getIdToken } as unknown as User;
+  const fetcher = vi.fn<typeof fetch>(async () => new Response(null, { status: 204 }));
+  vi.stubGlobal("fetch", fetcher);
+  const tracker = startAccountActivity(() => user);
+  tracker.report();
+  await vi.waitFor(() => expect(getIdToken).not.toHaveBeenCalled());
+  await Promise.resolve();
+  await Promise.resolve();
+  recordPrivacyConsent(localStorage);
+  tracker.report();
+  await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(1));
+  expect(JSON.parse(String(fetcher.mock.calls[0]?.[1]?.body))).toMatchObject({ event: "activity" });
+  tracker.report();
+  document.dispatchEvent(new Event("pointerdown"));
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  tracker.stop();
+  user = null;
+  document.dispatchEvent(new Event("keydown"));
+  expect(fetcher).toHaveBeenCalledTimes(1);
+});

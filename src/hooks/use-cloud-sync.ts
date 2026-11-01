@@ -1,3 +1,4 @@
+import { startAccountActivity } from "../data/account-activity";
 import { useEffect, useState } from "react";
 import { rememberReturningVisitor } from "../data/returning-visitor";
 import { prepareAccountLog, reauthenticateAccount } from "../data/account-auth";
@@ -777,7 +778,9 @@ export function useCloudSync() {
           };
           window.addEventListener("online", onlineListener);
         }
+        const activity = startAccountActivity(() => auth.currentUser);
         const synchronize = (user: (typeof auth)["currentUser"]) => {
+          activity.report();
           const attempt = ++accountRevision;
           void syncUser(user, attempt).catch(() => {
             if (!active || accountRevision !== attempt) return;
@@ -792,7 +795,11 @@ export function useCloudSync() {
             window.addEventListener("online", onlineListener);
           });
         };
-        stopAuth = authApi.onAuthStateChanged(auth, synchronize);
+        const unsubscribe = authApi.onAuthStateChanged(auth, synchronize);
+        stopAuth = () => {
+          activity.stop();
+          unsubscribe();
+        };
       })
       .catch(() => setState((current) => ({ ...current, ready: true, status: "offline" })));
 

@@ -5,6 +5,7 @@ import { PRIVACY_POLICY_VERSION } from "../domain/privacy-policy";
 function setup() {
   const data = new Map<string, string>();
   const send = vi.fn(async () => {});
+  const observe = vi.fn(async () => {});
   const now = Date.now();
   let account: LogAccount | undefined = {
     uid: "private-uid",
@@ -12,6 +13,7 @@ function setup() {
     provider: "google.com",
     createdAt: now,
     deleted: false,
+    name: "Pessoa verificada",
   };
   let quota = true;
   const handler = createAccountLogHandler({
@@ -19,6 +21,7 @@ function setup() {
     now: () => now,
     allowedOrigins: ["https://app.test"],
     send,
+    observe,
     identify: async () => account,
     consume: async () => quota,
     store: {
@@ -39,6 +42,7 @@ function setup() {
   });
   return {
     send,
+    observe,
     setAccount: (value: LogAccount | undefined) => {
       account = value;
     },
@@ -60,10 +64,44 @@ it("deriva conta e método do servidor, sem exportar UID ou campos forjados", as
   const s = setup();
   expect((await s.call()).status).toBe(204);
   expect(s.send).toHaveBeenCalledWith(
-    expect.objectContaining({ title: "Conta criada", method: "Google" }),
+    expect.objectContaining({
+      title: "Conta criada",
+      method: "Google",
+      name: "Pessoa verificada",
+      color: 0x57f287,
+    }),
   );
   expect(JSON.stringify(s.send.mock.calls)).not.toContain("private-uid");
   expect(JSON.stringify(s.send.mock.calls)).not.toContain("forged-user");
+});
+it("atividade atualiza acompanhamento sem publicar entrada ou criação", async () => {
+  const s = setup();
+  expect((await s.call("activity")).status).toBe(204);
+  expect(s.observe).toHaveBeenCalledWith(
+    expect.objectContaining({ name: "Pessoa verificada" }),
+    expect.stringMatching(/^[a-f0-9]{16}$/),
+    "Google",
+  );
+  expect(s.send).not.toHaveBeenCalled();
+});
+it("entrada de conta existente usa roxo e nome do servidor", async () => {
+  const s = setup();
+  s.setAccount({
+    uid: "u",
+    authTime: s.now / 1000,
+    provider: "google.com",
+    deleted: false,
+    name: "Pessoa\nverificada",
+    createdAt: 0,
+  });
+  await s.call();
+  expect(s.send).toHaveBeenCalledWith(
+    expect.objectContaining({
+      title: "Entrada na conta",
+      color: 0x7839ee,
+      name: "Pessoa verificada",
+    }),
+  );
 });
 it("repetição e concorrência da mesma sessão não duplicam o evento", async () => {
   const s = setup();
@@ -86,12 +124,12 @@ it("exclusão exige conta comprovadamente ausente e saída não se apresenta com
   expect((await s.call("deleted")).status).toBe(401);
   await s.call("logout");
   expect(s.send).toHaveBeenLastCalledWith(
-    expect.objectContaining({ title: "Saída informada pelo aplicativo" }),
+    expect.objectContaining({ title: "Saída informada pelo aplicativo", color: 0x7839ee }),
   );
   s.setAccount({ uid: "u", authTime: s.now / 1000, provider: "password", deleted: true });
   await s.call("deleted");
   expect(s.send).toHaveBeenLastCalledWith(
-    expect.objectContaining({ title: "Conta excluída", method: "E-mail e senha" }),
+    expect.objectContaining({ title: "Conta excluída", method: "E-mail e senha", color: 0xed4245 }),
   );
 });
 it("falha de envio não vira sucesso e permite tentar novamente", async () => {
