@@ -4130,3 +4130,17 @@ callbacks, aba oculta, clique atrasado e preservação do erro comum. Capturas d
 app e testes de navegador identificam a suspensão como simulação, não toque
 físico ou troca de aplicativo em aparelho real. Sem aprovação visual presumida
 e sem autorização de merge nesta tarefa.
+
+# PR557: fixture mensal da Agenda (2026-11-01)
+
+CI no SHA665e3ad, run41313708275: seis cenários da Agenda falharam no desktop
+e dois no mobile1/2 ao procurar dias de outubro em um calendário aberto em
+novembro. A tela usa a data atual corretamente; o teste não definia a data da
+fixture. `e2e/agenda.spec.ts` agora usa `page.clock.setFixedTime` em
+11/10/2026 antes da navegação apenas nos seis cenários com esses dias fixos.
+Os testes de fuso e notícias mantêm seus próprios relógios. Asserções, datas, testes,
+timeouts, shards e gates preservados. Sem mudança de produto ou workflow.
+Validação local: 32 e2e Agenda desktop/mobile verdes, incluindo notícias e
+fusos. Verify completo verde, 381 arquivos e 2460 testes, tipos, build e
+orçamento de desempenho. A correção terá seus próprios checks no novo SHA.
+Sem autorização de merge desta tarefa.
