@@ -1703,3 +1703,7 @@ Conflitos de documentação resolvidos preservando ambos os históricos. Main j�
 ## Teste manual ACCOUNT, 01/11/2026
 
 Conta inclui controle de teste para responsável; account-log-test usa identidade Firebase atual, CREKS_OWNER_EMAIL verificado, origem aprovada, quotas compartilhadas e mensagem fixa. GET não envia; POST exige confirmação exata e valida ID retornado. Diagnósticos não expõem segredos. Procedimento em DISCORD_ACCOUNT_LOGS.md. Verify 2452 testes aprovado; quatro cenários visuais PC/mobile claro/escuro simulados. Mensagem real e hook Google continuam não verificados. Teto JS autorizado 1640 KiB, medido 1635,0 KiB, sem novas dependências.
+
+## ACCOUNT e administradores, 01/11/2026
+
+assertPrivateDiscordLogDestination permite entradas explícitas de owner_id e Administrator verificado por bit real, consultando guild/roles e membro somente quando necessário, com cache por requisição. Continua rejeitando acessos comuns e falha fechada. Não exige ativação Firebase nova. Diagnóstico externo e envio real pendentes de deploy.

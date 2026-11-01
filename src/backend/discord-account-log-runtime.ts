@@ -61,6 +61,38 @@ async function discord(path: string, init?: RequestInit) {
 // Não envia antes de conferir o destino privado. Nenhuma resposta externa vai para logs.
 export async function assertPrivateDiscordLogDestination() {
   const me = (await (await discord("/users/@me")).json()) as { id: string };
+  let administration: { owner: string; roles: Set<string> } | undefined;
+  const members = new Map<string, boolean>();
+  async function isAdministrator(rule: { id: string; type: number }) {
+    if (!administration) {
+      const server = (await (await discord(`/guilds/${guild}`)).json()) as { owner_id: string };
+      const roles = (await (await discord(`/guilds/${guild}/roles`)).json()) as {
+        id: string;
+        permissions: string;
+      }[];
+      if (!server.owner_id || !Array.isArray(roles)) throw new Error("discord-guild-invalid");
+      administration = {
+        owner: server.owner_id,
+        roles: new Set(
+          roles.filter((role) => (BigInt(role.permissions) & 8n) !== 0n).map((role) => role.id),
+        ),
+      };
+    }
+    if (rule.type === 0) return administration.roles.has(rule.id);
+    if (rule.type !== 1) return false;
+    if (rule.id === administration.owner) return true;
+    if (!members.has(rule.id)) {
+      const member = (await (await discord(`/guilds/${guild}/members/${rule.id}`)).json()) as {
+        roles: string[];
+      };
+      if (!Array.isArray(member.roles)) throw new Error("discord-member-invalid");
+      members.set(
+        rule.id,
+        member.roles.some((role) => administration!.roles.has(role)),
+      );
+    }
+    return members.get(rule.id) === true;
+  }
   for (const id of [category, channel]) {
     const target = (await (await discord(`/channels/${id}`)).json()) as {
       guild_id?: string;
@@ -82,11 +114,17 @@ export async function assertPrivateDiscordLogDestination() {
         "discord-log-public",
         id === category ? "category" : "channel",
       );
-    if (rules.some((r) => r.id !== me.id && (BigInt(r.allow) & 1024n) !== 0n))
-      throw new DiscordAccountTestError(
-        "discord-log-extra-viewer",
-        id === category ? "category" : "channel",
-      );
+    for (const rule of rules) {
+      if (
+        rule.id !== me.id &&
+        (BigInt(rule.allow) & 1024n) !== 0n &&
+        !(await isAdministrator(rule))
+      )
+        throw new DiscordAccountTestError(
+          "discord-log-extra-viewer",
+          id === category ? "category" : "channel",
+        );
+    }
     if (!rules.some((r) => r.id === me.id && r.type === 1 && (BigInt(r.allow) & 3072n) === 3072n))
       throw new DiscordAccountTestError(
         "discord-log-bot-access",
