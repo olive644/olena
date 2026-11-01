@@ -111,8 +111,11 @@ test("mathematics islands use the shared adaptive engine and resume mastery", as
   await expect(page.getByRole("button", { name: /^Resposta/ }).last()).toBeInViewport({ ratio: 1 });
   expect(geometry!.x).toBeGreaterThanOrEqual(0);
   expect(geometry!.x + geometry!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+  const missed = [];
   for (let index = 0; index < 3; index++) {
-    const { answer: value } = await shownMathQuestion(page, "foundations");
+    const question = await shownMathQuestion(page, "foundations");
+    missed.push(question);
+    const value = question.answer;
     const buttons = page.getByRole("button", { name: /^Resposta/ });
     const labels = await buttons.evaluateAll((items) =>
       items.map((item) => item.getAttribute("aria-label")),
@@ -121,6 +124,22 @@ test("mathematics islands use the shared adaptive engine and resume mastery", as
     await expect(page.locator(".math-answer-reaction")).toBeVisible();
     await expect(page.locator(".math-answer-reaction")).toHaveCount(0);
   }
+  await expect(page.getByRole("heading", { name: "Vamos entender juntos?" })).toBeVisible();
+  await expect(page.locator(".math-hearts")).toHaveCount(0);
+  await expect(page.locator(".math-reserve")).toHaveCount(0);
+  for (const [index, question] of missed.entries()) {
+    await page.getByRole("button", { name: "Agora é sua vez" }).click();
+    await expect(
+      page.getByRole("heading", { name: question.expression, exact: true }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: `Resposta ${question.answer}`, exact: true }).click();
+    await expect(page.locator(".oliver-review__answers button:disabled")).toHaveCount(4);
+    await page
+      .getByRole("button", { name: index === 2 ? "Concluir revisão" : "Próxima questão" })
+      .click();
+  }
+  await expect(page.getByRole("heading", { name: "Você conseguiu!" })).toBeVisible();
+  await page.getByRole("button", { name: "Ver resultado" }).click();
   await expect(page.getByRole("button", { name: "Tentar de novo" })).toBeVisible();
   await expect(page.getByText(/XP pela prática de Matemática/)).toBeVisible();
   await expect(page.locator('.room-reward-notice [data-paper-editor-icon="close"]')).toBeVisible();
