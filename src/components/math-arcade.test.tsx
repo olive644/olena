@@ -317,6 +317,39 @@ it("uses the shared engine, scores once and retains progress on retry", async ()
   expect(screen.getByLabelText("3 chances restantes")).toBeTruthy();
 });
 
+it("keeps earned XP when leaving the review and clears questions after an account change", async () => {
+  updateAccessibility({ reduceMotion: true });
+  claimDeviceForAccount(localStorage, "review-owner");
+  const back = vi.fn();
+  const view = render(<MathArcade onBack={back} />);
+  await begin();
+  await click("Resposta " + correctAnswer());
+  await tick(650);
+  for (let i = 0; i < 3; i++) {
+    const wrong = screen
+      .getAllByRole("button", { name: /^Resposta/ })
+      .find((button) => button.getAttribute("aria-label") !== "Resposta " + correctAnswer())!;
+    await click(wrong.getAttribute("aria-label")!);
+    await tick(1300);
+  }
+  await tick(2);
+  await tick(1);
+  expect(screen.getByRole("heading", { name: "Vamos entender juntos?" })).toBeTruthy();
+  const xp = JSON.parse(localStorage.getItem("helena.room-xp.v1")!);
+  expect(xp.total).toBeGreaterThan(0);
+  expect(xp.receipts).toHaveLength(1);
+  await click("Voltar às ilhas");
+  await tick(1);
+  expect(back).toHaveBeenCalledOnce();
+  view.unmount();
+  expect(JSON.parse(localStorage.getItem("helena.room-xp.v1")!)).toEqual(xp);
+  render(<MathArcade onBack={back} />);
+  await begin();
+  expect(screen.queryByRole("heading", { name: "Vamos entender juntos?" })).toBeNull();
+  act(() => claimDeviceForAccount(localStorage, "new-account"));
+  expect(back).toHaveBeenCalledTimes(2);
+});
+
 it("rejects double answers and animates leaving before releasing scroll", async () => {
   const back = vi.fn();
   const view = render(<MathArcade onBack={back} />);

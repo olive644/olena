@@ -510,14 +510,14 @@
 }
 
 .math-arcade.is-reviewing {
-  background: var(--bg);
+  background: var(--page, #fff9ef);
   color: var(--text);
 }
 .math-arcade.is-reviewing .math-arcade-stage {
   width: min(1160px, 100%);
   max-width: none;
   display: block;
-  padding: 0;
+  padding: 84px 0 0;
 }
 .math-arcade.is-reviewing::before,
 .math-arcade.is-reviewing .math-game-floor {
@@ -542,4 +542,14 @@
 }
 .oliver-review__answers button:disabled {
   cursor: default;
+}
+.oliver-review .math-expression > span {
+  color: inherit;
+  text-shadow: none;
+}
+.oliver-review__practice-heading {
+  color: var(--text);
+}
+.oliver-review__practice-heading .paper-digits {
+  --digit-face: currentColor;
 }

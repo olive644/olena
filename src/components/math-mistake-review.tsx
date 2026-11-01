@@ -54,10 +54,14 @@ export function MathMistakeReview({
     root.current?.scrollIntoView?.({ block: "start" });
     root.current
       ?.querySelector<HTMLButtonElement>(
-        phase === "question" ? ".oliver-review__answers button" : ".primary-button",
+        phase === "question"
+          ? correct
+            ? ".oliver-review__feedback button"
+            : ".oliver-review__answers button"
+          : ".primary-button",
       )
       ?.focus();
-  }, [position, phase]);
+  }, [position, phase, correct]);
   function next() {
     if (!correct) return;
     setChoice(null);

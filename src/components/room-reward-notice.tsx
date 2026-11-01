@@ -10,11 +10,13 @@ export function RoomRewardNotice({
   bingo = false,
   activity,
   delayMs = 0,
+  deferPresentation = false,
 }: {
   reward: RoomXpReward | undefined;
   bingo?: boolean;
   activity?: "mathematics";
   delayMs?: number;
+  deferPresentation?: boolean;
 }) {
   useLanguage();
 
@@ -56,11 +58,13 @@ export function RoomRewardNotice({
     };
   }, [id, place, xp, completedAt, bingo, activity, delayMs]);
   useEffect(() => {
-    if (!notice) return;
+    if (!notice || deferPresentation) return;
     const timer = window.setTimeout(() => setNotice(""), 6000);
     return () => window.clearTimeout(timer);
-  }, [notice]);
-  return notice && (notificationPreferences.rewards || saveError) ? (
+  }, [notice, deferPresentation]);
+  return notice &&
+    (!deferPresentation || saveError) &&
+    (notificationPreferences.rewards || saveError) ? (
     <aside className="room-reward-notice" role="status">
       <RoomPointsIcon xp />
       <p>{notice}</p>

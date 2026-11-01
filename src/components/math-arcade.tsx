@@ -847,10 +847,11 @@ export function MathArcade({
             </p>
           )}
         </main>
-        {finished && !reviewing && (
+        {finished && (
           <RoomRewardNotice
             reward={reward}
             activity="mathematics"
+            deferPresentation={reviewing}
             delayMs={isMotionReduced() ? 0 : 1200}
           />
         )}
