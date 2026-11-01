@@ -1745,3 +1745,5 @@ adicionais. A galeria `artifacts/math-oliver-review/integration` guarda capturas
 nos quatro pares de viewport e tema, junto de `manifest.json`. O preview local usa
 `npm run preview -- --host 127.0.0.1 --port 4197`; as imagens podem ser abertas em
 `http://127.0.0.1:4196/`. Testes de navegador emulado não substituem aparelho físico.
+
+Revisão Oliver compacta (01/11/2026): MathMistakeReview não usa mais PaperSpeech. A explicação é integral, filtrando apenas a linha técnica de fonte na apresentação; o helper conserva créditos. OliverReviewArt recebe speaking=false e mantém reações. As quatro opções usam o CSS nativo do minigame, sem estilos próprios de botão ou partículas da revisão. Questão única no balão, sem placa. Regresso em e2e/math-mistake-review.spec.ts e provas em artifacts/math-review-polish.

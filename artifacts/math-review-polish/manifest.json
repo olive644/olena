@@ -1,0 +1,32 @@
+{
+  "limits": ["Sem conta/sync real", "Sem aparelho fisico ou audio audivel", "Sem Safari/Firefox"],
+  "mobile": "390x844, iPhone13 emulado",
+  "imageSha256": {
+    "desktop-dark-correct.png": "22542ebef70321bc1d654095ad7f401edd1ce7a6512c5784b1824c8267a27292",
+    "desktop-dark-intro.png": "572247a90270fa14de171178623966c75fe19b275027e7de03eb503dd2f9f69d",
+    "desktop-dark-question-2.png": "aa8f9d7f7d50180baf97dcda1411405557bddd3f5e42c92bc45008560a691d7b",
+    "desktop-dark-question-3.png": "0f8df71967108ae148d9c9a1b42883de6cea6a57c03a48e01e9fa5034290b754",
+    "desktop-dark-wrong.png": "e6245624b527a23ae5ebef38c542b5007d60b6d99160019342d0bb751799689e",
+    "desktop-light-correct.png": "4b146ec8dcf94425a9a4db702f6312c16628e45b119494b6a9c2de6be779cd93",
+    "desktop-light-intro.png": "6b594f84d1482ddeb69ceeedcd03fa49fc401880778685d0950b2595c4ccecdf",
+    "desktop-light-question-2.png": "4e4ee7a02e7b820c0e81cd7d6cff1fa7aecdabb2dae9c7a022bc4a8c6e888865",
+    "desktop-light-question-3.png": "9f62b121011f94e7ade96e14d269e105fa316297822e627c760fd9f0f31f7bcd",
+    "desktop-light-wrong.png": "4778c6dd82f9dab372bf3a12f8506d13159ac193e46bdc4177bda10d2230ff34",
+    "mobile-dark-correct.png": "8a25a01a3314698fe8257b8954c87fbcfa3ac7fd2ef471dda4595dd2d8774235",
+    "mobile-dark-intro.png": "31f74ef73b96973186022fab9daa50ae8d0f77aceb9af5d84a74efc7026e441f",
+    "mobile-dark-question-2.png": "4f0596e2928fa31031705798db301bc061b6b5e645732fb89cc012a5abd36c45",
+    "mobile-dark-question-3.png": "7ffbcfaae5a21a6be69081e89cada4bf55e303c60b301e86348657081042ec37",
+    "mobile-dark-wrong.png": "decdd84cdb03a5d3c65833c1fdb5f5e6b4127c9a8ca58c25d249b0202c16a19c",
+    "mobile-light-correct.png": "5f4fa61894ab5c8eccf20147e4ba3964c2d588597c78bbfdeacf9938987066a4",
+    "mobile-light-intro.png": "3e8f897fec2c2c81e14a27a574d51e8e490949c5bfd6acbbcbcaf2c02c3f2ed5",
+    "mobile-light-question-2.png": "34b53e8d799793b2191929f5ba22f7ae8bbaa6f38e192fcb165e92231bee511e",
+    "mobile-light-question-3.png": "9a6fef4f15c17bdb4705bd511505802a231544b020630ceafe0219c96acd0ae2",
+    "mobile-light-wrong.png": "c03aa72566f252ee3995665d49cef859122ad0cb088957d4ead4e8db91e4d638"
+  },
+  "desktop": "1280x720",
+  "browser": "Edge headless",
+  "focusedTests": 27,
+  "sourceSha": "ff61dc3b768835f9e97c9ed08fc7768ffde5a18a",
+  "themes": ["light", "dark"],
+  "e2e": 6
+}
