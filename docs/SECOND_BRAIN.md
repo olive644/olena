@@ -1724,3 +1724,7 @@ ou suspenso e confere prazo no clique, em `visibilitychange` e `pageshow`.
 prazo individual, para validar timeout por reserva menor. Sem esse campo usa
 `budget / drain`. Feedback e domínio permanecem pausados. Regressões em
 `math-arcade.test.tsx`, `math-mastery.test.ts` e `e2e/math-heart-timeout.spec.ts`.
+
+### Oliver de revisão, amostra v5 de movimento (01/11/2026)
+
+Amostra isolada em artifacts/math-oliver-review, branch feat/math-oliver-review. PaperSpeech revela palavras e emite eventos visuais, sem TTS. OliverReviewArt usa o runtime Rive existente e o rig próprio public/oliver-math-review/oliver.riv; boca com poses discretas e transições de 140 ms, reações temporais, repouso com recorte original, membros sem escala. Não pausar por interseção com viewport, pois isso congelava a reação ao rolar para responder. Aba oculta pausa; movimento reduzido usa PNG. Scripts de conferência validate-rig.mjs, validate-motion-ui.mjs e validate-interruptions.mjs geram provas locais em motion-v5. Ainda não integrado à coleta de erros da partida.

@@ -4130,3 +4130,13 @@ callbacks, aba oculta, clique atrasado e preservação do erro comum. Capturas d
 app e testes de navegador identificam a suspensão como simulação, não toque
 físico ou troca de aplicativo em aparelho real. Sem aprovação visual presumida
 e sem autorização de merge nesta tarefa.
+
+### 01/11/2026: correção e conferência do movimento do Oliver, amostra v5
+
+Na branch feat/math-oliver-review, HEAD f174506 com alterações locais, sem publicação ou merge. A reclamação da proprietária foi reproduzida no rig: repouso usava outra geometria de boca, controle escalar atravessava poses, trajetória do salto tinha descontinuidade, recorte do pé incluía um pedaço do braço e a pausa por viewport congelava reações após rolar até as alternativas.
+
+Repouso voltou ao recorte original. Fala usa poses discretas com transições Rive de 140 ms. Tristeza e felicidade fazem uma sequência temporal e retornam ao original. Salto recebeu antecipação, trajetória contínua e aterrissagem; corpo e membros mantêm escala. Corrigida máscara de pé/braço e boca triste sobre os olhos. Pausa mantém somente aba oculta, além do fallback para movimento reduzido.
+
+Conferência real em Edge headless: sete sequências de reação com amostragem por frame e quadros de comparação; interrupção fala/tristeza/acerto/fala/repouso registrou 162 quadros, 109 áreas de boca distintas e retorno dos inputs a zero. Tela React conferida em 1440x1000 e 390x844, claro/escuro: palavras e boca mudaram, reações consecutivas, erro, acerto, repouso, zero pageerrors/overflow horizontal. Vídeos WebM, PNGs, resultados e hashes em artifacts/math-oliver-review/motion-v5/index.html, portal Oliver: revisão sem corações. Testes focados: 17 verdes, TypeScript e ESLint verdes. O script inicial de tela falhou por seletor incorreto; corrigido o script e repetida a matriz.
+
+Limites: três fixtures, sem coleta real de erros, progresso, conta ou recompensas. Sem aparelho físico/Safari/Firefox, qualidade sonora ou voz. Capturas históricas v3 identificadas separadamente. Provas não significam aprovação humana; sem verify completo/build/e2e geral nesta correção de amostra.
