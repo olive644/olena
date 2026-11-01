@@ -9,56 +9,72 @@
       "viewport": "1280x720",
       "sha256": "f23a6dc49857e180e9cc044dbbb7589ad0d87595eac6abcb6927c4b36108ddd2",
       "file": "desktop-dark-continued.png",
-      "theme": "dark"
+      "theme": "dark",
+      "imagePixels": "1280x720",
+      "deviceScaleFactor": 1
     },
     {
       "state": "expiração, duas chances",
       "viewport": "1280x720",
       "sha256": "bb53c78f2990a4cd9d9eb36909b22b9855a778ce658d1ff1b76d280bb05d9404",
       "file": "desktop-dark-timeout.png",
-      "theme": "dark"
+      "theme": "dark",
+      "imagePixels": "1280x720",
+      "deviceScaleFactor": 1
     },
     {
       "state": "próxima questão, reserva renovada",
       "viewport": "1280x720",
       "sha256": "83b17da7a73a211843e8e21e2caaad28c8b29d49d8288bfc694191db4bd300c0",
       "file": "desktop-light-continued.png",
-      "theme": "light"
+      "theme": "light",
+      "imagePixels": "1280x720",
+      "deviceScaleFactor": 1
     },
     {
       "state": "expiração, duas chances",
       "viewport": "1280x720",
       "sha256": "bfa98354e089c0470ee05e6e3f880a94f746c1be2ce4a35a52bebc2f30e8a1ab",
       "file": "desktop-light-timeout.png",
-      "theme": "light"
+      "theme": "light",
+      "imagePixels": "1280x720",
+      "deviceScaleFactor": 1
     },
     {
       "state": "próxima questão, reserva renovada",
-      "viewport": "1170x1992",
+      "viewport": "390x664",
       "sha256": "80812be65eb9c9c72af2c2ec2c4fad71d8fce5e7204e3800bc7eb2b971ebdd0d",
       "file": "mobile-dark-continued.png",
-      "theme": "dark"
+      "theme": "dark",
+      "imagePixels": "1170x1992",
+      "deviceScaleFactor": 3
     },
     {
       "state": "expiração, duas chances",
-      "viewport": "1170x1992",
+      "viewport": "390x664",
       "sha256": "8b9cc9aa4e365d8babd71e72206813ede0b36e3ad889b710184e9bba4417be27",
       "file": "mobile-dark-timeout.png",
-      "theme": "dark"
+      "theme": "dark",
+      "imagePixels": "1170x1992",
+      "deviceScaleFactor": 3
     },
     {
       "state": "próxima questão, reserva renovada",
-      "viewport": "1170x1992",
+      "viewport": "390x664",
       "sha256": "63b92bc78041c6dc64435c6dff1660f807f0444362fe65411fcd03564cee88f1",
       "file": "mobile-light-continued.png",
-      "theme": "light"
+      "theme": "light",
+      "imagePixels": "1170x1992",
+      "deviceScaleFactor": 3
     },
     {
       "state": "expiração, duas chances",
-      "viewport": "1170x1992",
+      "viewport": "390x664",
       "sha256": "b86eb91e432806b06764ebb090ab7bd9508293f1e8b312e988f093e3ef87c293",
       "file": "mobile-light-timeout.png",
-      "theme": "light"
+      "theme": "light",
+      "imagePixels": "1170x1992",
+      "deviceScaleFactor": 3
     }
   ],
   "masteryHash": "cfc284a40adebf0487719e51f7fe39e457f90cddbadf78bf4b25f6e24a5391c4"
