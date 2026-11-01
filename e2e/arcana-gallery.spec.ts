@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { readFile } from "node:fs/promises";
 for (const theme of ["light", "dark"])
   test(`Arcano migration, earned highlights, real drag and responsive interpretation: ${theme}`, async ({
     page,
@@ -138,4 +139,22 @@ for (const theme of ["light", "dark"])
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
+    const share = page.getByRole("button", { name: "Compartilhar carta", exact: true });
+    await share.click();
+    const sharing = page.getByRole("dialog", { name: "Compartilhar carta", exact: true });
+    await expect(sharing.locator(".arcana-share-preview")).toBeVisible();
+    await expect(sharing.locator(".arcana-share-preview")).toHaveJSProperty("naturalWidth", 1080);
+    const [download] = await Promise.all([
+      page.waitForEvent("download"),
+      sharing.getByRole("link", { name: "Salvar imagem", exact: true }).click(),
+    ]);
+    expect(download.suggestedFilename()).toBe("olenastudy-arcano-major-17.png");
+    const file = await download.path();
+    expect(file).not.toBeNull();
+    const png = await readFile(file!);
+    expect(png.subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1080, 1350]);
+    await page.keyboard.press("Escape");
+    await expect(sharing).toHaveCount(0);
+    await expect(share).toBeFocused();
   });

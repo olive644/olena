@@ -1,0 +1,50 @@
+[
+  {
+    "label": "Comum: Seis de Paus",
+    "rank": 0,
+    "particles": 4,
+    "reducedMotion": "no-preference",
+    "hidden": false,
+    "source": "real component with simulated reward, no audio/storage/random draw"
+  },
+  {
+    "label": "Épica: O Mago",
+    "rank": 2,
+    "particles": 8,
+    "reducedMotion": "no-preference",
+    "hidden": false,
+    "source": "real component with simulated reward, no audio/storage/random draw"
+  },
+  {
+    "label": "Lendária: A Estrela",
+    "rank": 3,
+    "particles": 12,
+    "reducedMotion": "no-preference",
+    "hidden": false,
+    "source": "real component with simulated reward, no audio/storage/random draw"
+  },
+  {
+    "label": "Comum: Seis de Paus",
+    "rank": 0,
+    "particles": 4,
+    "reducedMotion": "reduce",
+    "hidden": true,
+    "source": "real component with simulated reward, no audio/storage/random draw"
+  },
+  {
+    "label": "Épica: O Mago",
+    "rank": 2,
+    "particles": 8,
+    "reducedMotion": "reduce",
+    "hidden": true,
+    "source": "real component with simulated reward, no audio/storage/random draw"
+  },
+  {
+    "label": "Lendária: A Estrela",
+    "rank": 3,
+    "particles": 12,
+    "reducedMotion": "reduce",
+    "hidden": true,
+    "source": "real component with simulated reward, no audio/storage/random draw"
+  }
+]

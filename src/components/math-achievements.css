@@ -703,14 +703,14 @@ body.reduce-motion .achievement-inspection [data-tier] .achievement-foil::after 
   content-visibility: auto;
   contain-intrinsic-size: auto 190px;
 }
-.achievement-static-art > .math-achievement-art {
+.achievement-static-art .math-achievement-art {
   --tier-from: 36px;
   animation: achievement-tier-in 560ms cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
 }
 .achievement-static-art[data-direction="down"] > .math-achievement-art {
   --tier-from: -36px;
 }
-.achievement-static-art > .math-achievement-art::before {
+.achievement-static-art .math-achievement-art::before {
   content: "";
   position: absolute;
   inset: 8%;
@@ -772,19 +772,19 @@ body.reduce-motion .achievement-inspection [data-tier] .achievement-foil::after 
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .achievement-static-art > .math-achievement-art,
-  .achievement-static-art > .math-achievement-art::before,
+  .achievement-static-art .math-achievement-art,
+  .achievement-static-art .math-achievement-art::before,
   .achievement-inspection .achievement-status,
   .achievement-tier-steps button {
     animation: none;
     transition: none;
   }
 }
-:root[data-reduce-motion="true"] .achievement-static-art > .math-achievement-art,
-:root[data-reduce-motion="true"] .achievement-static-art > .math-achievement-art::before,
+:root[data-reduce-motion="true"] .achievement-static-art .math-achievement-art,
+:root[data-reduce-motion="true"] .achievement-static-art .math-achievement-art::before,
 :root[data-reduce-motion="true"] .achievement-inspection .achievement-status,
-body.reduce-motion .achievement-static-art > .math-achievement-art,
-body.reduce-motion .achievement-static-art > .math-achievement-art::before,
+body.reduce-motion .achievement-static-art .math-achievement-art,
+body.reduce-motion .achievement-static-art .math-achievement-art::before,
 body.reduce-motion .achievement-inspection .achievement-status {
   animation: none;
 }

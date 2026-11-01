@@ -21,6 +21,7 @@ import { ProfileNetworks } from "./profile-networks";
 import { ProfileStreakValues } from "./profile-streaks";
 import { ProfileSafety } from "./profile-safety";
 import { AchievementCollection } from "./math-achievements";
+import { PublicProfileCards } from "./public-profile-cards";
 
 function ProfileVisitDialog({
   person,
@@ -375,6 +376,9 @@ export function SocialDirectory({
             ) : (
               <p>{uiText(2837)}</p>
             ))}
+          {!person.blocked && !!person.cardFavorites?.length && (
+            <PublicProfileCards person={person} />
+          )}
           <nav className="social-profile-networks" aria-label={uiText(913)}>
             <ProfileNetworks links={person.details?.socialLinks ?? []} />
           </nav>
@@ -428,9 +432,11 @@ export function SocialDirectory({
           {ownCard && (
             <ProfileShareCard
               person={ownCard}
-              featured={(ownProfile.achievementFavorites ?? []).filter(
-                (id) => !feed.self.achievements || feed.self.achievements.includes(id),
-              )}
+              featured={(
+                ownProfile.achievementFavorites ??
+                feed.self.achievementFavorites ??
+                []
+              ).filter((id) => !feed.self.achievements || feed.self.achievements.includes(id))}
             />
           )}
         </>

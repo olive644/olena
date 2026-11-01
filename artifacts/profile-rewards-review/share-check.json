@@ -1,0 +1,50 @@
+[
+  {
+    "name": "share-desktop-light",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "theme": "light",
+    "width": 720,
+    "height": 1160,
+    "bytes": 272834,
+    "source": "Real local canvas export from component, fixture profile, no account/network delivery"
+  },
+  {
+    "name": "share-desktop-dark",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "theme": "dark",
+    "width": 720,
+    "height": 1160,
+    "bytes": 272834,
+    "source": "Real local canvas export from component, fixture profile, no account/network delivery"
+  },
+  {
+    "name": "share-mobile-light",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "theme": "light",
+    "width": 720,
+    "height": 1160,
+    "bytes": 272834,
+    "source": "Real local canvas export from component, fixture profile, no account/network delivery"
+  },
+  {
+    "name": "share-mobile-dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "theme": "dark",
+    "width": 720,
+    "height": 1160,
+    "bytes": 272834,
+    "source": "Real local canvas export from component, fixture profile, no account/network delivery"
+  }
+]

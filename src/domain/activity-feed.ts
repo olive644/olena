@@ -1,6 +1,8 @@
 import type { SocialActivity, SocialActivitySummary, SocialNotice } from "./profile-social";
 export function meaningfulActivity(item: SocialActivitySummary) {
   return (
+    item.kind === "card" ||
+    item.kind === "achievement" ||
     item.kind === "module" ||
     item.kind === "streak" ||
     (item.kind === "practice"
@@ -11,7 +13,7 @@ export function meaningfulActivity(item: SocialActivitySummary) {
 export function groupedActivities(items: SocialActivity[]) {
   const groups = new Map<string, SocialActivity>();
   for (const item of items.filter(meaningfulActivity)) {
-    const key = `${item.person.username}:${item.kind}:${item.course ?? ""}:${item.kind === "module" ? item.level : new Date(item.at).toISOString().slice(0, 10)}`;
+    const key = `${item.person.username}:${item.kind}:${item.course ?? ""}:${item.kind === "card" || item.kind === "achievement" ? item.id : item.kind === "module" ? item.level : new Date(item.at).toISOString().slice(0, 10)}`;
     const old = groups.get(key);
     if (!old) {
       groups.set(key, item);

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { uiLocale, uiText, useLanguage } from "../i18n/runtime";
 import { MATH_COURSES, type MathCourseId } from "../data/math-courses";
@@ -21,6 +21,8 @@ import { RoomPointsIcon } from "./room-paper-icons";
 import { GeneralAchievementScene } from "./general-achievement-art";
 import { useAchievementDrag } from "../hooks/use-achievement-drag";
 import { isMotionReduced } from "../data/accessibility-preferences";
+import { createMathSound } from "../data/math-sound";
+import { PaperRadiance } from "./arcana-radiance";
 import "./math-achievements.css";
 import "./achievement-motion.css";
 
@@ -178,6 +180,37 @@ export function AchievementCollection({
   );
   const value = values?.find((item) => item.id === selected?.id);
   const earnedAt = value?.earnedAt ?? (selected ? dates[selected.id] : undefined);
+  const selectedEarned = !!selected && earned.has(selected.id);
+  const sound = useRef<ReturnType<typeof createMathSound> | null>(null);
+  const lastSound = useRef("");
+  const cue = useCallback((item: Achievement, obtained: boolean) => {
+    if (!obtained || lastSound.current === item.id) return;
+    lastSound.current = item.id;
+    sound.current ??= createMathSound();
+    sound.current.unlock();
+    sound.current.play(
+      item.rarity === "rare"
+        ? "achievementRare"
+        : item.rarity === "uncommon"
+          ? "achievementUncommon"
+          : "achievementCommon",
+    );
+  }, []);
+  useEffect(
+    () => () => {
+      sound.current?.dispose();
+      sound.current = null;
+      lastSound.current = "";
+    },
+    [],
+  );
+  useEffect(() => {
+    if (selected && navigator.userActivation?.isActive) cue(selected, selectedEarned);
+  }, [selected, selectedEarned, cue]);
+  function choose(item: Achievement) {
+    cue(item, earned.has(item.id));
+    setSelected(item);
+  }
   useEffect(() => {
     if (selected) inspection.current?.showModal();
   }, [selected]);
@@ -248,6 +281,7 @@ export function AchievementCollection({
     [],
   );
   function closeInspection() {
+    lastSound.current = "";
     generation.current++;
     inspection.current?.close();
     setSelected(undefined);
@@ -321,7 +355,7 @@ export function AchievementCollection({
             onClick={() => {
               if (drag.suppressClick()) return;
               setError("");
-              setSelected(item);
+              choose(item);
             }}
             aria-label={title(item) + ". " + uiText(earned.has(item.id) ? 2792 : 2793)}
           >
@@ -617,11 +651,20 @@ export function AchievementCollection({
             ) : (
               <>
                 <div ref={art} className="achievement-static-art" data-direction={direction}>
-                  <AchievementArt
-                    key={selected.id}
-                    item={selected}
-                    locked={!earned.has(selected.id)}
-                  />
+                  {selectedEarned ? (
+                    <PaperRadiance
+                      key={selected.id}
+                      rank={selected.rarity === "rare" ? 3 : selected.rarity === "uncommon" ? 2 : 0}
+                    >
+                      <AchievementArt item={selected} />
+                    </PaperRadiance>
+                  ) : (
+                    <AchievementArt
+                      key={selected.id}
+                      item={selected}
+                      locked={!earned.has(selected.id)}
+                    />
+                  )}
                 </div>
                 <p key={selected.id} className="achievement-status">
                   <span className={"achievement-rarity is-" + selected.rarity}>
@@ -690,7 +733,7 @@ export function AchievementCollection({
                         aria-label={uiText(2864, [materialName(item) || item.target])}
                         onClick={() => {
                           setDirection(item.target < selected.target ? "down" : "up");
-                          setSelected(item);
+                          choose(item);
                           setError("");
                         }}
                       >

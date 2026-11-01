@@ -1,0 +1,23 @@
+{
+  "note": "Browser pointer tests, including narrow viewport. Physical touch not tested.",
+  "results": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "reorder": true,
+      "explicitDragRemoval": true,
+      "outsideDropCanceled": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "reorder": true,
+      "explicitDragRemoval": true,
+      "outsideDropCanceled": true
+    }
+  ]
+}

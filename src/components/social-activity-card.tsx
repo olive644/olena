@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
+import { RewardDate } from "./reward-date";
+import { HelenaLoading } from "./helena-loading";
+const SocialReward = lazy(() => import("./social-reward"));
 import { uiText } from "../i18n/runtime";
 import { requestSocial, visitSocialProfile } from "../data/profile-social";
 import type { SocialActivity, SocialActivitySummary, SocialNotice } from "../domain/profile-social";
@@ -11,7 +14,6 @@ export function activityLabel(activity: SocialActivitySummary) {
       course?.topics[activity.level ?? -1] ?? uiText(1406),
       course?.title ?? uiText(1406),
     ]);
-  // Texto provisório de dados: a copy e a arte finais ficam com a direção visual.
   if (activity.kind === "card") return uiText("Conquistou uma nova carta do Arcano.");
   if (activity.kind === "achievement") return uiText("Desbloqueou uma nova conquista.");
   const labels = {
@@ -57,6 +59,12 @@ export function SocialActivityCard({
         </span>
       </button>
       <p>{activityLabel(activity)}</p>
+      {(activity.kind === "card" || activity.kind === "achievement") && (
+        <Suspense fallback={<HelenaLoading compact />}>
+          <SocialReward activity={activity} />
+        </Suspense>
+      )}
+      <RewardDate at={activity.at} showTime />
       <div className="social-activity-reactions">
         <button
           type="button"

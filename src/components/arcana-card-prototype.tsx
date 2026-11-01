@@ -12,6 +12,7 @@ export function ArcanaCardPrototype({
   art = "/arcana/mago-ink-v1.webp",
   indexColor = "#facc15",
   description = "Olena com varinha e os quatro símbolos do arcano O Mago.",
+  lazy = false,
 }: {
   back?: boolean;
   title?: string;
@@ -19,6 +20,7 @@ export function ArcanaCardPrototype({
   art?: string;
   indexColor?: string;
   description?: string;
+  lazy?: boolean;
 }) {
   if (back)
     return (
@@ -59,7 +61,15 @@ export function ArcanaCardPrototype({
       style={{ "--arcana-title-size": `${Math.min(26, 430 / title.length)}px` } as CSSProperties}
     >
       <div className="arcana-paper__scene">
-        <img src={art} width="900" height="1350" alt={description} draggable={false} />
+        <img
+          src={art}
+          width="900"
+          height="1350"
+          alt={description}
+          draggable={false}
+          loading={lazy ? "lazy" : "eager"}
+          decoding="async"
+        />
         <span
           className="arcana-paper__index"
           style={

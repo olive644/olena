@@ -1,8 +1,9 @@
 import { SYNCED_STORAGE_KEYS } from "./synced-storage";
 
 const supported = new Set<string>(SYNCED_STORAGE_KEYS);
-const wireName = (key: string) =>
+export const cloudWireName = (key: string) =>
   `k_${btoa(key).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")}`;
+const wireName = cloudWireName;
 
 // Storage names contain dots; Firebase child names cannot. Values remain unchanged.
 export function encodeCloudItems(items: Record<string, string>): Record<string, string> {
