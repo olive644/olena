@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { rememberReturningVisitor } from "../data/returning-visitor";
-import { reauthenticateAccount } from "../data/account-auth";
+import { prepareAccountLog, reauthenticateAccount } from "../data/account-auth";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { deleteAccountEverywhere } from "../data/account-deletion";
 import { claimDeviceForAccount, clearPersonalData } from "../data/personal-data";
@@ -217,7 +217,9 @@ export function useCloudSync() {
             await import("../data/account-devices")
               .then(({ requestAccountDevices }) => requestAccountDevices("DELETE"))
               .catch(() => {});
+            const log = await prepareAccountLog(user).catch(() => undefined);
             await authApi.signOut(auth);
+            void log?.("logout").catch(() => {});
             rememberReturningVisitor();
             stopSyncing();
             accountRevision++;
@@ -252,7 +254,9 @@ export function useCloudSync() {
                 },
                 deleteAuthUser: async () => {
                   const deletionToken = await user.getIdToken();
+                  const log = await prepareAccountLog(user).catch(() => undefined);
                   await authApi.deleteUser(user);
+                  void log?.("deleted").catch(() => {});
                   // O acesso já foi excluído; falha de limpeza não pode deixar dados no aparelho.
                   await fetch("/api/olena?action=account-auth&step=cleanup", {
                     method: "POST",

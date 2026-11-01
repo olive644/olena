@@ -1,3 +1,4 @@
+import { PRIVACY_POLICY_VERSION, readPrivacyConsent } from "../domain/privacy-policy";
 import type { User, UserCredential } from "firebase/auth";
 import { getFirebaseAccountServices } from "./firebase-account";
 import { uiText } from "../i18n/runtime";
@@ -10,22 +11,18 @@ export function setAccountLanguage(services: AccountServices): void {
 
 export function accountAuthError(cause: unknown): string {
   const code = cause && typeof cause === "object" && "code" in cause ? cause.code : "";
-  if (code === "auth/network-request-failed")
-    return uiText("Sem conexão. Confira sua internet e tente novamente.");
-  if (code === "auth/too-many-requests")
-    return uiText("Muitas tentativas. Aguarde um pouco antes de tentar novamente.");
+  if (code === "auth/network-request-failed") return uiText(3075);
+  if (code === "auth/too-many-requests") return uiText(3076);
   if (code === "auth/operation-not-allowed" || code === "auth/unauthorized-domain")
-    return uiText("Este método de acesso ainda não está configurado. Use outro método.");
+    return uiText(3077);
   if (
     code === "auth/account-exists-with-different-credential" ||
     code === "auth/email-already-in-use"
   )
-    return uiText(
-      "Não foi possível criar este acesso. Entre pelo método que já utiliza ou recupere sua senha.",
-    );
+    return uiText(3078);
   if (code === "auth/weak-password" || code === "auth/password-does-not-meet-requirements")
-    return uiText("A senha não atende à política de segurança da conta.");
-  return uiText("Não foi possível entrar. Confira seus dados e tente novamente.");
+    return uiText(3079);
+  return uiText(3080);
 }
 
 export async function reauthenticateAccount(
@@ -72,4 +69,21 @@ export async function reauthenticateAccount(
     // Revogação exigida pela Apple antes de apagar conta e dados associados.
     await services.authApi.revokeAccessToken(services.auth, credential.accessToken);
   }
+}
+
+// Captura antes da saída/exclusão, envia somente depois da ação concluída.
+export async function prepareAccountLog(
+  user: User,
+): Promise<((event: "login" | "logout" | "deleted") => Promise<void>) | undefined> {
+  if (user.isAnonymous || readPrivacyConsent(localStorage)?.version !== PRIVACY_POLICY_VERSION)
+    return undefined;
+  const token = await user.getIdToken();
+  return async (event) => {
+    await fetch("/api/olena?action=account-log", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ event, consent: PRIVACY_POLICY_VERSION }),
+      signal: AbortSignal.timeout(5000),
+    });
+  };
 }

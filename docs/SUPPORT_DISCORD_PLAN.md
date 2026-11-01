@@ -183,3 +183,7 @@ Entregue só a base do "Receber". Ainda não há envio de tickets, comandos nem 
   substitui a lista de comandos daquele servidor. Registro por servidor aparece na hora.
 - Não verificado: o registro e os comandos funcionando no servidor de testes, até a proprietária
   rodar o script e testar.
+
+## ACCOUNT, 31/10/2026
+
+Primeiro fluxo de saída implementado separadamente do suporte: consultar docs/DISCORD_ACCOUNT_LOGS.md. Atendimento por tickets continua inativo. Configuração real e flag do ACCOUNT ainda pendentes, não confundir implementação com ativação.

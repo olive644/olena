@@ -1403,5 +1403,45 @@
     "file": "src/views/today-view.tsx",
     "id": 1555,
     "text": "Ver agenda"
+  },
+  {
+    "file": "src/data/account-auth.ts",
+    "id": 3075,
+    "text": "Sem conexão. Confira sua internet e tente novamente."
+  },
+  {
+    "file": "src/data/account-auth.ts",
+    "id": 3076,
+    "text": "Muitas tentativas. Aguarde um pouco antes de tentar novamente."
+  },
+  {
+    "file": "src/data/account-auth.ts",
+    "id": 3077,
+    "text": "Este método de acesso ainda não está configurado. Use outro método."
+  },
+  {
+    "file": "src/data/account-auth.ts",
+    "id": 3078,
+    "text": "Não foi possível criar este acesso. Entre pelo método que já utiliza ou recupere sua senha."
+  },
+  {
+    "file": "src/data/account-auth.ts",
+    "id": 3079,
+    "text": "A senha não atende à política de segurança da conta."
+  },
+  {
+    "file": "src/data/account-auth.ts",
+    "id": 3080,
+    "text": "Não foi possível entrar. Confira seus dados e tente novamente."
+  },
+  {
+    "file": "src/views/google-login.tsx",
+    "id": 3116,
+    "text": "A autorização do Discord não foi concluída. Tente novamente."
+  },
+  {
+    "file": "src/views/google-login.tsx",
+    "id": 3117,
+    "text": "O acesso com Discord está indisponível. Tente outro método ou tente novamente mais tarde."
   }
 ]
