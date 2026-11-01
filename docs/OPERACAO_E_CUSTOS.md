@@ -72,6 +72,8 @@ Ao adicionar uma chave nova a `SYNCED_STORAGE_KEYS`, as regras precisam ser atua
 
 Referências verificadas em páginas oficiais do Supabase em 17/10/2026: plano gratuito com 500 MB de banco, 5 GB de egress sem cache e 5 GB com cache por mês (sem cobrança de excedente: o uso é restrito), pausa por inatividade após 7 dias, 2 projetos. O limite de tráfego é a metade do do Firebase. MySQL, Neon e Azure não foram verificados: o PlanetScale acabou com o plano gratuito em 2024 (de memória), e o Azure exige cartão e é fácil de gerar cobrança sem querer. Se um dia for preciso migrar, Postgres (Supabase ou Neon) é a escolha geral mais razoável, mas isso é palpite.
 
+Desenho detalhado de uma sincronização em banco próprio, ainda como proposta: `docs/DESENHO_SYNC_BACKEND_PROPRIO.md`.
+
 ## 4. Visibilidade do repositório
 
 - **Estado verificado em 18/10/2026:** `olive644/olena` é **público**, com 1 fork (de um dev do projeto) e 2 estrelas. Tem `LICENSE` e `SECURITY.md`. O `package.json` diz `UNLICENSED`.
