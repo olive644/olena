@@ -24,6 +24,31 @@ import { handleOlena } from "../backend/olena-handler";
 import { mergeSyncedItems } from "../data/sync-conflict";
 import { ACCOUNT_OWNER_KEY, claimDeviceForAccount } from "../data/personal-data";
 
+it("assesses an expired reserve as one timeout before the individual allowance", async () => {
+  const progress = upgradeMasteryProgress();
+  const question = nextMasteryQuestion("foundations", progress);
+  const input = {
+    action: "answer" as const,
+    course: "foundations" as const,
+    progress,
+    question,
+    choice: question.answer,
+    elapsed: 5,
+    timeLimit: 5,
+    streak: 0,
+    timedOut: true,
+  };
+  const result = await requestMastery(input, new AbortController().signal);
+  expect(result).toMatchObject({ correct: false, timedOut: true, points: 0 });
+  for (const timeLimit of [0, -1, NaN, Infinity, question.budget / question.drain + 1])
+    await expect(
+      requestMastery({ ...input, timeLimit }, new AbortController().signal),
+    ).rejects.toThrow("Resposta inválida");
+  await expect(
+    requestMastery({ ...input, elapsed: 1 }, new AbortController().signal),
+  ).rejects.toThrow("Resposta inválida");
+});
+
 function ready() {
   let p = upgradeMasteryProgress();
   for (let i = 0; i < 60 && nextMasteryQuestion("foundations", p).phase !== "final"; i++) {

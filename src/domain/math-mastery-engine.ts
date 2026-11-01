@@ -175,6 +175,7 @@ export async function requestMastery(
     question?: MasteryQuestion;
     choice?: number;
     elapsed?: number;
+    timeLimit?: number;
     streak?: number;
     timedOut?: boolean;
   },
@@ -210,7 +211,12 @@ export async function requestMastery(
     input.streak! < 0 ||
     input.streak! > 100000 ||
     (input.timedOut !== undefined && typeof input.timedOut !== "boolean") ||
-    (input.timedOut === true && input.elapsed! < expected.budget - 0.1)
+    (input.timeLimit !== undefined &&
+      (!Number.isFinite(input.timeLimit) ||
+        input.timeLimit <= 0 ||
+        input.timeLimit > expected.budget / expected.drain)) ||
+    (input.timedOut === true &&
+      input.elapsed! < (input.timeLimit ?? expected.budget / expected.drain) - 0.1)
   )
     throw new Error("Resposta inválida.");
   return assessMastery(
