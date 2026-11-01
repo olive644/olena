@@ -4154,3 +4154,33 @@ Validação local: 32 e2e Agenda desktop/mobile verdes, incluindo notícias e
 fusos. Verify completo verde, 381 arquivos e 2460 testes, tipos, build e
 orçamento de desempenho. A correção terá seus próprios checks no novo SHA.
 Sem autorização de merge desta tarefa.
+
+### 01/11/2026: revisão Oliver integrada e autorização de publicação/merge
+
+A proprietária aprovou a amostra v5 e autorizou mesclar as PRs desta entrega.
+PR557 foi mesclada, GitHub merged=true, commit5ec48b9eedd66e149b74f9c864dbbafd75a21052,
+depois de releitura do SHA d90bb11 e todos os checks/gates success; rotina pausada.
+
+MathArcade captura cópia da questão original e choices após avaliação confirmada,
+com ID da tentativa e escolha ou null no timeout. Após feedback da terceira perda,
+MathMistakeReview mostra explicação autoral offline e as mesmas quatro opções.
+Tentativas gratuitas não chamam requestMastery, saveMathLearning ou onPractice,
+não dão pontos, vidas, XP, baú ou confirmação de final. Fila é efêmera da rodada;
+reinício e troca de conta limpam dados. A liquidação original ocorre uma vez,
+independentemente de terminar a revisão.
+
+Revisão independente Atlas no4e14a05 detectou XP pendente ao sair antes do resultado.
+Corrigido: RoomRewardNotice permanece montado; deferPresentation adia só o aviso,
+sem adiar recordRoomXp. Erro de gravação continua visível. Testes focados de saída,
+adiamento e fluxo completo passaram27casos. Prisma detectou texto/sinais claros
+herdados do minigame, cabeçalho sob o retorno e avisos de fundo atravessando a
+revisão: correções locais de tinta, espaço superior e fundo opaco --page, pois
+--bg não existe no app. A reconferência do novo SHA fica registrada nas provas.
+
+Primeiro verify:384arquivos/2490testes verdes, tipos/build verdes; performance
+falhou honestamente em1669,3KiB total ante1640, entrada preservada220,6KiB.
+Seguindo orientação explícita anterior da proprietária de aumentar o teto em vez
+de reduzir a entrega, novo teto total/absoluto1680KiB. Não separada artificialmente
+a tabela offline do total; não cortada cobertura das soluções para caber no bundle.
+Entrada inicial e orçamentos opcionais não mudam. Nenhum workflow/gate/teste
+dispensado; validação completa será repetida no SHA corrigido.

@@ -125,3 +125,5 @@ Falhas de gate em execuções antigas aparecem como "failure" quando o e2e foi c
 - 31/10/2026: por autorização explícita do proprietário, teto total de JavaScript passa de 1608 para 1616 KiB na entrega ACCOUNT. Entrada inicial, limites opcionais, escopo e gates do CI preservados. Primeira medição 1608,7 KiB; reduções já prontas mantidas e textos equivalentes comprovados.
 
 - Integração PR553 com main c1ea388: preservado o teto maior já vigente de 1632 KiB, sem reduzir para 1616. Medição combinada 1631,6 KiB, entrada 220,6 KiB; nenhum workflow, timeout ou teste alterado.
+
+- 01/11/2026: revisão Oliver offline mede1669,3KiB totais e220,6KiB iniciais. Pela orientação da proprietária de ampliar o teto em vez de reduzir a implementação, limite total e absoluto1680KiB. Mantidos entrada inicial, opcionais, testes, workflows e gates; nenhuma economia alegada.
