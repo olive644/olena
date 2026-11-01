@@ -100,14 +100,16 @@ export function MathArcade({
   const answerLock = useRef(false);
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryChoice = useRef<{ choice: number; timedOut: boolean } | null>(null);
-  const finished =
-    status === "playing" && !feedback && (round.lives === 0 || round.bank <= 0 || completedCourse);
+  const activeClock = useRef<{ at: number; wallAt: number; elapsed: number; bank: number } | null>(
+    null,
+  );
+  const finished = status === "playing" && !feedback && (round.lives === 0 || completedCourse);
   const question = round.question;
   const expression = question ? formatMathNotation(question.expression) : "";
   const questionClock = question
     ? Math.max(0, question.budget - round.elapsed * question.drain)
     : 0;
-  // A rodada pode acabar antes do prazo individual. Mostrar sempre o prazo real.
+  // A reserva pode vencer antes do prazo individual, custando uma chance.
   const clock = Math.min(questionClock, round.bank);
   const audio = useRef<ReturnType<typeof createMathSound> | null>(null);
   const exitChangedAccount = useEffectEvent(onBack);
@@ -156,21 +158,33 @@ export function MathArcade({
     );
     return () => clearTimeout(timer);
   }, [status, countdown, pending]);
+  const startClock = useEffectEvent(() => ({
+    at: performance.now(),
+    wallAt: Date.now(),
+    elapsed: round.elapsed,
+    bank: round.bank,
+  }));
+  const updateClock = useEffectEvent(() => {
+    const started = activeClock.current;
+    if (!started || !question) return;
+    const elapsed =
+      started.elapsed +
+      Math.max(0, performance.now() - started.at, Date.now() - started.wallAt) / 1000;
+    const bank = Math.max(0, started.bank - (elapsed - started.elapsed) * question.drain);
+    setRound((value) => ({ ...value, elapsed, bank }));
+  });
   useEffect(() => {
     if (status !== "playing" || pending || feedback || milestone || error || finished) return;
-    let previous = performance.now();
-    const timer = setInterval(() => {
-      const now = performance.now(),
-        delta = Math.min(1, (now - previous) / 1000);
-      previous = now;
-      if (document.hidden) return;
-      setRound((value) => ({
-        ...value,
-        elapsed: value.elapsed + delta,
-        bank: Math.max(0, value.bank - delta * (value.question?.drain ?? 1)),
-      }));
-    }, 100);
-    return () => clearInterval(timer);
+    activeClock.current = startClock();
+    const timer = setInterval(updateClock, 100);
+    document.addEventListener("visibilitychange", updateClock);
+    window.addEventListener("pageshow", updateClock);
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", updateClock);
+      window.removeEventListener("pageshow", updateClock);
+      activeClock.current = null;
+    };
   }, [status, pending, feedback, milestone, error, finished]);
   useEffect(() => {
     if (!finished) return;
@@ -272,6 +286,19 @@ export function MathArcade({
       milestone
     )
       return;
+    const started = activeClock.current;
+    const elapsed = started
+      ? started.elapsed +
+        Math.max(0, performance.now() - started.at, Date.now() - started.wallAt) / 1000
+      : round.elapsed;
+    const bank = started
+      ? Math.max(0, started.bank - (elapsed - started.elapsed) * question.drain)
+      : round.bank;
+    const timeLimit = Math.min(
+      question.budget / question.drain,
+      started ? started.elapsed + started.bank / question.drain : elapsed + bank / question.drain,
+    );
+    timedOut ||= elapsed >= timeLimit;
     if (!timedOut) {
       audio.current ??= createMathSound();
       audio.current.unlock();
@@ -287,7 +314,8 @@ export function MathArcade({
         progress: round.progress,
         question,
         choice,
-        elapsed: Math.min(120, round.elapsed),
+        elapsed: Math.min(120, elapsed),
+        timeLimit,
         streak: round.streak,
         timedOut,
       });
@@ -313,18 +341,19 @@ export function MathArcade({
       audio.current?.play(missed ? "timeout" : result.correct ? "correct" : "wrong");
       setRound((value) => ({
         ...value,
+        elapsed,
         progress,
         points,
         streak: result.streak,
         lives: value.lives - Number(!result.correct),
         bank:
-          result.question.phase === "final" && question.phase !== "final"
-            ? Math.max(60, value.bank)
+          bank <= 0 || (result.question.phase === "final" && question.phase !== "final")
+            ? Math.max(60, bank)
             : missed
-              ? Math.max(0, value.bank - 4)
+              ? Math.max(0, bank - 4) || 60
               : result.correct
-                ? Math.min(90, value.bank + (result.fast ? 3 : 2))
-                : value.bank,
+                ? Math.min(90, bank + (result.fast ? 3 : 2))
+                : bank,
       }));
       setFeedback({ ...result, choice: missed ? null : choice });
       retryChoice.current = null;
@@ -359,7 +388,7 @@ export function MathArcade({
   });
   useEffect(() => {
     if (
-      questionClock > 0 ||
+      clock > 0 ||
       !question ||
       status !== "playing" ||
       finished ||
@@ -373,7 +402,7 @@ export function MathArcade({
       expire();
     }, 0);
     return () => clearTimeout(timer);
-  }, [questionClock, question, status, finished, feedback, milestone, pending, error]);
+  }, [clock, question, status, finished, feedback, milestone, pending, error]);
   useEffect(() => {
     if (milestone)
       root.current?.querySelector<HTMLButtonElement>(".math-mastery-continue")?.focus();

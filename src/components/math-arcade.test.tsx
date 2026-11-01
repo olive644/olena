@@ -130,9 +130,60 @@ it("shows the actual deadline when the round reserve is shorter than the questio
   const correct = mathLearning("foundations").correct;
   await tick((reserve + 1) * 1000);
   await tick(1);
-  expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeTruthy();
-  expect(screen.queryByText("Putz! Perdeu a vez!")).toBeNull();
+  expect(screen.queryByRole("button", { name: "Tentar de novo" })).toBeNull();
+  expect(screen.getByText("Putz! Perdeu a vez!")).toBeTruthy();
+  expect(screen.getByLabelText("2 chances restantes")).toBeTruthy();
   expect(mathLearning("foundations").correct).toBe(correct);
+  await tick(1300);
+  expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe("60");
+  expect(screen.getAllByRole("button", { name: /^Resposta/ })).toHaveLength(4);
+});
+
+it("ends only after three consecutive expired questions", async () => {
+  render(<MathArcade onBack={() => {}} />);
+  await begin();
+  for (let remaining = 2; remaining >= 0; remaining--) {
+    await tick(61000);
+    await tick(1);
+    expect(screen.getByLabelText(`${remaining} chances restantes`)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Tentar de novo" })).toBeNull();
+    await tick(1300);
+    if (remaining > 0) expect(screen.getAllByRole("button", { name: /^Resposta/ })).toHaveLength(4);
+  }
+  expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeTruthy();
+  expect(mathLearning("foundations").correct).toBe(0);
+});
+
+it("charges hidden time and reconciles a suspended timer once on visibility restore", async () => {
+  render(<MathArcade onBack={() => {}} />);
+  await begin();
+  vi.spyOn(document, "hidden", "get").mockReturnValue(true);
+  await tick(5000);
+  expect(Number(screen.getByRole("progressbar").getAttribute("aria-valuenow"))).toBeLessThanOrEqual(
+    55,
+  );
+  // O relógio de parede avança sem executar callbacks, como numa aba suspensa.
+  vi.setSystemTime(Date.now() + 90000);
+  await act(async () => {
+    document.dispatchEvent(new Event("visibilitychange"));
+    window.dispatchEvent(new Event("pageshow"));
+  });
+  await tick(1);
+  expect(screen.getByLabelText("2 chances restantes")).toBeTruthy();
+  await tick(1300);
+  expect(screen.getByLabelText("2 chances restantes")).toBeTruthy();
+  expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe("60");
+});
+
+it("rejects a correct click after suspension even before a timer or visibility callback", async () => {
+  render(<MathArcade onBack={() => {}} />);
+  await begin();
+  const answer = correctAnswer();
+  vi.setSystemTime(Date.now() + 90000);
+  await click("Resposta " + answer);
+  expect(screen.getByText("Putz! Perdeu a vez!")).toBeTruthy();
+  expect(screen.getByLabelText("2 chances restantes")).toBeTruthy();
+  expect(mathLearning("foundations").correct).toBe(0);
 });
 it("celebrates a mastered topic once, pauses the clock and continues with keyboard focus", async () => {
   seedFinal(0);

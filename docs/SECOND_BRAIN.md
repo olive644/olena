@@ -1713,3 +1713,14 @@ assertPrivateDiscordLogDestination permite entradas explícitas de owner_id e Ad
 Removido account-log-test e componente de teste. Eventos usam nome verificado e cores por tipo; política 2026-11-01 exige novo aceite. account-activity no navegador envia evento activity sem mensagem imediata. createAccountInactivity persiste metadados mínimos privados e usa CAS; GET account-inactivity autorizado por CRON_SECRET faz varredura diária limitada a 50. Nova atividade rearma aviso de sete dias, exclusão remove, retenção privada 30 dias. Regras privadas e índice dueAt precisam ser publicados pela responsável. Procedimento, limites, rollback e limites de presença em DISCORD_ACCOUNT_LOGS.md. Não afirmar cron ou entrega dos novos embeds reais validados antes de operação.
 
 Validação final desta entrega: verify 2456 testes/381 arquivos, 32 focados e 16 E2E Edge PC/mobile claro/escuro aprovados (12 skips preexistentes). App 1632,2 KiB de 1640. Regras recebidas do proprietário são semanticamente iguais às atuais; foi entregue arquivo com somente privateAccountActivity e índice dueAt adicionados. Publicação continua da responsável; cron e novos embeds reais não verificados.
+
+# Matemática: corações e tempo (2026-11-01)
+
+`MathArcade` não termina ao zerar a reserva. Expiração segue o fluxo normal de
+timeout com uma chance perdida; reserva esgotada renova para 60 antes da próxima
+pergunta. Três perdas encerram a rodada. O relógio ativo considera tempo oculto
+ou suspenso e confere prazo no clique, em `visibilitychange` e `pageshow`.
+`requestMastery` aceita `timeLimit` opcional, em segundos reais, limitado ao
+prazo individual, para validar timeout por reserva menor. Sem esse campo usa
+`budget / drain`. Feedback e domínio permanecem pausados. Regressões em
+`math-arcade.test.tsx`, `math-mastery.test.ts` e `e2e/math-heart-timeout.spec.ts`.
