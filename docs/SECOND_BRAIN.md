@@ -1737,3 +1737,11 @@ sem chamar avaliação, progresso, atividade ou recompensa. A coleta não usa re
 sincronizado como histórico. Revisão encerra no resultado já liquidado; não rearma playing.
 RoomRewardNotice.deferPresentation adia somente a apresentação, preservando crédito
 de XP mesmo saindo da revisão. Papéis e conta mantêm as mesmas regras de isolamento.
+
+Validação da integração Oliver no SHA `0bf2680112742330b11267562cfb36e352baab5c`:
+o e2e `e2e/math-mistake-review.spec.ts` percorre a entrada pública, captura as questões
+originais e verifica as mesmas quatro opções, sem relógio, vidas, progresso ou prêmios
+adicionais. A galeria `artifacts/math-oliver-review/integration` guarda capturas reais
+nos quatro pares de viewport e tema, junto de `manifest.json`. O preview local usa
+`npm run preview -- --host 127.0.0.1 --port 4197`; as imagens podem ser abertas em
+`http://127.0.0.1:4196/`. Testes de navegador emulado não substituem aparelho físico.

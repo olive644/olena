@@ -4184,3 +4184,7 @@ de reduzir a entrega, novo teto total/absoluto1680KiB. Não separada artificialm
 a tabela offline do total; não cortada cobertura das soluções para caber no bundle.
 Entrada inicial e orçamentos opcionais não mudam. Nenhum workflow/gate/teste
 dispensado; validação completa será repetida no SHA corrigido.
+
+### Evidências da integração Oliver, 2026-11-01
+
+No SHA de código `0bf2680112742330b11267562cfb36e352baab5c`, `npm run verify` terminou com código 0, 384 arquivos e 2.492 testes aprovados; lint reportou 27 avisos preexistentes sem erros, build passou e performance mediu 1.669,3 KiB sob o teto atualizado de 1.680 KiB. Os 32 testes e2e passaram em Edge headless nos projetos desktop e mobile, cobrindo revisão, timeout, feedback, progressão e finais. As doze capturas reais da revisão em claro e escuro estão em `artifacts/math-oliver-review/integration`, com manifesto SHA256 e galeria local. Dimensões: desktop 1280x720 e móvel emulado 390x844. O preview interativo local está em `http://127.0.0.1:4197/aprender`; a galeria no portal Maestri está em `http://127.0.0.1:4196/`. Sem conta ou sincronização real, aparelho físico, Safari/Firefox ou validação auditiva dos efeitos.
