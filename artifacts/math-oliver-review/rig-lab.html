@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>Oliver: laboratório de movimento</title>
+  <style>
+    body {
+      background: #272333;
+      color: #fff;
+      font: 18px sans-serif;
+      margin: 20px;
+    }
+    canvas {
+      width: 600px;
+      max-width: 100%;
+      background: #373044;
+    }
+    button {
+      padding: 12px;
+      margin: 4px;
+    }
+    img {
+      max-width: 100%;
+    }
+  </style>
+  <h1>Oliver: laboratório de movimento</h1>
+  <p>
+    Amostra local, sem progresso ou recompensa. Movimentos Rive reais. Selecione uma reação para
+    conferir a sequência completa.
+  </p>
+  <div id="controls"></div>
+  <canvas id="rig" width="600" height="600"></canvas>
+  <p id="status">Carregando</p>
+  <script type="module">
+    import { loadRiveRuntime } from "/src/data/rive-runtime.ts";
+    const runtime = await loadRiveRuntime();
+    window.events = [];
+    window.rig = new runtime.Rive({
+      src: "/oliver-math-review/oliver.riv?v=5",
+      canvas: document.querySelector("canvas"),
+      stateMachines: "Oliver",
+      autoplay: true,
+      layout: new runtime.Layout({ fit: runtime.Fit.Contain }),
+      onLoad() {
+        rig.resizeDrawingSurfaceToCanvas();
+        window.ready = true;
+        document.querySelector("#status").textContent = "Rive carregado";
+      },
+      onStateChange(e) {
+        events.push({ time: performance.now(), state: e.data });
+      },
+    });
+    window.setInput = (name, value) => {
+      rig.stateMachineInputs("Oliver").find((i) => i.name === name).value = value;
+    };
+    for (const [label, value] of [
+      ["Repouso", 0],
+      ["Salto", 1],
+      ["Fala", 2],
+      ["Tristeza", 3],
+      ["Saudação", 4],
+      ["Pensando", 5],
+      ["Passinhos", 6],
+      ["Atenção", 7],
+    ]) {
+      const button = document.createElement("button");
+      button.textContent = label;
+      button.onclick = () => {
+        setInput("clique", value);
+        if (value !== 2) setTimeout(() => setInput("clique", 0), 90);
+      };
+      document.querySelector("#controls").append(button);
+    }
+  </script>
+</html>

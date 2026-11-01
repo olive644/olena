@@ -1,0 +1,164 @@
+{
+  "width": 1254,
+  "height": 1254,
+  "source": "artifacts/math-oliver-review/oliver-tutor-v1.png",
+  "order": ["body", "footL", "footR", "handL", "handR", "mouth", "eyeL", "eyeR"],
+  "layers": {
+    "body": {
+      "file": "body.png",
+      "x0": 208,
+      "y0": 233,
+      "w": 935,
+      "h": 854,
+      "pivot": [630, 1050]
+    },
+    "footL": {
+      "file": "footL.png",
+      "x0": 344,
+      "y0": 843,
+      "w": 291,
+      "h": 260,
+      "pivot": [460, 890]
+    },
+    "footR": {
+      "file": "footR.png",
+      "x0": 750,
+      "y0": 832,
+      "w": 393,
+      "h": 273,
+      "pivot": [848, 900]
+    },
+    "handL": {
+      "file": "handL.png",
+      "x0": 54,
+      "y0": 765,
+      "w": 290,
+      "h": 309,
+      "pivot": [345, 820]
+    },
+    "handR": {
+      "file": "handR.png",
+      "x0": 912,
+      "y0": 535,
+      "w": 322,
+      "h": 280,
+      "pivot": [941, 746]
+    },
+    "mouth": {
+      "file": "mouth.png",
+      "x0": 507,
+      "y0": 504,
+      "w": 357,
+      "h": 237,
+      "pivot": [685, 622]
+    },
+    "eyeL": {
+      "file": "eyeL.png",
+      "x0": 446,
+      "y0": 460,
+      "w": 172,
+      "h": 146,
+      "pivot": [531.5, 532.5]
+    },
+    "eyeR": {
+      "file": "eyeR.png",
+      "x0": 676,
+      "y0": 410,
+      "w": 153,
+      "h": 148,
+      "pivot": [752, 483.5]
+    }
+  },
+  "mouthContour": [
+    {
+      "x": -172,
+      "top": 33,
+      "bottom": 40
+    },
+    {
+      "x": -152,
+      "top": 12,
+      "bottom": 63
+    },
+    {
+      "x": -132,
+      "top": 13,
+      "bottom": 82
+    },
+    {
+      "x": -111,
+      "top": 15,
+      "bottom": 97
+    },
+    {
+      "x": -91,
+      "top": 16,
+      "bottom": 105
+    },
+    {
+      "x": -71,
+      "top": 15,
+      "bottom": 110
+    },
+    {
+      "x": -51,
+      "top": 15,
+      "bottom": 113
+    },
+    {
+      "x": -30,
+      "top": 12,
+      "bottom": 113
+    },
+    {
+      "x": -10,
+      "top": 6,
+      "bottom": 111
+    },
+    {
+      "x": 10,
+      "top": 0,
+      "bottom": 107
+    },
+    {
+      "x": 30,
+      "top": -7,
+      "bottom": 101
+    },
+    {
+      "x": 51,
+      "top": -14,
+      "bottom": 92
+    },
+    {
+      "x": 71,
+      "top": -22,
+      "bottom": 80
+    },
+    {
+      "x": 91,
+      "top": -35,
+      "bottom": 68
+    },
+    {
+      "x": 111,
+      "top": -55,
+      "bottom": 51
+    },
+    {
+      "x": 132,
+      "top": -87,
+      "bottom": 26
+    },
+    {
+      "x": 152,
+      "top": -113,
+      "bottom": -10
+    },
+    {
+      "x": 172,
+      "top": -108,
+      "bottom": -67
+    }
+  ]
+}

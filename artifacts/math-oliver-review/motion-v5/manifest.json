@@ -1,0 +1,45 @@
+{
+  "version": 5,
+  "head": "f174506abb7d415bac7898913bab852c08510c4e",
+  "uncommitted": true,
+  "hashes": {
+    "src/components/oliver-review-art.tsx": "3a6f0501fd1ae40122e6c82d4bc1aa11bc735dc9cad9ba5e1ae9862b00d95f7e",
+    "src/components/oliver-review-art.css": "9d1202ff00e8827275eb986cb446e173a3d197a46fe83025f4085e9be6cc4575",
+    "src/components/paper-speech.tsx": "4c4b8a24a813ad48a85f63592bb4f791ecf08619d1859a60f9dd8cf81961a5d3",
+    "src/components/paper-speech.css": "9f3574f6c624344b71b968af864832540d218f3adea56b3bc69d05161760d818",
+    "scripts/oliver-review-rive/generate.cjs": "d0044964b7875337f8983cba74550317219763082bc0f6d619e86f99553b7848",
+    "scripts/oliver-review-rive/slice.cjs": "4a7a5517ee4570c086bbc463cf93bec17085c99ec80996a4cf7b6b1aa9523861",
+    "public/oliver-math-review/oliver.riv": "223ecffe12458c88ed069986e18cdc71f7e9fc66694544e50d008f8149f83080",
+    "artifacts/math-oliver-review/review.tsx": "3069d9fd3603cd6585d295f55af60540f95a411a8eae83cde5bf92da95727774",
+    "artifacts/math-oliver-review/review.css": "e65b58b34ece5f7da4aaa9bc37199b35085beb54aeded4324f955a102caa73c5"
+  },
+  "sourceHash": "bffd3f4ffd1e5202ffa4d3a7b2a96dd0042a582f425d743685568e090b79ac4e",
+  "url": "http://127.0.0.1:4196/artifacts/math-oliver-review/motion-v5/",
+  "viewports": {
+    "desktop": {
+      "width": 1440,
+      "height": 1000
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844
+    }
+  },
+  "themes": ["light", "dark"],
+  "browser": "Edge headless",
+  "fixtures": 3,
+  "limits": [
+    "Sem aparelho f?sico, Safari ou Firefox",
+    "Sem voz ou avalia??o aud?vel dos efeitos",
+    "Sem integra??o com erros reais ou persist?ncia",
+    "Sem aprova??o humana inferida"
+  ],
+  "tests": {
+    "unit": 17,
+    "typecheck": true,
+    "eslint": true,
+    "nativeInterruptionFrames": 162,
+    "distinctMouthAreas": 109
+  },
+  "results": ["results.json", "ui-results.json", "interruptions.json"]
+}

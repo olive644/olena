@@ -4131,6 +4131,16 @@ app e testes de navegador identificam a suspensão como simulação, não toque
 físico ou troca de aplicativo em aparelho real. Sem aprovação visual presumida
 e sem autorização de merge nesta tarefa.
 
+### 01/11/2026: correção e conferência do movimento do Oliver, amostra v5
+
+Na branch feat/math-oliver-review, HEAD f174506 com alterações locais, sem publicação ou merge. A reclamação da proprietária foi reproduzida no rig: repouso usava outra geometria de boca, controle escalar atravessava poses, trajetória do salto tinha descontinuidade, recorte do pé incluía um pedaço do braço e a pausa por viewport congelava reações após rolar até as alternativas.
+
+Repouso voltou ao recorte original. Fala usa poses discretas com transições Rive de 140 ms. Tristeza e felicidade fazem uma sequência temporal e retornam ao original. Salto recebeu antecipação, trajetória contínua e aterrissagem; corpo e membros mantêm escala. Corrigida máscara de pé/braço e boca triste sobre os olhos. Pausa mantém somente aba oculta, além do fallback para movimento reduzido.
+
+Conferência real em Edge headless: sete sequências de reação com amostragem por frame e quadros de comparação; interrupção fala/tristeza/acerto/fala/repouso registrou 162 quadros, 109 áreas de boca distintas e retorno dos inputs a zero. Tela React conferida em 1440x1000 e 390x844, claro/escuro: palavras e boca mudaram, reações consecutivas, erro, acerto, repouso, zero pageerrors/overflow horizontal. Vídeos WebM, PNGs, resultados e hashes em artifacts/math-oliver-review/motion-v5/index.html, portal Oliver: revisão sem corações. Testes focados: 17 verdes, TypeScript e ESLint verdes. O script inicial de tela falhou por seletor incorreto; corrigido o script e repetida a matriz.
+
+Limites: três fixtures, sem coleta real de erros, progresso, conta ou recompensas. Sem aparelho físico/Safari/Firefox, qualidade sonora ou voz. Capturas históricas v3 identificadas separadamente. Provas não significam aprovação humana; sem verify completo/build/e2e geral nesta correção de amostra.
+
 # PR557: fixture mensal da Agenda (2026-11-01)
 
 CI no SHA665e3ad, run41313708275: seis cenários da Agenda falharam no desktop
@@ -4144,3 +4154,41 @@ Validação local: 32 e2e Agenda desktop/mobile verdes, incluindo notícias e
 fusos. Verify completo verde, 381 arquivos e 2460 testes, tipos, build e
 orçamento de desempenho. A correção terá seus próprios checks no novo SHA.
 Sem autorização de merge desta tarefa.
+
+### 01/11/2026: revisão Oliver integrada e autorização de publicação/merge
+
+A proprietária aprovou a amostra v5 e autorizou mesclar as PRs desta entrega.
+PR557 foi mesclada, GitHub merged=true, commit5ec48b9eedd66e149b74f9c864dbbafd75a21052,
+depois de releitura do SHA d90bb11 e todos os checks/gates success; rotina pausada.
+
+MathArcade captura cópia da questão original e choices após avaliação confirmada,
+com ID da tentativa e escolha ou null no timeout. Após feedback da terceira perda,
+MathMistakeReview mostra explicação autoral offline e as mesmas quatro opções.
+Tentativas gratuitas não chamam requestMastery, saveMathLearning ou onPractice,
+não dão pontos, vidas, XP, baú ou confirmação de final. Fila é efêmera da rodada;
+reinício e troca de conta limpam dados. A liquidação original ocorre uma vez,
+independentemente de terminar a revisão.
+
+Revisão independente Atlas no4e14a05 detectou XP pendente ao sair antes do resultado.
+Corrigido: RoomRewardNotice permanece montado; deferPresentation adia só o aviso,
+sem adiar recordRoomXp. Erro de gravação continua visível. Testes focados de saída,
+adiamento e fluxo completo passaram27casos. Prisma detectou texto/sinais claros
+herdados do minigame, cabeçalho sob o retorno e avisos de fundo atravessando a
+revisão: correções locais de tinta, espaço superior e fundo opaco --page, pois
+--bg não existe no app. A reconferência do novo SHA fica registrada nas provas.
+
+Primeiro verify:384arquivos/2490testes verdes, tipos/build verdes; performance
+falhou honestamente em1669,3KiB total ante1640, entrada preservada220,6KiB.
+Seguindo orientação explícita anterior da proprietária de aumentar o teto em vez
+de reduzir a entrega, novo teto total/absoluto1680KiB. Não separada artificialmente
+a tabela offline do total; não cortada cobertura das soluções para caber no bundle.
+Entrada inicial e orçamentos opcionais não mudam. Nenhum workflow/gate/teste
+dispensado; validação completa será repetida no SHA corrigido.
+
+### Evidências da integração Oliver, 2026-11-01
+
+No SHA de código `0bf2680112742330b11267562cfb36e352baab5c`, `npm run verify` terminou com código 0, 384 arquivos e 2.492 testes aprovados; lint reportou 27 avisos preexistentes sem erros, build passou e performance mediu 1.669,3 KiB sob o teto atualizado de 1.680 KiB. Os 32 testes e2e passaram em Edge headless nos projetos desktop e mobile, cobrindo revisão, timeout, feedback, progressão e finais. As doze capturas reais da revisão em claro e escuro estão em `artifacts/math-oliver-review/integration`, com manifesto SHA256 e galeria local. Dimensões: desktop 1280x720 e móvel emulado 390x844. O preview interativo local está em `http://127.0.0.1:4197/aprender`; a galeria no portal Maestri está em `http://127.0.0.1:4196/`. Sem conta ou sincronização real, aparelho físico, Safari/Firefox ou validação auditiva dos efeitos.
+
+### 01/11/2026: PR558, compatibilidade do e2e de ilhas com a revisão
+
+O shard mobile 2/2 falhou em `practice-islands.spec.ts:124`, pois o teste esperava o resultado imediatamente após três erros. O fluxo aprovado agora abre a revisão do Oliver. O teste captura as três questões e atravessa a revisão com as respostas originais, confirma ausência de vidas/reserva e só então confere resultado, XP, baú e retomada. As asserções anteriores foram preservadas. Dois e2e locais passaram no Edge headless, desktop e mobile. Nenhum produto, gate ou timeout foi alterado. O novo SHA deve aguardar seus próprios checks remotos antes do merge.

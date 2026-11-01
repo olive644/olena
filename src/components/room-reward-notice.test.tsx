@@ -5,6 +5,24 @@ import { ROOM_XP_KEY } from "../data/room-xp";
 const reward = { id: "round:player", place: 2, xp: 75, completedAt: 1000 };
 describe("notificação final de XP", () => {
   beforeEach(() => localStorage.clear());
+  it("credits XP while presentation is deferred and displays it later without a second credit", async () => {
+    vi.useFakeTimers();
+    try {
+      const view = render(<RoomRewardNotice reward={reward} deferPresentation />);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(10000);
+      });
+      const saved = localStorage.getItem(ROOM_XP_KEY);
+      expect(JSON.parse(saved!).total).toBe(75);
+      expect(screen.queryByRole("status")).toBeNull();
+      view.rerender(<RoomRewardNotice reward={reward} deferPresentation={false} />);
+      expect(screen.getByRole("status")).toBeTruthy();
+      expect(localStorage.getItem(ROOM_XP_KEY)).toBe(saved);
+      view.unmount();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
   it("desativar o aviso não impede crédito de XP", async () => {
     localStorage.setItem(
       "helena.profile.v1",

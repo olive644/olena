@@ -1,0 +1,26 @@
+{
+  "layers": ["body", "footL", "footR", "handL", "handR", "mouth", "eyeL", "eyeR"],
+  "animations": [
+    "ambiente",
+    "repouso",
+    "falando",
+    "acerto",
+    "tristeza-e-retomada",
+    "saudacao",
+    "pensando",
+    "comemoracao-passinhos",
+    "atencao",
+    "boca-repouso",
+    "boca-A",
+    "boca-O",
+    "boca-E",
+    "boca-triste",
+    "boca-feliz",
+    "olhar-esquerda",
+    "olhar-centro",
+    "olhar-direita"
+  ],
+  "mouthNativeVertices": 36,
+  "bodyAndLimbsScaleFixedAtOne": true,
+  "inputs": ["olharX", "clique", "boca"]
+}
