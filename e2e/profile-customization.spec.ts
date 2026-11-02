@@ -50,14 +50,38 @@ for (const theme of ["light", "dark"])
       await dialog.getByRole("button", { name: "Headers", exact: true }).click();
       await dialog.getByRole("button", { name: "Horizonte dos números" }).click();
       await dialog.getByRole("button", { name: "Fundo do perfil", exact: true }).click();
-      await dialog.getByRole("button", { name: "Caderno geométrico" }).click();
+      await dialog.getByRole("button", { name: "Trans", exact: true }).click();
+      for (const id of [
+        "pride",
+        "lesbian",
+        "gay",
+        "bi",
+        "trans",
+        "pan",
+        "nonbinary",
+        "ace",
+        "aro",
+        "agender",
+        "genderfluid",
+        "intersex",
+        "mathematics",
+      ]) {
+        expect(
+          await page.evaluate(async (id) => {
+            const image = new Image();
+            image.src = "/profile-cosmetics/background-" + id + ".svg";
+            await image.decode();
+            return image.naturalWidth;
+          }, id),
+        ).toBeGreaterThan(0);
+      }
       await dialog.screenshot({ path: info.outputPath("personalizar-" + theme + ".png") });
       expect(await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
       await dialog.getByRole("button", { name: "Salvar personalização" }).click();
       await expect(dialog).not.toBeVisible();
       await expect(page.locator(".profile-cover")).toHaveAttribute(
         "data-profile-background",
-        "geometry",
+        "trans",
       );
       await expect(page.locator(".profile-cover__portrait .profile-frame-art")).toHaveAttribute(
         "src",

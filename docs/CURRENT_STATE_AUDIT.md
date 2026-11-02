@@ -1,3 +1,9 @@
+## Fundos e superfícies de perfil, 02/11/2026
+
+Correção dos fundos: doze bandeiras e Matemática, com desbloqueio correct-100. Mesmas artes locais no perfil, visita e card/PNG. Card próprio combina campos atuais com a projeção social. Dados publicados continuam validados por allowlist, sem novas chaves ou serviços.
+
+Provas focadas: 19 testes de componente, incluindo composição e caminho de exportação, e quatro E2E Edge PC/mobile claro/escuro, com decodificação das 13 artes. Preview do componente real de compartilhar com dados fictícios em servidor local: quatro combinações PC/mobile claro/escuro e quatro downloads PNG concluídos. Não houve login ou sincronização de contas reais. Evidências fora do repositório em b/previews-profile-surfaces-2026-11-02. Verify integral aprovado: 388 arquivos, 2509 testes, lint sem erros (27 avisos existentes), tipos/API/idiomas/formatação/build/desempenho verdes. Aplicação 1671,5 KiB, entrada 220,6 KiB, sem alterar limites. Matriz final com personalização, visitas e diretório: 14 E2E aprovados, sem skips, PC/mobile claro/escuro. Logs cosmetic-surfaces-verify.log e cosmetic-surfaces-final-browser.log fora do repositório.
+
 # Auditoria do estado atual
 
 ## Espaço sem busca e cartas no perfil, 27/10/2026

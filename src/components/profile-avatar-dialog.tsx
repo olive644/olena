@@ -122,9 +122,7 @@ export function ProfileAvatarDialog({
           )}
         >
           {entries.map((item) => {
-            const unlocked =
-              category === "background" ||
-              cosmeticUnlocked(category === "frame" ? "frame" : "cover", item.id, earned);
+            const unlocked = cosmeticUnlocked(category, item.id, earned);
             const selected = chosen[category] === item.id;
             return (
               <button
@@ -183,6 +181,8 @@ export function ProfileAvatarDialog({
                 allowed.frame = profileFrame(current.frame);
               if (!cosmeticUnlocked("cover", chosen.cover, earned))
                 allowed.cover = profileCover(current.cover);
+              if (!cosmeticUnlocked("background", chosen.background, earned))
+                allowed.background = profileBackground(current.background);
               writeSyncedStorage(
                 "helena.profile.v1",
                 JSON.stringify({

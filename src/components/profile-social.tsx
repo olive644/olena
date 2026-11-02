@@ -1,3 +1,4 @@
+import { profileFrame } from "../domain/profile-cosmetics";
 import { ProfileFrameArt } from "./profile-frame-art";
 import { profileBackground } from "../domain/profile-cosmetics";
 import "./profile-customization.css";
@@ -285,6 +286,14 @@ export function SocialDirectory({
         name: ownProfile.name?.trim() || nameFallback || feed.self.name,
         photoUrl: profileAvatarSource(ownProfile.photoUrl),
         cover: profileCover(ownProfile.cover),
+        details: {
+          level: feed.self.details?.level ?? 1,
+          streaks: feed.self.details?.streaks ?? { pomodoro: 0, timer: 0, islands: 0 },
+          socialLinks: feed.self.details?.socialLinks ?? [],
+          ...feed.self.details,
+          frame: profileFrame(ownProfile.frame),
+          background: profileBackground(ownProfile.background),
+        },
       }
     : undefined;
   const confirmationPanel = confirmation && (
