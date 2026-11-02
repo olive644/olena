@@ -1,4 +1,5 @@
-import { isRewardCourse, type RewardCourseId } from "./reward-courses";
+import { isRewardCourse, isEnglishRewardCourse, type RewardCourseId } from "./reward-courses";
+
 import { drawOliverCards, isOliverCard, randomCardRoll, type OliverCardId } from "./oliver-cards";
 import { OLIVER_TAROT, type OliverArtworkId } from "./oliver-tarot";
 import { writeSyncedStorage } from "./synced-storage";
@@ -7,7 +8,7 @@ import { activeArcanaId } from "./arcana-ids";
 export const MATH_PLACE_REWARDS_KEY = "helena.mathPlaceRewards.v1";
 export const ENGLISH_REWARDS_KEY = "helena.englishRewards.v1";
 export function rewardsStorageKey(course: RewardCourseId) {
-  return course === "english-a1" ? ENGLISH_REWARDS_KEY : MATH_PLACE_REWARDS_KEY;
+  return isEnglishRewardCourse(course) ? ENGLISH_REWARDS_KEY : MATH_PLACE_REWARDS_KEY;
 }
 export const COMMON_CHEST_POINTS = 100;
 export const COMMON_CHEST_WAIT = 10_000;
@@ -110,10 +111,14 @@ export function parseMathRewards(
   }
 }
 function readAll() {
-  const english = parseMathRewards(localStorage.getItem(ENGLISH_REWARDS_KEY) ?? "{}")["english-a1"];
+  const english = Object.fromEntries(
+    Object.entries(parseMathRewards(localStorage.getItem(ENGLISH_REWARDS_KEY) ?? "{}")).filter(
+      ([key]) => isEnglishRewardCourse(key),
+    ),
+  );
   return {
     ...parseMathRewards(localStorage.getItem(MATH_PLACE_REWARDS_KEY) ?? "{}"),
-    ...(english ? { "english-a1": english } : {}),
+    ...english,
   };
 }
 export function mathPlaceRewards(course: RewardCourseId): MathPlaceRewards {
@@ -123,11 +128,7 @@ function save(course: RewardCourseId, value: MathPlaceRewards) {
   const key = rewardsStorageKey(course);
   writeSyncedStorage(
     key,
-    JSON.stringify(
-      course === "english-a1"
-        ? { [course]: value }
-        : { ...parseMathRewards(localStorage.getItem(key) ?? "{}"), [course]: value },
-    ),
+    JSON.stringify({ ...parseMathRewards(localStorage.getItem(key) ?? "{}"), [course]: value }),
   );
   return value;
 }

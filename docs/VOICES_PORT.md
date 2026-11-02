@@ -2,7 +2,7 @@
 
 ## Entrega
 
-Porto das Vozes abre a Ilha de Inglês. O percurso introdutório, inspirado em situações de nível A1, tem seis partes sequenciais: Café no porto, Primeiros encontros, Caminhos da ilha, Uma mochila de descobertas, O ritmo do dia e Um convite para explorar. São 36 falas originais de Olena com respostas para Oliver, trabalhadas em quatro formatos, totalizando 144 tarefas. Isto não representa um curso A1 completo nem certificação de proficiência.
+A navegação confirmada é Ilhas gerais > Porto das Vozes > Ilha de Inglês (bandeira britânica) > seis partes internas. Espanhol, Japonês e Chinês aparecem em preparação. Não há seis ilhas de assuntos nem seis cursos por nível. As partes são apresentações e verbo to be, rotina e presente, passado, planos e futuro, argumentação e conexões, expressões e interpretação. São 36 falas próprias e 144 tarefas em quatro formatos. As referências A1 a C2 indicam dificuldade do material, não certificação, curso completo ou camadas de navegação.
 
 O aluno interpreta uma fala, completa uma palavra, escolhe uma resposta contextual e monta uma frase com palavras. A fala pode ser ouvida mediante ação do aluno, quando há voz inglesa local no aparelho. O texto oferece alternativa equivalente. Não há captura de microfone, avaliação de pronúncia, chamada, tradução automática ou conversa generativa nesta entrega.
 
@@ -53,10 +53,22 @@ Revisão pedagógica das falas, áudios próprios previamente produzidos e licen
 
 Os testes de domínio cobrem 144 tarefas, respostas, duplicação, bloqueio sequencial, confirmação, recuperação, merge de workspace e recompensas. O navegador exercita o componente real em Chromium/Edge, PC e celular, claro e escuro, com perfil fictício de visitante. Inclui recarga, alternativa textual, saída por Escape e revelação de carta. A sincronização Firebase, OAuth real, qualidade de voz do aparelho e publicações sociais reais não são comprovadas por fixtures.
 
-Screenshots de validação ficam fora do produto, em `b/previews-voices-port`. O percurso é carregado sob demanda; não há dependências novas. Antes de publicar, executar `npm run verify` e os E2E do percurso e de Matemática. Não baixar WebKit.
+Screenshots de validação ficam fora do produto, em `b/previews-voices-port-single`. O percurso é carregado sob demanda; não há dependências novas. Antes de publicar, executar `npm run verify` e os E2E do percurso e de Matemática. Não baixar WebKit.
 
-Verify integral final aprovado: 389 arquivos e 2.524 testes; lint sem erros e 27 avisos existentes; tipos/API/idiomas/formatação/build/desempenho verdes. Aplicação 1693,3 KiB de 1704 e entrada 220,6 KiB. O teto total foi ajustado sob autorização vigente do proprietário para crescimento de funcionalidades, sem alterar o teto da entrada e sem dependências novas. Dez E2E Edge/Chromium de Inglês e Matemática passaram em PC/mobile claro/escuro, sem skips; a matriz inglesa usa 320 × 568. Logs externos voices-final-verify.log e voices-final-browser.log.
+Verify da estrutura de uma Ilha de Inglês aprovado: 389 arquivos, 2528 testes, lint sem erros e 27 avisos existentes; formatação, API, idiomas, tipos, build e desempenho verdes. Aplicação 1697,6 KiB de 1704 e entrada 220,7 KiB. Typecheck do preview e lint final do mapa também aprovados. O E2E final das transições e da arte revisada é registrado ao concluir.
 
 Os índices de partes e questões são identificadores persistentes. Não reordenar o catálogo publicado; mudanças incompatíveis de currículo exigem uma versão explícita e migração. Conteúdo de diálogo inclui a intenção da resposta de Oliver para evitar marcar como errada outra resposta genérica plausível.
 
 Rollback: retirar a entrada de Idiomas da interface, preservando o histórico e a chave inglesa. Não apagar recibos, pontos ou cartas. Clientes antigos que tentarem substituir um estado omitindo a chave protegida receberão rejeição em vez de apagar dados; precisam carregar a versão atual.
+
+## Compatibilidade do protótipo
+
+O currículo de seis partes usa versão 3 e identifica a ilha em `area`. Registros das versões anteriores permanecem no histórico e conservam seus recibos e recompensas, mas não avançam questões reorganizadas do novo currículo. Os registros de recompensas novos usam `english-<area>` dentro da mesma chave sincronizada. IDs antigos continuam legíveis.
+
+## Direção visual confirmada
+
+A Ilha de Inglês usa a arte do Porto das Vozes como referência direta: rochas facetadas azul-marinho, pedra clara, telhados turquesa, água, vegetação geométrica e detalhes amarelos. A composição própria de Inglês tem uma casa de estudos baixa, pátio de conversa com bandeira britânica, ponte e barco pequeno. A referência de acabamento é exclusivamente Porto das Vozes, não uma vila britânica ornamentada. Evitar relógio gótico, cabine, iluminação realista ou excesso de adereços. Sua bandeira é a britânica. As seis partes internas não criam seis ilhas completas. A navegação dos idiomas reaproveita as classes de Matemática, FocusPaperArrow roxa, MathNumber, porcentagem sobre o avatar e MathPlaceTreasure, com as mesmas posições e seis segmentos. Não substituir por tabs de níveis, números de ilhas de assunto ou miniaturas vetoriais simplificadas.
+
+Arte criada pela ferramenta integrada imagegen. Prompt final: editar somente a referência de Porto das Vozes, preservando seu acabamento, escala dos polígonos, materiais, cores e câmera; criar uma casa baixa e pátio de conversa com bandeira britânica, reposicionar ponte e barco; sem catedral, cabine, relógio ornamentado, personagens ou textos, com transparência real. Arquivo usado: public/languages/islands/english.webp. Estudos descartados ficam fora do repositório.
+
+Validação final: 14 E2E de Inglês e Matemática em PC/mobile, claro/escuro, passaram sem skips após as transições. A revisão final da arte e contraste passou mais 4 cenários nos mesmos temas e dispositivos, incluindo leitura da imagem, seis partes, bloqueios, recuperação 503 e ausência de overflow. A porcentagem usa dígitos escuros sobre papel também no tema escuro. Build com a arte final e performance aprovados, 1697,6 KiB de 1704; entrada 220,7 KiB. Logs externos voices-single-release-verify.log, voices-single-transitions-browser.log e voices-final-visual-proof.log. Arte ainda depende do aceite visual do proprietário; PR permanece rascunho.

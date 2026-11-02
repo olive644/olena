@@ -2,12 +2,22 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { PracticeActivity, WorkspaceState } from "../domain/workspace";
 import { englishProgress, type LanguageAttempt } from "../domain/language-progress";
-import { ENGLISH_JOURNEY, englishQuestion, normalizeEnglish } from "../data/english-journey";
+import {
+  englishQuestion,
+  normalizeEnglish,
+  loadEnglishCourse,
+  englishText,
+  type EnglishCourse,
+} from "../data/english-journey";
 import { finishMathPlace } from "../data/math-place-rewards";
 import { recordRoomXp } from "../data/room-xp";
 import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
 import { createMathSound } from "../data/math-sound";
 import { isEnglishVoice, speakEnglish } from "../data/speech-voice";
+import { englishRewardCourse } from "../domain/english-levels";
+import { ENGLISH_AREAS, englishAreaReward, type EnglishArea } from "../domain/english-areas";
+import { ENGLISH_ISLAND_CATALOG } from "../data/english-island-catalog";
+import { HelenaLoading } from "./helena-loading";
 import { MathPlaceTreasure } from "./math-place-treasure";
 import { PaperArrow } from "./paper-arrow";
 import { PaperDigits } from "./paper-digits";
@@ -15,6 +25,7 @@ import { LibraryDialog } from "./library-dialog";
 import "./english-island-journey.css";
 
 type Round = {
+  area: EnglishArea;
   id: string;
   owner: string | null;
   part: number;
@@ -33,11 +44,15 @@ export function EnglishIslandJourney({
   onBack: () => void;
 }) {
   useLanguage();
+  const area: EnglishArea = "english";
+  const [loaded, setLoaded] = useState<EnglishCourse>();
+  const [contentError, setContentError] = useState(false);
+  const [loadRevision, setLoadRevision] = useState(0);
+  const course = loaded?.area === area ? loaded : undefined;
   const progress = useMemo(
-    () => englishProgress(workspace.practiceActivities),
-    [workspace.practiceActivities],
+    () => englishProgress(workspace.practiceActivities, area),
+    [workspace.practiceActivities, area],
   );
-  const [inside, setInside] = useState(false);
   const [part, setPart] = useState(0);
   const [round, setRound] = useState<Round>();
   const [feedback, setFeedback] = useState<boolean>();
@@ -49,17 +64,32 @@ export function EnglishIslandJourney({
   const [rewardRevision, setRewardRevision] = useState(0);
   const audio = useRef<ReturnType<typeof createMathSound> | null>(null);
   const nextFocus = useRef<HTMLButtonElement>(null);
-  const data = ENGLISH_JOURNEY[part]!;
+  const data = course?.parts[part];
+  const partUnlocked = progress.unlocked && (part === 0 || progress.parts[part - 1]!.confirmed);
   const current = progress.parts[part]!;
   const question =
-    round && round.at < round.ids.length
-      ? englishQuestion(round.part, round.ids[round.at]!)
+    round && course && round.at < round.ids.length
+      ? englishQuestion(course, round.part, round.ids[round.at]!)
       : undefined;
   const tokens =
     question?.phrase
       .split(" ")
       .map((text, id) => ({ text, id }))
       .reverse() ?? [];
+  useEffect(() => {
+    const controller = new AbortController();
+    loadEnglishCourse(area, controller.signal)
+      .then((value) => {
+        if (!controller.signal.aborted) {
+          setLoaded(value);
+          setContentError(false);
+        }
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setContentError(true);
+      });
+    return () => controller.abort();
+  }, [area, loadRevision]);
   useEffect(() => {
     audio.current = createMathSound();
     return () => {
@@ -78,7 +108,13 @@ export function EnglishIslandJourney({
       try {
         for (const activity of progress.accepted) {
           if (activity.correct <= 0) continue;
-          finishMathPlace("english-a1", activity.id, activity.correct * 20);
+          finishMathPlace(
+            activity.languageAttempt?.curriculum === 3
+              ? englishAreaReward(activity.languageAttempt.area!)
+              : englishRewardCourse(activity.languageAttempt?.level ?? "a1"),
+            activity.id,
+            activity.correct * 20,
+          );
           recordRoomXp({
             id: activity.id,
             place: 1,
@@ -107,6 +143,12 @@ export function EnglishIslandJourney({
     return () => window.removeEventListener("storage", changed);
   }, [round]);
   function start(mode: LanguageAttempt["mode"]) {
+    if (
+      !course ||
+      !partUnlocked ||
+      (mode === "final" && (current.solved.size < 20 || current.review > 0 || current.confirmed))
+    )
+      return;
     audio.current?.unlock();
     audio.current?.play("start");
     const bank = Array.from({ length: 24 }, (_, id) => id);
@@ -119,6 +161,7 @@ export function EnglishIslandJourney({
             .concat(bank.slice(0, progress.accepted.length % 19));
     setRound({
       id: `english:${crypto.randomUUID()}`,
+      area,
       owner: localStorage.getItem(ACCOUNT_OWNER_KEY),
       part,
       mode,
@@ -166,6 +209,8 @@ export function EnglishIslandJourney({
       answers: round.ids.length,
       correct: round.correct.length,
       languageAttempt: {
+        curriculum: 3,
+        area: round.area,
         part: round.part,
         mode: round.mode,
         questions: round.ids,
@@ -204,10 +249,7 @@ export function EnglishIslandJourney({
       setLeave(true);
       return;
     }
-    if (inside) {
-      setInside(false);
-      setSummary(undefined);
-    } else onBack();
+    onBack();
   }
   return (
     <section className="english-journey" aria-label={uiText("Porto das Vozes · Inglês")}>
@@ -219,37 +261,33 @@ export function EnglishIslandJourney({
         <p>
           {uiText("Porto das Vozes")} <span> / {uiText("Inglês")}</span>
         </p>
-        <strong>
-          <PaperDigits value={String(progress.percent)} />%
+        <strong aria-label={uiText("Progresso geral de Inglês")}>
+          <small>{uiText("Geral")}</small>
+          <PaperDigits value={String(progress.overall)} />%
         </strong>
       </header>
-      {!inside ? (
-        <>
-          <div className="english-port-intro">
-            <img src="/practice-islands/languages.webp" width="800" height="800" alt="" />
-            <div>
-              <p className="english-eyebrow">
-                {uiText("Uma nova língua, uma descoberta de cada vez")}
-              </p>
-              <h1>{uiText("Ilha de Inglês")}</h1>
-              <p>
-                {uiText(
-                  "Olena e Oliver esperam por você no porto. Entenda as falas, escolha respostas e construa suas primeiras conversas.",
-                )}
-              </p>
-              <p>{uiText("Percurso introdutório A1 · 6 partes · No seu ritmo")}</p>
-              <button className="primary-button" type="button" onClick={() => setInside(true)}>
-                {uiText("Explorar Inglês")}
-                <PaperArrow />
-              </button>
-            </div>
+      {!course || !data ? (
+        contentError ? (
+          <div className="english-part-detail" role="alert">
+            <p>{uiText("Não foi possível carregar as aulas desta ilha.")}</p>
+            <button
+              className="primary-button"
+              type="button"
+              onClick={() => {
+                setContentError(false);
+                setLoadRevision((value) => value + 1);
+              }}
+            >
+              {uiText("Tentar novamente")}
+            </button>
           </div>
-          <MathPlaceTreasure key={rewardRevision} course="english-a1" />
-        </>
+        ) : (
+          <HelenaLoading />
+        )
       ) : round && question ? (
         <div className="english-lesson">
           <div className="english-lesson-top">
-            <span>{uiText(data.title)}</span>
+            <span>{englishText(data.title)}</span>
             <span>{uiText("Questão {0} de {1}", [round.at + 1, round.ids.length])}</span>
           </div>
           <progress
@@ -378,9 +416,14 @@ export function EnglishIslandJourney({
           <div className="english-course-heading">
             <img src="/profile-avatars/oliver.webp" width="96" height="96" alt={uiText("Oliver")} />
             <div>
-              <p className="english-eyebrow">{uiText("Ilha de Inglês · Primeiras conversas")}</p>
-              <h1>{uiText(data.title)}</h1>
-              <p>{uiText(data.objective)}</p>
+              <p className="english-eyebrow">
+                {englishText(ENGLISH_ISLAND_CATALOG[ENGLISH_AREAS.indexOf(area)]!.subject)}
+              </p>
+              <h1>{englishText(data.title)}</h1>
+              <p>{englishText(data.objective)}</p>
+              <small className="english-proficiency">
+                {uiText("Referência de dificuldade: {0}", [data.proficiency])}
+              </small>
             </div>
           </div>
           {summary && (
@@ -405,13 +448,13 @@ export function EnglishIslandJourney({
             </div>
           )}
           <nav className="english-parts" aria-label={uiText("Partes do percurso de inglês")}>
-            {ENGLISH_JOURNEY.map((item, index) => (
+            {course.parts.map((item, index) => (
               <button
                 type="button"
                 className={`secondary-button ${part === index ? "is-selected" : ""}`}
-                key={item.title}
+                key={index}
                 aria-current={part === index ? "step" : undefined}
-                disabled={index > 0 && !progress.parts[index - 1]!.confirmed}
+
                 onClick={() => {
                   setPart(index);
                   setSummary(undefined);
@@ -419,7 +462,7 @@ export function EnglishIslandJourney({
               >
                 <PaperDigits value={String(index + 1)} />
                 <span>
-                  {uiText(item.title)}
+                  {englishText(item.title)}
                   <small>
                     {progress.parts[index]!.confirmed
                       ? uiText("Confirmada")
@@ -430,6 +473,20 @@ export function EnglishIslandJourney({
             ))}
           </nav>
           <section className="english-part-detail">
+            <details className="english-mini-lesson" key={`${area}:${part}`} open>
+              <summary>{uiText("Antes de praticar")}</summary>
+              <p>{englishText(data.lesson)}</p>
+              <blockquote lang="en">{data.scenes[0]![0]}</blockquote>
+            </details>
+            {!partUnlocked && (
+              <p className="english-locked-note">
+                {progress.unlocked
+                  ? uiText("Confirme a parte anterior para liberar esta prática.")
+                  : uiText("Conclua {0} para liberar esta prática.", [
+                      englishText(ENGLISH_ISLAND_CATALOG[ENGLISH_AREAS.indexOf(area) - 1]!.title),
+                    ])}
+              </p>
+            )}
             <h2>{uiText("Parte {0} de 6", [part + 1])}</h2>
             <p>
               {uiText(
@@ -446,21 +503,31 @@ export function EnglishIslandJourney({
               <p>{uiText("Faltam {0} respostas corretas de revisão.", [current.review])}</p>
             )}
             <div className="english-actions">
-              <button className="primary-button" type="button" onClick={() => start("practice")}>
+              <button
+                className="primary-button"
+                type="button"
+                disabled={!partUnlocked}
+                onClick={() => start("practice")}
+              >
                 {uiText("Praticar")}
                 <PaperArrow />
               </button>
               <button
                 className="secondary-button"
                 type="button"
-                disabled={current.solved.size < 20 || current.review > 0 || current.confirmed}
+                disabled={
+                  !partUnlocked ||
+                  current.solved.size < 20 ||
+                  current.review > 0 ||
+                  current.confirmed
+                }
                 onClick={() => start("final")}
               >
                 {uiText("Confirmar esta parte")}
               </button>
             </div>
           </section>
-          <MathPlaceTreasure key={rewardRevision} course="english-a1" />
+          <MathPlaceTreasure key={`${area}:${rewardRevision}`} course={englishAreaReward(area)} />
         </>
       )}
       {warning && <p role="alert">{warning}</p>}

@@ -1,7 +1,11 @@
 import { test, expect, type Page } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 import { createInitialWorkspace, type PracticeActivity } from "../src/domain/workspace";
+import { readFileSync } from "node:fs";
+const a1: unknown = JSON.parse(readFileSync("public/languages/en/english.json", "utf8"));
+import { validEnglishCourse } from "../src/data/english-journey";
 import { englishQuestion } from "../src/data/english-journey";
+import { ENGLISH_ISLAND_CATALOG } from "../src/data/english-island-catalog";
 
 async function seed(page: Page, theme: string, activities: PracticeActivity[] = []) {
   const workspace = createInitialWorkspace();
@@ -28,10 +32,11 @@ async function seed(page: Page, theme: string, activities: PracticeActivity[] = 
   await expect(page.getByRole("heading", { name: "Ilha de Inglês", exact: true })).toBeVisible();
 }
 async function enter(page: Page) {
-  await page.getByRole("button", { name: "Explorar Inglês", exact: true }).click();
+  await page.getByRole("button", { name: "Explorar lugar", exact: true }).click();
 }
 async function solve(page: Page, part: number, id: number, correct = true) {
-  const question = englishQuestion(part, id);
+  if (!validEnglishCourse(a1)) throw new Error("Invalid A1 content");
+  const question = englishQuestion(a1, part, id);
   if (question.kind === "order") {
     for (const word of question.phrase.split(" "))
       await page
@@ -60,6 +65,59 @@ async function noOverflow(page: Page) {
   );
 }
 for (const theme of ["light", "dark"]) {
+  test(`one English island with six internal parts and mathematics navigation: ${theme}`, async ({
+    page,
+  }, info) => {
+    if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
+    await seed(page, theme);
+    await expect(page.locator(".english-subject-journey .math-journey-island")).toHaveCount(4);
+    await expect(page.locator(".math-journey-completion")).toHaveAttribute("aria-valuenow", "0");
+    await expect(page.locator(".math-journey-progress-pieces > span")).toHaveCount(6);
+    await expect(page.locator(".math-journey-completion .paper-digits")).toHaveCSS(
+      "--digit-face",
+      "#292432",
+    );
+    for (const title of ["Ilha de Espanhol", "Ilha de Japonês", "Ilha de Chinês"]) {
+      await page.getByRole("button", { name: "Próxima ilha de idioma", exact: true }).click();
+      await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
+      await expect(page.locator(".math-place-start")).toBeDisabled();
+    }
+    for (let i = 0; i < 3; i++)
+      await page.getByRole("button", { name: "Ilha de idioma anterior", exact: true }).click();
+    const directory = "C:/Users/User/Documents/Codex/2026-09-10/b/previews-voices-port-single";
+    await mkdir(directory, { recursive: true });
+    await page
+      .locator(".math-journey-island.is-current img")
+      .evaluate((img: HTMLImageElement) => img.decode());
+    await page.screenshot({
+      path: `${directory}/${info.project.name}-${theme}-island.png`,
+      fullPage: true,
+    });
+    await page.route("**/languages/en/english.json", (route) =>
+      route.fulfill({ status: 503, body: "unavailable" }),
+    );
+    await enter(page);
+    await expect(page.getByRole("alert")).toContainText("Não foi possível carregar");
+    await page.unroute("**/languages/en/english.json");
+    await page.getByRole("button", { name: "Tentar novamente", exact: true }).click();
+    await expect(page.locator(".english-parts > button")).toHaveCount(6);
+    for (const [i, title] of ENGLISH_ISLAND_CATALOG[0]!.parts.entries()) {
+      await page.locator(".english-parts > button").nth(i).click();
+      await expect(page.getByRole("heading", { name: title["pt-BR"], exact: true })).toBeVisible();
+      await expect(page.locator(".english-mini-lesson p")).not.toBeEmpty();
+      if (i > 0)
+        await expect(
+          page
+            .locator(".english-part-detail")
+            .getByRole("button", { name: "Praticar", exact: true }),
+        ).toBeDisabled();
+    }
+    await noOverflow(page);
+    await page.screenshot({
+      path: `${directory}/${info.project.name}-${theme}-parts.png`,
+      fullPage: true,
+    });
+  });
   test(`English journey, persisted mastery, rewards and accessible alternatives: ${theme}`, async ({
     page,
   }, info) => {
@@ -68,7 +126,7 @@ for (const theme of ["light", "dark"]) {
     page.on("pageerror", (error) => errors.push(error.message));
     if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
     await seed(page, theme);
-    const directory = "C:/Users/User/Documents/Codex/2026-09-10/b/previews-voices-port";
+    const directory = "C:/Users/User/Documents/Codex/2026-09-10/b/previews-voices-port-final";
     await mkdir(directory, { recursive: true });
     await noOverflow(page);
     await page.screenshot({
@@ -76,7 +134,11 @@ for (const theme of ["light", "dark"]) {
       fullPage: true,
     });
     await enter(page);
-    await expect(page.getByRole("button", { name: /Primeiros encontros/ })).toBeDisabled();
+    await page.getByRole("button", { name: /Rotina e presente simples/ }).click();
+    await expect(
+      page.locator(".english-part-detail").getByRole("button", { name: "Praticar", exact: true }),
+    ).toBeDisabled();
+    await page.getByRole("button", { name: /Apresentações e verbo to be/ }).click();
     await page.screenshot({
       path: `${directory}/${info.project.name}-${theme}-parts.png`,
       fullPage: true,
@@ -100,10 +162,10 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("button", { name: "Ouvir a fala", exact: true }).click();
     await expect(page.getByRole("alert")).toContainText("Não há uma voz inglesa local");
     await page.getByRole("button", { name: "Ver texto da fala", exact: true }).click();
-    await expect(page.locator(".english-dialogue")).toContainText("I'd like a coffee, please.");
+    await expect(page.locator(".english-dialogue")).toContainText("Hello! My name is Olena.");
     await noOverflow(page);
     await page.screenshot({
-      path: `${directory}/${info.project.name}-${theme}-coffee.png`,
+      path: `${directory}/${info.project.name}-${theme}-lesson.png`,
       fullPage: true,
     });
     for (let id = 0; id < 6; id++) await solve(page, 0, id, id !== 2);
@@ -114,7 +176,7 @@ for (const theme of ["light", "dark"]) {
       .poll(() =>
         page.evaluate(
           () =>
-            JSON.parse(localStorage.getItem("helena.englishRewards.v1") ?? "{}")["english-a1"]
+            JSON.parse(localStorage.getItem("helena.englishRewards.v1") ?? "{}")["english-english"]
               ?.points,
         ),
       )
@@ -145,7 +207,8 @@ for (const theme of ["light", "dark"]) {
     expect(
       await page.evaluate(
         () =>
-          JSON.parse(localStorage.getItem("helena.englishRewards.v1") ?? "{}")["english-a1"].points,
+          JSON.parse(localStorage.getItem("helena.englishRewards.v1") ?? "{}")["english-english"]
+            .points,
       ),
     ).toBe(100);
     await expect(page.locator(".math-chest-slot")).toHaveCount(1);
@@ -169,6 +232,8 @@ for (const theme of ["light", "dark"]) {
       correct: 6,
       completedAt: new Date(1700000000000 + group * 1000).toISOString(),
       languageAttempt: {
+        curriculum: 3,
+        area: "english",
         part: 0,
         mode: "practice",
         questions: Array.from({ length: 6 }, (_, id) => id + group * 6),
@@ -177,16 +242,22 @@ for (const theme of ["light", "dark"]) {
     }));
     await seed(page, theme, activities);
     await enter(page);
-    await expect(page.getByRole("button", { name: /Primeiros encontros/ })).toBeDisabled();
+    await page.getByRole("button", { name: /Rotina e presente simples/ }).click();
+    await expect(
+      page.locator(".english-part-detail").getByRole("button", { name: "Praticar", exact: true }),
+    ).toBeDisabled();
+    await page.getByRole("button", { name: /Apresentações e verbo to be/ }).click();
     await page.getByRole("button", { name: "Confirmar esta parte", exact: true }).click();
     for (let id = 4; id < 9; id++) await solve(page, 0, id);
     await expect(page.locator(".english-summary")).toContainText("Parte confirmada!");
-    await expect(page.getByRole("button", { name: /Primeiros encontros/ })).toBeEnabled();
-    await page.getByRole("button", { name: /Primeiros encontros/ }).click();
+    await expect(page.getByRole("button", { name: /Rotina e presente simples/ })).toBeEnabled();
+    await page.getByRole("button", { name: /Rotina e presente simples/ }).click();
     await expect(
-      page.getByRole("heading", { name: "Primeiros encontros", exact: true }),
+      page.getByRole("heading", { name: "Rotina e presente simples", exact: true }),
     ).toBeVisible();
     expect(await page.evaluate(() => localStorage.getItem("helena.mathGame.v5"))).toBeNull();
+    await page.getByRole("button", { name: "Voltar", exact: true }).click();
+    await expect(page.locator(".math-journey-completion")).toHaveAttribute("aria-valuenow", "16");
     await noOverflow(page);
   });
 }

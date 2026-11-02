@@ -338,7 +338,7 @@ describe("App", () => {
     for (let index = 0; index < 6; index++) {
       const button = screen.getByRole("button", {
         name:
-          index === 0 ? "Explorar Inglês" : index === 4 ? "Explorar Matemática" : "Ilha bloqueada",
+          index === 0 ? "Explorar idiomas" : index === 4 ? "Explorar Matemática" : "Ilha bloqueada",
       }) as HTMLButtonElement;
       expect(button.disabled).toBe(index !== 0 && index !== 4);
       if (index !== 0 && index !== 4) fireEvent.click(button);

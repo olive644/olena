@@ -1,6 +1,11 @@
+import { ENGLISH_AREAS, isEnglishArea, type EnglishArea } from "./english-areas.js";
 import type { PracticeActivity } from "./workspace";
+import { ENGLISH_LEVELS, isEnglishLevel, type EnglishLevel } from "./english-levels.js";
 
 export type LanguageAttempt = {
+  curriculum?: 2 | 3;
+  area?: EnglishArea;
+  level?: EnglishLevel;
   part: number;
   mode: "practice" | "final";
   questions: number[];
@@ -23,6 +28,10 @@ export function validLanguageAttempt(value: unknown): value is LanguageAttempt {
     );
   const questions = item["questions"];
   return (
+    (item["curriculum"] === undefined || item["curriculum"] === 2 || item["curriculum"] === 3) &&
+    (item["area"] === undefined || isEnglishArea(item["area"])) &&
+    (item["curriculum"] !== 3 || isEnglishArea(item["area"])) &&
+    (item["level"] === undefined || isEnglishLevel(item["level"])) &&
     Number.isInteger(item["part"]) &&
     Number(item["part"]) >= 0 &&
     Number(item["part"]) < ENGLISH_PARTS &&
@@ -35,15 +44,29 @@ export function validLanguageAttempt(value: unknown): value is LanguageAttempt {
   );
 }
 
-export function englishProgress(activities: readonly PracticeActivity[] = []) {
-  const parts = Array.from({ length: ENGLISH_PARTS }, () => ({
-    solved: new Set<number>(),
-    correct: 0,
-    errors: 0,
-    confirmed: false,
-    review: 0,
-  }));
+export function englishProgress(
+  activities: readonly PracticeActivity[] = [],
+  area: EnglishArea = "english",
+) {
+  const areas = ENGLISH_AREAS.map(() =>
+    Array.from({ length: ENGLISH_PARTS }, () => ({
+      solved: new Set<number>(),
+      correct: 0,
+      errors: 0,
+      confirmed: false,
+      review: 0,
+    })),
+  );
   const accepted: PracticeActivity[] = [];
+  const legacy = ENGLISH_LEVELS.map(() =>
+    Array.from({ length: ENGLISH_PARTS }, () => ({
+      solved: new Set<number>(),
+      correct: 0,
+      errors: 0,
+      confirmed: false,
+      review: 0,
+    })),
+  );
   const seen = new Set<string>();
   for (const activity of [...activities].sort(
     (a, b) => a.completedAt.localeCompare(b.completedAt) || a.id.localeCompare(b.id),
@@ -60,6 +83,13 @@ export function englishProgress(activities: readonly PracticeActivity[] = []) {
     )
       continue;
     seen.add(activity.id);
+    const currentCurriculum = attempt.curriculum === 3;
+    const islandIndex = currentCurriculum
+      ? ENGLISH_AREAS.indexOf(attempt.area!)
+      : ENGLISH_LEVELS.indexOf(attempt.level ?? "a1");
+    const islands = currentCurriculum ? areas : legacy;
+    if (islandIndex > 0 && !islands[islandIndex - 1]!.every((part) => part.confirmed)) continue;
+    const parts = islands[islandIndex]!;
     const part = parts[attempt.part]!;
     if (attempt.part > 0 && !parts[attempt.part - 1]!.confirmed) continue;
     if (attempt.mode === "final" && (part.solved.size < ENGLISH_TARGET || part.review > 0))
@@ -73,10 +103,26 @@ export function englishProgress(activities: readonly PracticeActivity[] = []) {
     } else if (activity.correct >= 4) part.confirmed = true;
     else part.review = 4;
   }
+  const selected = ENGLISH_AREAS.indexOf(area);
+  const parts = areas[selected]!;
   const percent = Math.floor(
     (parts.reduce((sum, part) => sum + (part.confirmed ? 20 : Math.min(19, part.solved.size)), 0) /
       120) *
       100,
   );
-  return { parts, percent, accepted };
+  return {
+    overall: Math.floor(
+      (areas
+        .flat()
+        .reduce((sum, part) => sum + (part.confirmed ? 20 : Math.min(19, part.solved.size)), 0) /
+        120) *
+        100,
+    ),
+    parts,
+    percent,
+    accepted,
+    areas,
+    legacy: legacy.flat().some((part) => part.correct + part.errors > 0),
+    unlocked: selected === 0 || areas[selected - 1]!.every((part) => part.confirmed),
+  };
 }

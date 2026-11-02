@@ -134,8 +134,6 @@
 .english-parts .is-selected {
   background-color: #ffda19;
   color: #211923;
-  outline: 2px solid #7b38e8;
-  outline-offset: 2px;
 }
 .english-part-detail,
 .english-lesson,
@@ -364,4 +362,24 @@ html[data-reduce-motion="true"] .english-journey * {
     animation: none !important;
     transition: none !important;
   }
+}
+
+.english-subject-journey .math-journey-island:focus-visible {
+  outline: none;
+}
+.english-subject-journey .math-journey-island:focus-visible::after {
+  content: "";
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  bottom: 0;
+  height: 5px;
+  background: #ffda19;
+}
+
+:root[data-theme="dark"] .english-subject-journey .math-journey-completion .paper-digits {
+  --digit-face: #292432;
+  --digit-depth: #17131d;
+  --digit-fold: #51465d;
+  --digit-edge: #211b29;
 }

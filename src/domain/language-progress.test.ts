@@ -1,8 +1,10 @@
+import { readFileSync } from "node:fs";
+import { ENGLISH_AREAS } from "./english-areas";
 import { beforeEach, expect, it } from "vitest";
 import { englishProgress, validLanguageAttempt, type LanguageAttempt } from "./language-progress";
 import { createInitialWorkspace, workspaceReducer, type PracticeActivity } from "./workspace";
 import { mergeWorkspaceStates } from "./workspace-sync-merge";
-import { englishQuestion, ENGLISH_JOURNEY, normalizeEnglish } from "../data/english-journey";
+import { englishQuestion, validEnglishCourse, normalizeEnglish } from "../data/english-journey";
 import {
   finishMathPlace,
   mathPlaceRewards,
@@ -30,7 +32,14 @@ function attempt(
     answers: questions.length,
     correct: correct.length,
     completedAt: new Date(1700000000000 + sequence * 1000).toISOString(),
-    languageAttempt: { part, questions, correctQuestions: correct, mode },
+    languageAttempt: {
+      curriculum: 3,
+      area: "english",
+      part,
+      questions,
+      correctQuestions: correct,
+      mode,
+    },
   };
 }
 beforeEach(() => {
@@ -39,10 +48,11 @@ beforeEach(() => {
   localStorage.removeItem(ENGLISH_REWARDS_KEY);
 });
 it("has 144 answerable original tasks in four formats without duplicate choices", () => {
-  expect(ENGLISH_JOURNEY).toHaveLength(6);
+  const raw: unknown = JSON.parse(readFileSync("public/languages/en/english.json", "utf8"));
+  if (!validEnglishCourse(raw)) throw new Error("Invalid English content");
   for (let part = 0; part < 6; part++)
     for (let id = 0; id < 24; id++) {
-      const question = englishQuestion(part, id);
+      const question = englishQuestion(raw, part, id);
       expect(question.answer).toBeTruthy();
       expect(new Set(question.options).size).toBe(3);
       expect(question.options).toContain(question.answer);
@@ -155,4 +165,56 @@ it("merges English round receipts from different devices without duplicating rew
   );
   expect(result.conflicts).toEqual([]);
   expect(JSON.parse(result.items[ENGLISH_REWARDS_KEY]!)["english-a1"].points).toBe(140);
+});
+
+it("validates one English island, six parts and all 144 tasks", () => {
+  for (const level of ENGLISH_AREAS) {
+    const course: unknown = JSON.parse(readFileSync(`public/languages/en/${level}.json`, "utf8"));
+    expect(validEnglishCourse(course), level).toBe(true);
+    if (!validEnglishCourse(course)) continue;
+    for (let part = 0; part < 6; part++)
+      for (let id = 0; id < 24; id++) {
+        const question = englishQuestion(course, part, id);
+        expect(new Set(question.options).size, `${level}:${part}:${id}`).toBe(3);
+        expect(question.options).toContain(question.answer);
+      }
+  }
+});
+
+it("uses the same six-part completion formula as mathematics", () => {
+  const records: PracticeActivity[] = [];
+  for (let part = 0; part < 6; part++) {
+    for (let group = 0; group < 4; group++)
+      records.push(
+        attempt(
+          part,
+          Array.from({ length: 6 }, (_, id) => id + group * 6),
+        ),
+      );
+    records.push(attempt(part, [0, 5, 10, 15, 20], [0, 5, 10, 15], "final"));
+    expect(englishProgress(records).percent).toBe(Math.floor(((part + 1) * 100) / 6));
+  }
+  expect(englishProgress(records).overall).toBe(100);
+});
+
+it("retains preview history without treating changed curriculum IDs as new mastery", () => {
+  const old = attempt(0, [0, 1, 2]);
+  delete old.languageAttempt!.curriculum;
+  const progress = englishProgress([old]);
+  expect(progress.legacy).toBe(true);
+  expect(progress.accepted).toEqual([old]);
+  expect(progress.percent).toBe(0);
+  expect(validLanguageAttempt({ ...old.languageAttempt, level: "z9" })).toBe(false);
+});
+
+it("preserves each English level ledger and shares its Arcana collection", () => {
+  finishMathPlace("english-a1", "introductions", 40);
+  finishMathPlace("english-a2", "present", 120, () => 0.5);
+  finishMathPlace("english-c2", "meaning", 60);
+  expect(mathPlaceRewards("english-a1").points).toBe(40);
+  expect(mathPlaceRewards("english-a2").points).toBe(120);
+  expect(mathPlaceRewards("english-c2").points).toBe(60);
+  openMathChest("english-a2", "present", Date.now() + 11000, () => 0);
+  revealMathCard("english-a2", "present");
+  expect(oliverCollection()["major-00"]).toBe(1);
 });

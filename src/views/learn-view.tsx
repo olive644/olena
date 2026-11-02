@@ -35,9 +35,9 @@ type LearnViewProps = {
   workspace: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
 };
-const EnglishIslandJourney = lazy(() =>
-  import("../components/english-island-journey").then((module) => ({
-    default: module.EnglishIslandJourney,
+const VoicesPortJourney = lazy(() =>
+  import("../components/voices-port-journey").then((module) => ({
+    default: module.VoicesPortJourney,
   })),
 );
 
@@ -134,7 +134,7 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
   if (insideWorld && world.id === "languages")
     return (
       <Suspense fallback={<HelenaLoading />}>
-        <EnglishIslandJourney
+        <VoicesPortJourney
           workspace={workspace}
           onBack={() => setInsideWorld(false)}
           onPractice={(activity) => dispatch({ type: "practice/recorded", activity })}
@@ -176,7 +176,7 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
             </svg>
           )}
           {world.id === "languages"
-            ? uiText("Explorar Inglês")
+            ? uiText("Explorar idiomas")
             : available
               ? uiText(1250)
               : uiText(1970)}
