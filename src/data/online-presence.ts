@@ -1,5 +1,9 @@
 import type { User } from "firebase/auth";
-import { readPrivacyConsent, PRIVACY_POLICY_VERSION } from "../domain/privacy-policy";
+import {
+  readPrivacyConsent,
+  PRIVACY_POLICY_VERSION,
+  PRIVACY_CONSENT_CHANGED,
+} from "../domain/privacy-policy";
 export function startOnlinePresence(currentUser: () => User | null) {
   let stopped = false,
     pending = false,
@@ -43,11 +47,13 @@ export function startOnlinePresence(currentUser: () => User | null) {
   const timer = window.setInterval(() => void report(), 60000);
   const visible = () => void report();
   document.addEventListener("visibilitychange", visible);
+  window.addEventListener(PRIVACY_CONSENT_CHANGED, visible);
   void report();
   return () => {
     stopped = true;
     controller.abort();
     window.clearInterval(timer);
     document.removeEventListener("visibilitychange", visible);
+    window.removeEventListener(PRIVACY_CONSENT_CHANGED, visible);
   };
 }

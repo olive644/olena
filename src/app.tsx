@@ -289,7 +289,9 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
         {!projectorCode && (
           <Suspense fallback={null}>
             <HelenaChat currentView={view} materials={workspace.materials} />
-            {(!cloud.enabled || cloud.authenticated === true || guest) && <PrivacyNotice />}
+            {(!cloud.enabled || cloud.authenticated === true || guest) && (
+              <PrivacyNotice authenticated={cloud.authenticated === true && !guest} />
+            )}
           </Suspense>
         )}
       </div>

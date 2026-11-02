@@ -50,3 +50,63 @@ it("continua utilizável com armazenamento bloqueado", () => {
   fireEvent.click(screen.getByRole("button", { name: "Entendi" }));
   expect(screen.queryByRole("region")).toBeNull();
 });
+
+it("renova aceite antigo somente por confirmação explícita sem sair da conta", () => {
+  localStorage.setItem(PRIVACY_NOTICE_KEY, PRIVACY_POLICY_VERSION);
+  localStorage.setItem(
+    PRIVACY_CONSENT_ITEM,
+    JSON.stringify({ version: "2026-11-01", acceptedAt: "ontem" }),
+  );
+  localStorage.setItem("helena.profile.v1", JSON.stringify({ name: "Conta preservada" }));
+  const view = render(<PrivacyNotice authenticated />);
+  expect(screen.getByRole("dialog", { name: "Política de Privacidade atualizada" })).toBeTruthy();
+  const confirm = screen.getByRole("button", { name: "Confirmar aceite" });
+  expect(confirm.hasAttribute("disabled")).toBe(true);
+  expect(JSON.parse(localStorage.getItem(PRIVACY_CONSENT_ITEM)!).version).toBe("2026-11-01");
+  fireEvent.click(screen.getByRole("checkbox"));
+  fireEvent.click(confirm);
+  expect(JSON.parse(localStorage.getItem(PRIVACY_CONSENT_ITEM)!).version).toBe(
+    PRIVACY_POLICY_VERSION,
+  );
+  expect(JSON.parse(localStorage.getItem("helena.profile.v1")!).name).toBe("Conta preservada");
+  expect(screen.queryByRole("dialog")).toBeNull();
+  view.unmount();
+  render(<PrivacyNotice authenticated />);
+  expect(screen.queryByRole("dialog")).toBeNull();
+});
+it("adiar e troca de sessão não fabricam aceite", () => {
+  localStorage.setItem(
+    PRIVACY_CONSENT_ITEM,
+    JSON.stringify({ version: "antiga", acceptedAt: "ontem" }),
+  );
+  const view = render(<PrivacyNotice authenticated />);
+  fireEvent.click(screen.getByRole("button", { name: "Agora não" }));
+  expect(JSON.parse(localStorage.getItem(PRIVACY_CONSENT_ITEM)!).version).toBe("antiga");
+  view.unmount();
+  const next = render(<PrivacyNotice authenticated />);
+  expect(screen.getByRole("dialog")).toBeTruthy();
+  next.rerender(<PrivacyNotice authenticated={false} />);
+  expect(screen.queryByRole("dialog")).toBeNull();
+  expect(JSON.parse(localStorage.getItem(PRIVACY_CONSENT_ITEM)!).version).toBe("antiga");
+});
+
+it("falha de gravação mantém o aviso e não anuncia novo aceite", () => {
+  localStorage.setItem(
+    PRIVACY_CONSENT_ITEM,
+    JSON.stringify({ version: "antiga", acceptedAt: "ontem" }),
+  );
+  const events = vi.fn();
+  window.addEventListener("olena:privacy-consent-changed", events);
+  const spy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+    throw new Error("blocked");
+  });
+  render(<PrivacyNotice authenticated />);
+  fireEvent.click(screen.getByRole("checkbox"));
+  fireEvent.click(screen.getByRole("button", { name: "Confirmar aceite" }));
+  expect(screen.getByRole("alert")).toBeTruthy();
+  expect(screen.getByRole("dialog")).toBeTruthy();
+  expect(events).not.toHaveBeenCalled();
+  expect(JSON.parse(localStorage.getItem(PRIVACY_CONSENT_ITEM)!).version).toBe("antiga");
+  spy.mockRestore();
+  window.removeEventListener("olena:privacy-consent-changed", events);
+});
