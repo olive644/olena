@@ -436,3 +436,71 @@
 .social-share-avatar:has(.profile-frame-art) {
   margin-bottom: 24px;
 }
+
+/* As faixas cobrem a superfície inteira; no escuro, o papel recebe a tinta do tema. */
+:root[data-theme="dark"] body [data-profile-background] {
+  background-blend-mode: multiply;
+}
+:root[data-theme] body .social-share-card[data-profile-background] {
+  background-blend-mode: normal;
+}
+
+:root body .profile-cover[data-profile-background] {
+  --profile-background-top: calc(260px * (1 - var(--profile-collapse, 0)));
+  background-position: 0 var(--profile-background-top);
+  background-size: 100% calc(100% - var(--profile-background-top));
+}
+:root body .social-share-card[data-profile-background] {
+  background-position: 0 120px;
+  background-size: 100% calc(100% - 120px);
+}
+:root body .social-profile[data-profile-background] {
+  background-position: 0 124px;
+  background-size: 100% calc(100% - 124px);
+  background-repeat: no-repeat;
+}
+:root body .profile-customizer-preview[data-profile-background] {
+  background-position: 0 100px;
+  background-size: 100% calc(100% - 100px);
+}
+:root[data-theme="dark"]
+  body
+  [data-profile-background]:not([data-profile-background="paper"]):not(
+    [data-profile-background="night"]
+  ):not([data-profile-background="geometry"]) {
+  background-color: #62596b;
+}
+:root[data-theme="dark"] body .social-share-card[data-profile-background] {
+  background-color: #fff9ef;
+}
+@media (max-width: 600px) {
+  :root body .profile-cover[data-profile-background] {
+    --profile-background-top: 168px;
+  }
+  :root body .profile-customizer-preview[data-profile-background] {
+    background-position: 0 64px;
+    background-size: 100% calc(100% - 64px);
+  }
+}
+
+:root
+  body
+  [data-profile-background]:not(
+    [data-profile-background="paper"],
+    [data-profile-background="night"],
+    [data-profile-background="geometry"]
+  ) {
+  --muted: #352c40;
+}
+:root[data-theme="dark"]
+  body
+  [data-profile-background]:not(
+    [data-profile-background="paper"],
+    [data-profile-background="night"],
+    [data-profile-background="geometry"]
+  ) {
+  --muted: #f0e8fa;
+}
+:root[data-theme] body .social-share-card[data-profile-background] {
+  --muted: #352c40;
+}
