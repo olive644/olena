@@ -1,8 +1,8 @@
 export const ENGLISH_ISLAND_CATALOG = [
   {
     id: "english",
-    title: { "pt-BR": "Ilha de Inglês", "en-US": "English Island" },
-    subject: { "pt-BR": "Porto das Vozes", "en-US": "Voices Harbor" },
+    title: { "pt-BR": "Cais dos Encontros", "en-US": "Harbor of Encounters" },
+    subject: { "pt-BR": "Inglês", "en-US": "English" },
     parts: [
       { "pt-BR": "Apresentações e verbo to be", "en-US": "Introductions and the verb to be" },
       { "pt-BR": "Rotina e presente simples", "en-US": "Routines and the present simple" },

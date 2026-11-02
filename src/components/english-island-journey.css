@@ -4,7 +4,7 @@
   padding: 24px 16px 48px;
   color: var(--ink, #26212e);
 }
-.app-shell .english-journey .secondary-button {
+.english-journey .secondary-button {
   background-color: #fffdf8;
   background-image: linear-gradient(135deg, #f3e8d3 0 14px, transparent 14px);
   border: 1px solid #dbc9ad;
@@ -14,15 +14,15 @@
   font-size: 0.95rem;
   font-weight: 600;
 }
-.app-shell .english-journey .secondary-button:hover:enabled {
+.english-journey .secondary-button:hover:enabled {
   background-color: #f4ebff;
   border-color: #7b38e8;
 }
-.app-shell .english-journey .secondary-button.is-selected {
+.english-journey .secondary-button.is-selected {
   background-color: #ffda19;
   background-image: linear-gradient(135deg, #ffe779 0 14px, transparent 14px);
 }
-.app-shell .english-journey .text-button {
+.english-journey .text-button {
   border: 0;
   background: transparent;
   box-shadow: none;
@@ -30,29 +30,29 @@
   font-size: 0.9rem;
   text-decoration: underline;
 }
-.app-shell .english-journey button:focus-visible {
+.english-journey button:focus-visible {
   text-decoration-color: #ffce00;
   text-decoration-thickness: 3px;
   text-underline-offset: 5px;
 }
-.app-shell .english-journey button:disabled {
+.english-journey button:disabled {
   opacity: 0.5;
 }
-:root[data-theme="dark"] .app-shell .english-journey .secondary-button {
+:root[data-theme="dark"] .english-journey .secondary-button {
   background-color: #302936;
   background-image: linear-gradient(135deg, #42334f 0 14px, transparent 14px);
   color: #fff8ef;
   border-color: #5f516c;
   box-shadow: 0 4px 0 #17131e;
 }
-:root[data-theme="dark"] .app-shell .english-journey .secondary-button:hover:enabled {
+:root[data-theme="dark"] .english-journey .secondary-button:hover:enabled {
   background-color: #493258;
 }
-:root[data-theme="dark"] .app-shell .english-journey .secondary-button.is-selected {
+:root[data-theme="dark"] .english-journey .secondary-button.is-selected {
   background-color: #ffda19;
   color: #211923;
 }
-:root[data-theme="dark"] .app-shell .english-journey .text-button {
+:root[data-theme="dark"] .english-journey .text-button {
   color: #c49aff;
 }
 .english-journey-header,
@@ -364,10 +364,10 @@ html[data-reduce-motion="true"] .english-journey * {
   }
 }
 
-.english-subject-journey .math-journey-island:focus-visible {
+:is(.english-subject-journey, .english-parts-journey) .math-journey-island:focus-visible {
   outline: none;
 }
-.english-subject-journey .math-journey-island:focus-visible::after {
+:is(.english-subject-journey, .english-parts-journey) .math-journey-island:focus-visible::after {
   content: "";
   position: absolute;
   left: 25%;
@@ -377,9 +377,193 @@ html[data-reduce-motion="true"] .english-journey * {
   background: #ffda19;
 }
 
-:root[data-theme="dark"] .english-subject-journey .math-journey-completion .paper-digits {
+:root[data-theme="dark"]
+  :is(.english-subject-journey, .english-parts-journey)
+  .math-journey-completion
+  .paper-digits {
   --digit-face: #292432;
   --digit-depth: #17131d;
   --digit-fold: #51465d;
   --digit-edge: #211b29;
+}
+
+.english-island-interior {
+  max-width: none;
+  margin: 0;
+  padding: 24px clamp(16px, 4vw, 56px) 40px;
+  color: #fff9ef;
+}
+.english-interior-content {
+  max-width: 1120px;
+  margin: auto;
+  position: relative;
+}
+.english-island-interior .english-journey-header {
+  padding-bottom: 18px;
+  border-bottom: 1px solid #fff9ef33;
+}
+.english-island-interior .english-journey-header p {
+  color: #e8f4ee;
+}
+.english-island-interior .english-course-heading {
+  margin: 20px 0;
+}
+.english-island-interior .english-course-heading h1 {
+  margin: 8px 0;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.2;
+}
+.english-island-interior .english-course-heading p {
+  max-width: 65ch;
+  line-height: 1.6;
+}
+.english-island-interior .english-course-heading .english-eyebrow {
+  color: #83dfdf;
+}
+.english-interior-emblem {
+  width: 180px;
+  height: 180px;
+  flex: 0 0 180px;
+}
+.english-island-interior .english-interior-emblem img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.english-parts-layout {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.english-parts-layout .english-parts {
+  grid-template-columns: 1fr;
+  margin: 0;
+  gap: 10px;
+}
+.english-island-interior .english-parts > button {
+  min-height: 78px;
+  position: relative;
+  padding: 14px 36px 14px 14px;
+}
+.english-part-state {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: flex;
+  align-items: center;
+  color: #248054;
+}
+.english-part-state svg {
+  width: 18px;
+  height: 18px;
+}
+.english-island-interior .english-part-detail,
+.english-island-interior .english-lesson,
+.english-island-interior .english-summary {
+  color: var(--text, #292432);
+}
+.english-island-interior .english-lesson {
+  max-width: 820px;
+  margin: 28px auto;
+}
+.english-island-interior .english-lesson h1 {
+  font-size: clamp(22px, 3vw, 30px);
+  line-height: 1.35;
+}
+.english-island-interior .english-summary {
+  margin-bottom: 20px;
+}
+.english-island-interior .english-part-detail {
+  animation: english-arrive 0.25s ease-out both;
+}
+.english-island-interior .english-proficiency {
+  color: #d5e5e1;
+}
+.english-island-interior .math-place-treasure {
+  color: #fff9ef;
+}
+.english-island-interior .math-place-total .paper-digits,
+.english-island-interior .english-journey-header .paper-digits {
+  --digit-face: #fff5d9;
+  --digit-depth: #8c7658;
+  --digit-fold: #fff;
+  --digit-edge: #c7af80;
+}
+@media (max-width: 700px) {
+  .english-island-interior {
+    padding: 16px 12px 32px;
+  }
+  .english-parts-layout {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .english-parts-layout .english-parts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .english-island-interior .english-parts > button {
+    font-size: 0.8rem;
+    padding: 12px 24px 12px 10px;
+    gap: 8px;
+    min-height: 90px;
+  }
+  .english-interior-emblem {
+    width: 95px;
+    height: 110px;
+    flex-basis: 95px;
+  }
+  .english-island-interior .english-course-heading {
+    gap: 12px;
+  }
+  .english-island-interior .english-course-heading h1 {
+    font-size: 24px;
+  }
+  .english-island-interior .english-course-heading p {
+    font-size: 0.9rem;
+  }
+  .english-island-interior .english-journey-header {
+    gap: 8px;
+  }
+  .english-part-state {
+    right: 6px;
+    top: 6px;
+  }
+  .english-part-state svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .english-island-interior * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.english-parts > button > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.english-island-interior .english-parts .paper-digits {
+  --digit-face: #292432;
+  --digit-depth: #17131d;
+  --digit-fold: #51465d;
+  --digit-edge: #211b29;
+}
+:root[data-theme="dark"] .english-island-interior .english-parts .paper-digits {
+  --digit-face: #fff5d9;
+  --digit-depth: #8c7658;
+  --digit-fold: #fff;
+  --digit-edge: #c7af80;
+}
+:root[data-theme="dark"] .english-island-interior .english-parts .is-selected .paper-digits {
+  --digit-face: #292432;
+  --digit-depth: #17131d;
+  --digit-fold: #51465d;
+  --digit-edge: #211b29;
+}
+
+.english-island-interior .english-part-detail {
+  max-width: 820px;
+  margin: 0 auto;
 }

@@ -1,8 +1,10 @@
 # Porto das Vozes: primeira ilha de Inglês
 
+Contrato visual vigente: [VOICES_DESIGN.md](VOICES_DESIGN.md).
+
 ## Entrega
 
-A navegação confirmada é Ilhas gerais > Porto das Vozes > Ilha de Inglês (bandeira britânica) > seis partes internas. Espanhol, Japonês e Chinês aparecem em preparação. Não há seis ilhas de assuntos nem seis cursos por nível. As partes são apresentações e verbo to be, rotina e presente, passado, planos e futuro, argumentação e conexões, expressões e interpretação. São 36 falas próprias e 144 tarefas em quatro formatos. As referências A1 a C2 indicam dificuldade do material, não certificação, curso completo ou camadas de navegação.
+A navegação confirmada é Ilhas gerais > Porto das Vozes > Cais dos Encontros, Inglês (bandeira britânica) > seis partes internas. Espanhol, Japonês e Chinês aparecem em preparação. Não há seis ilhas de assuntos nem seis cursos por nível. As partes são apresentações e verbo to be, rotina e presente, passado, planos e futuro, argumentação e conexões, expressões e interpretação. São 36 falas próprias e 144 tarefas em quatro formatos. As referências A1 a C2 indicam dificuldade do material, não certificação, curso completo ou camadas de navegação.
 
 O aluno interpreta uma fala, completa uma palavra, escolhe uma resposta contextual e monta uma frase com palavras. A fala pode ser ouvida mediante ação do aluno, quando há voz inglesa local no aparelho. O texto oferece alternativa equivalente. Não há captura de microfone, avaliação de pronúncia, chamada, tradução automática ou conversa generativa nesta entrega.
 
@@ -82,3 +84,15 @@ Espanhol, Japonês e Chinês ganham artes individuais e continuam bloqueados, in
 Ferramenta integrada imagegen, usando Porto das Vozes e a ilha inglesa somente como referências do acabamento. Prompt comum: ilha flutuante isométrica, recortes facetados, pedra clara, telhados turquesa, rochas azul-marinho, água poligonal e detalhes amarelos, silhueta própria, poucas formas grandes, sem texto, personagens, interface ou cadeado, fundo transparente. Prompts individuais: Espanhol com moinho de quatro pás, praça circular, fonte e arcadas; Japonês com pavilhão aberto sobre madeira, árvore facetada rosada e ponte vermelha; Chinês com portal circular, pavilhão de dois telhados e bambus. Bandeira correspondente em cada arte. Exportação WebP 800 por 800 em public/languages/islands/spanish.webp, japanese.webp e chinese.webp. Nenhuma alteração na arte inglesa.
 
 Validação das três ilhas: verify integral aprovado, 389 arquivos e 2528 testes, lint sem erros e 27 avisos existentes; formatação/API/idiomas/tipos/build/performance verdes, aplicação 1697,6 KiB e entrada 220,7 KiB, sem alteração de limites. Doze E2E Edge/Chromium PC/mobile claro/escuro passaram sem skips, incluindo imagens próprias carregadas, três botões e ilhas bloqueados, ícone play compartilhado com Matemática, ausência da descrição inglesa e regressões de progresso/recompensas. Screenshots com visitante fictício em b/previews-voices-language-islands. Logs externos voices-language-islands-verify.log e voices-language-islands-browser.log. Nenhum conteúdo, conta real, regra Firebase ou configuração externa foi alterado nesta revisão. Arte ainda sujeita à revisão do proprietário, sem mesclagem.
+
+## Nomes, cadeado e interior
+
+Destinos renomeados para Cais dos Encontros, Praça dos Ventos, Jardim das Palavras e Pátio dos Traços, sem mudar IDs persistentes ou recibos. Cadeado original extraído de LearnView para PaperIslandLock e reutilizado nas ilhas gerais, Matemática e Idiomas. O interior de Inglês usa a arte existente e o cenário fullscreen compartilhado de Matemática, com seis partes, folha de estudo, cadeado de prática futura e check de confirmação. Sem geração de novas ilhas para cada parte, sem mudanças no currículo, nas cotas, na voz ou na sincronização. Validação desta revisão será registrada ao concluir.
+
+### Decisão final sobre as seis partes, 02/11/2026
+
+Proprietário confirmou: seis cenários navegáveis por setas, como Matemática, cada um abrindo seus próprios materiais. A proposta de lista lateral de tópicos foi rejeitada. Fluxo: mundo de idiomas > idioma > carrossel de cenários/partes > materiais. Cenários derivados da mesma ilha inglesa, sem seis mundos de idioma novos. Percentual por cenário, média de seis no idioma, pontos/poeira compartilhados. Ver VOICES_DESIGN.md para o contrato e nomes dos seis lugares.
+
+### Produção dos seis cenários regionais
+
+Artes produzidas pela ferramenta integrada imagegen a partir da ilha inglesa aprovada e do primeiro cenário regional. Prompt comum: região interna do mesmo Cais dos Encontros, câmera isométrica, recortes facetados, pedra clara, telhados turquesa, água poligonal e poucos detalhes amarelos; plataforma rasa com poucas rochas baixas azul-marinho, sem outra ilha flutuante completa, personagens, texto ou interface; fundo transparente. Marcos individuais: cais de boas-vindas, praça de hábitos, ponte de memórias, mirante de planos, pátio de ideias e casa dos sentidos. Exportação WebP 800 por 800 com alpha em public/languages/english-parts/. A ilha principal permanece intacta. As imagens aparecem no carrossel e nos materiais da respectiva parte, sem alterar IDs ou progresso.
