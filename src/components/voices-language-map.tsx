@@ -2,10 +2,10 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { uiText, useLanguage } from "../i18n/runtime";
 const LANGUAGES = [
-  { id: "en", title: { "pt-BR": "Ilha de Inglês", "en-US": "English Island" } },
-  { id: "es", title: { "pt-BR": "Ilha de Espanhol", "en-US": "Spanish Island" } },
-  { id: "ja", title: { "pt-BR": "Ilha de Japonês", "en-US": "Japanese Island" } },
-  { id: "zh", title: { "pt-BR": "Ilha de Chinês", "en-US": "Chinese Island" } },
+  { id: "en", art: "english", title: { "pt-BR": "Ilha de Inglês", "en-US": "English Island" } },
+  { id: "es", art: "spanish", title: { "pt-BR": "Ilha de Espanhol", "en-US": "Spanish Island" } },
+  { id: "ja", art: "japanese", title: { "pt-BR": "Ilha de Japonês", "en-US": "Japanese Island" } },
+  { id: "zh", art: "chinese", title: { "pt-BR": "Ilha de Chinês", "en-US": "Chinese Island" } },
 ] as const;
 import { englishText } from "../data/english-journey";
 
@@ -15,6 +15,7 @@ import { PaperArrow } from "./paper-arrow";
 import { FocusPaperArrow } from "./focus-paper-arrow";
 import { PracticeUserPortrait } from "./practice-user-portrait";
 import { MathNumber } from "./math-paper-art";
+import { HelenaRoomIcon } from "./helena-room-icon";
 import { MathPlaceTreasure } from "./math-place-treasure";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import "./math-island-journey.css";
@@ -155,11 +156,7 @@ export function VoicesLanguageMap({
             >
               {Math.abs(position - index) <= 1 && (
                 <img
-                  src={
-                    item.id === "en"
-                      ? "/languages/islands/english.webp"
-                      : "/practice-islands/languages.webp"
-                  }
+                  src={`/languages/islands/${item.art}.webp`}
                   width="800"
                   height="800"
                   alt=""
@@ -198,18 +195,14 @@ export function VoicesLanguageMap({
         <div className="math-journey-label" aria-live="polite">
           <span>{uiText("Porto das Vozes")}</span>
           <h1>{englishText(course.title)}</h1>
-          <p>
-            {unlocked(index)
-              ? uiText("6 partes: apresentações, presente, passado, futuro, conexões e expressões.")
-              : uiText("Em preparação")}
-          </p>
+          {!unlocked(index) && <p>{uiText("Em preparação")}</p>}
           <button
             className="primary-button math-place-start"
             type="button"
             disabled={phase !== "map" || !unlocked(index)}
             onClick={() => setPhase("enter")}
           >
-            {unlocked(index) ? uiText(1793) : uiText(1794)}
+            <HelenaRoomIcon name="play" /> {unlocked(index) ? uiText(1793) : uiText(1794)}
           </button>
         </div>
         <button

@@ -71,16 +71,40 @@ for (const theme of ["light", "dark"]) {
     if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
     await seed(page, theme);
     await expect(page.locator(".english-subject-journey .math-journey-island")).toHaveCount(4);
+    await expect(page.locator(".math-journey-label")).not.toContainText("6 partes:");
+    await expect(page.locator(".math-place-start img")).toHaveAttribute(
+      "src",
+      "/room-icons/play.svg",
+    );
     await expect(page.locator(".math-journey-completion")).toHaveAttribute("aria-valuenow", "0");
     await expect(page.locator(".math-journey-progress-pieces > span")).toHaveCount(6);
     await expect(page.locator(".math-journey-completion .paper-digits")).toHaveCSS(
       "--digit-face",
       "#292432",
     );
-    for (const title of ["Ilha de Espanhol", "Ilha de Japonês", "Ilha de Chinês"]) {
+    for (const [title, art] of [
+      ["Ilha de Espanhol", "spanish"],
+      ["Ilha de Japonês", "japanese"],
+      ["Ilha de Chinês", "chinese"],
+    ]) {
       await page.getByRole("button", { name: "Próxima ilha de idioma", exact: true }).click();
       await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
       await expect(page.locator(".math-place-start")).toBeDisabled();
+      const island = page.locator(".math-journey-island.is-current");
+      await expect(island).toBeDisabled();
+      await expect(island.locator("img")).toHaveAttribute("src", `/languages/islands/${art}.webp`);
+      await island.locator("img").evaluate((image: HTMLImageElement) => image.decode());
+      const directory =
+        "C:/Users/User/Documents/Codex/2026-09-10/b/previews-voices-language-islands";
+      await mkdir(directory, { recursive: true });
+      await page.screenshot({
+        path: `${directory}/${info.project.name}-${theme}-${art}.png`,
+        fullPage: true,
+      });
+      await expect(page.locator(".math-place-start img")).toHaveAttribute(
+        "src",
+        "/room-icons/play.svg",
+      );
     }
     for (let i = 0; i < 3; i++)
       await page.getByRole("button", { name: "Ilha de idioma anterior", exact: true }).click();
