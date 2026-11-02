@@ -56,3 +56,72 @@
     width: calc(100vw - 32px);
   }
 }
+
+.privacy-renewal {
+  max-width: 560px;
+}
+.privacy-renewal p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.privacy-renewal > a {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.privacy-renewal__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 20px 0;
+  min-height: 44px;
+  line-height: 1.5;
+}
+.privacy-renewal__consent input {
+  flex: none;
+}
+.privacy-renewal footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+@media (max-width: 500px) {
+  .privacy-renewal {
+    padding: 18px;
+  }
+  .privacy-renewal > header h2 {
+    font-size: 21px;
+  }
+  .privacy-renewal footer > button {
+    flex: 1;
+  }
+}
+
+.privacy-renewal > a .onboarding-paper-arrow {
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+@media (max-width: 500px) {
+  .privacy-renewal > header {
+    margin-bottom: 10px;
+  }
+  .privacy-renewal > header h2 {
+    font-size: 18px;
+    line-height: 1.35;
+  }
+  .privacy-renewal p {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 10px 0;
+  }
+  .privacy-renewal__consent {
+    font-size: 13px;
+    margin: 12px 0;
+  }
+  .privacy-renewal footer > button {
+    font-size: 13px;
+    padding: 10px;
+  }
+}

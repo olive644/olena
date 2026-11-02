@@ -1,13 +1,87 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useState } from "react";
-import { PRIVACY_POLICY_PATH, PRIVACY_POLICY_VERSION } from "../domain/privacy-policy";
+import {
+  PRIVACY_CONSENT_CHANGED,
+  readPrivacyConsent,
+  recordPrivacyConsent,
+  PRIVACY_POLICY_PATH,
+  PRIVACY_POLICY_VERSION,
+} from "../domain/privacy-policy";
 import "./privacy-notice.css";
+import { LibraryDialog } from "./library-dialog";
 import { PaperArrow } from "./paper-arrow";
 
 // É uma confirmação de leitura, não autoriza IA, voz ou serviços opcionais.
 export const PRIVACY_NOTICE_KEY = "helena.privacyNotice.v1";
 
-export function PrivacyNotice({ embedded = false }: { embedded?: boolean }) {
+function PrivacyRenewal({ onClose }: { onClose(): void }) {
+  const [accepted, setAccepted] = useState(false);
+  const [error, setError] = useState(false);
+  return (
+    <LibraryDialog
+      title={uiText("Política de Privacidade atualizada")}
+      onClose={onClose}
+      className="privacy-renewal"
+    >
+      <p>
+        {uiText(
+          "A política atual explica a presença no Olena e o contador público no Discord, que mostra somente o total de contas online.",
+        )}
+      </p>
+      <p>{uiText("Sua conta continua conectada. A presença só começa após sua confirmação.")}</p>
+      <a
+        className="secondary-button"
+        href={PRIVACY_POLICY_PATH}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {uiText(825)} <PaperArrow />
+      </a>
+      <label className="privacy-renewal__consent">
+        <input
+          className="paper-checkbox"
+          type="checkbox"
+          checked={accepted}
+          onChange={(e) => setAccepted(e.target.checked)}
+        />
+        {uiText("Li e concordo com a Política de Privacidade atualizada.")}
+      </label>
+      {error && (
+        <p role="alert">
+          {uiText("Não foi possível salvar o aceite neste navegador. Tente novamente.")}
+        </p>
+      )}
+      <footer>
+        <button type="button" className="secondary-button" onClick={onClose}>
+          {uiText("Agora não")}
+        </button>
+        <button
+          type="button"
+          className="primary-button"
+          disabled={!accepted}
+          onClick={() => {
+            recordPrivacyConsent(localStorage);
+            if (readPrivacyConsent(localStorage)?.version !== PRIVACY_POLICY_VERSION) {
+              setError(true);
+              return;
+            }
+            window.dispatchEvent(new Event(PRIVACY_CONSENT_CHANGED));
+            onClose();
+          }}
+        >
+          {uiText("Confirmar aceite")}
+        </button>
+      </footer>
+    </LibraryDialog>
+  );
+}
+export function PrivacyNotice({
+  embedded = false,
+  authenticated = false,
+}: {
+  embedded?: boolean;
+  authenticated?: boolean;
+}) {
   useLanguage();
 
   const [visible, setVisible] = useState(() => {
@@ -19,6 +93,21 @@ export function PrivacyNotice({ embedded = false }: { embedded?: boolean }) {
     }
   });
   const [expanded, setExpanded] = useState(false);
+  const [renewalDismissed, setRenewalDismissed] = useState(false);
+  if (
+    authenticated &&
+    !embedded &&
+    !renewalDismissed &&
+    readPrivacyConsent(localStorage)?.version !== PRIVACY_POLICY_VERSION
+  )
+    return (
+      <PrivacyRenewal
+        onClose={() => {
+          setRenewalDismissed(true);
+          setVisible(false);
+        }}
+      />
+    );
   if (!visible) return null;
   return (
     <section

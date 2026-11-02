@@ -2,6 +2,7 @@
 // atributo data-policy-version em public/politica-de-privacidade.html (um teste confere).
 export const PRIVACY_POLICY_VERSION = "2026-11-02";
 export const PRIVACY_POLICY_PATH = "/politica-de-privacidade.html";
+export const PRIVACY_CONSENT_CHANGED = "olena:privacy-consent-changed";
 export const PRIVACY_CONSENT_ITEM = "helena.privacy.v1";
 
 export type PrivacyConsent = { version: string; acceptedAt: string };

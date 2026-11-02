@@ -1,3 +1,9 @@
+## Renovação explícita da política, 02/11/2026
+
+Contas com aceite antigo recebem diálogo original sem logout. Entendi continua só leitura; checkbox e confirmação atualizam o aceite, com erro se a gravação falhar. Adiar/X/Escape não aceitam. Evento local inicia presença imediatamente, sem enviar token de sessão anterior. Nenhuma alteração de regras/serviços/segredos ou da versão da política. Contrato e provas em PRIVACY_RENEWAL.md.
+
+Verify integral aprovado: 388 arquivos, 2514 testes, lint sem erros (27 avisos existentes), tipos/API/idiomas/formatação/build/performance verdes. Aplicação 1673,1 KiB, entrada 220,6 KiB, sem alterar limites. Quinze testes focados passaram; quatro cenários de navegador com componentes reais e sessão simulada, PC/mobile320 claro/escuro, e dez E2E de acesso/retorno passaram. Não houve autenticação real ou envio ao Discord. Logs privacy-renewal-verify.log e privacy-renewal-regression-browser.log fora do repositório.
+
 ## Fundos completos abaixo do header, 02/11/2026
 
 Direção corrigida: as doze bandeiras e Matemática cobrem toda a superfície, em vez de pequenos recortes nas margens. SVG opaco com preserveAspectRatio=none elimina letterbox no perfil largo; posicionamento abaixo do header mantém todas as faixas visíveis. Claro usa papel tingido, escuro usa composição multiplicada com base ajustada, e card/PNG conservam as mesmas artes. IDs, desbloqueios, molduras e sincronização intactos.
