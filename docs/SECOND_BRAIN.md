@@ -1747,3 +1747,7 @@ nos quatro pares de viewport e tema, junto de `manifest.json`. O preview local u
 `http://127.0.0.1:4196/`. Testes de navegador emulado não substituem aparelho físico.
 
 Revisão Oliver compacta (01/11/2026): MathMistakeReview não usa mais PaperSpeech. A explicação é integral, filtrando apenas a linha técnica de fonte na apresentação; o helper conserva créditos. OliverReviewArt recebe speaking=false e mantém reações. As quatro opções usam o CSS nativo do minigame, sem estilos próprios de botão ou partículas da revisão. Questão única no balão, sem placa. Regresso em e2e/math-mistake-review.spec.ts e provas em artifacts/math-review-polish.
+
+## Personalização e presença, 02/11/2026
+
+Contrato em docs/PROFILE_CUSTOMIZATION.md. Quatro categorias no seletor, 12 bandeiras livres e dois exclusivos matemáticos por progresso. frame/background opcionais na chave de perfil existente e na projeção social. Online no Olena usa sinal privado por conta visível, TTL de 150 segundos, publicação agregada no canal 1566649923099689070 e trava de cinco minutos. Ativação requer regra privada, flag e agendador protegido operados pela responsável. Cron diário não mantém o zero atualizado após todos saírem. Não houve operação externa real.

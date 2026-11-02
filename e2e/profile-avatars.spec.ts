@@ -8,7 +8,7 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
   await page.goto("/perfil");
-  const profileMenu = page.getByRole("dialog", { name: "Avatar do perfil" });
+  const profileMenu = page.getByRole("dialog", { name: "Personalize seu perfil" });
   const avatars = [
     "Alice",
     "Soso Estrelinha",

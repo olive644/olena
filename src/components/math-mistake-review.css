@@ -97,10 +97,9 @@
   line-height: 1.4;
 }
 .oliver-review__calculation .math-expression {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px;
+  display: inline;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 .math-arcade .oliver-review__calculation .paper-digits {
   height: 1em;
@@ -233,7 +232,10 @@
     margin-bottom: 10px;
   }
   .oliver-review__calculation {
-    font-size: 23px;
+    font-size: clamp(17px, 4.8vw, 21px);
+    line-height: 1.5;
+    text-align: left;
+    font-weight: 700;
     margin: 10px 0 14px;
   }
   .oliver-review .primary-button {
@@ -259,4 +261,14 @@
 }
 :root[data-reduce-motion="true"] .oliver-review__speech {
   animation: none;
+}
+
+.oliver-review__calculation .paper-digits {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  vertical-align: -0.1em;
+}
+.oliver-review__calculation .math-question-mark {
+  display: inline-block;
+  vertical-align: -0.1em;
 }

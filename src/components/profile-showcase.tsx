@@ -1,3 +1,6 @@
+import { ProfileFrameArt } from "./profile-frame-art";
+import { profileBackground } from "../domain/profile-cosmetics";
+import "./profile-customization.css";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { profilePronounsLabel } from "../i18n/profile-pronouns";
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
@@ -190,7 +193,11 @@ export function ProfileShowcase({
           </div>
         )}
         {!settingsOpen && (
-          <section className="profile-cover" aria-label={uiText(863)}>
+          <section
+            className="profile-cover"
+            data-profile-background={profileBackground(profile.background)}
+            aria-label={uiText(863)}
+          >
             <div className="profile-cover__art">
               <ProfileCoverArt theme={profileCover(profile.cover)} />
             </div>
@@ -323,6 +330,7 @@ export function ProfileShowcase({
                   event.currentTarget.src = "/profile-avatars/helena.webp";
               }}
             />
+            <ProfileFrameArt frame={profile.frame} />
             <ProfileLevelBadge />
           </button>
         )}

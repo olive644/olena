@@ -1,3 +1,4 @@
+import { profileFrame, profileBackground } from "../domain/profile-cosmetics";
 import { useEffect, useState } from "react";
 import { SYNCED_STORAGE_EVENT, SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
 import type { StoredProfile } from "../domain/profile-identity";
@@ -27,6 +28,8 @@ export function readStoredProfile(): StoredProfile {
       delete profile.achievementFavorites;
     if ("achievementHistory" in profile)
       profile.achievementHistory = generalAchievementHistory(profile.achievementHistory);
+    if ("frame" in profile) profile.frame = profileFrame(profile.frame);
+    if ("background" in profile) profile.background = profileBackground(profile.background);
     if ("cover" in profile) profile.cover = profileCover(profile.cover);
     for (const key of ["name", "photoUrl", "username", "bio", "pronouns"] as const) {
       if (typeof profile[key] !== "string") delete profile[key];

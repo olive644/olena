@@ -1,3 +1,4 @@
+vi.mock("./online-presence", () => ({ startOnlinePresence: () => () => {} }));
 import { expect, it, vi } from "vitest";
 import type { User } from "firebase/auth";
 import { startAccountActivity } from "./account-activity";

@@ -1,9 +1,11 @@
+import { startOnlinePresence } from "./online-presence";
 import type { User } from "firebase/auth";
 import { prepareAccountLog } from "./account-auth";
 import { PRIVACY_POLICY_VERSION, readPrivacyConsent } from "../domain/privacy-policy";
 
 // Atividade observada no app, não presença online garantida.
 export function startAccountActivity(currentUser: () => User | null) {
+  const stopPresence = startOnlinePresence(currentUser);
   let active = true;
   let pending = false;
   const reported = new Map<string, number>();
@@ -40,6 +42,7 @@ export function startAccountActivity(currentUser: () => User | null) {
     report,
     stop() {
       active = false;
+      stopPresence();
       for (const event of events) document.removeEventListener(event, report);
     },
   };

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 for (const theme of ["light", "dark"]) {
-  test(`cinco capas e Perfil compacto sem espaços artificiais: ${theme}`, async ({
+  test(`capas originais e novas com Perfil compacto sem espaços artificiais: ${theme}`, async ({
     page,
   }, info) => {
     await page.addInitScript((theme) => {
@@ -36,11 +36,11 @@ for (const theme of ["light", "dark"]) {
     await expect(editCover).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
     await expect(editCover).toHaveCSS("box-shadow", "none");
     await editCover.click();
-    const dialog = page.getByRole("dialog", { name: "Capa do perfil", exact: true });
-    await expect(dialog.getByRole("group").getByRole("button")).toHaveCount(5);
+    const dialog = page.getByRole("dialog", { name: "Personalize seu perfil", exact: true });
+    await expect(dialog.getByRole("group").getByRole("button")).toHaveCount(18);
     for (const name of ["Noite da Olena", "Eclipse Solar", "Aurora", "Bosque", "Oceano"]) {
       await dialog.getByRole("button", { name, exact: true }).click();
-      await expect(dialog.locator(".profile-cover-preview img")).toHaveJSProperty(
+      await expect(dialog.locator(".profile-customizer-preview > img")).toHaveJSProperty(
         "naturalWidth",
         1200,
       );

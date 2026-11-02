@@ -1,5 +1,6 @@
 {
   "rules": {
+    "privateOnlinePresence": { ".indexOn": [".value"], ".read": false, ".write": false },
     "privateAccountActivity": { ".indexOn": ["dueAt"], ".read": false, ".write": false },
     "privateProfileHandles": { ".read": false, ".write": false },
     "privateProfileSocial": { ".read": false, ".write": false },

@@ -675,3 +675,34 @@ it("isola os destaques de cada conta e limpa com [] sem tocar nas outras", async
   expect([cleared?.cards, cleared?.cardFavorites]).toEqual([[], []]);
   expect((await app.feed("c", "username=bob")).profile?.cardFavorites).toEqual(["cups-01"]);
 });
+
+it("publica somente IDs de decoração conhecidos e preserva o perfil visitado", async () => {
+  const app = setup();
+  const share = {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    cover: "pride",
+    details: {
+      level: 1,
+      streaks: { pomodoro: 0, timer: 0, islands: 0 },
+      socialLinks: [],
+      frame: "bi",
+      background: "geometry",
+    },
+  };
+  expect((await app.request("a", share)).status).toBe(200);
+  expect((await app.feed("b", "username=alice")).profile).toMatchObject({
+    cover: "pride",
+    details: { frame: "bi", background: "geometry" },
+  });
+  expect(
+    (
+      await app.request("a", {
+        ...share,
+        details: { ...share.details, frame: "https://evil.example" },
+      })
+    ).status,
+  ).toBe(400);
+});

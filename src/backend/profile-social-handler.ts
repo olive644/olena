@@ -615,6 +615,8 @@ export function createProfileSocialHandler(options: {
               const details = body["details"];
               self.details = {
                 level: details.level,
+                ...(details.frame ? { frame: details.frame } : {}),
+                ...(details.background ? { background: details.background } : {}),
                 streaks: {
                   pomodoro: details.streaks.pomodoro,
                   timer: details.streaks.timer,

@@ -1,0 +1,340 @@
+.profile-frame-art {
+  position: absolute;
+  inset: -12%;
+  width: 124%;
+  height: 124%;
+  max-width: none;
+  pointer-events: none;
+  object-fit: contain;
+  z-index: 1;
+}
+.profile-cover__portrait {
+  overflow: visible;
+}
+.profile-cover__portrait .profile-level-badge {
+  z-index: 2;
+}
+.social-visit-avatar {
+  overflow: visible;
+}
+.social-visit-avatar .profile-frame-art {
+  width: 124%;
+  height: 124%;
+}
+:root body .profile-editor.social-directory .social-person {
+  border: 1px solid var(--line);
+  border-radius: 4px 17px 5px 13px;
+  box-shadow: 0 4px var(--line);
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(135deg, var(--soft) 0 12px, transparent 12px),
+    linear-gradient(315deg, var(--soft) 0 18px, transparent 18px);
+  transition:
+    transform 160ms,
+    box-shadow 160ms;
+  min-height: 78px;
+}
+:root body .profile-editor.social-directory .social-person:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px var(--line);
+}
+.social-person .social-person-portrait {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: block;
+  margin: 4px;
+}
+.social-person-portrait > img:first-child {
+  width: 100%;
+  height: 100%;
+}
+.social-connection-row {
+  border-bottom: 0;
+  padding-bottom: 8px;
+}
+[data-profile-background="night"] {
+  background-color: var(--surface);
+  background-image: url("/paper-sky-pattern-light.svg");
+  background-size: 540px auto;
+}
+[data-profile-background="geometry"] {
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(30deg, transparent 49%, var(--line) 49.5% 50.5%, transparent 51%),
+    linear-gradient(150deg, transparent 49%, var(--line) 49.5% 50.5%, transparent 51%);
+  background-size: 66px 114px;
+}
+.profile-customizer {
+  width: min(760px, calc(100vw - 24px));
+  max-height: 92dvh;
+  overflow: auto;
+}
+.profile-customizer-preview {
+  position: relative;
+  height: 154px;
+  margin: 12px 0 20px;
+  border-radius: 4px 20px 4px 12px;
+  overflow: hidden;
+  padding-bottom: 54px;
+  background-color: var(--surface);
+}
+.profile-customizer-preview > img {
+  display: block;
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+}
+.profile-customizer-portrait {
+  position: absolute;
+  top: 48px;
+  left: calc(50% - 47px);
+  width: 94px;
+  height: 94px;
+}
+.profile-customizer-portrait > img:first-child {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.profile-customizer-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.profile-customizer-tabs button[aria-pressed="true"],
+.profile-customizer-options button[aria-pressed="true"] {
+  background-color: #facc15;
+  color: #17151c;
+  box-shadow: 0 4px #b88c13;
+}
+.profile-customizer-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  max-height: 42dvh;
+  overflow: auto;
+  padding: 8px 4px 12px;
+}
+.profile-customizer-options button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  gap: 10px;
+  padding: 14px 10px;
+}
+.profile-customizer-options button[aria-disabled="true"] {
+  opacity: 0.65;
+  cursor: default;
+}
+.profile-customizer-options button > img {
+  width: 100%;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 3px 10px;
+}
+.profile-customizer-options button span {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 12px;
+}
+.profile-customizer-options small {
+  font-size: 11px;
+  line-height: 1.4;
+}
+.profile-customizer-frame {
+  width: 70px;
+  height: 70px;
+  position: relative;
+  margin: 8px;
+}
+.profile-customizer-frame > img:first-child {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.profile-background-swatch {
+  width: 100%;
+  height: 65px;
+  border: 1px solid var(--line);
+  border-radius: 4px 12px;
+}
+.profile-customizer footer {
+  position: sticky;
+  bottom: -1px;
+  background: var(--surface);
+  padding-top: 16px;
+  z-index: 2;
+}
+@media (max-width: 600px) {
+  .profile-customizer {
+    padding: 16px;
+  }
+  .profile-customizer-options {
+    gap: 9px;
+  }
+  .profile-customizer-options button {
+    padding: 10px 5px;
+  }
+  .profile-customizer-tabs {
+    gap: 6px;
+  }
+  .profile-customizer-tabs button {
+    padding: 9px;
+    font-size: 12px;
+  }
+  .profile-customizer-frame {
+    width: 56px;
+    height: 56px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root body .profile-editor.social-directory .social-person {
+    transition: none;
+  }
+}
+:root[data-reduce-motion="true"] .social-directory .social-person {
+  transition: none;
+}
+
+:root[data-theme="dark"] [data-profile-background="night"] {
+  background-image: url("/paper-sky-pattern.svg");
+}
+:root body .profile-customizer {
+  box-sizing: border-box;
+  max-height: 92dvh;
+  padding: 20px;
+}
+:root body .profile-customizer .profile-customizer-options button {
+  position: relative;
+}
+:root body .profile-customizer .profile-customizer-options button > span {
+  font-size: 12px;
+  overflow-wrap: normal;
+  word-break: normal;
+  display: block;
+  text-align: center;
+}
+:root body .profile-customizer .profile-customizer-options button > span svg {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  width: 16px;
+  height: 16px;
+}
+:root
+  body
+  .profile-customizer
+  :is(.profile-customizer-tabs, .profile-customizer-options)
+  button[aria-pressed="true"] {
+  background-color: #facc15;
+  color: #17151c;
+  box-shadow: 0 4px #b88c13;
+}
+@media (max-width: 600px) {
+  :root body .profile-customizer {
+    padding: 16px;
+  }
+  :root body .profile-customizer .profile-customizer-options button > span {
+    font-size: 11px;
+  }
+  .profile-customizer-preview {
+    height: 120px;
+    padding-bottom: 40px;
+  }
+  .profile-customizer-preview > img {
+    height: 80px;
+  }
+  .profile-customizer-portrait {
+    width: 74px;
+    height: 74px;
+    left: calc(50% - 37px);
+    top: 36px;
+  }
+  .profile-customizer-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .profile-customizer-tabs button {
+    min-height: 44px;
+  }
+  .profile-customizer footer button {
+    font-size: 12px;
+    padding: 10px;
+  }
+}
+:root body [data-profile-background="night"] {
+  background-color: var(--surface);
+  background-image: url("/paper-sky-pattern-light.svg");
+  background-size: 540px auto;
+}
+:root[data-theme="dark"] body [data-profile-background="night"] {
+  background-image: url("/paper-sky-pattern.svg");
+}
+:root body [data-profile-background="geometry"] {
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(30deg, transparent 49%, var(--line) 49.5% 50.5%, transparent 51%),
+    linear-gradient(150deg, transparent 49%, var(--line) 49.5% 50.5%, transparent 51%);
+  background-size: 66px 114px;
+}
+:root body .profile-customizer[open] {
+  display: flex;
+  flex-direction: column;
+  height: min(760px, 92dvh);
+  gap: 0;
+}
+.profile-customizer > :is(header, nav, footer, .profile-customizer-preview) {
+  flex-shrink: 0;
+}
+.profile-customizer > .profile-customizer-options {
+  flex: 1;
+  min-height: 120px;
+  max-height: none;
+}
+.profile-customizer > .profile-picker {
+  flex: 1;
+  min-height: 120px;
+}
+:root body .profile-customizer > .profile-customizer-options {
+  grid-auto-rows: max-content;
+  align-content: start;
+}
+:root body .profile-customizer .profile-customizer-options button {
+  min-height: 130px;
+  height: auto;
+}
+.profile-customizer-frame {
+  flex: none;
+}
+@media (max-width: 600px) {
+  :root body .profile-customizer > header {
+    margin-bottom: 8px;
+    padding-bottom: 10px;
+  }
+  :root body .profile-customizer > header h2 {
+    font-size: 18px;
+    margin: 0;
+  }
+  .profile-customizer-preview {
+    height: 96px;
+    margin: 8px 0 12px;
+  }
+  .profile-customizer-preview > img {
+    height: 64px;
+  }
+  .profile-customizer-portrait {
+    top: 24px;
+    width: 64px;
+    height: 64px;
+    left: calc(50% - 32px);
+  }
+  .profile-customizer-tabs {
+    margin-bottom: 12px;
+  }
+}
