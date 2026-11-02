@@ -56,7 +56,7 @@ for (const theme of ["light", "dark"]) {
     expect(Math.abs(edit!.y + edit!.height / 2 - name!.y - name!.height / 2)).toBeLessThan(2);
     const avatar = page.getByRole("button", { name: "Abrir foto do perfil" });
     await avatar.click();
-    const dialog = page.getByRole("dialog", { name: "Avatar do perfil", exact: true });
+    const dialog = page.getByRole("dialog", { name: "Personalize seu perfil", exact: true });
     const transparent = await dialog
       .locator(".profile-picker__options img")
       .evaluateAll(async (images) => {

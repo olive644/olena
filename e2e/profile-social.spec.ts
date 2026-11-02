@@ -45,15 +45,19 @@ for (const theme of ["light", "dark"]) {
         ocean.evaluate((button) =>
           Math.abs(
             button.getBoundingClientRect().width -
-              button.querySelector("img")!.getBoundingClientRect().width,
+              button.querySelector("img")!.getBoundingClientRect().width -
+              parseFloat(getComputedStyle(button).paddingLeft) -
+              parseFloat(getComputedStyle(button).paddingRight) -
+              parseFloat(getComputedStyle(button).borderLeftWidth) -
+              parseFloat(getComputedStyle(button).borderRightWidth),
           ),
         ),
       )
       .toBeLessThan(5);
     await expect(art).toBeVisible();
-    await expect(ocean.locator("span")).toHaveCSS("position", "absolute");
+    await expect(ocean.locator("span")).toHaveCSS("position", "static");
     await page
-      .getByRole("dialog", { name: "Capa do perfil" })
+      .getByRole("dialog", { name: "Personalize seu perfil" })
       .screenshot({ path: info.outputPath(`capas-${theme}.png`) });
   });
 }
