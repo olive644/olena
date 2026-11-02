@@ -8,7 +8,13 @@ As molduras são anéis octogonais SVG transparentes, sem cobrir rosto ou badge 
 
 O exclusivo Guardião dos números requer a conquista islands-1 (uma ilha completa). O header Horizonte dos números requer correct-100 (100 acertos). Não conceder XP ou progresso ao selecionar a decoração. A validação do desbloqueio utiliza o progresso existente no aparelho sincronizado; é uma recompensa cosmética, não uma autorização financeira ou prova antifraude no servidor.
 
-Fundo do perfil personaliza a superfície abaixo do header: papel original, céu de papel ou caderno geométrico. O padrão usa contraste discreto, sem prejudicar textos, controles ou redes sociais. Campos frame/background são opcionais na chave existente helena.profile.v1. Perfis antigos usam none/paper. A projeção social aceita apenas IDs conhecidos, sem URLs arbitrárias, e publica esses campos junto dos demais detalhes de apresentação. Não cria nova chave sincronizada.
+Fundo do perfil personaliza a superfície abaixo do header: papel original, as mesmas doze bandeiras das molduras e headers, e Matemática. Céu de papel e caderno geométrico continuam compatíveis com escolhas anteriores. O fundo matemático requer correct-100 (100 acertos), conferido ao escolher e novamente ao salvar. O padrão usa contraste discreto, sem prejudicar textos, controles ou redes sociais. Campos frame/background são opcionais na chave existente helena.profile.v1. Perfis antigos usam none/paper. A projeção social aceita apenas IDs conhecidos, sem URLs arbitrárias, e publica esses campos junto dos demais detalhes de apresentação. Não cria nova chave sincronizada.
+
+## Consistência das superfícies
+
+Perfil próprio, inspeção de outro usuário, prévia de compartilhamento e PNG devem combinar o header, o fundo e a moldura escolhidos. O card próprio usa as escolhas atuais de helena.profile.v1 mesmo antes de a projeção social retornar atualizada. Visitas usam somente os dados publicados daquele perfil, sem herdar escolhas do visitante. IDs desconhecidos continuam caindo em none/paper.
+
+Fundos de bandeiras usam facetas discretas nas margens, preservam a sequência de cores e deixam o centro livre para texto. O fundo de Matemática usa sólidos e operadores originais. SVGs transparentes permitem contraste nos dois temas. A exportação mantém papel creme e desenha as mesmas artes locais de fundo e moldura, com margem para o nome e nível acima da moldura. Não desenhar fundos opacos sobre textos nem exportar somente o header.
 
 ## Matemática
 

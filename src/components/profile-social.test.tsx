@@ -24,8 +24,11 @@ it("inspeção mostra nível, streak e redes, mas deixa atividades somente no si
     ...feed,
     profile: {
       ...bob,
+      cover: "mathematics",
       details: {
         level: 7,
+        frame: "bi",
+        background: "trans",
         streaks: { islands: 4, pomodoro: 0, timer: 2 },
         socialLinks: ["https://github.com/bob"],
         updatedAt: Date.now(),
@@ -46,6 +49,15 @@ it("inspeção mostra nível, streak e redes, mas deixa atividades somente no si
   render(<SocialDirectory initialUsername="bob" nameFallback="Alice" onClose={vi.fn()} />);
   // Primeiro teste do arquivo: paga o carregamento dos módulos do perfil em cache frio.
   const badge = await screen.findByLabelText("Nível 7", {}, { timeout: 5000 });
+  expect(document.querySelector(".social-profile")?.getAttribute("data-profile-background")).toBe(
+    "trans",
+  );
+  expect(
+    document.querySelector(".social-visit-avatar .profile-frame-art")?.getAttribute("src"),
+  ).toBe("/profile-cosmetics/bi.svg");
+  expect(document.querySelector(".social-visit-cover img")?.getAttribute("src")).toBe(
+    "/profile-covers/mathematics.svg",
+  );
   expect(badge.classList.contains("profile-level-badge")).toBe(true);
   expect(badge.closest(".social-visit-avatar")).not.toBeNull();
   expect(screen.queryByRole("textbox", { name: "Buscar por nome ou @" })).toBeNull();
@@ -225,6 +237,9 @@ it("cartão próprio mostra nível, etiquetas e destaques, com ações só de í
     "helena.profile.v1",
     JSON.stringify({
       name: "Oliver",
+      cover: "mathematics",
+      frame: "bi",
+      background: "trans",
       achievementFavorites: ["correct-10", "general-pomodoro-gold"],
     }),
   );
@@ -240,6 +255,10 @@ it("cartão próprio mostra nível, etiquetas e destaques, com ações só de í
   const card = (await screen.findByLabelText("QR code do perfil")).closest(
     ".social-share-card",
   ) as HTMLElement;
+  expect(card.getAttribute("data-profile-background")).toBe("trans");
+  expect(card.querySelector(".profile-frame-art")?.getAttribute("src")).toBe(
+    "/profile-cosmetics/bi.svg",
+  );
   expect(
     within(card)
       .getByLabelText(/^Nível \d+$/)

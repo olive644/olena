@@ -19,6 +19,8 @@ export const PROFILE_FRAMES = [
 ] as const;
 export const PROFILE_BACKGROUNDS = [
   { id: "paper", name: "Papel original" },
+  ...PRIDE_THEMES,
+  { id: "mathematics", name: "Guardião dos números" },
   { id: "night", name: "Céu de papel" },
   { id: "geometry", name: "Caderno geométrico" },
 ] as const;
@@ -30,6 +32,10 @@ export function profileFrame(value: unknown): ProfileFrame {
 export function profileBackground(value: unknown): ProfileBackground {
   return PROFILE_BACKGROUNDS.find((item) => item.id === value)?.id ?? "paper";
 }
-export function cosmeticUnlocked(kind: "frame" | "cover", id: string, earned: ReadonlySet<string>) {
+export function cosmeticUnlocked(
+  kind: "frame" | "cover" | "background",
+  id: string,
+  earned: ReadonlySet<string>,
+) {
   return id !== "mathematics" || earned.has(kind === "frame" ? "islands-1" : "correct-100");
 }

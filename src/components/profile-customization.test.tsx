@@ -37,3 +37,32 @@ it("salva moldura e fundo juntos preservando edições concorrentes", () => {
   });
   expect(readStoredProfile().photoUrl).toBeUndefined();
 });
+
+it("oferece as doze bandeiras também como fundo e protege o fundo matemático", () => {
+  localStorage.setItem("helena.profile.v1", JSON.stringify({ name: "Oli" }));
+  const { unmount } = render(
+    <ProfileAvatarDialog onClose={vi.fn()} initialCategory="background" />,
+  );
+  for (const name of [
+    "Orgulho LGBT",
+    "Lésbica",
+    "Gay",
+    "Bissexual",
+    "Trans",
+    "Pansexual",
+    "Não binárie",
+    "Assexual",
+    "Arromântica",
+    "Agênero",
+    "Gênero fluido",
+    "Intersexo",
+  ])
+    expect(screen.getByRole("button", { name }).getAttribute("aria-disabled")).toBe("false");
+  expect(
+    screen.getByRole("button", { name: /Guardião dos números/ }).getAttribute("aria-disabled"),
+  ).toBe("true");
+  fireEvent.click(screen.getByRole("button", { name: "Bissexual" }));
+  fireEvent.click(screen.getByRole("button", { name: "Salvar personalização" }));
+  expect(readStoredProfile().background).toBe("bi");
+  unmount();
+});

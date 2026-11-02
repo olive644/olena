@@ -338,3 +338,101 @@
     margin-bottom: 12px;
   }
 }
+
+/* Fundos compartilham as mesmas artes no perfil, visita e exportação. */
+:root body [data-profile-background="pride"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-pride.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+:root body [data-profile-background="lesbian"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-lesbian.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+:root body [data-profile-background="gay"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-gay.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+:root body [data-profile-background="bi"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-bi.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+:root body [data-profile-background="trans"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-trans.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+:root body [data-profile-background="pan"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-pan.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+:root body [data-profile-background="nonbinary"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-nonbinary.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+:root body [data-profile-background="ace"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-ace.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+:root body [data-profile-background="aro"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-aro.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+:root body [data-profile-background="agender"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-agender.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+:root body [data-profile-background="genderfluid"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-genderfluid.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+:root body [data-profile-background="intersex"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-intersex.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+:root body [data-profile-background="mathematics"] {
+  background-color: var(--surface);
+  background-image: url("/profile-cosmetics/background-mathematics.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+:root body .social-share-avatar > .profile-frame-art {
+  inset: -12%;
+  width: 124%;
+  height: 124%;
+  max-width: none;
+}
+.social-share-avatar .profile-level-badge {
+  z-index: 2;
+}
+
+:root body .social-share-card[data-profile-background] {
+  background-color: #fff9ef;
+}
+
+.social-share-avatar:has(.profile-frame-art) {
+  margin-bottom: 24px;
+}

@@ -3,6 +3,9 @@ import { useState, useRef } from "react";
 import qrcode from "qrcode-generator";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import type { SocialProfile } from "../domain/profile-social";
+import { ProfileFrameArt } from "./profile-frame-art";
+import { profileFrame, profileBackground } from "../domain/profile-cosmetics";
+import "./profile-customization.css";
 import { ProfileCoverArt } from "./profile-cover-art";
 import { profileCover } from "../domain/profile-covers";
 import { RoomQrCode } from "./room-qr-code";
@@ -95,6 +98,13 @@ export function ProfileShareCard({
       context.imageSmoothingQuality = "high";
       context.fillStyle = "#FFF9EF";
       context.fillRect(0, 0, 720, canvas.height);
+      const backgroundId = profileBackground(person.details?.background);
+      if (!["paper", "night", "geometry"].includes(backgroundId)) {
+        const background = new Image();
+        background.src = `/profile-cosmetics/background-${backgroundId}.svg`;
+        await background.decode();
+        context.drawImage(background, 0, 220, 720, canvas.height - 220);
+      }
       const coverScale = Math.max(720 / cover.naturalWidth, 220 / cover.naturalHeight);
       const coverWidth = 720 / coverScale,
         coverHeight = 220 / coverScale;
@@ -112,7 +122,15 @@ export function ProfileShareCard({
       context.fillStyle = "#FFF9EF";
       context.font = "800 30px Manrope, sans-serif";
       context.fillText("OlenaStudy", 40, 64);
-      context.drawImage(avatar, 180, 120, 360, 360);
+      const frameId = profileFrame(person.details?.frame);
+      if (frameId === "none") context.drawImage(avatar, 180, 120, 360, 360);
+      else context.drawImage(avatar, 216, 156, 288, 288);
+      if (frameId !== "none") {
+        const frame = new Image();
+        frame.src = `/profile-cosmetics/${frameId}.svg`;
+        await frame.decode();
+        context.drawImage(frame, 181.44, 121.44, 357.12, 357.12);
+      }
       // Selo de nível no canto da foto, igual ao do perfil: pentágono amarelo com sombra,
       // "NV" pequeno e os dígitos de papel.
       {
@@ -322,7 +340,10 @@ export function ProfileShareCard({
   }
   return (
     <section className="social-share" aria-label={uiText(903)}>
-      <div className="social-share-card">
+      <div
+        className="social-share-card"
+        data-profile-background={profileBackground(person.details?.background)}
+      >
         <div className="social-share-cover">
           <ProfileCoverArt theme={profileCover(person.cover)} />
         </div>
@@ -335,6 +356,7 @@ export function ProfileShareCard({
             width="160"
             height="160"
           />
+          <ProfileFrameArt frame={person.details?.frame} />
           <ProfileLevelBadge />
         </div>
         <h3>{person.name}</h3>
