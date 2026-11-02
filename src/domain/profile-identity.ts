@@ -1,6 +1,9 @@
+import type { ProfileFrame, ProfileBackground } from "./profile-cosmetics";
 import type { ProfileCover } from "./profile-covers";
 export type StoredProfile = {
   cover?: ProfileCover;
+  frame?: ProfileFrame;
+  background?: ProfileBackground;
   name?: string;
   photoUrl?: string;
   username?: string;

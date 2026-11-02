@@ -70,6 +70,8 @@ export function useProfilePresentation(
   const details = workspace
     ? JSON.stringify({
         level: profileLevel(readRoomXp()).level,
+        ...(profile.frame ? { frame: profile.frame } : {}),
+        ...(profile.background ? { background: profile.background } : {}),
         streaks: profileStreaks(workspace, [], new Date(), agendaTimeZone()),
         socialLinks: (profile.socialLinks ?? [])
           .filter((link) => recognizeSocialLink(link))

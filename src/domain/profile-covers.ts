@@ -1,10 +1,13 @@
 import { localizeResource } from "../i18n/runtime.js";
+import { PRIDE_THEMES } from "./profile-cosmetics.js";
 export const PROFILE_COVERS = localizeResource([
   { id: "helena", name: "Noite da Olena" },
   { id: "solar", name: "Eclipse Solar" },
   { id: "aurora", name: "Aurora" },
   { id: "forest", name: "Bosque" },
   { id: "ocean", name: "Oceano" },
+  ...PRIDE_THEMES,
+  { id: "mathematics", name: "Horizonte dos números" },
 ] as const);
 export type ProfileCover = (typeof PROFILE_COVERS)[number]["id"];
 export function profileCover(value: unknown): ProfileCover {

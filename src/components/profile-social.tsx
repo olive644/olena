@@ -1,3 +1,6 @@
+import { ProfileFrameArt } from "./profile-frame-art";
+import { profileBackground } from "../domain/profile-cosmetics";
+import "./profile-customization.css";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
@@ -92,7 +95,10 @@ function Person({ person, onVisit }: { person: SocialProfile; onVisit(username: 
       aria-label={uiText(1912, [person.username])}
       onClick={() => onVisit(person.username)}
     >
-      <img src={person.photoUrl} alt="" width="44" height="44" />
+      <div className="social-person-portrait">
+        <img src={person.photoUrl} alt="" width="44" height="44" />
+        <ProfileFrameArt frame={person.details?.frame} />
+      </div>
       <span>
         <strong title={person.name}>{person.name}</strong>
         <small title={`@${person.username}`}>@{person.username}</small>
@@ -329,12 +335,17 @@ export function SocialDirectory({
           : {})}
       >
         {" "}
-        <section className="social-profile" aria-label={uiText(1916, [person.username])}>
+        <section
+          className="social-profile"
+          data-profile-background={profileBackground(person.details?.background)}
+          aria-label={uiText(1916, [person.username])}
+        >
           <div className="social-visit-cover">
             <ProfileCoverArt theme={profileCover(person.cover)} />
           </div>
           <div className="social-visit-avatar">
             <img src={person.photoUrl} width="140" height="140" alt={uiText(1910, [person.name])} />
+            <ProfileFrameArt frame={person.details?.frame} />
             {person.details && <ProfileLevelBadge level={person.details.level} />}
           </div>
           <div className="social-profile-name">

@@ -4,13 +4,13 @@ import { ProfileCoverDialog } from "./profile-cover-dialog";
 import { readStoredProfile } from "../hooks/use-stored-profile";
 import { profileCover } from "../domain/profile-covers";
 
-it("oferece cinco capas, cancelar não grava e salvar preserva a ficha atual", () => {
+it("oferece capas originais e novas, cancelar não grava e salvar preserva a ficha atual", () => {
   localStorage.setItem("helena.profile.v1", JSON.stringify({ name: "Oli", cover: "forest" }));
   const close = vi.fn();
   const { rerender } = render(<ProfileCoverDialog onClose={close} />);
   expect(
     screen.getByRole("group", { name: "Temas de capa" }).querySelectorAll("button"),
-  ).toHaveLength(5);
+  ).toHaveLength(18);
   fireEvent.click(screen.getByRole("button", { name: "Oceano" }));
   expect(screen.getByRole("button", { name: "Oceano" }).getAttribute("aria-pressed")).toBe("true");
   fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));

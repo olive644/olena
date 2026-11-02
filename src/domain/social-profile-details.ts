@@ -1,8 +1,16 @@
+import {
+  profileFrame,
+  profileBackground,
+  type ProfileFrame,
+  type ProfileBackground,
+} from "./profile-cosmetics.js";
 import { recognizeSocialLink } from "./profile-identity.js";
 
 // Metadados visuais, nunca autorização de plano, recompensa ou XP.
 export type SocialProfileDetails = {
   level: number;
+  frame?: ProfileFrame;
+  background?: ProfileBackground;
   streaks: { pomodoro: number; timer: number; islands: number };
   socialLinks: string[];
   updatedAt?: number;
@@ -12,6 +20,8 @@ export function validSocialProfileDetails(value: unknown): value is SocialProfil
   if (!value || typeof value !== "object") return false;
   const item = value as Partial<SocialProfileDetails>;
   return (
+    (item.frame === undefined || profileFrame(item.frame) === item.frame) &&
+    (item.background === undefined || profileBackground(item.background) === item.background) &&
     Number.isSafeInteger(item.level) &&
     Number(item.level) >= 1 &&
     Number(item.level) <= 1_000_000 &&

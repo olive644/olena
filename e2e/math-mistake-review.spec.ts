@@ -51,6 +51,15 @@ for (const theme of ["light", "dark"]) {
     await page.screenshot({
       path: `artifacts/math-review-polish/${info.project.name}-${theme}-intro.png`,
     });
+    const digitRows = await page
+      .locator(".oliver-review__calculation .paper-digits")
+      .evaluateAll((nodes) =>
+        nodes.every((node) => {
+          const y = [...node.querySelectorAll("svg")].map((svg) => svg.getBoundingClientRect().top);
+          return y.every((top) => Math.abs(top - (y[0] ?? top)) < 1);
+        }),
+      );
+    expect(digitRows).toBe(true);
     const presentation = await page.evaluate(() => {
       const root = document.querySelector(".math-arcade")!;
       const plate = document.querySelector(".oliver-review__calculation")!;
