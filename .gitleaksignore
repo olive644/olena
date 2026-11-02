@@ -12,3 +12,8 @@ ee79bb74e804694242398fc5c251dc5756ce4bbb:firebase-room.rules.json:generic-api-ke
 # Nome público de uma preferência booleana do navegador (olena.returning.v1), não credencial.
 # Constante renomeada para ITEM; exceção limitada à linha introduzida no histórico da PR 526.
 02f1b66e12bbfb5a26ccb3c139e74285870bafa8:src/data/returning-visitor.ts:generic-api-key:2
+
+# Nome público de cache sincronizado nas regras Firebase, não credencial: a expressão compara
+# $key com a codificação base64 de helenastudy.workspace.v1. A inclusão de englishRewards
+# alterou a linha histórica da allowlist. Exceção limitada à ocorrência, sem ignorar o arquivo.
+fecdc123f530934f8f842f7b622a4b9aa1ee23a1:firebase-room.rules.json:generic-api-key:44
