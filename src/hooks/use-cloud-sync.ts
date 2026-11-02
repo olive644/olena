@@ -420,7 +420,7 @@ export function useCloudSync() {
                 localAfterGet[SYSTEM_UPDATES_READ_KEY],
                 cloud.items[SYSTEM_UPDATES_READ_KEY],
               );
-            const rewardsKey = "helena.mathPlaceRewards.v1";
+            const rewardKeys = ["helena.mathPlaceRewards.v1", "helena.englishRewards.v1"];
             const mergedProfile = mergeProfileProgress(
               cloud.items[ACCOUNT_PROFILE_KEY] ?? localAfterGet[ACCOUNT_PROFILE_KEY],
               localAfterGet[ACCOUNT_PROFILE_KEY],
@@ -428,8 +428,9 @@ export function useCloudSync() {
               cloud.items[ACCOUNT_PROFILE_KEY],
             );
             if (mergedProfile) merged[ACCOUNT_PROFILE_KEY] = mergedProfile;
-            const localRewards = localAfterGet[rewardsKey];
-            if (localRewards !== undefined) {
+            for (const rewardsKey of rewardKeys) {
+              const localRewards = localAfterGet[rewardsKey];
+              if (localRewards === undefined) continue;
               const rewardsMerge = await mergeItems(
                 {},
                 { [rewardsKey]: localRewards },
@@ -472,7 +473,7 @@ export function useCloudSync() {
               ...Object.keys(localAfterGet),
             ])) {
               if (
-                key === rewardsKey ||
+                rewardKeys.includes(key) ||
                 key === SYSTEM_UPDATES_READ_KEY ||
                 key === streakKey ||
                 key === FOCUS_SESSION_KEY

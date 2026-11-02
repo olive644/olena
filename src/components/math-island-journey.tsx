@@ -14,6 +14,7 @@ import { isMotionReduced } from "../data/accessibility-preferences";
 import { PracticeUserPortrait } from "./practice-user-portrait";
 import { PaperArrow } from "./paper-arrow";
 import { MathArcade } from "./math-arcade";
+import { PaperIslandLock } from "./paper-island-lock";
 import { HelenaRoomIcon } from "./helena-room-icon";
 import { FocusPaperArrow } from "./focus-paper-arrow";
 import { MathPlaceTreasure } from "./math-place-treasure";
@@ -292,7 +293,8 @@ export function MathIslandJourney({
               if (unlockedMathCourse(course.id, readMathGame())) setPhase("enter");
             }}
           >
-            <HelenaRoomIcon name="play" /> {unlocked ? uiText(1793) : uiText(1794)}
+            {unlocked ? <HelenaRoomIcon name="play" /> : <PaperIslandLock />}{" "}
+            {unlocked ? uiText(1793) : uiText(1794)}
           </button>
         </div>
         <button

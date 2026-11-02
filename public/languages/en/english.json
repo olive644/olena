@@ -1,0 +1,346 @@
+{
+  "version": 3,
+  "area": "english",
+  "title": {
+    "pt-BR": "Cais dos Encontros",
+    "en-US": "Harbor of Encounters"
+  },
+  "parts": [
+    {
+      "title": {
+        "pt-BR": "Apresentações e verbo to be",
+        "en-US": "Introductions and the verb to be"
+      },
+      "objective": {
+        "pt-BR": "Cumprimentar e se apresentar.",
+        "en-US": "Greet people and introduce yourself."
+      },
+      "scenes": [
+        [
+          "Hello! My name is Olena.",
+          "Olá! Meu nome é Olena.",
+          "Hi, Olena! I'm Oliver.",
+          "name",
+          "Oi, Olena! Eu sou Oliver."
+        ],
+        [
+          "What is your name?",
+          "Qual é o seu nome?",
+          "My name is Oliver.",
+          "your",
+          "Meu nome é Oliver."
+        ],
+        [
+          "Nice to meet you.",
+          "Prazer em conhecer você.",
+          "Nice to meet you too.",
+          "meet",
+          "Prazer em conhecer você também."
+        ],
+        ["Where are you from?", "De onde você é?", "I'm from Brazil.", "from", "Eu sou do Brasil."],
+        [
+          "How are you today?",
+          "Como você está hoje?",
+          "I'm fine, thanks.",
+          "today",
+          "Estou bem, obrigado."
+        ],
+        ["See you tomorrow!", "Até amanhã!", "See you!", "tomorrow", "Até mais!"]
+      ],
+      "lesson": {
+        "pt-BR": "Use I am, you/we/they are e he/she/it is para identidade e estado. Em perguntas, inverta a ordem: Are you...? Para negar, acrescente not.",
+        "en-US": "Use I am, you/we/they are and he/she/it is for identity and state. In questions, invert the order: Are you...? Add not to make a negative."
+      },
+      "proficiency": "A1"
+    },
+    {
+      "title": {
+        "pt-BR": "Rotina e presente simples",
+        "en-US": "Routines and the present simple"
+      },
+      "objective": {
+        "pt-BR": "Conversar sobre horários e rotina.",
+        "en-US": "Talk about times and routines."
+      },
+      "scenes": [
+        [
+          "I study in the morning.",
+          "Eu estudo de manhã.",
+          "I study in the afternoon.",
+          "morning",
+          "Eu estudo à tarde."
+        ],
+        ["What time is it?", "Que horas são?", "It is nine o'clock.", "time", "São nove horas."],
+        [
+          "The lesson starts at ten.",
+          "A aula começa às dez.",
+          "Let's get ready.",
+          "ten",
+          "Vamos nos preparar."
+        ],
+        [
+          "I walk to school every day.",
+          "Eu vou a pé para a escola todos os dias.",
+          "I walk to school too.",
+          "walk",
+          "Eu também vou a pé para a escola."
+        ],
+        [
+          "We have lunch at noon.",
+          "Nós almoçamos ao meio-dia.",
+          "Let's meet at noon.",
+          "lunch",
+          "Vamos nos encontrar ao meio-dia."
+        ],
+        [
+          "I read before bed.",
+          "Eu leio antes de dormir.",
+          "What do you like to read?",
+          "read",
+          "O que você gosta de ler?"
+        ]
+      ],
+      "lesson": {
+        "pt-BR": "No presente simples, I/you/we/they usam a forma básica do verbo. Com he/she/it, normalmente acrescentamos -s. Expressões como every day indicam rotina. Antes de bed e school, alguns usos não levam artigo.",
+        "en-US": "In the present simple, I/you/we/they use the base verb. With he/she/it, we usually add -s. Expressions such as every day indicate routine. Some uses of bed and school take no article."
+      },
+      "proficiency": "A1"
+    },
+    {
+      "title": {
+        "pt-BR": "Passado: o que aconteceu",
+        "en-US": "Past: what happened"
+      },
+      "objective": {
+        "pt-BR": "Relatar acontecimentos com passado simples.",
+        "en-US": "Describe events using the past simple."
+      },
+      "scenes": [
+        [
+          "I visited the harbor yesterday.",
+          "Eu visitei o porto ontem.",
+          "Did you enjoy the visit?",
+          "visited",
+          "Você gostou da visita?"
+        ],
+        [
+          "Oliver bought a new notebook.",
+          "Oliver comprou um caderno novo.",
+          "What color was it?",
+          "bought",
+          "De que cor ele era?"
+        ],
+        [
+          "We didn't miss the train.",
+          "Nós não perdemos o trem.",
+          "That's a relief!",
+          "miss",
+          "Que alívio!"
+        ],
+        [
+          "Did you see Olena at the cafe?",
+          "Você viu Olena no café?",
+          "Yes, she was reading.",
+          "see",
+          "Sim, ela estava lendo."
+        ],
+        [
+          "The shop closed at six.",
+          "A loja fechou às seis.",
+          "Let's go earlier tomorrow.",
+          "closed",
+          "Vamos mais cedo amanhã."
+        ],
+        [
+          "I was tired after the walk.",
+          "Eu estava cansado depois da caminhada.",
+          "Have a rest before dinner.",
+          "tired",
+          "Descanse antes do jantar."
+        ]
+      ],
+      "lesson": {
+        "pt-BR": "O passado simples descreve fatos concluídos. Verbos regulares geralmente recebem -ed; os irregulares têm formas próprias. Depois de did ou did not, use a forma básica do verbo. Be usa was/were.",
+        "en-US": "The past simple describes completed events. Regular verbs usually take -ed; irregular verbs have their own forms. After did or did not, use the base verb. Be uses was/were."
+      },
+      "proficiency": "A2"
+    },
+    {
+      "title": {
+        "pt-BR": "Planos e futuro",
+        "en-US": "Plans and the future"
+      },
+      "objective": {
+        "pt-BR": "Combinar planos e fazer previsões simples.",
+        "en-US": "Arrange plans and make simple predictions."
+      },
+      "scenes": [
+        [
+          "I'm going to visit the museum.",
+          "Eu vou visitar o museu.",
+          "Would you like some company?",
+          "museum",
+          "Você gostaria de companhia?"
+        ],
+        [
+          "We'll take the next bus.",
+          "Nós pegaremos o próximo ônibus.",
+          "It arrives in ten minutes.",
+          "next",
+          "Ele chega em dez minutos."
+        ],
+        [
+          "Are you going to study tonight?",
+          "Você vai estudar hoje à noite?",
+          "Yes, after dinner.",
+          "tonight",
+          "Sim, depois do jantar."
+        ],
+        [
+          "I think the weather will improve.",
+          "Acho que o tempo vai melhorar.",
+          "Then we can walk to the beach.",
+          "improve",
+          "Então podemos ir a pé até a praia."
+        ],
+        [
+          "Let's meet outside the library.",
+          "Vamos nos encontrar do lado de fora da biblioteca.",
+          "I'll be there at nine.",
+          "outside",
+          "Estarei lá às nove."
+        ],
+        [
+          "I won't be late this time.",
+          "Não vou me atrasar desta vez.",
+          "I'll save you a seat.",
+          "late",
+          "Vou guardar um lugar para você."
+        ]
+      ],
+      "lesson": {
+        "pt-BR": "Going to pode expressar planos e previsões apoiadas em indícios. Will pode expressar previsões, decisões e ofertas. O presente contínuo também pode indicar um compromisso já combinado.",
+        "en-US": "Going to can express plans and predictions based on evidence. Will can express predictions, decisions and offers. The present continuous can also describe an arrangement."
+      },
+      "proficiency": "A2"
+    },
+    {
+      "title": {
+        "pt-BR": "Argumentação e concessões",
+        "en-US": "Arguments and concessions"
+      },
+      "objective": {
+        "pt-BR": "Sustentar uma posição reconhecendo objeções.",
+        "en-US": "Support a position while acknowledging objections."
+      },
+      "scenes": [
+        [
+          "While the proposal has merit, it overlooks accessibility.",
+          "Embora a proposta tenha valor, ela ignora a acessibilidade.",
+          "We should address that before voting.",
+          "overlooks",
+          "Devemos tratar disso antes da votação."
+        ],
+        [
+          "The benefits outweigh the initial inconvenience.",
+          "Os benefícios superam o inconveniente inicial.",
+          "Could you give a concrete example?",
+          "outweigh",
+          "Você poderia dar um exemplo concreto?"
+        ],
+        [
+          "I take your point; nevertheless, the evidence is limited.",
+          "Entendo seu argumento; ainda assim, as evidências são limitadas.",
+          "Let's gather more data.",
+          "nevertheless",
+          "Vamos reunir mais dados."
+        ],
+        [
+          "There is a strong case for extending the opening hours.",
+          "Há bons argumentos para ampliar o horário de funcionamento.",
+          "Students would have more time to study.",
+          "extending",
+          "Os estudantes teriam mais tempo para estudar."
+        ],
+        [
+          "That conclusion doesn't necessarily follow from the figures.",
+          "Essa conclusão não decorre necessariamente dos números.",
+          "We need to examine the assumptions.",
+          "necessarily",
+          "Precisamos examinar as suposições."
+        ],
+        [
+          "On balance, a small trial seems the most sensible option.",
+          "No conjunto, um teste pequeno parece a opção mais sensata.",
+          "We can review it after a month.",
+          "balance",
+          "Podemos revisá-lo depois de um mês."
+        ]
+      ],
+      "lesson": {
+        "pt-BR": "Concessões reconhecem uma dificuldade sem abandonar a tese. While e nevertheless ajudam a contrastar argumentos. Distinguir evidência de conclusão evita tratar uma opinião como fato demonstrado.",
+        "en-US": "Concessions acknowledge difficulty without abandoning the claim. While and nevertheless help contrast arguments. Distinguishing evidence from conclusions avoids treating an opinion as a demonstrated fact."
+      },
+      "proficiency": "B2"
+    },
+    {
+      "title": {
+        "pt-BR": "Ironia, atenuação e subentendidos",
+        "en-US": "Irony, understatement and implication"
+      },
+      "objective": {
+        "pt-BR": "Interpretar intenção além do sentido literal.",
+        "en-US": "Interpret intention beyond literal meaning."
+      },
+      "scenes": [
+        [
+          "Calling that meeting brief would be a remarkable feat of optimism.",
+          "Dizer que aquela reunião foi breve seria um otimismo extraordinário.",
+          "So it lasted rather longer than expected.",
+          "optimism",
+          "Então ela durou bem mais do que o esperado."
+        ],
+        [
+          "I wouldn't describe the outcome as an unqualified success.",
+          "Eu não descreveria o resultado como um sucesso sem ressalvas.",
+          "There are clearly reservations worth discussing.",
+          "unqualified",
+          "Há claramente ressalvas que merecem discussão."
+        ],
+        [
+          "That is certainly one way of interpreting the evidence.",
+          "Essa é uma interpretação possível, mas a fala pode sinalizar discordância contida.",
+          "You sound unconvinced. What would you add?",
+          "interpreting",
+          "Você parece pouco convencido. O que acrescentaria?"
+        ],
+        [
+          "For a supposedly minor adjustment, it has caused quite a stir.",
+          "Para uma mudança supostamente pequena, ela causou bastante agitação.",
+          "The description understated its impact.",
+          "supposedly",
+          "A descrição minimizou seu impacto."
+        ],
+        [
+          "The silence that followed was, in itself, an answer.",
+          "O silêncio que veio depois já comunicava uma resposta.",
+          "Nobody seemed willing to endorse the proposal.",
+          "silence",
+          "Ninguém parecia disposto a apoiar a proposta."
+        ],
+        [
+          "His enthusiasm was conspicuous by its absence.",
+          "A falta de entusiasmo dele era muito evidente.",
+          "He may have concerns he hasn't voiced.",
+          "absence",
+          "Talvez ele tenha preocupações que ainda não expressou."
+        ]
+      ],
+      "lesson": {
+        "pt-BR": "Ironia e understatement dependem de contexto e tom; uma frase isolada nem sempre determina a intenção. Compare o sentido literal com as pistas fornecidas. Uma atenuação pode comunicar uma crítica forte.",
+        "en-US": "Irony and understatement depend on context and tone; an isolated sentence does not always determine intention. Compare literal meaning with the available cues. An understatement can communicate strong criticism."
+      },
+      "proficiency": "C2"
+    }
+  ]
+}

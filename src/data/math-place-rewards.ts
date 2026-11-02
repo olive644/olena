@@ -1,10 +1,15 @@
-import { isMathCourse, type MathCourseId } from "./math-courses";
+import { isRewardCourse, isEnglishRewardCourse, type RewardCourseId } from "./reward-courses";
+
 import { drawOliverCards, isOliverCard, randomCardRoll, type OliverCardId } from "./oliver-cards";
 import { OLIVER_TAROT, type OliverArtworkId } from "./oliver-tarot";
 import { writeSyncedStorage } from "./synced-storage";
 import { activeArcanaId } from "./arcana-ids";
 
 export const MATH_PLACE_REWARDS_KEY = "helena.mathPlaceRewards.v1";
+export const ENGLISH_REWARDS_KEY = "helena.englishRewards.v1";
+export function rewardsStorageKey(course: RewardCourseId) {
+  return isEnglishRewardCourse(course) ? ENGLISH_REWARDS_KEY : MATH_PLACE_REWARDS_KEY;
+}
 export const COMMON_CHEST_POINTS = 100;
 export const COMMON_CHEST_WAIT = 10_000;
 export const MAX_MATH_CHESTS = 3;
@@ -39,13 +44,13 @@ export type MathPlaceRewards = {
 const empty = (): MathPlaceRewards => ({ points: 0, receipts: [], chests: [] });
 export function parseMathRewards(
   serialized: string,
-): Partial<Record<MathCourseId, MathPlaceRewards>> {
+): Partial<Record<RewardCourseId, MathPlaceRewards>> {
   try {
     const raw: unknown = JSON.parse(serialized);
     if (!raw || typeof raw !== "object") return {};
     return Object.fromEntries(
       Object.entries(raw).filter(([course, item]) => {
-        if (!isMathCourse(course) || !item || typeof item !== "object") return false;
+        if (!isRewardCourse(course) || !item || typeof item !== "object") return false;
         const value = item as MathPlaceRewards;
         return (
           Number.isSafeInteger(value.points) &&
@@ -106,17 +111,29 @@ export function parseMathRewards(
   }
 }
 function readAll() {
-  return parseMathRewards(localStorage.getItem(MATH_PLACE_REWARDS_KEY) ?? "{}");
+  const english = Object.fromEntries(
+    Object.entries(parseMathRewards(localStorage.getItem(ENGLISH_REWARDS_KEY) ?? "{}")).filter(
+      ([key]) => isEnglishRewardCourse(key),
+    ),
+  );
+  return {
+    ...parseMathRewards(localStorage.getItem(MATH_PLACE_REWARDS_KEY) ?? "{}"),
+    ...english,
+  };
 }
-export function mathPlaceRewards(course: MathCourseId): MathPlaceRewards {
+export function mathPlaceRewards(course: RewardCourseId): MathPlaceRewards {
   return readAll()[course] ?? empty();
 }
-function save(course: MathCourseId, value: MathPlaceRewards) {
-  writeSyncedStorage(MATH_PLACE_REWARDS_KEY, JSON.stringify({ ...readAll(), [course]: value }));
+function save(course: RewardCourseId, value: MathPlaceRewards) {
+  const key = rewardsStorageKey(course);
+  writeSyncedStorage(
+    key,
+    JSON.stringify({ ...parseMathRewards(localStorage.getItem(key) ?? "{}"), [course]: value }),
+  );
   return value;
 }
 export function finishMathPlace(
-  course: MathCourseId,
+  course: RewardCourseId,
   id: string,
   points: number,
   random = randomCardRoll,
@@ -154,7 +171,7 @@ export function finishMathPlace(
       : value.chests,
   });
 }
-export function unlockMathChest(course: MathCourseId, id: string, now = Date.now()) {
+export function unlockMathChest(course: RewardCourseId, id: string, now = Date.now()) {
   const value = mathPlaceRewards(course);
   return save(course, {
     ...value,
@@ -166,7 +183,7 @@ export function unlockMathChest(course: MathCourseId, id: string, now = Date.now
   });
 }
 export function openMathChest(
-  course: MathCourseId,
+  course: RewardCourseId,
   id: string,
   now = Date.now(),
   random?: () => number,
@@ -186,7 +203,7 @@ export function openMathChest(
     ),
   });
 }
-export function revealMathCard(course: MathCourseId, id: string, now = Date.now()) {
+export function revealMathCard(course: RewardCourseId, id: string, now = Date.now()) {
   if (!Number.isSafeInteger(now) || now < 0 || now > 8640000000000000)
     throw new Error("Data inválida.");
   const value = mathPlaceRewards(course);

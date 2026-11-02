@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Porto das Vozes, prévia Olena</title>
+    <style>
+      .app-shell.voices-preview-frame {
+        display: block;
+        padding: 0 0 48px;
+      }
+      .voices-preview-controls {
+        position: fixed;
+        top: 8px;
+        right: 8px;
+        z-index: 160;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 16px 24px;
+        border-bottom: 1px solid #9d8baf55;
+      }
+      .voices-preview-controls p {
+        display: none;
+        margin: 0;
+        font-size: 0.8rem;
+      }
+      body:has(.english-island-interior) .voices-preview-controls {
+        top: auto;
+        bottom: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./voices.tsx"></script>
+  </body>
+</html>

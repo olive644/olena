@@ -1,3 +1,7 @@
+## Porto das Vozes e Inglês introdutório, 02/11/2026
+
+Primeiro percurso inglês com seis partes e conteúdo original. Reutilizar eventos de prática, merge por ID, motor de baús/cartas e XP; separar o registro inglês de recompensas para preservar abas antigas de Matemática. Não representar o percurso como A1 completo ou tutor generativo. Apenas vozes inglesas locais, acionadas pelo aluno, com alternativa textual. Respostas de diálogo incluem intenção explícita para evitar alternativas genéricas igualmente plausíveis. Pesquisa, operação Firebase e limites em VOICES_PORT.md. Verify integral final aprovado: 389 arquivos e 2.524 testes; lint sem erros e 27 avisos existentes; tipos/API/idiomas/formatação/build/desempenho verdes. Aplicação 1693,3 KiB de 1704 e entrada 220,6 KiB. O teto total foi ajustado sob autorização vigente do proprietário para crescimento de funcionalidades, sem alterar o teto da entrada e sem dependências novas. Dez E2E Edge/Chromium de Inglês e Matemática passaram em PC/mobile claro/escuro, sem skips; a matriz inglesa usa 320 × 568. Logs externos voices-final-verify.log e voices-final-browser.log. Ainda não afirmar publicação de regras ou sincronização real.
+
 ## Renovação explícita da política, 02/11/2026
 
 Contas com aceite antigo recebem diálogo original sem logout. Entendi continua só leitura; checkbox e confirmação atualizam o aceite, com erro se a gravação falhar. Adiar/X/Escape não aceitam. Evento local inicia presença imediatamente, sem enviar token de sessão anterior. Nenhuma alteração de regras/serviços/segredos ou da versão da política. Contrato e provas em PRIVACY_RENEWAL.md.
@@ -1769,3 +1773,33 @@ Revisão Oliver compacta (01/11/2026): MathMistakeReview não usa mais PaperSpee
 ## Personalização e presença, 02/11/2026
 
 Contrato em docs/PROFILE_CUSTOMIZATION.md. Quatro categorias no seletor, 12 bandeiras livres e dois exclusivos matemáticos por progresso. frame/background opcionais na chave de perfil existente e na projeção social. Online no Olena usa sinal privado por conta visível, TTL de 150 segundos, publicação agregada no canal 1566649923099689070 e trava de cinco minutos. Ativação requer regra privada, flag e agendador protegido operados pela responsável. Cron diário não mantém o zero atualizado após todos saírem. Não houve operação externa real.
+
+## Porto das Vozes, hierarquia por assuntos (02/11/2026)
+
+Fluxo confirmado: ilhas gerais > Porto das Vozes > Inglês/Espanhol/Japonês/Chinês > Inglês > seis ilhas de assuntos > seis partes por ilha. Inglês funcional, outros idiomas em preparação. A1 a C2 são metadados de dificuldade, sem navegação própria. Currículo versão 3 preserva registros anteriores sem atribuir domínio a questões reorganizadas. Mesmo ledger inglês, namespace por ilha; coleção Arcano compartilhada. Conteúdo próprio: 216 falas e 864 tarefas. Medição após inclusão das seis paisagens vetoriais e seleção de idiomas: 1708,6 KiB de JavaScript, entrada 220,7 KiB. Teto total ajustado de 1704 para 1720 KiB sob autorização vigente do proprietário para crescimento de funcionalidades; entrada, dependências, cotas e workflows intactos. Validação final será registrada após conclusão.
+
+### Correção da estrutura de Inglês
+
+A direção anterior de seis ilhas de assuntos foi rejeitada pelo proprietário. Estrutura vigente: uma Ilha de Inglês com bandeira britânica, seis partes internas e 144 tarefas. Apenas um percentual da ilha e um registro de recompensas inglês. Navegação dos idiomas usa a apresentação existente de Matemática, setas roxas, porcentagem sobre avatar, pontos e poeira nas posições compartilhadas. A arte é derivada visualmente do Porto das Vozes. Não reutilizar provas do protótipo com 36 partes como validação desta revisão.
+
+Validação da estrutura corrigida: verify integral aprovado em 389 arquivos e 2528 testes, lint sem erros e 27 avisos existentes, API/idiomas/formatação/tipos/build/performance verdes. Aplicação 1697,6 KiB de 1704, entrada 220,7 KiB. O teto experimental 1720 não foi mantido. A composição de Inglês é britânica e própria; o padrão facetado vem de Matemática/Porto, sem copiar a composição do Porto. Revisão final de arte em andamento, não declarar aceite visual do proprietário.
+
+Validação final: 14 E2E de Inglês e Matemática em PC/mobile, claro/escuro, passaram sem skips após as transições. A revisão final da arte e contraste passou mais 4 cenários nos mesmos temas e dispositivos, incluindo leitura da imagem, seis partes, bloqueios, recuperação 503 e ausência de overflow. A porcentagem usa dígitos escuros sobre papel também no tema escuro. Build com a arte final e performance aprovados, 1697,6 KiB de 1704; entrada 220,7 KiB. Logs externos voices-single-release-verify.log, voices-single-transitions-browser.log e voices-final-visual-proof.log. Arte ainda depende do aceite visual do proprietário; PR permanece rascunho.
+
+## Ilhas de idiomas com identidade própria
+
+Espanhol, Japonês e Chinês ganham artes individuais e continuam bloqueados, inclusive após completar Inglês. Não reutilizar Porto como imagem provisória de um idioma. O acabamento vem exclusivamente do Porto das Vozes; cada idioma precisa de silhueta e arquitetura próprias, não apenas trocar a bandeira da ilha inglesa. Espanhol: moinho e praça de arcadas; Japonês: pavilhão aberto, ponte vermelha e árvore facetada; Chinês: portal circular e pavilhão de dois telhados. Os bloqueios são aplicados pelo componente, sem pintar cadeados nas imagens. O botão de explorar usa HelenaRoomIcon play, o mesmo de Matemática, e a descrição das seis partes foi retirada abaixo do título inglês. Validação desta revisão será registrada ao concluir.
+
+Validação das três ilhas: verify integral aprovado, 389 arquivos e 2528 testes, lint sem erros e 27 avisos existentes; formatação/API/idiomas/tipos/build/performance verdes, aplicação 1697,6 KiB e entrada 220,7 KiB, sem alteração de limites. Doze E2E Edge/Chromium PC/mobile claro/escuro passaram sem skips, incluindo imagens próprias carregadas, três botões e ilhas bloqueados, ícone play compartilhado com Matemática, ausência da descrição inglesa e regressões de progresso/recompensas. Screenshots com visitante fictício em b/previews-voices-language-islands. Logs externos voices-language-islands-verify.log e voices-language-islands-browser.log. Nenhum conteúdo, conta real, regra Firebase ou configuração externa foi alterado nesta revisão. Arte ainda sujeita à revisão do proprietário, sem mesclagem.
+
+## Contrato visual de Idiomas e interior de Inglês
+
+VOICES_DESIGN.md passa a ser a referência vinculada em AGENTS.md e DESIGN_SYSTEM.md. Nomes próprios, cadeado compartilhado das ilhas gerais e interior fullscreen com a arte inglesa existente; seis partes internas, sem seis novas ilhas. IDs, registros de conta, questões, pontos e recompensas preservados. Validação e provas desta revisão serão registradas ao concluir.
+
+### Decisão final sobre as seis partes, 02/11/2026
+
+Proprietário confirmou: seis cenários navegáveis por setas, como Matemática, cada um abrindo seus próprios materiais. A proposta de lista lateral de tópicos foi rejeitada. Fluxo: mundo de idiomas > idioma > carrossel de cenários/partes > materiais. Cenários derivados da mesma ilha inglesa, sem seis mundos de idioma novos. Percentual por cenário, média de seis no idioma, pontos/poeira compartilhados. Ver VOICES_DESIGN.md para o contrato e nomes dos seis lugares.
+
+### Inglês: cenário antes do material
+
+A navegação vigente é Porto das Vozes > idioma > seis cenários por setas > material específico. VoicesLanguageMap reutiliza a apresentação de Matemática com catálogo regional; VoicesPortJourney guarda o cenário ao voltar dos materiais e separa as instâncias do mapa de idiomas e do mapa de partes. EnglishIslandJourney recebe initialPart e não oferece outra lista de seis tópicos. Contrato em VOICES_DESIGN.md, artes regionais em public/languages/english-parts/. Prova: 18 E2E PC/mobile claro/escuro sem skips, incluindo Matemática; verify final aprovado com 2528 testes, aplicação 1699,8 KiB e entrada 220,7 KiB, sem alteração do teto.

@@ -1,5 +1,7 @@
 # Identidade visual oficial OlenaStudy
 
+Porto das Vozes e partes de idiomas: seguir [VOICES_DESIGN.md](VOICES_DESIGN.md), incluindo artes próprias, nomes, cadeado compartilhado e reaproveitamento da interface de Matemática.
+
 ## Cartas no perfil e Oliver na base do widget, 27/10/2026
 
 O perfil substitui o bloco Minhas ilhas por Cartas do Oliver, com exatamente três posições de destaque. Não apagar a preferência antiga favoriteIsland ao mudar a apresentação. Reutilizar a própria OliverCard para miniaturas, com SVG/foreignObject e imagem WebP pequena, preservando moldura, título, atributos e números originais. As posições não recebem placas adicionais. A galeria tem três colunas no celular e cinco no PC, com versos bloqueados para cartas ainda não reveladas. Favoritar usa a estrela original em dourado, no máximo três e somente cartas obtidas. Seleção vazia explícita permanece vazia.

@@ -49,21 +49,33 @@ const handleFeed = createProfileSocialHandler({
     if (!zoneResponse.ok) throw new Error("activity-zone");
     const zone: unknown = await zoneResponse.json();
     const now = Date.now();
-    // Uma leitura extra por publicação (mesmas cotas acima), nunca por GET. Se falhar, só as
+    // Até duas leituras pequenas por publicação (mesmas cotas acima), nunca por GET. Se falhar, só as
     // cartas ficam de fora: os resumos de estudo continuam saindo.
     const cards = await (async () => {
       try {
-        const rewardsKey = `k_${Buffer.from("helena.mathPlaceRewards.v1").toString("base64url")}`;
-        const response = await fetch(
-          `${config.databaseUrl}/users/${uid}/stateV2/items/${rewardsKey}.json`,
-          {
-            signal: AbortSignal.timeout(10000),
-            headers: { Authorization: `Bearer ${await token()}` },
-          },
+        const keys = ["helena.mathPlaceRewards.v1"];
+        if (typeof raw === "string" && raw.includes('"languageAttempt"'))
+          keys.push("helena.englishRewards.v1");
+        const ledgers = await Promise.all(
+          keys.map(async (key) => {
+            const wire = `k_${Buffer.from(key).toString("base64url")}`;
+            const response = await fetch(
+              `${config.databaseUrl}/users/${uid}/stateV2/items/${wire}.json`,
+              {
+                signal: AbortSignal.timeout(10000),
+                headers: { Authorization: `Bearer ${await token()}` },
+              },
+            );
+            if (!response.ok) return [];
+            const value: unknown = await response.json();
+            if (typeof value !== "string") return [];
+            const ledger: unknown = JSON.parse(value);
+            return ledger && typeof ledger === "object" && !Array.isArray(ledger)
+              ? Object.entries(ledger)
+              : [];
+          }),
         );
-        if (!response.ok) return [];
-        const value: unknown = await response.json();
-        return cardActivities(typeof value === "string" ? value : null, now);
+        return cardActivities(JSON.stringify(Object.fromEntries(ledgers.flat())), now);
       } catch {
         return [];
       }

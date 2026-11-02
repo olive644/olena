@@ -1,0 +1,98 @@
+# Porto das Vozes: primeira ilha de Inglês
+
+Contrato visual vigente: [VOICES_DESIGN.md](VOICES_DESIGN.md).
+
+## Entrega
+
+A navegação confirmada é Ilhas gerais > Porto das Vozes > Cais dos Encontros, Inglês (bandeira britânica) > seis partes internas. Espanhol, Japonês e Chinês aparecem em preparação. Não há seis ilhas de assuntos nem seis cursos por nível. As partes são apresentações e verbo to be, rotina e presente, passado, planos e futuro, argumentação e conexões, expressões e interpretação. São 36 falas próprias e 144 tarefas em quatro formatos. As referências A1 a C2 indicam dificuldade do material, não certificação, curso completo ou camadas de navegação.
+
+O aluno interpreta uma fala, completa uma palavra, escolhe uma resposta contextual e monta uma frase com palavras. A fala pode ser ouvida mediante ação do aluno, quando há voz inglesa local no aparelho. O texto oferece alternativa equivalente. Não há captura de microfone, avaliação de pronúncia, chamada, tradução automática ou conversa generativa nesta entrega.
+
+## Regras compartilhadas com Matemática
+
+- Seis partes, banco de 24 tarefas por parte e alvo de 20 questões diferentes respondidas corretamente.
+- A confirmação tem cinco questões e exige quatro acertos. Antes da confirmação, o domínio da parte reserva o último ponto de progresso. Somente seis confirmações produzem 100%.
+- Erros são contabilizados, não retiram domínio adquirido e recebem a resposta esperada e o significado da fala. Questões ainda não dominadas têm prioridade nas próximas rodadas.
+- Reprovar uma confirmação exige quatro respostas corretas de revisão antes de tentar novamente. Partes seguintes permanecem bloqueadas até a confirmação anterior.
+- Rodadas de prática têm seis tarefas. Cada acerto vale 20 pontos e 4 XP, preservando a conversão de pontos para XP usada em Matemática. Recarregar uma rodada inacabada não concede recompensa.
+- Mesma implementação de poeira cósmica, três espaços, espera de dez segundos, sorteio de cartas e chance arcana de 5%. A coleção Arcano e as datas de revelação são compartilhadas. Os pontos e recibos de Inglês ficam separados dos de Matemática.
+- O primeiro percurso não impõe corrida contra relógio ou perda de vidas: a compreensão inicial permite ouvir e reler. Isso não altera o motor, os desafios ou o progresso de Matemática.
+
+## Persistência, conta e compatibilidade
+
+`PracticeActivity.languageAttempt` é um campo opcional aditivo. Guarda a parte, formato da rodada, IDs de questões e acertos. O workspace existente mantém o histórico e o merge por ID conserva atividades de aparelhos diferentes. Registros de Matemática e registros antigos sem esse campo continuam válidos. A leitura deduplica IDs e só considera tentativas coerentes, na ordem de conclusão e de desbloqueio.
+
+Recompensas usam `helena.englishRewards.v1`, com o mesmo parser e merge de recibos, baús, prazos e revelações. A chave separada evita que um cliente antigo de Matemática sobrescreva recompensas que desconhece. A coleção reúne os dois registros. O isolamento e a limpeza de conta usam os mecanismos existentes; temporizadores descartam liquidação se o proprietário local mudou.
+
+**Publicação necessária pela responsável:** publicar as regras atualizadas de `firebase-room.rules.json` antes de disponibilizar a funcionalidade em produção. Foi adicionada apenas a chave de recompensas de Inglês às listas permitidas e à soma existente de oito milhões de caracteres. O limite por item continua cinco milhões. A validação `stateV2` impede substituição integral que omita recompensas inglesas já existentes. Não há mudança de autenticação ou abertura de leitura pública. O agente não publicou regras ou alterou painéis.
+
+O resumo social consulta o registro inglês somente ao publicar atividade de uma conta cujo workspace já contém tentativas de idioma. É uma leitura pequena adicional nesse caso, sob as cotas existentes, sem assinatura ou leitura por visitante. As primeiras datas das cartas são deduplicadas entre os dois registros.
+
+## Pesquisa e decisões
+
+Pesquisa realizada em 02/11/2026, em documentação pública. Nenhum conteúdo protegido, áudio ou sessão autenticada de outro curso foi copiado.
+
+| Referência                                                                                                                                                                                                                                                                   | O que orientou a decisão                                                                                                                                                                                                                                                                                           |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [MEC: como utilizar o aplicativo](https://www.gov.br/mec/pt-br/assuntos/noticias/2026/julho/saiba-como-utilizar-o-aplicativo-mec-idiomas) e [Agência Gov: recursos](https://agenciagov.ebc.com.br/noticias/202609/conheca-recursos-do-mec-idiomas-para-aprender-nova-lingua) | Organização em níveis e módulos, entrada A1 ou nivelamento e prática de compreensão. A arquitetura inspira o percurso, sem copiar currículo ou afirmar equivalência.                                                                                                                                               |
+| [Council of Europe: descritores](https://www.coe.int/en/web/common-european-framework-reference-languages/level-descriptions)                                                                                                                                                | Objetivos comunicativos observáveis, como fazer um pedido e pedir direções. A etiqueta introdutória não certifica domínio do nível.                                                                                                                                                                                |
+| [British Council: A1 listening](https://learnenglish.britishcouncil.org/free-resources/listening/a1)                                                                                                                                                                         | Contextos cotidianos e linguagem básica clara. As falas, exercícios e imagens do Olena são próprios.                                                                                                                                                                                                               |
+| [Web Speech: localService](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisVoice/localService)                                                                                                                                                               | A propriedade distingue voz local de voz remota. Esta entrega seleciona apenas uma voz inglesa local, em vez de assumir que qualquer voz do navegador é offline. Disponibilidade e qualidade variam por aparelho.                                                                                                  |
+| [Free Dictionary API](https://github.com/meetDeveloper/freeDictionaryAPI)                                                                                                                                                                                                    | Candidato futuro para consulta opcional de palavras, não para currículo ou correção de diálogo. Não integrado: exigiria avaliar licença dos dados, disponibilidade, cache, consentimento e envio do termo/IP ao serviço. A licença do servidor não concede automaticamente direitos sobre todo conteúdo retornado. |
+| [Piper atual, OHF Voice](https://github.com/OHF-Voice/piper1-gpl)                                                                                                                                                                                                            | Candidato para produzir áudios estáticos de falas próprias, fora do navegador. Exige avaliar GPL-3.0, licença de cada voz e custo de processamento. Não foi instalado, executado ou incluído no bundle.                                                                                                            |
+
+A API atual `/api/olena` informa catálogo e capacidades. Ela não declara tutor textual generativo ou voz em tempo real configurados. O contrato Helena exige consentimento por pergunta e não deve ser apresentado como serviço generativo ativo. O percurso usa correção local determinística, sem API paga, chaves novas ou requisições didáticas externas.
+
+Outras rotas próprias também foram inspecionadas: `/api/speech` já possui adaptador Cloudflare TTS, consentimento explícito, limites de texto, cotas de geração e cache compartilhado para salas. É a primeira opção de reaproveitamento caso se decida oferecer voz remota neste percurso, mediante verificação de configuração, orçamento e consentimento; esta entrega não a chama e não inspecionou credenciais. `/api/olena-learning` produz rascunhos internos de um corpus público, com autenticação operacional e verificação aritmética; não é uma API de conversação ou avaliação linguística pronta. A declaração de capacidades do catálogo não comprova o estado de todas as rotas em produção.
+
+Não foi identificada uma API pública documentada do MEC que pudesse ser usada como conteúdo deste percurso. Não foram inspecionados endpoints privados. Bibliotecas de chamada não fornecem, por si, voz ou professor de idiomas.
+
+## Próximas etapas possíveis
+
+Revisão pedagógica das falas, áudios próprios previamente produzidos e licenciados, mais situações e depois outros níveis. Nivelamento, conversação aberta e pronúncia precisam de projetos próprios, dados de avaliação, orçamento e consentimento. Não habilitar um serviço remoto silenciosamente quando faltar uma voz local.
+
+## Validação e limites
+
+Os testes de domínio cobrem 144 tarefas, respostas, duplicação, bloqueio sequencial, confirmação, recuperação, merge de workspace e recompensas. O navegador exercita o componente real em Chromium/Edge, PC e celular, claro e escuro, com perfil fictício de visitante. Inclui recarga, alternativa textual, saída por Escape e revelação de carta. A sincronização Firebase, OAuth real, qualidade de voz do aparelho e publicações sociais reais não são comprovadas por fixtures.
+
+Screenshots de validação ficam fora do produto, em `b/previews-voices-port-single`. O percurso é carregado sob demanda; não há dependências novas. Antes de publicar, executar `npm run verify` e os E2E do percurso e de Matemática. Não baixar WebKit.
+
+Verify da estrutura de uma Ilha de Inglês aprovado: 389 arquivos, 2528 testes, lint sem erros e 27 avisos existentes; formatação, API, idiomas, tipos, build e desempenho verdes. Aplicação 1697,6 KiB de 1704 e entrada 220,7 KiB. Typecheck do preview e lint final do mapa também aprovados. O E2E final das transições e da arte revisada é registrado ao concluir.
+
+Os índices de partes e questões são identificadores persistentes. Não reordenar o catálogo publicado; mudanças incompatíveis de currículo exigem uma versão explícita e migração. Conteúdo de diálogo inclui a intenção da resposta de Oliver para evitar marcar como errada outra resposta genérica plausível.
+
+Rollback: retirar a entrada de Idiomas da interface, preservando o histórico e a chave inglesa. Não apagar recibos, pontos ou cartas. Clientes antigos que tentarem substituir um estado omitindo a chave protegida receberão rejeição em vez de apagar dados; precisam carregar a versão atual.
+
+## Compatibilidade do protótipo
+
+O currículo de seis partes usa versão 3 e identifica a ilha em `area`. Registros das versões anteriores permanecem no histórico e conservam seus recibos e recompensas, mas não avançam questões reorganizadas do novo currículo. Os registros de recompensas novos usam `english-<area>` dentro da mesma chave sincronizada. IDs antigos continuam legíveis.
+
+## Direção visual confirmada
+
+A Ilha de Inglês usa a arte do Porto das Vozes como referência direta: rochas facetadas azul-marinho, pedra clara, telhados turquesa, água, vegetação geométrica e detalhes amarelos. A composição própria de Inglês tem uma casa de estudos baixa, pátio de conversa com bandeira britânica, ponte e barco pequeno. A referência de acabamento é exclusivamente Porto das Vozes, não uma vila britânica ornamentada. Evitar relógio gótico, cabine, iluminação realista ou excesso de adereços. Sua bandeira é a britânica. As seis partes internas não criam seis ilhas completas. A navegação dos idiomas reaproveita as classes de Matemática, FocusPaperArrow roxa, MathNumber, porcentagem sobre o avatar e MathPlaceTreasure, com as mesmas posições e seis segmentos. Não substituir por tabs de níveis, números de ilhas de assunto ou miniaturas vetoriais simplificadas.
+
+Arte criada pela ferramenta integrada imagegen. Prompt final: editar somente a referência de Porto das Vozes, preservando seu acabamento, escala dos polígonos, materiais, cores e câmera; criar uma casa baixa e pátio de conversa com bandeira britânica, reposicionar ponte e barco; sem catedral, cabine, relógio ornamentado, personagens ou textos, com transparência real. Arquivo usado: public/languages/islands/english.webp. Estudos descartados ficam fora do repositório.
+
+Validação final: 14 E2E de Inglês e Matemática em PC/mobile, claro/escuro, passaram sem skips após as transições. A revisão final da arte e contraste passou mais 4 cenários nos mesmos temas e dispositivos, incluindo leitura da imagem, seis partes, bloqueios, recuperação 503 e ausência de overflow. A porcentagem usa dígitos escuros sobre papel também no tema escuro. Build com a arte final e performance aprovados, 1697,6 KiB de 1704; entrada 220,7 KiB. Logs externos voices-single-release-verify.log, voices-single-transitions-browser.log e voices-final-visual-proof.log. Arte ainda depende do aceite visual do proprietário; PR permanece rascunho.
+
+## Ilhas de idiomas com identidade própria
+
+Espanhol, Japonês e Chinês ganham artes individuais e continuam bloqueados, inclusive após completar Inglês. Não reutilizar Porto como imagem provisória de um idioma. O acabamento vem exclusivamente do Porto das Vozes; cada idioma precisa de silhueta e arquitetura próprias, não apenas trocar a bandeira da ilha inglesa. Espanhol: moinho e praça de arcadas; Japonês: pavilhão aberto, ponte vermelha e árvore facetada; Chinês: portal circular e pavilhão de dois telhados. Os bloqueios são aplicados pelo componente, sem pintar cadeados nas imagens. O botão de explorar usa HelenaRoomIcon play, o mesmo de Matemática, e a descrição das seis partes foi retirada abaixo do título inglês. Validação desta revisão será registrada ao concluir.
+
+### Produção das três artes
+
+Ferramenta integrada imagegen, usando Porto das Vozes e a ilha inglesa somente como referências do acabamento. Prompt comum: ilha flutuante isométrica, recortes facetados, pedra clara, telhados turquesa, rochas azul-marinho, água poligonal e detalhes amarelos, silhueta própria, poucas formas grandes, sem texto, personagens, interface ou cadeado, fundo transparente. Prompts individuais: Espanhol com moinho de quatro pás, praça circular, fonte e arcadas; Japonês com pavilhão aberto sobre madeira, árvore facetada rosada e ponte vermelha; Chinês com portal circular, pavilhão de dois telhados e bambus. Bandeira correspondente em cada arte. Exportação WebP 800 por 800 em public/languages/islands/spanish.webp, japanese.webp e chinese.webp. Nenhuma alteração na arte inglesa.
+
+Validação das três ilhas: verify integral aprovado, 389 arquivos e 2528 testes, lint sem erros e 27 avisos existentes; formatação/API/idiomas/tipos/build/performance verdes, aplicação 1697,6 KiB e entrada 220,7 KiB, sem alteração de limites. Doze E2E Edge/Chromium PC/mobile claro/escuro passaram sem skips, incluindo imagens próprias carregadas, três botões e ilhas bloqueados, ícone play compartilhado com Matemática, ausência da descrição inglesa e regressões de progresso/recompensas. Screenshots com visitante fictício em b/previews-voices-language-islands. Logs externos voices-language-islands-verify.log e voices-language-islands-browser.log. Nenhum conteúdo, conta real, regra Firebase ou configuração externa foi alterado nesta revisão. Arte ainda sujeita à revisão do proprietário, sem mesclagem.
+
+## Nomes, cadeado e interior
+
+Destinos renomeados para Cais dos Encontros, Praça dos Ventos, Jardim das Palavras e Pátio dos Traços, sem mudar IDs persistentes ou recibos. Cadeado original extraído de LearnView para PaperIslandLock e reutilizado nas ilhas gerais, Matemática e Idiomas. O interior de Inglês usa a arte existente e o cenário fullscreen compartilhado de Matemática, com seis partes, folha de estudo, cadeado de prática futura e check de confirmação. Sem geração de novas ilhas para cada parte, sem mudanças no currículo, nas cotas, na voz ou na sincronização. Validação desta revisão será registrada ao concluir.
+
+### Decisão final sobre as seis partes, 02/11/2026
+
+Proprietário confirmou: seis cenários navegáveis por setas, como Matemática, cada um abrindo seus próprios materiais. A proposta de lista lateral de tópicos foi rejeitada. Fluxo: mundo de idiomas > idioma > carrossel de cenários/partes > materiais. Cenários derivados da mesma ilha inglesa, sem seis mundos de idioma novos. Percentual por cenário, média de seis no idioma, pontos/poeira compartilhados. Ver VOICES_DESIGN.md para o contrato e nomes dos seis lugares.
+
+### Produção dos seis cenários regionais
+
+Artes produzidas pela ferramenta integrada imagegen a partir da ilha inglesa aprovada e do primeiro cenário regional. Prompt comum: região interna do mesmo Cais dos Encontros, câmera isométrica, recortes facetados, pedra clara, telhados turquesa, água poligonal e poucos detalhes amarelos; plataforma rasa com poucas rochas baixas azul-marinho, sem outra ilha flutuante completa, personagens, texto ou interface; fundo transparente. Marcos individuais: cais de boas-vindas, praça de hábitos, ponte de memórias, mirante de planos, pátio de ideias e casa dos sentidos. Exportação WebP 800 por 800 com alpha em public/languages/english-parts/. A ilha principal permanece intacta. As imagens aparecem no carrossel e nos materiais da respectiva parte, sem alterar IDs ou progresso.

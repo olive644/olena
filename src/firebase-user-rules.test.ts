@@ -15,6 +15,22 @@ const user = rules.rules.users.$uid as {
 };
 
 describe("regras de /users/<uid>", () => {
+  it("protects published English rewards from an old full-state replacement", () => {
+    const modern = rules.rules.users.$uid["stateV2"] as { ".validate": string };
+    const wire = Object.keys(encodeCloudItems({ "helena.englishRewards.v1": "rewards" }))[0]!;
+    expect(modern[".validate"]).toContain(`data.child('items/${wire}').exists()`);
+    const evaluate = new Function("data", "newData", `return (${modern[".validate"]});`) as (
+      data: unknown,
+      next: unknown,
+    ) => boolean;
+    const snapshot = (exists: boolean) => ({
+      hasChildren: () => true,
+      child: (path: string) => ({ exists: () => path === `items/${wire}` && exists, val: () => 2 }),
+    });
+    expect(evaluate(snapshot(false), snapshot(true))).toBe(true);
+    expect(evaluate(snapshot(true), snapshot(true))).toBe(true);
+    expect(evaluate(snapshot(true), snapshot(false))).toBe(false);
+  });
   it("registro de @ não aceita leitura nem escrita direta pelo navegador", () => {
     const all = JSON.parse(readFileSync("firebase-room.rules.json", "utf8")) as {
       rules: Record<string, unknown>;
@@ -109,7 +125,7 @@ describe("regras de /users/<uid>", () => {
     const others = Object.keys(
       encodeCloudItems(Object.fromEntries(SYNCED_STORAGE_KEYS.slice(1).map((name) => [name, "v"]))),
     );
-    expect(others).toHaveLength(16);
+    expect(others).toHaveLength(17);
     for (const wire of others) expect(expression).toContain(`'${wire}'`);
     // Expressão estática do repositório, nunca entrada de usuário.
     const evaluate = new Function("newData", `return (${expression});`) as (
@@ -123,8 +139,9 @@ describe("regras de /users/<uid>", () => {
     });
     const each = (length: number) => Object.fromEntries(others.map((wire) => [wire, length]));
     expect(evaluate(withLengths({}))).toBe(true);
-    expect(evaluate(withLengths(each(500_000)))).toBe(true); // 8 milhões somados
-    expect(evaluate(withLengths(each(500_001)))).toBe(false);
+    const perKey = Math.floor(8_000_000 / others.length);
+    expect(evaluate(withLengths(each(perKey)))).toBe(true);
+    expect(evaluate(withLengths(each(perKey + 1)))).toBe(false);
     expect(evaluate(withLengths({ [others[0]!]: 8_000_000 }))).toBe(true);
     expect(evaluate(withLengths({ [others[0]!]: 8_000_001 }))).toBe(false);
     // Uma conta com a folha de trabalho no teto (20 milhões) e o resto no limite do navegador

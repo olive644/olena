@@ -1,4 +1,5 @@
 import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences.js";
+import { validLanguageAttempt, type LanguageAttempt } from "./language-progress.js";
 import type { OnboardingConfiguration } from "./onboarding-configuration.js";
 import { reviewSchedule, reviewQueue } from "./flashcard-study.js";
 import type { HandwritingDocument } from "./handwriting";
@@ -239,6 +240,7 @@ export type WorkspaceState = {
 };
 
 export type PracticeActivity = {
+  languageAttempt?: LanguageAttempt;
   moduleLevel?: number;
   id: string;
   islandId: string;
@@ -911,6 +913,11 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         !Number.isSafeInteger(activity.correct) ||
         activity.correct < 0 ||
         activity.correct > activity.answers ||
+        (activity.languageAttempt !== undefined &&
+          (!validLanguageAttempt(activity.languageAttempt) ||
+            activity.islandId !== "languages" ||
+            activity.answers !== activity.languageAttempt.questions.length ||
+            activity.correct !== activity.languageAttempt.correctQuestions.length)) ||
         state.practiceActivities?.some((item) => item.id === activity.id)
       )
         return state;

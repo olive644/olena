@@ -1,11 +1,11 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { MathCourseId } from "../data/math-courses";
+import type { RewardCourseId } from "../data/reward-courses";
 import {
   isChestCollected,
   chestCards,
-  MATH_PLACE_REWARDS_KEY,
+  rewardsStorageKey,
   parseMathRewards,
   mathPlaceRewards,
   openMathChest,
@@ -25,7 +25,7 @@ import "./oliver-card.css";
 import "./cosmic-dust.css";
 import { CosmicDustArt } from "./cosmic-dust-art";
 
-function rewardsIdentity(raw: string | null, course: MathCourseId) {
+function rewardsIdentity(raw: string | null, course: RewardCourseId) {
   const value = parseMathRewards(raw ?? "{}")[course];
   return JSON.stringify({
     points: value?.points ?? 0,
@@ -51,12 +51,13 @@ export function MathPlaceTreasure({
   initialPoints = 0,
   onPointsChange,
 }: {
-  course: MathCourseId;
+  course: RewardCourseId;
   deliveryOrigin?: { x: number; y: number; size: number; id: string } | undefined;
   initialPoints?: number;
   onPointsChange?: (points: number) => void;
 }) {
   useLanguage();
+  const storageKey = rewardsStorageKey(course);
 
   const [value, setValue] = useState(() => mathPlaceRewards(course));
   const [now, setNow] = useState(Date.now);
@@ -98,9 +99,9 @@ export function MathPlaceTreasure({
     );
     return () => animation.cancel();
   }, [deliveryOrigin]);
-  const storedRewards = useRef(localStorage.getItem(MATH_PLACE_REWARDS_KEY));
+  const storedRewards = useRef(localStorage.getItem(storageKey));
   function acceptValue(next: ReturnType<typeof mathPlaceRewards>) {
-    storedRewards.current = localStorage.getItem(MATH_PLACE_REWARDS_KEY);
+    storedRewards.current = localStorage.getItem(storageKey);
     setValue(next);
   }
   const prepareLegacy = useEffectEvent(() => {
@@ -121,7 +122,7 @@ export function MathPlaceTreasure({
   }, [course, value]);
   useEffect(() => {
     function refresh() {
-      const incoming = localStorage.getItem(MATH_PLACE_REWARDS_KEY);
+      const incoming = localStorage.getItem(storageKey);
       if (incoming === storedRewards.current) return;
       const changed =
         rewardsIdentity(incoming, course) !== rewardsIdentity(storedRewards.current, course);
@@ -144,7 +145,7 @@ export function MathPlaceTreasure({
       window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
       window.removeEventListener("storage", refresh);
     };
-  }, [course]);
+  }, [course, storageKey]);
   useEffect(
     () => () => {
       audio.current?.dispose();

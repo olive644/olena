@@ -1,4 +1,5 @@
 import { uiText } from "../i18n/runtime.js";
+import { validLanguageAttempt } from "../domain/language-progress.js";
 import { validLibraryMetadata, validMaterialLinks } from "../domain/library.js";
 import { validFlashcardStudy } from "../domain/flashcard-study.js";
 import { isPomodoroDuration } from "../domain/pomodoro-duration.js";
@@ -760,6 +761,9 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
             isString(activity["id"]) &&
             isString(activity["islandId"]) &&
             isString(activity["islandName"]) &&
+            (activity["languageAttempt"] === undefined ||
+              (activity["islandId"] === "languages" &&
+                validLanguageAttempt(activity["languageAttempt"]))) &&
             (activity["moduleLevel"] === undefined ||
               (Number.isInteger(activity["moduleLevel"]) &&
                 Number(activity["moduleLevel"]) >= 0 &&

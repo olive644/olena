@@ -7,6 +7,25 @@ const at = (day: number) => Date.parse(`2026-10-${String(day).padStart(2, "0")}T
 const ledger = (chests: unknown[]) =>
   JSON.stringify({ school: { points: 0, receipts: [], chests } });
 
+it("includes English Arcana revelations and deduplicates the earliest date across islands", () => {
+  const chest = (id: string, date: number) => ({
+    id,
+    opened: true,
+    cards: ["cups-01"],
+    revealed: 1,
+    revealedAt: [date],
+  });
+  const events = cardActivities(
+    JSON.stringify({
+      school: { chests: [chest("math", at(12))] },
+      "english-a1": { chests: [chest("english", at(10))] },
+    }),
+    now,
+  );
+  expect(events).toHaveLength(1);
+  expect(events[0]!.at).toBe(at(10));
+});
+
 it("gera um evento por carta na primeira obtenção, sem cópias nem datas inventadas", () => {
   const events = cardActivities(
     ledger([

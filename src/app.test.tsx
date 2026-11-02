@@ -328,7 +328,7 @@ describe("App", () => {
     expect(await screen.findByRole("heading", { name: "Picos dos Padrões" })).toBeTruthy();
   });
 
-  it("bloqueia as cinco outras ilhas mesmo com progresso legado salvo", async () => {
+  it("libera Inglês e Matemática e mantém as quatro outras ilhas bloqueadas", async () => {
     localStorage.setItem("helena.soloProgress", "4");
     render(<App />);
     navigate("Praticar");
@@ -337,10 +337,11 @@ describe("App", () => {
       fireEvent.click(screen.getByRole("button", { name: "Mundo anterior" }));
     for (let index = 0; index < 6; index++) {
       const button = screen.getByRole("button", {
-        name: index === 4 ? "Explorar Matemática" : "Ilha bloqueada",
+        name:
+          index === 0 ? "Explorar idiomas" : index === 4 ? "Explorar Matemática" : "Ilha bloqueada",
       }) as HTMLButtonElement;
-      expect(button.disabled).toBe(index !== 4);
-      if (index !== 4) fireEvent.click(button);
+      expect(button.disabled).toBe(index !== 0 && index !== 4);
+      if (index !== 0 && index !== 4) fireEvent.click(button);
       expect(document.querySelector(".practice-trail-map")).toBeNull();
       if (index < 5) fireEvent.click(screen.getByRole("button", { name: "Próximo mundo" }));
     }
