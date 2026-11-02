@@ -67,7 +67,8 @@ it("somente canal de voz do servidor permitido pode ser renomeado", async () => 
     const url = String(input);
     if (url.includes("privateOnlinePresence"))
       return Response.json(init?.method === "PUT" ? Date.now() : null);
-    if (url.includes("discord.com")) return Response.json({ guild_id: "wrong-server", type: 2 });
+    if (new URL(url).hostname === "discord.com")
+      return Response.json({ guild_id: "wrong-server", type: 2 });
     throw new Error("unexpected");
   });
   expect((await handleOnlinePresence(request())).status).toBe(503);
@@ -95,7 +96,7 @@ it.each([true, false])(
           });
         return Response.json({});
       }
-      if (url.includes("discord.com")) {
+      if (new URL(url).hostname === "discord.com") {
         if (init?.method === "PATCH") return new Response(null, { status: 204 });
         return Response.json({ guild_id: "1562664412530085908", type: 2 });
       }
