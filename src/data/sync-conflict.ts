@@ -170,7 +170,7 @@ export function mergeSyncedItems(
     const localChanged = localValue !== baseValue;
     const remoteChanged = remoteValue !== baseValue;
     if (
-      key === "helena.mathPlaceRewards.v1" &&
+      (key === "helena.mathPlaceRewards.v1" || key === "helena.englishRewards.v1") &&
       localValue !== undefined &&
       remoteValue !== undefined &&
       localValue !== remoteValue

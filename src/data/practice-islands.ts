@@ -1,5 +1,5 @@
 import { localizeResource, uiText } from "../i18n/runtime.js";
-/** Cenários navegáveis. Somente Matemática está liberada neste protótipo. */
+/** Cenários navegáveis. Matemática e o percurso inicial de Inglês estão disponíveis. */
 export const PRACTICE_ISLANDS = localizeResource([
   {
     number: 1,

@@ -106,11 +106,11 @@ export function PracticeIslandCarousel({
               key={island.number}
               type="button"
               aria-label={uiText(1880, [island.title])}
-              disabled={!active || island.id !== "mathematics"}
+              disabled={!active || (island.id !== "mathematics" && island.id !== "languages")}
               onClick={(event) => {
                 if (!dragged.current || event.detail === 0) onEnter?.();
               }}
-              className={`practice-carousel-island${active ? " is-current" : " is-preview"}${island.id !== "mathematics" ? " is-locked" : ""}${island.id === "mathematics" && animatedReady ? " is-animated" : ""}`}
+              className={`practice-carousel-island${active ? " is-current" : " is-preview"}${island.id !== "mathematics" && island.id !== "languages" ? " is-locked" : ""}${island.id === "mathematics" && animatedReady ? " is-animated" : ""}`}
               aria-hidden={!active}
               style={
                 {

@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { activeArcanaId, isLegacyCard } from "../data/arcana-ids.js";
-import { isMathCourse } from "../data/math-courses.js";
+import { isRewardCourse } from "../data/reward-courses.js";
 import { isAchievementId } from "../domain/math-achievements.js";
 import type { SocialActivitySummary } from "../domain/profile-social.js";
 
@@ -68,7 +68,7 @@ export function cardActivities(raw: string | null, now: number): SocialActivityS
   let count = 0;
   for (const [course, place] of Object.entries(ledger)) {
     const chests = object(place)?.["chests"];
-    if (!isMathCourse(course) || !Array.isArray(chests)) continue;
+    if (!isRewardCourse(course) || !Array.isArray(chests)) continue;
     count += chests.length;
     if (count > MAX_CHESTS) return [];
     for (const entry of chests) {

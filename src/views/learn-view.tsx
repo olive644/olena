@@ -1,7 +1,16 @@
 import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import { isMathCourse } from "../data/math-courses";
 import { PaperCheckIcon } from "../components/paper-check-icon";
-import { useCallback, useEffect, useState, type Dispatch, type FormEvent } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useState,
+  type Dispatch,
+  type FormEvent,
+} from "react";
+import { HelenaLoading } from "../components/helena-loading";
 import { HelenaRoomIcon } from "../components/helena-room-icon";
 import { PageHeader } from "../components/app-navigation";
 import { ListeningQuiz } from "../components/listening-quiz";
@@ -26,6 +35,11 @@ type LearnViewProps = {
   workspace: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
 };
+const EnglishIslandJourney = lazy(() =>
+  import("../components/english-island-journey").then((module) => ({
+    default: module.EnglishIslandJourney,
+  })),
+);
 
 type SoloMode = "review" | "quiz" | "listening" | "bingo";
 
@@ -104,7 +118,7 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
   const [entryOrigin, setEntryOrigin] = useState<{ x: number; y: number; size: number }>();
   const [profile] = useStoredProfile();
   const world = SOLO_WORLDS[worldIndex]!;
-  const available = world.id === "mathematics";
+  const available = world.id === "mathematics" || world.id === "languages";
 
   function enterMath() {
     if (!available) return;
@@ -117,7 +131,17 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
       });
     setInsideWorld(true);
   }
-  if (insideWorld && available)
+  if (insideWorld && world.id === "languages")
+    return (
+      <Suspense fallback={<HelenaLoading />}>
+        <EnglishIslandJourney
+          workspace={workspace}
+          onBack={() => setInsideWorld(false)}
+          onPractice={(activity) => dispatch({ type: "practice/recorded", activity })}
+        />
+      </Suspense>
+    );
+  if (insideWorld && world.id === "mathematics")
     return (
       <MathIslandJourney
         {...(entryCourse ? { initialCourse: entryCourse } : {})}
@@ -151,7 +175,11 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
               <path d="M11 14h2v4h-2Z" fill="#333142" />
             </svg>
           )}
-          {available ? uiText(1250) : uiText(1970)}
+          {world.id === "languages"
+            ? uiText("Explorar Inglês")
+            : available
+              ? uiText(1250)
+              : uiText(1970)}
         </button>
       </div>
     </div>
