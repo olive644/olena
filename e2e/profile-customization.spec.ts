@@ -50,7 +50,7 @@ for (const theme of ["light", "dark"])
       await dialog.getByRole("button", { name: "Headers", exact: true }).click();
       await dialog.getByRole("button", { name: "Horizonte dos números" }).click();
       await dialog.getByRole("button", { name: "Fundo do perfil", exact: true }).click();
-      await dialog.getByRole("button", { name: "Trans", exact: true }).click();
+      await dialog.getByRole("button", { name: "Assexual", exact: true }).click();
       for (const id of [
         "pride",
         "lesbian",
@@ -71,9 +71,18 @@ for (const theme of ["light", "dark"])
             const image = new Image();
             image.src = "/profile-cosmetics/background-" + id + ".svg";
             await image.decode();
-            return image.naturalWidth;
+            const canvas = document.createElement("canvas");
+            canvas.width = 900;
+            canvas.height = 180;
+            const ctx = canvas.getContext("2d")!;
+            ctx.drawImage(image, 0, 0, 900, 180);
+            const pixels = ctx.getImageData(0, 0, 900, 180).data;
+            let minimumAlpha = 255;
+            for (let i = 3; i < pixels.length; i += 4)
+              minimumAlpha = Math.min(minimumAlpha, pixels[i]!);
+            return minimumAlpha;
           }, id),
-        ).toBeGreaterThan(0);
+        ).toBe(255);
       }
       await dialog.screenshot({ path: info.outputPath("personalizar-" + theme + ".png") });
       expect(await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
@@ -81,7 +90,7 @@ for (const theme of ["light", "dark"])
       await expect(dialog).not.toBeVisible();
       await expect(page.locator(".profile-cover")).toHaveAttribute(
         "data-profile-background",
-        "trans",
+        "ace",
       );
       await expect(page.locator(".profile-cover__portrait .profile-frame-art")).toHaveAttribute(
         "src",
@@ -96,6 +105,9 @@ for (const theme of ["light", "dark"])
           .locator(".profile-cover")
           .evaluate((node) => getComputedStyle(node).backgroundImage),
       ).not.toBe("none");
+      await page
+        .locator(".profile-cover")
+        .screenshot({ path: info.outputPath("fundo-" + theme + ".png") });
       await page.screenshot({ path: info.outputPath("perfil-" + theme + ".png"), fullPage: true });
       await page.reload();
       await expect(page.locator(".profile-cover__portrait .profile-frame-art")).toHaveAttribute(

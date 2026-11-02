@@ -14,7 +14,7 @@ Fundo do perfil personaliza a superfície abaixo do header: papel original, as m
 
 Perfil próprio, inspeção de outro usuário, prévia de compartilhamento e PNG devem combinar o header, o fundo e a moldura escolhidos. O card próprio usa as escolhas atuais de helena.profile.v1 mesmo antes de a projeção social retornar atualizada. Visitas usam somente os dados publicados daquele perfil, sem herdar escolhas do visitante. IDs desconhecidos continuam caindo em none/paper.
 
-Fundos de bandeiras usam facetas discretas nas margens, preservam a sequência de cores e deixam o centro livre para texto. O fundo de Matemática usa sólidos e operadores originais. SVGs transparentes permitem contraste nos dois temas. A exportação mantém papel creme e desenha as mesmas artes locais de fundo e moldura, com margem para o nome e nível acima da moldura. Não desenhar fundos opacos sobre textos nem exportar somente o header.
+Fundos de bandeiras preenchem toda a superfície abaixo do header, de ponta a ponta, com todas as faixas na ordem original e facetas discretas de papel. Não limitar a decoração às margens nem deixar o centro sem tema. SVGs têm base opaca e preserveAspectRatio=none, para preencher perfis largos e verticais sem letterbox. As faixas começam abaixo do header, sem esconder parte da bandeira atrás dele. Tinta clara no SVG e composição multiplicada no modo escuro mantêm leitura dos textos e cores do tema. O fundo de Matemática também preenche toda a área com malha, sólidos e operadores originais. A exportação mantém papel creme e desenha as mesmas artes locais de fundo e moldura, com margem para o nome e nível acima da moldura. Não desenhar fundos opacos sobre textos nem exportar somente o header.
 
 ## Matemática
 

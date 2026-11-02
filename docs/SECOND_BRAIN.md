@@ -1,3 +1,9 @@
+## Fundos completos abaixo do header, 02/11/2026
+
+Direção corrigida: as doze bandeiras e Matemática cobrem toda a superfície, em vez de pequenos recortes nas margens. SVG opaco com preserveAspectRatio=none elimina letterbox no perfil largo; posicionamento abaixo do header mantém todas as faixas visíveis. Claro usa papel tingido, escuro usa composição multiplicada com base ajustada, e card/PNG conservam as mesmas artes. IDs, desbloqueios, molduras e sincronização intactos.
+
+Teste de cobertura em navegador verifica cada pixel do canvas largo para as 13 artes, exigindo alpha 255; a primeira execução detectou transparência nas junções antialiasadas, resolvida com base opaca. Quatro E2E de personalização PC/mobile claro/escuro passaram. Verify integral aprovado: 388 arquivos, 2509 testes, lint sem erros e 27 avisos existentes, formatação/API/idiomas/tipos/build/desempenho verdes. JS aplicação 1671,5 KiB e entrada 220,6 KiB, sem alteração de limites ou dependências. Rodada final de personalização e inspeção: 10 E2E Edge Chromium PC/mobile claro/escuro aprovados, sem skips. Capturas de dados fictícios em b/previews-full-profile-backgrounds-2026-11-02; logs full-background-verify.log e full-background-final-browser.log fora do repositório.
+
 ## Fundos e superfícies de perfil, 02/11/2026
 
 Correção dos fundos: doze bandeiras e Matemática, com desbloqueio correct-100. Mesmas artes locais no perfil, visita e card/PNG. Card próprio combina campos atuais com a projeção social. Dados publicados continuam validados por allowlist, sem novas chaves ou serviços.
