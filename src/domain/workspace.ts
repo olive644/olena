@@ -240,6 +240,9 @@ export type WorkspaceState = {
 };
 
 export type PracticeActivity = {
+  englishA1Attempt?: LanguageAttempt;
+  englishA1FinalFailure?: boolean;
+  englishFinalFailure?: boolean;
   languageAttempt?: LanguageAttempt;
   englishAttempt?: LanguageAttempt;
   moduleLevel?: number;
@@ -919,6 +922,13 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             activity.islandId !== "languages" ||
             activity.answers !== activity.languageAttempt.questions.length ||
             activity.correct !== activity.languageAttempt.correctQuestions.length)) ||
+        (activity.englishFinalFailure !== undefined &&
+          (activity.englishFinalFailure !== true ||
+            activity.englishAttempt?.curriculum !== 4 ||
+            activity.englishAttempt?.mode !== "practice" ||
+            activity.answers - activity.correct !== 3 ||
+            activity.answers < 3 ||
+            activity.answers > 4)) ||
         (activity.englishAttempt !== undefined &&
           (!validLanguageAttempt(activity.englishAttempt) ||
             activity.englishAttempt.curriculum !== 4 ||
@@ -926,6 +936,21 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             activity.languageAttempt !== undefined ||
             activity.answers !== activity.englishAttempt.questions.length ||
             activity.correct !== activity.englishAttempt.correctQuestions.length)) ||
+        (activity.englishA1FinalFailure !== undefined &&
+          (activity.englishA1FinalFailure !== true ||
+            activity.englishA1Attempt?.curriculum !== 5 ||
+            activity.englishA1Attempt.mode !== "practice" ||
+            activity.answers - activity.correct !== 3 ||
+            activity.answers < 3 ||
+            activity.answers > 4)) ||
+        (activity.englishA1Attempt !== undefined &&
+          (!validLanguageAttempt(activity.englishA1Attempt) ||
+            activity.englishA1Attempt.curriculum !== 5 ||
+            activity.islandId !== "english" ||
+            activity.englishAttempt !== undefined ||
+            activity.languageAttempt !== undefined ||
+            activity.answers !== activity.englishA1Attempt.questions.length ||
+            activity.correct !== activity.englishA1Attempt.correctQuestions.length)) ||
         state.practiceActivities?.some((item) => item.id === activity.id)
       )
         return state;

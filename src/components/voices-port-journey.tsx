@@ -1,3 +1,4 @@
+import { lastEnglishCheckpointPart } from "../data/english-checkpoint";
 import { useState } from "react";
 import type { PracticeActivity, WorkspaceState } from "../domain/workspace";
 import { englishProgress } from "../domain/language-progress";
@@ -14,9 +15,11 @@ export function VoicesPortJourney({
 }) {
   const [selectedPart, setSelectedPart] = useState<number>();
   const [partIndex, setPartIndex] = useState(() => {
-    const pending = englishProgress(workspace.practiceActivities).parts.findIndex(
-      (part) => !part.confirmed,
-    );
+    const parts = englishProgress(workspace.practiceActivities).parts;
+    const remembered = lastEnglishCheckpointPart();
+    if (remembered !== undefined && (remembered === 0 || parts[remembered - 1]!.confirmed))
+      return remembered;
+    const pending = parts.findIndex((part) => !part.confirmed);
     return pending < 0 ? 5 : pending;
   });
   return selectedPart !== undefined ? (

@@ -181,20 +181,33 @@ test("paper form offers all islands, custom date/time, icon repeat and yellow co
     await form.getByRole("button", { name: "Matéria", exact: true }).focus();
     await page.keyboard.press("ArrowDown");
     const subjects = page.getByRole("listbox", { name: "Opções de Matéria" });
-    await expect(subjects.getByRole("option")).toHaveCount(6);
-    for (const name of ["Idiomas", "Português", "Química", "Biologia", "Matemática", "Programação"])
+    await expect(subjects.getByRole("option")).toHaveCount(9);
+    for (const name of [
+      "Inglês",
+      "Português",
+      "Química",
+      "Biologia",
+      "Matemática",
+      "Programação",
+      "Espanhol",
+      "Japonês",
+      "Chinês",
+    ])
       await expect(subjects.getByRole("option", { name, exact: true })).toBeVisible();
     const chemistry = subjects.getByRole("option", { name: "Química", exact: true });
     await chemistry.hover();
     await expect(chemistry).toHaveCSS("color", "rgb(41, 36, 50)");
     await expect(chemistry).toHaveCSS("background-color", "rgb(250, 204, 21)");
-    await subjects.getByRole("option", { name: "Idiomas", exact: true }).focus();
-    await expect(subjects.getByRole("option", { name: "Idiomas", exact: true })).toHaveCSS(
+    await subjects.getByRole("option", { name: "Inglês", exact: true }).focus();
+    await expect(subjects.getByRole("option", { name: "Inglês", exact: true })).toHaveCSS(
       "color",
       "rgb(41, 36, 50)",
     );
     await page.keyboard.press("End");
-    await page.keyboard.press("ArrowUp");
+    await expect(subjects.getByRole("option", { name: "Chinês", exact: true })).toBeFocused();
+    await page.keyboard.press("Home");
+    await expect(subjects.getByRole("option", { name: "Inglês", exact: true })).toBeFocused();
+    for (let step = 0; step < 4; step++) await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
     await expect(form.getByRole("button", { name: "Matéria", exact: true })).toContainText(
       "Matemática",

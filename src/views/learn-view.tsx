@@ -18,6 +18,7 @@ import { ListeningQuiz } from "../components/listening-quiz";
 import { writeSyncedStorage } from "../data/synced-storage";
 import "../solo-journey.css";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
+import { lastPracticeIsland, rememberPracticeIsland } from "../data/practice-island-selection";
 import { PracticeIslandCarousel } from "../components/practice-island-carousel";
 import { MathIslandJourney } from "../components/math-island-journey";
 import { useStoredProfile } from "../hooks/use-stored-profile";
@@ -88,13 +89,21 @@ const SOLO_PROGRESS_KEY = "helena.soloProgress";
 function PracticeHub({ dispatch, workspace }: LearnViewProps) {
   useLanguage();
 
-  const [worldIndex, setWorldIndex] = useState(() => {
+  const preference = workspace.studyPreferences.initialIslandId;
+  const preferredIndex = PRACTICE_ISLANDS.findIndex(
+    (island) => island.id === (preference === "languages" ? "english" : preference),
+  );
+  const [selection, setSelection] = useState(() => {
     try {
       const entry = sessionStorage.getItem("olena:enter-mathematics");
-      if (entry === "1" || isMathCourse(entry)) return 4;
+      if (entry === "1" || isMathCourse(entry)) return { index: 4, preference };
     } catch {
       /* Preferência do workspace continua disponível sem sessionStorage. */
     }
+    const remembered = PRACTICE_ISLANDS.findIndex(
+      (island) => island.id === lastPracticeIsland(preference),
+    );
+    if (remembered >= 0) return { index: remembered, preference };
     const index = PRACTICE_ISLANDS.findIndex(
       (island) =>
         island.id ===
@@ -102,8 +111,10 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
           ? "english"
           : workspace.studyPreferences.initialIslandId),
     );
-    return index < 0 ? 4 : index;
+    return { index: index < 0 ? 4 : index, preference };
   });
+  const worldIndex =
+    selection.preference === preference ? selection.index : preferredIndex < 0 ? 4 : preferredIndex;
   const [entryCourse] = useState(() => {
     try {
       const value = sessionStorage.getItem("olena:enter-mathematics");
@@ -124,6 +135,9 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
   const [profile] = useStoredProfile();
   const world = SOLO_WORLDS[worldIndex]!;
   const available = world.id === "mathematics" || world.id === "english";
+  useEffect(() => {
+    rememberPracticeIsland(world.id, preference);
+  }, [world.id, preference]);
 
   function enterMath() {
     if (!available) return;
@@ -160,7 +174,10 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
       <PracticeIslandCarousel
         index={worldIndex}
         onVisit={(index) => {
-          if (index >= 0 && index < SOLO_WORLDS.length) setWorldIndex(index);
+          if (index >= 0 && index < SOLO_WORLDS.length) {
+            setSelection({ index, preference });
+            rememberPracticeIsland(SOLO_WORLDS[index]!.id, preference);
+          }
         }}
         profile={profile}
         onEnter={enterMath}

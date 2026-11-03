@@ -1,0 +1,4430 @@
+{
+  "version": 1,
+  "level": "A1",
+  "units": [
+    {
+      "title": {
+        "pt-BR": "Conhecer e se apresentar",
+        "en-US": "Meeting and introducing yourself"
+      },
+      "objective": {
+        "pt-BR": "Cumprimentar, dizer nome, idade, origem e soletrar informações pessoais.",
+        "en-US": "Greet people, give names, age and origin, and spell personal details."
+      },
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Eu, você e o nome",
+            "en-US": "I, you and names"
+          },
+          "text": {
+            "pt-BR": "I é eu; you é você. I am pode virar I’m. Para apresentar seu nome, use My name is. Para perguntar o nome, inverta is e use What is your name?",
+            "en-US": "I refers to the speaker and you to the listener. I am can become I’m. Use My name is to introduce yourself and What is your name? to ask."
+          },
+          "example": "My name is Lia. What is your name?",
+          "meaning": {
+            "pt-BR": "Meu nome é Lia. Qual é seu nome?",
+            "en-US": "My name is Lia. What is your name?"
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Origem, idade e letras",
+            "en-US": "Origin, age and letters"
+          },
+          "text": {
+            "pt-BR": "From indica origem. Para idade, inglês usa am/is/are com years old, não tenho. Spell pede as letras do nome em ordem. Não é preciso informar dados reais para praticar.",
+            "en-US": "From indicates origin. English gives age with am/is/are and years old, not have. Spell asks for the letters of a name. No real personal data is needed to practise."
+          },
+          "example": "I am eighteen years old. I am from Chile.",
+          "meaning": {
+            "pt-BR": "Eu tenho dezoito anos. Eu sou do Chile.",
+            "en-US": "I am eighteen years old. I am from Chile."
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "pt-BR": "Pessoas e coisas por perto",
+        "en-US": "People and things around you"
+      },
+      "objective": {
+        "pt-BR": "Descrever pessoas, identificar objetos e dizer a quem pertencem.",
+        "en-US": "Describe people, identify objects and say who owns them."
+      },
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Um objeto, vários objetos",
+            "en-US": "One object, several objects"
+          },
+          "text": {
+            "pt-BR": "A e an apresentam um objeto. A escolha depende do som seguinte: a book, an orange bag. Para vários, normalmente acrescente s; child vira children e woman vira women.",
+            "en-US": "A and an introduce one object. Choose according to the next sound: a book, an orange bag. Plurals usually add s; child becomes children and woman becomes women."
+          },
+          "example": "This is a book. These are books.",
+          "meaning": {
+            "pt-BR": "Este é um livro. Estes são livros.",
+            "en-US": "This is a book. These are books."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "De quem é?",
+            "en-US": "Who owns it?"
+          },
+          "text": {
+            "pt-BR": "My, your, his, her e our vêm antes de nomes. Mine e hers podem aparecer sozinhos. I have fala do que eu tenho; she has fala do que ela tem.",
+            "en-US": "My, your, his, her and our come before nouns. Mine and hers can stand alone. I have states what I own; she has states what she owns."
+          },
+          "example": "This is her bag. The bag is hers.",
+          "meaning": {
+            "pt-BR": "Esta é a bolsa dela. A bolsa é dela.",
+            "en-US": "This is her bag. The bag is hers."
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "pt-BR": "Encontrar lugares",
+        "en-US": "Finding places"
+      },
+      "objective": {
+        "pt-BR": "Ler placas, localizar objetos e seguir instruções curtas.",
+        "en-US": "Read signs, locate objects and follow short directions."
+      },
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Há e está",
+            "en-US": "Existence and location"
+          },
+          "text": {
+            "pt-BR": "There is apresenta uma coisa; there are apresenta várias. In é dentro, on é sobre, under é embaixo. Para perguntar localização, use Where is ou Where are.",
+            "en-US": "There is introduces one thing; there are introduces several. In means inside, on indicates a surface, and under means below. Ask location with Where is or Where are."
+          },
+          "example": "There is a café next to the bank.",
+          "meaning": {
+            "pt-BR": "Há um café ao lado do banco.",
+            "en-US": "There is a café next to the bank."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Seguir um caminho",
+            "en-US": "Following directions"
+          },
+          "text": {
+            "pt-BR": "Go straight é siga em frente. Turn left e turn right indicam esquerda e direita. Pedidos diretos começam com verbo; do not proíbe uma ação.",
+            "en-US": "Go straight gives forward direction. Turn left and turn right name directions. Direct requests begin with a verb; do not prohibits an action."
+          },
+          "example": "Go straight. Do not cross here.",
+          "meaning": {
+            "pt-BR": "Siga em frente. Não atravesse aqui.",
+            "en-US": "Go straight. Do not cross here."
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "pt-BR": "Meu dia e meus horários",
+        "en-US": "My day and my schedule"
+      },
+      "objective": {
+        "pt-BR": "Entender horas e dias e falar de hábitos e capacidades.",
+        "en-US": "Understand times and days and talk about habits and abilities."
+      },
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Rotina não é só agora",
+            "en-US": "Routines and the present"
+          },
+          "text": {
+            "pt-BR": "I work e they work descrevem hábitos. Com he ou she, normalmente acrescente s: she works. Para negar, use don’t ou doesn’t; depois desses auxiliares, o verbo fica na forma base.",
+            "en-US": "I work and they work describe habits. With he or she, usually add s: she works. Negatives use don’t or doesn’t; after these auxiliaries, use the base verb."
+          },
+          "example": "She works on Mondays. She does not work on Sundays.",
+          "meaning": {
+            "pt-BR": "Ela trabalha às segundas. Ela não trabalha aos domingos.",
+            "en-US": "She works on Mondays. She does not work on Sundays."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Hora, frequência e capacidade",
+            "en-US": "Time, frequency and ability"
+          },
+          "text": {
+            "pt-BR": "At eight marca uma hora; on Monday marca um dia; in July marca um mês. Half past seven é 7:30. How often pede frequência. Can e cannot mostram capacidade e vêm antes do verbo sem to.",
+            "en-US": "At marks an exact time, on Monday names a day, and in July names a month. Half past seven is 7:30. How often asks frequency. Can and cannot show ability and precede a base verb without to."
+          },
+          "example": "I can swim. I usually swim at seven.",
+          "meaning": {
+            "pt-BR": "Eu sei nadar. Eu geralmente nado às sete.",
+            "en-US": "I can swim. I usually swim at seven."
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "pt-BR": "No café e nas compras",
+        "en-US": "At the café and the shops"
+      },
+      "objective": {
+        "pt-BR": "Fazer pedidos, entender preços, quantidades e formas de pagamento.",
+        "en-US": "Make requests and understand prices, amounts and payment methods."
+      },
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Pedir com clareza",
+            "en-US": "Making clear requests"
+          },
+          "text": {
+            "pt-BR": "I would like faz um pedido educado. A e an servem para uma unidade contável. Some serve para quantidade indefinida. How many pergunta unidades; how much pergunta quantidade não contável ou preço.",
+            "en-US": "I would like makes a polite request. A and an introduce one countable item. Some gives an unspecified amount. How many asks for a number; how much asks an uncountable amount or a price."
+          },
+          "example": "I would like some water and two apples.",
+          "meaning": {
+            "pt-BR": "Eu gostaria de um pouco de água e duas maçãs.",
+            "en-US": "I would like some water and two apples."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Ler menu e recibo",
+            "en-US": "Reading menus and receipts"
+          },
+          "text": {
+            "pt-BR": "Pounds são libras. Two pounds fifty é £2,50. Total soma a compra. By card é com cartão; take away é para levar. Uma oferta com or pede escolher entre alternativas.",
+            "en-US": "Pounds are a currency. Two pounds fifty means £2.50. Total combines the purchase. By card names a payment method; take away means to consume elsewhere. An offer with or asks for a choice."
+          },
+          "example": "Can I pay by card? To take away, please.",
+          "meaning": {
+            "pt-BR": "Posso pagar com cartão? Para levar, por favor.",
+            "en-US": "Can I pay by card? To take away, please."
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "pt-BR": "Entender e pedir ajuda",
+        "en-US": "Understanding and asking for help"
+      },
+      "objective": {
+        "pt-BR": "Ler mensagens curtas, pedir repetição e comunicar necessidades imediatas.",
+        "en-US": "Read short messages, request repetition and communicate immediate needs."
+      },
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Pedir apoio faz parte",
+            "en-US": "Asking for support"
+          },
+          "text": {
+            "pt-BR": "Please speak slowly pede fala devagar. Can you say that again? pede repetição. What does this word mean? pede significado. Use me depois de help para dizer quem recebe ajuda.",
+            "en-US": "Please speak slowly requests slower speech. Can you say that again? requests repetition. What does this word mean? asks for meaning. Use me after help to name who receives help."
+          },
+          "example": "Can you help me with this form?",
+          "meaning": {
+            "pt-BR": "Você pode me ajudar com este formulário?",
+            "en-US": "Can you help me with this form?"
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "O que acontece agora",
+            "en-US": "What is happening now"
+          },
+          "text": {
+            "pt-BR": "Am, is ou are com verbo em ing mostra uma ação em andamento. Compare I read every day com I am reading now. Ao ler bilhetes, separe quem fala, ação, lugar, horário e itens pedidos.",
+            "en-US": "Am, is or are plus an ing verb shows an ongoing action. Compare I read every day with I am reading now. In short notes, identify the speaker, action, place, time and requested items."
+          },
+          "example": "I am waiting at the gate. Please come at three.",
+          "meaning": {
+            "pt-BR": "Estou esperando no portão. Por favor, venha às três.",
+            "en-US": "I am waiting at the gate. Please come at three."
+          }
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": 120,
+      "unit": 0,
+      "level": 0,
+      "kind": "meaning",
+      "phrase": "Good morning, everyone!",
+      "meaning": {
+        "pt-BR": "Bom dia a todos!",
+        "en-US": "Good morning, everyone!"
+      },
+      "answer": {
+        "pt-BR": "Bom dia a todos!",
+        "en-US": "A greeting at the start of the day."
+      },
+      "options": [
+        {
+          "pt-BR": "Bom dia a todos!",
+          "en-US": "A greeting at the start of the day."
+        },
+        {
+          "pt-BR": "Boa noite a todos!",
+          "en-US": "Good night, everyone!"
+        },
+        {
+          "pt-BR": "Boa tarde a todos!",
+          "en-US": "Good afternoon, everyone!"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Bom dia a todos!",
+        "en-US": "Good morning, everyone!"
+      },
+      "focus": "morning",
+      "explanation": {
+        "pt-BR": "Morning é manhã. Good morning cumprimenta no começo do dia; não é uma despedida.",
+        "en-US": "Morning is the early part of the day. Good morning is a greeting, not a goodbye."
+      }
+    },
+    {
+      "id": 121,
+      "unit": 0,
+      "level": 0,
+      "kind": "gap",
+      "phrase": "I am Mia.",
+      "meaning": {
+        "pt-BR": "Eu sou Mia.",
+        "en-US": "I am Mia."
+      },
+      "answer": {
+        "pt-BR": "am",
+        "en-US": "am"
+      },
+      "options": [
+        {
+          "pt-BR": "am",
+          "en-US": "am"
+        },
+        {
+          "pt-BR": "is",
+          "en-US": "is"
+        },
+        {
+          "pt-BR": "are",
+          "en-US": "are"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Eu sou Mia.",
+        "en-US": "am"
+      },
+      "focus": "I am",
+      "explanation": {
+        "pt-BR": "Com I usamos am. Is acompanha he, she ou it; are acompanha you, we ou they.",
+        "en-US": "Use am with I. Is goes with he, she or it; are goes with you, we or they."
+      }
+    },
+    {
+      "id": 122,
+      "unit": 0,
+      "level": 0,
+      "kind": "reply",
+      "phrase": "Hello! I'm Leo.",
+      "meaning": {
+        "pt-BR": "Olá! Eu sou Leo.",
+        "en-US": "Hello! I'm Leo."
+      },
+      "answer": {
+        "pt-BR": "Hello, Leo. Nice to meet you.",
+        "en-US": "Hello, Leo. Nice to meet you."
+      },
+      "options": [
+        {
+          "pt-BR": "Hello, Leo. Nice to meet you.",
+          "en-US": "Hello, Leo. Nice to meet you."
+        },
+        {
+          "pt-BR": "Goodbye, Leo.",
+          "en-US": "Goodbye, Leo."
+        },
+        {
+          "pt-BR": "I am twenty years old.",
+          "en-US": "I am twenty years old."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Olá, Leo. Prazer em conhecer você.",
+        "en-US": "Hello, Leo. Nice to meet you."
+      },
+      "focus": "meeting someone",
+      "explanation": {
+        "pt-BR": "Responder ao cumprimento e dizer nice to meet you dá boas-vindas à pessoa que acabou de se apresentar.",
+        "en-US": "Return the greeting and say nice to meet you to welcome someone who has just introduced themselves."
+      }
+    },
+    {
+      "id": 123,
+      "unit": 0,
+      "level": 0,
+      "kind": "order",
+      "phrase": "My name is Sofia.",
+      "meaning": {
+        "pt-BR": "Meu nome é Sofia.",
+        "en-US": "My name is Sofia."
+      },
+      "answer": {
+        "pt-BR": "My name is Sofia.",
+        "en-US": "My name is Sofia."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Meu nome é Sofia.",
+        "en-US": "My name is Sofia."
+      },
+      "focus": "my name is",
+      "explanation": {
+        "pt-BR": "O bloco My name é o assunto; is liga esse bloco ao nome Sofia. Não coloque is antes de name numa afirmação.",
+        "en-US": "My name is the subject; is links it to Sofia. Do not put is before name in a statement."
+      }
+    },
+    {
+      "id": 124,
+      "unit": 0,
+      "level": 0,
+      "kind": "meaning",
+      "phrase": "I'm from Portugal.",
+      "meaning": {
+        "pt-BR": "Eu sou de Portugal.",
+        "en-US": "I'm from Portugal."
+      },
+      "answer": {
+        "pt-BR": "Eu sou de Portugal.",
+        "en-US": "The speaker comes from Portugal."
+      },
+      "options": [
+        {
+          "pt-BR": "Eu sou de Portugal.",
+          "en-US": "The speaker comes from Portugal."
+        },
+        {
+          "pt-BR": "Eu estou em Portugal.",
+          "en-US": "I am in Portugal."
+        },
+        {
+          "pt-BR": "Eu vou para Portugal.",
+          "en-US": "I am going to Portugal."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Eu sou de Portugal.",
+        "en-US": "I'm from Portugal."
+      },
+      "focus": "from",
+      "explanation": {
+        "pt-BR": "From indica origem. Estar em algum lugar usa in; a frase não informa onde a pessoa está agora.",
+        "en-US": "From indicates origin. Being in a place uses in; this sentence does not tell us the current location."
+      }
+    },
+    {
+      "id": 125,
+      "unit": 0,
+      "level": 0,
+      "kind": "gap",
+      "phrase": "You are my neighbour.",
+      "meaning": {
+        "pt-BR": "Você é meu vizinho.",
+        "en-US": "You are my neighbour."
+      },
+      "answer": {
+        "pt-BR": "are",
+        "en-US": "are"
+      },
+      "options": [
+        {
+          "pt-BR": "are",
+          "en-US": "are"
+        },
+        {
+          "pt-BR": "am",
+          "en-US": "am"
+        },
+        {
+          "pt-BR": "is",
+          "en-US": "is"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Você é meu vizinho.",
+        "en-US": "are"
+      },
+      "focus": "you are",
+      "explanation": {
+        "pt-BR": "You usa are mesmo quando falamos com uma pessoa só. Não use am com you.",
+        "en-US": "You takes are even when addressing only one person. Do not use am with you."
+      }
+    },
+    {
+      "id": 126,
+      "unit": 0,
+      "level": 1,
+      "kind": "reply",
+      "phrase": "What's your first name?",
+      "meaning": {
+        "pt-BR": "Qual é o seu primeiro nome?",
+        "en-US": "What's your first name?"
+      },
+      "answer": {
+        "pt-BR": "My first name is Ana.",
+        "en-US": "My first name is Ana."
+      },
+      "options": [
+        {
+          "pt-BR": "My first name is Ana.",
+          "en-US": "My first name is Ana."
+        },
+        {
+          "pt-BR": "I am from Peru.",
+          "en-US": "I am from Peru."
+        },
+        {
+          "pt-BR": "My family is here.",
+          "en-US": "My family is here."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Meu primeiro nome é Ana.",
+        "en-US": "My first name is Ana."
+      },
+      "focus": "first name",
+      "explanation": {
+        "pt-BR": "First name pede o primeiro nome, não o país ou a localização da família.",
+        "en-US": "First name asks for a given name, not a country or the location of a family."
+      }
+    },
+    {
+      "id": 127,
+      "unit": 0,
+      "level": 1,
+      "kind": "order",
+      "phrase": "She is from Japan.",
+      "meaning": {
+        "pt-BR": "Ela é do Japão.",
+        "en-US": "She is from Japan."
+      },
+      "answer": {
+        "pt-BR": "She is from Japan.",
+        "en-US": "She is from Japan."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Ela é do Japão.",
+        "en-US": "She is from Japan."
+      },
+      "focus": "she is from",
+      "explanation": {
+        "pt-BR": "Comece com she, depois is, e só então from Japan para indicar a origem.",
+        "en-US": "Start with she, then is, and then from Japan to indicate origin."
+      }
+    },
+    {
+      "id": 128,
+      "unit": 0,
+      "level": 1,
+      "kind": "meaning",
+      "phrase": "He is nineteen years old.",
+      "meaning": {
+        "pt-BR": "Ele tem dezenove anos.",
+        "en-US": "He is nineteen years old."
+      },
+      "answer": {
+        "pt-BR": "Ele tem dezenove anos.",
+        "en-US": "His age is 19."
+      },
+      "options": [
+        {
+          "pt-BR": "Ele tem dezenove anos.",
+          "en-US": "His age is 19."
+        },
+        {
+          "pt-BR": "Ele tem noventa anos.",
+          "en-US": "He is ninety years old."
+        },
+        {
+          "pt-BR": "Ele tem nove anos.",
+          "en-US": "He is nine years old."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Ele tem dezenove anos.",
+        "en-US": "He is nineteen years old."
+      },
+      "focus": "nineteen",
+      "explanation": {
+        "pt-BR": "Nineteen é dezenove; ninety é noventa. Em inglês, a idade é apresentada com is, não has.",
+        "en-US": "Nineteen is 19; ninety is 90. English presents age with is, not has."
+      }
+    },
+    {
+      "id": 129,
+      "unit": 0,
+      "level": 1,
+      "kind": "gap",
+      "phrase": "We are new students.",
+      "meaning": {
+        "pt-BR": "Nós somos estudantes novos.",
+        "en-US": "We are new students."
+      },
+      "answer": {
+        "pt-BR": "are",
+        "en-US": "are"
+      },
+      "options": [
+        {
+          "pt-BR": "are",
+          "en-US": "are"
+        },
+        {
+          "pt-BR": "is",
+          "en-US": "is"
+        },
+        {
+          "pt-BR": "am",
+          "en-US": "am"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Nós somos estudantes novos.",
+        "en-US": "are"
+      },
+      "focus": "we are",
+      "explanation": {
+        "pt-BR": "We fala de nós. O verbo é are e students tem s porque há mais de um estudante.",
+        "en-US": "We refers to us. Use are and plural students because there is more than one student."
+      }
+    },
+    {
+      "id": 130,
+      "unit": 0,
+      "level": 1,
+      "kind": "reply",
+      "phrase": "How do you spell your name?",
+      "meaning": {
+        "pt-BR": "Como se soletra seu nome?",
+        "en-US": "How do you spell your name?"
+      },
+      "answer": {
+        "pt-BR": "L-E-O.",
+        "en-US": "L-E-O."
+      },
+      "options": [
+        {
+          "pt-BR": "L-E-O.",
+          "en-US": "L-E-O."
+        },
+        {
+          "pt-BR": "I live near the park.",
+          "en-US": "I live near the park."
+        },
+        {
+          "pt-BR": "I am fine, thank you.",
+          "en-US": "I am fine, thank you."
+        }
+      ],
+      "intent": {
+        "pt-BR": "L-E-O.",
+        "en-US": "L-E-O."
+      },
+      "focus": "spell",
+      "explanation": {
+        "pt-BR": "Spell pede as letras em ordem. Dizer onde mora ou como está não soletra o nome.",
+        "en-US": "Spell asks for letters in order. Giving an address or saying how you feel does not spell a name."
+      }
+    },
+    {
+      "id": 131,
+      "unit": 0,
+      "level": 1,
+      "kind": "order",
+      "phrase": "Are you from Brazil?",
+      "meaning": {
+        "pt-BR": "Você é do Brasil?",
+        "en-US": "Are you from Brazil?"
+      },
+      "answer": {
+        "pt-BR": "Are you from Brazil?",
+        "en-US": "Are you from Brazil?"
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Você é do Brasil?",
+        "en-US": "Are you from Brazil?"
+      },
+      "focus": "are you",
+      "explanation": {
+        "pt-BR": "Para perguntar com to be, are vem antes de you. From Brazil permanece junto depois.",
+        "en-US": "In a question with to be, are comes before you. From Brazil stays together afterwards."
+      }
+    },
+    {
+      "id": 132,
+      "unit": 0,
+      "level": 2,
+      "kind": "meaning",
+      "phrase": "My phone number ends in five six.",
+      "meaning": {
+        "pt-BR": "Meu número de telefone termina em cinco seis.",
+        "en-US": "My phone number ends in five six."
+      },
+      "answer": {
+        "pt-BR": "Meu número de telefone termina em cinco seis.",
+        "en-US": "The final two phone digits are 5 and 6."
+      },
+      "options": [
+        {
+          "pt-BR": "Meu número de telefone termina em cinco seis.",
+          "en-US": "The final two phone digits are 5 and 6."
+        },
+        {
+          "pt-BR": "Meu telefone termina em seis cinco.",
+          "en-US": "My phone number ends in six five."
+        },
+        {
+          "pt-BR": "Meu telefone começa com cinco seis.",
+          "en-US": "My phone number starts with five six."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Meu número de telefone termina em cinco seis.",
+        "en-US": "My phone number ends in five six."
+      },
+      "focus": "ends in",
+      "explanation": {
+        "pt-BR": "Ends in aponta para os últimos dígitos. A ordem five six é 5, 6, não 6, 5.",
+        "en-US": "Ends in points to the last digits. Five six is 5, 6, not 6, 5."
+      }
+    },
+    {
+      "id": 133,
+      "unit": 0,
+      "level": 2,
+      "kind": "gap",
+      "phrase": "This is my sister, Ana.",
+      "meaning": {
+        "pt-BR": "Esta é minha irmã, Ana.",
+        "en-US": "This is my sister, Ana."
+      },
+      "answer": {
+        "pt-BR": "my",
+        "en-US": "my"
+      },
+      "options": [
+        {
+          "pt-BR": "my",
+          "en-US": "my"
+        },
+        {
+          "pt-BR": "I",
+          "en-US": "I"
+        },
+        {
+          "pt-BR": "me",
+          "en-US": "me"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Esta é minha irmã, Ana.",
+        "en-US": "my"
+      },
+      "focus": "my sister",
+      "explanation": {
+        "pt-BR": "My acompanha o nome de algo ou alguém ligado a mim. I é o sujeito eu; me não substitui my antes de sister.",
+        "en-US": "My comes before a noun linked to the speaker. I is a subject; me cannot replace my before sister."
+      }
+    },
+    {
+      "id": 134,
+      "unit": 0,
+      "level": 2,
+      "kind": "reply",
+      "phrase": "Is your surname Lima?",
+      "meaning": {
+        "pt-BR": "Seu sobrenome é Lima?",
+        "en-US": "Is your surname Lima?"
+      },
+      "answer": {
+        "pt-BR": "Yes, it is.",
+        "en-US": "Yes, it is."
+      },
+      "options": [
+        {
+          "pt-BR": "Yes, it is.",
+          "en-US": "Yes, it is."
+        },
+        {
+          "pt-BR": "Yes, I am.",
+          "en-US": "Yes, I am."
+        },
+        {
+          "pt-BR": "Yes, they are.",
+          "en-US": "Yes, they are."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Sim, é.",
+        "en-US": "Yes, it is."
+      },
+      "focus": "short answer",
+      "explanation": {
+        "pt-BR": "A pergunta é sobre surname, um nome singular. A resposta curta usa it is, não I am.",
+        "en-US": "The question is about surname, a singular noun. The short answer uses it is, not I am."
+      }
+    },
+    {
+      "id": 135,
+      "unit": 0,
+      "level": 2,
+      "kind": "order",
+      "phrase": "They are not from France.",
+      "meaning": {
+        "pt-BR": "Eles não são da França.",
+        "en-US": "They are not from France."
+      },
+      "answer": {
+        "pt-BR": "They are not from France.",
+        "en-US": "They are not from France."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Eles não são da França.",
+        "en-US": "They are not from France."
+      },
+      "focus": "are not",
+      "explanation": {
+        "pt-BR": "Not vem depois de are para negar a origem de they. Não mova not para o começo.",
+        "en-US": "Not follows are to deny the origin of they. Do not move not to the beginning."
+      }
+    },
+    {
+      "id": 136,
+      "unit": 0,
+      "level": 3,
+      "kind": "meaning",
+      "phrase": "Form: first name Ana; surname Silva.",
+      "meaning": {
+        "pt-BR": "O primeiro nome é Ana e o sobrenome é Silva.",
+        "en-US": "Form: first name Ana; surname Silva."
+      },
+      "answer": {
+        "pt-BR": "O primeiro nome é Ana e o sobrenome é Silva.",
+        "en-US": "Ana is the given name and Silva is the family name."
+      },
+      "options": [
+        {
+          "pt-BR": "O primeiro nome é Ana e o sobrenome é Silva.",
+          "en-US": "Ana is the given name and Silva is the family name."
+        },
+        {
+          "pt-BR": "O primeiro nome é Silva e o sobrenome é Ana.",
+          "en-US": "The first name is Silva and the surname is Ana."
+        },
+        {
+          "pt-BR": "Os dois nomes são sobrenomes.",
+          "en-US": "Both names are surnames."
+        }
+      ],
+      "intent": {
+        "pt-BR": "O primeiro nome é Ana e o sobrenome é Silva.",
+        "en-US": "Form: first name Ana; surname Silva."
+      },
+      "focus": "personal details",
+      "explanation": {
+        "pt-BR": "No formulário, first name e surname são campos diferentes. Leia o rótulo antes de escolher qual nome preencher.",
+        "en-US": "On a form, first name and surname are different fields. Read the label before choosing a name."
+      }
+    },
+    {
+      "id": 137,
+      "unit": 0,
+      "level": 3,
+      "kind": "gap",
+      "phrase": "Please call me Leo.",
+      "meaning": {
+        "pt-BR": "Por favor, me chame de Leo.",
+        "en-US": "Please call me Leo."
+      },
+      "answer": {
+        "pt-BR": "me",
+        "en-US": "me"
+      },
+      "options": [
+        {
+          "pt-BR": "me",
+          "en-US": "me"
+        },
+        {
+          "pt-BR": "my",
+          "en-US": "my"
+        },
+        {
+          "pt-BR": "I",
+          "en-US": "I"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Por favor, me chame de Leo.",
+        "en-US": "me"
+      },
+      "focus": "call me",
+      "explanation": {
+        "pt-BR": "Depois de call, me recebe a ação. My precisa acompanhar um nome, como my name.",
+        "en-US": "After call, me receives the action. My must come before a noun, such as my name."
+      }
+    },
+    {
+      "id": 138,
+      "unit": 0,
+      "level": 3,
+      "kind": "reply",
+      "phrase": "I'm sorry. What is your name again?",
+      "meaning": {
+        "pt-BR": "Desculpe. Qual é mesmo o seu nome?",
+        "en-US": "I'm sorry. What is your name again?"
+      },
+      "answer": {
+        "pt-BR": "My name is Ana.",
+        "en-US": "My name is Ana."
+      },
+      "options": [
+        {
+          "pt-BR": "My name is Ana.",
+          "en-US": "My name is Ana."
+        },
+        {
+          "pt-BR": "It is twelve pounds.",
+          "en-US": "It is twelve pounds."
+        },
+        {
+          "pt-BR": "The bus is outside.",
+          "en-US": "The bus is outside."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Meu nome é Ana.",
+        "en-US": "My name is Ana."
+      },
+      "focus": "repairing a conversation",
+      "explanation": {
+        "pt-BR": "Again pede repetir a informação. Dar o nome resolve a dúvida; preço ou localização não responde a essa pergunta.",
+        "en-US": "Again asks for repeated information. Giving the name resolves the question; a price or location does not."
+      }
+    },
+    {
+      "id": 139,
+      "unit": 0,
+      "level": 3,
+      "kind": "order",
+      "phrase": "Please say your name again.",
+      "meaning": {
+        "pt-BR": "Por favor, diga seu nome novamente.",
+        "en-US": "Please say your name again."
+      },
+      "answer": {
+        "pt-BR": "Please say your name again.",
+        "en-US": "Please say your name again."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Por favor, diga seu nome novamente.",
+        "en-US": "Please say your name again."
+      },
+      "focus": "say your name",
+      "explanation": {
+        "pt-BR": "No pedido, say é a ação e your name é o que deve ser dito. Again acrescenta a ideia de repetir.",
+        "en-US": "In the request, say is the action and your name is what should be said. Again adds repetition."
+      }
+    },
+    {
+      "id": 140,
+      "unit": 1,
+      "level": 0,
+      "kind": "meaning",
+      "phrase": "This is an orange bag.",
+      "meaning": {
+        "pt-BR": "Esta é uma bolsa laranja.",
+        "en-US": "This is an orange bag."
+      },
+      "answer": {
+        "pt-BR": "Esta é uma bolsa laranja.",
+        "en-US": "One bag is orange."
+      },
+      "options": [
+        {
+          "pt-BR": "Esta é uma bolsa laranja.",
+          "en-US": "One bag is orange."
+        },
+        {
+          "pt-BR": "Esta é uma bolsa azul.",
+          "en-US": "This is a blue bag."
+        },
+        {
+          "pt-BR": "Estas são bolsas laranja.",
+          "en-US": "These are orange bags."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Esta é uma bolsa laranja.",
+        "en-US": "This is an orange bag."
+      },
+      "focus": "an orange bag",
+      "explanation": {
+        "pt-BR": "An vem antes do som de vogal de orange. A cor vem antes de bag em inglês.",
+        "en-US": "An comes before the vowel sound in orange. The colour comes before bag in English."
+      }
+    },
+    {
+      "id": 141,
+      "unit": 1,
+      "level": 0,
+      "kind": "gap",
+      "phrase": "She has a brother.",
+      "meaning": {
+        "pt-BR": "Ela tem um irmão.",
+        "en-US": "She has a brother."
+      },
+      "answer": {
+        "pt-BR": "has",
+        "en-US": "has"
+      },
+      "options": [
+        {
+          "pt-BR": "has",
+          "en-US": "has"
+        },
+        {
+          "pt-BR": "have",
+          "en-US": "have"
+        },
+        {
+          "pt-BR": "are",
+          "en-US": "are"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Ela tem um irmão.",
+        "en-US": "has"
+      },
+      "focus": "she has",
+      "explanation": {
+        "pt-BR": "Com she, o verbo have muda para has. Are indica ser ou estar, não possuir.",
+        "en-US": "With she, have changes to has. Are expresses being, not possession."
+      }
+    },
+    {
+      "id": 142,
+      "unit": 1,
+      "level": 0,
+      "kind": "reply",
+      "phrase": "Whose pencil is this?",
+      "meaning": {
+        "pt-BR": "De quem é este lápis?",
+        "en-US": "Whose pencil is this?"
+      },
+      "answer": {
+        "pt-BR": "It is my pencil.",
+        "en-US": "It is my pencil."
+      },
+      "options": [
+        {
+          "pt-BR": "It is my pencil.",
+          "en-US": "It is my pencil."
+        },
+        {
+          "pt-BR": "It is a pencil.",
+          "en-US": "It is a pencil."
+        },
+        {
+          "pt-BR": "It is under the chair.",
+          "en-US": "It is under the chair."
+        }
+      ],
+      "intent": {
+        "pt-BR": "É meu lápis.",
+        "en-US": "It is my pencil."
+      },
+      "focus": "whose",
+      "explanation": {
+        "pt-BR": "Whose pergunta de quem é algo. Identificar o objeto ou dizer onde está não informa o dono.",
+        "en-US": "Whose asks who owns something. Identifying an object or giving its location does not identify the owner."
+      }
+    },
+    {
+      "id": 143,
+      "unit": 1,
+      "level": 0,
+      "kind": "order",
+      "phrase": "Her notebook is yellow.",
+      "meaning": {
+        "pt-BR": "O caderno dela é amarelo.",
+        "en-US": "Her notebook is yellow."
+      },
+      "answer": {
+        "pt-BR": "Her notebook is yellow.",
+        "en-US": "Her notebook is yellow."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "O caderno dela é amarelo.",
+        "en-US": "Her notebook is yellow."
+      },
+      "focus": "her notebook",
+      "explanation": {
+        "pt-BR": "Her vem antes de notebook para indicar a dona. Is liga esse objeto à cor yellow.",
+        "en-US": "Her comes before notebook to show its owner. Is links the object to yellow."
+      }
+    },
+    {
+      "id": 144,
+      "unit": 1,
+      "level": 0,
+      "kind": "meaning",
+      "phrase": "These are my keys.",
+      "meaning": {
+        "pt-BR": "Estas são minhas chaves.",
+        "en-US": "These are my keys."
+      },
+      "answer": {
+        "pt-BR": "Estas são minhas chaves.",
+        "en-US": "Several nearby keys belong to the speaker."
+      },
+      "options": [
+        {
+          "pt-BR": "Estas são minhas chaves.",
+          "en-US": "Several nearby keys belong to the speaker."
+        },
+        {
+          "pt-BR": "Esta é minha chave.",
+          "en-US": "This is my key."
+        },
+        {
+          "pt-BR": "Aquelas são suas chaves.",
+          "en-US": "Those are your keys."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Estas são minhas chaves.",
+        "en-US": "These are my keys."
+      },
+      "focus": "these",
+      "explanation": {
+        "pt-BR": "These indica várias coisas próximas. Por ser plural, a frase usa are e keys.",
+        "en-US": "These points to several nearby things. The plural takes are and keys."
+      }
+    },
+    {
+      "id": 145,
+      "unit": 1,
+      "level": 0,
+      "kind": "gap",
+      "phrase": "It is a small table.",
+      "meaning": {
+        "pt-BR": "É uma mesa pequena.",
+        "en-US": "It is a small table."
+      },
+      "answer": {
+        "pt-BR": "a",
+        "en-US": "a"
+      },
+      "options": [
+        {
+          "pt-BR": "a",
+          "en-US": "a"
+        },
+        {
+          "pt-BR": "an",
+          "en-US": "an"
+        },
+        {
+          "pt-BR": "are",
+          "en-US": "are"
+        }
+      ],
+      "intent": {
+        "pt-BR": "É uma mesa pequena.",
+        "en-US": "a"
+      },
+      "focus": "a small table",
+      "explanation": {
+        "pt-BR": "Small começa com som de consoante, então usamos a antes do grupo small table.",
+        "en-US": "Small starts with a consonant sound, so use a before the group small table."
+      }
+    },
+    {
+      "id": 146,
+      "unit": 1,
+      "level": 1,
+      "kind": "reply",
+      "phrase": "Are these your glasses?",
+      "meaning": {
+        "pt-BR": "Estes são seus óculos?",
+        "en-US": "Are these your glasses?"
+      },
+      "answer": {
+        "pt-BR": "No, they are not mine.",
+        "en-US": "No, they are not mine."
+      },
+      "options": [
+        {
+          "pt-BR": "No, they are not mine.",
+          "en-US": "No, they are not mine."
+        },
+        {
+          "pt-BR": "No, it is not mine.",
+          "en-US": "No, it is not mine."
+        },
+        {
+          "pt-BR": "No, I am not.",
+          "en-US": "No, I am not."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Não, não são meus.",
+        "en-US": "No, they are not mine."
+      },
+      "focus": "they",
+      "explanation": {
+        "pt-BR": "Glasses é plural nesta pergunta. A resposta curta usa they, mesmo que se trate de um único par.",
+        "en-US": "Glasses is plural in this question. Use they in the reply even when referring to one pair."
+      }
+    },
+    {
+      "id": 147,
+      "unit": 1,
+      "level": 1,
+      "kind": "order",
+      "phrase": "Our teacher has two cats.",
+      "meaning": {
+        "pt-BR": "Nossa professora tem dois gatos.",
+        "en-US": "Our teacher has two cats."
+      },
+      "answer": {
+        "pt-BR": "Our teacher has two cats.",
+        "en-US": "Our teacher has two cats."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Nossa professora tem dois gatos.",
+        "en-US": "Our teacher has two cats."
+      },
+      "focus": "our teacher has",
+      "explanation": {
+        "pt-BR": "Our teacher é uma pessoa, por isso vem has. Two exige o plural cats.",
+        "en-US": "Our teacher is one person, so use has. Two requires plural cats."
+      }
+    },
+    {
+      "id": 148,
+      "unit": 1,
+      "level": 1,
+      "kind": "meaning",
+      "phrase": "There are three children here.",
+      "meaning": {
+        "pt-BR": "Há três crianças aqui.",
+        "en-US": "There are three children here."
+      },
+      "answer": {
+        "pt-BR": "Há três crianças aqui.",
+        "en-US": "Three young people are here."
+      },
+      "options": [
+        {
+          "pt-BR": "Há três crianças aqui.",
+          "en-US": "Three young people are here."
+        },
+        {
+          "pt-BR": "Há três cadeiras aqui.",
+          "en-US": "There are three chairs here."
+        },
+        {
+          "pt-BR": "Há uma criança aqui.",
+          "en-US": "There is one child here."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Há três crianças aqui.",
+        "en-US": "There are three children here."
+      },
+      "focus": "children",
+      "explanation": {
+        "pt-BR": "Children é o plural irregular de child. Não escrevemos childs para falar de várias crianças.",
+        "en-US": "Children is the irregular plural of child. Do not use childs for several children."
+      }
+    },
+    {
+      "id": 149,
+      "unit": 1,
+      "level": 1,
+      "kind": "gap",
+      "phrase": "His name is Ben.",
+      "meaning": {
+        "pt-BR": "O nome dele é Ben.",
+        "en-US": "His name is Ben."
+      },
+      "answer": {
+        "pt-BR": "His",
+        "en-US": "His"
+      },
+      "options": [
+        {
+          "pt-BR": "His",
+          "en-US": "His"
+        },
+        {
+          "pt-BR": "He",
+          "en-US": "He"
+        },
+        {
+          "pt-BR": "Him",
+          "en-US": "Him"
+        }
+      ],
+      "intent": {
+        "pt-BR": "O nome dele é Ben.",
+        "en-US": "His"
+      },
+      "focus": "his name",
+      "explanation": {
+        "pt-BR": "His acompanha name para indicar o nome dele. He é usado como sujeito, não antes de name nessa estrutura.",
+        "en-US": "His comes before name to indicate his name. He is a subject and does not fit before name here."
+      }
+    },
+    {
+      "id": 150,
+      "unit": 1,
+      "level": 1,
+      "kind": "reply",
+      "phrase": "Do you have a pen?",
+      "meaning": {
+        "pt-BR": "Você tem uma caneta?",
+        "en-US": "Do you have a pen?"
+      },
+      "answer": {
+        "pt-BR": "Yes, I do.",
+        "en-US": "Yes, I do."
+      },
+      "options": [
+        {
+          "pt-BR": "Yes, I do.",
+          "en-US": "Yes, I do."
+        },
+        {
+          "pt-BR": "Yes, I am.",
+          "en-US": "Yes, I am."
+        },
+        {
+          "pt-BR": "Yes, she does.",
+          "en-US": "Yes, she does."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Sim, tenho.",
+        "en-US": "Yes, I do."
+      },
+      "focus": "do you have",
+      "explanation": {
+        "pt-BR": "A pergunta usa do para have. A resposta curta retoma do, e I representa quem responde.",
+        "en-US": "The question uses do with have. The short answer repeats do, and I refers to the speaker."
+      }
+    },
+    {
+      "id": 151,
+      "unit": 1,
+      "level": 1,
+      "kind": "order",
+      "phrase": "I do not have a car.",
+      "meaning": {
+        "pt-BR": "Eu não tenho carro.",
+        "en-US": "I do not have a car."
+      },
+      "answer": {
+        "pt-BR": "I do not have a car.",
+        "en-US": "I do not have a car."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Eu não tenho carro.",
+        "en-US": "I do not have a car."
+      },
+      "focus": "do not have",
+      "explanation": {
+        "pt-BR": "Para negar have com I, coloque do not antes de have. Não use am para dizer que não possui algo.",
+        "en-US": "To negate have with I, put do not before have. Do not use am to deny possession."
+      }
+    },
+    {
+      "id": 152,
+      "unit": 1,
+      "level": 2,
+      "kind": "meaning",
+      "phrase": "Those shoes are expensive.",
+      "meaning": {
+        "pt-BR": "Aqueles sapatos são caros.",
+        "en-US": "Those shoes are expensive."
+      },
+      "answer": {
+        "pt-BR": "Aqueles sapatos são caros.",
+        "en-US": "Those shoes cost a lot."
+      },
+      "options": [
+        {
+          "pt-BR": "Aqueles sapatos são caros.",
+          "en-US": "Those shoes cost a lot."
+        },
+        {
+          "pt-BR": "Estes sapatos são baratos.",
+          "en-US": "These shoes are cheap."
+        },
+        {
+          "pt-BR": "Aquele sapato é caro.",
+          "en-US": "That shoe is expensive."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Aqueles sapatos são caros.",
+        "en-US": "Those shoes are expensive."
+      },
+      "focus": "those shoes",
+      "explanation": {
+        "pt-BR": "Those aponta para objetos plurais mais afastados. Shoes e are mantêm o plural.",
+        "en-US": "Those points to plural objects farther away. Shoes and are keep the plural."
+      }
+    },
+    {
+      "id": 153,
+      "unit": 1,
+      "level": 2,
+      "kind": "gap",
+      "phrase": "The red coat is hers.",
+      "meaning": {
+        "pt-BR": "O casaco vermelho é dela.",
+        "en-US": "The red coat is hers."
+      },
+      "answer": {
+        "pt-BR": "hers",
+        "en-US": "hers"
+      },
+      "options": [
+        {
+          "pt-BR": "hers",
+          "en-US": "hers"
+        },
+        {
+          "pt-BR": "her",
+          "en-US": "her"
+        },
+        {
+          "pt-BR": "she",
+          "en-US": "she"
+        }
+      ],
+      "intent": {
+        "pt-BR": "O casaco vermelho é dela.",
+        "en-US": "hers"
+      },
+      "focus": "hers",
+      "explanation": {
+        "pt-BR": "Hers já significa dela e pode ficar sozinho. Her precisa vir antes de um nome, como her coat.",
+        "en-US": "Hers means belonging to her and can stand alone. Her must precede a noun, as in her coat."
+      }
+    },
+    {
+      "id": 154,
+      "unit": 1,
+      "level": 2,
+      "kind": "reply",
+      "phrase": "Is this an umbrella or a hat?",
+      "meaning": {
+        "pt-BR": "Isto é um guarda-chuva ou um chapéu?",
+        "en-US": "Is this an umbrella or a hat?"
+      },
+      "answer": {
+        "pt-BR": "It is an umbrella.",
+        "en-US": "It is an umbrella."
+      },
+      "options": [
+        {
+          "pt-BR": "It is an umbrella.",
+          "en-US": "It is an umbrella."
+        },
+        {
+          "pt-BR": "Yes, it is.",
+          "en-US": "Yes, it is."
+        },
+        {
+          "pt-BR": "It is my friend.",
+          "en-US": "It is my friend."
+        }
+      ],
+      "intent": {
+        "pt-BR": "É um guarda-chuva.",
+        "en-US": "It is an umbrella."
+      },
+      "focus": "or",
+      "explanation": {
+        "pt-BR": "Or apresenta duas alternativas. A resposta precisa escolher uma, e não apenas dizer yes.",
+        "en-US": "Or presents two alternatives. The reply needs to choose one, not simply say yes."
+      }
+    },
+    {
+      "id": 155,
+      "unit": 1,
+      "level": 2,
+      "kind": "order",
+      "phrase": "My parents are at home.",
+      "meaning": {
+        "pt-BR": "Meus pais estão em casa.",
+        "en-US": "My parents are at home."
+      },
+      "answer": {
+        "pt-BR": "My parents are at home.",
+        "en-US": "My parents are at home."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Meus pais estão em casa.",
+        "en-US": "My parents are at home."
+      },
+      "focus": "parents are",
+      "explanation": {
+        "pt-BR": "Parents indica mais de uma pessoa, por isso usa are. At home é o bloco de localização.",
+        "en-US": "Parents refers to more than one person, so use are. At home is the location phrase."
+      }
+    },
+    {
+      "id": 156,
+      "unit": 1,
+      "level": 3,
+      "kind": "meaning",
+      "phrase": "Lost bag: blue, with two books inside.",
+      "meaning": {
+        "pt-BR": "A bolsa perdida é azul e tem dois livros dentro.",
+        "en-US": "Lost bag: blue, with two books inside."
+      },
+      "answer": {
+        "pt-BR": "A bolsa perdida é azul e tem dois livros dentro.",
+        "en-US": "A lost blue bag contains two books."
+      },
+      "options": [
+        {
+          "pt-BR": "A bolsa perdida é azul e tem dois livros dentro.",
+          "en-US": "A lost blue bag contains two books."
+        },
+        {
+          "pt-BR": "A bolsa perdida é vermelha e tem dois livros.",
+          "en-US": "The lost bag is red and has two books."
+        },
+        {
+          "pt-BR": "Há duas bolsas azuis sem livros.",
+          "en-US": "There are two blue bags without books."
+        }
+      ],
+      "intent": {
+        "pt-BR": "A bolsa perdida é azul e tem dois livros dentro.",
+        "en-US": "Lost bag: blue, with two books inside."
+      },
+      "focus": "with ... inside",
+      "explanation": {
+        "pt-BR": "With apresenta o conteúdo da bolsa e inside indica que os livros estão dentro, não ao lado.",
+        "en-US": "With introduces the contents and inside places the books within the bag, not beside it."
+      }
+    },
+    {
+      "id": 157,
+      "unit": 1,
+      "level": 3,
+      "kind": "gap",
+      "phrase": "Are those women your teachers?",
+      "meaning": {
+        "pt-BR": "Aquelas mulheres são suas professoras?",
+        "en-US": "Are those women your teachers?"
+      },
+      "answer": {
+        "pt-BR": "women",
+        "en-US": "women"
+      },
+      "options": [
+        {
+          "pt-BR": "women",
+          "en-US": "women"
+        },
+        {
+          "pt-BR": "woman",
+          "en-US": "woman"
+        },
+        {
+          "pt-BR": "womans",
+          "en-US": "womans"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Aquelas mulheres são suas professoras?",
+        "en-US": "women"
+      },
+      "focus": "women",
+      "explanation": {
+        "pt-BR": "Women é o plural de woman. Those e are mostram que a pergunta fala de várias mulheres.",
+        "en-US": "Women is the plural of woman. Those and are show that the question is about several women."
+      }
+    },
+    {
+      "id": 158,
+      "unit": 1,
+      "level": 3,
+      "kind": "reply",
+      "phrase": "I have your book. Is the blue one yours?",
+      "meaning": {
+        "pt-BR": "Estou com seu livro. O azul é seu?",
+        "en-US": "I have your book. Is the blue one yours?"
+      },
+      "answer": {
+        "pt-BR": "Yes, the blue one is mine.",
+        "en-US": "Yes, the blue one is mine."
+      },
+      "options": [
+        {
+          "pt-BR": "Yes, the blue one is mine.",
+          "en-US": "Yes, the blue one is mine."
+        },
+        {
+          "pt-BR": "Yes, the blue ones are mine.",
+          "en-US": "Yes, the blue ones are mine."
+        },
+        {
+          "pt-BR": "Yes, I am blue.",
+          "en-US": "Yes, I am blue."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Sim, o azul é meu.",
+        "en-US": "Yes, the blue one is mine."
+      },
+      "focus": "one and mine",
+      "explanation": {
+        "pt-BR": "One substitui book, singular, e mine indica meu sem repetir o nome book.",
+        "en-US": "One replaces singular book, and mine indicates ownership without repeating book."
+      }
+    },
+    {
+      "id": 159,
+      "unit": 1,
+      "level": 3,
+      "kind": "order",
+      "phrase": "My sister does not have a bike.",
+      "meaning": {
+        "pt-BR": "Minha irmã não tem bicicleta.",
+        "en-US": "My sister does not have a bike."
+      },
+      "answer": {
+        "pt-BR": "My sister does not have a bike.",
+        "en-US": "My sister does not have a bike."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Minha irmã não tem bicicleta.",
+        "en-US": "My sister does not have a bike."
+      },
+      "focus": "does not have",
+      "explanation": {
+        "pt-BR": "My sister equivale a she. A negativa usa does not e have na forma base, nunca does not has.",
+        "en-US": "My sister works like she. The negative uses does not and base have, never does not has."
+      }
+    },
+    {
+      "id": 160,
+      "unit": 2,
+      "level": 0,
+      "kind": "meaning",
+      "phrase": "The café is next to the library.",
+      "meaning": {
+        "pt-BR": "O café fica ao lado da biblioteca.",
+        "en-US": "The café is next to the library."
+      },
+      "answer": {
+        "pt-BR": "O café fica ao lado da biblioteca.",
+        "en-US": "The café is beside the library."
+      },
+      "options": [
+        {
+          "pt-BR": "O café fica ao lado da biblioteca.",
+          "en-US": "The café is beside the library."
+        },
+        {
+          "pt-BR": "O café fica dentro da biblioteca.",
+          "en-US": "The café is inside the library."
+        },
+        {
+          "pt-BR": "O café fica atrás da biblioteca.",
+          "en-US": "The café is behind the library."
+        }
+      ],
+      "intent": {
+        "pt-BR": "O café fica ao lado da biblioteca.",
+        "en-US": "The café is next to the library."
+      },
+      "focus": "next to",
+      "explanation": {
+        "pt-BR": "Next to significa ao lado. Behind é atrás e inside é dentro, posições diferentes.",
+        "en-US": "Next to means beside. Behind and inside describe different positions."
+      }
+    },
+    {
+      "id": 161,
+      "unit": 2,
+      "level": 0,
+      "kind": "gap",
+      "phrase": "The book is on the desk.",
+      "meaning": {
+        "pt-BR": "O livro está sobre a escrivaninha.",
+        "en-US": "The book is on the desk."
+      },
+      "answer": {
+        "pt-BR": "on",
+        "en-US": "on"
+      },
+      "options": [
+        {
+          "pt-BR": "on",
+          "en-US": "on"
+        },
+        {
+          "pt-BR": "under",
+          "en-US": "under"
+        },
+        {
+          "pt-BR": "between",
+          "en-US": "between"
+        }
+      ],
+      "intent": {
+        "pt-BR": "O livro está sobre a escrivaninha.",
+        "en-US": "on"
+      },
+      "focus": "on",
+      "explanation": {
+        "pt-BR": "On indica contato com a superfície da mesa. Under colocaria o livro embaixo dela.",
+        "en-US": "On indicates contact with the desk surface. Under would place the book below it."
+      }
+    },
+    {
+      "id": 162,
+      "unit": 2,
+      "level": 0,
+      "kind": "reply",
+      "phrase": "Where is the station?",
+      "meaning": {
+        "pt-BR": "Onde fica a estação?",
+        "en-US": "Where is the station?"
+      },
+      "answer": {
+        "pt-BR": "It is opposite the park.",
+        "en-US": "It is opposite the park."
+      },
+      "options": [
+        {
+          "pt-BR": "It is opposite the park.",
+          "en-US": "It is opposite the park."
+        },
+        {
+          "pt-BR": "It is a big station.",
+          "en-US": "It is a big station."
+        },
+        {
+          "pt-BR": "It is eight pounds.",
+          "en-US": "It is eight pounds."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Fica em frente ao parque.",
+        "en-US": "It is opposite the park."
+      },
+      "focus": "where",
+      "explanation": {
+        "pt-BR": "Where pede localização. Opposite the park informa uma posição; tamanho e preço não respondem onde.",
+        "en-US": "Where asks for location. Opposite the park gives a position; size and price do not answer where."
+      }
+    },
+    {
+      "id": 163,
+      "unit": 2,
+      "level": 0,
+      "kind": "order",
+      "phrase": "There is a shop near here.",
+      "meaning": {
+        "pt-BR": "Há uma loja perto daqui.",
+        "en-US": "There is a shop near here."
+      },
+      "answer": {
+        "pt-BR": "There is a shop near here.",
+        "en-US": "There is a shop near here."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Há uma loja perto daqui.",
+        "en-US": "There is a shop near here."
+      },
+      "focus": "there is",
+      "explanation": {
+        "pt-BR": "There is apresenta a existência de uma coisa. Near here acrescenta onde ela fica.",
+        "en-US": "There is introduces the existence of one thing. Near here adds its location."
+      }
+    },
+    {
+      "id": 164,
+      "unit": 2,
+      "level": 0,
+      "kind": "meaning",
+      "phrase": "The tickets are in the box.",
+      "meaning": {
+        "pt-BR": "As passagens estão dentro da caixa.",
+        "en-US": "The tickets are in the box."
+      },
+      "answer": {
+        "pt-BR": "As passagens estão dentro da caixa.",
+        "en-US": "The tickets are inside the box."
+      },
+      "options": [
+        {
+          "pt-BR": "As passagens estão dentro da caixa.",
+          "en-US": "The tickets are inside the box."
+        },
+        {
+          "pt-BR": "As passagens estão sobre a caixa.",
+          "en-US": "The tickets are on the box."
+        },
+        {
+          "pt-BR": "A caixa está dentro da estação.",
+          "en-US": "The box is in the station."
+        }
+      ],
+      "intent": {
+        "pt-BR": "As passagens estão dentro da caixa.",
+        "en-US": "The tickets are in the box."
+      },
+      "focus": "in",
+      "explanation": {
+        "pt-BR": "In coloca as passagens dentro da caixa. Observe o que está sendo localizado: the tickets.",
+        "en-US": "In places the tickets inside the box. Notice the subject being located: the tickets."
+      }
+    },
+    {
+      "id": 165,
+      "unit": 2,
+      "level": 0,
+      "kind": "gap",
+      "phrase": "There are two windows.",
+      "meaning": {
+        "pt-BR": "Há duas janelas.",
+        "en-US": "There are two windows."
+      },
+      "answer": {
+        "pt-BR": "are",
+        "en-US": "are"
+      },
+      "options": [
+        {
+          "pt-BR": "are",
+          "en-US": "are"
+        },
+        {
+          "pt-BR": "is",
+          "en-US": "is"
+        },
+        {
+          "pt-BR": "am",
+          "en-US": "am"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Há duas janelas.",
+        "en-US": "are"
+      },
+      "focus": "there are",
+      "explanation": {
+        "pt-BR": "Two windows é plural. Use there are para dizer que há mais de uma janela.",
+        "en-US": "Two windows is plural. Use there are to say that more than one window exists."
+      }
+    },
+    {
+      "id": 166,
+      "unit": 2,
+      "level": 1,
+      "kind": "reply",
+      "phrase": "Is there a toilet here?",
+      "meaning": {
+        "pt-BR": "Há um banheiro aqui?",
+        "en-US": "Is there a toilet here?"
+      },
+      "answer": {
+        "pt-BR": "Yes, it is upstairs.",
+        "en-US": "Yes, it is upstairs."
+      },
+      "options": [
+        {
+          "pt-BR": "Yes, it is upstairs.",
+          "en-US": "Yes, it is upstairs."
+        },
+        {
+          "pt-BR": "Yes, I have a ticket.",
+          "en-US": "Yes, I have a ticket."
+        },
+        {
+          "pt-BR": "Yes, it is tomorrow.",
+          "en-US": "Yes, it is tomorrow."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Sim, fica no andar de cima.",
+        "en-US": "Yes, it is upstairs."
+      },
+      "focus": "upstairs",
+      "explanation": {
+        "pt-BR": "Upstairs informa o andar de cima e ajuda a localizar o banheiro. Tomorrow é tempo, não lugar.",
+        "en-US": "Upstairs identifies the upper floor and helps locate the toilet. Tomorrow is a time, not a place."
+      }
+    },
+    {
+      "id": 167,
+      "unit": 2,
+      "level": 1,
+      "kind": "order",
+      "phrase": "The bus stop is behind the shop.",
+      "meaning": {
+        "pt-BR": "O ponto de ônibus fica atrás da loja.",
+        "en-US": "The bus stop is behind the shop."
+      },
+      "answer": {
+        "pt-BR": "The bus stop is behind the shop.",
+        "en-US": "The bus stop is behind the shop."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "O ponto de ônibus fica atrás da loja.",
+        "en-US": "The bus stop is behind the shop."
+      },
+      "focus": "behind the shop",
+      "explanation": {
+        "pt-BR": "Bus stop é um único grupo de nome. Is liga esse lugar à posição behind the shop.",
+        "en-US": "Bus stop is a single noun group. Is links that place to behind the shop."
+      }
+    },
+    {
+      "id": 168,
+      "unit": 2,
+      "level": 1,
+      "kind": "meaning",
+      "phrase": "Turn left at the bridge.",
+      "meaning": {
+        "pt-BR": "Vire à esquerda na ponte.",
+        "en-US": "Turn left at the bridge."
+      },
+      "answer": {
+        "pt-BR": "Vire à esquerda na ponte.",
+        "en-US": "Take the left turn when you reach the bridge."
+      },
+      "options": [
+        {
+          "pt-BR": "Vire à esquerda na ponte.",
+          "en-US": "Take the left turn when you reach the bridge."
+        },
+        {
+          "pt-BR": "Vire à direita na ponte.",
+          "en-US": "Turn right at the bridge."
+        },
+        {
+          "pt-BR": "Atravesse a rua antes da ponte.",
+          "en-US": "Cross the road before the bridge."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Vire à esquerda na ponte.",
+        "en-US": "Turn left at the bridge."
+      },
+      "focus": "left",
+      "explanation": {
+        "pt-BR": "Left é esquerda. At the bridge indica onde virar, não uma ordem para atravessar a rua.",
+        "en-US": "Left is the opposite of right. At the bridge says where to turn, not to cross the road."
+      }
+    },
+    {
+      "id": 169,
+      "unit": 2,
+      "level": 1,
+      "kind": "gap",
+      "phrase": "The bank is between the café and the shop.",
+      "meaning": {
+        "pt-BR": "O banco fica entre o café e a loja.",
+        "en-US": "The bank is between the café and the shop."
+      },
+      "answer": {
+        "pt-BR": "between",
+        "en-US": "between"
+      },
+      "options": [
+        {
+          "pt-BR": "between",
+          "en-US": "between"
+        },
+        {
+          "pt-BR": "under",
+          "en-US": "under"
+        },
+        {
+          "pt-BR": "inside",
+          "en-US": "inside"
+        }
+      ],
+      "intent": {
+        "pt-BR": "O banco fica entre o café e a loja.",
+        "en-US": "between"
+      },
+      "focus": "between ... and",
+      "explanation": {
+        "pt-BR": "Between liga a posição a dois pontos de referência, apresentados por café and shop.",
+        "en-US": "Between relates the position to two reference points, joined by and."
+      }
+    },
+    {
+      "id": 170,
+      "unit": 2,
+      "level": 1,
+      "kind": "reply",
+      "phrase": "How can I get to the museum?",
+      "meaning": {
+        "pt-BR": "Como chego ao museu?",
+        "en-US": "How can I get to the museum?"
+      },
+      "answer": {
+        "pt-BR": "Go straight and turn right.",
+        "en-US": "Go straight and turn right."
+      },
+      "options": [
+        {
+          "pt-BR": "Go straight and turn right.",
+          "en-US": "Go straight and turn right."
+        },
+        {
+          "pt-BR": "It is an old museum.",
+          "en-US": "It is an old museum."
+        },
+        {
+          "pt-BR": "I like the museum.",
+          "en-US": "I like the museum."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Siga em frente e vire à direita.",
+        "en-US": "Go straight and turn right."
+      },
+      "focus": "directions",
+      "explanation": {
+        "pt-BR": "Go e turn são instruções de trajeto. Descrever a idade do museu ou gostar dele não explica como chegar.",
+        "en-US": "Go and turn give route instructions. Describing the museum or liking it does not explain how to get there."
+      }
+    },
+    {
+      "id": 171,
+      "unit": 2,
+      "level": 1,
+      "kind": "order",
+      "phrase": "Please open the door.",
+      "meaning": {
+        "pt-BR": "Por favor, abra a porta.",
+        "en-US": "Please open the door."
+      },
+      "answer": {
+        "pt-BR": "Please open the door.",
+        "en-US": "Please open the door."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Por favor, abra a porta.",
+        "en-US": "Please open the door."
+      },
+      "focus": "imperative",
+      "explanation": {
+        "pt-BR": "Um pedido direto começa com o verbo open, sem precisar de you. Please torna o pedido educado.",
+        "en-US": "A direct request starts with open without needing you. Please makes the request polite."
+      }
+    },
+    {
+      "id": 172,
+      "unit": 2,
+      "level": 2,
+      "kind": "meaning",
+      "phrase": "The sign says: No entry.",
+      "meaning": {
+        "pt-BR": "A placa diz que a entrada não é permitida.",
+        "en-US": "The sign says: No entry."
+      },
+      "answer": {
+        "pt-BR": "A placa diz que a entrada não é permitida.",
+        "en-US": "The sign prohibits going in."
+      },
+      "options": [
+        {
+          "pt-BR": "A placa diz que a entrada não é permitida.",
+          "en-US": "The sign prohibits going in."
+        },
+        {
+          "pt-BR": "A placa diz que a entrada é grátis.",
+          "en-US": "The sign says entry is free."
+        },
+        {
+          "pt-BR": "A placa informa uma saída.",
+          "en-US": "The sign shows an exit."
+        }
+      ],
+      "intent": {
+        "pt-BR": "A placa diz que a entrada não é permitida.",
+        "en-US": "The sign says: No entry."
+      },
+      "focus": "no entry",
+      "explanation": {
+        "pt-BR": "No entry proíbe entrar. Não confunda com free entry, que permite entrada sem pagamento.",
+        "en-US": "No entry prohibits entering. Do not confuse it with free entry, which allows admission without payment."
+      }
+    },
+    {
+      "id": 173,
+      "unit": 2,
+      "level": 2,
+      "kind": "gap",
+      "phrase": "There is not a lift in this building.",
+      "meaning": {
+        "pt-BR": "Não há elevador neste prédio.",
+        "en-US": "There is not a lift in this building."
+      },
+      "answer": {
+        "pt-BR": "not",
+        "en-US": "not"
+      },
+      "options": [
+        {
+          "pt-BR": "not",
+          "en-US": "not"
+        },
+        {
+          "pt-BR": "no",
+          "en-US": "no"
+        },
+        {
+          "pt-BR": "never",
+          "en-US": "never"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Não há elevador neste prédio.",
+        "en-US": "not"
+      },
+      "focus": "there is not",
+      "explanation": {
+        "pt-BR": "Not depois de is nega a existência. There is no lift seria outra construção, mas no não combina com o a que já aparece aqui.",
+        "en-US": "Not after is denies existence. There is no lift is another construction, but no cannot combine with the a already present here."
+      }
+    },
+    {
+      "id": 174,
+      "unit": 2,
+      "level": 2,
+      "kind": "reply",
+      "phrase": "Are there any chairs outside?",
+      "meaning": {
+        "pt-BR": "Há cadeiras lá fora?",
+        "en-US": "Are there any chairs outside?"
+      },
+      "answer": {
+        "pt-BR": "No, there are not.",
+        "en-US": "No, there are not."
+      },
+      "options": [
+        {
+          "pt-BR": "No, there are not.",
+          "en-US": "No, there are not."
+        },
+        {
+          "pt-BR": "No, there is not.",
+          "en-US": "No, there is not."
+        },
+        {
+          "pt-BR": "No, I am not outside.",
+          "en-US": "No, I am not outside."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Não, não há.",
+        "en-US": "No, there are not."
+      },
+      "focus": "are there",
+      "explanation": {
+        "pt-BR": "A pergunta fala de chairs, plural, e a resposta mantém there are. Não troque por there is.",
+        "en-US": "The question refers to plural chairs, so the reply keeps there are. Do not change it to there is."
+      }
+    },
+    {
+      "id": 175,
+      "unit": 2,
+      "level": 2,
+      "kind": "order",
+      "phrase": "Do not cross the road here.",
+      "meaning": {
+        "pt-BR": "Não atravesse a rua aqui.",
+        "en-US": "Do not cross the road here."
+      },
+      "answer": {
+        "pt-BR": "Do not cross the road here.",
+        "en-US": "Do not cross the road here."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Não atravesse a rua aqui.",
+        "en-US": "Do not cross the road here."
+      },
+      "focus": "do not",
+      "explanation": {
+        "pt-BR": "Para proibir uma ação, comece com do not seguido do verbo base cross. Here indica onde vale o aviso.",
+        "en-US": "To prohibit an action, start with do not followed by base cross. Here identifies where the warning applies."
+      }
+    },
+    {
+      "id": 176,
+      "unit": 2,
+      "level": 3,
+      "kind": "meaning",
+      "phrase": "Map: café, then park, then station.",
+      "meaning": {
+        "pt-BR": "No mapa, o parque fica entre o café e a estação.",
+        "en-US": "Map: café, then park, then station."
+      },
+      "answer": {
+        "pt-BR": "No mapa, o parque fica entre o café e a estação.",
+        "en-US": "The park is in the middle of the three places."
+      },
+      "options": [
+        {
+          "pt-BR": "No mapa, o parque fica entre o café e a estação.",
+          "en-US": "The park is in the middle of the three places."
+        },
+        {
+          "pt-BR": "No mapa, o café fica entre o parque e a estação.",
+          "en-US": "The café is between the park and the station."
+        },
+        {
+          "pt-BR": "No mapa, a estação fica entre o café e o parque.",
+          "en-US": "The station is between the café and the park."
+        }
+      ],
+      "intent": {
+        "pt-BR": "No mapa, o parque fica entre o café e a estação.",
+        "en-US": "Map: café, then park, then station."
+      },
+      "focus": "reading a sequence",
+      "explanation": {
+        "pt-BR": "Leia a ordem café, park, station. O item do meio é park, por isso ele fica entre os outros dois.",
+        "en-US": "Read the order café, park, station. Park is the middle item, so it lies between the other two."
+      }
+    },
+    {
+      "id": 177,
+      "unit": 2,
+      "level": 3,
+      "kind": "gap",
+      "phrase": "The café is on the first floor.",
+      "meaning": {
+        "pt-BR": "O café fica no primeiro andar.",
+        "en-US": "The café is on the first floor."
+      },
+      "answer": {
+        "pt-BR": "on",
+        "en-US": "on"
+      },
+      "options": [
+        {
+          "pt-BR": "on",
+          "en-US": "on"
+        },
+        {
+          "pt-BR": "at",
+          "en-US": "at"
+        },
+        {
+          "pt-BR": "under",
+          "en-US": "under"
+        }
+      ],
+      "intent": {
+        "pt-BR": "O café fica no primeiro andar.",
+        "en-US": "on"
+      },
+      "focus": "on a floor",
+      "explanation": {
+        "pt-BR": "Com um andar numerado, usamos on: on the first floor. O nome do andar funciona como referência de superfície.",
+        "en-US": "Use on with a numbered floor: on the first floor."
+      }
+    },
+    {
+      "id": 178,
+      "unit": 2,
+      "level": 3,
+      "kind": "reply",
+      "phrase": "Excuse me, is the library far from here?",
+      "meaning": {
+        "pt-BR": "Com licença, a biblioteca fica longe daqui?",
+        "en-US": "Excuse me, is the library far from here?"
+      },
+      "answer": {
+        "pt-BR": "No, it is a two-minute walk.",
+        "en-US": "No, it is a two-minute walk."
+      },
+      "options": [
+        {
+          "pt-BR": "No, it is a two-minute walk.",
+          "en-US": "No, it is a two-minute walk."
+        },
+        {
+          "pt-BR": "No, it closes at five.",
+          "en-US": "No, it closes at five."
+        },
+        {
+          "pt-BR": "No, it is a book.",
+          "en-US": "No, it is a book."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Não, fica a dois minutos de caminhada.",
+        "en-US": "No, it is a two-minute walk."
+      },
+      "focus": "far from here",
+      "explanation": {
+        "pt-BR": "A distância é respondida por two-minute walk. O horário de fechamento não informa se fica longe.",
+        "en-US": "Two-minute walk answers about distance. A closing time does not tell us whether it is far away."
+      }
+    },
+    {
+      "id": 179,
+      "unit": 2,
+      "level": 3,
+      "kind": "order",
+      "phrase": "The keys are under the green chair.",
+      "meaning": {
+        "pt-BR": "As chaves estão embaixo da cadeira verde.",
+        "en-US": "The keys are under the green chair."
+      },
+      "answer": {
+        "pt-BR": "The keys are under the green chair.",
+        "en-US": "The keys are under the green chair."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "As chaves estão embaixo da cadeira verde.",
+        "en-US": "The keys are under the green chair."
+      },
+      "focus": "under the green chair",
+      "explanation": {
+        "pt-BR": "Keys usa are no plural. Green vem antes de chair e under coloca as chaves embaixo da cadeira.",
+        "en-US": "Keys takes plural are. Green comes before chair, and under places the keys below it."
+      }
+    },
+    {
+      "id": 180,
+      "unit": 3,
+      "level": 0,
+      "kind": "meaning",
+      "phrase": "I get up at half past seven.",
+      "meaning": {
+        "pt-BR": "Eu me levanto às sete e meia.",
+        "en-US": "I get up at half past seven."
+      },
+      "answer": {
+        "pt-BR": "Eu me levanto às sete e meia.",
+        "en-US": "The speaker gets up at 7:30."
+      },
+      "options": [
+        {
+          "pt-BR": "Eu me levanto às sete e meia.",
+          "en-US": "The speaker gets up at 7:30."
+        },
+        {
+          "pt-BR": "Eu me levanto às seis e meia.",
+          "en-US": "I get up at half past six."
+        },
+        {
+          "pt-BR": "Eu me levanto às sete em ponto.",
+          "en-US": "I get up at seven o’clock."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Eu me levanto às sete e meia.",
+        "en-US": "I get up at half past seven."
+      },
+      "focus": "half past seven",
+      "explanation": {
+        "pt-BR": "Half past seven é meia hora depois das sete: 7:30. Não significa 6:30 nem 7:00.",
+        "en-US": "Half past seven is thirty minutes after seven: 7:30, not 6:30 or 7:00."
+      }
+    },
+    {
+      "id": 181,
+      "unit": 3,
+      "level": 0,
+      "kind": "gap",
+      "phrase": "He walks to work.",
+      "meaning": {
+        "pt-BR": "Ele vai andando ao trabalho.",
+        "en-US": "He walks to work."
+      },
+      "answer": {
+        "pt-BR": "walks",
+        "en-US": "walks"
+      },
+      "options": [
+        {
+          "pt-BR": "walks",
+          "en-US": "walks"
+        },
+        {
+          "pt-BR": "walk",
+          "en-US": "walk"
+        },
+        {
+          "pt-BR": "walking",
+          "en-US": "walking"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Ele vai andando ao trabalho.",
+        "en-US": "walks"
+      },
+      "focus": "he walks",
+      "explanation": {
+        "pt-BR": "No presente simples, he acrescenta s ao verbo walk. Walking precisaria de is para formar outra estrutura.",
+        "en-US": "In the present simple, he adds s to walk. Walking would need is to form a different structure."
+      }
+    },
+    {
+      "id": 182,
+      "unit": 3,
+      "level": 0,
+      "kind": "reply",
+      "phrase": "What time do you start school?",
+      "meaning": {
+        "pt-BR": "A que horas você começa a escola?",
+        "en-US": "What time do you start school?"
+      },
+      "answer": {
+        "pt-BR": "At eight thirty.",
+        "en-US": "At eight thirty."
+      },
+      "options": [
+        {
+          "pt-BR": "At eight thirty.",
+          "en-US": "At eight thirty."
+        },
+        {
+          "pt-BR": "On Tuesdays.",
+          "en-US": "On Tuesdays."
+        },
+        {
+          "pt-BR": "Near the station.",
+          "en-US": "Near the station."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Às oito e meia.",
+        "en-US": "At eight thirty."
+      },
+      "focus": "what time",
+      "explanation": {
+        "pt-BR": "What time pede a hora do dia. Um dia da semana ou um lugar não informa o horário.",
+        "en-US": "What time asks for a time of day. A weekday or a place does not give the time."
+      }
+    },
+    {
+      "id": 183,
+      "unit": 3,
+      "level": 0,
+      "kind": "order",
+      "phrase": "We have breakfast at home.",
+      "meaning": {
+        "pt-BR": "Nós tomamos café da manhã em casa.",
+        "en-US": "We have breakfast at home."
+      },
+      "answer": {
+        "pt-BR": "We have breakfast at home.",
+        "en-US": "We have breakfast at home."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Nós tomamos café da manhã em casa.",
+        "en-US": "We have breakfast at home."
+      },
+      "focus": "have breakfast",
+      "explanation": {
+        "pt-BR": "Have breakfast é tomar a refeição da manhã; não é beber coffee. At home acrescenta o local.",
+        "en-US": "Have breakfast means eat the morning meal, not drink coffee. At home adds the location."
+      }
+    },
+    {
+      "id": 184,
+      "unit": 3,
+      "level": 0,
+      "kind": "meaning",
+      "phrase": "The lesson is on Thursday.",
+      "meaning": {
+        "pt-BR": "A aula é na quinta-feira.",
+        "en-US": "The lesson is on Thursday."
+      },
+      "answer": {
+        "pt-BR": "A aula é na quinta-feira.",
+        "en-US": "The lesson is on the day after Wednesday."
+      },
+      "options": [
+        {
+          "pt-BR": "A aula é na quinta-feira.",
+          "en-US": "The lesson is on the day after Wednesday."
+        },
+        {
+          "pt-BR": "A aula é na terça-feira.",
+          "en-US": "The lesson is on Tuesday."
+        },
+        {
+          "pt-BR": "A aula é na sexta-feira.",
+          "en-US": "The lesson is on Friday."
+        }
+      ],
+      "intent": {
+        "pt-BR": "A aula é na quinta-feira.",
+        "en-US": "The lesson is on Thursday."
+      },
+      "focus": "Thursday",
+      "explanation": {
+        "pt-BR": "Thursday é quinta-feira. Tuesday é terça-feira; as palavras não indicam o mesmo dia.",
+        "en-US": "Thursday and Tuesday are different weekdays. Thursday comes after Wednesday."
+      }
+    },
+    {
+      "id": 185,
+      "unit": 3,
+      "level": 0,
+      "kind": "gap",
+      "phrase": "They play tennis after school.",
+      "meaning": {
+        "pt-BR": "Eles jogam tênis depois da escola.",
+        "en-US": "They play tennis after school."
+      },
+      "answer": {
+        "pt-BR": "play",
+        "en-US": "play"
+      },
+      "options": [
+        {
+          "pt-BR": "play",
+          "en-US": "play"
+        },
+        {
+          "pt-BR": "plays",
+          "en-US": "plays"
+        },
+        {
+          "pt-BR": "is",
+          "en-US": "is"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Eles jogam tênis depois da escola.",
+        "en-US": "play"
+      },
+      "focus": "they play",
+      "explanation": {
+        "pt-BR": "Com they, use play sem s. After school situa a atividade depois das aulas.",
+        "en-US": "With they, use play without s. After school places the activity after lessons."
+      }
+    },
+    {
+      "id": 186,
+      "unit": 3,
+      "level": 1,
+      "kind": "reply",
+      "phrase": "Do you work on Saturdays?",
+      "meaning": {
+        "pt-BR": "Você trabalha aos sábados?",
+        "en-US": "Do you work on Saturdays?"
+      },
+      "answer": {
+        "pt-BR": "No, I do not.",
+        "en-US": "No, I do not."
+      },
+      "options": [
+        {
+          "pt-BR": "No, I do not.",
+          "en-US": "No, I do not."
+        },
+        {
+          "pt-BR": "No, I am not.",
+          "en-US": "No, I am not."
+        },
+        {
+          "pt-BR": "No, he does not.",
+          "en-US": "No, he does not."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Não, não trabalho.",
+        "en-US": "No, I do not."
+      },
+      "focus": "do you work",
+      "explanation": {
+        "pt-BR": "A resposta a do you mantém do e muda you para I na fala de quem responde.",
+        "en-US": "The answer to do you keeps do and changes you to I for the person replying."
+      }
+    },
+    {
+      "id": 187,
+      "unit": 3,
+      "level": 1,
+      "kind": "order",
+      "phrase": "She does not drink milk.",
+      "meaning": {
+        "pt-BR": "Ela não bebe leite.",
+        "en-US": "She does not drink milk."
+      },
+      "answer": {
+        "pt-BR": "She does not drink milk.",
+        "en-US": "She does not drink milk."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Ela não bebe leite.",
+        "en-US": "She does not drink milk."
+      },
+      "focus": "does not drink",
+      "explanation": {
+        "pt-BR": "Does marca she na negativa. Por isso drink fica na forma base, não drinks.",
+        "en-US": "Does marks she in the negative. Drink therefore stays in its base form, not drinks."
+      }
+    },
+    {
+      "id": 188,
+      "unit": 3,
+      "level": 1,
+      "kind": "meaning",
+      "phrase": "The shop opens at quarter past nine.",
+      "meaning": {
+        "pt-BR": "A loja abre às nove e quinze.",
+        "en-US": "The shop opens at quarter past nine."
+      },
+      "answer": {
+        "pt-BR": "A loja abre às nove e quinze.",
+        "en-US": "The shop opens at 9:15."
+      },
+      "options": [
+        {
+          "pt-BR": "A loja abre às nove e quinze.",
+          "en-US": "The shop opens at 9:15."
+        },
+        {
+          "pt-BR": "A loja abre às nove e quarenta e cinco.",
+          "en-US": "The shop opens at quarter to ten."
+        },
+        {
+          "pt-BR": "A loja abre às oito e quinze.",
+          "en-US": "The shop opens at quarter past eight."
+        }
+      ],
+      "intent": {
+        "pt-BR": "A loja abre às nove e quinze.",
+        "en-US": "The shop opens at quarter past nine."
+      },
+      "focus": "quarter past",
+      "explanation": {
+        "pt-BR": "Quarter é quinze minutos e past significa depois da hora indicada: 9:15.",
+        "en-US": "Quarter is fifteen minutes and past means after the stated hour: 9:15."
+      }
+    },
+    {
+      "id": 189,
+      "unit": 3,
+      "level": 1,
+      "kind": "gap",
+      "phrase": "Does your brother cook?",
+      "meaning": {
+        "pt-BR": "Seu irmão cozinha?",
+        "en-US": "Does your brother cook?"
+      },
+      "answer": {
+        "pt-BR": "Does",
+        "en-US": "Does"
+      },
+      "options": [
+        {
+          "pt-BR": "Does",
+          "en-US": "Does"
+        },
+        {
+          "pt-BR": "Do",
+          "en-US": "Do"
+        },
+        {
+          "pt-BR": "Is",
+          "en-US": "Is"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Seu irmão cozinha?",
+        "en-US": "Does"
+      },
+      "focus": "does ... cook",
+      "explanation": {
+        "pt-BR": "Your brother equivale a he. Use does para perguntar sobre o hábito e mantenha cook sem s.",
+        "en-US": "Your brother works like he. Use does to ask about a habit and keep cook without s."
+      }
+    },
+    {
+      "id": 190,
+      "unit": 3,
+      "level": 1,
+      "kind": "reply",
+      "phrase": "How often do you visit your grandmother?",
+      "meaning": {
+        "pt-BR": "Com que frequência você visita sua avó?",
+        "en-US": "How often do you visit your grandmother?"
+      },
+      "answer": {
+        "pt-BR": "Every Sunday.",
+        "en-US": "Every Sunday."
+      },
+      "options": [
+        {
+          "pt-BR": "Every Sunday.",
+          "en-US": "Every Sunday."
+        },
+        {
+          "pt-BR": "At her house.",
+          "en-US": "At her house."
+        },
+        {
+          "pt-BR": "She is sixty.",
+          "en-US": "She is sixty."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Todo domingo.",
+        "en-US": "Every Sunday."
+      },
+      "focus": "how often",
+      "explanation": {
+        "pt-BR": "How often pede frequência. Every Sunday informa repetição semanal; endereço e idade não respondem.",
+        "en-US": "How often asks about frequency. Every Sunday gives a weekly pattern; an address or age does not."
+      }
+    },
+    {
+      "id": 191,
+      "unit": 3,
+      "level": 1,
+      "kind": "order",
+      "phrase": "I usually read in the evening.",
+      "meaning": {
+        "pt-BR": "Eu geralmente leio à noite.",
+        "en-US": "I usually read in the evening."
+      },
+      "answer": {
+        "pt-BR": "I usually read in the evening.",
+        "en-US": "I usually read in the evening."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Eu geralmente leio à noite.",
+        "en-US": "I usually read in the evening."
+      },
+      "focus": "usually read",
+      "explanation": {
+        "pt-BR": "Usually indica frequência e vem antes do verbo principal read. In the evening situa esse hábito no dia.",
+        "en-US": "Usually describes frequency and comes before main verb read. In the evening places the habit within the day."
+      }
+    },
+    {
+      "id": 192,
+      "unit": 3,
+      "level": 2,
+      "kind": "meaning",
+      "phrase": "I never eat fish.",
+      "meaning": {
+        "pt-BR": "Eu nunca como peixe.",
+        "en-US": "I never eat fish."
+      },
+      "answer": {
+        "pt-BR": "Eu nunca como peixe.",
+        "en-US": "The speaker does not eat fish at any time."
+      },
+      "options": [
+        {
+          "pt-BR": "Eu nunca como peixe.",
+          "en-US": "The speaker does not eat fish at any time."
+        },
+        {
+          "pt-BR": "Eu sempre como peixe.",
+          "en-US": "I always eat fish."
+        },
+        {
+          "pt-BR": "Eu às vezes como peixe.",
+          "en-US": "I sometimes eat fish."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Eu nunca como peixe.",
+        "en-US": "I never eat fish."
+      },
+      "focus": "never",
+      "explanation": {
+        "pt-BR": "Never já nega a frequência: nenhuma vez. Não é a mesma ideia de sometimes.",
+        "en-US": "Never already gives a negative frequency: not on any occasion. It does not mean sometimes."
+      }
+    },
+    {
+      "id": 193,
+      "unit": 3,
+      "level": 2,
+      "kind": "gap",
+      "phrase": "We go swimming in July.",
+      "meaning": {
+        "pt-BR": "Nós vamos nadar em julho.",
+        "en-US": "We go swimming in July."
+      },
+      "answer": {
+        "pt-BR": "in",
+        "en-US": "in"
+      },
+      "options": [
+        {
+          "pt-BR": "in",
+          "en-US": "in"
+        },
+        {
+          "pt-BR": "on",
+          "en-US": "on"
+        },
+        {
+          "pt-BR": "at",
+          "en-US": "at"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Nós vamos nadar em julho.",
+        "en-US": "in"
+      },
+      "focus": "in July",
+      "explanation": {
+        "pt-BR": "Com meses, use in. On aparece com dias, e at com horários exatos.",
+        "en-US": "Use in with months. On is used with days, and at with exact times."
+      }
+    },
+    {
+      "id": 194,
+      "unit": 3,
+      "level": 2,
+      "kind": "reply",
+      "phrase": "When is your birthday?",
+      "meaning": {
+        "pt-BR": "Quando é seu aniversário?",
+        "en-US": "When is your birthday?"
+      },
+      "answer": {
+        "pt-BR": "It is in March.",
+        "en-US": "It is in March."
+      },
+      "options": [
+        {
+          "pt-BR": "It is in March.",
+          "en-US": "It is in March."
+        },
+        {
+          "pt-BR": "I am twelve.",
+          "en-US": "I am twelve."
+        },
+        {
+          "pt-BR": "I like birthday cake.",
+          "en-US": "I like birthday cake."
+        }
+      ],
+      "intent": {
+        "pt-BR": "É em março.",
+        "en-US": "It is in March."
+      },
+      "focus": "when",
+      "explanation": {
+        "pt-BR": "When pede uma data ou período. In March responde ao mês; idade e gosto não respondem quando.",
+        "en-US": "When asks for a date or period. In March answers with a month; age and preference do not answer when."
+      }
+    },
+    {
+      "id": 195,
+      "unit": 3,
+      "level": 2,
+      "kind": "order",
+      "phrase": "I can swim but I cannot drive.",
+      "meaning": {
+        "pt-BR": "Eu sei nadar, mas não sei dirigir.",
+        "en-US": "I can swim but I cannot drive."
+      },
+      "answer": {
+        "pt-BR": "I can swim but I cannot drive.",
+        "en-US": "I can swim but I cannot drive."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Eu sei nadar, mas não sei dirigir.",
+        "en-US": "I can swim but I cannot drive."
+      },
+      "focus": "can and cannot",
+      "explanation": {
+        "pt-BR": "Can indica capacidade e vem antes do verbo base swim. Cannot nega a capacidade de dirigir.",
+        "en-US": "Can expresses ability and precedes base swim. Cannot denies the ability to drive."
+      }
+    },
+    {
+      "id": 196,
+      "unit": 3,
+      "level": 3,
+      "kind": "meaning",
+      "phrase": "Timetable: bus 8:10, lesson 9:00.",
+      "meaning": {
+        "pt-BR": "O ônibus sai antes de a aula começar.",
+        "en-US": "Timetable: bus 8:10, lesson 9:00."
+      },
+      "answer": {
+        "pt-BR": "O ônibus sai antes de a aula começar.",
+        "en-US": "The bus leaves earlier than the lesson starts."
+      },
+      "options": [
+        {
+          "pt-BR": "O ônibus sai antes de a aula começar.",
+          "en-US": "The bus leaves earlier than the lesson starts."
+        },
+        {
+          "pt-BR": "A aula começa antes de o ônibus sair.",
+          "en-US": "The lesson starts before the bus leaves."
+        },
+        {
+          "pt-BR": "Os dois começam no mesmo horário.",
+          "en-US": "Both start at the same time."
+        }
+      ],
+      "intent": {
+        "pt-BR": "O ônibus sai antes de a aula começar.",
+        "en-US": "Timetable: bus 8:10, lesson 9:00."
+      },
+      "focus": "reading a timetable",
+      "explanation": {
+        "pt-BR": "Compare 8:10 com 9:00: o ônibus vem primeiro. Não é preciso converter os horários em duração.",
+        "en-US": "Compare 8:10 and 9:00: the bus comes first. There is no need to convert them to a duration."
+      }
+    },
+    {
+      "id": 197,
+      "unit": 3,
+      "level": 3,
+      "kind": "gap",
+      "phrase": "Can your sister play the piano?",
+      "meaning": {
+        "pt-BR": "Sua irmã sabe tocar piano?",
+        "en-US": "Can your sister play the piano?"
+      },
+      "answer": {
+        "pt-BR": "Can",
+        "en-US": "Can"
+      },
+      "options": [
+        {
+          "pt-BR": "Can",
+          "en-US": "Can"
+        },
+        {
+          "pt-BR": "Does",
+          "en-US": "Does"
+        },
+        {
+          "pt-BR": "Is",
+          "en-US": "Is"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Sua irmã sabe tocar piano?",
+        "en-US": "Can"
+      },
+      "focus": "can ... play",
+      "explanation": {
+        "pt-BR": "A pergunta é sobre capacidade, por isso usa can antes do sujeito e play na forma base.",
+        "en-US": "The question is about ability, so it uses can before the subject and base play."
+      }
+    },
+    {
+      "id": 198,
+      "unit": 3,
+      "level": 3,
+      "kind": "reply",
+      "phrase": "The library closes at five. Can we go at six?",
+      "meaning": {
+        "pt-BR": "A biblioteca fecha às cinco. Podemos ir às seis?",
+        "en-US": "The library closes at five. Can we go at six?"
+      },
+      "answer": {
+        "pt-BR": "No, it is closed then.",
+        "en-US": "No, it is closed then."
+      },
+      "options": [
+        {
+          "pt-BR": "No, it is closed then.",
+          "en-US": "No, it is closed then."
+        },
+        {
+          "pt-BR": "Yes, it opens at five.",
+          "en-US": "Yes, it opens at five."
+        },
+        {
+          "pt-BR": "Yes, six is before five.",
+          "en-US": "Yes, six is before five."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Não, nesse horário ela está fechada.",
+        "en-US": "No, it is closed then."
+      },
+      "focus": "closes at five",
+      "explanation": {
+        "pt-BR": "Seis é depois de cinco. Se a biblioteca fecha às cinco, estará fechada às seis nessa informação.",
+        "en-US": "Six is later than five. If the library closes at five, it is closed at six according to this information."
+      }
+    },
+    {
+      "id": 199,
+      "unit": 3,
+      "level": 3,
+      "kind": "order",
+      "phrase": "My father works from Monday to Friday.",
+      "meaning": {
+        "pt-BR": "Meu pai trabalha de segunda a sexta-feira.",
+        "en-US": "My father works from Monday to Friday."
+      },
+      "answer": {
+        "pt-BR": "My father works from Monday to Friday.",
+        "en-US": "My father works from Monday to Friday."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Meu pai trabalha de segunda a sexta-feira.",
+        "en-US": "My father works from Monday to Friday."
+      },
+      "focus": "from ... to",
+      "explanation": {
+        "pt-BR": "From marca o início do intervalo e to marca o fim. Works concorda com my father, uma pessoa.",
+        "en-US": "From marks the start of the range and to marks its end. Works agrees with my father, one person."
+      }
+    },
+    {
+      "id": 200,
+      "unit": 4,
+      "level": 0,
+      "kind": "meaning",
+      "phrase": "The soup is three pounds.",
+      "meaning": {
+        "pt-BR": "A sopa custa três libras.",
+        "en-US": "The soup is three pounds."
+      },
+      "answer": {
+        "pt-BR": "A sopa custa três libras.",
+        "en-US": "The price of the soup is £3."
+      },
+      "options": [
+        {
+          "pt-BR": "A sopa custa três libras.",
+          "en-US": "The price of the soup is £3."
+        },
+        {
+          "pt-BR": "A sopa custa treze libras.",
+          "en-US": "The soup is thirteen pounds."
+        },
+        {
+          "pt-BR": "Há três sopas.",
+          "en-US": "There are three soups."
+        }
+      ],
+      "intent": {
+        "pt-BR": "A sopa custa três libras.",
+        "en-US": "The soup is three pounds."
+      },
+      "focus": "price",
+      "explanation": {
+        "pt-BR": "Pounds depois de um número indica preço em libras. A frase não conta quantas sopas existem.",
+        "en-US": "Pounds after a number gives a price in pounds. The sentence does not count bowls of soup."
+      }
+    },
+    {
+      "id": 201,
+      "unit": 4,
+      "level": 0,
+      "kind": "gap",
+      "phrase": "I would like a sandwich.",
+      "meaning": {
+        "pt-BR": "Eu gostaria de um sanduíche.",
+        "en-US": "I would like a sandwich."
+      },
+      "answer": {
+        "pt-BR": "like",
+        "en-US": "like"
+      },
+      "options": [
+        {
+          "pt-BR": "like",
+          "en-US": "like"
+        },
+        {
+          "pt-BR": "likes",
+          "en-US": "likes"
+        },
+        {
+          "pt-BR": "liking",
+          "en-US": "liking"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Eu gostaria de um sanduíche.",
+        "en-US": "like"
+      },
+      "focus": "would like",
+      "explanation": {
+        "pt-BR": "Would like é um pedido ou desejo educado. Depois de would, use like na forma base.",
+        "en-US": "Would like is a polite request or wish. After would, use base like."
+      }
+    },
+    {
+      "id": 202,
+      "unit": 4,
+      "level": 0,
+      "kind": "reply",
+      "phrase": "Would you like tea or juice?",
+      "meaning": {
+        "pt-BR": "Você gostaria de chá ou suco?",
+        "en-US": "Would you like tea or juice?"
+      },
+      "answer": {
+        "pt-BR": "Juice, please.",
+        "en-US": "Juice, please."
+      },
+      "options": [
+        {
+          "pt-BR": "Juice, please.",
+          "en-US": "Juice, please."
+        },
+        {
+          "pt-BR": "Yes, I am.",
+          "en-US": "Yes, I am."
+        },
+        {
+          "pt-BR": "At ten o’clock.",
+          "en-US": "At ten o’clock."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Suco, por favor.",
+        "en-US": "Juice, please."
+      },
+      "focus": "choosing a drink",
+      "explanation": {
+        "pt-BR": "A pergunta oferece duas bebidas. Escolher juice responde diretamente; horário e estado pessoal não respondem.",
+        "en-US": "The question offers two drinks. Choosing juice answers directly; a time or personal state does not."
+      }
+    },
+    {
+      "id": 203,
+      "unit": 4,
+      "level": 0,
+      "kind": "order",
+      "phrase": "A glass of water, please.",
+      "meaning": {
+        "pt-BR": "Um copo de água, por favor.",
+        "en-US": "A glass of water, please."
+      },
+      "answer": {
+        "pt-BR": "A glass of water, please.",
+        "en-US": "A glass of water, please."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Um copo de água, por favor.",
+        "en-US": "A glass of water, please."
+      },
+      "focus": "a glass of",
+      "explanation": {
+        "pt-BR": "A glass of indica o recipiente e o conteúdo. Water vem depois de of.",
+        "en-US": "A glass of names a container and its contents. Water follows of."
+      }
+    },
+    {
+      "id": 204,
+      "unit": 4,
+      "level": 0,
+      "kind": "meaning",
+      "phrase": "I am thirsty.",
+      "meaning": {
+        "pt-BR": "Eu estou com sede.",
+        "en-US": "I am thirsty."
+      },
+      "answer": {
+        "pt-BR": "Eu estou com sede.",
+        "en-US": "The speaker needs a drink."
+      },
+      "options": [
+        {
+          "pt-BR": "Eu estou com sede.",
+          "en-US": "The speaker needs a drink."
+        },
+        {
+          "pt-BR": "Eu estou com fome.",
+          "en-US": "I am hungry."
+        },
+        {
+          "pt-BR": "Eu estou com frio.",
+          "en-US": "I am cold."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Eu estou com sede.",
+        "en-US": "I am thirsty."
+      },
+      "focus": "thirsty",
+      "explanation": {
+        "pt-BR": "Thirsty é precisar de bebida. Hungry indica fome; cold indica sentir frio.",
+        "en-US": "Thirsty means needing a drink. Hungry means needing food; cold describes temperature."
+      }
+    },
+    {
+      "id": 205,
+      "unit": 4,
+      "level": 0,
+      "kind": "gap",
+      "phrase": "There is some rice.",
+      "meaning": {
+        "pt-BR": "Há um pouco de arroz.",
+        "en-US": "There is some rice."
+      },
+      "answer": {
+        "pt-BR": "some",
+        "en-US": "some"
+      },
+      "options": [
+        {
+          "pt-BR": "some",
+          "en-US": "some"
+        },
+        {
+          "pt-BR": "a",
+          "en-US": "a"
+        },
+        {
+          "pt-BR": "many",
+          "en-US": "many"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Há um pouco de arroz.",
+        "en-US": "some"
+      },
+      "focus": "some rice",
+      "explanation": {
+        "pt-BR": "Rice é usado como quantidade não contável aqui. Some indica uma quantidade sem precisar dizer a rice.",
+        "en-US": "Rice is uncountable here. Some gives an unspecified amount without saying a rice."
+      }
+    },
+    {
+      "id": 206,
+      "unit": 4,
+      "level": 1,
+      "kind": "reply",
+      "phrase": "How much is this bread?",
+      "meaning": {
+        "pt-BR": "Quanto custa este pão?",
+        "en-US": "How much is this bread?"
+      },
+      "answer": {
+        "pt-BR": "It is two pounds fifty.",
+        "en-US": "It is two pounds fifty."
+      },
+      "options": [
+        {
+          "pt-BR": "It is two pounds fifty.",
+          "en-US": "It is two pounds fifty."
+        },
+        {
+          "pt-BR": "There are two loaves.",
+          "en-US": "There are two loaves."
+        },
+        {
+          "pt-BR": "It is on the table.",
+          "en-US": "It is on the table."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Custa duas libras e cinquenta.",
+        "en-US": "It is two pounds fifty."
+      },
+      "focus": "how much is",
+      "explanation": {
+        "pt-BR": "How much is pede preço. Two pounds fifty é £2,50, não a quantidade de pães.",
+        "en-US": "How much is asks for a price. Two pounds fifty is £2.50, not a number of loaves."
+      }
+    },
+    {
+      "id": 207,
+      "unit": 4,
+      "level": 1,
+      "kind": "order",
+      "phrase": "I do not like coffee.",
+      "meaning": {
+        "pt-BR": "Eu não gosto de café.",
+        "en-US": "I do not like coffee."
+      },
+      "answer": {
+        "pt-BR": "I do not like coffee.",
+        "en-US": "I do not like coffee."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Eu não gosto de café.",
+        "en-US": "I do not like coffee."
+      },
+      "focus": "do not like",
+      "explanation": {
+        "pt-BR": "Do not nega o gosto expresso por like. Não use am not antes de like.",
+        "en-US": "Do not negates the preference expressed by like. Do not use am not before like."
+      }
+    },
+    {
+      "id": 208,
+      "unit": 4,
+      "level": 1,
+      "kind": "meaning",
+      "phrase": "Menu: tea £2, cake £4.",
+      "meaning": {
+        "pt-BR": "O bolo custa mais que o chá.",
+        "en-US": "Menu: tea £2, cake £4."
+      },
+      "answer": {
+        "pt-BR": "O bolo custa mais que o chá.",
+        "en-US": "Cake has a higher price than tea."
+      },
+      "options": [
+        {
+          "pt-BR": "O bolo custa mais que o chá.",
+          "en-US": "Cake has a higher price than tea."
+        },
+        {
+          "pt-BR": "O chá custa mais que o bolo.",
+          "en-US": "Tea costs more than cake."
+        },
+        {
+          "pt-BR": "O chá e o bolo têm o mesmo preço.",
+          "en-US": "Tea and cake cost the same."
+        }
+      ],
+      "intent": {
+        "pt-BR": "O bolo custa mais que o chá.",
+        "en-US": "Menu: tea £2, cake £4."
+      },
+      "focus": "menu prices",
+      "explanation": {
+        "pt-BR": "Quatro libras é mais que duas. Leia o preço ligado a cada item, não a posição no menu.",
+        "en-US": "Four pounds is more than two. Read the price attached to each item, not its position on the menu."
+      }
+    },
+    {
+      "id": 209,
+      "unit": 4,
+      "level": 1,
+      "kind": "gap",
+      "phrase": "How many apples do you need?",
+      "meaning": {
+        "pt-BR": "De quantas maçãs você precisa?",
+        "en-US": "How many apples do you need?"
+      },
+      "answer": {
+        "pt-BR": "many",
+        "en-US": "many"
+      },
+      "options": [
+        {
+          "pt-BR": "many",
+          "en-US": "many"
+        },
+        {
+          "pt-BR": "much",
+          "en-US": "much"
+        },
+        {
+          "pt-BR": "any",
+          "en-US": "any"
+        }
+      ],
+      "intent": {
+        "pt-BR": "De quantas maçãs você precisa?",
+        "en-US": "many"
+      },
+      "focus": "how many",
+      "explanation": {
+        "pt-BR": "Apples pode ser contado no plural. Use how many para perguntar a quantidade de unidades.",
+        "en-US": "Apples can be counted in the plural. Use how many to ask for the number of items."
+      }
+    },
+    {
+      "id": 210,
+      "unit": 4,
+      "level": 1,
+      "kind": "reply",
+      "phrase": "Anything else?",
+      "meaning": {
+        "pt-BR": "Mais alguma coisa?",
+        "en-US": "Anything else?"
+      },
+      "answer": {
+        "pt-BR": "No, thank you. That is all.",
+        "en-US": "No, thank you. That is all."
+      },
+      "options": [
+        {
+          "pt-BR": "No, thank you. That is all.",
+          "en-US": "No, thank you. That is all."
+        },
+        {
+          "pt-BR": "My name is Ben.",
+          "en-US": "My name is Ben."
+        },
+        {
+          "pt-BR": "It is next to the door.",
+          "en-US": "It is next to the door."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Não, obrigado. É só isso.",
+        "en-US": "No, thank you. That is all."
+      },
+      "focus": "anything else",
+      "explanation": {
+        "pt-BR": "No atendimento, anything else pergunta se o pedido terminou. That is all informa que não falta nada.",
+        "en-US": "In service, anything else asks whether the order is complete. That is all says nothing more is needed."
+      }
+    },
+    {
+      "id": 211,
+      "unit": 4,
+      "level": 1,
+      "kind": "order",
+      "phrase": "Can I pay by card?",
+      "meaning": {
+        "pt-BR": "Posso pagar com cartão?",
+        "en-US": "Can I pay by card?"
+      },
+      "answer": {
+        "pt-BR": "Can I pay by card?",
+        "en-US": "Can I pay by card?"
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Posso pagar com cartão?",
+        "en-US": "Can I pay by card?"
+      },
+      "focus": "pay by card",
+      "explanation": {
+        "pt-BR": "Can I pede permissão. By card indica a forma de pagamento e vem depois de pay.",
+        "en-US": "Can I asks permission. By card gives the payment method and follows pay."
+      }
+    },
+    {
+      "id": 212,
+      "unit": 4,
+      "level": 2,
+      "kind": "meaning",
+      "phrase": "I need a small size, not a large one.",
+      "meaning": {
+        "pt-BR": "Eu preciso do tamanho pequeno, não do grande.",
+        "en-US": "I need a small size, not a large one."
+      },
+      "answer": {
+        "pt-BR": "Eu preciso do tamanho pequeno, não do grande.",
+        "en-US": "The speaker wants the smaller size."
+      },
+      "options": [
+        {
+          "pt-BR": "Eu preciso do tamanho pequeno, não do grande.",
+          "en-US": "The speaker wants the smaller size."
+        },
+        {
+          "pt-BR": "Eu preciso do tamanho grande, não do pequeno.",
+          "en-US": "I need the large size, not the small one."
+        },
+        {
+          "pt-BR": "Eu preciso de dois tamanhos grandes.",
+          "en-US": "I need two large sizes."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Eu preciso do tamanho pequeno, não do grande.",
+        "en-US": "I need a small size, not a large one."
+      },
+      "focus": "not a large one",
+      "explanation": {
+        "pt-BR": "Not corrige a alternativa rejeitada. One substitui size para evitar repetir a palavra.",
+        "en-US": "Not identifies the rejected alternative. One replaces size to avoid repetition."
+      }
+    },
+    {
+      "id": 213,
+      "unit": 4,
+      "level": 2,
+      "kind": "gap",
+      "phrase": "Do you have any eggs?",
+      "meaning": {
+        "pt-BR": "Vocês têm ovos?",
+        "en-US": "Do you have any eggs?"
+      },
+      "answer": {
+        "pt-BR": "any",
+        "en-US": "any"
+      },
+      "options": [
+        {
+          "pt-BR": "any",
+          "en-US": "any"
+        },
+        {
+          "pt-BR": "a",
+          "en-US": "a"
+        },
+        {
+          "pt-BR": "much",
+          "en-US": "much"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Vocês têm ovos?",
+        "en-US": "any"
+      },
+      "focus": "any eggs",
+      "explanation": {
+        "pt-BR": "Any combina com a pergunta sobre uma quantidade indefinida de eggs, plural contável.",
+        "en-US": "Any fits a question about an unspecified number of plural countable eggs."
+      }
+    },
+    {
+      "id": 214,
+      "unit": 4,
+      "level": 2,
+      "kind": "reply",
+      "phrase": "For here or to take away?",
+      "meaning": {
+        "pt-BR": "Para consumir aqui ou levar?",
+        "en-US": "For here or to take away?"
+      },
+      "answer": {
+        "pt-BR": "To take away, please.",
+        "en-US": "To take away, please."
+      },
+      "options": [
+        {
+          "pt-BR": "To take away, please.",
+          "en-US": "To take away, please."
+        },
+        {
+          "pt-BR": "A table for two.",
+          "en-US": "A table for two."
+        },
+        {
+          "pt-BR": "It is delicious.",
+          "en-US": "It is delicious."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Para levar, por favor.",
+        "en-US": "To take away, please."
+      },
+      "focus": "take away",
+      "explanation": {
+        "pt-BR": "Take away indica levar a comida para outro lugar. For here seria consumir no próprio local.",
+        "en-US": "Take away means taking the food elsewhere. For here would mean eating at this place."
+      }
+    },
+    {
+      "id": 215,
+      "unit": 4,
+      "level": 2,
+      "kind": "order",
+      "phrase": "I would like two tickets, please.",
+      "meaning": {
+        "pt-BR": "Eu gostaria de duas passagens, por favor.",
+        "en-US": "I would like two tickets, please."
+      },
+      "answer": {
+        "pt-BR": "I would like two tickets, please.",
+        "en-US": "I would like two tickets, please."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Eu gostaria de duas passagens, por favor.",
+        "en-US": "I would like two tickets, please."
+      },
+      "focus": "two tickets",
+      "explanation": {
+        "pt-BR": "Two vem antes de tickets e exige o s do plural. Would like mantém o pedido educado.",
+        "en-US": "Two comes before tickets and requires plural s. Would like keeps the request polite."
+      }
+    },
+    {
+      "id": 216,
+      "unit": 4,
+      "level": 3,
+      "kind": "meaning",
+      "phrase": "Receipt: milk £1, bread £2, total £3.",
+      "meaning": {
+        "pt-BR": "O leite e o pão custam três libras juntos.",
+        "en-US": "Receipt: milk £1, bread £2, total £3."
+      },
+      "answer": {
+        "pt-BR": "O leite e o pão custam três libras juntos.",
+        "en-US": "Together, the milk and bread cost £3."
+      },
+      "options": [
+        {
+          "pt-BR": "O leite e o pão custam três libras juntos.",
+          "en-US": "Together, the milk and bread cost £3."
+        },
+        {
+          "pt-BR": "Só o leite custa três libras.",
+          "en-US": "The milk alone costs three pounds."
+        },
+        {
+          "pt-BR": "O pão custa uma libra.",
+          "en-US": "The bread costs one pound."
+        }
+      ],
+      "intent": {
+        "pt-BR": "O leite e o pão custam três libras juntos.",
+        "en-US": "Receipt: milk £1, bread £2, total £3."
+      },
+      "focus": "total",
+      "explanation": {
+        "pt-BR": "Total reúne os itens da compra. Não atribua o total de três libras a um produto só.",
+        "en-US": "Total combines the items purchased. Do not assign the three-pound total to only one product."
+      }
+    },
+    {
+      "id": 217,
+      "unit": 4,
+      "level": 3,
+      "kind": "gap",
+      "phrase": "How much water is in the bottle?",
+      "meaning": {
+        "pt-BR": "Quanta água há na garrafa?",
+        "en-US": "How much water is in the bottle?"
+      },
+      "answer": {
+        "pt-BR": "much",
+        "en-US": "much"
+      },
+      "options": [
+        {
+          "pt-BR": "much",
+          "en-US": "much"
+        },
+        {
+          "pt-BR": "many",
+          "en-US": "many"
+        },
+        {
+          "pt-BR": "an",
+          "en-US": "an"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Quanta água há na garrafa?",
+        "en-US": "much"
+      },
+      "focus": "how much water",
+      "explanation": {
+        "pt-BR": "Water é não contável nesta estrutura. Use how much, não how many, para a quantidade.",
+        "en-US": "Water is uncountable in this structure. Use how much, not how many, for the amount."
+      }
+    },
+    {
+      "id": 218,
+      "unit": 4,
+      "level": 3,
+      "kind": "reply",
+      "phrase": "We have no orange juice. Would you like apple juice?",
+      "meaning": {
+        "pt-BR": "Não temos suco de laranja. Você gostaria de suco de maçã?",
+        "en-US": "We have no orange juice. Would you like apple juice?"
+      },
+      "answer": {
+        "pt-BR": "Yes, apple juice is fine.",
+        "en-US": "Yes, apple juice is fine."
+      },
+      "options": [
+        {
+          "pt-BR": "Yes, apple juice is fine.",
+          "en-US": "Yes, apple juice is fine."
+        },
+        {
+          "pt-BR": "Yes, orange juice, please.",
+          "en-US": "Yes, orange juice, please."
+        },
+        {
+          "pt-BR": "No, the orange juice is ready.",
+          "en-US": "No, the orange juice is ready."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Sim, suco de maçã está bom.",
+        "en-US": "Yes, apple juice is fine."
+      },
+      "focus": "alternative",
+      "explanation": {
+        "pt-BR": "O suco de laranja não está disponível. Aceitar apple juice responde à alternativa oferecida.",
+        "en-US": "Orange juice is unavailable. Accepting apple juice responds to the offered alternative."
+      }
+    },
+    {
+      "id": 219,
+      "unit": 4,
+      "level": 3,
+      "kind": "order",
+      "phrase": "These tomatoes are two pounds a kilo.",
+      "meaning": {
+        "pt-BR": "Estes tomates custam duas libras por quilo.",
+        "en-US": "These tomatoes are two pounds a kilo."
+      },
+      "answer": {
+        "pt-BR": "These tomatoes are two pounds a kilo.",
+        "en-US": "These tomatoes are two pounds a kilo."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Estes tomates custam duas libras por quilo.",
+        "en-US": "These tomatoes are two pounds a kilo."
+      },
+      "focus": "a kilo",
+      "explanation": {
+        "pt-BR": "A kilo expressa preço por quilo. These tomatoes é plural e por isso usa are.",
+        "en-US": "A kilo expresses a price per kilo. These tomatoes is plural and therefore takes are."
+      }
+    },
+    {
+      "id": 220,
+      "unit": 5,
+      "level": 0,
+      "kind": "meaning",
+      "phrase": "Please write your address here.",
+      "meaning": {
+        "pt-BR": "Por favor, escreva seu endereço aqui.",
+        "en-US": "Please write your address here."
+      },
+      "answer": {
+        "pt-BR": "Por favor, escreva seu endereço aqui.",
+        "en-US": "A request to write where you live."
+      },
+      "options": [
+        {
+          "pt-BR": "Por favor, escreva seu endereço aqui.",
+          "en-US": "A request to write where you live."
+        },
+        {
+          "pt-BR": "Por favor, diga seu nome aqui.",
+          "en-US": "Please say your name here."
+        },
+        {
+          "pt-BR": "Por favor, escreva a data ali.",
+          "en-US": "Please write the date there."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Por favor, escreva seu endereço aqui.",
+        "en-US": "Please write your address here."
+      },
+      "focus": "address",
+      "explanation": {
+        "pt-BR": "Address é endereço. Write pede registrar por escrito, não apenas falar a informação.",
+        "en-US": "Address is where someone lives. Write asks for written information, not just spoken information."
+      }
+    },
+    {
+      "id": 221,
+      "unit": 5,
+      "level": 0,
+      "kind": "gap",
+      "phrase": "Please speak slowly.",
+      "meaning": {
+        "pt-BR": "Por favor, fale devagar.",
+        "en-US": "Please speak slowly."
+      },
+      "answer": {
+        "pt-BR": "slowly",
+        "en-US": "slowly"
+      },
+      "options": [
+        {
+          "pt-BR": "slowly",
+          "en-US": "slowly"
+        },
+        {
+          "pt-BR": "slow",
+          "en-US": "slow"
+        },
+        {
+          "pt-BR": "slows",
+          "en-US": "slows"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Por favor, fale devagar.",
+        "en-US": "slowly"
+      },
+      "focus": "speak slowly",
+      "explanation": {
+        "pt-BR": "Slowly descreve a maneira de falar. Slow sozinho é adjetivo; aqui a ação precisa do advérbio.",
+        "en-US": "Slowly describes how to speak. Slow alone is an adjective; the action needs an adverb here."
+      }
+    },
+    {
+      "id": 222,
+      "unit": 5,
+      "level": 0,
+      "kind": "reply",
+      "phrase": "Do you understand the instructions?",
+      "meaning": {
+        "pt-BR": "Você entende as instruções?",
+        "en-US": "Do you understand the instructions?"
+      },
+      "answer": {
+        "pt-BR": "Not yet. Can you say them again?",
+        "en-US": "Not yet. Can you say them again?"
+      },
+      "options": [
+        {
+          "pt-BR": "Not yet. Can you say them again?",
+          "en-US": "Not yet. Can you say them again?"
+        },
+        {
+          "pt-BR": "Yes, I am instructions.",
+          "en-US": "Yes, I am instructions."
+        },
+        {
+          "pt-BR": "It is a blue instruction.",
+          "en-US": "It is a blue instruction."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Ainda não. Você pode repeti-las?",
+        "en-US": "Not yet. Can you say them again?"
+      },
+      "focus": "asking for repetition",
+      "explanation": {
+        "pt-BR": "Not yet admite que falta compreender. Say them again pede repetição das instruções.",
+        "en-US": "Not yet admits that understanding is incomplete. Say them again requests repeated instructions."
+      }
+    },
+    {
+      "id": 223,
+      "unit": 5,
+      "level": 0,
+      "kind": "order",
+      "phrase": "Can you help me, please?",
+      "meaning": {
+        "pt-BR": "Você pode me ajudar, por favor?",
+        "en-US": "Can you help me, please?"
+      },
+      "answer": {
+        "pt-BR": "Can you help me, please?",
+        "en-US": "Can you help me, please?"
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Você pode me ajudar, por favor?",
+        "en-US": "Can you help me, please?"
+      },
+      "focus": "help me",
+      "explanation": {
+        "pt-BR": "Depois de help, me indica quem recebe a ajuda. Can you torna o pedido uma pergunta.",
+        "en-US": "After help, me identifies who receives help. Can you makes the request a question."
+      }
+    },
+    {
+      "id": 224,
+      "unit": 5,
+      "level": 0,
+      "kind": "meaning",
+      "phrase": "The message says: Meet at the gate.",
+      "meaning": {
+        "pt-BR": "A mensagem pede um encontro no portão.",
+        "en-US": "The message says: Meet at the gate."
+      },
+      "answer": {
+        "pt-BR": "A mensagem pede um encontro no portão.",
+        "en-US": "A message asking people to meet beside the gate."
+      },
+      "options": [
+        {
+          "pt-BR": "A mensagem pede um encontro no portão.",
+          "en-US": "A message asking people to meet beside the gate."
+        },
+        {
+          "pt-BR": "A mensagem pede um encontro na ponte.",
+          "en-US": "The message asks to meet at the bridge."
+        },
+        {
+          "pt-BR": "A mensagem diz que o portão está fechado.",
+          "en-US": "The message says the gate is closed."
+        }
+      ],
+      "intent": {
+        "pt-BR": "A mensagem pede um encontro no portão.",
+        "en-US": "The message says: Meet at the gate."
+      },
+      "focus": "meet at the gate",
+      "explanation": {
+        "pt-BR": "Meet pede encontrar alguém; at the gate informa o ponto de encontro. Não diz se o portão está aberto.",
+        "en-US": "Meet asks people to come together; at the gate gives the meeting point. It does not say whether the gate is open."
+      }
+    },
+    {
+      "id": 225,
+      "unit": 5,
+      "level": 0,
+      "kind": "gap",
+      "phrase": "I am reading a message now.",
+      "meaning": {
+        "pt-BR": "Eu estou lendo uma mensagem agora.",
+        "en-US": "I am reading a message now."
+      },
+      "answer": {
+        "pt-BR": "reading",
+        "en-US": "reading"
+      },
+      "options": [
+        {
+          "pt-BR": "reading",
+          "en-US": "reading"
+        },
+        {
+          "pt-BR": "read",
+          "en-US": "read"
+        },
+        {
+          "pt-BR": "reads",
+          "en-US": "reads"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Eu estou lendo uma mensagem agora.",
+        "en-US": "reading"
+      },
+      "focus": "am reading",
+      "explanation": {
+        "pt-BR": "Am seguido de reading descreve uma ação em andamento agora. Read sozinho indicaria outra estrutura.",
+        "en-US": "Am followed by reading describes an action happening now. Read alone would form a different structure."
+      }
+    },
+    {
+      "id": 226,
+      "unit": 5,
+      "level": 1,
+      "kind": "reply",
+      "phrase": "What does this word mean?",
+      "meaning": {
+        "pt-BR": "O que esta palavra significa?",
+        "en-US": "What does this word mean?"
+      },
+      "answer": {
+        "pt-BR": "It means a place to buy food.",
+        "en-US": "It means a place to buy food."
+      },
+      "options": [
+        {
+          "pt-BR": "It means a place to buy food.",
+          "en-US": "It means a place to buy food."
+        },
+        {
+          "pt-BR": "It is written in blue.",
+          "en-US": "It is written in blue."
+        },
+        {
+          "pt-BR": "It has four letters.",
+          "en-US": "It has four letters."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Significa um lugar para comprar comida.",
+        "en-US": "It means a place to buy food."
+      },
+      "focus": "word meaning",
+      "explanation": {
+        "pt-BR": "A pergunta pede sentido. Cor e quantidade de letras descrevem a palavra, mas não explicam o significado.",
+        "en-US": "The question asks for meaning. Colour and letter count describe the word but do not explain its meaning."
+      }
+    },
+    {
+      "id": 227,
+      "unit": 5,
+      "level": 1,
+      "kind": "order",
+      "phrase": "She is waiting for the bus.",
+      "meaning": {
+        "pt-BR": "Ela está esperando o ônibus.",
+        "en-US": "She is waiting for the bus."
+      },
+      "answer": {
+        "pt-BR": "She is waiting for the bus.",
+        "en-US": "She is waiting for the bus."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Ela está esperando o ônibus.",
+        "en-US": "She is waiting for the bus."
+      },
+      "focus": "is waiting for",
+      "explanation": {
+        "pt-BR": "Is waiting expressa a espera em andamento; for liga waiting ao que se espera.",
+        "en-US": "Is waiting expresses an ongoing wait; for links waiting to what is being waited for."
+      }
+    },
+    {
+      "id": 228,
+      "unit": 5,
+      "level": 1,
+      "kind": "meaning",
+      "phrase": "I have a headache.",
+      "meaning": {
+        "pt-BR": "Eu estou com dor de cabeça.",
+        "en-US": "I have a headache."
+      },
+      "answer": {
+        "pt-BR": "Eu estou com dor de cabeça.",
+        "en-US": "The speaker has pain in the head."
+      },
+      "options": [
+        {
+          "pt-BR": "Eu estou com dor de cabeça.",
+          "en-US": "The speaker has pain in the head."
+        },
+        {
+          "pt-BR": "Eu estou com dor de dente.",
+          "en-US": "I have a toothache."
+        },
+        {
+          "pt-BR": "Eu estou com dor no pé.",
+          "en-US": "My foot hurts."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Eu estou com dor de cabeça.",
+        "en-US": "I have a headache."
+      },
+      "focus": "headache",
+      "explanation": {
+        "pt-BR": "Headache é dor de cabeça. A frase permite comunicar uma necessidade simples de saúde, não faz diagnóstico.",
+        "en-US": "Headache means pain in the head. This expresses a simple health need; it is not a diagnosis."
+      }
+    },
+    {
+      "id": 229,
+      "unit": 5,
+      "level": 1,
+      "kind": "gap",
+      "phrase": "They are listening to the teacher.",
+      "meaning": {
+        "pt-BR": "Eles estão ouvindo a professora.",
+        "en-US": "They are listening to the teacher."
+      },
+      "answer": {
+        "pt-BR": "listening",
+        "en-US": "listening"
+      },
+      "options": [
+        {
+          "pt-BR": "listening",
+          "en-US": "listening"
+        },
+        {
+          "pt-BR": "listen",
+          "en-US": "listen"
+        },
+        {
+          "pt-BR": "listens",
+          "en-US": "listens"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Eles estão ouvindo a professora.",
+        "en-US": "listening"
+      },
+      "focus": "are listening",
+      "explanation": {
+        "pt-BR": "Are listening combina com they para uma ação em andamento. To liga listen a quem é ouvido.",
+        "en-US": "Are listening goes with they for an ongoing action. To links listen to the person being heard."
+      }
+    },
+    {
+      "id": 230,
+      "unit": 5,
+      "level": 1,
+      "kind": "reply",
+      "phrase": "Would you like to sit down?",
+      "meaning": {
+        "pt-BR": "Você gostaria de se sentar?",
+        "en-US": "Would you like to sit down?"
+      },
+      "answer": {
+        "pt-BR": "Yes, thank you.",
+        "en-US": "Yes, thank you."
+      },
+      "options": [
+        {
+          "pt-BR": "Yes, thank you.",
+          "en-US": "Yes, thank you."
+        },
+        {
+          "pt-BR": "Yes, I am standing yesterday.",
+          "en-US": "Yes, I am standing yesterday."
+        },
+        {
+          "pt-BR": "It is next Tuesday.",
+          "en-US": "It is next Tuesday."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Sim, obrigado.",
+        "en-US": "Yes, thank you."
+      },
+      "focus": "invitation",
+      "explanation": {
+        "pt-BR": "Would you like oferece algo de forma educada. Yes, thank you aceita a oferta.",
+        "en-US": "Would you like politely offers something. Yes, thank you accepts the offer."
+      }
+    },
+    {
+      "id": 231,
+      "unit": 5,
+      "level": 1,
+      "kind": "order",
+      "phrase": "I cannot hear you clearly.",
+      "meaning": {
+        "pt-BR": "Eu não consigo ouvir você claramente.",
+        "en-US": "I cannot hear you clearly."
+      },
+      "answer": {
+        "pt-BR": "I cannot hear you clearly.",
+        "en-US": "I cannot hear you clearly."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Eu não consigo ouvir você claramente.",
+        "en-US": "I cannot hear you clearly."
+      },
+      "focus": "cannot hear",
+      "explanation": {
+        "pt-BR": "Cannot nega a capacidade de ouvir. Clearly descreve ouvir com clareza, sem dizer que a pessoa está errada.",
+        "en-US": "Cannot denies the ability to hear. Clearly describes hearing well without saying the other person is wrong."
+      }
+    },
+    {
+      "id": 232,
+      "unit": 5,
+      "level": 2,
+      "kind": "meaning",
+      "phrase": "Note: Please bring a pen and a notebook.",
+      "meaning": {
+        "pt-BR": "O bilhete pede uma caneta e um caderno.",
+        "en-US": "Note: Please bring a pen and a notebook."
+      },
+      "answer": {
+        "pt-BR": "O bilhete pede uma caneta e um caderno.",
+        "en-US": "Both a pen and a notebook are required."
+      },
+      "options": [
+        {
+          "pt-BR": "O bilhete pede uma caneta e um caderno.",
+          "en-US": "Both a pen and a notebook are required."
+        },
+        {
+          "pt-BR": "O bilhete pede só uma caneta.",
+          "en-US": "The note asks for only a pen."
+        },
+        {
+          "pt-BR": "O bilhete pede uma caneta ou um caderno.",
+          "en-US": "The note asks for a pen or a notebook."
+        }
+      ],
+      "intent": {
+        "pt-BR": "O bilhete pede uma caneta e um caderno.",
+        "en-US": "Note: Please bring a pen and a notebook."
+      },
+      "focus": "and",
+      "explanation": {
+        "pt-BR": "And soma os dois itens necessários. Or ofereceria uma escolha; não é a palavra usada no bilhete.",
+        "en-US": "And adds both required items. Or would offer a choice; that is not the word used in the note."
+      }
+    },
+    {
+      "id": 233,
+      "unit": 5,
+      "level": 2,
+      "kind": "gap",
+      "phrase": "Are you using this chair?",
+      "meaning": {
+        "pt-BR": "Você está usando esta cadeira?",
+        "en-US": "Are you using this chair?"
+      },
+      "answer": {
+        "pt-BR": "using",
+        "en-US": "using"
+      },
+      "options": [
+        {
+          "pt-BR": "using",
+          "en-US": "using"
+        },
+        {
+          "pt-BR": "use",
+          "en-US": "use"
+        },
+        {
+          "pt-BR": "uses",
+          "en-US": "uses"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Você está usando esta cadeira?",
+        "en-US": "using"
+      },
+      "focus": "are you using",
+      "explanation": {
+        "pt-BR": "A pergunta sobre agora usa are antes de you e using depois do sujeito.",
+        "en-US": "A question about now uses are before you and using after the subject."
+      }
+    },
+    {
+      "id": 234,
+      "unit": 5,
+      "level": 2,
+      "kind": "reply",
+      "phrase": "Can you tell me your email address?",
+      "meaning": {
+        "pt-BR": "Você pode me dizer seu endereço de e-mail?",
+        "en-US": "Can you tell me your email address?"
+      },
+      "answer": {
+        "pt-BR": "Yes. It is ana at example dot com.",
+        "en-US": "Yes. It is ana at example dot com."
+      },
+      "options": [
+        {
+          "pt-BR": "Yes. It is ana at example dot com.",
+          "en-US": "Yes. It is ana at example dot com."
+        },
+        {
+          "pt-BR": "Yes. I live at number eight.",
+          "en-US": "Yes. I live at number eight."
+        },
+        {
+          "pt-BR": "Yes. I am from Spain.",
+          "en-US": "Yes. I am from Spain."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Sim. É ana arroba example ponto com.",
+        "en-US": "Yes. It is ana at example dot com."
+      },
+      "focus": "email address",
+      "explanation": {
+        "pt-BR": "At e dot dizem arroba e ponto ao soletrar um e-mail. Um endereço de casa responde a outra pergunta.",
+        "en-US": "At and dot name the symbols in an email address. A home address answers a different question."
+      }
+    },
+    {
+      "id": 235,
+      "unit": 5,
+      "level": 2,
+      "kind": "order",
+      "phrase": "Please do not take photos here.",
+      "meaning": {
+        "pt-BR": "Por favor, não tire fotos aqui.",
+        "en-US": "Please do not take photos here."
+      },
+      "answer": {
+        "pt-BR": "Please do not take photos here.",
+        "en-US": "Please do not take photos here."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Por favor, não tire fotos aqui.",
+        "en-US": "Please do not take photos here."
+      },
+      "focus": "do not take",
+      "explanation": {
+        "pt-BR": "Do not antes de take proíbe a ação. Photos é o que não se pode tirar neste local.",
+        "en-US": "Do not before take prohibits the action. Photos is what must not be taken here."
+      }
+    },
+    {
+      "id": 236,
+      "unit": 5,
+      "level": 3,
+      "kind": "meaning",
+      "phrase": "Message: I am at the café. Please come at two.",
+      "meaning": {
+        "pt-BR": "A pessoa está no café e pede que você vá às duas.",
+        "en-US": "Message: I am at the café. Please come at two."
+      },
+      "answer": {
+        "pt-BR": "A pessoa está no café e pede que você vá às duas.",
+        "en-US": "The person asks you to come to the café at 2:00."
+      },
+      "options": [
+        {
+          "pt-BR": "A pessoa está no café e pede que você vá às duas.",
+          "en-US": "The person asks you to come to the café at 2:00."
+        },
+        {
+          "pt-BR": "A pessoa está no café desde as duas.",
+          "en-US": "The person has been at the café since two."
+        },
+        {
+          "pt-BR": "A pessoa pede que você leve dois cafés.",
+          "en-US": "The person asks you to bring two coffees."
+        }
+      ],
+      "intent": {
+        "pt-BR": "A pessoa está no café e pede que você vá às duas.",
+        "en-US": "Message: I am at the café. Please come at two."
+      },
+      "focus": "place and time",
+      "explanation": {
+        "pt-BR": "At the café informa lugar; at two informa horário. Two não conta bebidas nesta mensagem.",
+        "en-US": "At the café gives a place; at two gives a time. Two does not count drinks in this message."
+      }
+    },
+    {
+      "id": 237,
+      "unit": 5,
+      "level": 3,
+      "kind": "gap",
+      "phrase": "We are not leaving now.",
+      "meaning": {
+        "pt-BR": "Nós não estamos saindo agora.",
+        "en-US": "We are not leaving now."
+      },
+      "answer": {
+        "pt-BR": "not",
+        "en-US": "not"
+      },
+      "options": [
+        {
+          "pt-BR": "not",
+          "en-US": "not"
+        },
+        {
+          "pt-BR": "no",
+          "en-US": "no"
+        },
+        {
+          "pt-BR": "never",
+          "en-US": "never"
+        }
+      ],
+      "intent": {
+        "pt-BR": "Nós não estamos saindo agora.",
+        "en-US": "not"
+      },
+      "focus": "are not leaving",
+      "explanation": {
+        "pt-BR": "Not depois de are nega a ação em andamento. A frase não afirma que nunca sairemos.",
+        "en-US": "Not after are negates the ongoing action. It does not say that we will never leave."
+      }
+    },
+    {
+      "id": 238,
+      "unit": 5,
+      "level": 3,
+      "kind": "reply",
+      "phrase": "The form asks for a surname. What should I write?",
+      "meaning": {
+        "pt-BR": "O formulário pede um sobrenome. O que devo escrever?",
+        "en-US": "The form asks for a surname. What should I write?"
+      },
+      "answer": {
+        "pt-BR": "Write your family name.",
+        "en-US": "Write your family name."
+      },
+      "options": [
+        {
+          "pt-BR": "Write your family name.",
+          "en-US": "Write your family name."
+        },
+        {
+          "pt-BR": "Write the city where you live.",
+          "en-US": "Write the city where you live."
+        },
+        {
+          "pt-BR": "Write how old you are.",
+          "en-US": "Write how old you are."
+        }
+      ],
+      "intent": {
+        "pt-BR": "Escreva seu sobrenome.",
+        "en-US": "Write your family name."
+      },
+      "focus": "reading a form",
+      "explanation": {
+        "pt-BR": "Surname e family name nomeiam o sobrenome. Cidade e idade pertencem a outros campos do formulário.",
+        "en-US": "Surname and family name refer to the same personal detail. City and age belong in different form fields."
+      }
+    },
+    {
+      "id": 239,
+      "unit": 5,
+      "level": 3,
+      "kind": "order",
+      "phrase": "I need help with this form.",
+      "meaning": {
+        "pt-BR": "Eu preciso de ajuda com este formulário.",
+        "en-US": "I need help with this form."
+      },
+      "answer": {
+        "pt-BR": "I need help with this form.",
+        "en-US": "I need help with this form."
+      },
+      "options": [],
+      "intent": {
+        "pt-BR": "Eu preciso de ajuda com este formulário.",
+        "en-US": "I need help with this form."
+      },
+      "focus": "need help with",
+      "explanation": {
+        "pt-BR": "Need apresenta a necessidade; with this form especifica em que a ajuda é necessária.",
+        "en-US": "Need states a need; with this form specifies what help is needed with."
+      }
+    }
+  ]
+}

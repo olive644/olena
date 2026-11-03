@@ -148,7 +148,7 @@ export function finishEnglishRound(
   earnedPoints: number,
   random = randomCardRoll,
 ) {
-  if (!isEnglishRewardCourse(course) || earnedPoints > 120)
+  if (!isEnglishRewardCourse(course) || earnedPoints > 4800)
     throw new Error("Rodada de inglês inválida.");
   return settlePlace(course, `${id}:completed`, 0, earnedPoints, random);
 }

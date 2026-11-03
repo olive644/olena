@@ -50,13 +50,14 @@ export function mergeSyncedItems(
       key === ACCOUNT_PROFILE_KEY &&
       [baseValue, localValue, remoteValue].some((raw) => {
         const profile = profileRecord(raw);
-        return profile["xpLedger"] || profile["studentResume"];
+        return profile["xpLedger"] || profile["studentResume"] || profile["englishCheckpoints"];
       })
     ) {
       const identity = (raw: string | undefined) => {
         const value = profileRecord(raw);
         delete value["xpLedger"];
         delete value["studentResume"];
+        delete value["englishCheckpoints"];
         return JSON.stringify(value);
       };
       const localChanged = identity(localValue) !== identity(baseValue);

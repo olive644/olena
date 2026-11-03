@@ -1,3 +1,10 @@
+import {
+  ARCADE_LIVES,
+  ARCADE_RESERVE,
+  ARCADE_COUNTDOWN,
+  arcadeReserve,
+  arcadeElapsed,
+} from "../domain/arcade-clock";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useEffectEvent, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
@@ -75,12 +82,12 @@ export function MathArcade({
     progress: mathLearning(courseId),
     points: 0,
     streak: 0,
-    lives: 3,
-    bank: 60,
+    lives: ARCADE_LIVES,
+    bank: ARCADE_RESERVE,
     elapsed: 0,
   }));
   const [status, setStatus] = useState<"ready" | "countdown" | "playing" | "leaving">("ready");
-  const [countdown, setCountdown] = useState(3);
+  const [countdown, setCountdown] = useState(ARCADE_COUNTDOWN);
   const [pending, setPending] = useState(false);
   const [feedback, setFeedback] = useState<
     (MathApiResult & { choice: number | null; timedOut: boolean }) | null
@@ -172,9 +179,7 @@ export function MathArcade({
   const updateClock = useEffectEvent(() => {
     const started = activeClock.current;
     if (!started || !question) return;
-    const elapsed =
-      started.elapsed +
-      Math.max(0, performance.now() - started.at, Date.now() - started.wallAt) / 1000;
+    const elapsed = arcadeElapsed(started);
     const bank = Math.max(0, started.bank - (elapsed - started.elapsed) * question.drain);
     setRound((value) => ({ ...value, elapsed, bank }));
   });
@@ -265,15 +270,15 @@ export function MathArcade({
         progress: result.progress,
         points: 0,
         streak: 0,
-        lives: 3,
-        bank: 60,
+        lives: ARCADE_LIVES,
+        bank: ARCADE_RESERVE,
         elapsed: 0,
       });
       setFeedback(null);
       setReward(undefined);
       roundId.current = "math:" + courseId + ":" + crypto.randomUUID();
       answerSequence.current = 0;
-      setCountdown(3);
+      setCountdown(ARCADE_COUNTDOWN);
       setStatus("countdown");
       setDisplayedScore(0);
     } catch (cause) {
@@ -294,10 +299,7 @@ export function MathArcade({
     )
       return;
     const started = activeClock.current;
-    const elapsed = started
-      ? started.elapsed +
-        Math.max(0, performance.now() - started.at, Date.now() - started.wallAt) / 1000
-      : round.elapsed;
+    const elapsed = started ? arcadeElapsed(started) : round.elapsed;
     const bank = started
       ? Math.max(0, started.bank - (elapsed - started.elapsed) * question.drain)
       : round.bank;
@@ -365,14 +367,13 @@ export function MathArcade({
         points,
         streak: result.streak,
         lives: value.lives - Number(!result.correct),
-        bank:
-          bank <= 0 || (result.question.phase === "final" && question.phase !== "final")
-            ? Math.max(60, bank)
-            : missed
-              ? Math.max(0, bank - 4) || 60
-              : result.correct
-                ? Math.min(90, bank + (result.fast ? 3 : 2))
-                : bank,
+        bank: arcadeReserve(
+          bank,
+          result.correct,
+          missed,
+          result.fast,
+          result.question.phase === "final" && question.phase !== "final",
+        ),
       }));
       setFeedback({ ...result, choice: missed ? null : choice });
       retryChoice.current = null;

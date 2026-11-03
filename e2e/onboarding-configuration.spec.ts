@@ -81,7 +81,7 @@ for (const theme of ["light", "dark"]) {
     await page.goto("/aprender");
     await expect(page.locator(".practice-carousel-island.is-current img").first()).toHaveAttribute(
       "src",
-      "/practice-islands/languages.webp",
+      "/languages/islands/english.webp",
     );
   });
 }

@@ -764,6 +764,15 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
             (activity["languageAttempt"] === undefined ||
               (activity["islandId"] === "languages" &&
                 validLanguageAttempt(activity["languageAttempt"]))) &&
+            (activity["englishFinalFailure"] === undefined ||
+              (activity["englishFinalFailure"] === true &&
+                Number(activity["answers"]) - Number(activity["correct"]) === 3 &&
+                Number(activity["answers"]) >= 3 &&
+                Number(activity["answers"]) <= 4 &&
+                activity["englishAttempt"] !== null &&
+                typeof activity["englishAttempt"] === "object" &&
+                (activity["englishAttempt"] as Record<string, unknown>)["curriculum"] === 4 &&
+                (activity["englishAttempt"] as Record<string, unknown>)["mode"] === "practice")) &&
             (activity["englishAttempt"] === undefined ||
               (activity["islandId"] === "english" &&
                 activity["languageAttempt"] === undefined &&
@@ -771,6 +780,24 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
                 activity["englishAttempt"].curriculum === 4 &&
                 activity["answers"] === activity["englishAttempt"].questions.length &&
                 activity["correct"] === activity["englishAttempt"].correctQuestions.length)) &&
+            (activity["englishA1FinalFailure"] === undefined ||
+              (activity["englishA1FinalFailure"] === true &&
+                Number(activity["answers"]) - Number(activity["correct"]) === 3 &&
+                Number(activity["answers"]) >= 3 &&
+                Number(activity["answers"]) <= 4 &&
+                activity["englishA1Attempt"] !== null &&
+                typeof activity["englishA1Attempt"] === "object" &&
+                (activity["englishA1Attempt"] as Record<string, unknown>)["curriculum"] === 5 &&
+                (activity["englishA1Attempt"] as Record<string, unknown>)["mode"] ===
+                  "practice")) &&
+            (activity["englishA1Attempt"] === undefined ||
+              (activity["islandId"] === "english" &&
+                activity["languageAttempt"] === undefined &&
+                activity["englishAttempt"] === undefined &&
+                validLanguageAttempt(activity["englishA1Attempt"]) &&
+                activity["englishA1Attempt"].curriculum === 5 &&
+                activity["answers"] === activity["englishA1Attempt"].questions.length &&
+                activity["correct"] === activity["englishA1Attempt"].correctQuestions.length)) &&
             (activity["moduleLevel"] === undefined ||
               (Number.isInteger(activity["moduleLevel"]) &&
                 Number(activity["moduleLevel"]) >= 0 &&
