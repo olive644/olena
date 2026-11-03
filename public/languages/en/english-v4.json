@@ -239,6 +239,248 @@
             "en-US": "I’d like a coffee, please."
           }
         }
+      ],
+      "teaching": [
+        {
+          "level": 0,
+          "focus": "My name is",
+          "explanation": {
+            "pt-BR": "Apresenta o próprio nome; não pergunta o nome de outra pessoa.",
+            "en-US": "Introduces your own name; it does not ask for another person’s name."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "What is your name",
+          "explanation": {
+            "pt-BR": "Pergunta o nome da outra pessoa; your aponta para quem está ouvindo.",
+            "en-US": "Asks for the other person’s name; your refers to the listener."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "Nice to meet you",
+          "explanation": {
+            "pt-BR": "Expressa prazer ao conhecer alguém, não uma despedida.",
+            "en-US": "Expresses pleasure when meeting someone, not a goodbye."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "Where ... from",
+          "explanation": {
+            "pt-BR": "Pergunta a origem; from introduz o lugar de onde alguém vem.",
+            "en-US": "Asks about origin; from introduces where somebody comes from."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "How are you",
+          "explanation": {
+            "pt-BR": "Pergunta como a pessoa está; today limita a pergunta a hoje.",
+            "en-US": "Asks how someone feels; today limits the question to today."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "See you tomorrow",
+          "explanation": {
+            "pt-BR": "Marca uma despedida com reencontro amanhã, não agora.",
+            "en-US": "Says goodbye with a meeting tomorrow, not now."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "I am",
+          "explanation": {
+            "pt-BR": "Liga eu a uma identidade; a student indica uma pessoa estudante.",
+            "en-US": "Links I to an identity; a student means one student."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "welcome here",
+          "explanation": {
+            "pt-BR": "Dá boas-vindas neste lugar; aqui welcome descreve quem é bem-vindo.",
+            "en-US": "Welcomes someone to this place; here welcome describes the person."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "He is",
+          "explanation": {
+            "pt-BR": "Usa he para ele e is para ligar essa pessoa a my friend.",
+            "en-US": "Uses he for a male person and is to link him to my friend."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "She is our teacher",
+          "explanation": {
+            "pt-BR": "Apresenta uma professora; our mostra que ela ensina a nós.",
+            "en-US": "Introduces a female teacher; our shows she teaches us."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "We are ready",
+          "explanation": {
+            "pt-BR": "Usa are com we; ready descreve que nós estamos prontos.",
+            "en-US": "Uses are with we; ready describes us as prepared."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "They are at",
+          "explanation": {
+            "pt-BR": "Usa they para eles ou elas e at para a localização no porto.",
+            "en-US": "Uses they for several people and at for their location at the harbour."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "am not",
+          "explanation": {
+            "pt-BR": "Nega o estado; not transforma estar cansado em não estar cansado.",
+            "en-US": "Negates the state; not changes being tired into not being tired."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Are you",
+          "explanation": {
+            "pt-BR": "Coloca are antes de you para transformar uma afirmação em pergunta.",
+            "en-US": "Puts are before you to turn a statement into a question."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Is he",
+          "explanation": {
+            "pt-BR": "Inverte he is para perguntar a identidade de uma pessoa.",
+            "en-US": "Reverses he is to ask about one person’s identity."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Are they your friends",
+          "explanation": {
+            "pt-BR": "Pergunta sobre várias pessoas; they exige are e your indica os amigos de quem ouve.",
+            "en-US": "Asks about several people; they takes are and your refers to the listener’s friends."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "This is my",
+          "explanation": {
+            "pt-BR": "Mostra algo próximo; my indica que o livro pertence a quem fala.",
+            "en-US": "Points to something nearby; my means the book belongs to the speaker."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "That is your",
+          "explanation": {
+            "pt-BR": "Mostra algo mais afastado; your indica que a bolsa pertence a quem ouve.",
+            "en-US": "Points to something farther away; your means the bag belongs to the listener."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "My name is Alice",
+          "explanation": {
+            "pt-BR": "Apresenta Alice; trocar o nome não muda a função de se apresentar.",
+            "en-US": "Introduces Alice; changing the name does not change the purpose of introducing yourself."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "What is this",
+          "explanation": {
+            "pt-BR": "Pergunta o que é um objeto próximo, não quem é uma pessoa.",
+            "en-US": "Asks what a nearby object is, not who a person is."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "How old",
+          "explanation": {
+            "pt-BR": "Pergunta idade; em inglês usamos are, não have, nessa pergunta.",
+            "en-US": "Asks about age; English uses are, not have, in this question."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "Where is",
+          "explanation": {
+            "pt-BR": "Pergunta localização; a resposta precisa indicar onde fica o café.",
+            "en-US": "Asks about location; the answer needs to say where the café is."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "I’d like",
+          "explanation": {
+            "pt-BR": "Faz um pedido educado; coffee é o item pedido e please acrescenta por favor.",
+            "en-US": "Makes a polite request; coffee is the requested item and please adds politeness."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "A tea, please",
+          "explanation": {
+            "pt-BR": "Pede um chá; tea é diferente de coffee, mesmo com a mesma forma de pedido.",
+            "en-US": "Requests a tea; tea is different from coffee even in the same request pattern."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "Is this your cup",
+          "explanation": {
+            "pt-BR": "Pergunta se esta xícara pertence a você; não afirma que pertence.",
+            "en-US": "Asks whether this cup belongs to you; it does not state that it does."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "I am hungry",
+          "explanation": {
+            "pt-BR": "Descreve fome com am; hungry é estar com fome, não com sede.",
+            "en-US": "Describes hunger with am; hungry means needing food, not drink."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "The water is cold",
+          "explanation": {
+            "pt-BR": "Descreve a temperatura da água; cold é fria e não quente.",
+            "en-US": "Describes water temperature; cold means not hot."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "Please speak slowly",
+          "explanation": {
+            "pt-BR": "Pede que a pessoa fale mais devagar; slowly modifica a maneira de falar.",
+            "en-US": "Asks someone to speak more slowly; slowly changes how they speak."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "don’t understand",
+          "explanation": {
+            "pt-BR": "Expressa falta de compreensão; don’t nega understand.",
+            "en-US": "Expresses a lack of understanding; don’t negates understand."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "Could you repeat",
+          "explanation": {
+            "pt-BR": "Pede repetição de modo educado; repeat é dizer outra vez, não traduzir.",
+            "en-US": "Politely requests repetition; repeat means say again, not translate."
+          }
+        }
       ]
     },
     {
@@ -508,6 +750,248 @@
           "meaning": {
             "pt-BR": "Ela está preparando o almoço agora.",
             "en-US": "She is making lunch now."
+          }
+        }
+      ],
+      "teaching": [
+        {
+          "level": 0,
+          "focus": "in the morning",
+          "explanation": {
+            "pt-BR": "Situa o hábito na manhã; study descreve a rotina, não uma ação só de agora.",
+            "en-US": "Places a habit in the morning; study describes a routine, not only an action now."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "What time",
+          "explanation": {
+            "pt-BR": "Pergunta as horas; a resposta precisa ser um horário.",
+            "en-US": "Asks for the time; the answer needs to give a time."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "starts at ten",
+          "explanation": {
+            "pt-BR": "Usa at antes de uma hora exata; starts concorda com the lesson.",
+            "en-US": "Uses at before an exact time; starts agrees with the lesson."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "every day",
+          "explanation": {
+            "pt-BR": "Indica repetição diária; walk descreve um hábito.",
+            "en-US": "Indicates daily repetition; walk describes a habit."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "at noon",
+          "explanation": {
+            "pt-BR": "Significa ao meio-dia; have lunch significa almoçar.",
+            "en-US": "Means at midday; have lunch means eat the midday meal."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "before bed",
+          "explanation": {
+            "pt-BR": "Situa a leitura antes de dormir; before não significa depois.",
+            "en-US": "Places reading before sleep; before does not mean after."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "wake up at seven",
+          "explanation": {
+            "pt-BR": "Combina acordar com um horário; up faz parte da expressão wake up.",
+            "en-US": "Combines waking with a time; up is part of wake up."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "She studies",
+          "explanation": {
+            "pt-BR": "Troca y por ies em study com she; o sujeito é uma pessoa.",
+            "en-US": "Changes y to ies in study with she; the subject is one person."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "He works",
+          "explanation": {
+            "pt-BR": "Acrescenta s ao verbo com he no presente simples.",
+            "en-US": "Adds s to the verb with he in the present simple."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "We walk",
+          "explanation": {
+            "pt-BR": "Mantém walk sem s com we; to indica o destino.",
+            "en-US": "Keeps walk without s with we; to indicates the destination."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "They play after",
+          "explanation": {
+            "pt-BR": "Usa play sem s com they; after situa a ação depois da escola.",
+            "en-US": "Uses play without s with they; after places the action after school."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "I don’t drink",
+          "explanation": {
+            "pt-BR": "Usa don’t para negar um hábito com I; drink permanece na forma base.",
+            "en-US": "Uses don’t to deny a habit with I; drink stays in its base form."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "She doesn’t eat",
+          "explanation": {
+            "pt-BR": "Usa doesn’t com she; o verbo eat fica sem s depois do auxiliar.",
+            "en-US": "Uses doesn’t with she; eat has no s after the auxiliary."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Do you like",
+          "explanation": {
+            "pt-BR": "Usa do para perguntar preferência; you mantém like na forma base.",
+            "en-US": "Uses do to ask about a preference; you keeps like in its base form."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Does he speak",
+          "explanation": {
+            "pt-BR": "Usa does com he; speak fica sem s porque does já marca a pessoa.",
+            "en-US": "Uses does with he; speak has no s because does already marks the person."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "What time do you",
+          "explanation": {
+            "pt-BR": "Pede o horário de uma rotina; do auxilia a pergunta sobre start.",
+            "en-US": "Asks for the time of a routine; do helps form the question about start."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "usually",
+          "explanation": {
+            "pt-BR": "Indica frequência habitual, não uma regra sem exceções.",
+            "en-US": "Indicates a usual frequency, not a rule without exceptions."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "always",
+          "explanation": {
+            "pt-BR": "Indica que algo acontece sempre e vem antes do verbo principal brings.",
+            "en-US": "Means something happens every time and comes before the main verb brings."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "sometimes",
+          "explanation": {
+            "pt-BR": "Indica algumas vezes; não significa sempre nem nunca.",
+            "en-US": "Means on some occasions; it does not mean always or never."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "never",
+          "explanation": {
+            "pt-BR": "Já dá sentido negativo; não acrescente don’t para negar novamente.",
+            "en-US": "Already gives a negative meaning; do not add don’t to negate it again."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "opens at eight",
+          "explanation": {
+            "pt-BR": "Descreve um horário regular da loja, com s por ser uma loja.",
+            "en-US": "Describes a shop’s regular opening time, with s for one shop."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "leaves at ten",
+          "explanation": {
+            "pt-BR": "Descreve a partida regular de um ônibus, não sua chegada.",
+            "en-US": "Describes a bus’s regular departure, not its arrival."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "am reading now",
+          "explanation": {
+            "pt-BR": "Combina am com reading para uma ação em andamento agora.",
+            "en-US": "Combines am with reading for an action happening now."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "is making",
+          "explanation": {
+            "pt-BR": "Combina is com making; make perde o e antes de ing.",
+            "en-US": "Combines is with making; make loses its e before ing."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "are waiting",
+          "explanation": {
+            "pt-BR": "Usa are com they e waiting para uma espera em andamento.",
+            "en-US": "Uses are with they and waiting for an ongoing wait."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "Are you listening",
+          "explanation": {
+            "pt-BR": "Inverte you are para perguntar sobre uma ação em andamento.",
+            "en-US": "Reverses you are to ask about an ongoing action."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "have breakfast",
+          "explanation": {
+            "pt-BR": "Significa tomar café da manhã; breakfast não é a bebida coffee.",
+            "en-US": "Means eat the morning meal; breakfast is not the drink coffee."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "after lunch",
+          "explanation": {
+            "pt-BR": "Ordena duas ações: primeiro almoçar, depois limpar a mesa.",
+            "en-US": "Orders two actions: first have lunch, then clean the table."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "How often",
+          "explanation": {
+            "pt-BR": "Pergunta frequência; responder um lugar não responde quantas vezes.",
+            "en-US": "Asks about frequency; giving a place does not answer how often."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "On Sundays",
+          "explanation": {
+            "pt-BR": "Usa on com dias e o plural Sundays para um hábito aos domingos.",
+            "en-US": "Uses on with days and plural Sundays for a Sunday habit."
           }
         }
       ]
@@ -791,6 +1275,248 @@
           "meaning": {
             "pt-BR": "Eu estava lendo quando você ligou.",
             "en-US": "I was reading when you called."
+          }
+        }
+      ],
+      "teaching": [
+        {
+          "level": 0,
+          "focus": "visited ... yesterday",
+          "explanation": {
+            "pt-BR": "Marca uma visita concluída ontem; ed indica passado regular.",
+            "en-US": "Marks a completed visit yesterday; ed indicates a regular past."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "bought",
+          "explanation": {
+            "pt-BR": "É o passado irregular de buy; a compra já aconteceu.",
+            "en-US": "Is the irregular past of buy; the purchase already happened."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "didn’t miss",
+          "explanation": {
+            "pt-BR": "Nega perder o trem; miss fica na forma base depois de didn’t.",
+            "en-US": "Negates missing the train; miss stays in its base form after didn’t."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Did you see",
+          "explanation": {
+            "pt-BR": "Pergunta sobre o passado; see fica na forma base depois de did.",
+            "en-US": "Asks about the past; see stays in its base form after did."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "closed at six",
+          "explanation": {
+            "pt-BR": "Descreve fechamento concluído às seis; closed é passado de close.",
+            "en-US": "Describes a completed closing at six; closed is the past of close."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "was tired",
+          "explanation": {
+            "pt-BR": "Usa was com I para um estado no passado, depois da caminhada.",
+            "en-US": "Uses was with I for a past state after the walk."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "visited the harbour",
+          "explanation": {
+            "pt-BR": "É uma visita terminada; yesterday elimina a leitura de rotina presente.",
+            "en-US": "Is a completed visit; yesterday rules out a present routine."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "walked across",
+          "explanation": {
+            "pt-BR": "Combina o passado walked com atravessar de um lado ao outro.",
+            "en-US": "Combines past walked with crossing from one side to the other."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "watched ... last night",
+          "explanation": {
+            "pt-BR": "Situa um filme na noite passada; watched não é uma intenção futura.",
+            "en-US": "Places a film last night; watched is not a future intention."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "played",
+          "explanation": {
+            "pt-BR": "É o passado regular de play; a ação na praça foi concluída.",
+            "en-US": "Is the regular past of play; the action in the square was completed."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "went",
+          "explanation": {
+            "pt-BR": "É o passado irregular de go; não se forma como goed.",
+            "en-US": "Is the irregular past of go; it is not formed as goed."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "bought a new book",
+          "explanation": {
+            "pt-BR": "Relata uma compra terminada; new descreve o livro, não o tempo verbal.",
+            "en-US": "Reports a completed purchase; new describes the book, not the tense."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "ate",
+          "explanation": {
+            "pt-BR": "É o passado irregular de eat; together indica que comeram juntos.",
+            "en-US": "Is the irregular past of eat; together means they ate with each other."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "saw",
+          "explanation": {
+            "pt-BR": "É o passado irregular de see; near indica proximidade do barco.",
+            "en-US": "Is the irregular past of see; near indicates closeness to the boat."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "didn’t understand",
+          "explanation": {
+            "pt-BR": "Nega compreensão no passado; não use understood depois de didn’t.",
+            "en-US": "Negates understanding in the past; do not use understood after didn’t."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "didn’t go",
+          "explanation": {
+            "pt-BR": "Usa go sem passado depois de didn’t; yesterday marca ontem.",
+            "en-US": "Uses base go after didn’t; yesterday marks the previous day."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Did you finish",
+          "explanation": {
+            "pt-BR": "Pergunta se algo foi concluído; finish permanece sem ed depois de did.",
+            "en-US": "Asks whether something was completed; finish stays without ed after did."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "Where did they go",
+          "explanation": {
+            "pt-BR": "Pede o destino de uma ação passada; where pede lugar.",
+            "en-US": "Asks for the destination of a past action; where asks for a place."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "I was at home",
+          "explanation": {
+            "pt-BR": "Descreve onde eu estava; was é o passado de am para I.",
+            "en-US": "Describes where I was; was is the past of am with I."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "We were",
+          "explanation": {
+            "pt-BR": "Usa were com we para estado passado de várias pessoas.",
+            "en-US": "Uses were with we for several people’s past state."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Was the café open",
+          "explanation": {
+            "pt-BR": "Pergunta sobre um estado passado; open é o estado, não o verbo opened.",
+            "en-US": "Asks about a past state; open is the state, not the verb opened."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "weren’t ready",
+          "explanation": {
+            "pt-BR": "Nega estar pronto no passado com they; weren’t junta were e not.",
+            "en-US": "Negates being ready in the past with they; weren’t joins were and not."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "was reading when",
+          "explanation": {
+            "pt-BR": "Mostra leitura em andamento interrompida pela ligação.",
+            "en-US": "Shows reading in progress interrupted by the call."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "was cooking at six",
+          "explanation": {
+            "pt-BR": "Descreve o que estava acontecendo às seis, sem dizer que terminou nessa hora.",
+            "en-US": "Describes what was happening at six without saying it finished then."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "While ... walking",
+          "explanation": {
+            "pt-BR": "Apresenta uma ação em andamento durante a qual começou a chover.",
+            "en-US": "Presents an ongoing action during which it rained."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "First",
+          "explanation": {
+            "pt-BR": "Marca a primeira ação de uma sequência passada.",
+            "en-US": "Marks the first action in a past sequence."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "Then",
+          "explanation": {
+            "pt-BR": "Liga o telefonema à ação anterior; significa depois ou em seguida.",
+            "en-US": "Links the call to the previous action; it means next."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "Finally",
+          "explanation": {
+            "pt-BR": "Marca a última ação; found é passado irregular de find.",
+            "en-US": "Marks the last action; found is the irregular past of find."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "Two days ago",
+          "explanation": {
+            "pt-BR": "Conta dois dias para trás a partir de agora; lost é passado de lose.",
+            "en-US": "Counts two days back from now; lost is the past of lose."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "When I was a child",
+          "explanation": {
+            "pt-BR": "Situa lived em um período passado da vida, não na infância de outra pessoa.",
+            "en-US": "Places lived in a past period of the speaker’s life, not somebody else’s childhood."
           }
         }
       ]
@@ -1082,6 +1808,248 @@
             "en-US": "If you practise, you will improve."
           }
         }
+      ],
+      "teaching": [
+        {
+          "level": 1,
+          "focus": "going to visit",
+          "explanation": {
+            "pt-BR": "Apresenta uma visita planejada; visit permanece na forma base.",
+            "en-US": "Presents a planned visit; visit remains in its base form."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "We’ll take",
+          "explanation": {
+            "pt-BR": "Contrai we will; next bus indica o próximo ônibus.",
+            "en-US": "Contracts we will; next bus means the following bus."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Are you going to",
+          "explanation": {
+            "pt-BR": "Pergunta sobre intenção futura invertendo you are.",
+            "en-US": "Asks about future intention by reversing you are."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "I think ... will",
+          "explanation": {
+            "pt-BR": "Expressa uma previsão ou opinião sobre o futuro, não certeza absoluta.",
+            "en-US": "Expresses a prediction or opinion about the future, not absolute certainty."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "Let’s meet",
+          "explanation": {
+            "pt-BR": "Propõe um encontro conjunto; outside indica fora da biblioteca.",
+            "en-US": "Suggests meeting together; outside means not inside the library."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "won’t be late",
+          "explanation": {
+            "pt-BR": "Nega um atraso futuro; won’t é will not.",
+            "en-US": "Negates future lateness; won’t means will not."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "I will help",
+          "explanation": {
+            "pt-BR": "Oferece ajuda ou assume uma decisão; help fica na forma base.",
+            "en-US": "Offers help or makes a decision; help stays in its base form."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "will rain tomorrow",
+          "explanation": {
+            "pt-BR": "Prevê chuva amanhã; tomorrow aponta para o futuro.",
+            "en-US": "Predicts rain tomorrow; tomorrow points to the future."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "We won’t",
+          "explanation": {
+            "pt-BR": "Nega uma previsão sobre nós; não significa que já chegamos atrasados.",
+            "en-US": "Negates a prediction about us; it does not mean we already arrived late."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "Will you join",
+          "explanation": {
+            "pt-BR": "Convida alguém a participar; will aparece antes de you.",
+            "en-US": "Invites someone to join; will comes before you."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "am going to study",
+          "explanation": {
+            "pt-BR": "Expressa um plano de estudo para esta noite, não estudo acontecendo agora.",
+            "en-US": "Expresses a study plan for tonight, not studying happening now."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "is going to visit",
+          "explanation": {
+            "pt-BR": "Concorda is com she e anuncia uma visita planejada.",
+            "en-US": "Agrees is with she and announces a planned visit."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Are they going to",
+          "explanation": {
+            "pt-BR": "Pergunta se várias pessoas pretendem viajar; are concorda com they.",
+            "en-US": "Asks whether several people intend to travel; are agrees with they."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "Look at those clouds",
+          "explanation": {
+            "pt-BR": "Dá uma evidência presente para a previsão com going to.",
+            "en-US": "Gives present evidence for the prediction with going to."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "are meeting ... at five",
+          "explanation": {
+            "pt-BR": "Usa presente contínuo para um compromisso futuro já combinado.",
+            "en-US": "Uses the present continuous for a future arrangement already made."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "leaves ... tomorrow",
+          "explanation": {
+            "pt-BR": "Usa presente simples para horário fixo de transporte no futuro.",
+            "en-US": "Uses the present simple for a fixed future transport schedule."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "I’d like to",
+          "explanation": {
+            "pt-BR": "Expressa um desejo; to introduz a ação de aprender.",
+            "en-US": "Expresses a wish; to introduces the action of learning."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Would you like",
+          "explanation": {
+            "pt-BR": "Faz um convite educado, sem obrigar a pessoa a aceitar.",
+            "en-US": "Makes a polite invitation without obliging the listener to accept."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "Let’s meet at",
+          "explanation": {
+            "pt-BR": "Sugere uma ação com quem ouve; at apresenta o ponto de encontro.",
+            "en-US": "Suggests an action together; at introduces the meeting place."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Shall we",
+          "explanation": {
+            "pt-BR": "Propõe decidir algo juntos, como pegar o barco.",
+            "en-US": "Suggests deciding something together, such as taking the boat."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "should leave",
+          "explanation": {
+            "pt-BR": "Dá um conselho; should não expressa a obrigação forte de must.",
+            "en-US": "Gives advice; should does not express the strong obligation of must."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "must bring",
+          "explanation": {
+            "pt-BR": "Expressa uma obrigação; ticket é o item obrigatório.",
+            "en-US": "Expresses an obligation; ticket is the required item."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "don’t have to",
+          "explanation": {
+            "pt-BR": "Indica ausência de obrigação; não significa proibição de pagar.",
+            "en-US": "Indicates no obligation; it does not mean paying is forbidden."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "If it rains, we will",
+          "explanation": {
+            "pt-BR": "Combina condição possível no presente com resultado futuro usando will.",
+            "en-US": "Combines a possible present condition with a future result using will."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "If you practise",
+          "explanation": {
+            "pt-BR": "Condiciona a melhora à prática; não promete melhora sem praticar.",
+            "en-US": "Makes improvement depend on practice; it does not promise improvement without practice."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "might arrive",
+          "explanation": {
+            "pt-BR": "Expressa possibilidade; o atraso não é uma certeza.",
+            "en-US": "Expresses possibility; arriving later is not certain."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "Perhaps we can",
+          "explanation": {
+            "pt-BR": "Oferece uma possibilidade para sábado, aberta à combinação.",
+            "en-US": "Offers a possibility for Saturday, open to agreement."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "I promise I will",
+          "explanation": {
+            "pt-BR": "Assume compromisso de telefonar no futuro.",
+            "en-US": "Makes a commitment to call in the future."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "Next month ... moving",
+          "explanation": {
+            "pt-BR": "Apresenta uma mudança futura já organizada com presente contínuo.",
+            "en-US": "Presents an arranged future move using the present continuous."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "will have finished",
+          "explanation": {
+            "pt-BR": "Indica que a ação estará concluída até sexta, não que começará na sexta.",
+            "en-US": "Means the action will be completed by Friday, not that it starts on Friday."
+          }
+        }
       ]
     },
     {
@@ -1371,6 +2339,248 @@
             "en-US": "Could you explain what you mean?"
           }
         }
+      ],
+      "teaching": [
+        {
+          "level": 4,
+          "focus": "While ... merit",
+          "explanation": {
+            "pt-BR": "Reconhece uma qualidade antes de apontar uma limitação de acessibilidade.",
+            "en-US": "Acknowledges a strength before pointing out an accessibility limitation."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "outweigh",
+          "explanation": {
+            "pt-BR": "Compara importância: os benefícios pesam mais que o inconveniente inicial.",
+            "en-US": "Compares importance: the benefits matter more than the initial inconvenience."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "nevertheless",
+          "explanation": {
+            "pt-BR": "Contrapõe uma ressalva ao reconhecimento anterior; a evidência ainda é limitada.",
+            "en-US": "Adds a contrasting reservation after acknowledging a point; evidence is still limited."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "a strong case for",
+          "explanation": {
+            "pt-BR": "Indica bons argumentos a favor, não uma caixa ou processo físico.",
+            "en-US": "Means good arguments in favour, not a physical case or box."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "doesn’t necessarily follow",
+          "explanation": {
+            "pt-BR": "Questiona a ligação lógica entre números e conclusão, sem negar todos os números.",
+            "en-US": "Questions the logical link between figures and conclusion without denying all the figures."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "On balance",
+          "explanation": {
+            "pt-BR": "Pesa prós e contras antes de recomendar uma experiência pequena.",
+            "en-US": "Weighs pros and cons before recommending a small trial."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "agree with",
+          "explanation": {
+            "pt-BR": "Expressa concordância com uma ideia; with liga concordar ao objeto.",
+            "en-US": "Expresses agreement with an idea; with links agreement to its object."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "but I disagree",
+          "explanation": {
+            "pt-BR": "Mantém respeito ao reconhecer o ponto, mas informa discordância.",
+            "en-US": "Shows respect by acknowledging a point but states disagreement."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "In my opinion",
+          "explanation": {
+            "pt-BR": "Sinaliza um ponto de vista pessoal, não um fato comprovado.",
+            "en-US": "Signals a personal viewpoint, not a proven fact."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "Because",
+          "explanation": {
+            "pt-BR": "Apresenta a causa da decisão de ficar dentro; chuva é o motivo.",
+            "en-US": "Introduces the cause of staying inside; rain is the reason."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "because I was ill",
+          "explanation": {
+            "pt-BR": "Explica por que a pessoa ficou em casa usando um estado passado.",
+            "en-US": "Explains why the speaker stayed home using a past state."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "Although",
+          "explanation": {
+            "pt-BR": "Contrasta frio com sair; a dificuldade não impediu a ação.",
+            "en-US": "Contrasts cold weather with going out; the difficulty did not prevent the action."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "However",
+          "explanation": {
+            "pt-BR": "Introduz uma alternativa que contrasta com a ideia anterior.",
+            "en-US": "Introduces an alternative contrasting with the previous idea."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "For example",
+          "explanation": {
+            "pt-BR": "Introduz um exemplo concreto, não uma conclusão geral.",
+            "en-US": "Introduces a concrete example, not a general conclusion."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Therefore",
+          "explanation": {
+            "pt-BR": "Marca uma consequência lógica: por isso é preciso outro plano.",
+            "en-US": "Marks a logical consequence: a new plan is needed as a result."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "On the other hand",
+          "explanation": {
+            "pt-BR": "Apresenta outro lado da comparação, aqui o custo menor.",
+            "en-US": "Presents another side of a comparison, here the lower cost."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Could you explain",
+          "explanation": {
+            "pt-BR": "Pede esclarecimento de modo educado; não afirma que a ideia está errada.",
+            "en-US": "Politely asks for clarification; it does not state that the idea is wrong."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "What evidence",
+          "explanation": {
+            "pt-BR": "Pede apoio verificável para uma ideia, não apenas outra opinião.",
+            "en-US": "Asks for verifiable support for an idea, not just another opinion."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "The main reason",
+          "explanation": {
+            "pt-BR": "Destaca o motivo principal; não afirma que é o único motivo.",
+            "en-US": "Highlights the main reason; it does not say it is the only reason."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "depends on",
+          "explanation": {
+            "pt-BR": "Indica que a decisão varia conforme o clima.",
+            "en-US": "Indicates that the decision changes according to the weather."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Both",
+          "explanation": {
+            "pt-BR": "Inclui as duas opções; não escolhe uma só.",
+            "en-US": "Includes two options; it does not choose only one."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Neither",
+          "explanation": {
+            "pt-BR": "Nega as duas respostas; não significa ambas completas.",
+            "en-US": "Negates both answers; it does not mean both are complete."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "Even though",
+          "explanation": {
+            "pt-BR": "Reforça a concessão: tentar apesar da dificuldade.",
+            "en-US": "Emphasises a concession: trying despite difficulty."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "Despite the rain",
+          "explanation": {
+            "pt-BR": "Usa despite seguido de nome, sem precisar de it is raining.",
+            "en-US": "Uses despite followed by a noun without needing it is raining."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "Not only is it",
+          "explanation": {
+            "pt-BR": "Inverte is it após not only no início; acrescenta uma segunda qualidade.",
+            "en-US": "Inverts is it after initial not only; it adds a second quality."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "I’d rather ... than",
+          "explanation": {
+            "pt-BR": "Compara preferências: prefere ler a assistir ao filme.",
+            "en-US": "Compares preferences: reading is preferred to watching a film."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "ought to",
+          "explanation": {
+            "pt-BR": "Recomenda considerar todos; funciona como conselho ou dever moral.",
+            "en-US": "Recommends considering everyone; it works as advice or a moral duty."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "If I were you",
+          "explanation": {
+            "pt-BR": "Introduz conselho em uma situação imaginária, não uma identidade real.",
+            "en-US": "Introduces advice in an imaginary situation, not a real identity."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "To sum up",
+          "explanation": {
+            "pt-BR": "Avisa que vem um resumo das ideias anteriores.",
+            "en-US": "Signals that a summary of earlier ideas follows."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "Let’s find",
+          "explanation": {
+            "pt-BR": "Convida à solução conjunta; together reforça cooperação.",
+            "en-US": "Invites a joint solution; together emphasises cooperation."
+          }
+        }
       ]
     },
     {
@@ -1652,6 +2862,248 @@
           "meaning": {
             "pt-BR": "Não tenho certeza de que entendi. Você poderia dar um exemplo?",
             "en-US": "I’m not sure I follow. Could you give an example?"
+          }
+        }
+      ],
+      "teaching": [
+        {
+          "level": 5,
+          "focus": "feat of optimism",
+          "explanation": {
+            "pt-BR": "Ironiza a duração: chamar a reunião de breve exigiria muito otimismo.",
+            "en-US": "Ironically comments on duration: calling the meeting brief would require great optimism."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "unqualified success",
+          "explanation": {
+            "pt-BR": "É sucesso sem ressalvas; a negação suavizada mostra reservas sobre o resultado.",
+            "en-US": "Means success without reservations; the softened negative expresses reservations about the outcome."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "certainly one way",
+          "explanation": {
+            "pt-BR": "Neste contexto concede que há uma leitura possível, sem endossá-la como a melhor.",
+            "en-US": "In this context concedes one possible reading without endorsing it as the best."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "supposedly minor",
+          "explanation": {
+            "pt-BR": "Contrasta a alegação de mudança pequena com a grande reação causada.",
+            "en-US": "Contrasts an allegedly small change with the large reaction it caused."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "silence ... an answer",
+          "explanation": {
+            "pt-BR": "Trata a ausência de fala como mensagem significativa, não falta de informação.",
+            "en-US": "Treats a lack of speech as a meaningful message, not no information."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "conspicuous by its absence",
+          "explanation": {
+            "pt-BR": "Destaca justamente o que faltou; a falta de entusiasmo era perceptível.",
+            "en-US": "Highlights what was missing; the lack of enthusiasm was noticeable."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "give me a hand",
+          "explanation": {
+            "pt-BR": "Pede ajuda; não pede que alguém entregue uma mão literalmente.",
+            "en-US": "Asks for help; it does not literally ask someone to hand over a hand."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "a piece of cake",
+          "explanation": {
+            "pt-BR": "Descreve algo muito fácil; neste uso não se refere a comida.",
+            "en-US": "Describes something very easy; in this use it does not refer to food."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "break the ice",
+          "explanation": {
+            "pt-BR": "Propõe reduzir o constrangimento inicial de uma conversa.",
+            "en-US": "Suggests reducing the initial awkwardness of a conversation."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "under the weather",
+          "explanation": {
+            "pt-BR": "Indica estar se sentindo mal; não descreve posição sob o tempo.",
+            "en-US": "Means feeling unwell; it does not describe a position under the weather."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "rings a bell",
+          "explanation": {
+            "pt-BR": "Expressa lembrança vaga ou familiaridade, não um sino real.",
+            "en-US": "Expresses a vague memory or familiarity, not a real bell."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "Take your time",
+          "explanation": {
+            "pt-BR": "Permite fazer algo sem pressa; não manda pegar um relógio.",
+            "en-US": "Allows someone to do something without rushing; it does not ask them to take a clock."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "Keep an eye on",
+          "explanation": {
+            "pt-BR": "Pede atenção ou vigilância ao barco, não mover um olho.",
+            "en-US": "Asks someone to watch the boat, not to move an eye."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "on the same page",
+          "explanation": {
+            "pt-BR": "Indica entendimento compartilhado, sem exigir a mesma página física.",
+            "en-US": "Indicates shared understanding without requiring the same physical page."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "changed my mind",
+          "explanation": {
+            "pt-BR": "Informa mudança de opinião, não troca literal da mente.",
+            "en-US": "Reports a change of opinion, not a literal replacement of the mind."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "call it a day",
+          "explanation": {
+            "pt-BR": "Propõe encerrar o trabalho por hoje, não dar nome ao dia.",
+            "en-US": "Suggests stopping work for today, not naming the day."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "looking forward to",
+          "explanation": {
+            "pt-BR": "Expressa expectativa positiva por algo futuro.",
+            "en-US": "Expresses positive anticipation of something in the future."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "up to you",
+          "explanation": {
+            "pt-BR": "Deixa a decisão para quem ouve; não indica altura.",
+            "en-US": "Leaves the decision to the listener; it does not indicate height."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Better late than never",
+          "explanation": {
+            "pt-BR": "Valoriza fazer algo com atraso em vez de nunca fazer.",
+            "en-US": "Values doing something late rather than never doing it."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "give up",
+          "explanation": {
+            "pt-BR": "Significa desistir; don’t transforma a fala em incentivo para continuar.",
+            "en-US": "Means stop trying; don’t turns the phrase into encouragement to continue."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "turn it down",
+          "explanation": {
+            "pt-BR": "Neste pedido, down indica diminuir volume; não é virar o objeto para baixo.",
+            "en-US": "In this request down means lower the volume, not physically turn an object down."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "look after",
+          "explanation": {
+            "pt-BR": "Significa cuidar dos livros; não significa olhar depois deles.",
+            "en-US": "Means take care of the books, not look after them in time."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "ran out of",
+          "explanation": {
+            "pt-BR": "Indica que a água acabou; run out tem sentido diferente de correr.",
+            "en-US": "Means the water supply was exhausted; run out differs from physical running."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "found out",
+          "explanation": {
+            "pt-BR": "Significa descobrir a resposta; out muda o sentido de find.",
+            "en-US": "Means discover the answer; out changes the meaning of find."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "put off",
+          "explanation": {
+            "pt-BR": "Significa adiar a reunião para outro momento, não cancelá-la necessariamente.",
+            "en-US": "Means postpone the meeting, not necessarily cancel it."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "turned down the offer",
+          "explanation": {
+            "pt-BR": "Significa recusar a oferta; com offer não se trata de volume.",
+            "en-US": "Means rejected the offer; with offer it does not refer to volume."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "What do you mean",
+          "explanation": {
+            "pt-BR": "Pede que a outra pessoa esclareça sua intenção.",
+            "en-US": "Asks the other person to clarify their intention."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "not sure I follow",
+          "explanation": {
+            "pt-BR": "Comunica dificuldade de acompanhar o raciocínio, não de seguir alguém andando.",
+            "en-US": "Communicates difficulty following the reasoning, not physically following someone."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "not my cup of tea",
+          "explanation": {
+            "pt-BR": "Expressa que algo não agrada ou não combina com a pessoa.",
+            "en-US": "Expresses that something is not to the speaker’s taste."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "silver lining",
+          "explanation": {
+            "pt-BR": "Representa um aspecto positivo em uma situação difícil.",
+            "en-US": "Represents a positive aspect of a difficult situation."
           }
         }
       ]

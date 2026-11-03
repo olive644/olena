@@ -18,6 +18,7 @@ import { ListeningQuiz } from "../components/listening-quiz";
 import { writeSyncedStorage } from "../data/synced-storage";
 import "../solo-journey.css";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
+import { lastPracticeIsland, rememberPracticeIsland } from "../data/practice-island-selection";
 import { PracticeIslandCarousel } from "../components/practice-island-carousel";
 import { MathIslandJourney } from "../components/math-island-journey";
 import { useStoredProfile } from "../hooks/use-stored-profile";
@@ -95,6 +96,8 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
     } catch {
       /* Preferência do workspace continua disponível sem sessionStorage. */
     }
+    const remembered = PRACTICE_ISLANDS.findIndex((island) => island.id === lastPracticeIsland());
+    if (remembered >= 0) return remembered;
     const index = PRACTICE_ISLANDS.findIndex(
       (island) =>
         island.id ===
@@ -124,6 +127,9 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
   const [profile] = useStoredProfile();
   const world = SOLO_WORLDS[worldIndex]!;
   const available = world.id === "mathematics" || world.id === "english";
+  useEffect(() => {
+    rememberPracticeIsland(world.id);
+  }, [world.id]);
 
   function enterMath() {
     if (!available) return;
@@ -160,7 +166,10 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
       <PracticeIslandCarousel
         index={worldIndex}
         onVisit={(index) => {
-          if (index >= 0 && index < SOLO_WORLDS.length) setWorldIndex(index);
+          if (index >= 0 && index < SOLO_WORLDS.length) {
+            setWorldIndex(index);
+            rememberPracticeIsland(SOLO_WORLDS[index]!.id);
+          }
         }}
         profile={profile}
         onEnter={enterMath}

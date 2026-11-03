@@ -10,11 +10,13 @@ export function settleEnglishRewards(
   random?: () => number,
 ) {
   const rounds = new Map<string, Map<number, number>>();
+  const completed = new Map<string, number>();
   for (const activity of activities) {
     const attempt = englishAttemptOf(activity);
     if (attempt?.curriculum === 4 && attempt.mode === "practice" && activity.answers === 1) {
-      const match = /^(english:.+):([0-5])$/.exec(activity.id);
-      if (match) {
+      const match = /^(english:.+):(\d+)(:completed)?$/.exec(activity.id);
+      if (match && Number.isSafeInteger(Number(match[2])) && Number(match[2]) < 120) {
+        if (match[3]) completed.set(match[1]!, Number(match[2]));
         const entries = rounds.get(match[1]!) ?? new Map<number, number>();
         entries.set(Number(match[2]), activity.correct);
         rounds.set(match[1]!, entries);
@@ -37,7 +39,8 @@ export function settleEnglishRewards(
     });
   }
   for (const [id, entries] of rounds) {
-    if (entries.size === 6)
+    const end = completed.get(id) ?? (!id.startsWith("english:arcade:") ? 5 : -1);
+    if (end >= 0 && entries.size === end + 1 && Math.max(...entries.keys()) === end)
       finishEnglishRound(
         "english-english",
         id,

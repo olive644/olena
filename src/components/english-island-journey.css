@@ -734,3 +734,227 @@ html[data-reduce-motion="true"] .english-journey * {
   text-decoration: underline 3px #ffda19;
   text-underline-offset: 6px;
 }
+.english-island-interior .math-world-back {
+  position: relative;
+  z-index: 4;
+  align-self: flex-start;
+  margin: 12px 0 24px;
+}
+.english-island-interior .english-course-heading {
+  display: block;
+}
+.english-island-interior .math-game-stats {
+  margin: 0 0 18px;
+}
+.english-island-interior .math-countdown {
+  min-height: 65vh;
+}
+.english-island-interior .english-game-rules {
+  padding: 16px;
+  background: #ffda1914;
+  border-left: 4px solid #ffda19;
+  line-height: 1.7;
+}
+.english-island-interior .english-specific-explanation {
+  line-height: 1.75;
+}
+.english-island-interior .english-scene > img {
+  object-fit: contain;
+}
+@media (max-width: 600px) {
+  .english-island-interior .math-world-back {
+    margin: 0 0 16px;
+  }
+  .english-island-interior .math-game-stats {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .english-island-interior .english-scene {
+    grid-template-columns: 65px minmax(0, 1fr) 60px;
+    gap: 6px;
+  }
+  .english-island-interior .english-scene > img {
+    width: 100%;
+    height: 95px;
+  }
+  .english-island-interior .english-dialogue {
+    padding: 10px;
+  }
+}
+@media (max-width: 600px) {
+  .english-island-interior .english-scene > img:last-child {
+    display: block;
+  }
+}
+.english-island-interior.is-practicing {
+  padding-top: 76px;
+}
+.english-island-interior .math-world-back {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  margin: 0;
+}
+.english-island-interior .english-scene {
+  margin: 16px 0;
+  align-items: center;
+}
+.english-island-interior .english-scene > img {
+  max-height: 140px;
+}
+.english-island-interior .english-lesson {
+  padding: 22px;
+}
+.english-island-interior .english-options .math-answer-button {
+  min-height: 64px;
+  padding: 16px;
+}
+.english-island-interior .english-lesson h1 {
+  margin: 16px 0;
+}
+.english-island-interior:not(.is-practicing) .english-interior-content {
+  padding-top: 58px;
+}
+@media (max-width: 600px) {
+  .english-island-interior.is-practicing {
+    padding-top: 68px;
+  }
+  .english-island-interior .math-world-back {
+    top: 10px;
+    left: 12px;
+  }
+  .english-island-interior .english-lesson {
+    padding: 12px;
+  }
+  .english-island-interior .math-game-stats {
+    margin-bottom: 10px;
+    gap: 6px;
+  }
+  .english-island-interior .math-game-stats .math-number .paper-digits {
+    height: 28px;
+  }
+  .english-island-interior .math-game-stats .math-hearts {
+    gap: 4px;
+  }
+  .english-island-interior .english-scene {
+    grid-template-columns: 46px minmax(0, 1fr) 46px;
+    margin: 10px 0;
+    gap: 6px;
+  }
+  .english-island-interior .english-scene > img {
+    height: 78px;
+  }
+  .english-island-interior .english-dialogue {
+    padding: 9px;
+  }
+  .english-island-interior .english-dialogue > p {
+    margin: 6px 0;
+    font-size: 15px;
+  }
+  .english-island-interior .english-lesson h1 {
+    font-size: 22px;
+    margin: 12px 0;
+  }
+  .english-island-interior .math-answers {
+    gap: 12px;
+  }
+  .english-island-interior .english-options .math-answer-button {
+    min-height: 52px;
+    padding: 12px 10px;
+  }
+}
+/* Atividade centralizada no cenário, sem cartão externo. */
+.english-island-interior.is-practicing .english-interior-content {
+  min-height: calc(100dvh - 116px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.english-island-interior .english-lesson {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+}
+.english-island-interior .english-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 14px;
+}
+.english-island-interior .english-scene > img {
+  width: 120px;
+  height: 120px;
+  max-height: none;
+}
+.english-island-interior .english-dialogue {
+  width: min(100%, 620px);
+  text-align: center;
+  padding: 12px 18px;
+  box-sizing: border-box;
+}
+.english-island-interior .english-dialogue > p {
+  margin: 6px 0;
+}
+.english-island-interior .english-lesson > h1 {
+  text-align: center;
+  color: #fff9ef;
+  font-size: 24px;
+  margin: 14px 0;
+}
+.english-island-interior .math-game-stats {
+  margin-bottom: 10px;
+}
+.english-island-interior .math-reserve {
+  margin: 10px 0;
+}
+.english-island-interior .math-time.is-ending {
+  color: #ffe49b;
+  background: #6c362f;
+}
+.english-island-interior .english-reply-intent {
+  text-align: center;
+}
+@media (max-width: 600px) {
+  .english-island-interior.is-practicing .english-interior-content {
+    min-height: calc(100dvh - 92px);
+  }
+  .english-island-interior .english-scene > img {
+    width: 78px;
+    height: 78px;
+  }
+  .english-island-interior .english-dialogue {
+    padding: 8px 12px;
+  }
+  .english-island-interior .english-dialogue > p {
+    font-size: 16px;
+  }
+  .english-island-interior .english-lesson > h1 {
+    font-size: 21px;
+    margin: 10px 0;
+  }
+  .english-island-interior .math-reserve {
+    margin: 8px 0;
+  }
+}
+.english-island-interior .english-scene {
+  margin: 20px 0;
+}
+.english-island-interior .english-options {
+  gap: 20px;
+}
+@media (max-width: 600px) {
+  .english-island-interior .english-scene {
+    margin: 18px 0;
+  }
+  .english-island-interior .english-options {
+    gap: 18px;
+  }
+}
+.english-island-interior .english-reply-intent {
+  color: #fff9ef;
+}

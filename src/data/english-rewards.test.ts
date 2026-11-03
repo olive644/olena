@@ -52,3 +52,31 @@ it("preserves the 100-point threshold, three slots and rare chest chance", () =>
     true,
   );
 });
+
+it("waits for the end of an arcade round instead of awarding at six answers", () => {
+  const records = [...round("arcade:long"), ...round("arcade:extra")].map((item, at) => ({
+    ...item,
+    id: `english:arcade:long:${at}`,
+  }));
+  settleEnglishRewards(records, () => 0.5);
+  expect(mathPlaceRewards("english-english").chests).toHaveLength(0);
+  const ended = records.map((item, at) =>
+    at === 11 ? { ...item, id: item.id + ":completed" } : item,
+  );
+  settleEnglishRewards(ended, () => 0.5);
+  expect(mathPlaceRewards("english-english").chests).toHaveLength(1);
+  expect(mathPlaceRewards("english-english").points).toBe(200);
+  settleEnglishRewards(ended, () => 0.5);
+  expect(mathPlaceRewards("english-english").chests).toHaveLength(1);
+});
+
+it("waits for all indexed answers when the completion arrives before older synced answers", () => {
+  const records = round("arcade:sync").map((item, at) => ({
+    ...item,
+    id: `english:arcade:sync:${at}${at === 5 ? ":completed" : ""}`,
+  }));
+  settleEnglishRewards([records[5]!], () => 0.5);
+  settleEnglishRewards(records, () => 0.5);
+  expect(mathPlaceRewards("english-english").points).toBe(100);
+  expect(mathPlaceRewards("english-english").chests).toHaveLength(1);
+});

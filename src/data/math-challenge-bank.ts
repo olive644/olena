@@ -1,4 +1,5 @@
 import { MATH_COURSES, type MathCourseId } from "./math-courses.js";
+import { arcadeQuestionTiming } from "../domain/arcade-clock.js";
 import { bankQuestion } from "./math-game-bank.js";
 import { choiceBounds, originalChoiceErrors } from "./math-choice-errors.js";
 import { type MathChallenge } from "../domain/adaptive-math.js";
@@ -995,7 +996,6 @@ export function challengeQuestion(
     [choices[i], choices[j]] = [choices[j]!, choices[i]!];
   }
   const difficulty = final ? 3 : variant < 2 ? 1 : variant < 4 ? 2 : 3;
-  const reading = Math.ceil(expression.length / 12);
   return {
     id: old?.id ?? `${course}:${level}:${final ? "final" : "extra"}:${extra}`,
     revision: 3,
@@ -1005,8 +1005,7 @@ export function challengeQuestion(
     choices,
     seed: final ? 289 + level * 24 + extra : level * 48 + index + 1,
     topic: MATH_COURSES.find((item) => item.id === course)!.topics[level]!,
-    budget: 28 + reading + (course.startsWith("calculus") ? 10 : 0) + (difficulty - 1) * 4,
-    drain: 1,
+    ...arcadeQuestionTiming(expression.length, difficulty, course.startsWith("calculus")),
     source:
       old?.source ??
       (final

@@ -240,6 +240,7 @@ export type WorkspaceState = {
 };
 
 export type PracticeActivity = {
+  englishFinalFailure?: boolean;
   languageAttempt?: LanguageAttempt;
   englishAttempt?: LanguageAttempt;
   moduleLevel?: number;
@@ -919,6 +920,13 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             activity.islandId !== "languages" ||
             activity.answers !== activity.languageAttempt.questions.length ||
             activity.correct !== activity.languageAttempt.correctQuestions.length)) ||
+        (activity.englishFinalFailure !== undefined &&
+          (activity.englishFinalFailure !== true ||
+            activity.englishAttempt?.curriculum !== 4 ||
+            activity.englishAttempt.mode !== "practice" ||
+            activity.answers - activity.correct !== 3 ||
+            activity.answers < 3 ||
+            activity.answers > 4)) ||
         (activity.englishAttempt !== undefined &&
           (!validLanguageAttempt(activity.englishAttempt) ||
             activity.englishAttempt.curriculum !== 4 ||

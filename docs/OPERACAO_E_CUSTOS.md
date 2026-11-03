@@ -116,3 +116,9 @@ O `.gitleaksignore` contém a impressão digital `ee79bb7…:firebase-room.rules
 Autorização vigente do proprietário para ampliar o teto de JavaScript quando a funcionalidade exigir. Revisão das atividades de Inglês medida em build: 1704,7 KiB contra 1699,8 KiB anterior, acréscimo de 4,9 KiB para planejamento adaptativo com fallback compartilhado, revisão da Olena e catálogo de idiomas gerais. Banco de 720 tarefas e guias continuam em JSON carregado sob demanda; sem biblioteca nova ou aumento da entrada por conteúdo didático. Ajuste explícito do teto total e teto rígido de 1704 para 1708 KiB. Nenhuma alteração no teto de entrada, workflows, testes ou tempos. Não se trata de redução de proteção nem de economia alegada: os demais gates continuam obrigatórios.
 
 Medição final após correção da liquidação das recompensas: aplicação 1705,7 KiB e entrada 220,7 KiB, dentro dos 1708 KiB autorizados. Nenhuma alteração adicional de teto.
+
+## Partidas inglesas com corações, 03/11/2026
+
+Build medido após a primeira integração do relógio e currículo por complexidade: aplicação 1709,6 KiB contra 1705,7 KiB da PR565; entrada permanece 220,7 KiB. Teto total de 1708 para 1712 KiB sob autorização vigente do proprietário para crescimento funcional. Nenhuma dependência nova, nenhum teto da entrada ou tempo de CI alterado. Explicações das 180 situações e artes ficam fora do JavaScript, carregadas como recursos. Limites continuam verificados no build final.
+
+Medição final com o layout sem arte nas perguntas: aplicação 1710,8 KiB de 1712 e entrada 220,7 KiB. Verify e 34 E2E locais aprovados. Sem mudança adicional de teto, dependências ou configuração externa.

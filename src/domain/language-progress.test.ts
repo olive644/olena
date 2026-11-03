@@ -272,3 +272,39 @@ it("merges expanded evidence additively without putting unsupported IDs in the l
   };
   expect(workspaceReducer(base, { type: "practice/recorded", activity: invalid })).toBe(base);
 });
+
+it("records a failed new final after three actual mistakes without inventing unanswered questions", () => {
+  const records: PracticeActivity[] = [];
+  for (let id = 0; id < 100; id++) {
+    const entry = attempt(0, [id]);
+    entry.islandId = "english";
+    entry.englishAttempt = { ...entry.languageAttempt!, curriculum: 4 };
+    delete entry.languageAttempt;
+    records.push(entry);
+  }
+  const failed = attempt(0, [0, 1, 2], [], "practice");
+  failed.englishFinalFailure = true;
+  failed.islandId = "english";
+  failed.englishAttempt = { ...failed.languageAttempt!, curriculum: 4 };
+  delete failed.languageAttempt;
+  expect(validLanguageAttempt(failed.englishAttempt)).toBe(true);
+  const progress = englishProgress([...records, failed]);
+  expect(progress.parts[0]!.review).toBe(4);
+  expect(progress.parts[0]!.errors).toBe(3);
+  expect(progress.parts[0]!.confirmed).toBe(false);
+  // Keep the old five-question final contract readable by deployed clients.
+  expect(validLanguageAttempt({ ...failed.englishAttempt, mode: "final" })).toBe(false);
+  const base = createInitialWorkspace();
+  const saved = workspaceReducer(base, { type: "practice/recorded", activity: failed });
+  expect(saved.practiceActivities).toEqual([failed]);
+  expect(isWorkspaceState(JSON.parse(JSON.stringify(saved)))).toBe(true);
+  const merged = mergeWorkspaceStates(base, saved, base).workspace;
+  expect(merged.practiceActivities![0]!.englishFinalFailure).toBe(true);
+  const invalid = {
+    ...failed,
+    correct: 1,
+    englishAttempt: { ...failed.englishAttempt!, correctQuestions: [0] },
+  };
+  expect(workspaceReducer(base, { type: "practice/recorded", activity: invalid })).toBe(base);
+  expect(isWorkspaceState({ ...base, practiceActivities: [invalid] })).toBe(false);
+});

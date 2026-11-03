@@ -1,4 +1,13 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import {
+  ARCADE_LIVES,
+  ARCADE_RESERVE,
+  ARCADE_COUNTDOWN,
+  arcadeQuestionTiming,
+  arcadeReserve,
+  arcadeElapsed,
+} from "../domain/arcade-clock";
+import { RoomPointsIcon, RoomClockIcon, RoomSecondsUnit } from "./room-paper-icons";
+import { useEffect, useEffectEvent, useMemo, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { PracticeActivity, WorkspaceState } from "../domain/workspace";
@@ -11,6 +20,7 @@ import {
 } from "../domain/language-progress";
 import {
   englishQuestion,
+  englishReplyMeaning,
   selectEnglishQuestion,
   normalizeEnglish,
   loadEnglishCourse,
@@ -22,10 +32,9 @@ import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
 import { createMathSound } from "../data/math-sound";
 import { isEnglishVoice, speakEnglish } from "../data/speech-voice";
 import { ENGLISH_AREAS, type EnglishArea } from "../domain/english-areas";
-import { ENGLISH_PART_CATALOG } from "../data/english-part-catalog";
 import { ENGLISH_ISLAND_CATALOG } from "../data/english-island-catalog";
 import { HelenaLoading } from "./helena-loading";
-import { MathUserAvatar, MathNumber } from "./math-paper-art";
+import { MathUserAvatar, MathNumber, MathIcon } from "./math-paper-art";
 import "./math-mistake-review.css";
 import { PaperArrow } from "./paper-arrow";
 import { PaperDigits } from "./paper-digits";
@@ -42,6 +51,11 @@ type Round = {
   ids: number[];
   correct: number[];
   at: number;
+  lives: number;
+  bank: number;
+  elapsed: number;
+  missed: { id: number; choice: string; timedOut: boolean }[];
+  ended: boolean;
 };
 export function EnglishIslandJourney({
   workspace,
@@ -61,7 +75,7 @@ export function EnglishIslandJourney({
     const overflow = document.body.style.overflow;
     const previous = document.activeElement;
     document.body.style.overflow = "hidden";
-    root.current?.querySelector<HTMLButtonElement>(".english-journey-header button")?.focus();
+    root.current?.querySelector<HTMLButtonElement>(".math-world-back")?.focus();
     return () => {
       document.body.style.overflow = overflow;
       if (previous instanceof HTMLElement) previous.focus();
@@ -76,6 +90,11 @@ export function EnglishIslandJourney({
     [workspace.practiceActivities, area],
   );
   const part = initialPart;
+  const [countdown, setCountdown] = useState(0);
+  const [reviewIndex, setReviewIndex] = useState(0);
+  const clockStart = useRef<{ at: number; wallAt: number; bank: number; elapsed: number } | null>(
+    null,
+  );
   const [round, setRound] = useState<Round>();
   const [feedback, setFeedback] = useState<boolean>();
   const [words, setWords] = useState<number[]>([]);
@@ -97,13 +116,30 @@ export function EnglishIslandJourney({
   const current = progress.parts[part]!;
   const question =
     round && course && round.at < round.ids.length
-      ? englishQuestion(course, round.part, round.ids[round.at]!)
+      ? englishQuestion(
+          course,
+          round.part,
+          reviewing ? round.missed[reviewIndex]!.id : round.ids[round.at]!,
+        )
       : undefined;
   const tokens =
     question?.phrase
       .split(" ")
       .map((text, id) => ({ text, id }))
       .reverse() ?? [];
+  const timing = arcadeQuestionTiming(
+    question?.phrase.length ?? 0,
+    round?.mode === "final" ? 3 : Math.min(3, 1 + Math.floor((question?.level ?? 0) / 2)),
+  );
+  const clock = round
+    ? Math.max(0, Math.min(timing.budget - round.elapsed * timing.drain, round.bank))
+    : 0;
+  useEffect(() => {
+    if (!countdown) return;
+    audio.current?.play(countdown as 1 | 2 | 3);
+    const handle = setTimeout(() => setCountdown((n) => n - 1), 1000);
+    return () => clearTimeout(handle);
+  }, [countdown]);
   useEffect(() => {
     const controller = new AbortController();
     loadEnglishCourse(area, controller.signal)
@@ -128,17 +164,20 @@ export function EnglishIslandJourney({
       activeRoundId.current = null;
     };
   }, []);
-  useEffect(() => {
+  const focusContent = useEffectEvent(() => {
     const target = reviewing
       ? root.current?.querySelector<HTMLElement>(".english-mentor h1")
       : round
         ? nextFocus.current
         : root.current?.querySelector<HTMLElement>(
-            summary ? ".english-summary h2" : ".english-journey-header button",
+            summary ? ".english-summary h2" : ".math-world-back",
           );
     target?.focus({ preventScroll: true });
     if (root.current) root.current.scrollTop = 0;
-  }, [round, feedback, summary, reviewing]);
+  });
+  useEffect(() => {
+    focusContent();
+  }, [round?.at, feedback, summary, reviewing, reviewIndex]);
   // Recover a reward write interrupted after the workspace activity was saved.
   useEffect(() => {
     const owner = localStorage.getItem(ACCOUNT_OWNER_KEY);
@@ -157,6 +196,8 @@ export function EnglishIslandJourney({
     const changed = () => {
       if (round.owner !== localStorage.getItem(ACCOUNT_OWNER_KEY)) {
         setRound(undefined);
+        setCountdown(0);
+        setReviewIndex(0);
         setSummary(undefined);
         setFeedback(undefined);
         activeRoundId.current = null;
@@ -201,6 +242,7 @@ export function EnglishIslandJourney({
       ? active.ids.map((id) => ({ id, correct: active.correct.includes(id) }))
       : [];
     return {
+      part,
       solved: [...new Set([...current.solved, ...(active?.correct ?? [])])],
       recent: [...history, ...live].slice(-24),
       exclude: active?.ids ?? [],
@@ -227,7 +269,7 @@ export function EnglishIslandJourney({
       audio.current?.play("start");
       const bank = Array.from({ length: ENGLISH_BANK }, (_, id) => id);
       const offset = progress.accepted.length % ENGLISH_BANK;
-      const id = `english:${crypto.randomUUID()}`;
+      const id = `english:arcade:${crypto.randomUUID()}`;
       activeRoundId.current = id;
       setRound({
         id,
@@ -239,7 +281,14 @@ export function EnglishIslandJourney({
           mode === "final" ? bank.slice(offset).concat(bank.slice(0, offset)).slice(0, 5) : [first],
         correct: [],
         at: 0,
+        lives: ARCADE_LIVES,
+        bank: ARCADE_RESERVE,
+        elapsed: 0,
+        missed: [],
+        ended: false,
       });
+      setCountdown(ARCADE_COUNTDOWN);
+      setReviewIndex(0);
       setSummary(undefined);
       setFeedback(undefined);
       setWords([]);
@@ -253,7 +302,7 @@ export function EnglishIslandJourney({
   }
   function activityFor(
     active: Round,
-    questions = active.ids,
+    questions = active.ids.slice(0, active.at + 1),
     correctQuestions = active.correct,
   ): PracticeActivity {
     return {
@@ -276,42 +325,6 @@ export function EnglishIslandJourney({
       },
     };
   }
-  function answer(value: string) {
-    if (
-      !round ||
-      !question ||
-      answerLock.current ||
-      pending ||
-      round.owner !== localStorage.getItem(ACCOUNT_OWNER_KEY)
-    )
-      return;
-    answerLock.current = true;
-    const correct = normalizeEnglish(value) === normalizeEnglish(question.answer);
-    const updated = {
-      ...round,
-      correct: correct ? [...round.correct, question.id] : round.correct,
-    };
-    setRound(updated);
-    setChoice(value);
-    setFeedback(correct);
-    audio.current?.unlock();
-    audio.current?.play(correct ? "correct" : "wrong");
-    if (round.mode === "practice") {
-      const entry = activityFor(
-        { ...updated, id: `${round.id}:${round.at}` },
-        [question.id],
-        correct ? [question.id] : [],
-      );
-      onPractice(entry);
-    }
-    timer.current = setTimeout(
-      () => {
-        if (correct) void advance(updated);
-        else setReviewing(true);
-      },
-      correct ? 650 : 1300,
-    );
-  }
   async function advance(active: Round) {
     if (
       active.owner !== localStorage.getItem(ACCOUNT_OWNER_KEY) ||
@@ -319,8 +332,7 @@ export function EnglishIslandJourney({
     )
       return;
     window.speechSynthesis?.cancel();
-    const size = active.mode === "final" ? 5 : 6;
-    if (active.at + 1 < size) {
+    if (!active.ended) {
       setPending(true);
       const controller = new AbortController();
       request.current = controller;
@@ -338,6 +350,7 @@ export function EnglishIslandJourney({
         setRound({
           ...active,
           at: active.at + 1,
+          elapsed: 0,
           ids: active.mode === "final" ? active.ids : [...active.ids, id],
         });
         setFeedback(undefined);
@@ -351,16 +364,117 @@ export function EnglishIslandJourney({
       return;
     }
     const activity = activityFor(active);
-    if (active.mode === "final") onPractice(activity);
+    if (active.mode === "final")
+      onPractice(
+        activity.answers === 5
+          ? activity
+          : {
+              ...activity,
+              englishFinalFailure: true,
+              englishAttempt: { ...activity.englishAttempt!, mode: "practice" },
+            },
+      );
     setSummary(activity);
     activeRoundId.current = null;
-    setRound(undefined);
+    setRound(active.missed.length ? { ...active, ended: true } : undefined);
     setFeedback(undefined);
-    setReviewing(false);
+    setReviewIndex(0);
+    setReviewing(active.missed.length > 0);
     setChoice(undefined);
     answerLock.current = false;
     audio.current?.play("finish");
   }
+  function answer(value: string, timedOut = false) {
+    if (
+      !round ||
+      !question ||
+      countdown > 0 ||
+      round.ended ||
+      answerLock.current ||
+      pending ||
+      round.owner !== localStorage.getItem(ACCOUNT_OWNER_KEY)
+    )
+      return;
+    answerLock.current = true;
+    const started = clockStart.current;
+    const elapsed = started ? arcadeElapsed(started) : round.elapsed;
+    const bank = started
+      ? Math.max(0, started.bank - (elapsed - started.elapsed) * timing.drain)
+      : round.bank;
+    timedOut ||= Math.min(timing.budget - elapsed * timing.drain, bank) <= 0;
+    const correct = !timedOut && normalizeEnglish(value) === normalizeEnglish(question.answer);
+    const lives = round.lives - Number(!correct);
+    const correctIds = correct ? [...round.correct, question.id] : round.correct;
+    const ended =
+      lives === 0 ||
+      (round.mode === "final"
+        ? round.at + 1 === 5
+        : new Set([...current.solved, ...correctIds]).size >= ENGLISH_TARGET ||
+          round.at + 1 >= ENGLISH_BANK);
+    const updated = {
+      ...round,
+      correct: correctIds,
+      lives,
+      elapsed,
+      ended,
+      bank: arcadeReserve(
+        bank,
+        correct,
+        timedOut,
+        elapsed <= (timing.budget / timing.drain) * 0.32,
+      ),
+      missed: correct
+        ? round.missed
+        : [...round.missed, { id: question.id, choice: value, timedOut }],
+    };
+    setRound(updated);
+    setChoice(value);
+    setFeedback(correct);
+    audio.current?.unlock();
+    audio.current?.play(timedOut ? "timeout" : correct ? "correct" : "wrong");
+    if (round.mode === "practice") {
+      const entry = activityFor(
+        { ...updated, id: `${round.id}:${round.at}${ended ? ":completed" : ""}` },
+        [question.id],
+        correct ? [question.id] : [],
+      );
+      onPractice(entry);
+    }
+    timer.current = setTimeout(
+      () => {
+        void advance(updated);
+      },
+      correct ? 650 : 1300,
+    );
+  }
+  const tick = useEffectEvent(() => {
+    const start = clockStart.current;
+    if (!start || !round) return;
+    const elapsed = arcadeElapsed(start);
+    const bank = Math.max(0, start.bank - (elapsed - start.elapsed) * timing.drain);
+    setRound((value) => (value ? { ...value, elapsed, bank } : value));
+    if (Math.min(timing.budget - elapsed * timing.drain, bank) <= 0) answer("", true);
+  });
+  const startClock = useEffectEvent(() =>
+    round
+      ? { at: performance.now(), wallAt: Date.now(), elapsed: round.elapsed, bank: round.bank }
+      : null,
+  );
+  const playing = Boolean(round && !round.ended);
+  const activeAt = round?.at;
+  useEffect(() => {
+    if (!playing || countdown || feedback !== undefined || pending || leave) return;
+    clockStart.current = startClock();
+    const handle = setInterval(tick, 100);
+    document.addEventListener("visibilitychange", tick);
+    window.addEventListener("pageshow", tick);
+    return () => {
+      clearInterval(handle);
+      clockStart.current = null;
+      document.removeEventListener("visibilitychange", tick);
+      window.removeEventListener("pageshow", tick);
+    };
+  }, [activeAt, playing, countdown, feedback, pending, leave]);
   function listen() {
     if (!question) return;
     const voice = window.speechSynthesis
@@ -412,32 +526,12 @@ export function EnglishIslandJourney({
         }
       }}
     >
-      <div className="math-game-landscape" aria-hidden="true">
-        <img
-          src={`/languages/english-parts/${ENGLISH_PART_CATALOG[part]!.art}.webp`}
-          width="800"
-          height="800"
-          alt=""
-        />
-      </div>
+      <button type="button" className="secondary-button math-world-back" onClick={back}>
+        <PaperArrow back />
+        {uiText("Voltar")}
+      </button>
       <div className="math-game-floor" aria-hidden="true" />
       <div className="english-interior-content">
-        {!round && (
-          <header className="english-journey-header">
-            <button type="button" className="secondary-button" onClick={back}>
-              <PaperArrow back />
-              {uiText("Voltar")}
-            </button>
-            <p>
-              {uiText("Cais dos Encontros")}{" "}
-              <span> / {englishText(ENGLISH_PART_CATALOG[part]!.title)}</span>
-            </p>
-            <strong aria-label={uiText("Progresso geral de Inglês")}>
-              <small>{uiText("Geral")}</small>
-              <PaperDigits value={String(progress.overall)} />%
-            </strong>
-          </header>
-        )}
         {!course || !data ? (
           contentError ? (
             <div className="english-part-detail" role="alert">
@@ -456,6 +550,13 @@ export function EnglishIslandJourney({
           ) : (
             <HelenaLoading />
           )
+        ) : countdown > 0 ? (
+          <div className="math-countdown" role="status" aria-live="assertive">
+            <MathUserAvatar />
+            <span key={countdown}>
+              <PaperDigits value={String(countdown)} />
+            </span>
+          </div>
         ) : round && question ? (
           reviewing ? (
             <section
@@ -465,7 +566,7 @@ export function EnglishIslandJourney({
               <section className="oliver-review__lesson">
                 <div className="oliver-review__character">
                   <img
-                    src="/helena-onboarding-step-3-cutout.webp"
+                    src="/languages/characters/olena-english-v2.webp"
                     alt={uiText("Olena")}
                     width="330"
                     height="330"
@@ -475,26 +576,37 @@ export function EnglishIslandJourney({
                   <span className="oliver-review__speaker">{uiText("Olena")}</span>
                   <h1 tabIndex={-1}>{uiText("Vamos entender juntos?")}</h1>
                   <p className="oliver-review__reason">
-                    {uiText("Sua resposta: {0}", [choice ?? ""])}
+                    {uiText("Sua resposta: {0}", [
+                      round.missed[reviewIndex]!.timedOut
+                        ? uiText("Tempo esgotado")
+                        : round.missed[reviewIndex]!.choice,
+                    ])}
                   </p>
                   <p>{uiText("Nesta conversa, a fala significa: {0}", [question.meaning])}</p>
                   <blockquote lang="en">{question.phrase}</blockquote>
-                  <p>
-                    {englishText(
-                      data.guide[
-                        question.kind === "meaning"
-                          ? 0
-                          : question.kind === "gap"
-                            ? 1
-                            : question.kind === "reply"
-                              ? 3
-                              : 2
-                      ]!.text,
-                    )}
+                  <p className="english-specific-explanation">
+                    <strong lang="en">{question.focus}</strong>: {question.explanation}
                   </p>
+                  {question.kind === "reply" &&
+                    !round.missed[reviewIndex]!.timedOut &&
+                    englishReplyMeaning(course, part, round.missed[reviewIndex]!.choice) && (
+                      <p>
+                        {uiText("A resposta escolhida significa: {0}", [
+                          englishReplyMeaning(course, part, round.missed[reviewIndex]!.choice)!,
+                        ])}
+                      </p>
+                    )}
+                  {question.kind === "gap" && (
+                    <p>
+                      {uiText("Nesta lacuna, {0} mantém o sentido da fala: {1}", [
+                        question.answer,
+                        question.meaning,
+                      ])}
+                    </p>
+                  )}
                   <p>
                     {question.kind === "reply"
-                      ? uiText("Oliver precisa comunicar: {0}", [question.replyMeaning])
+                      ? uiText("Você precisa comunicar: {0}", [question.replyMeaning])
                       : question.kind === "order"
                         ? uiText("Leia a frase por blocos e observe a posição de cada palavra.")
                         : uiText(
@@ -513,9 +625,17 @@ export function EnglishIslandJourney({
                     className="primary-button"
                     disabled={pending}
                     type="button"
-                    onClick={() => void advance(round)}
+                    onClick={() => {
+                      if (reviewIndex + 1 < round.missed.length) setReviewIndex(reviewIndex + 1);
+                      else {
+                        setReviewing(false);
+                        setRound(undefined);
+                      }
+                    }}
                   >
-                    {uiText("Agora é sua vez")}
+                    {reviewIndex + 1 < round.missed.length
+                      ? uiText("Próxima explicação")
+                      : uiText("Ver resultado")}
                     <PaperArrow />
                   </button>
                 </div>
@@ -523,23 +643,57 @@ export function EnglishIslandJourney({
             </section>
           ) : (
             <div className="english-lesson" data-question-id={question.id}>
-              <div className="english-lesson-top">
-                <span>
-                  {uiText("Questão {0} de {1}", [round.at + 1, round.mode === "final" ? 5 : 6])}
-                </span>
+              <div className="math-game-stats">
+                <div className="math-score" aria-label={round.correct.length * 20 + uiText(2292)}>
+                  <RoomPointsIcon />
+                  <MathNumber value={round.correct.length * 20} />
+                </div>
+                <div
+                  className={`math-time${clock <= 5 ? " is-ending" : ""}`}
+                  aria-label={Math.ceil(clock) + uiText(612)}
+                >
+                  <RoomClockIcon />
+                  <MathNumber value={Math.ceil(clock)} />
+                  <RoomSecondsUnit />
+                </div>
+                <div className="math-hearts" aria-label={round.lives + uiText(2293)}>
+                  {Array.from({ length: ARCADE_LIVES }, (_, index) => (
+                    <span
+                      key={index}
+                      className={
+                        index < round.lives
+                          ? ""
+                          : feedback === false && index === round.lives
+                            ? "is-breaking"
+                            : "is-empty"
+                      }
+                    >
+                      <MathIcon name="heart" />
+                      {feedback === false && index === round.lives && <MathIcon name="heart" />}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <progress
-                max={round.mode === "final" ? 5 : 6}
-                value={round.at}
-                aria-label={uiText("Progresso da rodada")}
-              />
+              <div
+                className="math-reserve"
+                role="progressbar"
+                aria-label={uiText(613)}
+                aria-valuemin={0}
+                aria-valuemax={60}
+                aria-valuenow={Math.min(60, Math.round(round.bank))}
+              >
+                <span style={{ width: Math.min(100, (round.bank / 60) * 100) + "%" }} />
+              </div>
+              {feedback === false && round.missed.at(-1)?.timedOut && (
+                <div className="math-timeout-reaction" role="status">
+                  <b>{uiText("Tempo esgotado")}</b>
+                  <span>
+                    −<MathNumber value={4} />
+                    <RoomSecondsUnit />
+                  </span>
+                </div>
+              )}
               <div className="english-scene">
-                <img
-                  src="/helena-onboarding-step-3-cutout.webp"
-                  alt={uiText("Olena")}
-                  width="190"
-                  height="190"
-                />
                 <div className="english-dialogue">
                   <span className="english-eyebrow">{uiText("Olena")}</span>
                   <p lang={question.kind === "order" ? undefined : "en"}>
@@ -555,12 +709,6 @@ export function EnglishIslandJourney({
                     </button>
                   )}
                 </div>
-                <img
-                  src="/profile-avatars/oliver.webp"
-                  alt={uiText("Oliver")}
-                  width="150"
-                  height="150"
-                />
               </div>
               <h1>{question.prompt}</h1>
               {question.kind === "gap" && (
@@ -570,7 +718,7 @@ export function EnglishIslandJourney({
               )}
               {question.kind === "reply" && (
                 <p className="english-reply-intent">
-                  {uiText("Oliver quer dizer: {0}", [question.replyMeaning])}
+                  {uiText("Você quer dizer: {0}", [question.replyMeaning])}
                 </p>
               )}
               {question.kind === "order" && (
@@ -670,14 +818,6 @@ export function EnglishIslandJourney({
         ) : (
           <>
             <div className="english-course-heading">
-              <div className="english-interior-emblem">
-                <img
-                  src={`/languages/english-parts/${ENGLISH_PART_CATALOG[part]!.art}.webp`}
-                  width="800"
-                  height="800"
-                  alt=""
-                />
-              </div>
               <div>
                 <p className="english-eyebrow">
                   {englishText(ENGLISH_ISLAND_CATALOG[ENGLISH_AREAS.indexOf(area)]!.subject)}
@@ -710,6 +850,16 @@ export function EnglishIslandJourney({
                 </p>
               </div>
             )}
+            {summary && (
+              <button
+                type="button"
+                className="primary-button math-start-button"
+                onClick={() => void start("practice")}
+              >
+                <MathIcon name="retry" />
+                {uiText("Tentar novamente")}
+              </button>
+            )}
             <section className="english-part-detail">
               <details className="english-mini-lesson" key={`${area}:${part}`} open>
                 <summary>{uiText("Antes de praticar")}</summary>
@@ -728,6 +878,11 @@ export function EnglishIslandJourney({
                   ))}
                 </div>
               </details>
+              <p className="english-game-rules">
+                {uiText(
+                  "Você começa com três corações e 60 segundos de reserva. Acertar repõe tempo; errar ou deixar o prazo acabar custa um coração. Ao terminar, a Olena explica os erros, e você pode tentar novamente sem perder o que aprendeu.",
+                )}
+              </p>
               {!partUnlocked && (
                 <p className="english-locked-note">
                   {progress.unlocked
@@ -803,6 +958,7 @@ export function EnglishIslandJourney({
                   if (timer.current) clearTimeout(timer.current);
                   request.current?.abort();
                   setPending(false);
+                  setCountdown(0);
                   setRound(undefined);
                   setFeedback(undefined);
                   setLeave(false);

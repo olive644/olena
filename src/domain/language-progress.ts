@@ -106,7 +106,8 @@ export function englishProgress(
     accepted.push(activity);
     part.correct += activity.correct;
     part.errors += activity.answers - activity.correct;
-    if (attempt.mode === "practice") {
+    if (activity.englishFinalFailure) part.review = 4;
+    else if (attempt.mode === "practice") {
       attempt.correctQuestions.forEach((id) => part.solved.add(id));
       part.review = Math.max(0, part.review - activity.correct);
     } else if (activity.correct >= 4) part.confirmed = true;

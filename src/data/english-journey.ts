@@ -10,6 +10,7 @@ export type EnglishGuide = {
   meaning: EnglishText;
 };
 export type EnglishPart = {
+  teaching: { level: number; focus: string; explanation: EnglishText }[];
   guide: EnglishGuide[];
   title: EnglishText;
   objective: EnglishText;
@@ -54,6 +55,17 @@ export function validEnglishCourse(value: unknown): value is EnglishCourse {
         /^(A1|A2|B1|B2|C1|C2)$/.test(part["proficiency"]) &&
         Array.isArray(part["scenes"]) &&
         part["scenes"].length === 30 &&
+        Array.isArray(part["teaching"]) &&
+        part["teaching"].length === 30 &&
+        part["teaching"].every(
+          (item: unknown) =>
+            object(item) &&
+            Number.isInteger(item["level"]) &&
+            Number(item["level"]) >= 0 &&
+            Number(item["level"]) <= 5 &&
+            typeof item["focus"] === "string" &&
+            text(item["explanation"]),
+        ) &&
         Array.isArray(part["guide"]) &&
         part["guide"].length === 4 &&
         part["guide"].every(
@@ -105,6 +117,9 @@ export type EnglishQuestion = {
   options: string[];
   meaning: string;
   replyMeaning: string;
+  explanation: string;
+  focus: string;
+  level: number;
 };
 export function englishQuestion(course: EnglishCourse, part: number, id: number): EnglishQuestion {
   const scenes = course.parts[part]!.scenes;
@@ -138,6 +153,9 @@ export function englishQuestion(course: EnglishCourse, part: number, id: number)
     phrase,
     meaning,
     replyMeaning: uiLocale() === "pt-BR" ? replyTranslation : reply,
+    explanation: englishText(course.parts[part]!.teaching[scene]!.explanation),
+    focus: course.parts[part]!.teaching[scene]!.focus,
+    level: course.parts[part]!.teaching[scene]!.level,
     answer,
     options: [...options.slice(rotation), ...options.slice(0, rotation)],
     prompt:
@@ -146,7 +164,7 @@ export function englishQuestion(course: EnglishCourse, part: number, id: number)
         : kind === "gap"
           ? uiText("Complete a fala.")
           : kind === "reply"
-            ? uiText("Como Oliver pode responder?")
+            ? uiText("Como você pode responder?")
             : uiText("Monte a fala em inglês."),
   };
 }
@@ -158,6 +176,13 @@ export function normalizeEnglish(value: string) {
     .replace(/[.!?,]/g, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+export function englishReplyMeaning(course: EnglishCourse, part: number, value: string) {
+  const scene = course.parts[part]!.scenes.find(
+    (item) => normalizeEnglish(item[2]) === normalizeEnglish(value),
+  );
+  return scene ? (uiLocale() === "pt-BR" ? scene[4] : scene[2]) : undefined;
 }
 
 export async function selectEnglishQuestion(input: EnglishSelection, signal: AbortSignal) {
