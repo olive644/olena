@@ -13,9 +13,13 @@ export function settleEnglishRewards(
   const completed = new Map<string, number>();
   for (const activity of activities) {
     const attempt = englishAttemptOf(activity);
-    if (attempt?.curriculum === 4 && attempt.mode === "practice" && activity.answers === 1) {
+    if (
+      (attempt?.curriculum === 4 || attempt?.curriculum === 5) &&
+      attempt.mode === "practice" &&
+      activity.answers === 1
+    ) {
       const match = /^(english:.+):(\d+)(:completed)?$/.exec(activity.id);
-      if (match && Number.isSafeInteger(Number(match[2])) && Number(match[2]) < 120) {
+      if (match && Number.isSafeInteger(Number(match[2])) && Number(match[2]) < 240) {
         if (match[3]) completed.set(match[1]!, Number(match[2]));
         const entries = rounds.get(match[1]!) ?? new Map<number, number>();
         entries.set(Number(match[2]), activity.correct);
@@ -24,7 +28,7 @@ export function settleEnglishRewards(
     }
     if (activity.correct <= 0 || !attempt) continue;
     finishMathPlace(
-      attempt.curriculum === 3 || attempt.curriculum === 4
+      attempt.curriculum === 3 || attempt.curriculum === 4 || attempt.curriculum === 5
         ? englishAreaReward(attempt.area!)
         : englishRewardCourse(attempt.level ?? "a1"),
       activity.id,

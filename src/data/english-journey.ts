@@ -1,6 +1,8 @@
 import { nextEnglishQuestion, type EnglishSelection } from "../domain/english-adaptive";
 import { uiLocale, uiText } from "../i18n/runtime";
 import { isEnglishArea, type EnglishArea } from "../domain/english-areas";
+import { validA1Content, type A1Content } from "./english-a1-content";
+import { A1_BANK } from "../domain/english-a1";
 export type EnglishText = { "pt-BR": string; "en-US": string };
 export type EnglishScene = [string, string, string, string, string];
 export type EnglishGuide = {
@@ -19,6 +21,7 @@ export type EnglishPart = {
   proficiency: string;
 };
 export type EnglishCourse = {
+  a1?: A1Content;
   version: 4;
   area: EnglishArea;
   title: EnglishText;
@@ -105,6 +108,15 @@ export async function loadEnglishCourse(
   if (!response.ok) throw new Error("english-content-unavailable");
   const value: unknown = await response.json();
   if (!validEnglishCourse(value) || value.area !== area) throw new Error("english-content-invalid");
+  const a1Response = await fetch("/languages/en/english-a1-v1.json", {
+    signal,
+    credentials: "omit",
+    referrerPolicy: "no-referrer",
+  });
+  if (!a1Response.ok) throw new Error("english-a1-unavailable");
+  const a1: unknown = await a1Response.json();
+  if (!validA1Content(a1)) throw new Error("english-a1-invalid");
+  value.a1 = a1;
   cache.set(area, value);
   return value;
 }
@@ -122,6 +134,33 @@ export type EnglishQuestion = {
   level: number;
 };
 export function englishQuestion(course: EnglishCourse, part: number, id: number): EnglishQuestion {
+  if (part === 0 && id >= 120) {
+    const task = course.a1?.tasks[id - 120];
+    if (!task) throw new Error("english-a1-question");
+    const answer = englishText(task.answer),
+      options = task.options.map(englishText),
+      rotation = id % 3;
+    return {
+      id,
+      kind: task.kind,
+      phrase: task.phrase,
+      meaning: englishText(task.meaning),
+      replyMeaning: englishText(task.intent),
+      answer,
+      options: [...options.slice(rotation), ...options.slice(0, rotation)],
+      explanation: englishText(task.explanation),
+      focus: task.focus,
+      level: task.level,
+      prompt:
+        task.kind === "meaning"
+          ? uiText("O que foi dito?")
+          : task.kind === "gap"
+            ? uiText("Complete a fala.")
+            : task.kind === "reply"
+              ? uiText("Como você pode responder?")
+              : uiText("Monte a fala em inglês."),
+    };
+  }
   const scenes = course.parts[part]!.scenes;
   const scene = Math.floor(id / 4);
   const [phrase, translation, reply, word, replyTranslation] = scenes[scene]!;
@@ -179,6 +218,14 @@ export function normalizeEnglish(value: string) {
 }
 
 export function englishReplyMeaning(course: EnglishCourse, part: number, value: string) {
+  const task =
+    part === 0
+      ? course.a1?.tasks.find(
+          (t) =>
+            t.kind === "reply" && normalizeEnglish(t.answer["en-US"]) === normalizeEnglish(value),
+        )
+      : undefined;
+  if (task) return englishText(task.intent);
   const scene = course.parts[part]!.scenes.find(
     (item) => normalizeEnglish(item[2]) === normalizeEnglish(value),
   );
@@ -202,7 +249,7 @@ export async function selectEnglishQuestion(input: EnglishSelection, signal: Abo
       !("id" in value) ||
       !Number.isInteger(value.id) ||
       Number(value.id) < 0 ||
-      Number(value.id) >= 120 ||
+      Number(value.id) >= (input.curriculum === 5 && input.part === 0 ? A1_BANK : 120) ||
       input.exclude.includes(Number(value.id))
     )
       throw new Error("english-selection-invalid");

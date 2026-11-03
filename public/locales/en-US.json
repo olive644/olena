@@ -3602,5 +3602,12 @@
   "In this gap, {0} preserves the meaning of the sentence: {1}",
   "How can you reply?",
   "You need to communicate: {0}",
-  "You want to say: {0}"
+  "You want to say: {0}",
+  "A1: first encounters in English",
+  "A1 topics",
+  "A1: learning through situations",
+  "Read the support for each topic before practising. Exercises combine dialogue, messages, signs and everyday situations.",
+  "To confirm A1: 100 different answers and at least 12 in every topic. Previously confirmed parts remain saved.",
+  "The pending question could not be saved. Try again before leaving.",
+  "Your correct answers are saved. When you return, you resume the pending question."
 ]

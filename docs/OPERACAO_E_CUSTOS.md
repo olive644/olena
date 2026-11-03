@@ -122,3 +122,9 @@ Medição final após correção da liquidação das recompensas: aplicação 17
 Build medido após a primeira integração do relógio e currículo por complexidade: aplicação 1709,6 KiB contra 1705,7 KiB da PR565; entrada permanece 220,7 KiB. Teto total de 1708 para 1712 KiB sob autorização vigente do proprietário para crescimento funcional. Nenhuma dependência nova, nenhum teto da entrada ou tempo de CI alterado. Explicações das 180 situações e artes ficam fora do JavaScript, carregadas como recursos. Limites continuam verificados no build final.
 
 Medição final com o layout sem arte nas perguntas: aplicação 1710,8 KiB de 1712 e entrada 220,7 KiB. Verify e 34 E2E locais aprovados. Sem mudança adicional de teto, dependências ou configuração externa.
+
+## Conteúdo A1, 03/11/2026
+
+Build inicial medido em 1716,3 KiB, contra 1710,8 KiB da revisão anterior, entrada 220,7 KiB. Sob autorização vigente do proprietário, teto total e rígido passam de 1712 para 1720 KiB, sem alterar entrada, workflows ou tempos. Os 120 novos exercícios e doze guias ficam em JSON sob demanda, sem biblioteca ou serviço novo. A camada de seleção, validação e compatibilidade responde pelo crescimento funcional; não foi alegada economia não medida. Conferir medição final no audit.
+
+Medição com a retomada: aplicação 1719,8 KiB de 1720 e entrada 220,7 KiB. O cursor reutiliza o perfil privado e a fila de sincronização existentes, sem chave de nuvem, regra ou serviço novo. Nenhum aumento adicional de teto.

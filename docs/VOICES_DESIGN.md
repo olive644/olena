@@ -116,3 +116,15 @@ Direção posterior do proprietário: sem cartão branco externo na atividade; O
 Correção da referência de prazo: a versão inicial usava o cálculo legado. O jogo ativo de Matemática usa o banco math-challenge-bank: base 28 + teto de caracteres/12 + quatro por faixa adicional (e dez para Cálculo), com drain 1. Esse cálculo foi extraído sem mudar valores para arcadeQuestionTiming e é o usado em Inglês, com comprimento da fala e exigência didática mapeada às três faixas do banco. A confirmação usa faixa 3. O tempo exibido é o menor entre prazo individual e reserva restante. Demais regras de corações, reposição, penalidade e contagem são as mesmas.
 
 Ajuste de espaço confirmado pelo proprietário: não mostrar arte da Olena nem de Oliver nas perguntas. Manter somente identificação/fala, relógio/reserva/corações e opções centralizadas com mais espaço. A arte da Olena pertence apenas à revisão final, fora da partida cronometrada. O teste de navegador exige ausência de imagens na conversa da questão.
+
+## Ampliação A1, 03/11/2026
+
+Contrato atual da primeira parte em [ENGLISH_A1.md](ENGLISH_A1.md): seis assuntos internos, 120 situações inéditas, cobertura por assunto e preservação das 720 tarefas anteriores. Não altera os seis cenários, artes, outras partes ou regras compartilhadas do relógio. O banco da primeira parte passa a 240 IDs, os demais continuam com 120.
+
+## Retomada da pergunta, 03/11/2026
+
+O cursor privado da prática é gravado assim que a questão aparece. Sair da rodada, da ilha ou recarregar permite retomar o mesmo ID. Depois de perder os três corações, Tentar novamente retoma a questão do último erro. Os corações e a reserva reiniciam; domínio, pontos e respostas já registrados permanecem. A contagem 3, 2, 1 continua obrigatória. Uma resposta correta limpa o cursor anterior antes de selecionar a próxima, evitando repetir um acerto no intervalo do feedback.
+
+Confirmação interrompida mantém ID da tentativa, cinco perguntas, posição, acertos e erros já respondidos; concluir grava uma única atividade e um único recibo. Confirmação reprovada continua exigindo revisão, com a prática retomando o último erro. O carrossel interno reabre a última parte praticada, respeitando o bloqueio sequencial.
+
+Os cursores ficam em englishCheckpoints no perfil privado já sincronizado, separados por parte e modo, com proprietário, data e marca de limpeza. O merge mantém a versão mais recente de cada cursor e não ressuscita posição limpa por uma cópia antiga. Nenhuma regra Firebase, chave sincronizada nova ou dado público foi adicionado. Testes simulam contas e merge; sincronização real entre aparelhos não foi verificada.

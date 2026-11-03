@@ -1,3 +1,5 @@
+import { readEnglishCheckpoint, saveEnglishCheckpoint } from "../data/english-checkpoint";
+import { A1_BANK, A1_UNIT_TARGET, a1Coverage } from "../domain/english-a1";
 import {
   ARCADE_LIVES,
   ARCADE_RESERVE,
@@ -114,6 +116,10 @@ export function EnglishIslandJourney({
   const data = course?.parts[part];
   const partUnlocked = progress.unlocked && (part === 0 || progress.parts[part - 1]!.confirmed);
   const current = progress.parts[part]!;
+  const isA1 = part === 0 && Boolean(course?.a1);
+  const bankSize = isA1 ? A1_BANK : ENGLISH_BANK;
+  const coverage = a1Coverage(current.solved);
+  const canConfirm = current.solved.size >= ENGLISH_TARGET && (!isA1 || coverage.ready);
   const question =
     round && course && round.at < round.ids.length
       ? englishQuestion(
@@ -243,18 +249,44 @@ export function EnglishIslandJourney({
       : [];
     return {
       part,
+      ...(isA1 ? { curriculum: 5 as const } : {}),
       solved: [...new Set([...current.solved, ...(active?.correct ?? [])])],
       recent: [...history, ...live].slice(-24),
       exclude: active?.ids ?? [],
     };
+  }
+  function rememberRound(active: Round, clear = false) {
+    const saved = saveEnglishCheckpoint(
+      {
+        owner: active.owner,
+        part: active.part,
+        mode: active.mode,
+        question: clear ? null : active.ids[active.at]!,
+        ...(active.mode === "final" && !clear
+          ? {
+              final: {
+                id: active.id,
+                ids: active.ids,
+                at: active.at,
+                correct: active.correct,
+                missed: active.missed,
+              },
+            }
+          : {}),
+      },
+      active.owner,
+    );
+    if (!saved)
+      setWarning(
+        uiText("Não foi possível guardar a questão para retomar. Tente novamente antes de sair."),
+      );
   }
   async function start(mode: LanguageAttempt["mode"]) {
     if (
       !course ||
       !partUnlocked ||
       pending ||
-      (mode === "final" &&
-        (current.solved.size < ENGLISH_TARGET || current.review > 0 || current.confirmed))
+      (mode === "final" && (!canConfirm || current.review > 0 || current.confirmed))
     )
       return;
     request.current?.abort();
@@ -263,36 +295,49 @@ export function EnglishIslandJourney({
     const owner = localStorage.getItem(ACCOUNT_OWNER_KEY);
     setPending(true);
     try {
-      const first = await selectEnglishQuestion(evidence(), controller.signal);
+      const checkpoint = readEnglishCheckpoint(part, mode);
+      const resumedFinal = mode === "final" ? checkpoint?.final : undefined;
+      const first =
+        mode === "practice"
+          ? (checkpoint?.question ?? (await selectEnglishQuestion(evidence(), controller.signal)))
+          : 0;
       if (controller.signal.aborted || owner !== localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
       audio.current?.unlock();
       audio.current?.play("start");
-      const bank = Array.from({ length: ENGLISH_BANK }, (_, id) => id);
-      const offset = progress.accepted.length % ENGLISH_BANK;
-      const id = `english:arcade:${crypto.randomUUID()}`;
+      const bank = Array.from({ length: bankSize }, (_, id) => id);
+      const offset = progress.accepted.length % bankSize;
+      const finalIds = isA1
+        ? Array.from(
+            { length: 5 },
+            (_, i) =>
+              120 + ((i + Math.floor(progress.accepted.length / 5)) % 6) * 20 + 16 + (i % 4),
+          )
+        : bank.slice(offset).concat(bank.slice(0, offset)).slice(0, 5);
+      const id = resumedFinal?.id ?? `english:arcade:${crypto.randomUUID()}`;
       activeRoundId.current = id;
-      setRound({
+      const started: Round = {
         id,
         area,
         owner,
         part,
         mode,
-        ids:
-          mode === "final" ? bank.slice(offset).concat(bank.slice(0, offset)).slice(0, 5) : [first],
-        correct: [],
-        at: 0,
+        ids: mode === "final" ? (resumedFinal?.ids ?? finalIds) : [first],
+        correct: resumedFinal?.correct ?? [],
+        at: resumedFinal?.at ?? 0,
         lives: ARCADE_LIVES,
         bank: ARCADE_RESERVE,
         elapsed: 0,
-        missed: [],
+        missed: resumedFinal?.missed ?? [],
         ended: false,
-      });
+      };
+      setRound(started);
       setCountdown(ARCADE_COUNTDOWN);
       setReviewIndex(0);
       setSummary(undefined);
       setFeedback(undefined);
       setWords([]);
       setWarning("");
+      rememberRound(started);
       setReviewing(false);
       setChoice(undefined);
       answerLock.current = false;
@@ -315,8 +360,8 @@ export function EnglishIslandJourney({
       completedAt: new Date().toISOString(),
       answers: questions.length,
       correct: correctQuestions.length,
-      englishAttempt: {
-        curriculum: 4,
+      [active.part === 0 ? "englishA1Attempt" : "englishAttempt"]: {
+        curriculum: active.part === 0 ? 5 : 4,
         area: active.area,
         part: active.part,
         mode: active.mode,
@@ -347,12 +392,14 @@ export function EnglishIslandJourney({
           activeRoundId.current !== active.id
         )
           return;
-        setRound({
+        const next = {
           ...active,
           at: active.at + 1,
           elapsed: 0,
           ids: active.mode === "final" ? active.ids : [...active.ids, id],
-        });
+        };
+        if (active.mode === "practice") rememberRound(next);
+        setRound(next);
         setFeedback(undefined);
         setWords([]);
         setChoice(undefined);
@@ -370,10 +417,24 @@ export function EnglishIslandJourney({
           ? activity
           : {
               ...activity,
-              englishFinalFailure: true,
-              englishAttempt: { ...activity.englishAttempt!, mode: "practice" },
+              ...(active.part === 0
+                ? {
+                    englishA1FinalFailure: true,
+                    englishA1Attempt: { ...activity.englishA1Attempt!, mode: "practice" as const },
+                  }
+                : {
+                    englishFinalFailure: true,
+                    englishAttempt: { ...activity.englishAttempt!, mode: "practice" as const },
+                  }),
             },
       );
+    if (active.mode === "final") {
+      rememberRound(active, true);
+      if (active.correct.length < 4 && active.missed.length) {
+        const lastMiss = active.missed.at(-1)!;
+        rememberRound({ ...active, mode: "practice", ids: [lastMiss.id], at: 0 });
+      }
+    }
     setSummary(activity);
     activeRoundId.current = null;
     setRound(active.missed.length ? { ...active, ended: true } : undefined);
@@ -409,8 +470,9 @@ export function EnglishIslandJourney({
       lives === 0 ||
       (round.mode === "final"
         ? round.at + 1 === 5
-        : new Set([...current.solved, ...correctIds]).size >= ENGLISH_TARGET ||
-          round.at + 1 >= ENGLISH_BANK);
+        : (new Set([...current.solved, ...correctIds]).size >= ENGLISH_TARGET &&
+            (!isA1 || a1Coverage([...current.solved, ...correctIds]).ready)) ||
+          round.at + 1 >= bankSize);
     const updated = {
       ...round,
       correct: correctIds,
@@ -427,6 +489,8 @@ export function EnglishIslandJourney({
         ? round.missed
         : [...round.missed, { id: question.id, choice: value, timedOut }],
     };
+    if (round.mode === "practice") rememberRound(updated, correct);
+    else if (!ended) rememberRound({ ...updated, at: updated.at + 1 });
     setRound(updated);
     setChoice(value);
     setFeedback(correct);
@@ -698,7 +762,7 @@ export function EnglishIslandJourney({
                   <span className="english-eyebrow">{uiText("Olena")}</span>
                   <p lang={question.kind === "order" ? undefined : "en"}>
                     {question.kind === "gap"
-                      ? question.phrase.replace(question.answer, "____")
+                      ? question.phrase.replace(new RegExp(`\\b${question.answer}\\b`), "____")
                       : question.kind === "order"
                         ? question.meaning
                         : question.phrase}
@@ -822,7 +886,9 @@ export function EnglishIslandJourney({
                 <p className="english-eyebrow">
                   {englishText(ENGLISH_ISLAND_CATALOG[ENGLISH_AREAS.indexOf(area)]!.subject)}
                 </p>
-                <h1>{englishText(data.title)}</h1>
+                <h1>
+                  {isA1 ? uiText("A1: primeiros encontros em inglês") : englishText(data.title)}
+                </h1>
                 <p>{englishText(data.objective)}</p>
                 <small className="english-proficiency">
                   {uiText("Referência de dificuldade: {0}", [data.proficiency])}
@@ -859,6 +925,41 @@ export function EnglishIslandJourney({
                 <MathIcon name="retry" />
                 {uiText("Tentar novamente")}
               </button>
+            )}
+            {isA1 && course.a1 && (
+              <section className="english-a1-materials" aria-label={uiText("Assuntos do A1")}>
+                <h2>{uiText("A1: aprender por situações")}</h2>
+                <p>
+                  {uiText(
+                    "Leia o apoio de cada assunto antes de praticar. Os exercícios misturam falas, mensagens, placas e situações do dia a dia.",
+                  )}
+                </p>
+                {course.a1.units.map((unit, index) => (
+                  <details className="english-a1-unit" key={index} open={index === 0}>
+                    <summary>
+                      <PaperDigits value={String(index + 1)} />
+                      <span>{englishText(unit.title)}</span>
+                      <small>
+                        {Math.min(A1_UNIT_TARGET, coverage.units[index]!)} / {A1_UNIT_TARGET}
+                      </small>
+                    </summary>
+                    <p>{englishText(unit.objective)}</p>
+                    {unit.guide.map((step, at) => (
+                      <section key={at}>
+                        <h3>{englishText(step.title)}</h3>
+                        <p>{englishText(step.text)}</p>
+                        <blockquote lang="en">{step.example}</blockquote>
+                        <p>{englishText(step.meaning)}</p>
+                      </section>
+                    ))}
+                  </details>
+                ))}
+                <p>
+                  {uiText(
+                    "Para confirmar o A1: 100 respostas diferentes e pelo menos 12 em cada assunto. Partes já confirmadas continuam salvas.",
+                  )}
+                </p>
+              </section>
             )}
             <section className="english-part-detail">
               <details className="english-mini-lesson" key={`${area}:${part}`} open>
@@ -924,12 +1025,7 @@ export function EnglishIslandJourney({
                 <button
                   className="secondary-button"
                   type="button"
-                  disabled={
-                    !partUnlocked ||
-                    current.solved.size < ENGLISH_TARGET ||
-                    current.review > 0 ||
-                    current.confirmed
-                  }
+                  disabled={!partUnlocked || !canConfirm || current.review > 0 || current.confirmed}
                   onClick={() => start("final")}
                 >
                   {uiText("Confirmar esta parte")}
@@ -941,11 +1037,7 @@ export function EnglishIslandJourney({
         {warning && <p role="alert">{warning}</p>}
         {leave && (
           <LibraryDialog title={uiText("Sair desta rodada?")} onClose={() => setLeave(false)}>
-            <p>
-              {uiText(
-                "As partes já concluídas ficam salvas. Esta rodada ainda não terminou e será reiniciada.",
-              )}
-            </p>
+            <p>{uiText("Seus acertos ficam salvos. Ao voltar, você retoma a questão pendente.")}</p>
             <div className="english-actions">
               <button className="secondary-button" onClick={() => setLeave(false)} type="button">
                 {uiText("Continuar praticando")}

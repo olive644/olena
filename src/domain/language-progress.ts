@@ -1,9 +1,10 @@
 import { ENGLISH_AREAS, isEnglishArea, type EnglishArea } from "./english-areas.js";
 import type { PracticeActivity } from "./workspace";
+import { A1_BANK, a1Coverage } from "./english-a1.js";
 import { ENGLISH_LEVELS, isEnglishLevel, type EnglishLevel } from "./english-levels.js";
 
 export type LanguageAttempt = {
-  curriculum?: 2 | 3 | 4;
+  curriculum?: 2 | 3 | 4 | 5;
   area?: EnglishArea;
   level?: EnglishLevel;
   part: number;
@@ -27,16 +28,19 @@ export function validLanguageAttempt(value: unknown): value is LanguageAttempt {
       (id: unknown) =>
         Number.isInteger(id) &&
         Number(id) >= 0 &&
-        Number(id) < (item["curriculum"] === 4 ? ENGLISH_BANK : 24),
+        Number(id) <
+          (item["curriculum"] === 5 ? A1_BANK : item["curriculum"] === 4 ? ENGLISH_BANK : 24),
     );
   const questions = item["questions"];
   return (
     (item["curriculum"] === undefined ||
       item["curriculum"] === 2 ||
       item["curriculum"] === 3 ||
-      item["curriculum"] === 4) &&
+      item["curriculum"] === 4 ||
+      item["curriculum"] === 5) &&
+    (item["curriculum"] !== 5 || item["part"] === 0) &&
     (item["area"] === undefined || isEnglishArea(item["area"])) &&
-    (![3, 4].includes(Number(item["curriculum"])) || isEnglishArea(item["area"])) &&
+    (![3, 4, 5].includes(Number(item["curriculum"])) || isEnglishArea(item["area"])) &&
     (item["level"] === undefined || isEnglishLevel(item["level"])) &&
     Number.isInteger(item["part"]) &&
     Number(item["part"]) >= 0 &&
@@ -89,7 +93,8 @@ export function englishProgress(
     )
       continue;
     seen.add(activity.id);
-    const currentCurriculum = attempt.curriculum === 3 || attempt.curriculum === 4;
+    const currentCurriculum =
+      attempt.curriculum === 3 || attempt.curriculum === 4 || attempt.curriculum === 5;
     const islandIndex = currentCurriculum
       ? ENGLISH_AREAS.indexOf(attempt.area!)
       : ENGLISH_LEVELS.indexOf(attempt.level ?? "a1");
@@ -100,13 +105,16 @@ export function englishProgress(
     if (attempt.part > 0 && !parts[attempt.part - 1]!.confirmed) continue;
     if (
       attempt.mode === "final" &&
-      (part.solved.size < (attempt.curriculum === 4 ? ENGLISH_TARGET : 20) || part.review > 0)
+      (part.solved.size <
+        (attempt.curriculum === 4 || attempt.curriculum === 5 ? ENGLISH_TARGET : 20) ||
+        part.review > 0 ||
+        (attempt.curriculum === 5 && !a1Coverage(part.solved).ready))
     )
       continue;
     accepted.push(activity);
     part.correct += activity.correct;
     part.errors += activity.answers - activity.correct;
-    if (activity.englishFinalFailure) part.review = 4;
+    if (activity.englishFinalFailure || activity.englishA1FinalFailure) part.review = 4;
     else if (attempt.mode === "practice") {
       attempt.correctQuestions.forEach((id) => part.solved.add(id));
       part.review = Math.max(0, part.review - activity.correct);
@@ -147,5 +155,5 @@ export function englishProgress(
 }
 
 export function englishAttemptOf(activity: PracticeActivity) {
-  return activity.englishAttempt ?? activity.languageAttempt;
+  return activity.englishA1Attempt ?? activity.englishAttempt ?? activity.languageAttempt;
 }

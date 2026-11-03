@@ -1,8 +1,10 @@
 import { ENGLISH_BANK } from "./language-progress.js";
 import { englishDifficulty } from "./english-difficulty.js";
+import { A1_BANK, A1_UNIT_TARGET, a1Unit, a1Difficulty } from "./english-a1.js";
 
 export type EnglishEvidence = { id: number; correct: boolean };
 export type EnglishSelection = {
+  curriculum?: 4 | 5;
   part?: number;
   solved: number[];
   recent: EnglishEvidence[];
@@ -11,13 +13,17 @@ export type EnglishSelection = {
 export function validEnglishSelection(value: unknown): value is EnglishSelection {
   if (!value || typeof value !== "object") return false;
   const item = value as Record<string, unknown>;
-  const id = (n: unknown) => Number.isInteger(n) && Number(n) >= 0 && Number(n) < ENGLISH_BANK;
+  const bank = item["curriculum"] === 5 && item["part"] === 0 ? A1_BANK : ENGLISH_BANK;
+  const id = (n: unknown) => Number.isInteger(n) && Number(n) >= 0 && Number(n) < bank;
   const ids = (list: unknown): list is number[] =>
     Array.isArray(list) &&
-    list.length <= ENGLISH_BANK &&
+    list.length <= bank &&
     new Set(list).size === list.length &&
     list.every(id);
   return (
+    (item["curriculum"] === undefined ||
+      item["curriculum"] === 4 ||
+      (item["curriculum"] === 5 && item["part"] === 0)) &&
     (item["part"] === undefined ||
       (Number.isInteger(item["part"]) && Number(item["part"]) >= 0 && Number(item["part"]) < 6)) &&
     ids(item["solved"]) &&
@@ -38,6 +44,31 @@ export function nextEnglishQuestion(input: EnglishSelection) {
   const success = recent.filter((entry) => entry.correct).length;
   const last = recent.at(-1);
   const part = input.part ?? 0;
+  if (input.curriculum === 5 && part === 0) {
+    const solved = new Set(input.solved),
+      excluded = new Set(input.exclude);
+    const counts = Array.from(
+      { length: 6 },
+      (_, unit) => input.solved.filter((id) => a1Unit(id) === unit).length,
+    );
+    const unit = counts.findIndex((count) => count < A1_UNIT_TARGET);
+    const selectedUnit = unit < 0 ? counts.indexOf(Math.min(...counts)) : unit;
+    const wrong = last && !last.correct ? last : undefined;
+    const targetUnit = wrong ? a1Unit(wrong.id) : selectedUnit;
+    const difficulty = Math.min(3, Math.floor(counts[targetUnit]! / 4));
+    const candidates = Array.from({ length: A1_BANK }, (_, id) => id).filter(
+      (id) => !excluded.has(id),
+    );
+    const score = (id: number) =>
+      Number(a1Unit(id) !== targetUnit) * 100000 +
+      Number(solved.has(id)) * (wrong ? 100 : 10000) +
+      Math.abs(a1Difficulty(id) - (wrong ? Math.max(0, a1Difficulty(wrong.id) - 1) : difficulty)) *
+        1000 +
+      Number(id < 120) * 500 +
+      Math.abs((id % 4) - (wrong ? 0 : Math.min(3, Math.floor(success / 2)))) * 10;
+    candidates.sort((a, b) => score(a) - score(b) || a - b);
+    return { id: candidates[0] ?? 120, difficulty, recovery: Boolean(wrong) };
+  }
   let difficulty = 0;
   while (
     difficulty < 5 &&

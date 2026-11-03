@@ -958,3 +958,61 @@ html[data-reduce-motion="true"] .english-journey * {
 .english-island-interior .english-reply-intent {
   color: #fff9ef;
 }
+.english-a1-materials {
+  background: var(--surface, #fffdf8);
+  color: var(--text, #292432);
+  padding: clamp(18px, 3vw, 30px);
+  border: 1px solid var(--line, #ded3bf);
+  border-radius: 6px 28px 6px 18px;
+  box-shadow: 0 5px 0 #0002;
+  margin: 24px auto;
+  max-width: 820px;
+}
+.english-a1-materials > p {
+  line-height: 1.7;
+}
+.english-a1-unit {
+  border-top: 1px dashed var(--line, #ded3bf);
+  padding: 16px 0;
+}
+.english-a1-unit > summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.english-a1-unit > summary .paper-digits {
+  height: 24px;
+  flex: 0 0 auto;
+}
+.english-a1-unit > summary small {
+  margin-left: auto;
+  white-space: nowrap;
+}
+.english-a1-unit p {
+  line-height: 1.7;
+}
+.english-a1-unit blockquote {
+  margin: 14px 0;
+  padding: 12px 16px;
+  border-left: 4px solid #ffda19;
+  background: #ffda1914;
+}
+:root[data-theme="dark"] .english-a1-materials {
+  background: #24202b;
+  color: #fff8ef;
+  border-color: #494151;
+}
+.english-a1-unit > summary:focus-visible {
+  outline: none;
+  text-decoration: underline 3px #ffda19;
+  text-underline-offset: 5px;
+}
+@media (max-width: 600px) {
+  .english-a1-unit > summary {
+    align-items: flex-start;
+    font-size: 15px;
+    gap: 8px;
+  }
+}

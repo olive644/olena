@@ -136,3 +136,7 @@ Recompensas usam o namespace english:arcade:UUID:índice e o sufixo :completed n
 Rollback: preservar o leitor aditivo englishFinalFailure e a liquidação do namespace arcade mesmo se a apresentação for revertida. Não transformar respostas não dadas em erros nem remover atividades já concluídas. Não reverter o banco de 120 IDs ou desconfirmar histórico.
 
 A direção final de composição remove o cartão externo e Oliver da atividade, centraliza a Olena acima da fala e reutiliza a barra de reserva de Matemática. A revisão de código distinguiu o prazo legado do banco ativo. O prazo vigente agora compartilha arcadeQuestionTiming com math-challenge-bank: base 28, leitura por caracteres, faixa 1 a 3 e drain 1; Cálculo conserva seus dez segundos extras somente em Matemática. A regra matemática original não mudou. Corrigir qualquer referência acima ao antigo prazo inicial de 14 segundos ou drenagem por nível. A reserva mostrada é a reserva real, não quantidade de perguntas.
+
+## Ampliação A1, 03/11/2026
+
+Contrato atual da primeira parte em [ENGLISH_A1.md](ENGLISH_A1.md): seis assuntos internos, 120 situações inéditas, cobertura por assunto e preservação das 720 tarefas anteriores. Não altera os seis cenários, artes, outras partes ou regras compartilhadas do relógio. O banco da primeira parte passa a 240 IDs, os demais continuam com 120.

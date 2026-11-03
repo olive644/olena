@@ -16,3 +16,12 @@ it("ignores malformed or absent caches", () => {
   localStorage.setItem("helena.practiceIsland.v1", "bad json");
   expect(lastPracticeIsland()).toBeUndefined();
 });
+
+it("honors an explicit preference change instead of restoring a stale destination", () => {
+  rememberPracticeIsland("mathematics", "chemistry");
+  expect(lastPracticeIsland("chemistry")).toBe("mathematics");
+  expect(lastPracticeIsland("english")).toBeUndefined();
+  rememberPracticeIsland("japanese", "english");
+  expect(lastPracticeIsland("english")).toBe("japanese");
+  expect(lastPracticeIsland("chemistry")).toBeUndefined();
+});

@@ -78,8 +78,8 @@ test("painel usa agenda real, último foco, ilha e foco lado a lado e Oliver com
   await expect(page.getByText("Seu fogo azul apaga em", { exact: false })).toBeVisible();
   await expect(page.getByText("Uma aventura com Oliver", { exact: true })).toHaveCount(0);
   const agenda = page.locator('[aria-labelledby="agenda-today-title"]');
-  await expect(agenda.getByText("Idiomas", { exact: false })).toBeVisible();
-  await expect(agenda.getByText("Inglês", { exact: true })).toHaveCount(0);
+  await expect(agenda.getByText("Inglês · Compromisso", { exact: true })).toBeVisible();
+  await expect(agenda.getByText("Idiomas", { exact: true })).toHaveCount(0);
   await expect(agenda.locator("li")).toHaveCSS("border-inline-start-color", "rgb(239, 71, 111)");
   await expect(page.locator(".check-button")).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator(".check-button svg")).toHaveCSS("opacity", "0.45");
