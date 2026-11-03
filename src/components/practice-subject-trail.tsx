@@ -21,7 +21,7 @@ function TrailEmblem({ id }: { id: TrailIslandId }) {
 
   return (
     <svg viewBox="0 0 48 48" aria-hidden="true" className="practice-trail-emblem">
-      {id === "portuguese" || id === "languages" ? (
+      {id === "portuguese" || id === "english" ? (
         <>
           <path d="m4 13 17-4 3 3 3-3 17 4v27l-17-3-3 3-3-3-17 3Z" fill="#843222" />
           <path d="m5 10 16-4 3 4 3-4 16 4v25l-16-3-3 4-3-4-16 3Z" fill="#fff9ef" />
@@ -77,7 +77,7 @@ function TrailNumberPiece({ id, level }: { id: TrailIslandId; level: number }) {
       className="practice-trail-number-piece"
       data-piece={id}
     >
-      {id === "languages" ? (
+      {id === "english" ? (
         <>
           <path className="number-piece-depth" d="M6 16h88v63H51L30 96V79H6Z" />
           <path className="number-piece-face" d="M6 8h88v63H51L30 88V71H6Z" />
@@ -238,7 +238,7 @@ export function PracticeSubjectTrail({
               <source
                 media="(min-width: 900px)"
                 srcSet={
-                  island.id === "languages"
+                  island.id === "english"
                     ? "/practice-trails/languages-fast-desktop.webp"
                     : `/practice-trails/${island.id}-fast-desktop.webp`
                 }
@@ -246,7 +246,7 @@ export function PracticeSubjectTrail({
               <img
                 className="solo-level-scenery__art"
                 src={
-                  island.id === "languages"
+                  island.id === "english"
                     ? "/practice-trails/languages-fast-mobile.webp"
                     : `/practice-trails/${island.id}-fast-mobile.webp`
                 }
@@ -281,7 +281,7 @@ export function PracticeSubjectTrail({
               }
               aria-pressed={selected === index}
               disabled={index + 1 > unlockedLevel}
-              aria-label={`${island.id === "languages" ? uiText(449) : uiText(1884)} ${index + 1}: ${item.title}. ${index + 1 > unlockedLevel ? uiText(817) : item.description}`}
+              aria-label={`${island.id === "english" ? uiText(449) : uiText(1884)} ${index + 1}: ${item.title}. ${index + 1 > unlockedLevel ? uiText(817) : item.description}`}
               onClick={(event) => {
                 setJourney((current) => ({
                   target: index,

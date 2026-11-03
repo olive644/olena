@@ -30,6 +30,18 @@ function error(status: number, code: OlenaErrorCode, message: string): Response 
 /** Catálogo e desafios matemáticos calculados, sem provedor de IA ou escrita no servidor. */
 export async function handleOlena(request: Request): Promise<Response> {
   const url = new URL(request.url);
+  if (url.searchParams.get("action") === "english") {
+    if (
+      [...url.searchParams.keys()].some((key) => key !== "action") ||
+      url.searchParams.getAll("action").length !== 1
+    )
+      return error(400, "invalid_request", "Parâmetros inválidos.");
+    const { englishResponse } = await import("./english-handler.js");
+    const result = await englishResponse(request);
+    const response = json(result.status, result.body);
+    if (result.status === 405) response.headers.set("Allow", "POST");
+    return response;
+  }
   if (url.searchParams.get("action") === "online-presence") {
     const { handleOnlinePresence } = await import("./online-presence-runtime.js");
     return handleOnlinePresence(request);

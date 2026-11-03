@@ -7,7 +7,7 @@ describe("catálogo da Olena", () => {
     expect(olenaIslands().map((island) => island.title)).toEqual(
       PRACTICE_ISLANDS.map((island) => island.title),
     );
-    expect(new Set(olenaIslands().map((island) => island.id)).size).toBe(6);
+    expect(new Set(olenaIslands().map((island) => island.id)).size).toBe(9);
   });
   it("valida IDs sem aceitar posição, título ou dados do usuário", () => {
     expect(isOlenaIslandId("biology")).toBe(true);
@@ -18,7 +18,7 @@ describe("catálogo da Olena", () => {
     const islands = olenaIslands();
     islands.pop();
     islands[0]!.topics.pop();
-    expect(olenaIslands()).toHaveLength(6);
+    expect(olenaIslands()).toHaveLength(9);
     expect(olenaIslands()[0]!.topics).toHaveLength(4);
   });
   it("é uma base de metodologias e texto, não uma tutora ou voz simulada", () => {

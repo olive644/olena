@@ -11,7 +11,7 @@ it("uses the island catalog and stable IDs without duplicate subjects across dev
     PRACTICE_ISLANDS.map((island) => island.subject),
   );
   expect(choices[0]?.value).toBe("subject-english");
-  expect(agendaSubjectName(base, "subject-english")).toBe("Idiomas");
+  expect(agendaSubjectName(base, "subject-english")).toBe("Inglês");
   const math = choices.find((choice) => choice.label === "Matemática")!;
   const action = {
     type: "subject/added" as const,

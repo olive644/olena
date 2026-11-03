@@ -2,7 +2,10 @@ import { localizeResource, uiText } from "../i18n/runtime.js";
 import type { PRACTICE_ISLANDS } from "./practice-islands";
 
 export type PracticeIsland = (typeof PRACTICE_ISLANDS)[number];
-export type SubjectIslandId = Exclude<PracticeIsland["id"], "languages">;
+export type SubjectIslandId = Exclude<
+  PracticeIsland["id"],
+  "english" | "spanish" | "japanese" | "chinese"
+>;
 export type TrailIslandId = PracticeIsland["id"];
 
 export const BASIC_MATH_CHAPTERS = localizeResource([
@@ -155,7 +158,10 @@ function mathPosition(index: number, landings: readonly number[]) {
 
 // Coordinates are measured on each portrait's actual flat landings.
 export const MOBILE_TRAIL_Y: Record<TrailIslandId, readonly number[]> = {
-  languages: [85, 62, 39, 16],
+  english: [85, 62, 39, 16],
+  spanish: [85, 62, 39, 16],
+  japanese: [85, 62, 39, 16],
+  chinese: [85, 62, 39, 16],
   portuguese: [85, 63, 41, 19],
   chemistry: [82, 56, 39, 17],
   biology: [85, 61, 35, 14],
@@ -163,8 +169,8 @@ export const MOBILE_TRAIL_Y: Record<TrailIslandId, readonly number[]> = {
   programming: [86, 56, 31, 13],
 };
 
-export const SUBJECT_TRAILS = localizeResource({
-  languages: {
+const BASE_SUBJECT_TRAILS = localizeResource({
+  english: {
     points: [
       { x: 50, y: 85 },
       { x: 50, y: 62 },
@@ -340,7 +346,7 @@ export const SUBJECT_TRAILS = localizeResource({
     ],
   },
 } as const satisfies Record<
-  TrailIslandId,
+  Exclude<TrailIslandId, "spanish" | "japanese" | "chinese">,
   {
     color: string;
     points: readonly { x: number; y: number }[];
@@ -349,3 +355,10 @@ export const SUBJECT_TRAILS = localizeResource({
     stops: readonly { title: string; topic: string; description: string }[];
   }
 >);
+
+export const SUBJECT_TRAILS = {
+  ...BASE_SUBJECT_TRAILS,
+  spanish: BASE_SUBJECT_TRAILS.english,
+  japanese: BASE_SUBJECT_TRAILS.english,
+  chinese: BASE_SUBJECT_TRAILS.english,
+};

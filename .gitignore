@@ -24,3 +24,6 @@ __pycache__/
 
 # Contrato societário fora do repositório
 docs/CONTRATO_SOCIETARIO.md
+
+# Cache local do Trail-Code, regenerável com trail build.
+/graft/

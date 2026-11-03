@@ -1,0 +1,1660 @@
+{
+  "version": 4,
+  "area": "english",
+  "title": {
+    "pt-BR": "Cais dos Encontros",
+    "en-US": "Harbor of Encounters"
+  },
+  "parts": [
+    {
+      "title": {
+        "pt-BR": "Apresentações e verbo to be",
+        "en-US": "Introductions and the verb to be"
+      },
+      "objective": {
+        "pt-BR": "Cumprimentar e se apresentar.",
+        "en-US": "Greet people and introduce yourself."
+      },
+      "scenes": [
+        [
+          "Hello! My name is Olena.",
+          "Olá! Meu nome é Olena.",
+          "Hi, Olena! I'm Oliver.",
+          "name",
+          "Oi, Olena! Eu sou Oliver."
+        ],
+        [
+          "What is your name?",
+          "Qual é o seu nome?",
+          "My name is Oliver.",
+          "your",
+          "Meu nome é Oliver."
+        ],
+        [
+          "Nice to meet you.",
+          "Prazer em conhecer você.",
+          "Nice to meet you too.",
+          "meet",
+          "Prazer em conhecer você também."
+        ],
+        ["Where are you from?", "De onde você é?", "I'm from Brazil.", "from", "Eu sou do Brasil."],
+        [
+          "How are you today?",
+          "Como você está hoje?",
+          "I'm fine, thanks.",
+          "today",
+          "Estou bem, obrigado."
+        ],
+        ["See you tomorrow!", "Até amanhã!", "See you!", "tomorrow", "Até mais!"],
+        [
+          "I am a student.",
+          "Eu sou estudante.",
+          "I'm a student too.",
+          "student",
+          "Eu também sou estudante."
+        ],
+        [
+          "You are welcome here.",
+          "Você é bem-vindo aqui.",
+          "Thank you, Olena.",
+          "welcome",
+          "Obrigado, Olena."
+        ],
+        [
+          "He is my friend.",
+          "Ele é meu amigo.",
+          "Nice to meet him.",
+          "friend",
+          "Prazer em conhecê-lo."
+        ],
+        [
+          "She is our teacher.",
+          "Ela é nossa professora.",
+          "Good morning, teacher.",
+          "teacher",
+          "Bom dia, professora."
+        ],
+        ["We are ready.", "Nós estamos prontos.", "Let's begin.", "ready", "Vamos começar."],
+        [
+          "They are at the harbour.",
+          "Eles estão no porto.",
+          "Let's meet them there.",
+          "harbour",
+          "Vamos encontrá-los lá."
+        ],
+        [
+          "I am not tired.",
+          "Eu não estou cansada.",
+          "Good! Let's study.",
+          "tired",
+          "Ótimo! Vamos estudar."
+        ],
+        ["Are you a student?", "Você é estudante?", "Yes, I am.", "student", "Sim, sou."],
+        ["Is he Oliver?", "Ele é Oliver?", "Yes, he is.", "Oliver", "Sim, é."],
+        [
+          "Are they your friends?",
+          "Eles são seus amigos?",
+          "Yes, they are.",
+          "friends",
+          "Sim, são."
+        ],
+        [
+          "This is my book.",
+          "Este é meu livro.",
+          "It's a nice book.",
+          "book",
+          "É um livro bonito."
+        ],
+        [
+          "That is your bag.",
+          "Aquela é sua bolsa.",
+          "Thank you for finding it.",
+          "bag",
+          "Obrigado por encontrá-la."
+        ],
+        ["My name is Alice.", "Meu nome é Alice.", "Hello, Alice.", "Alice", "Olá, Alice."],
+        ["What is this?", "O que é isto?", "It is a pencil.", "this", "É um lápis."],
+        [
+          "How old are you?",
+          "Quantos anos você tem?",
+          "I am eighteen.",
+          "old",
+          "Eu tenho dezoito anos."
+        ],
+        [
+          "Where is the café?",
+          "Onde fica o café?",
+          "It is near the bridge.",
+          "café",
+          "Fica perto da ponte."
+        ],
+        [
+          "I'd like a coffee, please.",
+          "Eu gostaria de um café, por favor.",
+          "Of course. Here you are.",
+          "coffee",
+          "Claro. Aqui está."
+        ],
+        ["A tea, please.", "Um chá, por favor.", "Here is your tea.", "tea", "Aqui está seu chá."],
+        ["Is this your cup?", "Esta é sua xícara?", "Yes, it is mine.", "cup", "Sim, é minha."],
+        [
+          "I am hungry.",
+          "Estou com fome.",
+          "Let's get a sandwich.",
+          "hungry",
+          "Vamos pegar um sanduíche."
+        ],
+        [
+          "The water is cold.",
+          "A água está fria.",
+          "Would you like some warm water?",
+          "cold",
+          "Você gostaria de água morna?"
+        ],
+        [
+          "Please speak slowly.",
+          "Por favor, fale devagar.",
+          "Of course. I can speak slowly.",
+          "slowly",
+          "Claro. Posso falar devagar."
+        ],
+        [
+          "I don't understand.",
+          "Eu não entendo.",
+          "Let me explain again.",
+          "understand",
+          "Deixe-me explicar de novo."
+        ],
+        [
+          "Could you repeat that?",
+          "Você poderia repetir isso?",
+          "Yes, of course.",
+          "repeat",
+          "Sim, claro."
+        ]
+      ],
+      "lesson": {
+        "pt-BR": "Use I am, you/we/they are e he/she/it is para identidade e estado. Em perguntas, inverta a ordem: Are you...? Para negar, acrescente not.",
+        "en-US": "Use I am, you/we/they are and he/she/it is for identity and state. In questions, invert the order: Are you...? Add not to make a negative."
+      },
+      "proficiency": "A1",
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Comece pelo significado",
+            "en-US": "Start with meaning"
+          },
+          "text": {
+            "pt-BR": "Em inglês, I é eu e you é você. A expressão my name is significa meu nome é. Você pode trocar só o nome para se apresentar. Hello e hi são formas de dizer olá.",
+            "en-US": "In English, I refers to the speaker and you to the listener. Use my name is followed by your name to introduce yourself. Hello and hi are greetings."
+          },
+          "example": "Hello! My name is Olena.",
+          "meaning": {
+            "pt-BR": "Olá! Meu nome é Olena.",
+            "en-US": "Hello! My name is Olena."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Quem é a pessoa?",
+            "en-US": "Who is speaking?"
+          },
+          "text": {
+            "pt-BR": "To be pode significar ser ou estar. Use I am para falar de você, you are para falar com alguém, he is para ele e she is para ela. We are significa nós somos ou estamos; they are significa eles ou elas são ou estão.",
+            "en-US": "To be describes identity or state. Use I am, you are, he is, she is, we are and they are. Choose the form that matches the person."
+          },
+          "example": "I am a student. She is our teacher.",
+          "meaning": {
+            "pt-BR": "Eu sou estudante. Ela é nossa professora.",
+            "en-US": "I am a student. She is our teacher."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Pergunte e responda",
+            "en-US": "Ask and answer"
+          },
+          "text": {
+            "pt-BR": "Para perguntar com to be, coloque am, is ou are antes da pessoa. You are a student vira Are you a student? Para negar, use not depois do verbo. I am not tired significa eu não estou cansada.",
+            "en-US": "Move am, is or are before the person to ask a question. Put not after the verb to make it negative. A short answer repeats the matching form of be."
+          },
+          "example": "Are you a student? Yes, I am.",
+          "meaning": {
+            "pt-BR": "Você é estudante? Sim, sou.",
+            "en-US": "Are you a student? Yes, I am."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Use numa conversa real",
+            "en-US": "Use it in a real conversation"
+          },
+          "text": {
+            "pt-BR": "Leia o pedido inteiro antes de escolher. I would like, geralmente escrito I’d like, é uma maneira educada de pedir. Coffee é café, tea é chá e please significa por favor. Não é preciso traduzir cada palavra para identificar o pedido.",
+            "en-US": "I would like, often shortened to I’d like, is a polite request. Identify the item being requested. Please makes the request more polite."
+          },
+          "example": "I’d like a coffee, please.",
+          "meaning": {
+            "pt-BR": "Eu gostaria de um café, por favor.",
+            "en-US": "I’d like a coffee, please."
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "pt-BR": "Rotina e presente simples",
+        "en-US": "Routines and the present simple"
+      },
+      "objective": {
+        "pt-BR": "Conversar sobre horários e rotina.",
+        "en-US": "Talk about times and routines."
+      },
+      "scenes": [
+        [
+          "I study in the morning.",
+          "Eu estudo de manhã.",
+          "I study in the afternoon.",
+          "morning",
+          "Eu estudo à tarde."
+        ],
+        ["What time is it?", "Que horas são?", "It is nine o'clock.", "time", "São nove horas."],
+        [
+          "The lesson starts at ten.",
+          "A aula começa às dez.",
+          "Let's get ready.",
+          "ten",
+          "Vamos nos preparar."
+        ],
+        [
+          "I walk to school every day.",
+          "Eu vou a pé para a escola todos os dias.",
+          "I walk to school too.",
+          "walk",
+          "Eu também vou a pé para a escola."
+        ],
+        [
+          "We have lunch at noon.",
+          "Nós almoçamos ao meio-dia.",
+          "Let's meet at noon.",
+          "lunch",
+          "Vamos nos encontrar ao meio-dia."
+        ],
+        [
+          "I read before bed.",
+          "Eu leio antes de dormir.",
+          "What do you like to read?",
+          "read",
+          "O que você gosta de ler?"
+        ],
+        [
+          "I wake up at seven.",
+          "Eu acordo às sete.",
+          "I wake up at eight.",
+          "seven",
+          "Eu acordo às oito."
+        ],
+        [
+          "She studies every morning.",
+          "Ela estuda toda manhã.",
+          "I study in the afternoon.",
+          "studies",
+          "Eu estudo à tarde."
+        ],
+        [
+          "He works at the café.",
+          "Ele trabalha no café.",
+          "He makes good coffee.",
+          "works",
+          "Ele faz um bom café."
+        ],
+        [
+          "We walk to the harbour.",
+          "Nós caminhamos até o porto.",
+          "Let's walk together.",
+          "walk",
+          "Vamos caminhar juntos."
+        ],
+        [
+          "They play after school.",
+          "Eles brincam depois da escola.",
+          "That sounds fun.",
+          "play",
+          "Parece divertido."
+        ],
+        [
+          "I don't drink coffee.",
+          "Eu não tomo café.",
+          "Would you like tea instead?",
+          "coffee",
+          "Você gostaria de chá em vez disso?"
+        ],
+        [
+          "She doesn't eat meat.",
+          "Ela não come carne.",
+          "Let's choose a vegetable dish.",
+          "doesn't",
+          "Vamos escolher um prato de legumes."
+        ],
+        ["Do you like tea?", "Você gosta de chá?", "Yes, I do.", "tea", "Sim, gosto."],
+        ["Does he speak English?", "Ele fala inglês?", "Yes, he does.", "speak", "Sim, fala."],
+        [
+          "What time do you start?",
+          "A que horas você começa?",
+          "I start at nine.",
+          "start",
+          "Eu começo às nove."
+        ],
+        [
+          "I usually study here.",
+          "Eu geralmente estudo aqui.",
+          "This is a quiet place.",
+          "usually",
+          "Este é um lugar tranquilo."
+        ],
+        [
+          "She always brings a book.",
+          "Ela sempre traz um livro.",
+          "She loves reading.",
+          "always",
+          "Ela adora ler."
+        ],
+        [
+          "We sometimes eat outside.",
+          "Nós às vezes comemos lá fora.",
+          "Only when it is sunny.",
+          "sometimes",
+          "Só quando está ensolarado."
+        ],
+        [
+          "He never arrives late.",
+          "Ele nunca chega atrasado.",
+          "He plans his journey.",
+          "never",
+          "Ele planeja o trajeto."
+        ],
+        [
+          "The shop opens at eight.",
+          "A loja abre às oito.",
+          "Let's go after eight.",
+          "opens",
+          "Vamos depois das oito."
+        ],
+        [
+          "The bus leaves at ten.",
+          "O ônibus sai às dez.",
+          "We have enough time.",
+          "leaves",
+          "Temos tempo suficiente."
+        ],
+        [
+          "I am reading now.",
+          "Eu estou lendo agora.",
+          "I'll wait until you finish.",
+          "reading",
+          "Vou esperar você terminar."
+        ],
+        [
+          "She is making lunch.",
+          "Ela está preparando o almoço.",
+          "It smells delicious.",
+          "making",
+          "Está com um cheiro delicioso."
+        ],
+        [
+          "They are waiting outside.",
+          "Eles estão esperando lá fora.",
+          "Let's invite them in.",
+          "waiting",
+          "Vamos convidá-los para entrar."
+        ],
+        [
+          "Are you listening?",
+          "Você está ouvindo?",
+          "Yes, I am listening.",
+          "listening",
+          "Sim, estou ouvindo."
+        ],
+        [
+          "I have breakfast before school.",
+          "Eu tomo café da manhã antes da escola.",
+          "So do I.",
+          "before",
+          "Eu também."
+        ],
+        [
+          "We clean the table after lunch.",
+          "Nós limpamos a mesa depois do almoço.",
+          "I'll help you.",
+          "after",
+          "Vou ajudar você."
+        ],
+        [
+          "How often do you practise?",
+          "Com que frequência você pratica?",
+          "I practise every day.",
+          "often",
+          "Eu pratico todos os dias."
+        ],
+        [
+          "On Sundays, I rest.",
+          "Aos domingos, eu descanso.",
+          "Rest is important too.",
+          "Sundays",
+          "Descansar também é importante."
+        ]
+      ],
+      "lesson": {
+        "pt-BR": "No presente simples, I/you/we/they usam a forma básica do verbo. Com he/she/it, normalmente acrescentamos -s. Expressões como every day indicam rotina. Antes de bed e school, alguns usos não levam artigo.",
+        "en-US": "In the present simple, I/you/we/they use the base verb. With he/she/it, we usually add -s. Expressions such as every day indicate routine. Some uses of bed and school take no article."
+      },
+      "proficiency": "A1",
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Fale do que se repete",
+            "en-US": "Talk about routines"
+          },
+          "text": {
+            "pt-BR": "O presente simples conta hábitos e fatos. Com I, you, we e they, use o verbo básico: I study. Para ele, ela ou uma coisa, normalmente acrescente s: she studies. Study muda o y para ies.",
+            "en-US": "Use the present simple for habits and facts. I, you, we and they take the base verb. He, she and it normally take a verb ending in s; study becomes studies."
+          },
+          "example": "I study every day. She studies every morning.",
+          "meaning": {
+            "pt-BR": "Eu estudo todos os dias. Ela estuda toda manhã.",
+            "en-US": "I study every day. She studies every morning."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Perguntas e negativas",
+            "en-US": "Questions and negatives"
+          },
+          "text": {
+            "pt-BR": "Use do para perguntar com I, you, we e they, e does com he, she e it. Depois de does, o verbo volta à forma básica. Don’t e doesn’t são do not e does not.",
+            "en-US": "Use do or does for present simple questions. After does or doesn’t, keep the main verb in its base form. Don’t and doesn’t make negatives."
+          },
+          "example": "Does he speak English? He doesn’t speak Spanish.",
+          "meaning": {
+            "pt-BR": "Ele fala inglês? Ele não fala espanhol.",
+            "en-US": "Does he speak English? He doesn’t speak Spanish."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Quando e com que frequência?",
+            "en-US": "When and how often?"
+          },
+          "text": {
+            "pt-BR": "At seven indica às sete. Every day é todos os dias. Always é sempre, usually é geralmente, sometimes é às vezes e never é nunca. Procure essas pistas para reconhecer uma rotina.",
+            "en-US": "At seven gives a time. Every day, always, usually, sometimes and never tell you how often something happens. These are useful clues for routines."
+          },
+          "example": "I usually study at seven.",
+          "meaning": {
+            "pt-BR": "Eu geralmente estudo às sete.",
+            "en-US": "I usually study at seven."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "O que acontece agora?",
+            "en-US": "What is happening now?"
+          },
+          "text": {
+            "pt-BR": "Para uma ação em andamento, combine am, is ou are com o verbo terminado em ing. I am reading now é estou lendo agora. Compare com I read every day, que descreve um hábito.",
+            "en-US": "Use am, is or are with an ing form for an action in progress. Compare a routine, I read every day, with an action now, I am reading."
+          },
+          "example": "She is making lunch now.",
+          "meaning": {
+            "pt-BR": "Ela está preparando o almoço agora.",
+            "en-US": "She is making lunch now."
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "pt-BR": "Passado: o que aconteceu",
+        "en-US": "Past: what happened"
+      },
+      "objective": {
+        "pt-BR": "Relatar acontecimentos com passado simples.",
+        "en-US": "Describe events using the past simple."
+      },
+      "scenes": [
+        [
+          "I visited the harbor yesterday.",
+          "Eu visitei o porto ontem.",
+          "Did you enjoy the visit?",
+          "visited",
+          "Você gostou da visita?"
+        ],
+        [
+          "Oliver bought a new notebook.",
+          "Oliver comprou um caderno novo.",
+          "What color was it?",
+          "bought",
+          "De que cor ele era?"
+        ],
+        [
+          "We didn't miss the train.",
+          "Nós não perdemos o trem.",
+          "That's a relief!",
+          "miss",
+          "Que alívio!"
+        ],
+        [
+          "Did you see Olena at the cafe?",
+          "Você viu Olena no café?",
+          "Yes, she was reading.",
+          "see",
+          "Sim, ela estava lendo."
+        ],
+        [
+          "The shop closed at six.",
+          "A loja fechou às seis.",
+          "Let's go earlier tomorrow.",
+          "closed",
+          "Vamos mais cedo amanhã."
+        ],
+        [
+          "I was tired after the walk.",
+          "Eu estava cansado depois da caminhada.",
+          "Have a rest before dinner.",
+          "tired",
+          "Descanse antes do jantar."
+        ],
+        [
+          "I visited the harbour yesterday.",
+          "Eu visitei o porto ontem.",
+          "Did you enjoy it?",
+          "visited",
+          "Você gostou?"
+        ],
+        [
+          "She walked across the bridge.",
+          "Ela atravessou a ponte a pé.",
+          "It was a beautiful walk.",
+          "walked",
+          "Foi uma caminhada bonita."
+        ],
+        [
+          "We watched a film last night.",
+          "Nós assistimos a um filme ontem à noite.",
+          "What was it about?",
+          "watched",
+          "Sobre o que era?"
+        ],
+        [
+          "They played in the square.",
+          "Eles brincaram na praça.",
+          "They had a great time.",
+          "played",
+          "Eles se divertiram muito."
+        ],
+        [
+          "I went to the café.",
+          "Eu fui ao café.",
+          "What did you order?",
+          "went",
+          "O que você pediu?"
+        ],
+        [
+          "He bought a new book.",
+          "Ele comprou um livro novo.",
+          "Which book did he buy?",
+          "bought",
+          "Qual livro ele comprou?"
+        ],
+        [
+          "We ate lunch together.",
+          "Nós almoçamos juntos.",
+          "That was lovely.",
+          "ate",
+          "Foi muito bom."
+        ],
+        [
+          "She saw Oliver near the boat.",
+          "Ela viu Oliver perto do barco.",
+          "He was waiting for us.",
+          "saw",
+          "Ele estava nos esperando."
+        ],
+        [
+          "I didn't understand the question.",
+          "Eu não entendi a pergunta.",
+          "Let's read it together.",
+          "didn't",
+          "Vamos lê-la juntos."
+        ],
+        [
+          "He didn't go to school yesterday.",
+          "Ele não foi à escola ontem.",
+          "Was he ill?",
+          "go",
+          "Ele estava doente?"
+        ],
+        [
+          "Did you finish your homework?",
+          "Você terminou a tarefa?",
+          "Yes, I finished it.",
+          "finish",
+          "Sim, terminei."
+        ],
+        [
+          "Where did they go?",
+          "Aonde eles foram?",
+          "They went to the library.",
+          "Where",
+          "Eles foram à biblioteca."
+        ],
+        ["I was at home.", "Eu estava em casa.", "I was there too.", "was", "Eu também estava lá."],
+        [
+          "We were tired after the trip.",
+          "Nós estávamos cansados depois da viagem.",
+          "We needed some rest.",
+          "were",
+          "Precisávamos descansar."
+        ],
+        [
+          "Was the café open?",
+          "O café estava aberto?",
+          "No, it was closed.",
+          "open",
+          "Não, estava fechado."
+        ],
+        [
+          "They weren't ready.",
+          "Eles não estavam prontos.",
+          "We waited for them.",
+          "weren't",
+          "Nós esperamos por eles."
+        ],
+        [
+          "I was reading when you called.",
+          "Eu estava lendo quando você ligou.",
+          "Sorry for interrupting.",
+          "reading",
+          "Desculpe por interromper."
+        ],
+        [
+          "She was cooking at six.",
+          "Ela estava cozinhando às seis.",
+          "I helped with the dishes.",
+          "cooking",
+          "Eu ajudei com a louça."
+        ],
+        [
+          "While we were walking, it rained.",
+          "Enquanto caminhávamos, choveu.",
+          "We found shelter.",
+          "While",
+          "Nós encontramos abrigo."
+        ],
+        [
+          "First, I opened the door.",
+          "Primeiro, eu abri a porta.",
+          "Then what happened?",
+          "First",
+          "E depois, o que aconteceu?"
+        ],
+        [
+          "Then, I called Oliver.",
+          "Depois, eu liguei para Oliver.",
+          "Did he answer?",
+          "Then",
+          "Ele atendeu?"
+        ],
+        [
+          "Finally, we found the key.",
+          "Por fim, nós encontramos a chave.",
+          "What a relief!",
+          "Finally",
+          "Que alívio!"
+        ],
+        [
+          "Two days ago, I lost my map.",
+          "Há dois dias, eu perdi meu mapa.",
+          "Let's look for it.",
+          "ago",
+          "Vamos procurá-lo."
+        ],
+        [
+          "When I was a child, I lived here.",
+          "Quando eu era criança, morava aqui.",
+          "Tell me more about it.",
+          "child",
+          "Conte-me mais sobre isso."
+        ]
+      ],
+      "lesson": {
+        "pt-BR": "O passado simples descreve fatos concluídos. Verbos regulares geralmente recebem -ed; os irregulares têm formas próprias. Depois de did ou did not, use a forma básica do verbo. Be usa was/were.",
+        "en-US": "The past simple describes completed events. Regular verbs usually take -ed; irregular verbs have their own forms. After did or did not, use the base verb. Be uses was/were."
+      },
+      "proficiency": "A2",
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Localize o momento",
+            "en-US": "Find the time"
+          },
+          "text": {
+            "pt-BR": "Yesterday é ontem, last night é ontem à noite e two days ago é há dois dias. Essas expressões mostram que a ação já aconteceu. Muitos verbos recebem ed no passado: visit vira visited.",
+            "en-US": "Yesterday, last night and two days ago point to a finished past time. Many verbs add ed in the past, for example visit becomes visited."
+          },
+          "example": "I visited the harbour yesterday.",
+          "meaning": {
+            "pt-BR": "Eu visitei o porto ontem.",
+            "en-US": "I visited the harbour yesterday."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Alguns verbos mudam",
+            "en-US": "Some verbs change"
+          },
+          "text": {
+            "pt-BR": "Verbos irregulares não seguem a regra de ed. Go vira went, buy vira bought, eat vira ate e see vira saw. Aprenda a mudança dentro de uma frase e compare a ação com sua tradução.",
+            "en-US": "Irregular verbs do not follow the ed rule. Go becomes went, buy becomes bought, eat becomes ate and see becomes saw. Learn each form in a meaningful sentence."
+          },
+          "example": "We went to the café and ate lunch.",
+          "meaning": {
+            "pt-BR": "Nós fomos ao café e almoçamos.",
+            "en-US": "We went to the café and ate lunch."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Pergunte sem duplicar o passado",
+            "en-US": "Do not mark the past twice"
+          },
+          "text": {
+            "pt-BR": "Did já indica passado. Depois dele, use o verbo básico: Did you go?, não did you went. A negativa usa did not ou didn’t. Was e were são o passado de be e fazem perguntas sem did.",
+            "en-US": "Did already marks the past, so use the base verb after it. Use didn’t for negatives. Was and were are past forms of be and make their own questions."
+          },
+          "example": "Did you finish? I didn’t finish.",
+          "meaning": {
+            "pt-BR": "Você terminou? Eu não terminei.",
+            "en-US": "Did you finish? I didn’t finish."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Conte uma sequência",
+            "en-US": "Tell a sequence"
+          },
+          "text": {
+            "pt-BR": "First é primeiro, then é depois e finally é por fim. Was ou were com ing descreve algo que estava acontecendo. When conecta essa ação a um acontecimento: eu estava lendo quando você ligou.",
+            "en-US": "First, then and finally organise a story. Was or were with ing describes an action in progress in the past. When can connect it to a shorter event."
+          },
+          "example": "I was reading when you called.",
+          "meaning": {
+            "pt-BR": "Eu estava lendo quando você ligou.",
+            "en-US": "I was reading when you called."
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "pt-BR": "Planos e futuro",
+        "en-US": "Plans and the future"
+      },
+      "objective": {
+        "pt-BR": "Combinar planos e fazer previsões simples.",
+        "en-US": "Arrange plans and make simple predictions."
+      },
+      "scenes": [
+        [
+          "I'm going to visit the museum.",
+          "Eu vou visitar o museu.",
+          "Would you like some company?",
+          "museum",
+          "Você gostaria de companhia?"
+        ],
+        [
+          "We'll take the next bus.",
+          "Nós pegaremos o próximo ônibus.",
+          "It arrives in ten minutes.",
+          "next",
+          "Ele chega em dez minutos."
+        ],
+        [
+          "Are you going to study tonight?",
+          "Você vai estudar hoje à noite?",
+          "Yes, after dinner.",
+          "tonight",
+          "Sim, depois do jantar."
+        ],
+        [
+          "I think the weather will improve.",
+          "Acho que o tempo vai melhorar.",
+          "Then we can walk to the beach.",
+          "improve",
+          "Então podemos ir a pé até a praia."
+        ],
+        [
+          "Let's meet outside the library.",
+          "Vamos nos encontrar do lado de fora da biblioteca.",
+          "I'll be there at nine.",
+          "outside",
+          "Estarei lá às nove."
+        ],
+        [
+          "I won't be late this time.",
+          "Não vou me atrasar desta vez.",
+          "I'll save you a seat.",
+          "late",
+          "Vou guardar um lugar para você."
+        ],
+        [
+          "I will help you.",
+          "Eu vou ajudar você.",
+          "Thank you for offering.",
+          "will",
+          "Obrigado por oferecer ajuda."
+        ],
+        [
+          "It will rain tomorrow.",
+          "Vai chover amanhã.",
+          "Let's take an umbrella.",
+          "rain",
+          "Vamos levar um guarda-chuva."
+        ],
+        [
+          "We won't be late.",
+          "Nós não vamos nos atrasar.",
+          "Good, the boat leaves soon.",
+          "won't",
+          "Ótimo, o barco sai logo."
+        ],
+        [
+          "Will you join us?",
+          "Você vai se juntar a nós?",
+          "Yes, I'd love to.",
+          "join",
+          "Sim, adoraria."
+        ],
+        [
+          "I am going to study tonight.",
+          "Eu vou estudar hoje à noite.",
+          "Which subject will you study?",
+          "study",
+          "Qual matéria você vai estudar?"
+        ],
+        [
+          "She is going to visit the harbour.",
+          "Ela vai visitar o porto.",
+          "Let's show her around.",
+          "visit",
+          "Vamos mostrar o lugar a ela."
+        ],
+        [
+          "Are they going to travel?",
+          "Eles vão viajar?",
+          "Yes, next week.",
+          "travel",
+          "Sim, na semana que vem."
+        ],
+        [
+          "Look at those clouds! It is going to rain.",
+          "Olhe aquelas nuvens! Vai chover.",
+          "We should go inside.",
+          "clouds",
+          "Devemos entrar."
+        ],
+        [
+          "We are meeting Oliver at five.",
+          "Nós vamos encontrar Oliver às cinco.",
+          "I'll be there.",
+          "meeting",
+          "Estarei lá."
+        ],
+        [
+          "The train leaves at six tomorrow.",
+          "O trem sai às seis amanhã.",
+          "Let's arrive early.",
+          "leaves",
+          "Vamos chegar cedo."
+        ],
+        [
+          "I'd like to learn another language.",
+          "Eu gostaria de aprender outro idioma.",
+          "Which one interests you?",
+          "learn",
+          "Qual interessa a você?"
+        ],
+        [
+          "Would you like to come?",
+          "Você gostaria de vir?",
+          "Yes, thank you.",
+          "come",
+          "Sim, obrigado."
+        ],
+        [
+          "Let's meet at the café.",
+          "Vamos nos encontrar no café.",
+          "How about four o'clock?",
+          "meet",
+          "Que tal às quatro?"
+        ],
+        [
+          "Shall we take the boat?",
+          "Vamos pegar o barco?",
+          "That's a good idea.",
+          "boat",
+          "É uma boa ideia."
+        ],
+        [
+          "We should leave soon.",
+          "Nós deveríamos sair logo.",
+          "I'll get my bag.",
+          "should",
+          "Vou pegar minha bolsa."
+        ],
+        [
+          "You must bring your ticket.",
+          "Você deve trazer seu ingresso.",
+          "I have it here.",
+          "ticket",
+          "Eu o tenho aqui."
+        ],
+        [
+          "You don't have to pay today.",
+          "Você não precisa pagar hoje.",
+          "Can I pay tomorrow?",
+          "today",
+          "Posso pagar amanhã?"
+        ],
+        [
+          "If it rains, we will stay inside.",
+          "Se chover, vamos ficar dentro.",
+          "We can read together.",
+          "If",
+          "Podemos ler juntos."
+        ],
+        [
+          "If you practise, you will improve.",
+          "Se você praticar, vai melhorar.",
+          "I'll practise a little every day.",
+          "practise",
+          "Vou praticar um pouco todos os dias."
+        ],
+        [
+          "I might arrive later.",
+          "Talvez eu chegue mais tarde.",
+          "Send me a message when you arrive.",
+          "might",
+          "Mande uma mensagem quando chegar."
+        ],
+        [
+          "Perhaps we can go on Saturday.",
+          "Talvez possamos ir no sábado.",
+          "Saturday works for me.",
+          "Saturday",
+          "Sábado funciona para mim."
+        ],
+        [
+          "I promise I will call.",
+          "Prometo que vou ligar.",
+          "I'll wait for your call.",
+          "promise",
+          "Vou esperar sua ligação."
+        ],
+        [
+          "Next month, we are moving.",
+          "No mês que vem, nós vamos nos mudar.",
+          "Where are you moving to?",
+          "month",
+          "Para onde vocês vão se mudar?"
+        ],
+        [
+          "By Friday, I will have finished.",
+          "Até sexta-feira, eu terei terminado.",
+          "Then we can review it.",
+          "finished",
+          "Então podemos revisar."
+        ]
+      ],
+      "lesson": {
+        "pt-BR": "Going to pode expressar planos e previsões apoiadas em indícios. Will pode expressar previsões, decisões e ofertas. O presente contínuo também pode indicar um compromisso já combinado.",
+        "en-US": "Going to can express plans and predictions based on evidence. Will can express predictions, decisions and offers. The present continuous can also describe an arrangement."
+      },
+      "proficiency": "A2",
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Decisão ou plano?",
+            "en-US": "Decision or plan?"
+          },
+          "text": {
+            "pt-BR": "Will pode expressar uma decisão tomada agora, uma oferta ou previsão. Going to costuma indicar um plano já pensado ou uma previsão com sinais visíveis. Compare oferecer ajuda agora com planejar estudar à noite.",
+            "en-US": "Will can express a decision now, an offer or a prediction. Going to often expresses an existing plan or a prediction based on visible evidence."
+          },
+          "example": "I will help you. I am going to study tonight.",
+          "meaning": {
+            "pt-BR": "Eu vou ajudar você. Eu vou estudar hoje à noite.",
+            "en-US": "I will help you. I am going to study tonight."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Convide com educação",
+            "en-US": "Invite politely"
+          },
+          "text": {
+            "pt-BR": "Would you like to...? é um convite educado. Let’s significa vamos e sugere fazer algo juntos. Shall we...? também propõe uma atividade. Na resposta, reconheça se a pessoa está aceitando ou recusando.",
+            "en-US": "Would you like to...? is a polite invitation. Let’s and Shall we...? suggest doing something together. Notice whether the reply accepts or declines."
+          },
+          "example": "Would you like to come? Yes, I’d love to.",
+          "meaning": {
+            "pt-BR": "Você gostaria de vir? Sim, adoraria.",
+            "en-US": "Would you like to come? Yes, I’d love to."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Conselho não é obrigação",
+            "en-US": "Advice is not obligation"
+          },
+          "text": {
+            "pt-BR": "Should é uma recomendação. Must expressa uma obrigação forte. Don’t have to significa não precisar, e não uma proibição. Might indica uma possibilidade, não uma certeza.",
+            "en-US": "Should gives advice. Must expresses a strong obligation. Don’t have to means something is unnecessary, not forbidden. Might expresses possibility."
+          },
+          "example": "You should rest. You don’t have to leave.",
+          "meaning": {
+            "pt-BR": "Você deveria descansar. Você não precisa sair.",
+            "en-US": "You should rest. You don’t have to leave."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Uma condição e um resultado",
+            "en-US": "A condition and its result"
+          },
+          "text": {
+            "pt-BR": "If significa se. Para uma condição futura possível, use o presente depois de if e will no resultado. Não coloque will nos dois lados. By Friday indica um prazo; will have finished olha para algo concluído até esse prazo.",
+            "en-US": "For a possible future condition, use the present after if and will in the result. By Friday sets a deadline; will have finished looks at completion by that time."
+          },
+          "example": "If you practise, you will improve.",
+          "meaning": {
+            "pt-BR": "Se você praticar, vai melhorar.",
+            "en-US": "If you practise, you will improve."
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "pt-BR": "Argumentação e concessões",
+        "en-US": "Arguments and concessions"
+      },
+      "objective": {
+        "pt-BR": "Sustentar uma posição reconhecendo objeções.",
+        "en-US": "Support a position while acknowledging objections."
+      },
+      "scenes": [
+        [
+          "While the proposal has merit, it overlooks accessibility.",
+          "Embora a proposta tenha valor, ela ignora a acessibilidade.",
+          "We should address that before voting.",
+          "overlooks",
+          "Devemos tratar disso antes da votação."
+        ],
+        [
+          "The benefits outweigh the initial inconvenience.",
+          "Os benefícios superam o inconveniente inicial.",
+          "Could you give a concrete example?",
+          "outweigh",
+          "Você poderia dar um exemplo concreto?"
+        ],
+        [
+          "I take your point; nevertheless, the evidence is limited.",
+          "Entendo seu argumento; ainda assim, as evidências são limitadas.",
+          "Let's gather more data.",
+          "nevertheless",
+          "Vamos reunir mais dados."
+        ],
+        [
+          "There is a strong case for extending the opening hours.",
+          "Há bons argumentos para ampliar o horário de funcionamento.",
+          "Students would have more time to study.",
+          "extending",
+          "Os estudantes teriam mais tempo para estudar."
+        ],
+        [
+          "That conclusion doesn't necessarily follow from the figures.",
+          "Essa conclusão não decorre necessariamente dos números.",
+          "We need to examine the assumptions.",
+          "necessarily",
+          "Precisamos examinar as suposições."
+        ],
+        [
+          "On balance, a small trial seems the most sensible option.",
+          "No conjunto, um teste pequeno parece a opção mais sensata.",
+          "We can review it after a month.",
+          "balance",
+          "Podemos revisá-lo depois de um mês."
+        ],
+        [
+          "I agree with your idea.",
+          "Eu concordo com sua ideia.",
+          "Let's try it together.",
+          "agree",
+          "Vamos tentar juntos."
+        ],
+        [
+          "I see your point, but I disagree.",
+          "Eu entendo seu argumento, mas discordo.",
+          "What would you suggest?",
+          "disagree",
+          "O que você sugeriria?"
+        ],
+        [
+          "In my opinion, we need more time.",
+          "Na minha opinião, precisamos de mais tempo.",
+          "How much more time?",
+          "opinion",
+          "Quanto tempo a mais?"
+        ],
+        [
+          "Because it is raining, we'll stay inside.",
+          "Como está chovendo, ficaremos dentro.",
+          "That makes sense.",
+          "Because",
+          "Faz sentido."
+        ],
+        [
+          "I stayed home because I was ill.",
+          "Eu fiquei em casa porque estava doente.",
+          "I hope you feel better.",
+          "because",
+          "Espero que você melhore."
+        ],
+        [
+          "Although it was cold, we went out.",
+          "Embora estivesse frio, nós saímos.",
+          "Did you wear a coat?",
+          "Although",
+          "Vocês usaram casaco?"
+        ],
+        [
+          "However, there is another option.",
+          "No entanto, há outra opção.",
+          "Tell me about it.",
+          "However",
+          "Conte-me sobre ela."
+        ],
+        [
+          "For example, we could walk.",
+          "Por exemplo, nós poderíamos caminhar.",
+          "It isn't very far.",
+          "example",
+          "Não é muito longe."
+        ],
+        [
+          "Therefore, we need a new plan.",
+          "Portanto, precisamos de um plano novo.",
+          "Let's make one now.",
+          "Therefore",
+          "Vamos fazer um agora."
+        ],
+        [
+          "On the other hand, it costs less.",
+          "Por outro lado, custa menos.",
+          "We should compare both options.",
+          "hand",
+          "Devemos comparar as duas opções."
+        ],
+        [
+          "Could you explain what you mean?",
+          "Você poderia explicar o que quer dizer?",
+          "Of course. Let me give an example.",
+          "mean",
+          "Claro. Deixe-me dar um exemplo."
+        ],
+        [
+          "What evidence supports that idea?",
+          "Que evidência apoia essa ideia?",
+          "We can check the results.",
+          "evidence",
+          "Podemos conferir os resultados."
+        ],
+        [
+          "The main reason is safety.",
+          "O principal motivo é a segurança.",
+          "Safety should come first.",
+          "reason",
+          "A segurança deve vir primeiro."
+        ],
+        [
+          "It depends on the weather.",
+          "Depende do tempo.",
+          "Let's check the forecast.",
+          "depends",
+          "Vamos conferir a previsão."
+        ],
+        [
+          "Both options have advantages.",
+          "As duas opções têm vantagens.",
+          "Let's list them.",
+          "Both",
+          "Vamos listá-las."
+        ],
+        [
+          "Neither answer is complete.",
+          "Nenhuma das duas respostas está completa.",
+          "What is missing?",
+          "Neither",
+          "O que está faltando?"
+        ],
+        [
+          "Even though it is difficult, I'll try.",
+          "Mesmo sendo difícil, vou tentar.",
+          "I'll support you.",
+          "difficult",
+          "Vou apoiar você."
+        ],
+        [
+          "Despite the rain, the event continued.",
+          "Apesar da chuva, o evento continuou.",
+          "Everyone stayed under cover.",
+          "Despite",
+          "Todos ficaram abrigados."
+        ],
+        [
+          "Not only is it useful, but it is also fun.",
+          "Não só é útil, como também é divertido.",
+          "That sounds worth trying.",
+          "useful",
+          "Parece valer a tentativa."
+        ],
+        [
+          "I'd rather read than watch a film.",
+          "Eu preferiria ler a assistir a um filme.",
+          "Which book shall we read?",
+          "rather",
+          "Qual livro vamos ler?"
+        ],
+        [
+          "We ought to consider everyone.",
+          "Nós deveríamos considerar todas as pessoas.",
+          "Let's ask for their opinions.",
+          "consider",
+          "Vamos pedir suas opiniões."
+        ],
+        [
+          "If I were you, I would ask.",
+          "Se eu fosse você, eu perguntaria.",
+          "I'll ask politely.",
+          "were",
+          "Vou perguntar com educação."
+        ],
+        [
+          "To sum up, practice takes time.",
+          "Resumindo, praticar leva tempo.",
+          "Small steps help.",
+          "sum",
+          "Pequenos passos ajudam."
+        ],
+        [
+          "Let's find a solution together.",
+          "Vamos encontrar uma solução juntos.",
+          "We can combine our ideas.",
+          "solution",
+          "Podemos combinar nossas ideias."
+        ]
+      ],
+      "lesson": {
+        "pt-BR": "Concessões reconhecem uma dificuldade sem abandonar a tese. While e nevertheless ajudam a contrastar argumentos. Distinguir evidência de conclusão evita tratar uma opinião como fato demonstrado.",
+        "en-US": "Concessions acknowledge difficulty without abandoning the claim. While and nevertheless help contrast arguments. Distinguishing evidence from conclusions avoids treating an opinion as a demonstrated fact."
+      },
+      "proficiency": "B2",
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Diga sua ideia com clareza",
+            "en-US": "State an idea clearly"
+          },
+          "text": {
+            "pt-BR": "I agree é eu concordo; I disagree é eu discordo. In my opinion apresenta seu ponto de vista. Antes de responder, identifique se a outra pessoa concorda, discorda ou pede uma explicação.",
+            "en-US": "I agree shows agreement; I disagree shows disagreement. In my opinion introduces a viewpoint. Decide whether the speaker agrees, disagrees or asks for clarification."
+          },
+          "example": "In my opinion, we need more time.",
+          "meaning": {
+            "pt-BR": "Na minha opinião, precisamos de mais tempo.",
+            "en-US": "In my opinion, we need more time."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Explique o motivo",
+            "en-US": "Explain the reason"
+          },
+          "text": {
+            "pt-BR": "Because significa porque e apresenta uma razão. Therefore significa portanto e apresenta uma conclusão. For example traz um exemplo. Trocar essas expressões muda a relação entre as ideias.",
+            "en-US": "Because gives a reason, therefore introduces a conclusion and for example introduces an illustration. These expressions link ideas in different ways."
+          },
+          "example": "I stayed home because I was ill.",
+          "meaning": {
+            "pt-BR": "Eu fiquei em casa porque estava doente.",
+            "en-US": "I stayed home because I was ill."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Reconheça um contraste",
+            "en-US": "Recognise contrast"
+          },
+          "text": {
+            "pt-BR": "Although e even though significam embora ou mesmo que. Despite significa apesar de e vem antes de um nome ou forma ing. However costuma abrir outra frase ou oração com um contraste.",
+            "en-US": "Although and even though introduce a contrasting clause. Despite is followed by a noun or ing form. However usually introduces a contrast in a separate clause or sentence."
+          },
+          "example": "Although it was cold, we went out.",
+          "meaning": {
+            "pt-BR": "Embora estivesse frio, nós saímos.",
+            "en-US": "Although it was cold, we went out."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Converse, não adivinhe",
+            "en-US": "Clarify rather than guess"
+          },
+          "text": {
+            "pt-BR": "Could you explain what you mean? pede esclarecimento com educação. What evidence...? pede uma base para a ideia. If I were you, I would... apresenta um conselho imaginando estar no lugar da outra pessoa.",
+            "en-US": "Ask Could you explain what you mean? when an idea is unclear. Ask for evidence to understand its basis. If I were you, I would... gives advice from an imagined position."
+          },
+          "example": "Could you explain what you mean?",
+          "meaning": {
+            "pt-BR": "Você poderia explicar o que quer dizer?",
+            "en-US": "Could you explain what you mean?"
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "pt-BR": "Ironia, atenuação e subentendidos",
+        "en-US": "Irony, understatement and implication"
+      },
+      "objective": {
+        "pt-BR": "Interpretar intenção além do sentido literal.",
+        "en-US": "Interpret intention beyond literal meaning."
+      },
+      "scenes": [
+        [
+          "Calling that meeting brief would be a remarkable feat of optimism.",
+          "Dizer que aquela reunião foi breve seria um otimismo extraordinário.",
+          "So it lasted rather longer than expected.",
+          "optimism",
+          "Então ela durou bem mais do que o esperado."
+        ],
+        [
+          "I wouldn't describe the outcome as an unqualified success.",
+          "Eu não descreveria o resultado como um sucesso sem ressalvas.",
+          "There are clearly reservations worth discussing.",
+          "unqualified",
+          "Há claramente ressalvas que merecem discussão."
+        ],
+        [
+          "That is certainly one way of interpreting the evidence.",
+          "Essa é uma interpretação possível, mas a fala pode sinalizar discordância contida.",
+          "You sound unconvinced. What would you add?",
+          "interpreting",
+          "Você parece pouco convencido. O que acrescentaria?"
+        ],
+        [
+          "For a supposedly minor adjustment, it has caused quite a stir.",
+          "Para uma mudança supostamente pequena, ela causou bastante agitação.",
+          "The description understated its impact.",
+          "supposedly",
+          "A descrição minimizou seu impacto."
+        ],
+        [
+          "The silence that followed was, in itself, an answer.",
+          "O silêncio que veio depois já comunicava uma resposta.",
+          "Nobody seemed willing to endorse the proposal.",
+          "silence",
+          "Ninguém parecia disposto a apoiar a proposta."
+        ],
+        [
+          "His enthusiasm was conspicuous by its absence.",
+          "A falta de entusiasmo dele era muito evidente.",
+          "He may have concerns he hasn't voiced.",
+          "absence",
+          "Talvez ele tenha preocupações que ainda não expressou."
+        ],
+        [
+          "Could you give me a hand?",
+          "Você poderia me dar uma ajuda?",
+          "Of course. What do you need?",
+          "hand",
+          "Claro. Do que você precisa?"
+        ],
+        [
+          "It is a piece of cake.",
+          "É muito fácil.",
+          "Then let's try it.",
+          "cake",
+          "Então vamos tentar."
+        ],
+        [
+          "Let's break the ice.",
+          "Vamos quebrar o gelo.",
+          "I'll introduce myself first.",
+          "ice",
+          "Vou me apresentar primeiro."
+        ],
+        [
+          "I'm feeling under the weather.",
+          "Eu estou me sentindo indisposto.",
+          "You should get some rest.",
+          "weather",
+          "Você deveria descansar."
+        ],
+        [
+          "That rings a bell.",
+          "Isso me parece familiar.",
+          "Maybe you've heard it before.",
+          "bell",
+          "Talvez você já tenha ouvido isso."
+        ],
+        [
+          "Take your time.",
+          "Faça no seu ritmo, sem pressa.",
+          "Thank you. I need a moment.",
+          "time",
+          "Obrigado. Preciso de um momento."
+        ],
+        [
+          "Keep an eye on the boat.",
+          "Fique de olho no barco.",
+          "I'll watch it carefully.",
+          "eye",
+          "Vou observá-lo com atenção."
+        ],
+        [
+          "We are on the same page.",
+          "Nós estamos de acordo.",
+          "Good, let's continue.",
+          "page",
+          "Ótimo, vamos continuar."
+        ],
+        [
+          "I changed my mind.",
+          "Eu mudei de ideia.",
+          "What would you prefer now?",
+          "mind",
+          "O que você prefere agora?"
+        ],
+        [
+          "Let's call it a day.",
+          "Vamos encerrar por hoje.",
+          "We can continue tomorrow.",
+          "day",
+          "Podemos continuar amanhã."
+        ],
+        [
+          "I'm looking forward to it.",
+          "Estou animado para isso.",
+          "So am I!",
+          "forward",
+          "Eu também!"
+        ],
+        [
+          "It's up to you.",
+          "A decisão é sua.",
+          "I'd choose the café.",
+          "you",
+          "Eu escolheria o café."
+        ],
+        [
+          "Better late than never.",
+          "Antes tarde do que nunca.",
+          "I'm glad I finally started.",
+          "late",
+          "Fico feliz por finalmente ter começado."
+        ],
+        ["Don't give up.", "Não desista.", "I'll keep trying.", "up", "Vou continuar tentando."],
+        [
+          "Could you turn it down?",
+          "Você poderia abaixar o volume?",
+          "Yes, I'll lower it.",
+          "down",
+          "Sim, vou abaixá-lo."
+        ],
+        [
+          "Please look after the books.",
+          "Por favor, cuide dos livros.",
+          "I'll keep them safe.",
+          "after",
+          "Vou mantê-los seguros."
+        ],
+        [
+          "We ran out of water.",
+          "Nós ficamos sem água.",
+          "Let's get some more.",
+          "water",
+          "Vamos buscar mais um pouco."
+        ],
+        [
+          "I found out the answer.",
+          "Eu descobri a resposta.",
+          "How did you find it?",
+          "out",
+          "Como você a encontrou?"
+        ],
+        [
+          "Let's put off the meeting.",
+          "Vamos adiar a reunião.",
+          "Shall we meet tomorrow?",
+          "off",
+          "Vamos nos reunir amanhã?"
+        ],
+        [
+          "She turned down the offer.",
+          "Ela recusou a oferta.",
+          "She wanted another option.",
+          "offer",
+          "Ela queria outra opção."
+        ],
+        [
+          "What do you mean by that?",
+          "O que você quer dizer com isso?",
+          "Let me explain it another way.",
+          "mean",
+          "Deixe-me explicar de outra forma."
+        ],
+        [
+          "I'm not sure I follow.",
+          "Não tenho certeza de que entendi.",
+          "I'll use a simpler example.",
+          "follow",
+          "Vou usar um exemplo mais simples."
+        ],
+        [
+          "It's not my cup of tea.",
+          "Não é algo de que eu goste.",
+          "What do you enjoy instead?",
+          "tea",
+          "Do que você gosta, então?"
+        ],
+        [
+          "Every cloud has a silver lining.",
+          "Há algo de bom mesmo numa situação difícil.",
+          "Let's look for that possibility.",
+          "silver",
+          "Vamos procurar essa possibilidade."
+        ]
+      ],
+      "lesson": {
+        "pt-BR": "Ironia e understatement dependem de contexto e tom; uma frase isolada nem sempre determina a intenção. Compare o sentido literal com as pistas fornecidas. Uma atenuação pode comunicar uma crítica forte.",
+        "en-US": "Irony and understatement depend on context and tone; an isolated sentence does not always determine intention. Compare literal meaning with the available cues. An understatement can communicate strong criticism."
+      },
+      "proficiency": "C2",
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Nem sempre é literal",
+            "en-US": "Meaning is not always literal"
+          },
+          "text": {
+            "pt-BR": "Uma expressão pode ter um sentido diferente da soma das palavras. Give me a hand pede ajuda; não pede uma mão de verdade. Antes de responder, pense na situação e no que a pessoa precisa.",
+            "en-US": "An expression can mean more than the sum of its words. Give me a hand asks for help, not a literal hand. Use the situation to identify the intention."
+          },
+          "example": "Could you give me a hand?",
+          "meaning": {
+            "pt-BR": "Você poderia me dar uma ajuda?",
+            "en-US": "Could you give me a hand?"
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Use as pistas da conversa",
+            "en-US": "Use conversational clues"
+          },
+          "text": {
+            "pt-BR": "Under the weather indica indisposição. A piece of cake descreve algo fácil. Not my cup of tea indica uma preferência negativa. Uma resposta adequada reage a esse sentido, não ao objeto citado.",
+            "en-US": "Under the weather means unwell, a piece of cake means easy and not my cup of tea expresses dislike. Respond to the intended meaning rather than the literal object."
+          },
+          "example": "I’m feeling under the weather.",
+          "meaning": {
+            "pt-BR": "Eu estou me sentindo indisposto.",
+            "en-US": "I’m feeling under the weather."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Verbo e partícula trabalham juntos",
+            "en-US": "Read the verb and particle together"
+          },
+          "text": {
+            "pt-BR": "Look after significa cuidar. Run out of significa ficar sem. Put off pode significar adiar. A pequena palavra depois do verbo muda o sentido; leia o conjunto antes de escolher.",
+            "en-US": "Look after means care for, run out of means have none left and put off can mean postpone. The small word after the verb changes the meaning of the whole expression."
+          },
+          "example": "We ran out of water.",
+          "meaning": {
+            "pt-BR": "Nós ficamos sem água.",
+            "en-US": "We ran out of water."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Peça uma reformulação",
+            "en-US": "Ask for a different explanation"
+          },
+          "text": {
+            "pt-BR": "I’m not sure I follow é uma forma educada de dizer que não entendeu. What do you mean by that? pede uma explicação. Não é preciso fingir que compreendeu: pedir um exemplo faz parte da conversa.",
+            "en-US": "I’m not sure I follow politely signals that you have not understood. Ask what someone means or request an example. Clarification is a normal part of communication."
+          },
+          "example": "I’m not sure I follow. Could you give an example?",
+          "meaning": {
+            "pt-BR": "Não tenho certeza de que entendi. Você poderia dar um exemplo?",
+            "en-US": "I’m not sure I follow. Could you give an example?"
+          }
+        }
+      ]
+    }
+  ]
+}

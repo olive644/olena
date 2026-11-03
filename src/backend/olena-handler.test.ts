@@ -33,23 +33,28 @@ describe("API oficial da Olena", () => {
     expect(fetcher).not.toHaveBeenCalled();
   });
 
-  it("lista seis ilhas com identificadores estáveis, sem foto, progresso ou credenciais", async () => {
+  it("lista nove ilhas com identificadores estáveis, sem foto, progresso ou credenciais", async () => {
     const response = await handleOlena(get("?version=1&action=islands"));
     const payload = await response.json();
     expect(payload.version).toBe(1);
     expect(payload.islands.map((island: { id: string }) => island.id)).toEqual([
-      "languages",
+      "english",
       "portuguese",
       "chemistry",
       "biology",
       "mathematics",
       "programming",
+      "spanish",
+      "japanese",
+      "chinese",
     ]);
     expect(payload.islands[0].trail).toBe("available");
     expect(
       payload.islands.slice(1).every((island: { trail: string }) => island.trail === "preview"),
     ).toBe(true);
-    expect(payload.islands.at(-1).topics).toEqual(["Python", "JavaScript", "HTML", "CSS"]);
+    expect(
+      payload.islands.find((island: { id: string }) => island.id === "programming").topics,
+    ).toEqual(["Python", "JavaScript", "HTML", "CSS"]);
     for (const island of payload.islands)
       expect(Object.keys(island).sort()).toEqual([
         "description",

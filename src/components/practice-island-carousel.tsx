@@ -106,11 +106,11 @@ export function PracticeIslandCarousel({
               key={island.number}
               type="button"
               aria-label={uiText(1880, [island.title])}
-              disabled={!active || (island.id !== "mathematics" && island.id !== "languages")}
+              disabled={!active || (island.id !== "mathematics" && island.id !== "english")}
               onClick={(event) => {
                 if (!dragged.current || event.detail === 0) onEnter?.();
               }}
-              className={`practice-carousel-island${active ? " is-current" : " is-preview"}${island.id !== "mathematics" && island.id !== "languages" ? " is-locked" : ""}${island.id === "mathematics" && animatedReady ? " is-animated" : ""}`}
+              className={`practice-carousel-island${active ? " is-current" : " is-preview"}${island.id !== "mathematics" && island.id !== "english" ? " is-locked" : ""}${island.id === "mathematics" && animatedReady ? " is-animated" : ""}`}
               aria-hidden={!active}
               style={
                 {
@@ -125,7 +125,11 @@ export function PracticeIslandCarousel({
                 <img
                   className="solo-island-art"
                   src={island.art}
-                  srcSet={`${island.art.replace(".webp", "-small.webp")} 480w, ${island.art} 800w`}
+                  srcSet={
+                    island.art.startsWith("/languages/")
+                      ? undefined
+                      : `${island.art.replace(".webp", "-small.webp")} 480w, ${island.art} 800w`
+                  }
                   sizes={
                     active ? "(max-width: 600px) 66vw, 440px" : "(max-width: 600px) 32vw, 240px"
                   }

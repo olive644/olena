@@ -8,7 +8,7 @@ export function agendaSubjects(workspace: WorkspaceState) {
       (subject) =>
         subject.name.trim().toLocaleLowerCase("pt-BR") ===
           island.subject.toLocaleLowerCase("pt-BR") ||
-        (island.id === "languages" && subject.id === "subject-english"),
+        (island.id === "english" && subject.id === "subject-english"),
     );
     return { value: existing?.id ?? `subject-island-${island.id}`, label: island.subject };
   });

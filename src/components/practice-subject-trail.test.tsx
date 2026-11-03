@@ -11,7 +11,7 @@ afterEach(() => {
 
 describe("trilhas exploráveis por disciplina", () => {
   for (const island of PRACTICE_ISLANDS) {
-    if (island.id === "languages") continue;
+    if (island.id === "english") continue;
     it(`apresenta etapas próprias de ${island.subject}, sem inventar exercícios`, () => {
       vi.useFakeTimers();
       const onBack = vi.fn();
@@ -134,7 +134,7 @@ describe("trilhas exploráveis por disciplina", () => {
       />,
     );
     const levels = screen.getAllByRole("button", { name: /^Nível/ });
-    expect(screen.getByRole("region", { name: "Trilha de Idiomas" })).toBeTruthy();
+    expect(screen.getByRole("region", { name: "Trilha de Inglês" })).toBeTruthy();
     expect(levels[2]!.hasAttribute("disabled")).toBe(true);
     expect(levels[3]!.hasAttribute("disabled")).toBe(true);
     expect(screen.getByAltText("Sua foto no nível 2")).toBeTruthy();
@@ -148,6 +148,6 @@ describe("trilhas exploráveis por disciplina", () => {
     expect(document.querySelector(".practice-language-path")).toBeNull();
     expect(screen.queryByText("Flashcards")).toBeNull();
     expect(screen.queryByText("Bingo")).toBeNull();
-    expect(SUBJECT_TRAILS.languages.stops.map((stop) => stop.topic)).toEqual([...island.topics]);
+    expect(SUBJECT_TRAILS.english.stops.map((stop) => stop.topic)).toEqual([...island.topics]);
   });
 });

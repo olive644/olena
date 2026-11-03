@@ -335,15 +335,15 @@ describe("App", () => {
     await screen.findByRole("region", { name: "Ilhas de estudo" });
     for (let index = 0; index < 4; index++)
       fireEvent.click(screen.getByRole("button", { name: "Mundo anterior" }));
-    for (let index = 0; index < 6; index++) {
+    for (let index = 0; index < 9; index++) {
       const button = screen.getByRole("button", {
         name:
-          index === 0 ? "Explorar idiomas" : index === 4 ? "Explorar Matemática" : "Ilha bloqueada",
+          index === 0 ? "Explorar Inglês" : index === 4 ? "Explorar Matemática" : "Ilha bloqueada",
       }) as HTMLButtonElement;
       expect(button.disabled).toBe(index !== 0 && index !== 4);
       if (index !== 0 && index !== 4) fireEvent.click(button);
       expect(document.querySelector(".practice-trail-map")).toBeNull();
-      if (index < 5) fireEvent.click(screen.getByRole("button", { name: "Próximo mundo" }));
+      if (index < 8) fireEvent.click(screen.getByRole("button", { name: "Próximo mundo" }));
     }
     expect(localStorage.getItem("helena.soloProgress")).toBe("4");
   });
@@ -357,14 +357,14 @@ describe("App", () => {
     expect(screen.queryByRole("combobox")).toBeNull();
     for (let index = 0; index < 4; index++)
       fireEvent.click(screen.getByRole("button", { name: "Mundo anterior" }));
-    expect(screen.getByRole("heading", { name: "Porto das Vozes" })).toBeTruthy();
-    expect(screen.getByRole("img", { name: /Mundo 1: Idiomas/ }).getAttribute("src")).toBe(
-      "/practice-islands/languages.webp",
+    expect(screen.getByRole("heading", { name: "Cais dos Encontros" })).toBeTruthy();
+    expect(screen.getByRole("img", { name: /Mundo 1: Inglês/ }).getAttribute("src")).toBe(
+      "/languages/islands/english.webp",
     );
     fireEvent.keyDown(screen.getByRole("region", { name: "Ilhas de estudo" }), {
       key: "ArrowLeft",
     });
-    expect(screen.getByRole("heading", { name: "Porto das Vozes" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Cais dos Encontros" })).toBeTruthy();
     expect(
       (screen.getByRole("button", { name: "Mundo anterior" }) as HTMLButtonElement).disabled,
     ).toBe(true);

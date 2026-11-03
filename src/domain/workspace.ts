@@ -241,6 +241,7 @@ export type WorkspaceState = {
 
 export type PracticeActivity = {
   languageAttempt?: LanguageAttempt;
+  englishAttempt?: LanguageAttempt;
   moduleLevel?: number;
   id: string;
   islandId: string;
@@ -918,6 +919,13 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             activity.islandId !== "languages" ||
             activity.answers !== activity.languageAttempt.questions.length ||
             activity.correct !== activity.languageAttempt.correctQuestions.length)) ||
+        (activity.englishAttempt !== undefined &&
+          (!validLanguageAttempt(activity.englishAttempt) ||
+            activity.englishAttempt.curriculum !== 4 ||
+            activity.islandId !== "english" ||
+            activity.languageAttempt !== undefined ||
+            activity.answers !== activity.englishAttempt.questions.length ||
+            activity.correct !== activity.englishAttempt.correctQuestions.length)) ||
         state.practiceActivities?.some((item) => item.id === activity.id)
       )
         return state;
