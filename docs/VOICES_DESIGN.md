@@ -1,4 +1,4 @@
-# Porto das Vozes: contrato visual e de navegação
+# Idiomas: contrato visual, de navegação e ensino
 
 Decisão explícita do proprietário em 02/11/2026: as seis partes aparecem como seis cenários navegáveis por setas, igual em Matemática. Cada cenário abre seus próprios materiais. Não são seis tópicos numa lista nem seis locais clicáveis sobre um único mapa.
 
@@ -6,9 +6,9 @@ Este documento é a referência de trabalho para Idiomas. Ler junto com DESIGN_S
 
 ## Estrutura
 
-Ilhas gerais > Porto das Vozes > destino do idioma > carrossel de seis cenários/partes por setas > materiais da parte > prática e confirmação.
+Ilhas gerais > Cais dos Encontros (Inglês) > carrossel de seis cenários/partes por setas > materiais da parte > prática e confirmação. Praça dos Ventos, Jardim das Palavras e Pátio dos Traços também são ilhas gerais, ainda bloqueadas.
 
-- Porto das Vozes é o mundo dos idiomas, nunca uma imagem provisória de outro idioma.
+- Porto das Vozes foi retirado da navegação por decisão do proprietário. Sua arte permanece apenas como referência histórica de estilo. Não recriar essa camada intermediária.
 - Inglês é uma única ilha, Cais dos Encontros, com seis partes. Não criar seis ilhas completas para essas partes.
 - A1 a C2 podem indicar dificuldade do material. Não são uma camada de navegação nem prova de certificação.
 - Espanhol, Japonês e Chinês continuam bloqueados nesta entrega, mesmo que Inglês chegue a 100%.
@@ -47,7 +47,7 @@ Reaproveitar os componentes e a estrutura existentes, sem reinterpretar os contr
 - Botão disponível: HelenaRoomIcon com name="play".
 - Botão bloqueado: PaperIslandLock, extraído sem redesenho do cadeado das ilhas gerais. Nunca usar play, emoji, ícone do navegador ou um novo cadeado nesse estado.
 - Porcentagem sobre o avatar, seis segmentos de progresso, dígitos em PaperDigits/MathNumber.
-- Pontos e três espaços de poeira cósmica em MathPlaceTreasure, nas posições de Matemática.
+- Pontos, percentual e três espaços de poeira cósmica em MathPlaceTreasure aparecem somente no carrossel das partes. A ilha geral do idioma não mostra essas informações nem os três botões de +. Materiais e atividades também não repetem o tesouro.
 - Transições de entrada, saída e navegação conservam o comportamento compartilhado, com redução de movimento do sistema e do app.
 - Sem descrição "6 partes..." abaixo do nome da ilha. A informação aparece dentro do percurso.
 - Fontes originais, botões de papel e foco amarelo. Não adicionar fontes remotas, molduras de foco roxas ou pretas ou ações dependentes de hover.
@@ -63,7 +63,7 @@ As seis partes são apresentações e verbo to be, rotina e presente simples, pa
 - Partes pertencem ao mesmo percurso e ao mesmo percentual. Não têm ilhas ou registros de pontos separados.
 - Cenários seguintes permanecem visíveis para navegação, mas abrir seus materiais exige confirmar a parte anterior, como os destinos bloqueados de Matemática. Mostrar o cadeado original e botão desativado.
 - Parte confirmada recebe o check original. Seleção usa papel amarelo com tinta escura em ambos os temas.
-- Cada parte tem 24 tarefas, exige 20 acertos diferentes para a confirmação e reserva o último ponto de domínio até a confirmação 4 de 5.
+- Cada parte tem 120 tarefas (30 situações em quatro formatos), exige 100 acertos diferentes para a confirmação e reserva o último ponto percentual até a confirmação 4 de 5. São 720 tarefas no percurso. Repetição não gera domínio novo.
 - Falha na confirmação exige quatro acertos de revisão. Erro não apaga domínio adquirido.
 - Acertos, erros, pontos, XP, poeira e Arcano continuam usando as regras documentadas em VOICES_PORT.md. Não inventar valores para preencher o preview.
 - Fala, lacuna, resposta contextual e ordenação usam o conteúdo próprio existente. A voz local é opcional e tem alternativa em texto. Não anunciar pronúncia, chamada ou IA generativa que não existe.
@@ -85,4 +85,14 @@ Testes precisam preservar progresso, recarga, pontos, revelação de cartas e Ma
 | 5     | Pátio das Ideias     | Argumentação e concessões   | ideas.webp    |
 | 6     | Casa dos Sentidos    | Expressões e interpretação  | meaning.webp  |
 
-Artes em public/languages/english-parts/, catálogo em src/data/english-part-catalog.ts. O percentual de cada cenário usa seu domínio de 20 questões e confirmação final; o percentual do idioma continua a média dos seis cenários. Os pontos e a poeira continuam no registro inglês compartilhado, sem duplicação por troca de tela. IDs de partes e currículo permanecem estáveis. Completar a primeira parte libera a segunda; não libera outro idioma.
+Artes em public/languages/english-parts/, catálogo em src/data/english-part-catalog.ts. O percentual de cada cenário usa seu domínio de 100 questões e confirmação final; o percentual do idioma continua a média dos seis cenários. Os pontos e a poeira continuam no registro inglês compartilhado, sem duplicação por troca de tela. IDs de partes e currículo permanecem estáveis. Completar a primeira parte libera a segunda; não libera outro idioma.
+
+## Aprender antes de responder
+
+Antes de praticar, cada parte apresenta quatro explicações graduais: significado, regra, contraste e aplicação em conversa, com exemplos em inglês e significado em português. Não supor conhecimento prévio de termos como to be, auxiliar ou expressão idiomática. Explicar os termos na própria lição.
+
+Durante a atividade não mostrar Voltar, título central da ilha, porcentagem geral, Ver texto da fala ou botão Continuar. A fala já está em texto. Ouvir a fala aparece somente quando há voz inglesa local; ausência de voz é silenciosa e não bloqueia o estudo. Escape continua oferecendo saída com confirmação e foco contido.
+
+Respostas usam math-answer-button, seus tons, recortes, avatar/reação e efeitos sonoros existentes de Matemática. Acerto reage por 650 ms e avança automaticamente. Erro reage por 1300 ms e abre a revisão da Olena, com sua arte aprovada do onboarding, resposta dada, significado, regra e orientação. Não avançar automaticamente enquanto a pessoa lê essa explicação. Agora é sua vez retorna à prática com apoio adaptado. Os tempos são de feedback, não prazo de resposta nem de leitura. Respeitar movimento e som configurados.
+
+A área de materiais usa toda a superfície temática, sem faixa de fundo vazia ou tesouro duplicado. Conferir scroll real, contraste e botões em PC, 320 px, claro e escuro.

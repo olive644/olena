@@ -1,8 +1,16 @@
+import { nextEnglishQuestion, type EnglishSelection } from "../domain/english-adaptive";
 import { uiLocale, uiText } from "../i18n/runtime";
 import { isEnglishArea, type EnglishArea } from "../domain/english-areas";
 export type EnglishText = { "pt-BR": string; "en-US": string };
 export type EnglishScene = [string, string, string, string, string];
+export type EnglishGuide = {
+  title: EnglishText;
+  text: EnglishText;
+  example: string;
+  meaning: EnglishText;
+};
 export type EnglishPart = {
+  guide: EnglishGuide[];
   title: EnglishText;
   objective: EnglishText;
   lesson: EnglishText;
@@ -10,7 +18,7 @@ export type EnglishPart = {
   proficiency: string;
 };
 export type EnglishCourse = {
-  version: 3;
+  version: 4;
   area: EnglishArea;
   title: EnglishText;
   parts: EnglishPart[];
@@ -27,7 +35,7 @@ export function validEnglishCourse(value: unknown): value is EnglishCourse {
     );
   if (
     !object(value) ||
-    value["version"] !== 3 ||
+    value["version"] !== 4 ||
     !isEnglishArea(value["area"]) ||
     !text(value["title"])
   )
@@ -45,7 +53,19 @@ export function validEnglishCourse(value: unknown): value is EnglishCourse {
         typeof part["proficiency"] === "string" &&
         /^(A1|A2|B1|B2|C1|C2)$/.test(part["proficiency"]) &&
         Array.isArray(part["scenes"]) &&
-        part["scenes"].length === 6 &&
+        part["scenes"].length === 30 &&
+        Array.isArray(part["guide"]) &&
+        part["guide"].length === 4 &&
+        part["guide"].every(
+          (step: unknown) =>
+            object(step) &&
+            text(step["title"]) &&
+            text(step["text"]) &&
+            text(step["meaning"]) &&
+            typeof step["example"] === "string" &&
+            step["example"].length > 0 &&
+            step["example"].length < 500,
+        ) &&
         part["scenes"].every(
           (scene: unknown) =>
             Array.isArray(scene) &&
@@ -65,7 +85,7 @@ export async function loadEnglishCourse(
 ): Promise<EnglishCourse> {
   const saved = cache.get(area);
   if (saved) return saved;
-  const response = await fetch(`/languages/en/${area}.json`, {
+  const response = await fetch(`/languages/en/${area}-v4.json`, {
     signal,
     credentials: "omit",
     referrerPolicy: "no-referrer",
@@ -94,8 +114,11 @@ export function englishQuestion(course: EnglishCourse, part: number, id: number)
   const meaning = uiLocale() === "pt-BR" ? translation : phrase;
   const answer =
     kind === "meaning" ? meaning : kind === "gap" ? word : kind === "reply" ? reply : phrase;
-  const others = [1, 2].map((offset) => scenes[(scene + offset) % scenes.length]!);
-  const options = [
+  const others = Array.from(
+    { length: scenes.length - 1 },
+    (_, offset) => scenes[(scene + offset + 1) % scenes.length]!,
+  );
+  const candidates = [
     answer,
     ...others.map((item) =>
       kind === "meaning"
@@ -107,7 +130,8 @@ export function englishQuestion(course: EnglishCourse, part: number, id: number)
           : item[2],
     ),
   ];
-  const rotation = (part + id) % 3;
+  const options = [...new Set(candidates)].slice(0, 3);
+  const rotation = (part + id) % options.length;
   return {
     id,
     kind,
@@ -134,4 +158,32 @@ export function normalizeEnglish(value: string) {
     .replace(/[.!?,]/g, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+export async function selectEnglishQuestion(input: EnglishSelection, signal: AbortSignal) {
+  try {
+    const response = await fetch("/api/olena?action=english", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+      credentials: "omit",
+      signal: AbortSignal.any([signal, AbortSignal.timeout(5000)]),
+    });
+    if (!response.ok) throw new Error("english-selection-unavailable");
+    const value: unknown = await response.json();
+    if (
+      !value ||
+      typeof value !== "object" ||
+      !("id" in value) ||
+      !Number.isInteger(value.id) ||
+      Number(value.id) < 0 ||
+      Number(value.id) >= 120 ||
+      input.exclude.includes(Number(value.id))
+    )
+      throw new Error("english-selection-invalid");
+    return Number(value.id);
+  } catch {
+    // Callers check the signal before using this result, including after cancellation.
+    return nextEnglishQuestion(input).id;
+  }
 }

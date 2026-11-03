@@ -567,3 +567,170 @@ html[data-reduce-motion="true"] .english-journey * {
   max-width: 820px;
   margin: 0 auto;
 }
+/* Shared mathematics controls remain coloured in both themes. */
+.english-island-interior {
+  min-height: 100dvh;
+  background: linear-gradient(145deg, #155f70 0 48%, #123f52 48% 100%);
+}
+.english-island-interior .math-game-landscape,
+.english-island-interior .math-game-floor {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  pointer-events: none;
+}
+.english-island-interior .english-lesson {
+  max-width: 860px;
+  margin: 12px auto 24px;
+}
+.english-island-interior .math-answers {
+  gap: 20px;
+}
+.english-island-interior .math-answer-button {
+  min-height: 76px;
+  height: auto;
+  padding: 20px 16px;
+  font-family: inherit;
+  font-size: clamp(16px, 2vw, 21px);
+  line-height: 1.35;
+  color: #292432;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.english-island-interior .math-answer-button[aria-disabled="true"] {
+  cursor: default;
+}
+.english-island-interior .math-answer-button[aria-pressed="true"] {
+  color: #292432;
+}
+.english-island-interior .math-answer-button:focus-visible {
+  outline: none;
+  text-decoration: underline 4px #ffda19;
+  text-underline-offset: 6px;
+}
+.english-island-interior .math-answer-reaction {
+  top: -30px;
+  max-width: 100%;
+}
+.english-island-interior .english-options {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+.english-island-interior .english-word-bank {
+  grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+}
+.english-island-interior
+  .english-word-bank
+  .math-answer-button[aria-disabled="true"]:not([data-feedback]) {
+  opacity: 0.45;
+}
+.english-island-interior .english-lesson-top {
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.english-guide {
+  display: grid;
+  gap: 18px;
+}
+.english-guide > section {
+  position: relative;
+  border-top: 1px dashed var(--line);
+  padding: 16px 0 0 42px;
+}
+.english-guide h3 {
+  margin: 0 0 8px;
+  font-size: 1.16rem;
+}
+.english-guide-step {
+  position: absolute;
+  top: 19px;
+  left: 2px;
+}
+.english-guide .paper-digits {
+  height: 24px;
+  --digit-face: #783fe0;
+  --digit-depth: #51259b;
+  --digit-fold: #a47ae6;
+  --digit-edge: #51259b;
+}
+.english-guide blockquote,
+.english-mentor blockquote {
+  margin: 12px 0;
+  padding: 12px 16px;
+  border-left: 4px solid #ffda19;
+  background: #ffda1914;
+  font-weight: 650;
+}
+.english-example-meaning {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+.english-mentor {
+  padding: 16px 0;
+}
+.english-mentor .oliver-review__lesson {
+  grid-template-columns: minmax(150px, 260px) minmax(0, 1fr);
+}
+.english-mentor .oliver-review__speech {
+  --surface: #fffdf8;
+  --text: #292432;
+  --line: #ded3bf;
+}
+:root[data-theme="dark"] .english-mentor .oliver-review__speech {
+  --surface: #24202b;
+  --text: #fff8ef;
+  --line: #494151;
+}
+.english-review-answer {
+  padding: 12px 0;
+  line-height: 1.6;
+}
+@media (max-width: 600px) {
+  .english-island-interior.is-practicing {
+    padding: 12px 12px 24px;
+  }
+  .english-island-interior .english-lesson {
+    margin: 0 auto 18px;
+  }
+  .english-island-interior .english-lesson h1 {
+    font-size: 24px;
+  }
+  .english-island-interior .math-answers {
+    gap: 18px;
+  }
+  .english-island-interior .math-answer-button {
+    min-height: 60px;
+    padding: 16px 12px;
+    font-size: 16px;
+  }
+  .english-mentor .oliver-review__lesson {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+  }
+  .english-mentor .oliver-review__character {
+    width: 140px;
+    align-self: flex-start;
+    z-index: 1;
+    margin-bottom: -14px;
+  }
+  .english-mentor .oliver-review__speech {
+    padding: 22px 18px;
+  }
+  .english-mentor h1 {
+    font-size: 25px;
+  }
+  .english-mentor .oliver-review__speech p {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .english-guide > section {
+    padding-left: 32px;
+  }
+}
+.english-island-interior :is(.english-mentor h1, .english-summary h2):focus-visible {
+  outline: none;
+  text-decoration: underline 3px #ffda19;
+  text-underline-offset: 6px;
+}

@@ -1803,3 +1803,11 @@ Proprietário confirmou: seis cenários navegáveis por setas, como Matemática,
 ### Inglês: cenário antes do material
 
 A navegação vigente é Porto das Vozes > idioma > seis cenários por setas > material específico. VoicesLanguageMap reutiliza a apresentação de Matemática com catálogo regional; VoicesPortJourney guarda o cenário ao voltar dos materiais e separa as instâncias do mapa de idiomas e do mapa de partes. EnglishIslandJourney recebe initialPart e não oferece outra lista de seis tópicos. Contrato em VOICES_DESIGN.md, artes regionais em public/languages/english-parts/. Prova: 18 E2E PC/mobile claro/escuro sem skips, incluindo Matemática; verify final aprovado com 2528 testes, aplicação 1699,8 KiB e entrada 220,7 KiB, sem alteração do teto.
+
+### Idiomas gerais e prática ampliada
+
+Navegação vigente: ilhas gerais > Cais dos Encontros > seis cenários por setas > materiais. Os outros três idiomas permanecem bloqueados nas ilhas gerais. Porto das Vozes fica só como referência histórica de arte. Banco 120 tarefas/parte, alvo 100 + final 4/5; 720 tarefas e quatro guias por parte. englishAttempt currículo4 é aditivo, languageAttempt preserva histórico. Não colocar IDs novos no campo antigo. API action=english usa planejador compartilhado e fallback local, sem modelo/provedor; não confundir seleção adaptativa com avaliação de pronúncia ou antifraude. Regras e rollback em VOICES_PORT.md.
+
+Trail-Code 0.28.1 disponível como ferramenta local em b/tools/trail-code, fora das dependências do produto. Usado build estrutural apenas em .ts/.tsx, sem init/deep, importação de conversas, integração a terminais ou credenciais. DO_NOT_TRACK=1 nas invocações. Cache graft/ local ignorado pelo Git. Usar skeleton/callers/ask com limite e sem refresh repetido quando a árvore não mudou; não afirmar economia real de tokens só pela estimativa do CLI. Documentação privada não entra na seleção de extensões.
+
+Recompensas inglesas são reconciliadas por settleEnglishRewards: respostas preservadas imediatamente e conclusão com recibo idempotente sem pontos adicionais. Não usar cada resposta isolada para decidir elegibilidade de baú. Teste vermelho/verde cobre rodada incompleta, completa, recarga, coleção comum, limite de espaços e raridade.

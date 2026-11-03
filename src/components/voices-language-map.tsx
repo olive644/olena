@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { ENGLISH_PART_CATALOG } from "../data/english-part-catalog";
-import { VOICES_LANGUAGE_CATALOG as LANGUAGES } from "../data/voices-language-catalog";
 
 import { englishText } from "../data/english-journey";
 
@@ -23,12 +22,10 @@ export function VoicesLanguageMap({
   progress,
   onSelect,
   onBack,
-  parts = false,
   initialPart = 0,
 }: {
   progress: ReturnType<typeof englishProgress>;
   onSelect: (part: number) => void;
-  parts?: boolean;
   initialPart?: number;
   onBack: () => void;
 }) {
@@ -39,15 +36,9 @@ export function VoicesLanguageMap({
   const dragged = useRef(false);
   const wheel = useRef(0);
   const [index, setIndex] = useState(initialPart);
-  const entries = parts ? ENGLISH_PART_CATALOG : LANGUAGES;
+  const entries = ENGLISH_PART_CATALOG;
   const current = progress.parts[index];
-  const percent = parts
-    ? current!.confirmed
-      ? 100
-      : Math.min(19, current!.solved.size) * 5
-    : index === 0
-      ? progress.percent
-      : 0;
+  const percent = current!.confirmed ? 100 : Math.min(99, current!.solved.size);
   const [phase, setPhase] = useState<"map" | "enter" | "exit">("map");
   const [direction, setDirection] = useState("right");
   useEffect(() => {
@@ -78,13 +69,12 @@ export function VoicesLanguageMap({
       setIndex(next);
     }
   };
-  const unlocked = (position: number) =>
-    position === 0 || (parts && progress.parts[position - 1]!.confirmed);
+  const unlocked = (position: number) => position === 0 || progress.parts[position - 1]!.confirmed;
   return createPortal(
     <section
       ref={root}
-      className={`math-journey is-${phase} ${parts ? "english-parts-journey" : "english-subject-journey"}`}
-      aria-label={parts ? uiText("Partes do Cais dos Encontros") : uiText("Porto das Vozes")}
+      className={`math-journey is-${phase} english-parts-journey`}
+      aria-label={uiText("Partes do Cais dos Encontros")}
       style={
         {
           "--math-color": "#16869a",
@@ -168,11 +158,7 @@ export function VoicesLanguageMap({
             >
               {Math.abs(position - index) <= 1 && (
                 <img
-                  src={
-                    parts
-                      ? `/languages/english-parts/${item.art}.webp`
-                      : `/languages/islands/${item.art}.webp`
-                  }
+                  src={`/languages/english-parts/${item.art}.webp`}
                   width="800"
                   height="800"
                   alt=""
@@ -209,15 +195,9 @@ export function VoicesLanguageMap({
           </div>
         </div>
         <div className="math-journey-label" aria-live="polite">
-          <span>
-            {parts ? uiText("Inglês · Parte {0} de 6", [index + 1]) : englishText(course.subject)}
-          </span>
+          <span>{uiText("Inglês · Parte {0} de 6", [index + 1])}</span>
           <h1>{englishText(course.title)}</h1>
-          {parts ? (
-            <p>{englishText(course.subject)}</p>
-          ) : (
-            !unlocked(index) && <p>{uiText("Em preparação")}</p>
-          )}
+          <p>{englishText(course.subject)}</p>
           <button
             className="primary-button math-place-start"
             type="button"
@@ -231,9 +211,7 @@ export function VoicesLanguageMap({
         <button
           className="focus-mode-arrow math-place-arrow math-place-arrow--previous"
           type="button"
-          aria-label={
-            parts ? uiText("Parte anterior de Inglês") : uiText("Ilha de idioma anterior")
-          }
+          aria-label={uiText("Parte anterior de Inglês")}
           disabled={index === 0 || phase !== "map"}
           onClick={() => visit(index - 1)}
         >
@@ -242,13 +220,13 @@ export function VoicesLanguageMap({
         <button
           className="focus-mode-arrow focus-mode-arrow--next math-place-arrow math-place-arrow--next"
           type="button"
-          aria-label={parts ? uiText("Próxima parte de Inglês") : uiText("Próxima ilha de idioma")}
+          aria-label={uiText("Próxima parte de Inglês")}
           disabled={index === entries.length - 1 || phase !== "map"}
           onClick={() => visit(index + 1)}
         >
           <FocusPaperArrow />
         </button>
-        {(parts || index === 0) && <MathPlaceTreasure course="english-english" />}
+        <MathPlaceTreasure course="english-english" />
       </div>
     </section>,
     document.body,

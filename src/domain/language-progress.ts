@@ -3,7 +3,7 @@ import type { PracticeActivity } from "./workspace";
 import { ENGLISH_LEVELS, isEnglishLevel, type EnglishLevel } from "./english-levels.js";
 
 export type LanguageAttempt = {
-  curriculum?: 2 | 3;
+  curriculum?: 2 | 3 | 4;
   area?: EnglishArea;
   level?: EnglishLevel;
   part: number;
@@ -12,8 +12,8 @@ export type LanguageAttempt = {
   correctQuestions: number[];
 };
 export const ENGLISH_PARTS = 6;
-export const ENGLISH_BANK = 24;
-export const ENGLISH_TARGET = 20;
+export const ENGLISH_BANK = 120;
+export const ENGLISH_TARGET = 100;
 
 export function validLanguageAttempt(value: unknown): value is LanguageAttempt {
   if (!value || typeof value !== "object") return false;
@@ -24,13 +24,19 @@ export function validLanguageAttempt(value: unknown): value is LanguageAttempt {
     list.length <= 6 &&
     new Set(list).size === list.length &&
     list.every(
-      (id: unknown) => Number.isInteger(id) && Number(id) >= 0 && Number(id) < ENGLISH_BANK,
+      (id: unknown) =>
+        Number.isInteger(id) &&
+        Number(id) >= 0 &&
+        Number(id) < (item["curriculum"] === 4 ? ENGLISH_BANK : 24),
     );
   const questions = item["questions"];
   return (
-    (item["curriculum"] === undefined || item["curriculum"] === 2 || item["curriculum"] === 3) &&
+    (item["curriculum"] === undefined ||
+      item["curriculum"] === 2 ||
+      item["curriculum"] === 3 ||
+      item["curriculum"] === 4) &&
     (item["area"] === undefined || isEnglishArea(item["area"])) &&
-    (item["curriculum"] !== 3 || isEnglishArea(item["area"])) &&
+    (![3, 4].includes(Number(item["curriculum"])) || isEnglishArea(item["area"])) &&
     (item["level"] === undefined || isEnglishLevel(item["level"])) &&
     Number.isInteger(item["part"]) &&
     Number(item["part"]) >= 0 &&
@@ -71,9 +77,9 @@ export function englishProgress(
   for (const activity of [...activities].sort(
     (a, b) => a.completedAt.localeCompare(b.completedAt) || a.id.localeCompare(b.id),
   )) {
-    const attempt = activity.languageAttempt;
+    const attempt = englishAttemptOf(activity);
     if (
-      activity.islandId !== "languages" ||
+      (activity.islandId !== "languages" && activity.islandId !== "english") ||
       !activity.id ||
       !Number.isFinite(Date.parse(activity.completedAt)) ||
       !validLanguageAttempt(attempt) ||
@@ -83,7 +89,7 @@ export function englishProgress(
     )
       continue;
     seen.add(activity.id);
-    const currentCurriculum = attempt.curriculum === 3;
+    const currentCurriculum = attempt.curriculum === 3 || attempt.curriculum === 4;
     const islandIndex = currentCurriculum
       ? ENGLISH_AREAS.indexOf(attempt.area!)
       : ENGLISH_LEVELS.indexOf(attempt.level ?? "a1");
@@ -92,7 +98,10 @@ export function englishProgress(
     const parts = islands[islandIndex]!;
     const part = parts[attempt.part]!;
     if (attempt.part > 0 && !parts[attempt.part - 1]!.confirmed) continue;
-    if (attempt.mode === "final" && (part.solved.size < ENGLISH_TARGET || part.review > 0))
+    if (
+      attempt.mode === "final" &&
+      (part.solved.size < (attempt.curriculum === 4 ? ENGLISH_TARGET : 20) || part.review > 0)
+    )
       continue;
     accepted.push(activity);
     part.correct += activity.correct;
@@ -106,16 +115,25 @@ export function englishProgress(
   const selected = ENGLISH_AREAS.indexOf(area);
   const parts = areas[selected]!;
   const percent = Math.floor(
-    (parts.reduce((sum, part) => sum + (part.confirmed ? 20 : Math.min(19, part.solved.size)), 0) /
-      120) *
+    (parts.reduce(
+      (sum, part) =>
+        sum + (part.confirmed ? ENGLISH_TARGET : Math.min(ENGLISH_TARGET - 1, part.solved.size)),
+      0,
+    ) /
+      (ENGLISH_TARGET * ENGLISH_PARTS)) *
       100,
   );
   return {
     overall: Math.floor(
       (areas
         .flat()
-        .reduce((sum, part) => sum + (part.confirmed ? 20 : Math.min(19, part.solved.size)), 0) /
-        120) *
+        .reduce(
+          (sum, part) =>
+            sum +
+            (part.confirmed ? ENGLISH_TARGET : Math.min(ENGLISH_TARGET - 1, part.solved.size)),
+          0,
+        ) /
+        (ENGLISH_TARGET * ENGLISH_PARTS)) *
         100,
     ),
     parts,
@@ -125,4 +143,8 @@ export function englishProgress(
     legacy: legacy.flat().some((part) => part.correct + part.errors > 0),
     unlocked: selected === 0 || areas[selected - 1]!.every((part) => part.confirmed),
   };
+}
+
+export function englishAttemptOf(activity: PracticeActivity) {
+  return activity.englishAttempt ?? activity.languageAttempt;
 }

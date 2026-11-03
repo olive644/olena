@@ -37,12 +37,17 @@ describe("conversa da Olena", () => {
     const { container } = render(<OnboardingView onFinish={vi.fn()} />);
     expect(container.querySelector(".onboarding__eyebrow")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Ensino médio" }));
-    for (const island of PRACTICE_ISLANDS)
-      expect(screen.getByRole("button", { name: island.subject })).toBeTruthy();
+    const languages = new Set(["english", "spanish", "japanese", "chinese"]);
+    const subjects = new Set(
+      PRACTICE_ISLANDS.map((island) => (languages.has(island.id) ? "Idiomas" : island.subject)),
+    );
+    for (const subject of subjects)
+      expect(screen.getByRole("button", { name: subject })).toBeTruthy();
     for (const icon of container.querySelectorAll(".onboarding__choices use"))
       expect(icon.getAttribute("href")).toContain("/onboarding-journey.svg#");
     fireEvent.click(screen.getByRole("button", { name: "Matemática" }));
-    expect(screen.getByRole("button", { name: "Japonês" })).toBeTruthy();
+    for (const name of ["Inglês", "Espanhol", "Japonês", "Chinês"])
+      expect(screen.getByRole("button", { name })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Chinês" })).toBeTruthy();
   });
   it("abre com a Olena se apresentando e a primeira pergunta como resposta rápida", () => {

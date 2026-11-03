@@ -96,3 +96,31 @@ Proprietário confirmou: seis cenários navegáveis por setas, como Matemática,
 ### Produção dos seis cenários regionais
 
 Artes produzidas pela ferramenta integrada imagegen a partir da ilha inglesa aprovada e do primeiro cenário regional. Prompt comum: região interna do mesmo Cais dos Encontros, câmera isométrica, recortes facetados, pedra clara, telhados turquesa, água poligonal e poucos detalhes amarelos; plataforma rasa com poucas rochas baixas azul-marinho, sem outra ilha flutuante completa, personagens, texto ou interface; fundo transparente. Marcos individuais: cais de boas-vindas, praça de hábitos, ponte de memórias, mirante de planos, pátio de ideias e casa dos sentidos. Exportação WebP 800 por 800 com alpha em public/languages/english-parts/. A ilha principal permanece intacta. As imagens aparecem no carrossel e nos materiais da respectiva parte, sem alterar IDs ou progresso.
+
+## Revisão vigente: idiomas gerais, apoio ao iniciante e banco ampliado
+
+Esta revisão substitui as descrições anteriores de navegação e do banco de 24 tarefas. Porto das Vozes deixa de ser uma ilha navegável. Os quatro destinos entram diretamente nas ilhas gerais; Cais dos Encontros abre suas seis partes. Artes aprovadas preservadas. Pontos, percentual e tesouro existem somente nas partes, sem duplicação no destino geral nem abaixo dos materiais.
+
+Banco: 30 situações originais por parte, quatro formatos por situação, 120 tarefas por parte e 720 no percurso. Cada parte traz quatro explicações graduais com exemplos bilíngues. Novas confirmações exigem 100 respostas distintas e quatro acertos em cinco; falha exige quatro acertos de revisão. Sem cronômetro de resposta. As regras de pontos, XP, poeira e Arcano permanecem as mesmas.
+
+### Adaptação pela API original
+
+POST /api/olena?action=english seleciona a próxima tarefa usando somente IDs públicos de tarefas, acertos recentes, domínio e exclusões da rodada. Corpo JSON limitado a 4096 caracteres, IDs 0 a 119, histórico recente até 24 itens. Não recebe nome, e-mail, UID, fala gravada ou conteúdo de caderno; não usa provedor externo, segredos ou dependência nova. No máximo uma solicitação por início/avanço de questão, com cancelamento ao sair/trocar conta e prazo de cinco segundos. Depois de falha de rede, o mesmo algoritmo determinístico continua no aparelho. Não apresentar isso como IA generativa, avaliação de pronúncia ou certificação CEFR.
+
+Sequência: começo com compreensão apoiada; acertos recentes elevam a exigência entre compreensão, lacuna, resposta contextual e montagem. Erro reduz a exigência e aproxima a próxima tarefa do contexto que precisa de revisão. IDs já dominados são preteridos e nenhum ID repete na mesma rodada. Explicação não tem tempo limite. A API planeja a prática; não é um mecanismo antifraude nem certifica autoria dos acertos.
+
+### Preservação e retorno seguro
+
+Currículos antigos continuam sendo lidos. Os primeiros 24 IDs de cada parte mantêm conteúdo e significado; os 96 novos vêm depois deles. Acertos antigos contam uma vez no banco maior, sem apagar números de acertos/erros, recibos ou recompensas. Uma parte já confirmada conserva 100% e o próximo desbloqueio. Percentuais de partes ainda abertas são recalculados sobre o novo alvo de 100, portanto quatro acertos representam 4%, não 20%.
+
+Novas evidências usam o campo aditivo englishAttempt (currículo 4) em atividades islandId=english, mantendo languageAttempt/islandId=languages exclusivamente para o histórico. Isso evita colocar IDs acima de 23 no campo que clientes anteriores validavam estritamente. O conteúdo ampliado usa english-v4.json (formato 4); english.json (formato 3) permanece intacto para abas antigas não falharem ao carregar. Clientes anteriores leem essas atividades como histórico genérico e a mesclagem por ID conserva o campo adicional. Não há chave sincronizada nova nem mudança de regras Firebase nesta revisão. Clientes antigos ainda seguem o percurso antigo até recarregar; suas confirmações históricas permanecem válidas.
+
+Cada resposta de prática gera uma atividade imutável com ID próprio, sem precisar terminar a rodada; a confirmação final só é gravada ao completar as cinco respostas. Recibos de recompensa continuam idempotentes. Retorno: reverter apresentação/planejador mantendo leitores do campo englishAttempt e o banco expandido para não perder evidências novas. Não fazer downgrade destrutivo dos dados da conta.
+
+### Referências pedagógicas consultadas
+
+- Council of Europe, abordagem orientada à ação: https://www.coe.int/en/web/common-european-framework-reference-languages/action-orientation-in-the-classroom . Usada para situações com intenção comunicativa real, como pedidos, convites e esclarecimentos; sem copiar exercícios ou prometer certificação.
+- American English, Teaching Beginners / scaffolding: https://americanenglish.state.gov/resources/week-4-scaffolding-part-two-supporting-language-production . Usada para modelos e apoio antes da produção independente.
+- API e mecanismo matemático do próprio Olena: olena-handler, math-handler e math-mastery-engine. Reaproveitados o dispatcher, planejamento determinístico, correção visual e resposta ao erro. Nenhum repositório ou biblioteca adicional foi necessário.
+
+Recompensas da prática ampliada: pontos/XP por resposta, baú apenas ao completar seis respostas elegíveis. Recibo de conclusão com zero pontos evita crédito duplicado. Mantidos limiar de 100, três espaços, espera de dez segundos e sorteio raro de 5%. Prova vermelha reproduziu zero baús antes; 37 testes focados passaram após correção e Matemática permaneceu isolada.

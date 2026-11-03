@@ -2,7 +2,7 @@ import { PRACTICE_ISLANDS } from "../data/practice-islands.js";
 
 export const OLENA_API_VERSION = 1;
 export const OLENA_API_ENDPOINT = "/api/olena";
-export type OlenaIslandId = (typeof PRACTICE_ISLANDS)[number]["id"];
+export type OlenaIslandId = (typeof PRACTICE_ISLANDS)[number]["id"] | "languages";
 
 export type OlenaMethodology = {
   id: string;
@@ -21,14 +21,14 @@ export function olenaIslands() {
     subject: island.subject,
     description: island.description,
     topics: [...island.topics],
-    trail: island.id === "languages" ? ("available" as const) : ("preview" as const),
+    trail: island.id === "english" ? ("available" as const) : ("preview" as const),
   }));
 }
 
 export type OlenaIsland = ReturnType<typeof olenaIslands>[number];
 
 export function isOlenaIslandId(value: unknown): value is OlenaIslandId {
-  return PRACTICE_ISLANDS.some((island) => island.id === value);
+  return value === "languages" || PRACTICE_ISLANDS.some((island) => island.id === value);
 }
 
 export function olenaMethodologies(island?: OlenaIslandId): readonly OlenaMethodology[] {

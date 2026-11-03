@@ -764,6 +764,13 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
             (activity["languageAttempt"] === undefined ||
               (activity["islandId"] === "languages" &&
                 validLanguageAttempt(activity["languageAttempt"]))) &&
+            (activity["englishAttempt"] === undefined ||
+              (activity["islandId"] === "english" &&
+                activity["languageAttempt"] === undefined &&
+                validLanguageAttempt(activity["englishAttempt"]) &&
+                activity["englishAttempt"].curriculum === 4 &&
+                activity["answers"] === activity["englishAttempt"].questions.length &&
+                activity["correct"] === activity["englishAttempt"].correctQuestions.length)) &&
             (activity["moduleLevel"] === undefined ||
               (Number.isInteger(activity["moduleLevel"]) &&
                 Number(activity["moduleLevel"]) >= 0 &&

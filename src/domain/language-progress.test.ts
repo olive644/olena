@@ -3,6 +3,7 @@ import { ENGLISH_AREAS } from "./english-areas";
 import { beforeEach, expect, it } from "vitest";
 import { englishProgress, validLanguageAttempt, type LanguageAttempt } from "./language-progress";
 import { createInitialWorkspace, workspaceReducer, type PracticeActivity } from "./workspace";
+import { isWorkspaceState } from "../data/local-workspace";
 import { mergeWorkspaceStates } from "./workspace-sync-merge";
 import { englishQuestion, validEnglishCourse, normalizeEnglish } from "../data/english-journey";
 import {
@@ -47,11 +48,11 @@ beforeEach(() => {
   localStorage.removeItem(MATH_PLACE_REWARDS_KEY);
   localStorage.removeItem(ENGLISH_REWARDS_KEY);
 });
-it("has 144 answerable original tasks in four formats without duplicate choices", () => {
-  const raw: unknown = JSON.parse(readFileSync("public/languages/en/english.json", "utf8"));
+it("has 720 answerable original tasks in four formats without duplicate choices", () => {
+  const raw: unknown = JSON.parse(readFileSync("public/languages/en/english-v4.json", "utf8"));
   if (!validEnglishCourse(raw)) throw new Error("Invalid English content");
   for (let part = 0; part < 6; part++)
-    for (let id = 0; id < 24; id++) {
+    for (let id = 0; id < 120; id++) {
       const question = englishQuestion(raw, part, id);
       expect(question.answer).toBeTruthy();
       expect(new Set(question.options).size).toBe(3);
@@ -75,7 +76,7 @@ it("keeps later parts locked, deduplicates mastery and requires the final", () =
   expect(before.parts[0]!.solved.size).toBe(24);
   expect(before.parts[0]!.correct).toBe(24);
   expect(before.parts[1]!.solved.size).toBe(0);
-  expect(before.percent).toBe(15);
+  expect(before.percent).toBe(4);
   records.push(attempt(0, [0, 1, 2, 3, 4], [0, 1, 2, 3], "final"));
   records.push(attempt(1, [0, 1]));
   expect(englishProgress(records).parts[1]!.solved.size).toBe(2);
@@ -167,13 +168,15 @@ it("merges English round receipts from different devices without duplicating rew
   expect(JSON.parse(result.items[ENGLISH_REWARDS_KEY]!)["english-a1"].points).toBe(140);
 });
 
-it("validates one English island, six parts and all 144 tasks", () => {
+it("validates one English island, six parts and all 720 tasks", () => {
   for (const level of ENGLISH_AREAS) {
-    const course: unknown = JSON.parse(readFileSync(`public/languages/en/${level}.json`, "utf8"));
+    const course: unknown = JSON.parse(
+      readFileSync(`public/languages/en/${level}-v4.json`, "utf8"),
+    );
     expect(validEnglishCourse(course), level).toBe(true);
     if (!validEnglishCourse(course)) continue;
     for (let part = 0; part < 6; part++)
-      for (let id = 0; id < 24; id++) {
+      for (let id = 0; id < 120; id++) {
         const question = englishQuestion(course, part, id);
         expect(new Set(question.options).size, `${level}:${part}:${id}`).toBe(3);
         expect(question.options).toContain(question.answer);
@@ -217,4 +220,55 @@ it("preserves each English level ledger and shares its Arcana collection", () =>
   openMathChest("english-a2", "present", Date.now() + 11000, () => 0);
   revealMathCard("english-a2", "present");
   expect(oliverCollection()["major-00"]).toBe(1);
+});
+
+it("credits old correct answers without inflating the expanded curriculum and preserves confirmed parts", () => {
+  const records = [attempt(0, [0, 1, 2, 3])];
+  expect(englishProgress(records).parts[0]!.solved.size).toBe(4);
+  const expanded = attempt(0, [24, 25, 26, 27]);
+  expanded.islandId = "english";
+  expanded.englishAttempt = { ...expanded.languageAttempt!, curriculum: 4 };
+  delete expanded.languageAttempt;
+  expect(validLanguageAttempt(expanded.englishAttempt)).toBe(true);
+  const progress = englishProgress([...records, expanded]);
+  expect(progress.parts[0]!.solved.size).toBe(8);
+  expect(progress.percent).toBe(1);
+  expect(validLanguageAttempt({ ...expanded.englishAttempt, curriculum: 3 })).toBe(false);
+});
+it("requires 100 distinct answers for new finals, reserves the last percent and never counts errors", () => {
+  const records: PracticeActivity[] = [];
+  for (let id = 0; id < 100; id++) {
+    const entry = attempt(0, [id]);
+    entry.islandId = "english";
+    entry.englishAttempt = { ...entry.languageAttempt!, curriculum: 4 };
+    delete entry.languageAttempt;
+    records.push(entry);
+  }
+  const final = attempt(0, [0, 1, 2, 3, 4], [0, 1, 2, 3], "final");
+  final.islandId = "english";
+  final.englishAttempt = { ...final.languageAttempt!, curriculum: 4 };
+  delete final.languageAttempt;
+  expect(englishProgress(records.slice(0, 4)).parts[0]!.solved.size).toBe(4);
+  expect(englishProgress([...records.slice(0, 99), final]).parts[0]!.confirmed).toBe(false);
+  expect(englishProgress([...records, final]).parts[0]!.confirmed).toBe(true);
+});
+
+it("merges expanded evidence additively without putting unsupported IDs in the legacy field", () => {
+  const base = createInitialWorkspace();
+  const entry = attempt(0, [108], [108]);
+  entry.islandId = "english";
+  entry.englishAttempt = { ...entry.languageAttempt!, curriculum: 4 };
+  delete entry.languageAttempt;
+  const saved = workspaceReducer(base, { type: "practice/recorded", activity: entry });
+  expect(saved.practiceActivities).toEqual([entry]);
+  expect(isWorkspaceState(JSON.parse(JSON.stringify(saved)))).toBe(true);
+  const merged = mergeWorkspaceStates(base, saved, { ...base, practiceActivities: [] }).workspace;
+  expect(merged.practiceActivities).toEqual([entry]);
+  expect(merged.practiceActivities![0]!.languageAttempt).toBeUndefined();
+  expect(englishProgress(merged.practiceActivities).parts[0]!.solved.has(108)).toBe(true);
+  const invalid = {
+    ...entry,
+    englishAttempt: { ...entry.englishAttempt, correctQuestions: [109] },
+  };
+  expect(workspaceReducer(base, { type: "practice/recorded", activity: invalid })).toBe(base);
 });

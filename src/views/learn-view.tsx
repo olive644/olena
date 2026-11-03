@@ -96,7 +96,11 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
       /* Preferência do workspace continua disponível sem sessionStorage. */
     }
     const index = PRACTICE_ISLANDS.findIndex(
-      (island) => island.id === workspace.studyPreferences.initialIslandId,
+      (island) =>
+        island.id ===
+        (workspace.studyPreferences.initialIslandId === "languages"
+          ? "english"
+          : workspace.studyPreferences.initialIslandId),
     );
     return index < 0 ? 4 : index;
   });
@@ -119,7 +123,7 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
   const [entryOrigin, setEntryOrigin] = useState<{ x: number; y: number; size: number }>();
   const [profile] = useStoredProfile();
   const world = SOLO_WORLDS[worldIndex]!;
-  const available = world.id === "mathematics" || world.id === "languages";
+  const available = world.id === "mathematics" || world.id === "english";
 
   function enterMath() {
     if (!available) return;
@@ -132,7 +136,7 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
       });
     setInsideWorld(true);
   }
-  if (insideWorld && world.id === "languages")
+  if (insideWorld && world.id === "english")
     return (
       <Suspense fallback={<HelenaLoading />}>
         <VoicesPortJourney
@@ -167,8 +171,8 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
         <p>{world.description}</p>
         <button className="primary-button" type="button" disabled={!available} onClick={enterMath}>
           {available ? <HelenaRoomIcon name="play" /> : <PaperIslandLock />}
-          {world.id === "languages"
-            ? uiText("Explorar idiomas")
+          {world.id === "english"
+            ? uiText("Explorar Inglês")
             : available
               ? uiText(1250)
               : uiText(1970)}

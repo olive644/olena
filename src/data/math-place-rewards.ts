@@ -138,17 +138,41 @@ export function finishMathPlace(
   points: number,
   random = randomCardRoll,
 ) {
+  return settlePlace(course, id, points, points, random);
+}
+
+/** Practice answers already have point receipts; completion only grants its chest. */
+export function finishEnglishRound(
+  course: RewardCourseId,
+  id: string,
+  earnedPoints: number,
+  random = randomCardRoll,
+) {
+  if (!isEnglishRewardCourse(course) || earnedPoints > 120)
+    throw new Error("Rodada de inglês inválida.");
+  return settlePlace(course, `${id}:completed`, 0, earnedPoints, random);
+}
+
+function settlePlace(
+  course: RewardCourseId,
+  id: string,
+  points: number,
+  chestPoints: number,
+  random: () => number,
+) {
   const value = mathPlaceRewards(course);
   if (
     !id ||
     !Number.isSafeInteger(points) ||
     points < 0 ||
+    !Number.isSafeInteger(chestPoints) ||
+    chestPoints < 0 ||
     !Number.isSafeInteger(value.points + points)
   )
     throw new Error("Pontuação inválida.");
   if (value.receipts.includes(id)) return value;
   const eligible =
-    points >= COMMON_CHEST_POINTS &&
+    chestPoints >= COMMON_CHEST_POINTS &&
     value.chests.filter((chest) => !isChestCollected(chest)).length < MAX_MATH_CHESTS;
   const roll = eligible ? random() : 1;
   if (!Number.isFinite(roll) || roll < 0 || (eligible && roll >= 1))

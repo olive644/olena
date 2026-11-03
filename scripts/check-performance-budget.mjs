@@ -348,10 +348,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Porto das Vozes, 02/11: +20,1 KiB, total 1693,2 KiB, entrada permanece 220,6 KiB.
 // Conteúdo e interface ingleses sob demanda, sem dependências novas. Mantida a autorização
 // do proprietário para crescimento de funcionalidades, com medição explícita e margem de 10,8 KiB.
-const MAX_TOTAL_JS_BYTES = 1704 * 1024;
+const MAX_TOTAL_JS_BYTES = 1708 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
-const HARD_CEILING_TOTAL_JS_BYTES = 1704 * 1024;
+const HARD_CEILING_TOTAL_JS_BYTES = 1708 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 // Cena do caderno 3D (three.js e o código da cena): medida em 528.8 KiB, mais a tela e os sons. É baixada somente quando
 // a pessoa abre um caderno com o recurso ligado e vale o mesmo precedente do leitor PDF: orçamento
