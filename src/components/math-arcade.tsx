@@ -1,3 +1,4 @@
+import { ArcadeResults } from "./arcade-results";
 import {
   ARCADE_LIVES,
   ARCADE_RESERVE,
@@ -40,7 +41,6 @@ import { MathPlaceScene } from "./math-place-scene";
 import { COMMON_CHEST_POINTS, finishMathPlace, type MathChest } from "../data/math-place-rewards";
 import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
 import { SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
-import { CommonMathChest } from "./math-place-treasure";
 import { MathMistakeReview, type MissedMathQuestion } from "./math-mistake-review";
 import "./math-arcade.css";
 import "./math-island-journey.css";
@@ -100,7 +100,6 @@ export function MathArcade({
   const nextCourse = MATH_COURSES[MATH_COURSES.findIndex((item) => item.id === courseId) + 1];
   const [storageWarning, setStorageWarning] = useState(false);
   const [earnedChest, setEarnedChest] = useState<MathChest | undefined>();
-  const [displayedScore, setDisplayedScore] = useState(0);
   const [reward, setReward] = useState<RoomXpReward | undefined>();
   const roundId = useRef("");
   const answerSequence = useRef(0);
@@ -218,21 +217,9 @@ export function MathArcade({
         completedAt: Date.now(),
       });
     }, 0);
-    let frame = 0;
-    const start = performance.now();
-    const animate = () => {
-      const ratio = isMotionReduced() ? 1 : Math.min(1, (performance.now() - start) / 1200);
-      setDisplayedScore(Math.round(round.points * (1 - (1 - ratio) ** 3)));
-      if (ratio < 1) frame = requestAnimationFrame(animate);
-      else if (round.points > 0) {
-        audio.current?.play("xp");
-      }
-    };
-    frame = requestAnimationFrame(animate);
     return () => {
       window.clearTimeout(rewardTimer);
       window.clearTimeout(settlementTimer);
-      cancelAnimationFrame(frame);
     };
   }, [finished, round.points, courseId]);
 
@@ -280,7 +267,6 @@ export function MathArcade({
       answerSequence.current = 0;
       setCountdown(ARCADE_COUNTDOWN);
       setStatus("countdown");
-      setDisplayedScore(0);
     } catch (cause) {
       if (!controller.current?.signal.aborted)
         setError(cause instanceof Error ? cause.message : uiText(595));
@@ -585,22 +571,27 @@ export function MathArcade({
               }}
             />
           ) : finished ? (
-            <div className="math-results" aria-live="polite">
-              <div className="math-result-burst" aria-hidden="true">
-                {Array.from({ length: 16 }, (_, index) => (
-                  <i key={index} style={{ "--spark-index": index } as CSSProperties} />
-                ))}
-              </div>
-              <MathUserAvatar mood="finished" />
-              <h1 className="visually-hidden">{round.points + uiText(2292)}</h1>
-              <div className="math-result-score" aria-hidden="true">
-                <RoomPointsIcon />
-                <MathNumber value={displayedScore} />
-              </div>
-              <p>{round.points > 0 ? uiText(605) : uiText(606)}</p>
-              <span className="math-result-topic">
-                {course.topics[masteryCompletion(round.progress).level]}
-              </span>
+            <ArcadeResults
+              points={round.points}
+              topic={course.topics[masteryCompletion(round.progress).level]!}
+              dust={Boolean(earnedChest)}
+              blockedDust={round.points >= COMMON_CHEST_POINTS && !storageWarning}
+              pending={pending}
+              onRetry={() => void start()}
+              onScoreComplete={() => audio.current?.play("xp")}
+              onCollectDust={(event) => {
+                const rect = event.currentTarget.getBoundingClientRect();
+                audio.current?.play("chestUnlock");
+                if (onChestReturn)
+                  onChestReturn({
+                    x: rect.x + rect.width / 2,
+                    y: rect.y + rect.height / 2,
+                    size: 110,
+                    id: roundId.current,
+                  });
+                else setStatus("leaving");
+              }}
+            >
               {completedCourse && nextCourse && onNextCourse && (
                 <button
                   type="button"
@@ -611,40 +602,7 @@ export function MathArcade({
                   <PaperArrow />
                 </button>
               )}
-              {earnedChest && (
-                <button
-                  type="button"
-                  className="math-earned-chest"
-                  aria-label={uiText(608)}
-                  onClick={(event) => {
-                    const rect = event.currentTarget.getBoundingClientRect();
-                    audio.current?.play("chestUnlock");
-                    if (onChestReturn)
-                      onChestReturn({
-                        x: rect.x + rect.width / 2,
-                        y: rect.y + rect.height / 2,
-                        size: 110,
-                        id: roundId.current,
-                      });
-                    else setStatus("leaving");
-                  }}
-                >
-                  <CommonMathChest />
-                  <span>{uiText(609)}</span>
-                </button>
-              )}
-              {!earnedChest && round.points >= COMMON_CHEST_POINTS && !storageWarning && (
-                <p className="math-result-topic">{uiText(610)}</p>
-              )}
-              <button
-                className="primary-button math-start-button"
-                type="button"
-                disabled={pending}
-                onClick={() => void start()}
-              >
-                <MathIcon name="retry" /> {uiText(611)}
-              </button>
-            </div>
+            </ArcadeResults>
           ) : question ? (
             <>
               <div className="math-game-stats">

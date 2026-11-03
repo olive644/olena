@@ -14,6 +14,12 @@ export function VoicesPortJourney({
   onBack: () => void;
 }) {
   const [selectedPart, setSelectedPart] = useState<number>();
+  const [deliveryOrigin, setDeliveryOrigin] = useState<{
+    x: number;
+    y: number;
+    size: number;
+    id: string;
+  }>();
   const [partIndex, setPartIndex] = useState(() => {
     const parts = englishProgress(workspace.practiceActivities).parts;
     const remembered = lastEnglishCheckpointPart();
@@ -27,14 +33,23 @@ export function VoicesPortJourney({
       workspace={workspace}
       onPractice={onPractice}
       initialPart={selectedPart}
-      onBack={() => setSelectedPart(undefined)}
+      onBack={() => {
+        setDeliveryOrigin(undefined);
+        setSelectedPart(undefined);
+      }}
+      onChestReturn={(origin) => {
+        setDeliveryOrigin(origin);
+        setSelectedPart(undefined);
+      }}
     />
   ) : (
     <VoicesLanguageMap
       key="english-parts"
       initialPart={partIndex}
+      deliveryOrigin={deliveryOrigin}
       progress={englishProgress(workspace.practiceActivities)}
       onSelect={(part) => {
+        setDeliveryOrigin(undefined);
         setPartIndex(part);
         setSelectedPart(part);
       }}

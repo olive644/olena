@@ -58,3 +58,7 @@ Leia `docs/CI_MINUTOS.md` e `docs/OPERACAO_E_CUSTOS.md` antes de mexer em `.gith
 - Não leia nem versione `docs/CONTRATO_SOCIETARIO.md`. Não exponha chaves de servidor.
 - Ações fora do repositório (publicar regras do Firebase, variáveis da Vercel, privar o repositório, planos pagos) são da dona do projeto: descreva o passo e confira o resultado, sem fazer sozinho.
 - Todo recurso que gasta dinheiro precisa de limite por quem chama e de teto global.
+
+## Foco informativo e realce global, 03/11/2026
+
+Realçar seleções controla somente o reforço opcional de aria-pressed/aria-selected/input marcado, aplicado pela preferência global data-highlight-selections. Foco de teclado em controles é obrigatório mesmo com a opção desligada. Títulos e marcos de leitura com tabindex=-1 recebem foco programático para anúncio e continuidade, mas nunca sublinhado, filtro ou sombra de botão. A exceção global em paper-controls.css exclui botões, links, campos, summary, papéis interativos e edição. Não adicionar CSS local forçando sublinhado em títulos informativos. Testar após navegação por teclado, não apenas clique, pois :focus-visible muda com a modalidade.

@@ -665,7 +665,7 @@
   border-radius: 8px 20px 4px 8px;
   box-shadow: 0 5px #bf8767;
 }
-.math-arcade > .room-reward-notice {
+.math-arcade .room-reward-notice {
   top: max(16px, env(safe-area-inset-top));
   bottom: auto;
   z-index: 15;

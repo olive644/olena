@@ -1,5 +1,10 @@
+import { RoomRewardNotice } from "./room-reward-notice";
+import { PaperDigits } from "./paper-digits";
+import { ArcadeResults } from "./arcade-results";
+import { mathPlaceRewards, COMMON_CHEST_POINTS, type MathChest } from "../data/math-place-rewards";
+import { ENGLISH_PART_CATALOG } from "../data/english-part-catalog";
 import { readEnglishCheckpoint, saveEnglishCheckpoint } from "../data/english-checkpoint";
-import { A1_BANK, A1_UNIT_TARGET, a1Coverage } from "../domain/english-a1";
+import { A1_BANK, a1Coverage } from "../domain/english-a1";
 import {
   ARCADE_LIVES,
   ARCADE_RESERVE,
@@ -33,13 +38,11 @@ import { settleEnglishRewards } from "../data/english-rewards";
 import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
 import { createMathSound } from "../data/math-sound";
 import { isEnglishVoice, speakEnglish } from "../data/speech-voice";
-import { ENGLISH_AREAS, type EnglishArea } from "../domain/english-areas";
-import { ENGLISH_ISLAND_CATALOG } from "../data/english-island-catalog";
+import { type EnglishArea } from "../domain/english-areas";
 import { HelenaLoading } from "./helena-loading";
 import { MathUserAvatar, MathNumber, MathIcon } from "./math-paper-art";
 import "./math-mistake-review.css";
 import { PaperArrow } from "./paper-arrow";
-import { PaperDigits } from "./paper-digits";
 import { LibraryDialog } from "./library-dialog";
 import "./math-arcade.css";
 import "./english-island-journey.css";
@@ -64,9 +67,12 @@ export function EnglishIslandJourney({
   onPractice,
   onBack,
   initialPart = 0,
+  onChestReturn,
 }: {
   workspace: WorkspaceState;
   initialPart?: number;
+  onChestReturn?:
+    ((origin: { x: number; y: number; size: number; id: string }) => void) | undefined;
   onPractice: (activity: PracticeActivity) => void;
   onBack: () => void;
 }) {
@@ -111,6 +117,8 @@ export function EnglishIslandJourney({
   const [leave, setLeave] = useState(false);
   const [warning, setWarning] = useState("");
   const [summary, setSummary] = useState<PracticeActivity>();
+  const [earnedChest, setEarnedChest] = useState<MathChest>();
+  const [settledSummary, setSettledSummary] = useState<string>();
   const audio = useRef<ReturnType<typeof createMathSound> | null>(null);
   const nextFocus = useRef<HTMLButtonElement>(null);
   const data = course?.parts[part];
@@ -176,7 +184,7 @@ export function EnglishIslandJourney({
       : round
         ? nextFocus.current
         : root.current?.querySelector<HTMLElement>(
-            summary ? ".english-summary h2" : ".math-world-back",
+            summary ? ".math-results h1" : ".math-world-back",
           );
     target?.focus({ preventScroll: true });
     if (root.current) root.current.scrollTop = 0;
@@ -191,12 +199,19 @@ export function EnglishIslandJourney({
       if (owner !== localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
       try {
         settleEnglishRewards(progress.accepted);
+        if (summary) {
+          const saved = mathPlaceRewards("english-english");
+          const receipt =
+            englishAttemptOf(summary)?.mode === "practice" ? `${summary.id}:completed` : summary.id;
+          setEarnedChest(saved.chests.find((chest) => chest.id === receipt));
+          setSettledSummary(saved.receipts.includes(receipt) ? summary.id : undefined);
+        }
       } catch {
         setWarning(uiText("Não foi possível guardar a recompensa. Tente novamente antes de sair."));
       }
     }, 0);
     return () => clearTimeout(timer);
-  }, [progress]);
+  }, [progress, summary]);
   useEffect(() => {
     if (!round) return;
     const changed = () => {
@@ -334,6 +349,8 @@ export function EnglishIslandJourney({
       setCountdown(ARCADE_COUNTDOWN);
       setReviewIndex(0);
       setSummary(undefined);
+      setEarnedChest(undefined);
+      setSettledSummary(undefined);
       setFeedback(undefined);
       setWords([]);
       setWarning("");
@@ -557,7 +574,7 @@ export function EnglishIslandJourney({
   return createPortal(
     <section
       ref={root}
-      className={`english-journey english-island-interior math-arcade${round ? " is-practicing" : ""}`}
+      className={`english-journey english-island-interior math-arcade${round ? " is-practicing" : summary ? " is-finished" : " is-ready"}`}
       aria-label={uiText("Cais dos Encontros · Inglês")}
       style={
         {
@@ -879,160 +896,96 @@ export function EnglishIslandJourney({
               {pending && <HelenaLoading compact />}
             </div>
           )
-        ) : (
-          <>
-            <div className="english-course-heading">
-              <div>
-                <p className="english-eyebrow">
-                  {englishText(ENGLISH_ISLAND_CATALOG[ENGLISH_AREAS.indexOf(area)]!.subject)}
-                </p>
-                <h1>
-                  {isA1 ? uiText("A1: primeiros encontros em inglês") : englishText(data.title)}
-                </h1>
-                <p>{englishText(data.objective)}</p>
-                <small className="english-proficiency">
-                  {uiText("Referência de dificuldade: {0}", [data.proficiency])}
-                </small>
-              </div>
-            </div>
-            {summary && (
-              <div className="english-summary" role="status">
-                <h2 tabIndex={-1}>{uiText("Rodada concluída")}</h2>
-                <p>
-                  {uiText("Acertos: {0} · Erros: {1} · Pontos: {2}", [
-                    summary.correct,
-                    summary.answers - summary.correct,
-                    summary.correct * 20,
-                  ])}
-                </p>
-                <p>
-                  {englishAttemptOf(summary)?.mode === "final"
-                    ? summary.correct >= 4
-                      ? uiText("Parte confirmada! O próximo caminho está aberto.")
-                      : uiText(
-                          "Revise quatro respostas corretas antes de tentar a confirmação novamente.",
-                        )
-                    : uiText("Cada resposta correta aproxima você da confirmação desta parte.")}
-                </p>
-              </div>
-            )}
-            {summary && (
+        ) : summary ? (
+          <ArcadeResults
+            key={summary.id}
+            points={summary.correct * 20}
+            topic={englishText(ENGLISH_PART_CATALOG[part]!.title)}
+            message={
+              englishAttemptOf(summary)?.mode === "final"
+                ? summary.correct >= 4
+                  ? uiText("Parte confirmada! O próximo caminho está aberto.")
+                  : uiText(
+                      "Revise quatro respostas corretas antes de tentar a confirmação novamente.",
+                    )
+                : undefined
+            }
+            dust={Boolean(earnedChest)}
+            blockedDust={
+              settledSummary === summary.id &&
+              summary.correct * 20 >= COMMON_CHEST_POINTS &&
+              !warning
+            }
+            pending={pending}
+            onRetry={() => void start("practice")}
+            onScoreComplete={() => audio.current?.play("xp")}
+            onCollectDust={(event) => {
+              if (!earnedChest) return;
+              const rect = event.currentTarget.getBoundingClientRect();
+              audio.current?.play("chestUnlock");
+              if (onChestReturn)
+                onChestReturn({
+                  x: rect.x + rect.width / 2,
+                  y: rect.y + rect.height / 2,
+                  size: 110,
+                  id: earnedChest.id,
+                });
+              else onBack();
+            }}
+          >
+            {canConfirm && current.review === 0 && !current.confirmed && (
               <button
+                className="secondary-button"
                 type="button"
-                className="primary-button math-start-button"
-                onClick={() => void start("practice")}
+                disabled={pending}
+                onClick={() => void start("final")}
               >
-                <MathIcon name="retry" />
-                {uiText("Tentar novamente")}
+                {uiText("Confirmar esta parte")}
+                <PaperArrow />
               </button>
             )}
-            {isA1 && course.a1 && (
-              <section className="english-a1-materials" aria-label={uiText("Assuntos do A1")}>
-                <h2>{uiText("A1: aprender por situações")}</h2>
-                <p>
-                  {uiText(
-                    "Leia o apoio de cada assunto antes de praticar. Os exercícios misturam falas, mensagens, placas e situações do dia a dia.",
-                  )}
-                </p>
-                {course.a1.units.map((unit, index) => (
-                  <details className="english-a1-unit" key={index} open={index === 0}>
-                    <summary>
-                      <PaperDigits value={String(index + 1)} />
-                      <span>{englishText(unit.title)}</span>
-                      <small>
-                        {Math.min(A1_UNIT_TARGET, coverage.units[index]!)} / {A1_UNIT_TARGET}
-                      </small>
-                    </summary>
-                    <p>{englishText(unit.objective)}</p>
-                    {unit.guide.map((step, at) => (
-                      <section key={at}>
-                        <h3>{englishText(step.title)}</h3>
-                        <p>{englishText(step.text)}</p>
-                        <blockquote lang="en">{step.example}</blockquote>
-                        <p>{englishText(step.meaning)}</p>
-                      </section>
-                    ))}
-                  </details>
-                ))}
-                <p>
-                  {uiText(
-                    "Para confirmar o A1: 100 respostas diferentes e pelo menos 12 em cada assunto. Partes já confirmadas continuam salvas.",
-                  )}
-                </p>
-              </section>
+          </ArcadeResults>
+        ) : (
+          <div className="english-entry math-welcome">
+            <h1 className="visually-hidden">{englishText(ENGLISH_PART_CATALOG[part]!.title)}</h1>
+            <MathUserAvatar />
+            {!partUnlocked && (
+              <p>{uiText("Confirme a parte anterior para liberar esta prática.")}</p>
             )}
-            <section className="english-part-detail">
-              <details className="english-mini-lesson" key={`${area}:${part}`} open>
-                <summary>{uiText("Antes de praticar")}</summary>
-                <p>{englishText(data.lesson)}</p>
-                <div className="english-guide">
-                  {data.guide.map((step, index) => (
-                    <section key={index}>
-                      <span className="english-guide-step">
-                        <PaperDigits value={String(index + 1)} />
-                      </span>
-                      <h3>{englishText(step.title)}</h3>
-                      <p>{englishText(step.text)}</p>
-                      <blockquote lang="en">{step.example}</blockquote>
-                      <p className="english-example-meaning">{englishText(step.meaning)}</p>
-                    </section>
-                  ))}
-                </div>
-              </details>
-              <p className="english-game-rules">
-                {uiText(
-                  "Você começa com três corações e 60 segundos de reserva. Acertar repõe tempo; errar ou deixar o prazo acabar custa um coração. Ao terminar, a Olena explica os erros, e você pode tentar novamente sem perder o que aprendeu.",
-                )}
-              </p>
-              {!partUnlocked && (
-                <p className="english-locked-note">
-                  {progress.unlocked
-                    ? uiText("Confirme a parte anterior para liberar esta prática.")
-                    : uiText("Conclua {0} para liberar esta prática.", [
-                        englishText(ENGLISH_ISLAND_CATALOG[ENGLISH_AREAS.indexOf(area) - 1]!.title),
-                      ])}
-                </p>
-              )}
-              <h2>{uiText("Parte {0} de 6", [part + 1])}</h2>
-              <p>
-                {uiText(
-                  "Domine 100 questões diferentes e confirme a parte com pelo menos 4 acertos em 5. Errar faz parte: você recebe uma explicação e pode praticar novamente.",
-                )}
-              </p>
-              <progress
-                max={ENGLISH_TARGET}
-                value={
-                  current.confirmed
-                    ? ENGLISH_TARGET
-                    : Math.min(ENGLISH_TARGET - 1, current.solved.size)
-                }
-                aria-label={uiText("Domínio da parte")}
-              />
-              <p>{uiText("Acertos: {0} · Erros: {1}", [current.correct, current.errors])}</p>
-              {current.review > 0 && (
-                <p>{uiText("Faltam {0} respostas corretas de revisão.", [current.review])}</p>
-              )}
-              <div className="english-actions">
-                <button
-                  className="primary-button"
-                  type="button"
-                  disabled={!partUnlocked || pending}
-                  onClick={() => start("practice")}
-                >
-                  {uiText("Praticar")}
-                  <PaperArrow />
-                </button>
-                <button
-                  className="secondary-button"
-                  type="button"
-                  disabled={!partUnlocked || !canConfirm || current.review > 0 || current.confirmed}
-                  onClick={() => start("final")}
-                >
-                  {uiText("Confirmar esta parte")}
-                </button>
-              </div>
-            </section>
-          </>
+            <button
+              className="primary-button math-start-button"
+              type="button"
+              disabled={!partUnlocked || pending}
+              onClick={() => void start("practice")}
+            >
+              <MathIcon name="start" />
+              {uiText("Praticar")}
+            </button>
+            {canConfirm && current.review === 0 && !current.confirmed && (
+              <button
+                className="secondary-button"
+                type="button"
+                disabled={!partUnlocked || pending}
+                onClick={() => void start("final")}
+              >
+                {uiText("Confirmar esta parte")}
+                <PaperArrow />
+              </button>
+            )}
+          </div>
+        )}
+        {summary && settledSummary === summary.id && (
+          <RoomRewardNotice
+            reward={{
+              id: summary.id,
+              place: 1,
+              xp: summary.correct * 4,
+              completedAt: Date.parse(summary.completedAt),
+            }}
+            activity="english"
+            presentationOnly
+            deferPresentation={reviewing}
+          />
         )}
         {warning && <p role="alert">{warning}</p>}
         {leave && (

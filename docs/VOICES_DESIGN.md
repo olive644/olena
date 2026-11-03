@@ -128,3 +128,13 @@ O cursor privado da prática é gravado assim que a questão aparece. Sair da ro
 Confirmação interrompida mantém ID da tentativa, cinco perguntas, posição, acertos e erros já respondidos; concluir grava uma única atividade e um único recibo. Confirmação reprovada continua exigindo revisão, com a prática retomando o último erro. O carrossel interno reabre a última parte praticada, respeitando o bloqueio sequencial.
 
 Os cursores ficam em englishCheckpoints no perfil privado já sincronizado, separados por parte e modo, com proprietário, data e marca de limpeza. O merge mantém a versão mais recente de cada cursor e não ressuscita posição limpa por uma cópia antiga. Nenhuma regra Firebase, chave sincronizada nova ou dado público foi adicionado. Testes simulam contas e merge; sincronização real entre aparelhos não foi verificada.
+
+## Entrada e resultado de partida, 03/11/2026
+
+Direção vigente do proprietário substitui as telas de material anteriores: ao explorar a parte, apresentar entrada compacta com avatar, Praticar e confirmação quando elegível. Não exibir cabeçalho/proficiência, guias, assuntos A1, contadores ou resumo textual da rodada nessa tela. Conteúdo JSON, tarefas, domínio e histórico são preservados; explicações específicas continuam na revisão dos erros ao fim da partida.
+
+O resultado usa ArcadeResults, o mesmo componente de Matemática: avatar, pontos com dígitos originais e contagem animada, mensagem, parte, poeira cósmica quando realmente concedida e Tentar de novo. A ação de levar poeira retorna ao cenário com a mesma entrega visual e os espaços existentes. O componente apresenta os valores, sem conceder XP ou pontos novamente; liquidação mantém recibos e motor existentes. Sem recompensa inventada quando os três espaços estiverem ocupados ou a gravação falhar. Movimento e som respeitam preferências globais.
+
+Frases da revisão usam papel amarelo com dobra, facetas e base, tinta grafite em ambos os temas. Não usar o bloco retangular translúcido com borda lateral. Foco em títulos segue o contrato global de DESIGN_SYSTEM.md.
+
+XP aparece somente na notificação RoomRewardNotice, como em Matemática, respeitando a preferência de avisos de recompensas. Inglês usa apresentação de XP já liquidado pelos recibos individuais, sem conceder novamente nem mostrar uma linha de XP na tela de resultado. A notificação fica adiada durante a revisão dos erros.

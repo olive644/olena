@@ -1825,3 +1825,13 @@ Retomada adicionada ao perfil privado já sincronizado, por parte/modo, com guar
 Verify final aprovado em 03/11/2026: 397 arquivos, 2564 testes, lint sem erros e 27 avisos existentes, formatação/API/idiomas/tipos/build/desempenho verdes. Aplicação 1719,8 KiB de 1720, entrada 220,7 KiB. Log externo english-a1-release-verify.log. Gitleaks 8.30.0 verificou os 991 commits anteriores sem vazamentos, com o fingerprint público histórico exato; o commit final é conferido antes do push.
 
 Quatro E2E adicionais confirmaram reabrir a terceira parte previamente praticada, em vez da sexta escolhida por progresso legado completo, com o mesmo ID pendente em PC/mobile claro/escuro. Log english-resume-part-selection.log. O arquivo E2E teve lint específico aprovado após fortalecer essa prova.
+
+## Resultado inglês e foco global, 03/11/2026
+
+Causa reproduzida: :focus-visible global decorava títulos tabindex=-1 após navegação de teclado, e Inglês ainda forçava sublinhado local no título de revisão. Quatro cenários vermelhos capturaram o efeito; seis E2E de acessibilidade passaram após exceção global restrita a marcos informativos, mantendo foco dos controles e preferência Realçar seleções.
+
+Removidas da interface as telas de material solicitadas, preservando banco/guia em JSON e evidência do aluno. Entrada compacta e resultado compartilhado ArcadeResults com Matemática, pontos/XP reais, poeira/entrega e recibos existentes. Frase na revisão em papel amarelo original. Validação completa e visual em andamento.
+
+Correção de XP confirmada pelo proprietário: somente notificação original, sem linha de XP no resultado. RoomRewardNotice usa apresentação do saldo já liquidado em Inglês; teste garante saldo e recibos idênticos antes/depois e aviso oculto quando recompensas estiverem desativadas. A notificação herda superfície/tinta do tema, inclusive quando renderizada dentro do conteúdo do minigame. Os 17 testes focados passaram. E2E cobre pontos100/XP20/uma poeira, entrega sem novo recibo, partida zero sem poeira, retomada, revisão e confirmação. Previews com visitante fictício em b/previews-english-a1, PC1280x720 e mobile320x568, claro/escuro. Nenhum OAuth ou envio Firebase real executado.
+
+Validação final: npm run verify EXIT0, 397 arquivos e 2565 testes, lint sem erros e 27 avisos existentes, tipos/API/idiomas/formatação/build/performance aprovados. Aplicação 1718,1 KiB de 1720; entrada 220,7 KiB. Última matriz focada passou 14/14 E2E Edge, incluindo papel interativo preservando foco, aviso XP com contraste nos dois temas, entrega de poeira e resultado sem pontos. Logs ../../english-results-release-verify.log e ../../english-results-release-browser.log. Banco de tarefas e dados de progresso não foram alterados.

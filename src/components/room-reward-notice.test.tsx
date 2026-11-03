@@ -110,3 +110,48 @@ describe("notificação final de XP", () => {
     }
   });
 });
+
+it("English presents previously settled XP after review without writing a second receipt", async () => {
+  localStorage.clear();
+  localStorage.setItem(
+    ROOM_XP_KEY,
+    JSON.stringify({
+      total: 20,
+      receipts: ["english:answer"],
+      legacy: 0,
+      legacyReceipts: [],
+      rewards: { "english:answer": 20 },
+    }),
+  );
+  const before = localStorage.getItem(ROOM_XP_KEY);
+  const view = render(
+    <RoomRewardNotice
+      reward={{ ...reward, xp: 20 }}
+      activity="english"
+      presentationOnly
+      deferPresentation
+    />,
+  );
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  });
+  expect(screen.queryByRole("status")).toBeNull();
+  view.rerender(
+    <RoomRewardNotice reward={{ ...reward, xp: 20 }} activity="english" presentationOnly />,
+  );
+  await waitFor(() =>
+    expect(screen.getByRole("status").textContent).toContain("+20 XP pela prática de Inglês!"),
+  );
+  expect(localStorage.getItem(ROOM_XP_KEY)).toBe(before);
+  view.unmount();
+  localStorage.setItem(
+    "helena.profile.v1",
+    JSON.stringify({ notificationPreferences: { rewards: false } }),
+  );
+  render(<RoomRewardNotice reward={{ ...reward, xp: 20 }} activity="english" presentationOnly />);
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  });
+  expect(screen.queryByRole("status")).toBeNull();
+  expect(localStorage.getItem(ROOM_XP_KEY)).toBe(before);
+});
