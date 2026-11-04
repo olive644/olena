@@ -133,3 +133,15 @@ Relato: a transcrição continuava ruim, as palavras não apareciam enquanto a p
 - **Precisão.** Não houve troca de modelo (o tiny.en fica, por decisão da proprietária). O que melhora a impressão de precisão é a sequência de prévias mais frequente. Ganho real de acerto não foi medido neste passo: não há microfone real aqui.
 
 Limites: sem celular físico; o tempo de cada passada em aparelhos fracos não foi medido; o indicador de microfone aberto durante a partida é uma troca consciente por não repetir o pedido.
+
+## Segurar para falar, 04/11/2026
+
+Pedido: gravar como um áudio de mensageiro, segurando o botão do microfone.
+
+- **Segurar** o botão começa a ouvir e **soltar** termina e confere a frase. Enquanto segura, pausas no meio da frase não encerram a fala (o fim automático por silêncio fica desligado); o limite de 12 s continua.
+- **Toque curto** (menos de 0,4 s) liga o modo de toque: continua ouvindo, com o fim automático por silêncio, até outro toque. Foi mantido para quem não consegue segurar.
+- **Teclado:** Espaço ou Enter alternam começar e terminar, sem depender de segurar. O clique gerado por ponteiro é ignorado para não alternar duas vezes.
+- Se soltar antes de o microfone terminar de abrir, a fala termina assim que a escuta começa. O ponteiro fica capturado no botão, então soltar fora dele também termina; cancelamento do toque pelo sistema conta como soltar.
+- Toque longo no celular não abre menu de contexto nem seleciona texto (`touch-action`, `user-select`, menu bloqueado). Com movimento reduzido o botão não aumenta ao segurar.
+
+Limites: não testado em celular físico (gesto de segurar com o dedo, atalhos do sistema, bordas de tela); o e2e usa mouse. Soltar com um dedo que escorrega para fora do botão depende da captura de ponteiro do navegador.

@@ -62,6 +62,12 @@ export function EnglishSpeakingInput({
       text.trim().split(/\s+/).length >= previous.trim().split(/\s+/).length ? text : previous,
     );
   }, []);
+  // Segurar o botão grava e soltar termina, como um áudio de mensageiro. Toque curto liga o modo
+  // de toque (continua ouvindo até outro toque) e o teclado segue alternando, sem depender de segurar.
+  const [holding, setHolding] = useState(false);
+  const held = useRef(false);
+  const pressedAt = useRef(0);
+  const releasedEarly = useRef(false);
   const generation = useRef(0);
   const stopping = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -180,6 +186,12 @@ export function EnglishSpeakingInput({
   const stopLatest = useEffectEvent(stop);
   useEffect(() => {
     if (phase !== "listening") return;
+    if (releasedEarly.current) {
+      // Soltou o botão enquanto o microfone ainda abria: termina assim que a escuta começa.
+      releasedEarly.current = false;
+      void stopLatest();
+      return;
+    }
     let alive = true;
     let preview: ReturnType<typeof setTimeout> | undefined;
     const limit = setTimeout(() => void stopLatest(), 12000);
@@ -196,7 +208,10 @@ export function EnglishSpeakingInput({
       if (alive) preview = setTimeout(() => void tick(), 120);
     };
     preview = setTimeout(() => void tick(), 300);
-    const unsubscribe = speech.subscribeSilence(() => void stopLatest());
+    // Segurando, quem encerra é a pessoa ao soltar: pausas no meio da frase não terminam a fala.
+    const unsubscribe = speech.subscribeSilence(() => {
+      if (!held.current) void stopLatest();
+    });
     return () => {
       alive = false;
       clearTimeout(limit);
@@ -204,6 +219,31 @@ export function EnglishSpeakingInput({
       unsubscribe();
     };
   }, [phase, speech, showPreview]);
+  function press(event: React.PointerEvent<HTMLButtonElement>) {
+    if (event.button > 0 || disabled || busy || phase === "ready") return;
+    if (phase === "listening") {
+      void stop();
+      return;
+    }
+    held.current = true;
+    releasedEarly.current = false;
+    pressedAt.current = Date.now();
+    setHolding(true);
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      /* sem captura, o pointerup fora do botão ainda chega pelo cancelamento */
+    }
+    void start();
+  }
+  function release() {
+    if (!held.current) return;
+    held.current = false;
+    setHolding(false);
+    if (Date.now() - pressedAt.current < 400) return;
+    if (phase === "listening") void stop();
+    else if (phase === "requesting") releasedEarly.current = true;
+  }
   async function start() {
     if (disabled || !speech.ready) return;
     cancel();
@@ -283,7 +323,9 @@ export function EnglishSpeakingInput({
                 ? uiText("Preparando a voz neste aparelho…")
                 : uiText("Baixando arquivo do modelo: {0}%", [progress])
               : phase === "listening"
-                ? uiText("Pode falar. Toque para terminar.")
+                ? holding
+                  ? uiText("Pode falar. Solte o botão para terminar.")
+                  : uiText("Pode falar. Toque para terminar.")
                 : phase === "processing"
                   ? uiText("Transcrevendo neste aparelho…")
                   : phase === "requesting"
@@ -295,7 +337,7 @@ export function EnglishSpeakingInput({
                       : phase === "ready"
                         ? uiText("Frase reconhecida!")
                         : uiText(
-                            "Fale a frase em inglês. As palavras mudam de cor conforme são reconhecidas.",
+                            "Segure o botão e fale a frase em inglês. Solte para terminar. As palavras mudam de cor conforme são reconhecidas.",
                           )}
           </p>
           {busy && <HelenaLoading compact />}
@@ -342,7 +384,16 @@ export function EnglishSpeakingInput({
                 className="primary-button english-speaking-record"
                 type="button"
                 disabled={disabled || busy || phase === "ready"}
-                onClick={() => void (phase === "listening" ? stop() : start())}
+                data-holding={holding}
+                onPointerDown={press}
+                onPointerUp={release}
+                onPointerCancel={release}
+                onContextMenu={(event) => event.preventDefault()}
+                // Clique de ponteiro já foi tratado ao apertar; este caminho é do teclado.
+                onClick={(event) => {
+                  if (event.detail > 0) return;
+                  void (phase === "listening" ? stop() : start());
+                }}
               >
                 <img src="/room-icons/microphone.svg" alt="" width="28" height="28" />
                 {phase === "listening"
