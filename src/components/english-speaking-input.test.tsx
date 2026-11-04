@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { EnglishSpeakingInput } from "./english-speaking-input";
 import { LocalEnglishSpeech } from "../data/english-local-speech";
+import { VOICE_FILES, VOICE_MODEL, VOICE_REVISION } from "../data/english-asr-model";
 let speech: LocalEnglishSpeech;
 const answer = vi.fn(),
   alternative = vi.fn(),
@@ -29,6 +30,7 @@ async function prepare() {
 }
 beforeEach(() => {
   vi.clearAllMocks();
+  localStorage.clear();
   vi.stubGlobal("isSecureContext", true);
   vi.stubGlobal("AudioContext", class {});
   vi.stubGlobal("AudioWorkletNode", class {});
@@ -209,4 +211,58 @@ it("colors a recognized prefix while listening and only accepts after the speech
   await act(async () => end!());
   expect(answer).toHaveBeenCalledExactlyOnceWith("What is your name?");
   expect(screen.queryByRole("button", { name: "Enviar resposta" })).toBeNull();
+});
+
+const REMEMBERED = "olena.englishVoice.prepared.v1";
+function cacheWith(files: readonly string[]) {
+  const urls = files.map(
+    (f) => `https://huggingface.co/${VOICE_MODEL}/resolve/${VOICE_REVISION}/onnx/${f}`,
+  );
+  vi.stubGlobal("caches", {
+    open: async () => ({
+      match: async (url: string) => (urls.includes(url) ? new Response("peso") : undefined),
+    }),
+  });
+}
+it("remembers on this device that the voice was prepared, so the next practice does not ask again", async () => {
+  mount();
+  expect(localStorage.getItem(REMEMBERED)).toBeNull();
+  await prepare();
+  expect(localStorage.getItem(REMEMBERED)).toBe(VOICE_REVISION);
+});
+it("prepares the cached voice by itself and never asks for the download again", async () => {
+  localStorage.setItem(REMEMBERED, VOICE_REVISION);
+  cacheWith(VOICE_FILES);
+  mount();
+  expect(screen.queryByText(/Baixe o modelo gratuito/)).toBeNull();
+  expect(screen.queryByRole("button", { name: "Preparar voz no aparelho" })).toBeNull();
+  await screen.findByRole("button", { name: "Falar agora" });
+  expect(speech.load).toHaveBeenCalledOnce();
+  expect(speech.start).not.toHaveBeenCalled();
+  expect(screen.getByRole("checkbox").closest("label")?.textContent).toContain(
+    "Autorizo usar o microfone.",
+  );
+  expect(screen.getByRole("checkbox").closest("label")?.textContent).not.toContain("baixar");
+  // O microfone continua exigindo a autorização e o gesto da pessoa.
+  expect(screen.getByRole("button", { name: "Falar agora" }).hasAttribute("disabled")).toBe(true);
+  fireEvent.click(screen.getByRole("checkbox"));
+  fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
+  await screen.findByRole("button", { name: "Terminar fala" });
+});
+it("goes back to the consent and download when the browser erased the model", async () => {
+  localStorage.setItem(REMEMBERED, VOICE_REVISION);
+  cacheWith([VOICE_FILES[0]]);
+  mount();
+  await screen.findByRole("button", { name: "Preparar voz no aparelho" });
+  expect(speech.load).not.toHaveBeenCalled();
+  expect(localStorage.getItem(REMEMBERED)).toBeNull();
+  expect(screen.getByText(/Baixe o modelo gratuito/)).toBeTruthy();
+  expect(screen.getByRole("checkbox").closest("label")?.textContent).toContain("baixar o modelo");
+});
+it("ignores a marker from another model revision", async () => {
+  localStorage.setItem(REMEMBERED, "revisao-antiga");
+  cacheWith(VOICE_FILES);
+  mount();
+  expect(screen.getByRole("button", { name: "Preparar voz no aparelho" })).toBeTruthy();
+  expect(speech.load).not.toHaveBeenCalled();
 });

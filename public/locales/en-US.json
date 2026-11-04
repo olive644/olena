@@ -3646,5 +3646,8 @@
   "English speaking practice is optional and requires separate permission to download the voice model and use the microphone. Transcription happens on your device.",
   "Try the red words again. Say the sentence once more.",
   "Sentence recognized!",
-  "Say the sentence in English. Words change color as they are recognized."
+  "Say the sentence in English. Words change color as they are recognized.",
+  "I authorize using the microphone. My speech will be transcribed on this device, without sending the audio.",
+  "Preparing the voice on this device…",
+  "Preparing the voice…"
 ]

@@ -94,3 +94,17 @@ A proprietária decidiu não trocar para o base.en: não vale deixar a transcri�
 ### Alternativa analisada: modelo base.en (não adotada)
 
 A maior melhora medida vem de trocar tiny.en por base.en: de 9,9% para 5,7% de frases recusadas, e de 12,5% para 7,8% no sotaque simulado. O custo, não verificado aqui: download cerca de 35 MB maior (estimativa a partir da arquitetura, pesos quantizados de aproximadamente 75 MB contra 41 MB) e inferência cerca de 30% mais lenta no PC, ainda mais no celular, onde a prévia a cada 2 s pode atrasar. Não foi incluído porque o Hugging Face estava bloqueado: não foi possível confirmar os nomes dos arquivos nem fixar a revisão do repositório onnx-community/whisper-base.en, e o projeto fixa revisões de modelos. Para ativar: abrir https://huggingface.co/onnx-community/whisper-base.en/commits/main, copiar o hash do commit escolhido, conferir que `onnx/encoder_model_quantized.onnx` e `onnx/decoder_model_merged_quantized.onnx` existem nele, trocar `MODEL` e `REVISION` em `src/data/english-asr.worker.ts`, atualizar o texto "cerca de 65 MB" (catálogos de idioma e política de privacidade) e repetir a prova no celular.
+
+## Voz lembrada neste aparelho, 04/11/2026
+
+Problema relatado: a cada prática o Olena pedia de novo a autorização para baixar o modelo, mesmo com ele já guardado no navegador, porque cada prática cria um cliente novo de voz que começa "não preparado".
+
+Fluxo atual:
+
+- Ao preparar a voz com sucesso, o aparelho grava a marca `olena.englishVoice.prepared.v1` no localStorage, com a revisão do modelo. A marca é do aparelho, não da conta, e não sincroniza.
+- Nas práticas seguintes, se a marca bate com a revisão atual, o Olena confere no Cache API (`transformers-cache`) se os dois arquivos grandes do modelo estão guardados e então prepara a voz sozinho, sem rede e sem pedir o download. A tela diz "Preparando a voz neste aparelho".
+- O microfone continua exigindo a autorização marcada em cada sessão de prática e o toque em "Falar agora". O texto da autorização deixa de falar em baixar o modelo.
+- Se o navegador apagou o modelo (arquivo faltando ou erro ao preparar), a marca é removida e volta o fluxo normal com consentimento e download.
+- Após preparar, o Olena pede `navigator.storage.persist()` para reduzir a chance de o navegador apagar o modelo. É melhor esforço: o navegador pode negar.
+
+Limites: a conferência do cache cobre só os dois pesos grandes; arquivos pequenos de configuração poderiam, em tese, ser baixados de novo se apenas eles fossem apagados (não verificado). Não foi testado em celular físico.

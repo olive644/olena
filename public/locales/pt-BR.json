@@ -3646,5 +3646,8 @@
   "A prática de fala de Inglês é opcional e pede autorização separada para baixar o modelo de voz e usar o microfone. A transcrição acontece no aparelho.",
   "As palavras em vermelho precisam de outra tentativa. Fale a frase novamente.",
   "Frase reconhecida!",
-  "Fale a frase em inglês. As palavras mudam de cor conforme são reconhecidas."
+  "Fale a frase em inglês. As palavras mudam de cor conforme são reconhecidas.",
+  "Autorizo usar o microfone. Minha fala será transcrita neste aparelho, sem envio do áudio.",
+  "Preparando a voz neste aparelho…",
+  "Preparando a voz…"
 ]
