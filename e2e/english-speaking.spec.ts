@@ -1,3 +1,4 @@
+import { GENERAL_ACHIEVEMENTS } from "../src/domain/general-achievement-catalog";
 import { test, expect, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
@@ -318,6 +319,32 @@ for (const theme of ["light", "dark"]) {
     await page.mouse.up();
     await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", /ready|retry/);
     expect(await page.evaluate(() => (window as BrowserVoice).voiceTest.starts)).toBe(1);
+  });
+  test(`an achievement earned during the speaking round appears above it: ${theme}`, async ({
+    page,
+  }, info) => {
+    if (info.project.name === "mobile") await page.setViewportSize({ width: 360, height: 740 });
+    await setup(page, 0, theme);
+    // Mesmo recibo local do teste da celebração, aplicado com a partida de Inglês em tela cheia.
+    await page.evaluate(
+      (id) => {
+        const profile = JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}");
+        profile.achievementHistory = {
+          ...profile.achievementHistory,
+          [id]: "2026-11-04T12:00:00Z",
+        };
+        localStorage.setItem("helena.profile.v1", JSON.stringify(profile));
+        window.dispatchEvent(new CustomEvent("helena:synced-storage-change"));
+      },
+      GENERAL_ACHIEVEMENTS.find((item) => item.rarity === "rare")!.id,
+    );
+    const notice = page.getByLabel("Nova conquista", { exact: true });
+    await expect(notice).toBeVisible();
+    await page.screenshot({ path: info.outputPath(`conquista-na-partida-${theme}.png`) });
+    // O clique só chega ao botão se nada da partida estiver por cima da celebração.
+    await notice.getByRole("button", { name: "Fechar conquista" }).click({ timeout: 5000 });
+    await expect(notice).toHaveCount(0);
+    await expect(page.locator(".english-speaking")).toBeVisible();
   });
   test(`speech denial, retry, private transcript and same-question fallback: ${theme}`, async ({
     page,

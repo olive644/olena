@@ -4419,3 +4419,12 @@ Pedido da proprietária: transcrição ainda ruim e sem acompanhar a fala; remov
 - Mudança: botão do microfone grava ao segurar e termina ao soltar, com modo de toque curto e teclado preservados; detalhes e limites em `ENGLISH_SPEAKING.md`. Textos novos nos dois catálogos. Empilhada sobre a PR 573 (microfone uma vez e prévia ao vivo).
 - Provas: 5 testes unitários novos (segurar e soltar, toque curto, pausa durante a fala segurada, soltar durante a abertura, teclado e clique de ponteiro) e e2e novo em PC e celular 320 px, claro e escuro. e2e de fala 48 de 48. Os ajustes nos testes antigos vieram da prévia contínua: o mock segura todas as transcrições em espera e um cenário no celular congela o relógio antes do toque, porque o cursor parado sobre o botão alterna o hover quando a frase muda de altura.
 - Limites: sem celular real; gesto de segurar só provado com mouse e eventos sintéticos.
+
+## Conquistas aparecem por cima das partidas, 04/11/2026
+
+Pedido da proprietária: verificar se as conquistas ainda aparecem na tela quando são ganhas.
+
+- Verificação: os e2e e testes existentes de conquistas passavam, mas só cobriam a tela do Perfil. Dentro da partida de Inglês a conquista entrava no DOM e **não aparecia**: `.achievement-notice` tinha `z-index: 140` e as partidas em tela cheia (`.english-journey` e o arcade de Matemática) têm 150, então a celebração ficava atrás delas, justamente onde a maior parte das conquistas é ganha.
+- Correção: `z-index: 1700` em `math-achievements.css`, acima das partidas (150), do painel de novidades (1600) e do caderno aberto (1100), e abaixo dos diálogos de conta e do seletor de pasta (10000 ou mais).
+- Provas: e2e novo "an achievement earned during the speaking round appears above it" em PC e celular, claro e escuro (o clique no botão de fechar só chega se nada cobre a celebração; falha sem a correção) e captura conferida no celular em tema escuro. e2e de conquistas, celebração, interação e baús (22) continuam passando.
+- Limites: o arcade de Matemática recebe a mesma correção por ter o mesmo z-index, mas não ganhou teste próprio. A celebração é não modal e cobre o centro da tela por até 10 s, inclusive sobre a pergunta de uma partida com relógio; isso é o desenho anterior e não foi alterado. Não verificado em celular real.

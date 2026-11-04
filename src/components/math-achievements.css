@@ -623,7 +623,9 @@
   position: fixed;
   bottom: calc(90px + env(safe-area-inset-bottom));
   right: 20px;
-  z-index: 140;
+  /* Acima das partidas em tela cheia (Inglês e arcade de Matemática, z-index 150), onde a
+     maioria das conquistas é ganha, e abaixo dos diálogos de conta. */
+  z-index: 1700;
   width: min(370px, calc(100vw - 32px));
   display: flex;
   align-items: center;
