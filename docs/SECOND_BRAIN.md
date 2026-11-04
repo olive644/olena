@@ -1865,3 +1865,5 @@ A pedido do proprietário, Enviar resposta foi removido. AudioWorklet alimenta P
 2026-11-04, fala de Inglês: o microfone é pedido uma vez no início da partida e o fluxo aberto (sem gravar) é reaproveitado pela atividade via LocalEnglishSpeech.adoptMicrophone; solto ao fim da partida. A caixa de autorização da atividade só trata do download do modelo. Prévia de palavras em laço contínuo. Detalhes em ENGLISH_SPEAKING.md.
 
 2026-11-04, fala de Inglês: o botão do microfone grava enquanto segurado e termina ao soltar (pointerdown/up com captura); toque curto liga o modo de toque e o teclado alterna. Silêncio não encerra a fala segurada. Detalhes em ENGLISH_SPEAKING.md.
+
+2026-11-04, amigos e fala: moldura do avatar na lista de conexões tem regras próprias em profile-customization.css (124% do avatar, centrada); nota de contatos oculta até 600 px; botão de segurar para falar não é desabilitado enquanto o microfone abre. Detalhes em CURRENT_STATE_AUDIT.md.

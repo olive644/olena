@@ -145,3 +145,11 @@ Pedido: gravar como um áudio de mensageiro, segurando o botão do microfone.
 - Toque longo no celular não abre menu de contexto nem seleciona texto (`touch-action`, `user-select`, menu bloqueado). Com movimento reduzido o botão não aumenta ao segurar.
 
 Limites: não testado em celular físico (gesto de segurar com o dedo, atalhos do sistema, bordas de tela); o e2e usa mouse. Soltar com um dedo que escorrega para fora do botão depende da captura de ponteiro do navegador.
+
+## Correção do segurar para falar no celular, 04/11/2026
+
+Relato: no celular o botão só funcionava como clique, não dava para segurar.
+
+- Causa provável, reproduzida em e2e com toque real (Chrome DevTools Protocol, `Input.dispatchTouchEvent`) e abertura lenta do microfone: ao apertar, a fase vira "requesting" e o botão ficava `disabled`. Com o dedo ainda em cima, o navegador pode parar de entregar o fim do toque a um controle desabilitado, e a gravação nunca terminava ao soltar. No mouse e no mock instantâneo isso não aparecia.
+- Correção: o botão continua habilitado durante "requesting" (`aria-busy` indica a abertura) e um clique de teclado durante a abertura é ignorado, para não abrir o microfone duas vezes.
+- Limite: a causa foi provada em Chromium com toque sintético; o comportamento em Chrome e Samsung Internet no aparelho real não foi verificado aqui.

@@ -400,3 +400,21 @@ it("keeps keyboard activation as a toggle, and a pointer click never toggles twi
   await waitFor(() => expect(answer).toHaveBeenCalled());
   expect(speech.finish).toHaveBeenCalledOnce();
 });
+it("keeps the record button enabled while the microphone opens, so a finger on it still releases", async () => {
+  let opened: (() => void) | undefined;
+  vi.mocked(speech.start).mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        opened = resolve;
+      }),
+  );
+  mount();
+  await prepare();
+  fireEvent.pointerDown(record());
+  await screen.findByText("Aguardando o microfone…");
+  expect(record().hasAttribute("disabled")).toBe(false);
+  // Um clique de teclado durante a abertura não abre o microfone uma segunda vez.
+  fireEvent.click(record(), { detail: 0 });
+  expect(speech.start).toHaveBeenCalledOnce();
+  await act(async () => opened!());
+});

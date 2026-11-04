@@ -4419,3 +4419,13 @@ Pedido da proprietária: transcrição ainda ruim e sem acompanhar a fala; remov
 - Mudança: botão do microfone grava ao segurar e termina ao soltar, com modo de toque curto e teclado preservados; detalhes e limites em `ENGLISH_SPEAKING.md`. Textos novos nos dois catálogos. Empilhada sobre a PR 573 (microfone uma vez e prévia ao vivo).
 - Provas: 5 testes unitários novos (segurar e soltar, toque curto, pausa durante a fala segurada, soltar durante a abertura, teclado e clique de ponteiro) e e2e novo em PC e celular 320 px, claro e escuro. e2e de fala 48 de 48. Os ajustes nos testes antigos vieram da prévia contínua: o mock segura todas as transcrições em espera e um cenário no celular congela o relógio antes do toque, porque o cursor parado sobre o botão alterna o hover quando a frase muda de altura.
 - Limites: sem celular real; gesto de segurar só provado com mouse e eventos sintéticos.
+
+## Amigos e segurar para falar, 04/11/2026
+
+Pedido da proprietária, com capturas do celular: moldura dos avatares na lista de amigos torta, remover o texto de contatos no celular, botão de segurar só funcionando como clique.
+
+- Molduras: no celular uma regra de imagem (`.social-connection-row .social-person img`, 36 px) também encolhia a moldura, que ficava do tamanho do avatar e deslocada para cima e à esquerda. Medido no navegador: moldura 36 px a (-5,3; -5,3) do avatar. Agora avatar e moldura têm regras próprias com maior especificidade (`profile-customization.css`) e o retrato fica com 36 px no celular; a moldura mede 124% do avatar e fica centrada.
+- Texto "Somente o nome do contato escolhido é preenchido aqui. Não lemos telefones ou e-mails." deixa de aparecer até 600 px (`display: none`, só no celular). Continua no PC e a mesma informação está na política de privacidade. Limite: no celular a nota some também para leitores de tela.
+- Botão de segurar: causa e correção em `ENGLISH_SPEAKING.md`.
+- Provas: e2e `profile-connections-layout` agora usa o retrato com moldura e exige moldura centrada e 1,24 vezes o avatar, e nota oculta no celular e visível no PC (falha no celular sem a correção); e2e novo de toque real com microfone lento (falha sem a correção); teste unitário de botão habilitado na abertura (falha sem a correção). e2e de fala 52 de 52.
+- Limites: não verificado em celular real.
