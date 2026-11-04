@@ -174,10 +174,14 @@ export function SystemUpdates({
   const [saveError, setSaveError] = useState("");
   useEffect(() => {
     let active = true,
-      pending = false;
+      pending = false,
+      refreshQueued = false;
     const abort = new AbortController();
     const refresh = async () => {
-      if (pending) return;
+      if (pending) {
+        refreshQueued = true;
+        return;
+      }
       pending = true;
       try {
         const response = await fetch("/system-updates.json", {
@@ -194,6 +198,10 @@ export function SystemUpdates({
         if (active) setStatus(uiText(1025));
       } finally {
         pending = false;
+        if (active && refreshQueued) {
+          refreshQueued = false;
+          void refresh();
+        }
       }
     };
     const readStorage = () => setRead(storedReadUpdates());

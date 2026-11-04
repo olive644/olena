@@ -159,7 +159,7 @@ for (const theme of ["light", "dark"]) {
       await page.getByRole("button", { name: "Falar agora", exact: true }).click();
       await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "listening");
       await page.clock.runFor(1000);
-      expect(await page.locator(".math-time").getAttribute("aria-label")).not.toBe(before);
+      await expect(page.locator(".math-time")).not.toHaveAttribute("aria-label", before!);
       await mkdir(directory, { recursive: true });
       await page.screenshot({
         path: `${directory}/${info.project.name}-${theme}-part${part + 1}-listening.png`,

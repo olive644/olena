@@ -59,6 +59,12 @@ test("task colors and unclipped day/week strips stay current on desktop and mobi
     );
     const buttons = strip.getByRole("button", { name: /Ver tarefa/ });
     await expect(buttons).toHaveCount(2);
+    await strip.evaluate(async (element) => {
+      const animations = new Set<Animation>();
+      for (let node: Element | null = element; node; node = node.parentElement)
+        node.getAnimations().forEach((animation) => animations.add(animation));
+      await Promise.all([...animations].map((animation) => animation.finished));
+    });
     const bounds = await strip.boundingBox();
     for (const button of await buttons.all()) {
       const item = await button.boundingBox();
