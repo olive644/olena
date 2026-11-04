@@ -125,8 +125,14 @@ async function setup(page: Page, part: number, theme: string, supported = true, 
                 },
               }),
             );
-          if (message.type === "transcribe" && harness.hold) harness.release = result;
-          else queueMicrotask(result);
+          if (message.type === "transcribe" && harness.hold) {
+            // Prévia e resultado final podem estar em espera ao mesmo tempo: soltar libera todos.
+            const earlier = harness.release;
+            harness.release = () => {
+              earlier?.();
+              result();
+            };
+          } else queueMicrotask(result);
         }
         terminate() {
           harness.aborts++;
@@ -290,6 +296,29 @@ for (const theme of ["light", "dark"]) {
       ).toBe(true);
       expect(errors).toEqual([]);
     });
+  test(`holding the microphone button records and releasing finishes: ${theme}`, async ({
+    page,
+  }, info) => {
+    if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
+    const q = await setup(page, 0, theme);
+    await prepare(page);
+    const button = page.getByRole("button", { name: "Falar agora", exact: true });
+    const box = (await button.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "listening");
+    await expect(page.getByRole("status")).toContainText("Solte o botão");
+    await page.evaluate((text) => {
+      (window as BrowserVoice).voiceTest.text = text;
+    }, q.answer);
+    await page.clock.runFor(1500);
+    // Pausa longa segurando: não encerra sozinha.
+    await page.clock.runFor(3000);
+    await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "listening");
+    await page.mouse.up();
+    await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", /ready|retry/);
+    expect(await page.evaluate(() => (window as BrowserVoice).voiceTest.starts)).toBe(1);
+  });
   test(`speech denial, retry, private transcript and same-question fallback: ${theme}`, async ({
     page,
   }, info) => {
@@ -396,7 +425,11 @@ for (const theme of ["light", "dark"]) {
       h.hold = true;
       h.text = "test";
     });
-    await page.getByRole("button", { name: "Terminar fala", exact: true }).click();
+    // A prévia ao vivo anima a frase enquanto escuta: congela o relógio, como finish(), antes do toque.
+    await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
+    // O cursor parado sobre o botão alterna o realce de hover quando a frase muda de altura
+    // com a prévia ao vivo; só no celular de 320 px isso impede o teste de estabilidade.
+    await page.getByRole("button", { name: "Terminar fala", exact: true }).click({ force: true });
     await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "processing");
     await page.clock.runFor(5000);
     expect(await page.locator(".math-time").getAttribute("aria-label")).toBe(before);

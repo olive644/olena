@@ -328,3 +328,75 @@ it("keeps refreshing the live words back to back while the person speaks", async
   });
   expect(calls).toBeGreaterThanOrEqual(4);
 });
+
+const record = () => screen.getByRole("button", { name: /Falar agora|Terminar fala/ });
+it("records while the button is held and finishes when it is released", async () => {
+  mount();
+  await prepare();
+  vi.useFakeTimers({ toFake: ["Date"] });
+  fireEvent.pointerDown(record());
+  await screen.findByRole("button", { name: "Terminar fala" });
+  expect(speech.start).toHaveBeenCalledOnce();
+  expect(screen.getByRole("status").textContent).toContain("Solte o botão para terminar");
+  vi.setSystemTime(Date.now() + 1500);
+  fireEvent.pointerUp(record());
+  await waitFor(() => expect(answer).toHaveBeenCalledWith("What is your name?"));
+  expect(speech.finish).toHaveBeenCalledOnce();
+});
+it("a quick tap keeps listening until the next tap", async () => {
+  mount();
+  await prepare();
+  fireEvent.pointerDown(record());
+  await screen.findByRole("button", { name: "Terminar fala" });
+  fireEvent.pointerUp(record());
+  fireEvent.click(record(), { detail: 1 });
+  expect(speech.finish).not.toHaveBeenCalled();
+  fireEvent.pointerDown(record());
+  await waitFor(() => expect(answer).toHaveBeenCalled());
+  expect(speech.finish).toHaveBeenCalledOnce();
+});
+it("pauses in the middle of the sentence do not end a held recording", async () => {
+  let silence: (() => void) | undefined;
+  vi.mocked(speech.subscribeSilence).mockImplementation((listener) => {
+    silence = listener;
+    return () => undefined;
+  });
+  mount();
+  await prepare();
+  vi.useFakeTimers({ toFake: ["Date"] });
+  fireEvent.pointerDown(record());
+  await screen.findByRole("button", { name: "Terminar fala" });
+  await act(async () => silence!());
+  expect(speech.finish).not.toHaveBeenCalled();
+  vi.setSystemTime(Date.now() + 1500);
+  fireEvent.pointerUp(record());
+  await waitFor(() => expect(speech.finish).toHaveBeenCalledOnce());
+});
+it("releasing the button while the microphone is still opening finishes as soon as it listens", async () => {
+  let opened: (() => void) | undefined;
+  vi.mocked(speech.start).mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        opened = resolve;
+      }),
+  );
+  mount();
+  await prepare();
+  vi.useFakeTimers({ toFake: ["Date"] });
+  fireEvent.pointerDown(record());
+  vi.setSystemTime(Date.now() + 1500);
+  fireEvent.pointerUp(record());
+  expect(speech.finish).not.toHaveBeenCalled();
+  await act(async () => opened!());
+  await waitFor(() => expect(speech.finish).toHaveBeenCalledOnce());
+});
+it("keeps keyboard activation as a toggle, and a pointer click never toggles twice", async () => {
+  mount();
+  await prepare();
+  fireEvent.click(record(), { detail: 0 });
+  await screen.findByRole("button", { name: "Terminar fala" });
+  expect(speech.start).toHaveBeenCalledOnce();
+  fireEvent.click(record(), { detail: 0 });
+  await waitFor(() => expect(answer).toHaveBeenCalled());
+  expect(speech.finish).toHaveBeenCalledOnce();
+});
