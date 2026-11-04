@@ -18,6 +18,7 @@ type BrowserVoice = Window & {
     text: string;
     denied: boolean;
     hold: boolean;
+    openDelay: number;
     release?: () => void;
   };
 };
@@ -99,6 +100,7 @@ async function setup(page: Page, part: number, theme: string, supported = true, 
         text: "",
         denied,
         hold: false,
+        openDelay: 0,
       };
       Object.defineProperty(window, "voiceTest", { value: harness });
       const RealWorker = window.Worker;
@@ -161,7 +163,13 @@ async function setup(page: Page, part: number, theme: string, supported = true, 
       });
       Object.defineProperty(AudioContext.prototype, "audioWorklet", {
         configurable: true,
-        get: () => ({ addModule: async () => undefined }),
+        get: () => ({
+          // Abrir o microfone de verdade leva centenas de ms; com atraso 0 não há timer a esperar.
+          addModule: () =>
+            harness.openDelay
+              ? new Promise<void>((resolve) => setTimeout(resolve, harness.openDelay))
+              : Promise.resolve(),
+        }),
       });
       Object.defineProperty(AudioContext.prototype, "createMediaStreamSource", {
         configurable: true,
@@ -318,6 +326,38 @@ for (const theme of ["light", "dark"]) {
     await page.mouse.up();
     await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", /ready|retry/);
     expect(await page.evaluate(() => (window as BrowserVoice).voiceTest.starts)).toBe(1);
+  });
+  test(`a real touch hold keeps recording while the microphone is still opening: ${theme}`, async ({
+    page,
+  }, info) => {
+    if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
+    const q = await setup(page, 0, theme);
+    await prepare(page);
+    await page.evaluate(() => {
+      (window as BrowserVoice).voiceTest.openDelay = 600;
+    });
+    const button = page.getByRole("button", { name: "Falar agora", exact: true });
+    const box = (await button.boundingBox())!;
+    const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+    const cdp = await page.context().newCDPSession(page);
+    const touch = (type: "touchStart" | "touchEnd") =>
+      cdp.send("Input.dispatchTouchEvent", {
+        type,
+        touchPoints: type === "touchEnd" ? [] : [{ ...point, id: 1 }],
+      });
+    await touch("touchStart");
+    await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "requesting");
+    // O botão não pode ficar desabilitado com o dedo em cima: o navegador deixaria de entregar o fim do toque.
+    expect(await page.locator(".english-speaking-record").isDisabled()).toBe(false);
+    await page.clock.runFor(700);
+    await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "listening");
+    await page.evaluate((text) => {
+      (window as BrowserVoice).voiceTest.text = text;
+    }, q.answer);
+    await page.clock.runFor(3000);
+    await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "listening");
+    await touch("touchEnd");
+    await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", /ready|retry/);
   });
   test(`speech denial, retry, private transcript and same-question fallback: ${theme}`, async ({
     page,

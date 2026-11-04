@@ -380,9 +380,18 @@ html[data-reduce-motion="true"] .social-directory {
     padding: 10px 6px;
     gap: 8px;
   }
-  .social-connection-row .social-person img {
+  .social-connection-row .social-person .social-person-portrait {
     width: 36px;
     height: 36px;
+    flex-basis: 36px;
+  }
+  /* Mesmo tamanho de antes para o avatar, sem tocar na moldura. */
+  .social-connection-row .social-person > img:not(.profile-frame-art) {
+    width: 36px;
+    height: 36px;
+  }
+  .social-support-note {
+    display: none;
   }
 }
 .social-confirm {
