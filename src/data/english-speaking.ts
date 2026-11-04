@@ -75,32 +75,3 @@ export function spokenEnglish(value: string) {
     .replace(/\s+/g, " ")
     .trim();
 }
-
-export type VoiceRecognition = {
-  lang: string;
-  continuous: boolean;
-  interimResults: boolean;
-  maxAlternatives: number;
-  onstart: (() => void) | null;
-  onspeechend: (() => void) | null;
-  onend: (() => void) | null;
-  onerror: ((event: { error: string }) => void) | null;
-  onresult:
-    | ((event: { results: ArrayLike<{ isFinal: boolean; 0: { transcript: string } }> }) => void)
-    | null;
-  start(): void;
-  stop(): void;
-  abort(): void;
-};
-type VoiceConstructor = {
-  new (): VoiceRecognition;
-};
-export function voiceRecognition(): VoiceConstructor | undefined {
-  const browser = window as Window & {
-    SpeechRecognition?: VoiceConstructor;
-    webkitSpeechRecognition?: VoiceConstructor;
-  };
-  return window.isSecureContext
-    ? (browser.SpeechRecognition ?? browser.webkitSpeechRecognition)
-    : undefined;
-}

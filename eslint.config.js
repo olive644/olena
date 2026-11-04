@@ -14,6 +14,7 @@ export default tseslint.config(
       "playwright-report",
       "test-results",
       "public/ocr",
+      "public/speech-runtime",
       "public/helena-assistant/rive.js",
       ".vercel",
     ],

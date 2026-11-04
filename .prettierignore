@@ -1,5 +1,6 @@
 dist
 public/ocr
+public/speech-runtime
 .vercel
 node_modules
 coverage

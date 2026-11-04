@@ -6,6 +6,7 @@ import { ENGLISH_PART_CATALOG } from "../data/english-part-catalog";
 import { readEnglishCheckpoint, saveEnglishCheckpoint } from "../data/english-checkpoint";
 import { A1_BANK, a1Coverage } from "../domain/english-a1";
 import { isSpeakingQuestion, spokenEnglish } from "../data/english-speaking";
+import { LocalEnglishSpeech } from "../data/english-local-speech";
 import { EnglishSpeakingInput } from "./english-speaking-input";
 import {
   ARCADE_LIVES,
@@ -112,6 +113,8 @@ export function EnglishIslandJourney({
   const [choice, setChoice] = useState<string>();
   const [pending, setPending] = useState(false);
   const [hasVoice, setHasVoice] = useState(false);
+  const [speechClient] = useState(() => new LocalEnglishSpeech());
+  useEffect(() => () => speechClient.dispose(), [speechClient]);
   const [speechAllowed, setSpeechAllowed] = useState(false);
   const [speechFallback, setSpeechFallback] = useState(false);
   const [speechPaused, setSpeechPaused] = useState(true);
@@ -833,6 +836,8 @@ export function EnglishIslandJourney({
               {speaking && (
                 <EnglishSpeakingInput
                   key={`${round.id}:${round.at}:${leave}`}
+                  speech={speechClient}
+                  expected={question.answer}
                   allowed={speechAllowed}
                   disabled={feedback !== undefined || pending || leave}
                   onAllow={() => setSpeechAllowed(true)}

@@ -5,14 +5,20 @@ import { createInitialWorkspace, type PracticeActivity } from "../src/domain/wor
 import { isWorkspaceState } from "../src/data/local-workspace";
 import { englishQuestion, type EnglishCourse } from "../src/data/english-journey";
 import { isSpeakingQuestion } from "../src/data/english-speaking";
-import type { VoiceRecognition } from "../src/data/english-speaking";
 const course = JSON.parse(
   readFileSync("public/languages/en/english-v4.json", "utf8"),
 ) as EnglishCourse;
 course.a1 = JSON.parse(readFileSync("public/languages/en/english-a1-v1.json", "utf8"));
 const directory = "C:/Users/User/Documents/Codex/2026-09-10/b/previews-english-speaking";
 type BrowserVoice = Window & {
-  voiceTest: { last?: VoiceRecognition; starts: number; aborts: number };
+  voiceTest: {
+    starts: number;
+    aborts: number;
+    text: string;
+    denied: boolean;
+    hold: boolean;
+    release?: () => void;
+  };
 };
 function completed() {
   const records: PracticeActivity[] = [];
@@ -86,37 +92,81 @@ async function setup(page: Page, part: number, theme: string, supported = true) 
           }),
         );
       }
-      const harness: BrowserVoice["voiceTest"] = { starts: 0, aborts: 0 };
+      const harness: BrowserVoice["voiceTest"] = {
+        starts: 0,
+        aborts: 0,
+        text: "",
+        denied: false,
+        hold: false,
+      };
       Object.defineProperty(window, "voiceTest", { value: harness });
-      class Recognition implements VoiceRecognition {
-        lang = "";
-        continuous = false;
-        interimResults = false;
-        maxAlternatives = 1;
-        onstart: VoiceRecognition["onstart"] = null;
-        onspeechend: VoiceRecognition["onspeechend"] = null;
-        onend: VoiceRecognition["onend"] = null;
-        onerror: VoiceRecognition["onerror"] = null;
-        onresult: VoiceRecognition["onresult"] = null;
-        constructor() {
-          harness.last = this;
+      const RealWorker = window.Worker;
+      class ModelWorker {
+        onmessage: ((event: { data: { id: number; type: string; text?: string } }) => void) | null =
+          null;
+        onerror: (() => void) | null = null;
+        postMessage(message: { id: number; type: string }) {
+          const result = () =>
+            this.onmessage?.({
+              data: {
+                id: message.id,
+                type: message.type === "load" ? "ready" : "result",
+                ...(message.type === "load" ? {} : { text: harness.text }),
+              },
+            });
+          if (message.type === "transcribe" && harness.hold) harness.release = result;
+          else queueMicrotask(result);
         }
-        start() {
-          harness.starts++;
-          this.onstart?.();
-        }
-        stop() {}
-        abort() {
+        terminate() {
           harness.aborts++;
         }
       }
-      Object.defineProperty(window, "SpeechRecognition", {
+      Object.defineProperty(window, "Worker", {
         configurable: true,
-        value: supported ? Recognition : undefined,
+        value: class extends RealWorker {
+          constructor(url: string | URL, options?: WorkerOptions) {
+            if (String(url).includes("english-asr.worker"))
+              return new ModelWorker() as unknown as Worker;
+            super(url, options);
+          }
+        },
       });
-      Object.defineProperty(window, "webkitSpeechRecognition", {
+      Object.defineProperty(navigator, "mediaDevices", {
         configurable: true,
-        value: undefined,
+        value: {
+          getUserMedia: async () => {
+            harness.starts++;
+            if (harness.denied) throw new DOMException("denied", "NotAllowedError");
+            return { getTracks: () => [{ stop: () => harness.aborts++ }] };
+          },
+        },
+      });
+      Object.defineProperty(AudioContext.prototype, "audioWorklet", {
+        configurable: true,
+        get: () => ({ addModule: async () => undefined }),
+      });
+      Object.defineProperty(AudioContext.prototype, "createMediaStreamSource", {
+        configurable: true,
+        value: () => ({ connect: () => undefined, disconnect: () => undefined }),
+      });
+      class Capture {
+        port: {
+          onmessage:
+            ((event: { data: { samples: Float32Array; sampleRate: number } }) => void) | null;
+        } = { onmessage: null };
+        constructor() {
+          queueMicrotask(() =>
+            this.port.onmessage?.({
+              data: { samples: new Float32Array(16000).fill(0.02), sampleRate: 16000 },
+            }),
+          );
+        }
+        connect() {}
+        disconnect() {}
+      }
+      Object.defineProperty(window, "AudioWorkletNode", {
+        configurable: true,
+        value: supported ? Capture : undefined,
       });
     },
     { workspace, part, theme, id: q.id, supported },
@@ -136,13 +186,23 @@ async function setup(page: Page, part: number, theme: string, supported = true) 
   await expect(page.locator(".english-lesson")).toHaveAttribute("data-question-id", String(q.id));
   return q;
 }
-async function finish(page: Page, transcript: string) {
-  await page.evaluate((transcript) => {
-    const r = (window as BrowserVoice).voiceTest.last!;
-    r.onresult?.({ results: [{ isFinal: true, 0: { transcript } }] });
-    r.onend?.();
-  }, transcript);
+async function prepare(page: Page) {
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: "Preparar voz no aparelho", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Falar agora", exact: true })).toBeVisible();
 }
+async function finish(page: Page, transcript: string) {
+  await page.evaluate((text) => {
+    (window as BrowserVoice).voiceTest.text = text;
+  }, transcript);
+  await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "listening");
+  // Clear the old hover after the permission error disappears and recenters the activity.
+  await page.mouse.move(0, 0);
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
+  await page.getByRole("button", { name: "Terminar fala", exact: true }).click();
+  await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", /ready|retry/);
+}
+
 for (const theme of ["light", "dark"]) {
   for (let part = 0; part < 6; part++)
     test(`speech in English part ${part + 1}, ${theme}`, async ({ page }, info) => {
@@ -154,13 +214,23 @@ for (const theme of ["light", "dark"]) {
       await page.clock.runFor(5000);
       expect(await page.locator(".math-time").getAttribute("aria-label")).toBe(before);
       expect(await page.evaluate(() => (window as BrowserVoice).voiceTest.starts)).toBe(0);
-      await expect(page.getByRole("button", { name: "Falar agora", exact: true })).toBeDisabled();
-      await page.getByRole("checkbox").check();
+      await expect(
+        page.getByRole("button", { name: "Preparar voz no aparelho", exact: true }),
+      ).toBeDisabled();
+      await prepare(page);
       await page.getByRole("button", { name: "Falar agora", exact: true }).click();
       await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "listening");
       await page.clock.runFor(1000);
       await expect(page.locator(".math-time")).not.toHaveAttribute("aria-label", before!);
       await mkdir(directory, { recursive: true });
+      await page.evaluate((text) => {
+        (window as BrowserVoice).voiceTest.text = text;
+      }, q.answer.split(/\s+/).slice(0, 2).join(" "));
+      await page.clock.runFor(2000);
+      await expect(page.locator("[data-word-state=correct]")).toHaveCount(2);
+      await expect(page.getByRole("button", { name: "Enviar resposta", exact: true })).toHaveCount(
+        0,
+      );
       await page.screenshot({
         path: `${directory}/${info.project.name}-${theme}-part${part + 1}-listening.png`,
       });
@@ -172,15 +242,17 @@ for (const theme of ["light", "dark"]) {
       expect(back!.y).toBeGreaterThanOrEqual(0);
       await finish(page, q.answer);
       await expect(page.locator(".english-speaking-transcript")).toHaveText(q.answer);
-      await expect(page.locator(".english-speaking-transcript")).toHaveCSS(
+      await expect(page.locator("[data-word-state=correct]")).toHaveCount(
+        q.answer.trim().split(/\s+/).length,
+      );
+      await expect(page.locator("[data-word-state=correct]").first()).toHaveCSS(
         "color",
-        "rgb(41, 36, 50)",
+        "rgb(23, 75, 55)",
       );
       await page.screenshot({
         path: `${directory}/${info.project.name}-${theme}-part${part + 1}-transcript.png`,
       });
       await expect(page.locator(".math-hearts")).toHaveAttribute("aria-label", /3/);
-      await page.getByRole("button", { name: "Enviar resposta", exact: true }).click();
       await expect(page.locator(".math-answer-reaction.is-correct")).toBeVisible();
       await expect(page.locator(".math-score")).toHaveAttribute("aria-label", /20/);
       expect(
@@ -198,18 +270,22 @@ for (const theme of ["light", "dark"]) {
   }, info) => {
     if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
     const q = await setup(page, 0, theme);
-    await page.getByRole("checkbox").check();
+    await prepare(page);
+    await page.evaluate(() => {
+      (window as BrowserVoice).voiceTest.denied = true;
+    });
     await page.getByRole("button", { name: "Falar agora", exact: true }).click();
-    await page.evaluate(() =>
-      (window as BrowserVoice).voiceTest.last!.onerror?.({ error: "not-allowed" }),
-    );
     await expect(page.getByRole("alert")).toContainText("não foi autorizado");
     await page.clock.runFor(45000);
     await expect(page.locator(".math-hearts")).toHaveAttribute("aria-label", /3/);
+    await page.evaluate(() => {
+      (window as BrowserVoice).voiceTest.denied = false;
+    });
     await page.getByRole("button", { name: "Falar agora", exact: true }).click();
     await finish(page, "private microphone text do not save");
-    await page.getByRole("button", { name: "Enviar resposta", exact: true }).click();
-    await expect(page.locator(".math-answer-reaction.is-wrong")).toBeVisible();
+    await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "retry");
+    await expect(page.locator("[data-word-state=retry]").first()).toBeVisible();
+    await expect(page.locator(".math-hearts")).toHaveAttribute("aria-label", /3/);
     const storage = await page.evaluate(() => JSON.stringify({ ...localStorage }));
     expect(storage).not.toContain("private microphone text");
     await page.keyboard.press("Escape");
@@ -218,7 +294,13 @@ for (const theme of ["light", "dark"]) {
       .locator(".english-island-interior")
       .getByRole("button", { name: "Praticar", exact: true })
       .click();
-    await page.clock.runFor(3000);
+    await expect(page.locator(".math-countdown")).toBeVisible();
+    // The clock is paused for color assertions; flush each React countdown commit.
+    for (const remaining of [2, 1]) {
+      await page.clock.runFor(1000);
+      await expect(page.locator(".math-countdown .paper-digits")).toHaveText(String(remaining));
+    }
+    await page.clock.runFor(1000);
     await expect(page.locator(".english-lesson")).toHaveAttribute("data-question-id", String(q.id));
     await page.getByRole("button", { name: "Agora não posso falar", exact: true }).click();
     await expect(page.locator(".english-speaking")).toHaveCount(0);
@@ -228,7 +310,7 @@ for (const theme of ["light", "dark"]) {
   test(`speech aborts on account change: ${theme}`, async ({ page }, info) => {
     if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
     await setup(page, 0, theme);
-    await page.getByRole("checkbox").check();
+    await prepare(page);
     await page.getByRole("button", { name: "Falar agora", exact: true }).click();
     await page.evaluate(() => {
       localStorage.setItem("helena.account.v1", "other-test-account");
@@ -238,25 +320,33 @@ for (const theme of ["light", "dark"]) {
     expect(await page.evaluate(() => (window as BrowserVoice).voiceTest.aborts)).toBeGreaterThan(0);
     await expect(page.locator(".english-entry")).toBeVisible();
   });
-  test(`automatic speech processing pauses the deadline: ${theme}`, async ({ page }, info) => {
+  test(`local speech processing pauses the deadline: ${theme}`, async ({ page }, info) => {
     if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
     const q = await setup(page, 0, theme);
-    await page.getByRole("checkbox").check();
+    await prepare(page);
     await page.getByRole("button", { name: "Falar agora", exact: true }).click();
     await page.clock.runFor(1000);
     const before = await page.locator(".math-time").getAttribute("aria-label");
-    await page.evaluate(() => (window as BrowserVoice).voiceTest.last!.onspeechend?.());
+    await page.evaluate(() => {
+      const h = (window as BrowserVoice).voiceTest;
+      h.hold = true;
+      h.text = "test";
+    });
+    await page.getByRole("button", { name: "Terminar fala", exact: true }).click();
     await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "processing");
     await page.clock.runFor(5000);
     expect(await page.locator(".math-time").getAttribute("aria-label")).toBe(before);
-    await finish(page, q.answer);
-    await page.getByRole("button", { name: "Enviar resposta", exact: true }).click();
+    await page.evaluate((text) => {
+      const h = (window as BrowserVoice).voiceTest;
+      h.text = text;
+      h.release?.();
+    }, q.answer);
     await expect(page.locator(".math-answer-reaction.is-correct")).toBeVisible();
   });
   test(`unsupported voice uses words without penalty: ${theme}`, async ({ page }, info) => {
     if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
     const q = await setup(page, 0, theme, false);
-    await expect(page.getByRole("status")).toContainText("não oferece reconhecimento");
+    await expect(page.getByRole("status")).toContainText("não oferece gravação");
     await page.getByRole("button", { name: "Agora não posso falar", exact: true }).click();
     for (const word of q.phrase.split(" "))
       await page

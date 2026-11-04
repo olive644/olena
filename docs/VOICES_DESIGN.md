@@ -142,3 +142,11 @@ XP aparece somente na notificação RoomRewardNotice, como em Matemática, respe
 ## Fala intercalada, 03/11/2026
 
 Contrato em ENGLISH_SPEAKING.md. Nas seis partes, tarefas de ordenação a partir da faixa 1 podem ser respondidas por voz, com permissão específica e conferência da transcrição. As primeiras faixas continuam interpretação/seleção; a API adaptativa, os IDs, checkpoints e recompensas permanecem. Alternativa Agora não posso falar mantém a mesma questão com palavras. Não armazenar áudio ou texto ditado e não anunciar nota de pronúncia. Os botões, checkbox, microfone, papel e reações são os originais do app, em claro/escuro e mobile.
+
+## Fala local opcional, 03/11/2026
+
+A prática de fala usa a captura local e o worker descritos em ENGLISH_SPEAKING.md. Preservar os controles de papel, checkbox universal, HelenaLoading, sons e preferências existentes. Preparar modelo é uma ação explícita anterior à gravação; nunca ativar microfone ao terminar download. Mesma questão e alternativa de palavras nas seis partes. Não alterar personagens, artes, banco didático, regras arcade ou recompensas nesta integração.
+
+### Ajuste aprovado de interação da fala
+
+Após a solicitação de remover Enviar resposta, as palavras usam estados neutro/verde/vermelho no papel original. Verde também tem sublinhado; vermelho, sublinhado ondulado, sem depender só de cor. Captura local em AudioWorklet, parciais a cada 2 s, finalização após pausa de 1 s ou Terminar fala. Frase completa correta avança automaticamente; divergência pede repetir, sem registrar erro de conteúdo. Sem placa externa nova, sem avatar adicionado. Validar as seis partes em claro/escuro e PC/mobile.

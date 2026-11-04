@@ -4344,3 +4344,33 @@ CI41744747142: desktop e segundo shard móvel passaram, primeiro shard móvel fa
 Agenda: altura recebida43.99993896484375 para alvo44, compatível com precisão de coordenadas durante translateY de entrada. Medição agora aguarda Animation.finished dos ancestrais sem tocar no CSS, na exigência44 ou na tolerância de recorte. Reprodução isolada anterior6/6verde. Sino: teste determinístico novo mostrou que focus durante fetch pendente era descartado, deixando o resultado anterior até próxima consulta. RED em ../../pr567-refresh-red.log, correção enfileira uma atualização coalescida após a pendente, sem requisições paralelas; oito testes passaram em ../../pr567-refresh-green.log. Matriz móvel14/14 passou em ../../pr567-ci-fix-browser.log. Verify integral da correção em andamento, sem push até terminar.
 
 Validação da correção do CI concluída: npm run verify EXIT0, 399 arquivos/2576 testes, lint sem erros/27 avisos existentes, idiomas/API/tipos/formatação/build/performance verdes. Aplicação1725,2KiB de1730, entrada220,7. Log ../../pr567-ci-fix-verify.log. Matriz móvel14/14 aprovada, sem alteração dos prazos, tolerâncias ou escopo. Publicar na mesmaPR567 e exigir CI do novo commit.
+
+## Fala no Brave com modelo local, 03/11/2026
+
+Investigação reproduziu start/audiostart/audioend/network/end em cerca de 0,7 s na API nativa do Brave, com permissão e áudio sintético. Proprietário aprovou modelo local. Branch fix/english-speech-availability substitui apenas o reconhecimento opcional: MediaRecorder, PCM 16 kHz, Whisper tiny.en q8 em worker, pesos públicos em revisão fixa, runtime servido localmente. Consentimento específico antes do download aproximado de 65 MB, gravação por gesto posterior, alternativa de palavras preservada em todas as seis partes. Política 2026-11-03.1 cobre download e transcrição local.
+
+Teste real do worker no Brave reconheceu What is your name? a partir de WAV sintético. Não validado microfone físico. Testes de UI usam mocks identificados. Verificações completas e prova de captura serão acrescentadas ao término, sem declarar aprovação antecipada. Logs ../../brave-speaking-probe.log, ../../english-local-model-probe.log, ../../english-local-focused.log e ../../english-local-browser.log. Sem envio real de voz a provedor, Firebase ou Discord.
+
+### Provas adicionais do fluxo local
+
+A cadeia real no Brave também passou: captura por MediaRecorder com dispositivo de áudio sintético, decodificação a 16 kHz, inferência real e exibição de What is your name? para confirmação. Nenhum erro de página e nenhum upload ao hospedador do modelo no probe. Log ../../english-local-brave-real-ui.log, imagem ../../english-local-brave-real-capture.png. Não equivale a microfone físico.
+
+Na matriz, 38 casos passaram inicialmente e dois cenários desktop de negar/repetir ficaram esperando estabilidade do botão. O diagnóstico registrou mudança de Y de 459 para 463 sem animações ativas, hover antigo no controle depois de remover o erro e recentralizar a atividade, repetidos element is not stable até a parada automática de 12 s; o clique então atingia Gravar novamente. Mover o ponteiro para fora antes do próximo clique reproduz o gesto entre ações e corrigiu os dois cenários sem mudar produto, tempo ou expectativas. Logs ../../english-local-denial-actions.log, ../../english-local-geometry.log e ../../english-local-denial-hover.log. Instrumentação temporária removida.
+
+### Alteração de interação durante a implementação
+
+Proprietário pediu retirar o envio manual e colorir palavras durante a fala. Implementado AudioWorklet mono 16 kHz, blocos de 200 ms, prévias de transcrição a cada 2 s sem concorrência. Alinhamento textual preserva contrações/números da correção existente. Pausa de 1 s após voz encerra captura; resultado completo correto gera crédito canônico uma vez; divergência fica vermelha e pede repetir sem resultado incorreto. Não avalia pronúncia. Limites e alternativa por palavras em ENGLISH_SPEAKING.md. Prova Brave real atualizada em ../../english-live-brave-real-ui.log: quatro palavras verdes, aceite automático, botão de envio ausente, sem erro de página. Dispositivo de áudio sintético, microfone físico não verificado.
+
+Medição 1731,1 KiB de aplicação, 220,7 KiB inicial. Crescimento de 5,9 KiB sobre a base da funcionalidade, teto principal 1734 KiB sob autorização vigente para crescimento medido. Worker 866,5 KiB e runtime WASM 20,6 MiB opcionais isolados. Não alterados timeouts de CI ou regras do arcade. A verificação anterior ao ajuste passou 400 arquivos/2586 testes; a validação final será registrada separadamente.
+
+### Verificação da interação progressiva
+
+Matriz de fala: 36 cenários passaram na execução completa após fixar o botão Voltar; quatro cenários de negar/repetir/retomar passaram na repetição focada com commit do contador verificado a cada segundo. O relógio de Playwright estava pausado para conferir cores, e runFor(3000) executava o próximo efeito React apenas após encerrar o avanço, deixando o contador em 2. A prova final preserva três passos de 1 s, observando 2, 1 e a mesma pergunta. Nenhum prazo de produto/teste ampliado. Logs ../../english-live-browser-final.log e ../../english-live-resume-browser.log. Total de 40 cenários atuais em Edge/Chromium, PC e 320x568, claro/escuro, sem skips.
+
+46 testes focados passaram cobrindo recursos locais, autorização, silêncio, término automático, inferência tardia, prefixo verde, troca de palavras e cache do modelo. Log ../../english-live-focused-final.log. Verificação integral final em ../../english-live-release-verify.log, resultado a registrar após conclusão. Captura real no Brave e microfone sintético permanecem identificados separadamente, sem alegar precisão fonética ou teste físico.
+
+### Verificação integral final, 04/11/2026
+
+npm run verify terminou com exit 0: 401 arquivos e 2592 testes, lint sem erros e 27 avisos existentes, formatação, API, idiomas, tipos, build e desempenho aprovados. Aplicação 1731,1 KiB dentro de 1734 KiB; entrada 220,7 KiB; worker opcional 866,5 KiB e runtime WASM 20,6 MiB. Log ../../english-live-release-verify.log. Nenhuma instalação de WebKit, alteração de painel ou envio de voz a serviço remoto. Fluxo final testado no Brave com áudio sintético em ../../english-live-brave-real-ui.log; microfone físico e precisão fonética não verificados.
+
+Regressões finais do curso: 36 E2E Edge/Chromium em PC/mobile e claro/escuro passaram, sem skips, cobrindo seis partes, progressão adaptativa, corações, resultados, poeira/XP, retomada e confirmações. Log ../../english-live-regression-browser.log. Somados aos 40 cenários de fala atuais, são 76 cenários de navegador aprovados. Sem execução de OAuth/Firebase reais.

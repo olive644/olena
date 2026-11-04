@@ -144,3 +144,7 @@ Contrato atual da primeira parte em [ENGLISH_A1.md](ENGLISH_A1.md): seis assunto
 ## Prática de fala opcional, 03/11/2026
 
 ENGLISH_SPEAKING.md substitui a descrição histórica de ausência de microfone: há captura opcional pelo serviço do navegador, após consentimento separado. Os servidores do Olena não recebem áudio/transcrição. A alternativa com palavras conserva a mesma tarefa, progresso e recompensas; a seleção adaptativa existente continua responsável pela dificuldade. Sem API paga, modelo baixado ou regra Firebase adicional.
+
+## Reconhecimento local, 03/11/2026
+
+A implementação de fala opcional passou do serviço nativo do navegador para Whisper no aparelho, pois o Brave encerrou a API nativa com network apesar da permissão. ENGLISH_SPEAKING.md registra modelo/revisão, consentimento, cache, CSP, limites e provas. Gravação/transcrição somente em memória; progresso continua registrando resultado canônico ou rótulo neutro. Nenhuma regra Firebase, serviço pago ou painel externo novo.
