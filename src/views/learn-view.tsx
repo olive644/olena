@@ -95,6 +95,11 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
   );
   const [selection, setSelection] = useState(() => {
     try {
+      if (sessionStorage.getItem("olena:enter-english") === "1")
+        return {
+          index: PRACTICE_ISLANDS.findIndex((island) => island.id === "english"),
+          preference,
+        };
       const entry = sessionStorage.getItem("olena:enter-mathematics");
       if (entry === "1" || isMathCourse(entry)) return { index: 4, preference };
     } catch {
@@ -123,9 +128,17 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
       return undefined;
     }
   });
-  const [insideWorld, setInsideWorld] = useState(Boolean(entryCourse));
+  const [entryEnglish] = useState(() => {
+    try {
+      return sessionStorage.getItem("olena:enter-english") === "1";
+    } catch {
+      return false;
+    }
+  });
+  const [insideWorld, setInsideWorld] = useState(Boolean(entryCourse) || entryEnglish);
   useEffect(() => {
     try {
+      sessionStorage.removeItem("olena:enter-english");
       sessionStorage.removeItem("olena:enter-mathematics");
     } catch {
       /* Sem armazenamento, manter o hub normal. */

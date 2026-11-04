@@ -4429,3 +4429,11 @@ Pedido da proprietária, com capturas do celular: moldura dos avatares na lista 
 - Botão de segurar: causa e correção em `ENGLISH_SPEAKING.md`.
 - Provas: e2e `profile-connections-layout` agora usa o retrato com moldura e exige moldura centrada e 1,24 vezes o avatar, e nota oculta no celular e visível no PC (falha no celular sem a correção); e2e novo de toque real com microfone lento (falha sem a correção); teste unitário de botão habilitado na abertura (falha sem a correção). e2e de fala 52 de 52.
 - Limites: não verificado em celular real.
+
+## Espaço do aluno: ilha de destino segue a última prática, 04/11/2026
+
+Pedido da proprietária, com captura: a última ilha foi o Cais das Boas-vindas e o Espaço do aluno ainda mostrava Matemática.
+
+- O atalho de ilha do Espaço (`student-destinations.tsx`) só considerava Matemática. Agora considera a última prática com respostas entre os cursos de Matemática e o Inglês (`islandId` "english"), e mostra a arte do cenário da parte praticada (`/languages/english-parts/*.webp`, parte 0 = Cais das Boas-vindas). Tocar abre direto o Cais dos Encontros, nos cenários de Inglês, por `sessionStorage` `olena:enter-english` (lido e removido em `learn-view.tsx`, como já ocorria com Matemática).
+- Provas: 2 testes unitários novos (Inglês mais recente abre o Inglês; Matemática mais recente volta à Matemática) e e2e `student-space-last-island` em PC e celular, claro e escuro, com captura do atalho conferida nos dois temas no celular.
+- Limites: o destaque grande do topo ("A próxima descoberta é sua", Oliver, ofensiva e "Explorar Matemática") continua de Matemática porque a ofensiva é de Matemática e não há arte equivalente de Inglês; decisão de produto pendente. A ilha segue a última prática registrada (com respostas), não a mera entrada na tela da ilha.
