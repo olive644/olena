@@ -138,3 +138,7 @@ O resultado usa ArcadeResults, o mesmo componente de Matemática: avatar, pontos
 Frases da revisão usam papel amarelo com dobra, facetas e base, tinta grafite em ambos os temas. Não usar o bloco retangular translúcido com borda lateral. Foco em títulos segue o contrato global de DESIGN_SYSTEM.md.
 
 XP aparece somente na notificação RoomRewardNotice, como em Matemática, respeitando a preferência de avisos de recompensas. Inglês usa apresentação de XP já liquidado pelos recibos individuais, sem conceder novamente nem mostrar uma linha de XP na tela de resultado. A notificação fica adiada durante a revisão dos erros.
+
+## Fala intercalada, 03/11/2026
+
+Contrato em ENGLISH_SPEAKING.md. Nas seis partes, tarefas de ordenação a partir da faixa 1 podem ser respondidas por voz, com permissão específica e conferência da transcrição. As primeiras faixas continuam interpretação/seleção; a API adaptativa, os IDs, checkpoints e recompensas permanecem. Alternativa Agora não posso falar mantém a mesma questão com palavras. Não armazenar áudio ou texto ditado e não anunciar nota de pronúncia. Os botões, checkbox, microfone, papel e reações são os originais do app, em claro/escuro e mobile.

@@ -80,10 +80,18 @@ describe("página da Política de Privacidade", () => {
     }
   });
 
-  it("explica o envio de arquivos sem microfone e o prazo do áudio da sala", () => {
-    expect(text).toContain("Não pedimos localização nem acesso ao microfone");
+  it("explica microfone opcional com autorização separada e preserva o prazo do áudio da sala", () => {
+    expect(text).toContain("Não pedimos localização");
+    expect(text).toContain("microfone só é ativado após autorização específica e ação sua");
+    expect(text).toContain(
+      "Você pode usar palavras com a mesma progressão, sem autorizar o microfone",
+    );
+    expect(text).toContain("não são enviados para a nuvem do Olena");
+    expect(text).toContain(
+      "A disponibilidade, o processamento e a retenção seguem as condições desse provedor",
+    );
     expect(text).toContain("por até 4 horas após a criação da sala");
-    expect(text).not.toContain("microfone só é solicitado");
+    expect(text).not.toContain("Não pedimos localização nem acesso ao microfone");
   });
 
   it("fala em linguagem simples: sem nomes de fornecedores nem termos técnicos", () => {

@@ -72,6 +72,8 @@ async function answer(page: Page, correct = true) {
   const q = englishQuestion(course, 0, id);
   if (q.kind === "reply" || q.kind === "gap")
     await expect(page.locator(".english-reply-intent")).toHaveCSS("color", "rgb(255, 249, 239)");
+  if (await page.locator(".english-speaking").count())
+    await page.getByRole("button", { name: "Agora não posso falar", exact: true }).click();
   if (q.kind === "order") {
     const words = q.phrase.split(" ");
     const order = correct ? words : [...words].reverse();

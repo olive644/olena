@@ -29,6 +29,11 @@ function PrivacyRenewal({ onClose }: { onClose(): void }) {
         )}
       </p>
       <p>{uiText("Sua conta continua conectada. A presença só começa após sua confirmação.")}</p>
+      <p>
+        {uiText(
+          "A prática de fala de Inglês é opcional e pede autorização separada para usar o microfone e o reconhecimento do navegador.",
+        )}
+      </p>
       <a
         className="secondary-button"
         href={PRIVACY_POLICY_PATH}
