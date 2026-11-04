@@ -1,4 +1,5 @@
 import { env, pipeline } from "@huggingface/transformers";
+import { VOICE_MODEL, VOICE_REVISION } from "./english-asr-model";
 
 env.allowLocalModels = false;
 env.useBrowserCache = true;
@@ -7,8 +8,8 @@ if (env.backends.onnx.wasm) {
   env.backends.onnx.wasm.proxy = false;
   env.backends.onnx.wasm.wasmPaths = "/speech-runtime/";
 }
-const MODEL = "onnx-community/whisper-tiny.en";
-const REVISION = "2575352d61be1bf7225cf8f8b268a4678025fc58";
+const MODEL = VOICE_MODEL;
+const REVISION = VOICE_REVISION;
 let transcriber: Awaited<ReturnType<typeof load>> | undefined;
 function load() {
   return pipeline("automatic-speech-recognition", MODEL, {

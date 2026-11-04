@@ -4,6 +4,12 @@ import type { LocalEnglishSpeech } from "../data/english-local-speech";
 import { speakingWords, speechAccepted } from "../data/english-speaking-words";
 import { HelenaLoading } from "./helena-loading";
 import { PRIVACY_POLICY_PATH } from "../domain/privacy-policy";
+import {
+  keepVoiceStorage,
+  setVoicePrepared,
+  voiceModelCached,
+  voiceRemembered,
+} from "../data/english-voice-memory";
 type Phase =
   "setup" | "downloading" | "requesting" | "listening" | "processing" | "ready" | "retry" | "error";
 export function EnglishSpeakingInput({
@@ -30,12 +36,16 @@ export function EnglishSpeakingInput({
   expected: string;
 }) {
   useLanguage();
-  const [phase, setPhase] = useState<Phase>("setup");
+  const [phase, setPhase] = useState<Phase>(() =>
+    !speech.ready && voiceRemembered() ? "downloading" : "setup",
+  );
   const [accepted, setAccepted] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [error, setError] = useState("");
   const [progress, setProgress] = useState(0);
   const [loaded, setLoaded] = useState(speech.ready);
+  // Já preparada neste aparelho: o modelo está no cache, então não pedimos o download de novo.
+  const [remembered, setRemembered] = useState(() => !speech.ready && voiceRemembered());
   const [supported] = useState(
     () =>
       window.isSecureContext &&
@@ -76,6 +86,29 @@ export function EnglishSpeakingInput({
   useEffect(() => {
     if (disabled) cancel();
   }, [disabled, cancel]);
+  useEffect(() => {
+    if (!remembered || speech.ready || !supported) return;
+    const id = ++generation.current;
+    void (async () => {
+      try {
+        // Sem rede: só prossegue se os arquivos ainda estiverem no cache do navegador.
+        if (!(await voiceModelCached())) throw new Error("not-cached");
+        await speech.load();
+        if (id !== generation.current) return;
+        setLoaded(true);
+        setPhase("setup");
+        void keepVoiceStorage();
+      } catch {
+        if (id !== generation.current) return;
+        // O navegador apagou o modelo: volta ao fluxo normal, com a autorização e o download.
+        setVoicePrepared(false);
+        speech.cancel();
+        setRemembered(false);
+        setLoaded(false);
+        setPhase("setup");
+      }
+    })();
+  }, [remembered, speech, supported]);
   async function download() {
     if (disabled || (!allowed && !accepted)) return;
     const id = ++generation.current;
@@ -86,6 +119,8 @@ export function EnglishSpeakingInput({
     try {
       await speech.load();
       if (id !== generation.current) return;
+      setVoicePrepared(true);
+      void keepVoiceStorage();
       setLoaded(true);
       setPhase("setup");
     } catch {
@@ -216,16 +251,20 @@ export function EnglishSpeakingInput({
                 onChange={(e) => setAccepted(e.target.checked)}
               />
               <span>
-                {uiText(
-                  "Autorizo baixar o modelo de voz e usar o microfone. Minha fala será transcrita neste aparelho, sem envio do áudio.",
-                )}{" "}
+                {remembered || loaded
+                  ? uiText(
+                      "Autorizo usar o microfone. Minha fala será transcrita neste aparelho, sem envio do áudio.",
+                    )
+                  : uiText(
+                      "Autorizo baixar o modelo de voz e usar o microfone. Minha fala será transcrita neste aparelho, sem envio do áudio.",
+                    )}{" "}
                 <a href={PRIVACY_POLICY_PATH} target="_blank" rel="noopener noreferrer">
                   {uiText(825)}
                 </a>
               </span>
             </label>
           )}
-          {!loaded && (
+          {!loaded && !remembered && (
             <p>
               {uiText(
                 "Baixe o modelo gratuito uma vez, cerca de 65 MB. O navegador pode guardar os arquivos para as próximas práticas.",
@@ -234,7 +273,9 @@ export function EnglishSpeakingInput({
           )}
           <p className="english-speaking-status" role="status">
             {phase === "downloading"
-              ? uiText("Baixando arquivo do modelo: {0}%", [progress])
+              ? remembered
+                ? uiText("Preparando a voz neste aparelho…")
+                : uiText("Baixando arquivo do modelo: {0}%", [progress])
               : phase === "listening"
                 ? uiText("Pode falar. Toque para terminar.")
                 : phase === "processing"
@@ -288,7 +329,7 @@ export function EnglishSpeakingInput({
                 disabled={disabled || busy || (!allowed && !accepted)}
                 onClick={() => void download()}
               >
-                {uiText("Preparar voz no aparelho")}
+                {remembered ? uiText("Preparando a voz…") : uiText("Preparar voz no aparelho")}
               </button>
             ) : (
               <button

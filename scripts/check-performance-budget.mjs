@@ -353,10 +353,11 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // do proprietário para crescimento medido de funcionalidades; teto anterior 1730 KiB.
 // Fala local progressiva: medidos 1731,1 KiB, entrada 220,7 KiB.
 // Crescimento de 5,9 KiB sobre a base, dentro da autorização vigente; teto 1734 KiB.
-const MAX_TOTAL_JS_BYTES = 1734 * 1024;
+// Voz lembrada no aparelho: medidos 1734,2 KiB (+1,2 KiB), entrada 220,7 KiB inalterada; teto 1735 KiB.
+const MAX_TOTAL_JS_BYTES = 1735 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
-const HARD_CEILING_TOTAL_JS_BYTES = 1734 * 1024;
+const HARD_CEILING_TOTAL_JS_BYTES = 1735 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 // Cena do caderno 3D (three.js e o código da cena): medida em 528.8 KiB, mais a tela e os sons. É baixada somente quando
 // a pessoa abre um caderno com o recurso ligado e vale o mesmo precedente do leitor PDF: orçamento

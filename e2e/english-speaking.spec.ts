@@ -5,6 +5,7 @@ import { createInitialWorkspace, type PracticeActivity } from "../src/domain/wor
 import { isWorkspaceState } from "../src/data/local-workspace";
 import { englishQuestion, type EnglishCourse } from "../src/data/english-journey";
 import { isSpeakingQuestion } from "../src/data/english-speaking";
+import { VOICE_FILES, VOICE_MODEL, VOICE_REVISION } from "../src/data/english-asr-model";
 const course = JSON.parse(
   readFileSync("public/languages/en/english-v4.json", "utf8"),
 ) as EnglishCourse;
@@ -306,6 +307,43 @@ for (const theme of ["light", "dark"]) {
     await expect(page.locator(".english-speaking")).toHaveCount(0);
     await expect(page.locator(".english-word-bank")).toBeVisible();
     await expect(page.locator(".math-hearts")).toHaveAttribute("aria-label", /3/);
+  });
+  test(`a voice already prepared on this device does not ask for the download again: ${theme}`, async ({
+    page,
+  }, info) => {
+    if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
+    const q = await setup(page, 0, theme);
+    await prepare(page);
+    // O navegador guardou os pesos do modelo no cache; o worker de teste não baixa nada de verdade.
+    await page.evaluate(
+      async ({ model, revision, files }) => {
+        const cache = await caches.open("transformers-cache");
+        for (const file of files)
+          await cache.put(
+            `https://huggingface.co/${model}/resolve/${revision}/onnx/${file}`,
+            new Response("peso"),
+          );
+      },
+      { model: VOICE_MODEL, revision: VOICE_REVISION, files: [...VOICE_FILES] },
+    );
+    await page.keyboard.press("Escape");
+    await page.getByRole("button", { name: "Sair da rodada", exact: true }).click();
+    await page
+      .locator(".english-island-interior")
+      .getByRole("button", { name: "Praticar", exact: true })
+      .click();
+    await expect(page.locator(".math-countdown")).toBeVisible();
+    for (const remaining of [2, 1]) {
+      await page.clock.runFor(1000);
+      await expect(page.locator(".math-countdown .paper-digits")).toHaveText(String(remaining));
+    }
+    await page.clock.runFor(1000);
+    await expect(page.locator(".english-lesson")).toHaveAttribute("data-question-id", String(q.id));
+    await expect(page.getByRole("button", { name: "Falar agora", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Preparar voz no aparelho", exact: true }),
+    ).toHaveCount(0);
+    await expect(page.locator(".english-speaking")).not.toContainText("Baixe o modelo gratuito");
   });
   test(`speech aborts on account change: ${theme}`, async ({ page }, info) => {
     if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
