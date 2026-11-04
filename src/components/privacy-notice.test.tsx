@@ -110,3 +110,27 @@ it("falha de gravação mantém o aviso e não anuncia novo aceite", () => {
   spy.mockRestore();
   window.removeEventListener("olena:privacy-consent-changed", events);
 });
+
+it("keeps the explicit acceptance after remount without showing the summary again", () => {
+  localStorage.setItem("helena.account.v1", "same-user");
+  const view = render(<PrivacyNotice authenticated />);
+  fireEvent.click(screen.getByRole("checkbox"));
+  fireEvent.click(screen.getByRole("button", { name: "Confirmar aceite" }));
+  expect(localStorage.getItem(PRIVACY_NOTICE_KEY)).toBe(PRIVACY_POLICY_VERSION);
+  view.unmount();
+  render(<PrivacyNotice authenticated />);
+  expect(screen.queryByRole("dialog")).toBeNull();
+  expect(screen.queryByRole("region")).toBeNull();
+});
+
+it("closes renewal when the same policy is accepted in another tab", () => {
+  render(<PrivacyNotice authenticated />);
+  expect(screen.getByRole("dialog")).toBeTruthy();
+  localStorage.setItem(
+    PRIVACY_CONSENT_ITEM,
+    JSON.stringify({ version: PRIVACY_POLICY_VERSION, acceptedAt: new Date().toISOString() }),
+  );
+  fireEvent(window, new StorageEvent("storage", { key: PRIVACY_CONSENT_ITEM }));
+  expect(screen.queryByRole("dialog")).toBeNull();
+  expect(screen.queryByRole("region")).toBeNull();
+});

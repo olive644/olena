@@ -28,7 +28,20 @@ export function writeAccessPreferences(
   change: Partial<Pick<AccessPreferences, "consent" | "resetSentAt">>,
 ) {
   try {
-    storage.setItem(ITEM, JSON.stringify({ ...readAccessPreferences(storage, uid), ...change }));
+    let raw: unknown = null;
+    try {
+      raw = JSON.parse(storage.getItem(ITEM) ?? "null");
+    } catch {
+      /* Um cache ilegível não impede registrar uma nova escolha explícita. */
+    }
+    const privacy =
+      raw && typeof raw === "object" && "uid" in raw && raw.uid === uid && "privacyConsent" in raw
+        ? { privacyConsent: raw.privacyConsent }
+        : {};
+    storage.setItem(
+      ITEM,
+      JSON.stringify({ ...readAccessPreferences(storage, uid), ...privacy, ...change }),
+    );
   } catch {
     /* O consentimento desta tela ainda vale sem cache. */
   }

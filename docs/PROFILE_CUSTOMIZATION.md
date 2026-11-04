@@ -46,3 +46,9 @@ Fontes verificadas: https://github.com/discord/discord-api-docs/blob/main/develo
 Desligar DISCORD_ONLINE_COUNT_ENABLED interrompe a coleta no próximo carregamento. Remover o agendamento e limpar privateOnlinePresence pela operação da responsável. Preservar helena.profile.v1: campos novos são aditivos. Um rollback visual pode ignorar frame/background sem apagar o perfil ou o progresso.
 
 Toda alteração visual exige PC e celular, claro e escuro, teclado, toque, ausência de overflow, estados bloqueados e persistência. Registrar resultados e limitações em CURRENT_STATE_AUDIT.md. Artes são SVGs originais construídos para o aplicativo, não capturas de tela nem alterações dos personagens aprovados.
+
+## Lista de amigos e nível na inspeção, 04/11/2026
+
+Retirado o aviso de contatos indisponíveis da lista de amigos. Busca e compartilhamento continuam disponíveis; o seletor sem suporte continua desabilitado. Voltar na lista usa somente a seta original, sem placa ou texto visível, preservando nome acessível e área de toque de 44 pixels.
+
+Na inspeção, o selo de nível fica acima da moldura do avatar. Prova de layout usa o selo real do app dentro de uma fixture de inspeção, nos dois temas e em desktop/mobile; não representa uma visita autenticada real.

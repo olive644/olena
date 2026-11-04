@@ -181,6 +181,9 @@ it("abre seguidores, visita e confirma a remoção antes de alterar a conexão",
   );
   render(<SocialDirectory initialList="followers" nameFallback="Alice" onClose={vi.fn()} />);
   await screen.findByRole("button", { name: "Visitar perfil de @bob" });
+  const back = screen.getByRole("button", { name: /^Voltar$/ });
+  expect(back.textContent?.trim()).toBe("");
+  expect(back.classList.contains("social-visit-back")).toBe(true);
   const person = screen.getByRole("button", { name: "Visitar perfil de @bob" });
   const identity = person.querySelector("span")!;
   expect(identity.querySelector("strong")?.title).toBe("Bob");
@@ -318,4 +321,15 @@ it("inspeção não inventa destaques quando a pessoa não escolheu nenhum", asy
   render(<SocialDirectory initialUsername="bob" nameFallback="Alice" onClose={vi.fn()} />);
   await screen.findAllByRole("heading", { name: "Bob" });
   expect(document.querySelectorAll(".social-profile .achievement-tile")).toHaveLength(0);
+});
+
+it("does not show the unsupported contacts notice", async () => {
+  mocks.request.mockResolvedValue(feed);
+  render(<SocialDirectory nameFallback="Alice" onClose={vi.fn()} />);
+  await screen.findByRole("dialog");
+  expect(
+    screen.queryByText(
+      "Este navegador não oferece seleção de contatos. Use a busca ou compartilhe seu perfil.",
+    ),
+  ).toBeNull();
 });

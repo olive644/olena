@@ -25,6 +25,13 @@ export class LocalEnglishSpeech {
   private context: AudioContext | undefined;
   ready = false;
   private onProgress: (percent: number) => void = () => undefined;
+  private onTranscript: (text: string) => void = () => undefined;
+  subscribeTranscript(listener: (text: string) => void) {
+    this.onTranscript = listener;
+    return () => {
+      this.onTranscript = () => undefined;
+    };
+  }
   subscribeProgress(listener: (percent: number) => void) {
     this.onProgress = listener;
     return () => {
@@ -59,6 +66,11 @@ export class LocalEnglishSpeech {
         }
         const pending = this.pending;
         if (!pending || pending.id !== event.data.id) return;
+        if (event.data.type === "partial") {
+          const text = (event.data.text ?? "").trim().slice(0, 500);
+          if (text) this.onTranscript(text);
+          return;
+        }
         clearTimeout(pending.timer);
         this.pending = undefined;
         if (event.data.type === "error") pending.reject(new Error("local-model"));
@@ -83,7 +95,12 @@ export class LocalEnglishSpeech {
     if (!this.ready || this.stream || this.context) throw new Error("not-ready");
     const id = ++this.captureId;
     const stream = await navigator.mediaDevices.getUserMedia({
-      audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true },
+      audio: {
+        channelCount: 1,
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      },
       video: false,
     });
     if (id !== this.captureId) {
@@ -121,7 +138,7 @@ export class LocalEnglishSpeech {
           this.voiced = true;
           this.silence = 0;
         } else this.silence += pcm.length;
-        if (this.voiced && this.silence >= 16000 && !this.ended) {
+        if (this.voiced && this.silence >= 22400 && !this.ended) {
           this.ended = true;
           this.onSilence();
         }

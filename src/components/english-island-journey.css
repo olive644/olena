@@ -1253,3 +1253,40 @@ html[data-reduce-motion="true"] .english-journey * {
 .english-island-interior.is-practicing > .math-world-back {
   position: fixed;
 }
+
+@keyframes english-word-correct {
+  0% {
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+  45% {
+    transform: translateY(-3px) scale(1.05);
+    filter: brightness(1.15);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+}
+@keyframes english-word-retry {
+  25% {
+    transform: translateX(-3px) rotate(-2deg);
+  }
+  75% {
+    transform: translateX(3px) rotate(2deg);
+  }
+}
+.english-speaking-words .is-correct {
+  animation: english-word-correct 320ms ease-out;
+}
+.english-speaking-words .is-retry {
+  animation: english-word-retry 240ms ease-out;
+}
+:root[data-reduce-motion="true"] .english-speaking-words span {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .english-speaking-words span {
+    animation: none;
+  }
+}

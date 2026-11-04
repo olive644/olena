@@ -1,3 +1,4 @@
+import { claimDeviceForAccount, clearPersonalData } from "../data/personal-data";
 import { describe, expect, it } from "vitest";
 import {
   PRIVACY_CONSENT_ITEM,
@@ -53,5 +54,37 @@ describe("registro do aceite da política", () => {
 
   it("usa uma chave que é apagada junto com os dados pessoais ao sair da conta", () => {
     expect(PRIVACY_CONSENT_ITEM.startsWith("helena")).toBe(true);
+  });
+});
+
+it("preserves an explicit policy acceptance for the same UID after logout, without sharing it", () => {
+  localStorage.setItem("helena.account.v1", "ana");
+  recordPrivacyConsent(localStorage);
+  clearPersonalData(localStorage, ["helena.accountAccess.v1"]);
+  claimDeviceForAccount(localStorage, "ana");
+  expect(readPrivacyConsent(localStorage)?.version).toBe(PRIVACY_POLICY_VERSION);
+  claimDeviceForAccount(localStorage, "bia");
+  expect(readPrivacyConsent(localStorage)).toBeNull();
+});
+
+it("retains the explicit login acceptance recorded before the UID is claimed", () => {
+  recordPrivacyConsent(localStorage);
+  claimDeviceForAccount(localStorage, "login-user");
+  clearPersonalData(localStorage, ["helena.accountAccess.v1"]);
+  claimDeviceForAccount(localStorage, "login-user");
+  expect(readPrivacyConsent(localStorage)?.version).toBe(PRIVACY_POLICY_VERSION);
+});
+
+it("does not upgrade an old policy while assigning its account", () => {
+  localStorage.setItem(
+    PRIVACY_CONSENT_ITEM,
+    JSON.stringify({ version: "old-policy", acceptedAt: "2025-01-01" }),
+  );
+  claimDeviceForAccount(localStorage, "login-user");
+  clearPersonalData(localStorage, ["helena.accountAccess.v1"]);
+  claimDeviceForAccount(localStorage, "login-user");
+  expect(readPrivacyConsent(localStorage)).toEqual({
+    version: "old-policy",
+    acceptedAt: "2025-01-01",
   });
 });

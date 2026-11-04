@@ -64,7 +64,7 @@ it("requires consent and download then accepts a matching sentence automatically
   expect(speech.start).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
   await screen.findByRole("button", { name: "Terminar fala" });
-  expect(pause).toHaveBeenLastCalledWith(false);
+  await waitFor(() => expect(pause).toHaveBeenLastCalledWith(false));
   fireEvent.click(screen.getByRole("button", { name: "Terminar fala" }));
   await waitFor(() => expect(answer).toHaveBeenCalled());
   expect(screen.queryByRole("button", { name: "Enviar resposta" })).toBeNull();
@@ -256,7 +256,7 @@ it("goes back to the consent and download when the browser erased the model", as
   await screen.findByRole("button", { name: "Preparar voz no aparelho" });
   expect(speech.load).not.toHaveBeenCalled();
   expect(localStorage.getItem(REMEMBERED)).toBeNull();
-  expect(screen.getByText(/Baixe o modelo gratuito/)).toBeTruthy();
+  expect(screen.queryByText(/Baixe o modelo gratuito/)).toBeNull();
   expect(screen.getByRole("checkbox").closest("label")?.textContent).toContain("baixar o modelo");
 });
 it("ignores a marker from another model revision", async () => {
@@ -264,5 +264,55 @@ it("ignores a marker from another model revision", async () => {
   cacheWith(VOICE_FILES);
   mount();
   expect(screen.getByRole("button", { name: "Preparar voz no aparelho" })).toBeTruthy();
+  expect(speech.load).not.toHaveBeenCalled();
+});
+
+it("shows streamed words during inference without accepting a provisional sentence", async () => {
+  let streamed: ((text: string) => void) | undefined;
+  vi.spyOn(speech, "subscribeTranscript").mockImplementation((listener) => {
+    streamed = listener;
+    return () => undefined;
+  });
+  let finish: ((text: string) => void) | undefined;
+  vi.mocked(speech.finish).mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  );
+  const view = mount();
+  await prepare();
+  fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
+  await screen.findByRole("button", { name: "Terminar fala" });
+  await act(async () => streamed!("What is"));
+  await act(async () => streamed!("What"));
+  expect(view.container.querySelectorAll('[data-word-state="correct"]')).toHaveLength(2);
+  expect(answer).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("button", { name: "Terminar fala" }));
+  await act(async () => streamed!("What is your name?"));
+  expect(answer).not.toHaveBeenCalled();
+  await act(async () => finish!("What is your name?"));
+  expect(answer).toHaveBeenCalledExactlyOnceWith("What is your name?");
+});
+
+it("reuses the permission granted at round start without asking for a second checkbox", async () => {
+  speech.ready = true;
+  render(
+    <EnglishSpeakingInput
+      speech={speech}
+      expected="What is your name?"
+      microphoneGranted
+      allowed={false}
+      disabled={false}
+      onAllow={allow}
+      onPause={pause}
+      onAnswer={answer}
+      onAlternative={alternative}
+      onSound={() => undefined}
+    />,
+  );
+  expect(screen.queryByRole("checkbox")).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
+  await screen.findByRole("button", { name: "Terminar fala" });
   expect(speech.load).not.toHaveBeenCalled();
 });

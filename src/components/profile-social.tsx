@@ -507,7 +507,6 @@ export function SocialDirectory({
                   {uiText(903)}
                 </button>
               </nav>
-              {!contacts && <p className="social-support-note">{uiText(935)}</p>}
               {contacts && <p className="social-support-note">{uiText(936)}</p>}
               <form
                 onSubmit={(event) => {
@@ -539,14 +538,14 @@ export function SocialDirectory({
             <section className="social-connections" aria-label={uiText(941)}>
               <button
                 type="button"
-                className="secondary-button"
+                className="social-visit-back"
+                aria-label={uiText(374)}
                 onClick={() => {
                   setList(undefined);
                   void load(list.owner === feed.self.username ? undefined : list.owner);
                 }}
               >
                 <PaperArrow back />
-                {uiText(374)}
               </button>
               <nav aria-label={uiText(942)}>
                 {(["following", "followers"] as const).map((kind) => (

@@ -108,3 +108,17 @@ Fluxo atual:
 - Após preparar, o Olena pede `navigator.storage.persist()` para reduzir a chance de o navegador apagar o modelo. É melhor esforço: o navegador pode negar.
 
 Limites: a conferência do cache cobre só os dois pesos grandes; arquivos pequenos de configuração poderiam, em tese, ser baixados de novo se apenas eles fossem apagados (não verificado). Não foi testado em celular físico.
+
+## Transcrição progressiva e permissão no início, 04/11/2026
+
+A partida pede a permissão do microfone no gesto de iniciar, antes da contagem de três segundos. A consulta encerra imediatamente as trilhas, sem gravar; negativa ou ausência de suporte mantém a alternativa por palavras. A resposta tardia após cancelamento não inicia outra conta. O preparo e download do modelo continuam exigindo consentimento próprio. Quando o modelo já está preparado e a permissão foi concedida no início, não repetir o checkbox de microfone na questão.
+
+O worker usa WhisperTextStreamer do Transformers.js 3.8.1 para emitir palavras durante a decodificação. O cliente aceita mensagens parciais apenas para a requisição ativa, sem encerrar sua promessa ou creditar resposta. As prévias do áudio acumulado continuam a cada dois segundos, sem inferências paralelas. Uma prévia curta de uma nova decodificação não apaga palavras já exibidas; o resultado final pode corrigir o texto. Somente esse resultado final confirma a resposta uma vez. Isso é transcrição incremental local, com latência de captura e inferência, não avaliação fonética instantânea.
+
+A detecção de silêncio passa de 1 para 1,4 segundo para tolerar pausas curtas. O limite de captura permanece em 12 segundos e as regras do relógio e dos corações não mudam. O preparo de áudio preserva uma palavra inicial baixa antes de um trecho mais forte: regressão determinística reproduziu o corte anterior e validou a redução do limiar relativo, mantendo o piso de ruído. A captura solicita também controle automático de ganho do navegador.
+
+As palavras usam pulso verde ou movimento curto vermelho, com som de nova tentativa respeitando as preferências existentes. Movimento reduzido desliga os efeitos. Os parágrafos técnicos sobre tamanho do download e sotaque foram retirados da atividade, mantendo consentimento, política e estados de erro.
+
+Pesquisa e prova: documentação oficial do [Transformers.js](https://huggingface.co/docs/transformers.js/v3.8.1/en/api/pipelines), exemplo de [stream do whisper.cpp](https://github.com/ggml-org/whisper.cpp/tree/master/examples/stream) e código do WhisperTextStreamer instalado. Em quatro frases sintéticas Microsoft Zira, tiny.en e base.en reconheceram quatro de quatro; tiny levou cerca de 2,6 a 3,4 segundos e base 5,0 a 5,4 segundos. Mantido tiny.en, sem nova dependência ou API paga. A API adaptativa do Olena não é transcritor de áudio.
+
+Brave real, worker e pesos reais produziram What, What is, What is your e What is your name?, seguidos pelo resultado final. Log speech-stream-real-probe.log. Prova com WAV sintético, sem microfone físico, sotaque real ou garantia de qualidade equivalente ao Duolingo. A comparação de quatro frases não substitui o corpus anterior de 576 gravações.
