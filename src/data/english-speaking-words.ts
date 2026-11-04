@@ -28,6 +28,8 @@ function editDistance(a: string, b: string) {
   return row[b.length]!;
 }
 export function nearSpokenWord(expected: string, heard: string) {
+  // O "a" átono (/ə/) é muito ouvido como "of" (two pounds a kilo / of kilo) e vice-versa.
+  if ((expected === "a" && heard === "of") || (expected === "of" && heard === "a")) return true;
   if (expected === heard || expected.length < 4 || heard.length < 4) return false;
   if (PROTECTED.has(expected) || PROTECTED.has(heard) || /\d/.test(expected + heard)) return false;
   return expected[0] === heard[0] && editDistance(expected, heard) === 1;

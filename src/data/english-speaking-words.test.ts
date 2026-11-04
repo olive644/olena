@@ -76,3 +76,11 @@ it("ignores recognizer annotations and the invented thank-you at the edges", () 
   expect(accepted("What is your name?", "Thank you.")).toBe(false);
   expect(accepted("What is your name?", "")).toBe(false);
 });
+it("treats the unstressed article a and of as the one allowed short-word confusion", () => {
+  expect(
+    accepted("These tomatoes are 2 pounds a kilo.", "These tomatoes are 2 pounds of kilo"),
+  ).toBe(true);
+  expect(accepted("It is a book.", "It is of book")).toBe(true);
+  expect(accepted("It is a book.", "It is the book")).toBe(false);
+  expect(accepted("I have a car.", "I have of cars here")).toBe(false);
+});
