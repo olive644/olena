@@ -4419,3 +4419,11 @@ Pedido da proprietária: transcrição ainda ruim e sem acompanhar a fala; remov
 - Mudança: botão do microfone grava ao segurar e termina ao soltar, com modo de toque curto e teclado preservados; detalhes e limites em `ENGLISH_SPEAKING.md`. Textos novos nos dois catálogos. Empilhada sobre a PR 573 (microfone uma vez e prévia ao vivo).
 - Provas: 5 testes unitários novos (segurar e soltar, toque curto, pausa durante a fala segurada, soltar durante a abertura, teclado e clique de ponteiro) e e2e novo em PC e celular 320 px, claro e escuro. e2e de fala 48 de 48. Os ajustes nos testes antigos vieram da prévia contínua: o mock segura todas as transcrições em espera e um cenário no celular congela o relógio antes do toque, porque o cursor parado sobre o botão alterna o hover quando a frase muda de altura.
 - Limites: sem celular real; gesto de segurar só provado com mouse e eventos sintéticos.
+
+## Espaço do aluno: ilha de destino segue a última prática, 04/11/2026
+
+Pedido da proprietária, com captura: a última ilha foi o Cais das Boas-vindas e o Espaço do aluno ainda mostrava Matemática.
+
+- O atalho de ilha do Espaço (`student-destinations.tsx`) só considerava Matemática. Agora considera a última prática com respostas entre os cursos de Matemática e o Inglês (`islandId` "english"), e mostra a arte do cenário da parte praticada (`/languages/english-parts/*.webp`, parte 0 = Cais das Boas-vindas). Tocar abre direto o Cais dos Encontros, nos cenários de Inglês, por `sessionStorage` `olena:enter-english` (lido e removido em `learn-view.tsx`, como já ocorria com Matemática).
+- Provas: 2 testes unitários novos (Inglês mais recente abre o Inglês; Matemática mais recente volta à Matemática) e e2e `student-space-last-island` em PC e celular, claro e escuro, com captura do atalho conferida nos dois temas no celular.
+- Limites: o destaque grande do topo ("A próxima descoberta é sua", Oliver, ofensiva e "Explorar Matemática") continua de Matemática porque a ofensiva é de Matemática e não há arte equivalente de Inglês; decisão de produto pendente. A ilha segue a última prática registrada (com respostas), não a mera entrada na tela da ilha.
