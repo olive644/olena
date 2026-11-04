@@ -27,7 +27,7 @@ Abortar e remover callbacks ao sair, trocar de questão/conta, abrir confirmaç�
 
 A reserva compartilhada de Matemática continua correndo ao falar ou conferir uma transcrição. Pausa durante aviso/permissão, processamento e erros técnicos, sem descontar coração por falha de reconhecimento. Pedido técnico limitado a 20 s; gravação até 12 s; processamento após parar até 8 s. Esses limites são novos da captura, não mudanças dos prazos do minigame ou dos testes.
 
-Ao receber transcrição, mostrar texto não editável e permitir gravar novamente. Somente Enviar resposta avalia. Comparar frase normalizada (caixa, pontuação, contrações comuns e números de 0 a 99), sem similaridade aproximada que aceite negação ou número incorretos. Não atribuir nota de sotaque. A pessoa pode refazer a captura quando o navegador tiver reconhecido errado, ou usar palavras.
+Ao receber transcrição, mostrar texto não editável e permitir gravar novamente. Somente Enviar resposta avalia. Comparar frase normalizada (caixa, pontuação, contrações comuns e números de 0 a 99), sem similaridade aproximada que aceite negação ou número incorretos. A tolerância limitada a erros de reconhecimento de uma letra está descrita em "Precisão do reconhecimento, 04/11/2026". Não atribuir nota de sotaque. A pessoa pode refazer a captura quando o navegador tiver reconhecido errado, ou usar palavras.
 
 Erro enviado usa o mesmo coração, reação e revisão ao final. Acerto usa os mesmos pontos/XP/poeira sem bônus por microfone. Papel amarelo para a transcrição, botões e ícone de microfone originais do app, sinal visual abstrato enquanto ouvindo (não é medidor acústico), efeitos de Matemática com preferência de som. Movimento reduzido do sistema e do app desliga o pulso. Nenhuma explicação da atividade depende de animação ou som.
 
@@ -64,3 +64,33 @@ Prova real atualizada: Brave com dispositivo de áudio sintético, AudioWorklet 
 Aplicação medida em 1731,1 KiB, entrada permanece 220,7 KiB. Aumento medido de 5,9 KiB sobre a base 1725,2 KiB, para captura local e alinhamento das palavras. Dentro da autorização vigente do proprietário para crescimento medido, teto principal ajustado de 1730 para 1734 KiB. Worker e WASM opcionais continuam em orçamento próprio. Nenhum limite de tempo de teste alterado. Licenças do runtime e dependência incluídas em public/speech-licenses; pastas geradas de runtime são excluídas do lint/format, como o OCR existente, enquanto todo o código próprio é verificado.
 
 Validação integral de 04/11/2026: 401 arquivos/2592 testes, zero erros de lint/27 avisos existentes, tipos/API/idiomas/formatação/build/performance verdes. Aplicação 1731,1 KiB de 1734 KiB, entrada 220,7 KiB. Provas locais e limites em CURRENT_STATE_AUDIT.md.
+
+## Precisão do reconhecimento, 04/11/2026
+
+Relato da proprietária: mesmo falando alto e com boa pronúncia, a transcrição errava. Três mudanças, sem novo modelo, dependência ou envio de áudio.
+
+1. **Preparo do áudio** (`src/data/english-speech-audio.ts`). Antes de cada inferência, a cópia do áudio perde o desvio contínuo, é cortada no primeiro e no último trecho com voz (margem de 280 ms), ganha 300 ms de silêncio em cada ponta e tem o pico levado a 0,9, com ganho máximo de 30 dB para não transformar ruído em fala. A captura termina com cerca de 1 s de silêncio, e é nesse silêncio que o Whisper costuma inventar "Thank you."
+2. **Aceite com tolerância curta** (`src/data/english-speaking-words.ts`). Uma palavra de conteúdo (4 letras ou mais, mesma letra inicial) pode diferir em uma letra, como card e cards, no máximo uma vez em frases de até 6 palavras e duas nas maiores. Números, negações (not, cannot, never...) e palavras curtas (is, are, do, does, a, the...) continuam exatos, porque carregam a gramática treinada. A única confusão curta aceita é "a" com "of", que o modelo troca no a átono (two pounds a kilo). Anotações como [BLANK_AUDIO], hesitações iniciais (uh, um) e "Thank you" no fim, quando a frase pedida não termina assim, são ignoradas. As cores das palavras e o aceite usam a mesma função, então o que aparece verde é o que vale.
+3. **Interface**: o aceite continua automático e uma divergência continua pedindo nova tentativa, sem descontar coração.
+
+### Medição, e o que ela não prova
+
+Whisper tiny.en, base.en e small.en vieram do GitHub (sherpa-onnx, mesmos pesos da OpenAI, quantização int8 própria), porque o Hugging Face não era acessível no ambiente de desenvolvimento. Corpus: as 24 frases de fala do curso, seis vozes sintéticas do Kokoro (quatro nativas e duas com sotaque brasileiro simulado, voz portuguesa falando inglês), cada uma em quatro condições (limpa, microfone de celular com ruído a 14 dB, volume muito baixo e ruído a 6 dB), 576 gravações por modelo, todas com 0,3 a 1,2 s de silêncio antes e 1 s depois, como a captura real. O preparo medido é o código do app, aplicado aos WAVs.
+
+| Configuração                                          | Frases aceitas | Frases aceitas, sotaque br simulado | Erro de palavras |
+| ----------------------------------------------------- | -------------- | ----------------------------------- | ---------------- |
+| tiny.en, como estava (áudio bruto, comparação exata)  | 84,5%          | 78,6%                               | 3,5%             |
+| tiny.en com preparo e tolerância curta (esta entrega) | 90,1%          | 87,5%                               | 3,5%             |
+| base.en com preparo e tolerância curta (não incluído) | 94,3%          | 92,2%                               | 2,0%             |
+
+O preparo sozinho melhora o tiny.en em cerca de 1,6 ponto (84,5% para 86,1% na comparação exata). A tolerância e o tratamento de bordas somam o resto. O codificador em fp32 do tiny.en não melhorou nada na medição (85,9% contra 86,1%), por isso não foi adotado.
+
+**Limites.** Fala sintética não é microfone real: não mede sotaques reais, ruído de rua, hesitações, microfone ruim nem a captura do navegador. O sotaque brasileiro foi simulado. Os números mostram a direção e a ordem de grandeza, não a taxa que a pessoa vai ter. Não foi testado em celular físico.
+
+### Decisão da proprietária, 04/11/2026: manter o tiny.en
+
+A proprietária decidiu não trocar para o base.en: não vale deixar a transcrição mais lenta e o download maior para ganhar precisão. O tiny.en fica, com o preparo do áudio e a tolerância curta. A análise abaixo fica registrada para uma revisão futura, por exemplo se a lentidão deixar de ser um problema.
+
+### Alternativa analisada: modelo base.en (não adotada)
+
+A maior melhora medida vem de trocar tiny.en por base.en: de 9,9% para 5,7% de frases recusadas, e de 12,5% para 7,8% no sotaque simulado. O custo, não verificado aqui: download cerca de 35 MB maior (estimativa a partir da arquitetura, pesos quantizados de aproximadamente 75 MB contra 41 MB) e inferência cerca de 30% mais lenta no PC, ainda mais no celular, onde a prévia a cada 2 s pode atrasar. Não foi incluído porque o Hugging Face estava bloqueado: não foi possível confirmar os nomes dos arquivos nem fixar a revisão do repositório onnx-community/whisper-base.en, e o projeto fixa revisões de modelos. Para ativar: abrir https://huggingface.co/onnx-community/whisper-base.en/commits/main, copiar o hash do commit escolhido, conferir que `onnx/encoder_model_quantized.onnx` e `onnx/decoder_model_merged_quantized.onnx` existem nele, trocar `MODEL` e `REVISION` em `src/data/english-asr.worker.ts`, atualizar o texto "cerca de 65 MB" (catálogos de idioma e política de privacidade) e repetir a prova no celular.

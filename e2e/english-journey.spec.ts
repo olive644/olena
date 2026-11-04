@@ -335,6 +335,13 @@ for (const theme of ["light", "dark"]) {
     }
     await expect(page.getByRole("region", { name: "Revisão com a Olena" })).toBeVisible();
     await expect(page.locator(".math-hearts")).toHaveCount(0);
+    if (info.project.name === "mobile") {
+      // No celular a Olena fica à direita, alinhada à borda do cartão de explicação.
+      const art = (await page.locator(".english-mentor .oliver-review__character").boundingBox())!;
+      const speech = (await page.locator(".english-mentor .oliver-review__speech").boundingBox())!;
+      expect(art.x + art.width).toBeGreaterThan(speech.x + speech.width - 24);
+      expect(art.x).toBeGreaterThan(speech.x + speech.width / 2 - 40);
+    }
     await page.keyboard.press("Tab");
     await page.locator(".english-mentor h1").focus();
     await expect(page.locator(".english-mentor h1")).toHaveCSS("text-decoration-line", "none");

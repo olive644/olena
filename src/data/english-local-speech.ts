@@ -1,3 +1,4 @@
+import { prepareSpeechAudio } from "./english-speech-audio";
 export class LocalEnglishSpeech {
   private worker: Worker | undefined;
   private sequence = 0;
@@ -149,7 +150,7 @@ export class LocalEnglishSpeech {
   }
   async partial(): Promise<string | undefined> {
     if (!this.stream || this.pending || !this.voiced || this.samples < 16000) return undefined;
-    const pending = this.send("transcribe", 60000, this.pcm());
+    const pending = this.send("transcribe", 60000, prepareSpeechAudio(this.pcm()));
     this.inference = pending;
     try {
       return await pending;
@@ -168,7 +169,9 @@ export class LocalEnglishSpeech {
     if (!voiced || pcm.length < 3200) throw new Error("no-speech");
     if (this.inference) await this.inference;
     if (id !== this.captureId) throw new Error("cancelled");
-    return this.send("transcribe", 60000, pcm);
+    const prepared = prepareSpeechAudio(pcm);
+    pcm.fill(0);
+    return this.send("transcribe", 60000, prepared);
   }
   private stopMicrophone() {
     if (this.capture) {
