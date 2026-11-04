@@ -791,3 +791,20 @@
   flex: none;
   vertical-align: middle;
 }
+
+/* Reading landmarks receive programmatic focus without button decoration. */
+:root
+  body
+  [tabindex="-1"]:not(
+    button,
+    a[href],
+    input,
+    textarea,
+    select,
+    summary,
+    [role]:not([role="heading"], [role="region"], [role="status"], [role="alert"]),
+    [contenteditable="true"]
+  ):focus-visible {
+  text-decoration: none !important;
+  filter: none !important;
+}

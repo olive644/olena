@@ -245,3 +245,36 @@ it("agrupa quatro seguidores e permite inspecionar as contas ao expandir", () =>
   expect(group.open).toBe(true);
   expect(screen.getAllByRole("button", { name: /Visitar perfil/ })).toHaveLength(4);
 });
+
+it("rechecks updates when focus returns during an unfinished refresh", async () => {
+  let release: ((response: Response) => void) | undefined;
+  const fetcher = vi.fn(
+    () =>
+      new Promise<Response>((resolve) => {
+        release = resolve;
+      }),
+  );
+  vi.stubGlobal("fetch", fetcher);
+  render(<SystemUpdates page />);
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  fireEvent(window, new Event("focus"));
+  fetcher.mockImplementation(
+    async () =>
+      new Response(
+        JSON.stringify([
+          {
+            id: 920,
+            version: "beta.920",
+            title: "New focus update",
+            date: new Date(Date.now() - 1000).toISOString(),
+          },
+        ]),
+      ),
+  );
+  await act(async () => {
+    release?.(new Response("[]"));
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Novidades" }));
+  await waitFor(() => expect(screen.getByText("New focus update")).toBeTruthy());
+  expect(fetcher).toHaveBeenCalledTimes(2);
+});

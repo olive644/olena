@@ -11,10 +11,12 @@ export function RoomRewardNotice({
   activity,
   delayMs = 0,
   deferPresentation = false,
+  presentationOnly = false,
 }: {
   reward: RoomXpReward | undefined;
   bingo?: boolean;
-  activity?: "mathematics";
+  activity?: "mathematics" | "english";
+  presentationOnly?: boolean;
   delayMs?: number;
   deferPresentation?: boolean;
 }) {
@@ -32,12 +34,16 @@ export function RoomRewardNotice({
     let displayTimer: number | undefined;
     const timer = window.setTimeout(() => {
       try {
-        const result = recordRoomXp({ id, place, xp, completedAt });
+        const result = presentationOnly
+          ? { added: true }
+          : recordRoomXp({ id, place, xp, completedAt });
         if (result.added) {
           const message =
-            activity === "mathematics"
+            activity === "mathematics" || activity === "english"
               ? xp > 0
-                ? uiText(1941, [xp])
+                ? activity === "english"
+                  ? uiText("+{0} XP pela prática de Inglês!", [xp])
+                  : uiText(1941, [xp])
                 : "+0 XP desta vez. Vamos tentar de novo!"
               : xp > 0
                 ? bingo
@@ -56,7 +62,7 @@ export function RoomRewardNotice({
       window.clearTimeout(timer);
       window.clearTimeout(displayTimer);
     };
-  }, [id, place, xp, completedAt, bingo, activity, delayMs]);
+  }, [id, place, xp, completedAt, bingo, activity, delayMs, presentationOnly]);
   useEffect(() => {
     if (!notice || deferPresentation) return;
     const timer = window.setTimeout(() => setNotice(""), 6000);

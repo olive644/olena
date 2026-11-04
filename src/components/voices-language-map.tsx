@@ -23,10 +23,12 @@ export function VoicesLanguageMap({
   onSelect,
   onBack,
   initialPart = 0,
+  deliveryOrigin,
 }: {
   progress: ReturnType<typeof englishProgress>;
   onSelect: (part: number) => void;
   initialPart?: number;
+  deliveryOrigin?: { x: number; y: number; size: number; id: string } | undefined;
   onBack: () => void;
 }) {
   useLanguage();
@@ -226,7 +228,7 @@ export function VoicesLanguageMap({
         >
           <FocusPaperArrow />
         </button>
-        <MathPlaceTreasure course="english-english" />
+        <MathPlaceTreasure course="english-english" deliveryOrigin={deliveryOrigin} />
       </div>
     </section>,
     document.body,

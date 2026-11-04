@@ -140,3 +140,7 @@ A direção final de composição remove o cartão externo e Oliver da atividade
 ## Ampliação A1, 03/11/2026
 
 Contrato atual da primeira parte em [ENGLISH_A1.md](ENGLISH_A1.md): seis assuntos internos, 120 situações inéditas, cobertura por assunto e preservação das 720 tarefas anteriores. Não altera os seis cenários, artes, outras partes ou regras compartilhadas do relógio. O banco da primeira parte passa a 240 IDs, os demais continuam com 120.
+
+## Prática de fala opcional, 03/11/2026
+
+ENGLISH_SPEAKING.md substitui a descrição histórica de ausência de microfone: há captura opcional pelo serviço do navegador, após consentimento separado. Os servidores do Olena não recebem áudio/transcrição. A alternativa com palavras conserva a mesma tarefa, progresso e recompensas; a seleção adaptativa existente continua responsável pela dificuldade. Sem API paga, modelo baixado ou regra Firebase adicional.

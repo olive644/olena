@@ -655,10 +655,16 @@ html[data-reduce-motion="true"] .english-journey * {
 }
 .english-guide blockquote,
 .english-mentor blockquote {
-  margin: 12px 0;
-  padding: 12px 16px;
-  border-left: 4px solid #ffda19;
-  background: #ffda1914;
+  margin: 16px 0;
+  padding: 18px 20px;
+  color: #292432;
+  background: #ffe17d;
+  background-image:
+    linear-gradient(145deg, #fff0ad 0 18px, transparent 18px),
+    linear-gradient(168deg, transparent 70%, #efc64d 70%);
+  border: 1px solid #e9c45d;
+  border-radius: 4px 20px 4px 14px;
+  box-shadow: 0 4px 0 #b58b2e;
   font-weight: 650;
 }
 .english-example-meaning {
@@ -728,11 +734,6 @@ html[data-reduce-motion="true"] .english-journey * {
   .english-guide > section {
     padding-left: 32px;
   }
-}
-.english-island-interior :is(.english-mentor h1, .english-summary h2):focus-visible {
-  outline: none;
-  text-decoration: underline 3px #ffda19;
-  text-underline-offset: 6px;
 }
 .english-island-interior .math-world-back {
   position: relative;
@@ -1014,5 +1015,193 @@ html[data-reduce-motion="true"] .english-journey * {
     align-items: flex-start;
     font-size: 15px;
     gap: 8px;
+  }
+}
+
+.english-island-interior:is(.is-ready, .is-finished) .english-interior-content {
+  min-height: calc(100dvh - 130px);
+  display: grid;
+  place-items: center;
+  padding-top: 65px;
+}
+.english-entry {
+  display: grid;
+  justify-items: center;
+  gap: 20px;
+}
+.english-entry > .math-user-avatar {
+  width: 180px;
+}
+.english-island-interior .math-results {
+  width: 100%;
+  max-width: 780px;
+}
+.math-results > .math-earned-chest {
+  margin: 12px auto;
+  width: fit-content;
+}
+@media (max-width: 600px) {
+  .english-island-interior.is-finished .english-interior-content {
+    padding-top: 50px;
+  }
+  .english-island-interior .math-results > .math-user-avatar {
+    width: 104px;
+    height: auto;
+  }
+  .english-island-interior .math-result-score {
+    margin: 4px 0;
+  }
+  .english-island-interior .math-result-score .paper-digits {
+    height: 62px;
+  }
+  .english-island-interior .math-results > p {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  .english-island-interior .math-result-topic {
+    margin-bottom: 10px;
+  }
+  .english-island-interior .math-earned-chest .math-common-chest {
+    width: 80px;
+  }
+  .english-island-interior .math-start-button {
+    margin-top: 8px;
+  }
+}
+
+.english-speaking {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  margin: 12px auto;
+  max-width: 640px;
+  text-align: center;
+  color: #fff9ef;
+}
+.english-speaking p {
+  margin: 0;
+}
+.english-speaking-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 4px 20px 4px 14px;
+  box-shadow: 0 4px 0 var(--line);
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+}
+.english-speaking-consent input {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+.english-speaking .english-actions {
+  justify-content: center;
+  gap: 12px;
+}
+.english-speaking-record {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.english-speaking small {
+  font-size: 12px;
+  line-height: 1.5;
+  max-width: 440px;
+}
+.english-speaking-transcript {
+  margin: 0;
+  padding: 14px 20px;
+  width: 100%;
+  background: #ffe17d;
+  background-image:
+    linear-gradient(145deg, #fff0ad 0 18px, transparent 18px),
+    linear-gradient(168deg, transparent 70%, #efc64d70);
+  color: #292432;
+  border-radius: 4px 20px 4px 14px;
+  box-shadow: 0 4px 0 #b58b2e;
+  overflow-wrap: anywhere;
+}
+.english-speaking-error {
+  max-width: 480px;
+}
+.english-speaking-wave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 44px;
+}
+.english-speaking-wave i {
+  width: 7px;
+  height: 12px;
+  background: #ffda19;
+  clip-path: polygon(0 12%, 75% 0, 100% 88%, 25% 100%);
+}
+.english-speaking-wave i:nth-child(3n) {
+  height: 30px;
+  background: #b68aff;
+}
+.english-speaking-wave i:nth-child(2n) {
+  height: 22px;
+}
+.english-speaking[data-phase="listening"] .english-speaking-wave i {
+  animation: english-voice-pulse 0.65s ease-in-out infinite alternate;
+}
+.english-speaking[data-phase="listening"] .english-speaking-wave i:nth-child(2n) {
+  animation-delay: -0.3s;
+}
+@keyframes english-voice-pulse {
+  to {
+    transform: scaleY(0.45);
+  }
+}
+:root[data-reduce-motion="true"] .english-speaking-wave i {
+  animation: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .english-speaking-wave i {
+    animation: none !important;
+  }
+}
+@media (max-width: 600px) {
+  .english-speaking {
+    gap: 10px;
+  }
+  .english-speaking-consent {
+    padding: 10px;
+    font-size: 12px;
+  }
+  .english-speaking-wave {
+    height: 32px;
+  }
+  .english-speaking .english-actions button {
+    padding: 10px 12px;
+  }
+  .english-speaking-status {
+    font-size: 14px;
+  }
+}
+.english-lesson > .math-answer-reaction {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  width: fit-content;
+  margin: 12px auto;
+  animation: english-arrive 0.25s ease-out both;
+}
+@media (max-width: 600px) {
+  .english-island-interior .english-lesson.is-speaking .english-scene {
+    margin: 10px 0;
+  }
+  .english-speaking {
+    gap: 8px;
+  }
+  .english-speaking-wave {
+    height: 28px;
   }
 }

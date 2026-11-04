@@ -23,11 +23,12 @@ describe("cabeçalhos de segurança da Vercel", () => {
     expect(headers.get("Referrer-Policy")).toBe("strict-origin-when-cross-origin");
   });
 
-  it("libera a câmera só para o próprio site, por causa do leitor de QR da sala, e nega o resto", () => {
+  it("restringe câmera e microfone ao próprio site e mantém localização bloqueada", () => {
     const policy = headers.get("Permissions-Policy") ?? "";
     expect(policy).toContain("camera=(self)");
-    expect(policy).toContain("microphone=()");
+    expect(policy).toContain("microphone=(self)");
     expect(policy).toContain("geolocation=()");
+    expect(policy).not.toContain("*");
   });
 
   it("não deixa executar script inline nem eval, e bloqueia plugins e enquadramento externo", () => {

@@ -49,7 +49,10 @@ async function parts(page: Page) {
 async function materials(page: Page) {
   await parts(page);
   await page.getByRole("button", { name: "Explorar lugar", exact: true }).click();
-  await expect(page.locator(".english-guide > section")).toHaveCount(4);
+  await expect(page.locator(".english-entry")).toBeVisible();
+  await expect(
+    page.locator(".english-guide,.english-a1-materials,.english-course-heading"),
+  ).toHaveCount(0);
 }
 async function noOverflow(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
@@ -69,6 +72,8 @@ async function answer(page: Page, correct = true) {
   const q = englishQuestion(course, 0, id);
   if (q.kind === "reply" || q.kind === "gap")
     await expect(page.locator(".english-reply-intent")).toHaveCSS("color", "rgb(255, 249, 239)");
+  if (await page.locator(".english-speaking").count())
+    await page.getByRole("button", { name: "Agora não posso falar", exact: true }).click();
   if (q.kind === "order") {
     const words = q.phrase.split(" ");
     const order = correct ? words : [...words].reverse();
@@ -176,16 +181,10 @@ for (const theme of ["light", "dark"]) {
     await expect(page.getByRole("alert")).toContainText("Não foi possível carregar");
     await page.unroute("**/languages/en/english-v4.json");
     await page.getByRole("button", { name: "Tentar novamente", exact: true }).click();
-    await expect(page.locator(".english-guide > section")).toHaveCount(4);
-    await expect(page.locator(".english-a1-unit")).toHaveCount(6);
-    await expect(page.getByRole("region", { name: "Assuntos do A1" })).toContainText(
-      "100 respostas diferentes",
-    );
-    await expect(page.locator(".english-guide")).toContainText(
-      "To be pode significar ser ou estar",
-    );
-    await expect(page.locator(".english-guide")).toContainText("Eu gostaria de um café");
-    await expect(page.locator(".english-part-detail")).toContainText("100 questões diferentes");
+    await expect(page.locator(".english-entry")).toBeVisible();
+    await expect(
+      page.locator(".english-guide,.english-a1-materials,.english-course-heading"),
+    ).toHaveCount(0);
     await expect(page.locator(".math-treasure,.math-place-treasure")).toHaveCount(0);
     await page.screenshot({
       path: `${directory}/${info.project.name}-${theme}-materials.png`,
@@ -224,16 +223,17 @@ for (const theme of ["light", "dark"]) {
         "100",
       );
       await page.getByRole("button", { name: "Explorar lugar", exact: true }).click();
-      await expect(page.locator(".english-guide > section")).toHaveCount(4);
-      await expect(page.locator(".english-course-heading h1")).toHaveText(
-        i === 0 ? "A1: primeiros encontros em inglês" : course.parts[i]!.title["pt-BR"],
-      );
+      await expect(page.locator(".english-entry")).toBeVisible();
+      await expect(
+        page.locator(".english-guide,.english-a1-materials,.english-course-heading"),
+      ).toHaveCount(0);
+      await expect(page.locator(".english-entry h1")).toHaveText(region.title["pt-BR"]);
       await expect(
         page.locator(".english-interior-emblem img,.math-game-landscape img"),
       ).toHaveCount(0);
       await expect(
         page.getByRole("button", { name: "Confirmar esta parte", exact: true }),
-      ).toBeDisabled();
+      ).toHaveCount(0);
       await noOverflow(page);
       await page.getByRole("button", { name: "Voltar", exact: true }).click();
       if (i < 5)
@@ -335,6 +335,15 @@ for (const theme of ["light", "dark"]) {
     }
     await expect(page.getByRole("region", { name: "Revisão com a Olena" })).toBeVisible();
     await expect(page.locator(".math-hearts")).toHaveCount(0);
+    await page.keyboard.press("Tab");
+    await page.locator(".english-mentor h1").focus();
+    await expect(page.locator(".english-mentor h1")).toHaveCSS("text-decoration-line", "none");
+    await expect(page.locator(".english-mentor h1")).toHaveCSS("filter", "none");
+    await expect(page.locator(".english-mentor blockquote")).toHaveCSS(
+      "background-color",
+      "rgb(255, 225, 125)",
+    );
+    await expect(page.locator(".english-mentor blockquote")).toHaveCSS("color", "rgb(41, 36, 50)");
     const explanations: string[] = [];
     for (let i = 0; i < 3; i++) {
       explanations.push(await page.locator(".english-specific-explanation").innerText());
@@ -350,9 +359,19 @@ for (const theme of ["light", "dark"]) {
         .click();
     }
     expect(new Set(explanations).size).toBeGreaterThan(1);
-    await expect(page.locator(".english-summary")).toContainText(
-      "Acertos: 5 · Erros: 3 · Pontos: 100",
+    await expect(page.locator(".math-results h1")).toHaveText("100 pontos");
+    await expect(page.locator(".room-reward-notice")).toContainText(
+      "+20 XP pela prática de Inglês!",
     );
+    await expect(page.locator(".math-result-xp")).toHaveCount(0);
+    await expect(page.locator(".room-reward-notice")).toHaveCSS(
+      "color",
+      theme === "light" ? "rgb(15, 15, 20)" : "rgb(244, 242, 238)",
+    );
+    await expect(
+      page.getByRole("button", { name: "Levar Poeira cósmica aos espaços da ilha", exact: true }),
+    ).toBeVisible();
+    await page.screenshot({ path: `${directory}/${info.project.name}-${theme}-results.png` });
     await expect
       .poll(() =>
         page.evaluate(
@@ -371,7 +390,22 @@ for (const theme of ["light", "dark"]) {
         ),
       )
       .toBe(8);
-    await page.getByRole("button", { name: "Tentar novamente", exact: true }).click();
+    const rewardsBeforeDelivery = await page.evaluate(() =>
+      localStorage.getItem("helena.englishRewards.v1"),
+    );
+    await page
+      .getByRole("button", { name: "Levar Poeira cósmica aos espaços da ilha", exact: true })
+      .click();
+    await expect(page.locator(".english-parts-journey")).toBeVisible();
+    await expect(page.locator(".math-chest-flight")).toHaveCount(1);
+    expect(await page.evaluate(() => localStorage.getItem("helena.englishRewards.v1"))).toBe(
+      rewardsBeforeDelivery,
+    );
+    await page.getByRole("button", { name: "Explorar lugar", exact: true }).click();
+    await page
+      .locator(".english-island-interior")
+      .getByRole("button", { name: "Praticar", exact: true })
+      .click();
     await page.clock.runFor(3000);
     await expect(page.locator(".math-hearts")).toHaveAttribute("aria-label", /3/);
     await expect(page.locator(".english-lesson")).toHaveAttribute("data-question-id", lastFailedId);
@@ -379,7 +413,14 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("button", { name: "Sair da rodada", exact: true }).click();
     await page.reload();
     await materials(page);
-    await expect(page.locator(".english-part-detail")).toContainText("Acertos: 5 · Erros: 3");
+    expect(
+      await page.evaluate(() =>
+        JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).practiceActivities.reduce(
+          (n: number, a: { correct: number }) => n + a.correct,
+          0,
+        ),
+      ),
+    ).toBe(5);
     await page
       .locator(".english-island-interior")
       .getByRole("button", { name: "Praticar", exact: true })
@@ -387,6 +428,40 @@ for (const theme of ["light", "dark"]) {
     await page.clock.runFor(3000);
     await expect(page.locator(".english-lesson")).toHaveAttribute("data-question-id", lastFailedId);
     expect(failures).toEqual([]);
+  });
+  test(`zero-point result has no dust or inline XP and keeps retry: ${theme}`, async ({
+    page,
+  }, info) => {
+    if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
+    await seed(page, theme);
+    await materials(page);
+    await page.clock.install();
+    await page
+      .locator(".english-island-interior")
+      .getByRole("button", { name: "Praticar", exact: true })
+      .click();
+    await page.clock.runFor(3000);
+    for (let i = 0; i < 3; i++) {
+      await expect(page.locator(".english-lesson")).toBeVisible();
+      const previous = await page.locator(".english-lesson").getAttribute("data-question-id");
+      await answer(page, false);
+      await page.clock.runFor(1300);
+      if (i < 2)
+        await expect(page.locator(".english-lesson")).not.toHaveAttribute(
+          "data-question-id",
+          previous!,
+        );
+      else await expect(page.locator(".english-mentor")).toBeVisible();
+    }
+    for (let i = 0; i < 3; i++)
+      await page
+        .getByRole("button", { name: i < 2 ? "Próxima explicação" : "Ver resultado", exact: true })
+        .click();
+    await expect(page.locator(".math-results h1")).toHaveText("0 pontos");
+    await expect(page.locator(".math-result-xp,.math-earned-chest")).toHaveCount(0);
+    await page.getByRole("button", { name: "Tentar de novo", exact: true }).click();
+    await page.clock.runFor(3000);
+    await expect(page.locator(".math-hearts")).toHaveAttribute("aria-label", /3/);
   });
   test(`expired deadlines cost hearts without inventing a chosen answer: ${theme}`, async ({
     page,
@@ -449,7 +524,14 @@ for (const theme of ["light", "dark"]) {
     await expect(page.locator(".english-lesson")).toHaveCount(0);
     await page.reload();
     await materials(page);
-    await expect(page.locator(".english-part-detail")).toContainText("Acertos: 1 · Erros: 0");
+    expect(
+      await page.evaluate(() =>
+        JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).practiceActivities.reduce(
+          (n: number, a: { correct: number }) => n + a.correct,
+          0,
+        ),
+      ),
+    ).toBe(1);
     await page
       .locator(".english-island-interior")
       .getByRole("button", { name: "Praticar", exact: true })
@@ -521,7 +603,7 @@ for (const theme of ["light", "dark"]) {
           previous!,
         );
     }
-    await expect(page.locator(".english-summary")).toContainText("Parte confirmada!");
+    await expect(page.locator(".math-results")).toContainText("Parte confirmada!");
     const finals = await page.evaluate(() =>
       JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).practiceActivities.filter(
         (item: { englishA1Attempt?: { mode: string } }) => item.englishA1Attempt?.mode === "final",
@@ -532,7 +614,7 @@ for (const theme of ["light", "dark"]) {
     expect(finals[0].correct).toBe(5);
     await expect(
       page.getByRole("button", { name: "Confirmar esta parte", exact: true }),
-    ).toBeDisabled();
+    ).toHaveCount(0);
     await page.getByRole("button", { name: "Voltar", exact: true }).click();
     await expect(page.locator(".math-journey-completion")).toHaveAttribute("aria-valuenow", "100");
     await page.getByRole("button", { name: "Próxima parte de Inglês", exact: true }).click();
@@ -584,12 +666,10 @@ for (const theme of ["light", "dark"]) {
       await page
         .getByRole("button", { name: i < 2 ? "Próxima explicação" : "Ver resultado", exact: true })
         .click();
-    await expect(page.locator(".english-part-detail")).toContainText(
-      "Faltam 4 respostas corretas de revisão.",
-    );
+    await expect(page.locator(".math-results")).toContainText("Revise quatro respostas corretas");
     await expect(
       page.getByRole("button", { name: "Confirmar esta parte", exact: true }),
-    ).toBeDisabled();
+    ).toHaveCount(0);
     const entry = await page.evaluate(() =>
       JSON.parse(localStorage.getItem("helenastudy.workspace.v1") ?? "{}").practiceActivities.at(
         -1,
