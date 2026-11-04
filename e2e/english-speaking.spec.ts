@@ -60,7 +60,7 @@ function completed() {
   }
   return records;
 }
-async function setup(page: Page, part: number, theme: string, supported = true) {
+async function setup(page: Page, part: number, theme: string, supported = true, denied = false) {
   const q = Array.from({ length: part === 0 ? 240 : 120 }, (_, id) =>
     englishQuestion(course, part, id),
   ).find(isSpeakingQuestion)!;
@@ -69,7 +69,7 @@ async function setup(page: Page, part: number, theme: string, supported = true) 
   workspace.practiceActivities = completed();
   expect(isWorkspaceState(workspace)).toBe(true);
   await page.addInitScript(
-    ({ workspace, part, theme, id, supported }) => {
+    ({ workspace, part, theme, id, supported, denied }) => {
       localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
       localStorage.setItem("helena.guest.v1", "1");
       localStorage.setItem("helenastudy.theme", theme);
@@ -97,7 +97,7 @@ async function setup(page: Page, part: number, theme: string, supported = true) 
         starts: 0,
         aborts: 0,
         text: "",
-        denied: false,
+        denied,
         hold: false,
       };
       Object.defineProperty(window, "voiceTest", { value: harness });
@@ -148,7 +148,8 @@ async function setup(page: Page, part: number, theme: string, supported = true) 
           getUserMedia: async () => {
             harness.starts++;
             if (harness.denied) throw new DOMException("denied", "NotAllowedError");
-            return { getTracks: () => [{ stop: () => harness.aborts++ }] };
+            const track = { readyState: "live", stop: () => harness.aborts++ };
+            return { getTracks: () => [track], getAudioTracks: () => [track] };
           },
         },
       });
@@ -165,22 +166,33 @@ async function setup(page: Page, part: number, theme: string, supported = true) 
           onmessage:
             ((event: { data: { samples: Float32Array; sampleRate: number } }) => void) | null;
         } = { onmessage: null };
+        timer: ReturnType<typeof setInterval> | undefined;
         constructor() {
           queueMicrotask(() =>
             this.port.onmessage?.({
               data: { samples: new Float32Array(16000).fill(0.02), sampleRate: 16000 },
             }),
           );
+          // O microfone real continua entregando áudio enquanto a pessoa fala.
+          this.timer = setInterval(
+            () =>
+              this.port.onmessage?.({
+                data: { samples: new Float32Array(1600).fill(0.02), sampleRate: 16000 },
+              }),
+            100,
+          );
         }
         connect() {}
-        disconnect() {}
+        disconnect() {
+          clearInterval(this.timer);
+        }
       }
       Object.defineProperty(window, "AudioWorkletNode", {
         configurable: true,
         value: supported ? Capture : undefined,
       });
     },
-    { workspace, part, theme, id: q.id, supported },
+    { workspace, part, theme, id: q.id, supported, denied },
   );
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/aprender");
@@ -252,6 +264,8 @@ for (const theme of ["light", "dark"]) {
       const back = await page.getByRole("button", { name: "Voltar", exact: true }).boundingBox();
       expect(back!.y).toBeGreaterThanOrEqual(0);
       await finish(page, q.answer);
+      // A atividade reaproveitou o microfone liberado no início: nenhum segundo pedido.
+      expect(await page.evaluate(() => (window as BrowserVoice).voiceTest.starts)).toBe(1);
       await expect(page.locator(".english-speaking-transcript")).toHaveText(q.answer);
       await expect(page.locator("[data-word-state=correct]")).toHaveCount(
         q.answer.trim().split(/\s+/).length,
@@ -280,11 +294,10 @@ for (const theme of ["light", "dark"]) {
     page,
   }, info) => {
     if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
-    const q = await setup(page, 0, theme);
+    // Negado no pedido do início da partida: a atividade não reabre o pedido sozinha, só ao tocar.
+    const q = await setup(page, 0, theme, true, true);
+    expect(await page.evaluate(() => (window as BrowserVoice).voiceTest.starts)).toBe(1);
     await prepare(page);
-    await page.evaluate(() => {
-      (window as BrowserVoice).voiceTest.denied = true;
-    });
     await page.getByRole("button", { name: "Falar agora", exact: true }).click();
     await expect(page.getByRole("alert")).toContainText("não foi autorizado");
     await page.clock.runFor(45000);
