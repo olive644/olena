@@ -40,3 +40,27 @@ it("fails closed when storage is unavailable", () => {
     ).consent,
   ).toBe(false);
 });
+
+it("updating access preferences keeps the policy acceptance for its UID", () => {
+  localStorage.setItem(
+    "helena.accountAccess.v1",
+    JSON.stringify({ uid: "a", privacyConsent: { version: "current", acceptedAt: "today" } }),
+  );
+  writeAccessPreferences(localStorage, "a", { consent: true });
+  expect(JSON.parse(localStorage.getItem("helena.accountAccess.v1")!).privacyConsent.version).toBe(
+    "current",
+  );
+  writeAccessPreferences(localStorage, "b", { consent: true });
+  expect(
+    JSON.parse(localStorage.getItem("helena.accountAccess.v1")!).privacyConsent,
+  ).toBeUndefined();
+});
+
+it("repairs malformed access preferences without inventing policy consent", () => {
+  localStorage.setItem("helena.accountAccess.v1", "invalid-json");
+  writeAccessPreferences(localStorage, "a", { consent: true });
+  expect(readAccessPreferences(localStorage, "a").consent).toBe(true);
+  expect(
+    JSON.parse(localStorage.getItem("helena.accountAccess.v1")!).privacyConsent,
+  ).toBeUndefined();
+});

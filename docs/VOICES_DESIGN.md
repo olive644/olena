@@ -150,3 +150,7 @@ A prática de fala usa a captura local e o worker descritos em ENGLISH_SPEAKING.
 ### Ajuste aprovado de interação da fala
 
 Após a solicitação de remover Enviar resposta, as palavras usam estados neutro/verde/vermelho no papel original. Verde também tem sublinhado; vermelho, sublinhado ondulado, sem depender só de cor. Captura local em AudioWorklet, parciais a cada 2 s, finalização após pausa de 1 s ou Terminar fala. Frase completa correta avança automaticamente; divergência pede repetir, sem registrar erro de conteúdo. Sem placa externa nova, sem avatar adicionado. Validar as seis partes em claro/escuro e PC/mobile.
+
+## Fala incremental, 04/11/2026
+
+A frase reconhecida permanece no papel original. Palavras corretas pulsam em verde e divergências têm movimento curto vermelho; preservar sublinhado textual e respeitar movimento reduzido e preferências de som. Prévia de streaming nunca confirma sozinha uma resposta. Não reintroduzir parágrafos técnicos sobre o modelo no centro da atividade. Solicitar permissão de microfone ao iniciar, sem descontar tempo enquanto a pessoa decide, e manter consentimento separado para baixar o modelo.

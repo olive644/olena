@@ -115,6 +115,16 @@ async function setup(page: Page, part: number, theme: string, supported = true) 
                 ...(message.type === "load" ? {} : { text: harness.text }),
               },
             });
+          if (message.type === "transcribe")
+            queueMicrotask(() =>
+              this.onmessage?.({
+                data: {
+                  id: message.id,
+                  type: "partial",
+                  text: harness.text.split(" ").slice(0, 2).join(" "),
+                },
+              }),
+            );
           if (message.type === "transcribe" && harness.hold) harness.release = result;
           else queueMicrotask(result);
         }
@@ -214,7 +224,7 @@ for (const theme of ["light", "dark"]) {
       const before = await page.locator(".math-time").getAttribute("aria-label");
       await page.clock.runFor(5000);
       expect(await page.locator(".math-time").getAttribute("aria-label")).toBe(before);
-      expect(await page.evaluate(() => (window as BrowserVoice).voiceTest.starts)).toBe(0);
+      expect(await page.evaluate(() => (window as BrowserVoice).voiceTest.starts)).toBe(1);
       await expect(
         page.getByRole("button", { name: "Preparar voz no aparelho", exact: true }),
       ).toBeDisabled();
@@ -350,12 +360,15 @@ for (const theme of ["light", "dark"]) {
     await setup(page, 0, theme);
     await prepare(page);
     await page.getByRole("button", { name: "Falar agora", exact: true }).click();
+    const abortedBefore = await page.evaluate(() => (window as BrowserVoice).voiceTest.aborts);
     await page.evaluate(() => {
       localStorage.setItem("helena.account.v1", "other-test-account");
       window.dispatchEvent(new StorageEvent("storage"));
     });
     await expect(page.locator(".english-speaking")).toHaveCount(0);
-    expect(await page.evaluate(() => (window as BrowserVoice).voiceTest.aborts)).toBeGreaterThan(0);
+    expect(await page.evaluate(() => (window as BrowserVoice).voiceTest.aborts)).toBeGreaterThan(
+      abortedBefore,
+    );
     await expect(page.locator(".english-entry")).toBeVisible();
   });
   test(`local speech processing pauses the deadline: ${theme}`, async ({ page }, info) => {

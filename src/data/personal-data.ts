@@ -1,3 +1,4 @@
+import { preservePrivacyConsentForAccount, readPrivacyConsent } from "../domain/privacy-policy";
 import { SYNCED_STORAGE_APPLIED_EVENT } from "./synced-storage";
 
 // Guarda de quem são os dados deste aparelho, para detectar troca de conta.
@@ -62,6 +63,10 @@ export function claimDeviceForAccount(storage: Storage, uid: string): boolean {
       window.dispatchEvent(new Event(SYNCED_STORAGE_APPLIED_EVENT));
     }
     storage.setItem(ACCOUNT_OWNER_KEY, uid);
+    if (!switched) {
+      const consent = readPrivacyConsent(storage);
+      if (consent) preservePrivacyConsentForAccount(storage, uid, consent);
+    }
     return switched;
   } catch {
     return false;

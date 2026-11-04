@@ -1,3 +1,4 @@
+import { prepareEnglishMicrophone } from "../data/english-microphone";
 import { RoomRewardNotice } from "./room-reward-notice";
 import { PaperDigits } from "./paper-digits";
 import { ArcadeResults } from "./arcade-results";
@@ -116,6 +117,7 @@ export function EnglishIslandJourney({
   const [speechClient] = useState(() => new LocalEnglishSpeech());
   useEffect(() => () => speechClient.dispose(), [speechClient]);
   const [speechAllowed, setSpeechAllowed] = useState(false);
+  const [microphoneGranted, setMicrophoneGranted] = useState(false);
   const [speechFallback, setSpeechFallback] = useState(false);
   const [speechPaused, setSpeechPaused] = useState(true);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -234,6 +236,7 @@ export function EnglishIslandJourney({
         setReviewing(false);
         setPending(false);
         setSpeechAllowed(false);
+        setMicrophoneGranted(false);
         if (timer.current) clearTimeout(timer.current);
         request.current?.abort();
         window.speechSynthesis?.cancel();
@@ -318,6 +321,7 @@ export function EnglishIslandJourney({
     const controller = new AbortController();
     request.current = controller;
     const owner = localStorage.getItem(ACCOUNT_OWNER_KEY);
+    const microphone = prepareEnglishMicrophone();
     setPending(true);
     try {
       const checkpoint = readEnglishCheckpoint(part, mode);
@@ -355,6 +359,9 @@ export function EnglishIslandJourney({
         missed: resumedFinal?.missed ?? [],
         ended: false,
       };
+      const granted = await microphone;
+      if (controller.signal.aborted || owner !== localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
+      setMicrophoneGranted(granted);
       setRound(started);
       setCountdown(ARCADE_COUNTDOWN);
       setReviewIndex(0);
@@ -838,6 +845,8 @@ export function EnglishIslandJourney({
                   key={`${round.id}:${round.at}:${leave}`}
                   speech={speechClient}
                   expected={question.answer}
+                  microphoneGranted={microphoneGranted}
+                  onRetrySound={() => audio.current?.play("wrong")}
                   allowed={speechAllowed}
                   disabled={feedback !== undefined || pending || leave}
                   onAllow={() => setSpeechAllowed(true)}

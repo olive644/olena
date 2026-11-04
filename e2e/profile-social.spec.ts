@@ -15,6 +15,7 @@ for (const theme of ["light", "dark"]) {
     await open.click();
     const dialog = page.getByRole("dialog", { name: "Encontre seus amigos", exact: true });
     await expect(dialog).toBeVisible();
+    await expect(dialog).not.toContainText("Este navegador não oferece seleção de contatos.");
     await expect(dialog.getByRole("button", { name: "Escolher nos contatos" })).toBeDisabled();
     await expect(
       dialog.getByRole("button", { name: "Compartilhar perfil", exact: true }),

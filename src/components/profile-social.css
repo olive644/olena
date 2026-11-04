@@ -560,3 +560,22 @@ html[data-reduce-motion="true"] .social-directory {
 .social-profile-name .social-profile-streaks:empty {
   display: none;
 }
+
+/* The level remains above the cosmetic frame, in both profile inspection layouts. */
+.social-visit-avatar .profile-level-badge {
+  z-index: 2;
+}
+:root body .social-directory .social-connections > .social-visit-back {
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  width: 44px;
+  height: 44px;
+  padding: 6px;
+  display: inline-grid;
+  place-items: center;
+}
+.social-connections > .social-visit-back .onboarding-paper-arrow {
+  width: 32px;
+  height: 32px;
+}

@@ -308,3 +308,26 @@ it("records a failed new final after three actual mistakes without inventing una
   expect(workspaceReducer(base, { type: "practice/recorded", activity: invalid })).toBe(base);
   expect(isWorkspaceState({ ...base, practiceActivities: [invalid] })).toBe(false);
 });
+
+it("keeps 23 mastered A1 questions after reload and additive account merge", () => {
+  const base = createInitialWorkspace();
+  const entries = Array.from({ length: 23 }, (_, id) => {
+    const entry = attempt(0, [id]);
+    entry.islandId = "english";
+    entry.englishA1Attempt = { ...entry.languageAttempt!, curriculum: 5 };
+    delete entry.languageAttempt;
+    return entry;
+  });
+  const local = entries.reduce(
+    (state, activity) => workspaceReducer(state, { type: "practice/recorded", activity }),
+    base,
+  );
+  expect(englishProgress(local.practiceActivities).parts[0]!.solved.size).toBe(23);
+  const loaded: unknown = JSON.parse(JSON.stringify(local));
+  expect(isWorkspaceState(loaded)).toBe(true);
+  const remote = workspaceReducer(base, { type: "practice/recorded", activity: entries[0]! });
+  const merged = mergeWorkspaceStates(base, local, remote).workspace;
+  expect(englishProgress(merged.practiceActivities).parts[0]!.solved.size).toBe(23);
+  expect(englishProgress(merged.practiceActivities).parts[0]!.correct).toBe(23);
+  expect(englishProgress(merged.practiceActivities).parts[0]!.confirmed).toBe(false);
+});

@@ -20,9 +20,11 @@ export function EnglishSpeakingInput({
   onAnswer,
   onAlternative,
   onSound,
+  onRetrySound,
   onListen,
   speech,
   expected,
+  microphoneGranted = false,
 }: {
   allowed: boolean;
   disabled: boolean;
@@ -31,9 +33,11 @@ export function EnglishSpeakingInput({
   onAnswer(transcript: string): void;
   onAlternative(): void;
   onSound(): void;
+  onRetrySound?: (() => void) | undefined;
   onListen?: (() => void) | undefined;
   speech: LocalEnglishSpeech;
   expected: string;
+  microphoneGranted?: boolean;
 }) {
   useLanguage();
   const [phase, setPhase] = useState<Phase>(() =>
@@ -54,6 +58,12 @@ export function EnglishSpeakingInput({
       typeof AudioWorkletNode !== "undefined" &&
       typeof Worker !== "undefined",
   );
+  const showPreview = useCallback((text: string) => {
+    if (!text.trim()) return;
+    setTranscript((previous) =>
+      text.trim().split(/\s+/).length >= previous.trim().split(/\s+/).length ? text : previous,
+    );
+  }, []);
   const generation = useRef(0);
   const stopping = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -68,6 +78,7 @@ export function EnglishSpeakingInput({
   }, [speech]);
   useEffect(() => {
     const unsubscribe = speech.subscribeProgress(setProgress);
+    const stopTranscript = speech.subscribeTranscript(showPreview);
     const hide = () => {
       if (document.hidden) {
         cancel();
@@ -80,9 +91,10 @@ export function EnglishSpeakingInput({
     return () => {
       document.removeEventListener("visibilitychange", hide);
       unsubscribe();
+      stopTranscript();
       cancel();
     };
-  }, [speech, cancel]);
+  }, [speech, cancel, showPreview]);
   useEffect(() => {
     if (disabled) cancel();
   }, [disabled, cancel]);
@@ -154,6 +166,7 @@ export function EnglishSpeakingInput({
         onAnswer(expected);
       } else {
         setPhase("retry");
+        onRetrySound?.();
       }
     } catch (cause) {
       if (id !== generation.current) return;
@@ -171,7 +184,7 @@ export function EnglishSpeakingInput({
     const id = generation.current;
     try {
       const text = await speech.partial();
-      if (id === generation.current && text) setTranscript(text);
+      if (id === generation.current && text) showPreview(text);
     } catch {
       /* Final recognition reports recoverable errors. */
     }
@@ -188,7 +201,7 @@ export function EnglishSpeakingInput({
     };
   }, [phase, speech]);
   async function start() {
-    if (disabled || !speech.ready || (!allowed && !accepted)) return;
+    if (disabled || !speech.ready || (!allowed && !microphoneGranted && !accepted)) return;
     cancel();
     const id = generation.current;
     onAllow();
@@ -241,7 +254,7 @@ export function EnglishSpeakingInput({
         </p>
       ) : (
         <>
-          {!allowed && (
+          {!allowed && (!loaded || !microphoneGranted) && (
             <label className="english-speaking-consent">
               <input
                 className="paper-checkbox"
@@ -263,13 +276,6 @@ export function EnglishSpeakingInput({
                 </a>
               </span>
             </label>
-          )}
-          {!loaded && !remembered && (
-            <p>
-              {uiText(
-                "Baixe o modelo gratuito uma vez, cerca de 65 MB. O navegador pode guardar os arquivos para as próximas práticas.",
-              )}
-            </p>
           )}
           <p className="english-speaking-status" role="status">
             {phase === "downloading"
@@ -335,7 +341,12 @@ export function EnglishSpeakingInput({
               <button
                 className="primary-button english-speaking-record"
                 type="button"
-                disabled={disabled || busy || phase === "ready" || (!allowed && !accepted)}
+                disabled={
+                  disabled ||
+                  busy ||
+                  phase === "ready" ||
+                  (!allowed && !microphoneGranted && !accepted)
+                }
                 onClick={() => void (phase === "listening" ? stop() : start())}
               >
                 <img src="/room-icons/microphone.svg" alt="" width="28" height="28" />
@@ -360,11 +371,6 @@ export function EnglishSpeakingInput({
       >
         {uiText("Agora não posso falar")}
       </button>
-      <small>
-        {uiText(
-          "Avaliamos a frase reconhecida, não o sotaque. Falha de microfone não tira coração.",
-        )}
-      </small>
     </section>
   );
 }

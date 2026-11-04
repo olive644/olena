@@ -166,7 +166,7 @@ it("signals a pause after voice once, without automatically evaluating audio", a
   const ended = vi.fn();
   client.subscribeSilence(ended);
   await client.start();
-  holder.port!.onmessage!({ data: { samples: new Float32Array(16000), sampleRate: 16000 } });
+  holder.port!.onmessage!({ data: { samples: new Float32Array(22400), sampleRate: 16000 } });
   holder.port!.onmessage!({ data: { samples: new Float32Array(16000), sampleRate: 16000 } });
   expect(ended).toHaveBeenCalledOnce();
   expect(worker.messages).toHaveLength(1);
@@ -186,4 +186,28 @@ it("sends the model a trimmed, level-corrected copy of a quiet recording with si
   expect(sent.reduce((peak, sample) => Math.max(peak, Math.abs(sample)), 0)).toBeGreaterThan(0.8);
   worker.reply("result", "Are you from Brazil?");
   await expect(pending).resolves.toBe("Are you from Brazil?");
+});
+
+it("delivers streamed words without settling the inference until its final result", async () => {
+  await ready();
+  capture(new Float32Array(16000).fill(0.02));
+  await client.start();
+  const transcript = vi.fn();
+  client.subscribeTranscript(transcript);
+  const finished = client.finish();
+  await vi.waitFor(() => expect(worker.messages.at(-1)?.type).toBe("transcribe"));
+  worker.reply("partial", "What is");
+  expect(transcript).toHaveBeenLastCalledWith("What is");
+  let settled = false;
+  void finished.then(() => {
+    settled = true;
+  });
+  await Promise.resolve();
+  expect(settled).toBe(false);
+  worker.reply("partial", "What is your name?");
+  worker.reply("result", "What is your name?");
+  await expect(finished).resolves.toBe("What is your name?");
+  client.cancel();
+  worker.reply("partial", "stale text");
+  expect(transcript).not.toHaveBeenCalledWith("stale text");
 });

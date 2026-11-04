@@ -1,5 +1,5 @@
 import { uiText, useLanguage } from "../i18n/runtime";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import {
   PRIVACY_CONSENT_CHANGED,
   readPrivacyConsent,
@@ -13,6 +13,16 @@ import { PaperArrow } from "./paper-arrow";
 
 // É uma confirmação de leitura, não autoriza IA, voz ou serviços opcionais.
 export const PRIVACY_NOTICE_KEY = "helena.privacyNotice.v1";
+
+function subscribeConsent(listener: () => void) {
+  window.addEventListener("storage", listener);
+  window.addEventListener(PRIVACY_CONSENT_CHANGED, listener);
+  return () => {
+    window.removeEventListener("storage", listener);
+    window.removeEventListener(PRIVACY_CONSENT_CHANGED, listener);
+  };
+}
+const consentVersion = () => readPrivacyConsent(localStorage)?.version ?? null;
 
 function PrivacyRenewal({ onClose }: { onClose(): void }) {
   const [accepted, setAccepted] = useState(false);
@@ -70,6 +80,7 @@ function PrivacyRenewal({ onClose }: { onClose(): void }) {
               setError(true);
               return;
             }
+            localStorage.setItem(PRIVACY_NOTICE_KEY, PRIVACY_POLICY_VERSION);
             window.dispatchEvent(new Event(PRIVACY_CONSENT_CHANGED));
             onClose();
           }}
@@ -88,6 +99,7 @@ export function PrivacyNotice({
   authenticated?: boolean;
 }) {
   useLanguage();
+  const acceptedVersion = useSyncExternalStore(subscribeConsent, consentVersion, () => null);
 
   const [visible, setVisible] = useState(() => {
     if (embedded) return true;
@@ -99,12 +111,7 @@ export function PrivacyNotice({
   });
   const [expanded, setExpanded] = useState(false);
   const [renewalDismissed, setRenewalDismissed] = useState(false);
-  if (
-    authenticated &&
-    !embedded &&
-    !renewalDismissed &&
-    readPrivacyConsent(localStorage)?.version !== PRIVACY_POLICY_VERSION
-  )
+  if (authenticated && !embedded && !renewalDismissed && acceptedVersion !== PRIVACY_POLICY_VERSION)
     return (
       <PrivacyRenewal
         onClose={() => {
@@ -113,7 +120,8 @@ export function PrivacyNotice({
         }}
       />
     );
-  if (!visible) return null;
+  if (!visible || (authenticated && !embedded && acceptedVersion === PRIVACY_POLICY_VERSION))
+    return null;
   return (
     <section
       className={embedded ? "profile-card privacy-information" : "privacy-notice"}

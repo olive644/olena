@@ -15,3 +15,13 @@ PT/EN usam entradas append-only do catálogo e versão recalculada. LibraryDialo
 Três regressões vermelhas antes da implementação: aviso ausente para aceite antigo, ausência de opção de adiar e presença sem envio imediato após confirmação. Testes focados após a correção cobrem renovar, não repetir após aceite, cancelar/adiar, troca de sessão, armazenamento bloqueado e descarte do token anterior. Componente real com sessão simulada exercitado em navegador Edge desktop/mobile320 claro/escuro, com POST interceptado: nada antes de confirmar, um sinal após confirmar, perfil preservado e ausência de novo pedido após recarregar. Nenhuma conta real, token real ou renomeação Discord usada na validação.
 
 Evidências externas: b/previews-privacy-renewal-2026-11-02. Logs privacy-renewal-red.log e privacy-renewal-focused.log. Verify integral aprovado: 388 arquivos e 2514 testes, lint sem erros/27 avisos existentes, tipos/API/idiomas/formatação/build/performance verdes. Aplicação 1673,1 KiB, entrada 220,6 KiB. Quinze testes focados e dez E2E Edge PC/mobile claro/escuro de login e retorno passaram. Logs privacy-renewal-verify.log e privacy-renewal-regression-browser.log. Sem novos serviços, dependências, limites ou configurações externas.
+
+## Aceite preservado e abas abertas, 04/11/2026
+
+O aceite explícito atual também guarda versão e data no registro de acesso já existente, associado ao UID ativo. Esse registro sobrevive ao logout; a leitura de recuperação só é permitida quando o UID da conta atual coincide. Trocar de conta não herda o aceite anterior, e excluir a conta continua limpando o registro. Não fabricar consentimento nem substituir a versão da política. A confirmação registra também que o resumo foi lido, evitando outro aviso no remount.
+
+PrivacyNotice acompanha o evento local de consentimento e storage de outras abas. Aceite válido atual fecha a renovação pendente; a página incorporada da política continua acessível. Testes cobrem logout/mesmo UID, isolamento entre contas, remount e aceite vindo de outra aba. A versão permanece 2026-11-03.1, sem novo destinatário ou serviço.
+
+Cache de acesso ilegível é descartado ao gravar uma nova escolha explícita, sem impedir a gravação nem criar aceite de política. Regressão RED/GREEN em privacy-access-repair-red/green.log.
+
+O login pode registrar o aceite antes de conhecer o UID. claimDeviceForAccount associa esse registro explícito à conta ao assumir o aparelho, sem alterar versão/data; em troca de UID, limpa os dados antigos antes da leitura. Regressão de ordem real do login em privacy-login-order-red/green.log, com testes de isolamento existentes preservados.

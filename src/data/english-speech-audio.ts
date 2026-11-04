@@ -29,7 +29,7 @@ export function prepareSpeechAudio(input: Float32Array): Float32Array {
   const sorted = [...energy].sort((a, b) => a - b);
   const floor = percentile(sorted, 0.15);
   const loud = percentile(sorted, 0.95);
-  const threshold = Math.max(floor * 3, loud * 0.08, 1e-4);
+  const threshold = Math.max(floor * 3, loud * 0.01, 1e-4);
   const first = energy.findIndex((e) => e > threshold);
   if (first < 0) return input.slice();
   let last = first;

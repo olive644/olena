@@ -1,4 +1,4 @@
-import { env, pipeline } from "@huggingface/transformers";
+import { env, pipeline, WhisperTextStreamer, WhisperTokenizer } from "@huggingface/transformers";
 import { VOICE_MODEL, VOICE_REVISION } from "./english-asr-model";
 
 env.allowLocalModels = false;
@@ -40,7 +40,21 @@ self.onmessage = async (
         !audio.every(Number.isFinite)
       )
         throw new Error("invalid-audio");
-      const result = await transcriber(audio, { max_new_tokens: 100, return_timestamps: false });
+      if (!(transcriber.tokenizer instanceof WhisperTokenizer))
+        throw new Error("invalid-tokenizer");
+      let preview = "";
+      const streamer = new WhisperTextStreamer(transcriber.tokenizer, {
+        skip_prompt: true,
+        callback_function: (text: string) => {
+          preview = (preview + text).slice(0, 500);
+          self.postMessage({ id, type: "partial", text: preview.trim() });
+        },
+      });
+      const result = await transcriber(audio, {
+        max_new_tokens: 100,
+        return_timestamps: false,
+        streamer,
+      });
       const text = Array.isArray(result) ? result[0]?.text : result.text;
       self.postMessage({ id, type: "result", text: (text ?? "").trim().slice(0, 500) });
     }

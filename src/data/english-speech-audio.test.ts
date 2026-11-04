@@ -71,3 +71,14 @@ it("does not modify the captured buffer it reads from", () => {
   prepareSpeechAudio(input);
   expect([...input]).toEqual([...before]);
 });
+
+it("keeps a quiet opening word before a much louder remainder", () => {
+  const input = new Float32Array(16000 * 3);
+  for (let n = 8000; n < 16000; n++) input[n] = 0.006 * Math.sin((2 * Math.PI * 210 * n) / 16000);
+  for (let n = 20000; n < 36000; n++) input[n] = 0.3 * Math.sin((2 * Math.PI * 210 * n) / 16000);
+  const output = prepareSpeechAudio(input);
+  const firstVoice = output.findIndex((sample) => Math.abs(sample) > 0.01);
+  // 300 ms padding, 280 ms retained lead, then the quiet word. Its onset must survive.
+  expect(firstVoice / 16000).toBeLessThan(0.65);
+  expect(output.length / 16000).toBeGreaterThan(2.6);
+});
