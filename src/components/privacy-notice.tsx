@@ -31,7 +31,7 @@ function PrivacyRenewal({ onClose }: { onClose(): void }) {
       <p>{uiText("Sua conta continua conectada. A presença só começa após sua confirmação.")}</p>
       <p>
         {uiText(
-          "A prática de fala de Inglês é opcional e pede autorização separada para usar o microfone e o reconhecimento do navegador.",
+          "A prática de fala de Inglês é opcional e pede autorização separada para baixar o modelo de voz e usar o microfone. A transcrição acontece no aparelho.",
         )}
       </p>
       <a

@@ -87,9 +87,7 @@ describe("página da Política de Privacidade", () => {
       "Você pode usar palavras com a mesma progressão, sem autorizar o microfone",
     );
     expect(text).toContain("não são enviados para a nuvem do Olena");
-    expect(text).toContain(
-      "A disponibilidade, o processamento e a retenção seguem as condições desse provedor",
-    );
+    expect(text).toContain("sem áudio, transcrição ou dados da sua conta");
     expect(text).toContain("por até 4 horas após a criação da sala");
     expect(text).not.toContain("Não pedimos localização nem acesso ao microfone");
   });
@@ -144,6 +142,9 @@ describe("página da Política de Privacidade", () => {
       "apis.google.com": "Google",
       "api.datamuse.com": "consulta de vocabulário",
       "tarotapi.dev": "consulta dos significados das cartas",
+      "huggingface.co": "serviço de download do modelo de voz",
+      "cas-bridge.xethub.hf.co": "serviço de download do modelo de voz",
+      "us.aws.cdn.hf.co": "serviço de download do modelo de voz",
       "www.google.com": "verificação de segurança",
     };
     for (const host of hosts) {

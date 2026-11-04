@@ -9,9 +9,9 @@
     "node": ">=24"
   },
   "scripts": {
-    "predev": "node scripts/copy-ocr-assets.mjs",
+    "predev": "node scripts/copy-ocr-assets.mjs && node scripts/copy-speech-assets.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/copy-ocr-assets.mjs",
+    "prebuild": "node scripts/copy-ocr-assets.mjs && node scripts/copy-speech-assets.mjs",
     "build": "npm run typecheck && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
@@ -27,6 +27,7 @@
     "verify": "npm run lint && npm run format:check && npm run api:check && npm run i18n:check && npm test && npm run build && npm run performance:check"
   },
   "dependencies": {
+    "@huggingface/transformers": "3.8.1",
     "firebase": "^12.19.0",
     "jose": "^6.2.12",
     "jsqr": "^1.4.0",

@@ -3630,5 +3630,21 @@
   "Leia a frase em voz alta.",
   "Fale a frase estudada em inglês.",
   "A fala enviada ainda não corresponde à frase pedida.",
-  "A prática de fala de Inglês é opcional e pede autorização separada para usar o microfone e o reconhecimento do navegador."
+  "A prática de fala de Inglês é opcional e pede autorização separada para usar o microfone e o reconhecimento do navegador.",
+  "Não foi possível preparar a voz no aparelho. Confira a conexão e tente novamente.",
+  "Não foi possível transcrever no aparelho. Tente novamente ou use palavras.",
+  "O pedido de microfone não foi concluído. Tente novamente ou use palavras.",
+  "Não foi possível abrir o microfone. Confira se ele está conectado ou sendo usado por outro aplicativo.",
+  "Este navegador não oferece gravação de áudio compatível. Faça a mesma questão com palavras.",
+  "Autorizo baixar o modelo de voz e usar o microfone. Minha fala será transcrita neste aparelho, sem envio do áudio.",
+  "Baixe o modelo gratuito uma vez, cerca de 65 MB. O navegador pode guardar os arquivos para as próximas práticas.",
+  "Baixando e preparando o modelo: {0}%",
+  "Transcrevendo neste aparelho…",
+  "Aguardando o microfone…",
+  "Preparar voz no aparelho",
+  "Baixando arquivo do modelo: {0}%",
+  "A prática de fala de Inglês é opcional e pede autorização separada para baixar o modelo de voz e usar o microfone. A transcrição acontece no aparelho.",
+  "As palavras em vermelho precisam de outra tentativa. Fale a frase novamente.",
+  "Frase reconhecida!",
+  "Fale a frase em inglês. As palavras mudam de cor conforme são reconhecidas."
 ]

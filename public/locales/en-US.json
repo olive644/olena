@@ -3630,5 +3630,21 @@
   "Read the phrase aloud.",
   "Say the phrase you studied in English.",
   "The submitted speech does not match the requested phrase yet.",
-  "English speaking practice is optional and asks for separate permission to use the microphone and browser speech recognition."
+  "English speaking practice is optional and asks for separate permission to use the microphone and browser speech recognition.",
+  "The on-device voice model could not be prepared. Check your connection and try again.",
+  "On-device transcription failed. Try again or use words.",
+  "The microphone request did not finish. Try again or use words.",
+  "The microphone could not be opened. Check its connection or whether another app is using it.",
+  "This browser does not offer compatible audio recording. Complete the same question with words.",
+  "I allow downloading the speech model and using the microphone. My speech will be transcribed on this device without sending audio.",
+  "Download the free model once, about 65 MB. Your browser may keep the files for future practice.",
+  "Downloading and preparing the model: {0}%",
+  "Transcribing on this device…",
+  "Waiting for microphone access…",
+  "Prepare on-device speech",
+  "Downloading a model file: {0}%",
+  "English speaking practice is optional and requires separate permission to download the voice model and use the microphone. Transcription happens on your device.",
+  "Try the red words again. Say the sentence once more.",
+  "Sentence recognized!",
+  "Say the sentence in English. Words change color as they are recognized."
 ]

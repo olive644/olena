@@ -1205,3 +1205,45 @@ html[data-reduce-motion="true"] .english-journey * {
     height: 28px;
   }
 }
+
+.english-speaking-words {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+.english-speaking-words span {
+  padding: 3px 6px;
+  border-radius: 3px 8px 3px 5px;
+  color: #40392e;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+.english-speaking-words .is-correct {
+  color: #174b37;
+  background: #b3ecd1;
+  box-shadow: 0 3px #619d82;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.english-speaking-words .is-retry {
+  color: #6a202e;
+  background: #ffc3cd;
+  box-shadow: 0 3px #b86777;
+  text-decoration: underline wavy;
+  text-underline-offset: 4px;
+}
+:root[data-reduce-motion="true"] .english-speaking-words span {
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .english-speaking-words span {
+    transition: none;
+  }
+}
+
+/* Keep the existing return control reachable while live speech wraps on small screens. */
+.english-island-interior.is-practicing > .math-world-back {
+  position: fixed;
+}

@@ -1,25 +1,8 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { EnglishSpeakingInput } from "./english-speaking-input";
-import type { VoiceRecognition } from "../data/english-speaking";
-class Recognition implements VoiceRecognition {
-  static last: Recognition;
-  lang = "";
-  continuous = false;
-  interimResults = false;
-  maxAlternatives = 1;
-  onstart: VoiceRecognition["onstart"] = null;
-  onspeechend: VoiceRecognition["onspeechend"] = null;
-  onend: VoiceRecognition["onend"] = null;
-  onerror: VoiceRecognition["onerror"] = null;
-  onresult: VoiceRecognition["onresult"] = null;
-  start = vi.fn();
-  stop = vi.fn();
-  abort = vi.fn();
-  constructor() {
-    Recognition.last = this;
-  }
-}
+import { LocalEnglishSpeech } from "../data/english-local-speech";
+let speech: LocalEnglishSpeech;
 const answer = vi.fn(),
   alternative = vi.fn(),
   pause = vi.fn(),
@@ -27,151 +10,203 @@ const answer = vi.fn(),
 function mount(allowed = false) {
   return render(
     <EnglishSpeakingInput
+      speech={speech}
+      expected="What is your name?"
       allowed={allowed}
       disabled={false}
-      onAnswer={answer}
-      onAlternative={alternative}
       onAllow={allow}
       onPause={pause}
+      onAnswer={answer}
+      onAlternative={alternative}
       onSound={() => undefined}
     />,
   );
 }
+async function prepare() {
+  fireEvent.click(screen.getByRole("checkbox"));
+  fireEvent.click(screen.getByRole("button", { name: "Preparar voz no aparelho" }));
+  await screen.findByRole("button", { name: "Falar agora" });
+}
 beforeEach(() => {
   vi.clearAllMocks();
   vi.stubGlobal("isSecureContext", true);
-  vi.stubGlobal("SpeechRecognition", Recognition);
+  vi.stubGlobal("AudioContext", class {});
+  vi.stubGlobal("AudioWorkletNode", class {});
+  vi.stubGlobal("Worker", class {});
+  vi.stubGlobal("navigator", { mediaDevices: { getUserMedia: vi.fn() } });
+  speech = new LocalEnglishSpeech();
+  vi.spyOn(speech, "load").mockImplementation(async () => {
+    speech.ready = true;
+    return "";
+  });
+  vi.spyOn(speech, "start").mockResolvedValue();
+  vi.spyOn(speech, "partial").mockResolvedValue(undefined);
+  vi.spyOn(speech, "subscribeSilence").mockReturnValue(() => undefined);
+  vi.spyOn(speech, "finish").mockResolvedValue("What is your name?");
+  vi.spyOn(speech, "cancel").mockImplementation(() => undefined);
 });
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
   vi.useRealTimers();
 });
-it("requires explicit consent, displays recognized speech and submits only on confirmation", () => {
-  const view = mount();
-  expect(screen.getByRole("button", { name: "Falar agora" }).hasAttribute("disabled")).toBe(true);
-  expect(allow).not.toHaveBeenCalled();
-  fireEvent.click(screen.getByRole("checkbox"));
+it("requires consent and download then accepts a matching sentence automatically", async () => {
+  mount();
+  expect(
+    screen.getByRole("button", { name: "Preparar voz no aparelho" }).hasAttribute("disabled"),
+  ).toBe(true);
+  expect(speech.load).not.toHaveBeenCalled();
+  expect(speech.start).not.toHaveBeenCalled();
+  await prepare();
+  expect(speech.load).toHaveBeenCalledOnce();
+  expect(speech.start).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
-  const r = Recognition.last;
-  expect(r.start).toHaveBeenCalledOnce();
-  expect(r.lang).toBe("en-GB");
-  act(() => r.onstart?.());
+  await screen.findByRole("button", { name: "Terminar fala" });
   expect(pause).toHaveBeenLastCalledWith(false);
-  act(() => {
-    r.onresult?.({ results: [{ isFinal: true, 0: { transcript: "My name is Olena." } }] });
-    r.onend?.();
-  });
-  expect(answer).not.toHaveBeenCalled();
-  expect(screen.getByText("My name is Olena.")).toBeTruthy();
-  fireEvent.click(screen.getByRole("button", { name: "Enviar resposta" }));
-  expect(answer).toHaveBeenCalledWith("My name is Olena.");
-  view.unmount();
-  expect(r.abort).toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("button", { name: "Terminar fala" }));
+  await waitFor(() => expect(answer).toHaveBeenCalled());
+  expect(screen.queryByRole("button", { name: "Enviar resposta" })).toBeNull();
+  expect(answer).toHaveBeenCalledWith("What is your name?");
 });
-it("permission denial, silence and network errors never grade an answer", () => {
-  mount(true);
-  for (const error of ["not-allowed", "service-not-allowed", "no-speech", "network"]) {
-    fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
-    act(() => Recognition.last.onerror?.({ error }));
-    expect(screen.getByRole("alert")).toBeTruthy();
-    if (error === "service-not-allowed")
-      expect(screen.getByRole("alert").textContent).not.toContain("não foi autorizado");
-    expect(pause).toHaveBeenLastCalledWith(true);
-  }
+it("load failure keeps the clock paused and allows equivalent words", async () => {
+  vi.mocked(speech.load).mockRejectedValue(new Error("offline"));
+  mount();
+  fireEvent.click(screen.getByRole("checkbox"));
+  fireEvent.click(screen.getByRole("button", { name: "Preparar voz no aparelho" }));
+  await screen.findByRole("alert");
+  expect(pause).toHaveBeenLastCalledWith(true);
   expect(answer).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole("button", { name: "Agora não posso falar" }));
   expect(alternative).toHaveBeenCalledOnce();
 });
-it("aborts on dialog interruption and ignores callbacks after unmount", () => {
-  const view = mount(true);
+it("denied microphone permission never grades a response", async () => {
+  vi.mocked(speech.start).mockRejectedValue(new DOMException("denied", "NotAllowedError"));
+  mount();
+  await prepare();
   fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
-  const r = Recognition.last,
-    late = r.onresult;
-  act(() => r.onstart?.());
-  view.rerender(
-    <EnglishSpeakingInput
-      allowed
-      disabled
-      onAnswer={answer}
-      onAlternative={alternative}
-      onAllow={allow}
-      onPause={pause}
-      onSound={() => undefined}
-    />,
-  );
-  expect(r.abort).toHaveBeenCalled();
-  view.unmount();
-  act(() => late?.({ results: [{ isFinal: true, 0: { transcript: "private late text" } }] }));
+  await screen.findByRole("alert");
+  expect(screen.getByRole("alert").textContent).toContain("não foi autorizado");
   expect(answer).not.toHaveBeenCalled();
 });
-it("caps recording and processing, with a recoverable timeout and no answer", async () => {
-  vi.useFakeTimers();
+it("processing pauses the clock and a mismatch asks for a retry without grading", async () => {
+  let finish: ((value: string) => void) | undefined;
+  vi.mocked(speech.finish).mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  );
+  mount();
+  await prepare();
+  fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
+  await screen.findByRole("button", { name: "Terminar fala" });
+  fireEvent.click(screen.getByRole("button", { name: "Terminar fala" }));
+  await waitFor(() => expect(pause).toHaveBeenLastCalledWith(true));
+  await act(async () => finish?.("My name is Olena."));
+  expect(answer).not.toHaveBeenCalled();
+  expect(
+    screen.getByText(
+      "As palavras em vermelho precisam de outra tentativa. Fale a frase novamente.",
+    ),
+  ).toBeTruthy();
+  expect(pause).toHaveBeenLastCalledWith(true);
+});
+it("unmount cancels capture and ignores late microphone resolution", async () => {
+  let start: (() => void) | undefined;
+  vi.mocked(speech.start).mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        start = resolve;
+      }),
+  );
+  const view = mount();
+  await prepare();
+  fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
+  view.unmount();
+  await act(async () => start?.());
+  expect(speech.cancel).toHaveBeenCalled();
+  expect(answer).not.toHaveBeenCalled();
+});
+it("silence or local inference failure does not remove hearts by submitting an answer", async () => {
+  vi.mocked(speech.finish).mockRejectedValue(new Error("no-speech"));
+  mount();
+  await prepare();
+  fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
+  await screen.findByRole("button", { name: "Terminar fala" });
+  fireEvent.click(screen.getByRole("button", { name: "Terminar fala" }));
+  await screen.findByRole("alert");
+  expect(answer).not.toHaveBeenCalled();
+  expect(pause).toHaveBeenLastCalledWith(true);
+});
+it("reuses prepared model without another download", async () => {
+  speech.ready = true;
   mount(true);
   fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
-  const r = Recognition.last;
-  act(() => r.onstart?.());
+  await screen.findByRole("button", { name: "Terminar fala" });
+  expect(speech.load).not.toHaveBeenCalled();
+});
+it("unsupported audio APIs offer words without loading any model", () => {
+  vi.stubGlobal("AudioWorkletNode", undefined);
+  mount();
+  expect(screen.queryByRole("button", { name: "Preparar voz no aparelho" })).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Agora não posso falar" }));
+  expect(alternative).toHaveBeenCalledOnce();
+  expect(speech.load).not.toHaveBeenCalled();
+});
+
+it("stops recording after twelve seconds and accepts a matching sentence", async () => {
+  mount();
+  await prepare();
+  vi.useFakeTimers();
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
+  });
+  expect(screen.getByRole("button", { name: "Terminar fala" })).toBeDefined();
   await act(async () => {
     await vi.advanceTimersByTimeAsync(12000);
   });
-  expect(r.stop).toHaveBeenCalledOnce();
-  await act(async () => {
-    await vi.advanceTimersByTimeAsync(8000);
-  });
-  expect(r.abort).toHaveBeenCalled();
-  expect(answer).not.toHaveBeenCalled();
-  expect(screen.getByRole("alert")).toBeTruthy();
+  expect(speech.finish).toHaveBeenCalledOnce();
+  expect(answer).toHaveBeenCalledWith("What is your name?");
 });
-it("unsupported browsers offer the same question without requesting a microphone", () => {
-  vi.stubGlobal("SpeechRecognition", undefined);
-  vi.stubGlobal("webkitSpeechRecognition", undefined);
-  mount();
-  expect(screen.queryByRole("button", { name: "Falar agora" })).toBeNull();
-  fireEvent.click(screen.getByRole("button", { name: "Agora não posso falar" }));
-  expect(alternative).toHaveBeenCalledOnce();
-  expect(allow).not.toHaveBeenCalled();
-});
-it("stops capture when the tab is hidden and never resumes it automatically", () => {
-  mount(true);
+it("discards late inference after leaving the activity", async () => {
+  let resolve: ((value: string) => void) | undefined;
+  vi.mocked(speech.finish).mockImplementation(
+    () =>
+      new Promise((done) => {
+        resolve = done;
+      }),
+  );
+  const view = mount();
+  await prepare();
   fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
-  const r = Recognition.last;
-  act(() => r.onstart?.());
-  const descriptor = Object.getOwnPropertyDescriptor(document, "hidden");
-  Object.defineProperty(document, "hidden", { configurable: true, value: true });
-  act(() => document.dispatchEvent(new Event("visibilitychange")));
-  expect(r.abort).toHaveBeenCalled();
-  expect(pause).toHaveBeenLastCalledWith(true);
-  expect(screen.getByRole("button", { name: "Falar agora" })).toBeTruthy();
-  if (descriptor) Object.defineProperty(document, "hidden", descriptor);
-  else Reflect.deleteProperty(document, "hidden");
-  expect(r.start).toHaveBeenCalledOnce();
+  await screen.findByRole("button", { name: "Terminar fala" });
+  fireEvent.click(screen.getByRole("button", { name: "Terminar fala" }));
+  view.unmount();
+  await act(async () => resolve!("private recording"));
+  expect(answer).not.toHaveBeenCalled();
+  expect(speech.cancel).toHaveBeenCalled();
 });
-it("times out an unanswered permission request without submitting a failed attempt", async () => {
+
+it("colors a recognized prefix while listening and only accepts after the speech ends", async () => {
+  let end: (() => void) | undefined;
+  vi.mocked(speech.subscribeSilence).mockImplementation((listener) => {
+    end = listener;
+    return () => undefined;
+  });
+  vi.mocked(speech.partial).mockResolvedValue("What is");
+  const view = mount();
+  await prepare();
   vi.useFakeTimers();
-  mount(true);
-  fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
   await act(async () => {
-    await vi.advanceTimersByTimeAsync(20000);
+    fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
   });
-  expect(Recognition.last.abort).toHaveBeenCalled();
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(2000);
+  });
+  expect(view.container.querySelectorAll('[data-word-state="correct"]')).toHaveLength(2);
+  expect(view.container.querySelectorAll('[data-word-state="waiting"]')).toHaveLength(2);
   expect(answer).not.toHaveBeenCalled();
-  expect(screen.getByRole("alert")).toBeTruthy();
-});
-it("pauses the game for automatic recognition processing and stops only once", () => {
-  mount(true);
-  fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
-  const r = Recognition.last;
-  act(() => r.onstart?.());
-  expect(pause).toHaveBeenLastCalledWith(false);
-  act(() => {
-    r.onspeechend?.();
-    r.onspeechend?.();
-  });
-  expect(r.stop).toHaveBeenCalledOnce();
-  expect(pause).toHaveBeenLastCalledWith(true);
-  act(() => {
-    r.onresult?.({ results: [{ isFinal: true, 0: { transcript: "What is your name?" } }] });
-    r.onend?.();
-  });
-  expect(pause).toHaveBeenLastCalledWith(false);
-  expect(screen.getByRole("button", { name: "Enviar resposta" })).toBeTruthy();
+  await act(async () => end!());
+  expect(answer).toHaveBeenCalledExactlyOnceWith("What is your name?");
+  expect(screen.queryByRole("button", { name: "Enviar resposta" })).toBeNull();
 });

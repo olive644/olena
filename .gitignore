@@ -27,3 +27,6 @@ docs/CONTRATO_SOCIETARIO.md
 
 # Cache local do Trail-Code, regenerável com trail build.
 /graft/
+
+# Runtime de voz local, copiado do pacote instalado
+public/speech-runtime/

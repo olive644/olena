@@ -1847,3 +1847,11 @@ Entrega de fala validada com verify 399 arquivos/2575 testes e matrizes Edge em 
 Consulta de novidades agora preserva um refresh solicitado durante fetch pendente, com prova RED/GREEN e sem paralelismo de rede. Asserção do relógio de fala usa auto-retry do DOM, mesmos1000ms e expectativa. Medição de agenda espera animação de entrada terminar antes de exigir44px. Nenhum tempo, valor ou comportamento do minigame alterado. Logs pr567-refresh-red/green e pr567-ci-fix-browser;14cenáriosmóveis verdes. Exigir verify e CI do novoSHA antes de merge.
 
 Correção PR567 validada: verify399arquivos2576testes EXIT0, JS1725,2KiB/1730, entrada220,7;14E2Emóveis focados verdes. Atualização de novidades tem regressão determinística de focus durante consulta pendente. Aguardar CI do novoSHA, sem reutilizar resultados anteriores.
+
+## Voz de Inglês no Brave, 03/11/2026
+
+Contrato atual em ENGLISH_SPEAKING.md: MediaRecorder e Whisper tiny.en local, @huggingface/transformers 3.8.1, worker sob demanda, revisão de modelo fixa. Build/dev executam scripts/copy-speech-assets.mjs usando o pacote já instalado. Não baixar pesos em build ou CI. Primeiro preparo explícito pode baixar cerca de 65 MB; cache do navegador não é garantia permanente. Não usar SpeechRecognition como prova de suporte. Nenhuma gravação no storage, conta ou servidor. Política 2026-11-03.1, novas origens CSP apenas para arquivos do modelo. Alternativa de palavras mantém questão/progresso. Validação física e sotaques permanecem não verificados.
+
+### Interação atual de fala
+
+A pedido do proprietário, Enviar resposta foi removido. AudioWorklet alimenta PCM local; Whisper produz prévias a cada 2 s, sem inferências simultâneas. Verde/vermelho representa correspondência textual, não sotaque. Silêncio de 1 s encerra captura e a frase correta completa avança automaticamente com crédito único. Divergência pede nova gravação sem erro registrado; o cronômetro ainda corre durante a fala. O contrato anterior de confirmar manualmente foi substituído por esta seção e ENGLISH_SPEAKING.md.
