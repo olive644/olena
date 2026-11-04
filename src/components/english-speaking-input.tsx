@@ -383,7 +383,10 @@ export function EnglishSpeakingInput({
               <button
                 className="primary-button english-speaking-record"
                 type="button"
-                disabled={disabled || busy || phase === "ready"}
+                // Com o dedo no botão ele não pode ser desabilitado enquanto o microfone abre: o
+                // navegador deixaria de entregar o fim do toque e a gravação nunca terminaria ao soltar.
+                disabled={disabled || (busy && phase !== "requesting") || phase === "ready"}
+                aria-busy={phase === "requesting"}
                 data-holding={holding}
                 onPointerDown={press}
                 onPointerUp={release}
@@ -391,7 +394,7 @@ export function EnglishSpeakingInput({
                 onContextMenu={(event) => event.preventDefault()}
                 // Clique de ponteiro já foi tratado ao apertar; este caminho é do teclado.
                 onClick={(event) => {
-                  if (event.detail > 0) return;
+                  if (event.detail > 0 || phase === "requesting") return;
                   void (phase === "listening" ? stop() : start());
                 }}
               >

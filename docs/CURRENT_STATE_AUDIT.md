@@ -4428,3 +4428,21 @@ Pedido da proprietária: verificar se as conquistas ainda aparecem na tela quand
 - Correção: `z-index: 1700` em `math-achievements.css`, acima das partidas (150), do painel de novidades (1600) e do caderno aberto (1100), e abaixo dos diálogos de conta e do seletor de pasta (10000 ou mais).
 - Provas: e2e novo "an achievement earned during the speaking round appears above it" em PC e celular, claro e escuro (o clique no botão de fechar só chega se nada cobre a celebração; falha sem a correção) e captura conferida no celular em tema escuro. e2e de conquistas, celebração, interação e baús (22) continuam passando.
 - Limites: o arcade de Matemática recebe a mesma correção por ter o mesmo z-index, mas não ganhou teste próprio. A celebração é não modal e cobre o centro da tela por até 10 s, inclusive sobre a pergunta de uma partida com relógio; isso é o desenho anterior e não foi alterado. Não verificado em celular real.
+
+## Amigos e segurar para falar, 04/11/2026
+
+Pedido da proprietária, com capturas do celular: moldura dos avatares na lista de amigos torta, remover o texto de contatos no celular, botão de segurar só funcionando como clique.
+
+- Molduras: no celular uma regra de imagem (`.social-connection-row .social-person img`, 36 px) também encolhia a moldura, que ficava do tamanho do avatar e deslocada para cima e à esquerda. Medido no navegador: moldura 36 px a (-5,3; -5,3) do avatar. Agora avatar e moldura têm regras próprias com maior especificidade (`profile-customization.css`) e o retrato fica com 36 px no celular; a moldura mede 124% do avatar e fica centrada.
+- Texto "Somente o nome do contato escolhido é preenchido aqui. Não lemos telefones ou e-mails." deixa de aparecer até 600 px (`display: none`, só no celular). Continua no PC e a mesma informação está na política de privacidade. Limite: no celular a nota some também para leitores de tela.
+- Botão de segurar: causa e correção em `ENGLISH_SPEAKING.md`.
+- Provas: e2e `profile-connections-layout` agora usa o retrato com moldura e exige moldura centrada e 1,24 vezes o avatar, e nota oculta no celular e visível no PC (falha no celular sem a correção); e2e novo de toque real com microfone lento (falha sem a correção); teste unitário de botão habilitado na abertura (falha sem a correção). e2e de fala 52 de 52.
+- Limites: não verificado em celular real.
+
+## Espaço do aluno: ilha de destino segue a última prática, 04/11/2026
+
+Pedido da proprietária, com captura: a última ilha foi o Cais das Boas-vindas e o Espaço do aluno ainda mostrava Matemática.
+
+- O atalho de ilha do Espaço (`student-destinations.tsx`) só considerava Matemática. Agora considera a última prática com respostas entre os cursos de Matemática e o Inglês (`islandId` "english"), e mostra a arte do cenário da parte praticada (`/languages/english-parts/*.webp`, parte 0 = Cais das Boas-vindas). Tocar abre direto o Cais dos Encontros, nos cenários de Inglês, por `sessionStorage` `olena:enter-english` (lido e removido em `learn-view.tsx`, como já ocorria com Matemática).
+- Provas: 2 testes unitários novos (Inglês mais recente abre o Inglês; Matemática mais recente volta à Matemática) e e2e `student-space-last-island` em PC e celular, claro e escuro, com captura do atalho conferida nos dois temas no celular.
+- Limites: o destaque grande do topo ("A próxima descoberta é sua", Oliver, ofensiva e "Explorar Matemática") continua de Matemática porque a ofensiva é de Matemática e não há arte equivalente de Inglês; decisão de produto pendente. A ilha segue a última prática registrada (com respostas), não a mera entrada na tela da ilha.
