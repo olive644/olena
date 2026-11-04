@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { LocalEnglishSpeech } from "../data/english-local-speech";
-import { spokenEnglish } from "../data/english-speaking";
-import { speakingWords } from "../data/english-speaking-words";
+import { speakingWords, speechAccepted } from "../data/english-speaking-words";
 import { HelenaLoading } from "./helena-loading";
 import { PRIVACY_POLICY_PATH } from "../domain/privacy-policy";
 type Phase =
@@ -115,7 +114,7 @@ export function EnglishSpeakingInput({
         return;
       }
       setTranscript(text);
-      if (spokenEnglish(text) === spokenEnglish(expected)) {
+      if (speechAccepted(expected, text)) {
         setPhase("ready");
         onAnswer(expected);
       } else {

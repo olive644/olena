@@ -171,3 +171,19 @@ it("signals a pause after voice once, without automatically evaluating audio", a
   expect(ended).toHaveBeenCalledOnce();
   expect(worker.messages).toHaveLength(1);
 });
+it("sends the model a trimmed, level-corrected copy of a quiet recording with silence around it", async () => {
+  await ready();
+  const quiet = new Float32Array(16000 * 3);
+  for (let n = 16000; n < 16000 * 2; n++)
+    quiet[n] = 0.03 * Math.sin((2 * Math.PI * 200 * n) / 16000);
+  capture(quiet);
+  await client.start();
+  const pending = client.finish();
+  await vi.waitFor(() => expect(worker.messages.at(-1)?.type).toBe("transcribe"));
+  const sent = worker.messages.at(-1)!.audio!;
+  expect(sent.length).toBeLessThan(quiet.length * 0.9);
+  expect(sent.length).toBeGreaterThan(16000);
+  expect(sent.reduce((peak, sample) => Math.max(peak, Math.abs(sample)), 0)).toBeGreaterThan(0.8);
+  worker.reply("result", "Are you from Brazil?");
+  await expect(pending).resolves.toBe("Are you from Brazil?");
+});
