@@ -24,7 +24,6 @@ export function EnglishSpeakingInput({
   onListen,
   speech,
   expected,
-  microphoneGranted = false,
 }: {
   allowed: boolean;
   disabled: boolean;
@@ -37,7 +36,6 @@ export function EnglishSpeakingInput({
   onListen?: (() => void) | undefined;
   speech: LocalEnglishSpeech;
   expected: string;
-  microphoneGranted?: boolean;
 }) {
   useLanguage();
   const [phase, setPhase] = useState<Phase>(() =>
@@ -180,28 +178,34 @@ export function EnglishSpeakingInput({
     }
   }
   const stopLatest = useEffectEvent(stop);
-  const previewLatest = useEffectEvent(async () => {
-    const id = generation.current;
-    try {
-      const text = await speech.partial();
-      if (id === generation.current && text) showPreview(text);
-    } catch {
-      /* Final recognition reports recoverable errors. */
-    }
-  });
   useEffect(() => {
     if (phase !== "listening") return;
+    let alive = true;
+    let preview: ReturnType<typeof setTimeout> | undefined;
     const limit = setTimeout(() => void stopLatest(), 12000);
-    const preview = setInterval(() => void previewLatest(), 2000);
+    const id = generation.current;
+    // Prévia contínua: assim que uma passada termina, começa outra com o áudio novo, para as
+    // palavras aparecerem enquanto a pessoa fala, no ritmo que o aparelho aguentar.
+    const tick = async () => {
+      try {
+        const text = await speech.partial();
+        if (alive && id === generation.current && text) showPreview(text);
+      } catch {
+        /* Final recognition reports recoverable errors. */
+      }
+      if (alive) preview = setTimeout(() => void tick(), 120);
+    };
+    preview = setTimeout(() => void tick(), 300);
     const unsubscribe = speech.subscribeSilence(() => void stopLatest());
     return () => {
+      alive = false;
       clearTimeout(limit);
-      clearInterval(preview);
+      clearTimeout(preview);
       unsubscribe();
     };
-  }, [phase, speech]);
+  }, [phase, speech, showPreview]);
   async function start() {
-    if (disabled || !speech.ready || (!allowed && !microphoneGranted && !accepted)) return;
+    if (disabled || !speech.ready) return;
     cancel();
     const id = generation.current;
     onAllow();
@@ -254,7 +258,7 @@ export function EnglishSpeakingInput({
         </p>
       ) : (
         <>
-          {!allowed && (!loaded || !microphoneGranted) && (
+          {!allowed && !loaded && !remembered && (
             <label className="english-speaking-consent">
               <input
                 className="paper-checkbox"
@@ -264,13 +268,9 @@ export function EnglishSpeakingInput({
                 onChange={(e) => setAccepted(e.target.checked)}
               />
               <span>
-                {remembered || loaded
-                  ? uiText(
-                      "Autorizo usar o microfone. Minha fala será transcrita neste aparelho, sem envio do áudio.",
-                    )
-                  : uiText(
-                      "Autorizo baixar o modelo de voz e usar o microfone. Minha fala será transcrita neste aparelho, sem envio do áudio.",
-                    )}{" "}
+                {uiText(
+                  "Autorizo baixar o modelo de voz. Minha fala será transcrita neste aparelho, sem envio do áudio.",
+                )}{" "}
                 <a href={PRIVACY_POLICY_PATH} target="_blank" rel="noopener noreferrer">
                   {uiText(825)}
                 </a>
@@ -341,12 +341,7 @@ export function EnglishSpeakingInput({
               <button
                 className="primary-button english-speaking-record"
                 type="button"
-                disabled={
-                  disabled ||
-                  busy ||
-                  phase === "ready" ||
-                  (!allowed && !microphoneGranted && !accepted)
-                }
+                disabled={disabled || busy || phase === "ready"}
                 onClick={() => void (phase === "listening" ? stop() : start())}
               >
                 <img src="/room-icons/microphone.svg" alt="" width="28" height="28" />

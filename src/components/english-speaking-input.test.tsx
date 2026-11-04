@@ -239,13 +239,9 @@ it("prepares the cached voice by itself and never asks for the download again", 
   await screen.findByRole("button", { name: "Falar agora" });
   expect(speech.load).toHaveBeenCalledOnce();
   expect(speech.start).not.toHaveBeenCalled();
-  expect(screen.getByRole("checkbox").closest("label")?.textContent).toContain(
-    "Autorizo usar o microfone.",
-  );
-  expect(screen.getByRole("checkbox").closest("label")?.textContent).not.toContain("baixar");
-  // O microfone continua exigindo a autorização e o gesto da pessoa.
-  expect(screen.getByRole("button", { name: "Falar agora" }).hasAttribute("disabled")).toBe(true);
-  fireEvent.click(screen.getByRole("checkbox"));
+  // O microfone é pedido só no início da partida: a atividade não repete nenhum pedido.
+  expect(screen.queryByRole("checkbox")).toBeNull();
+  expect(screen.getByRole("button", { name: "Falar agora" }).hasAttribute("disabled")).toBe(false);
   fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
   await screen.findByRole("button", { name: "Terminar fala" });
 });
@@ -295,13 +291,12 @@ it("shows streamed words during inference without accepting a provisional senten
   expect(answer).toHaveBeenCalledExactlyOnceWith("What is your name?");
 });
 
-it("reuses the permission granted at round start without asking for a second checkbox", async () => {
+it("never shows a microphone checkbox once the voice is loaded, even without a grant flag", async () => {
   speech.ready = true;
   render(
     <EnglishSpeakingInput
       speech={speech}
       expected="What is your name?"
-      microphoneGranted
       allowed={false}
       disabled={false}
       onAllow={allow}
@@ -315,4 +310,21 @@ it("reuses the permission granted at round start without asking for a second che
   fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
   await screen.findByRole("button", { name: "Terminar fala" });
   expect(speech.load).not.toHaveBeenCalled();
+});
+it("keeps refreshing the live words back to back while the person speaks", async () => {
+  let calls = 0;
+  vi.mocked(speech.partial).mockImplementation(async () => {
+    calls++;
+    return "What is";
+  });
+  mount();
+  await prepare();
+  vi.useFakeTimers();
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Falar agora" }));
+  });
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(2000);
+  });
+  expect(calls).toBeGreaterThanOrEqual(4);
 });

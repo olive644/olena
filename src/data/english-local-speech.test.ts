@@ -211,3 +211,45 @@ it("delivers streamed words without settling the inference until its final resul
   worker.reply("partial", "stale text");
   expect(transcript).not.toHaveBeenCalledWith("stale text");
 });
+it("reuses the microphone granted at round start without asking again, across several questions", async () => {
+  const live = {
+    getTracks: () => [{ stop }],
+    getAudioTracks: () => [{ readyState: "live" }],
+  } as unknown as MediaStream;
+  await ready();
+  capture(new Float32Array(16000));
+  client.adoptMicrophone(live);
+  await client.start();
+  await expect(client.finish()).rejects.toThrow("no-speech");
+  // A atividade terminou, mas a partida continua: o fluxo liberado segue aberto.
+  expect(navigator.mediaDevices.getUserMedia).not.toHaveBeenCalled();
+  expect(stop).not.toHaveBeenCalled();
+  await client.start();
+  expect(navigator.mediaDevices.getUserMedia).not.toHaveBeenCalled();
+  client.abort();
+  expect(stop).not.toHaveBeenCalled();
+  client.releaseMicrophone();
+  expect(stop).toHaveBeenCalledOnce();
+});
+it("asks again only when the held microphone is gone", async () => {
+  const ended = {
+    getTracks: () => [{ stop }],
+    getAudioTracks: () => [{ readyState: "ended" }],
+  } as unknown as MediaStream;
+  await ready();
+  capture(new Float32Array(16000));
+  client.adoptMicrophone(ended);
+  await client.start();
+  expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledOnce();
+});
+it("previews only when new audio arrived since the last pass", async () => {
+  await ready();
+  capture(new Float32Array(16000).fill(0.02));
+  await client.start();
+  await vi.waitFor(() => expect(client["samples" as keyof typeof client]).toBe(16000));
+  const first = client.partial();
+  worker.reply("result", "What");
+  await first;
+  expect(await client.partial()).toBeUndefined();
+  expect(worker.messages.filter((m) => m.type === "transcribe")).toHaveLength(1);
+});

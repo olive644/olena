@@ -11,6 +11,9 @@ export class LocalEnglishSpeech {
       }
     | undefined;
   private stream: MediaStream | undefined;
+  // Fluxo liberado no início da partida: reaproveitado pela atividade para não pedir de novo.
+  private held: MediaStream | undefined;
+  private previewed = 0;
   private source: MediaStreamAudioSourceNode | undefined;
   private capture: AudioWorkletNode | undefined;
   private gain: GainNode | undefined;
@@ -91,23 +94,38 @@ export class LocalEnglishSpeech {
       }
     });
   }
+  /** Guarda o fluxo já autorizado; as trilhas só são paradas em releaseMicrophone/dispose. */
+  adoptMicrophone(stream: MediaStream) {
+    if (this.held !== stream) this.releaseMicrophone();
+    this.held = stream;
+  }
+  releaseMicrophone() {
+    this.held?.getTracks().forEach((track) => track.stop());
+    this.held = undefined;
+  }
   async start() {
     if (!this.ready || this.stream || this.context) throw new Error("not-ready");
     const id = ++this.captureId;
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        channelCount: 1,
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-      },
-      video: false,
-    });
+    const held = this.held?.getAudioTracks().some((track) => track.readyState === "live")
+      ? this.held
+      : undefined;
+    const stream =
+      held ??
+      (await navigator.mediaDevices.getUserMedia({
+        audio: {
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+        video: false,
+      }));
     if (id !== this.captureId) {
-      stream.getTracks().forEach((track) => track.stop());
+      if (stream !== this.held) stream.getTracks().forEach((track) => track.stop());
       throw new Error("cancelled");
     }
     this.stream = stream;
+    this.previewed = 0;
     this.chunks = [];
     this.samples = 0;
     this.silence = 0;
@@ -166,7 +184,15 @@ export class LocalEnglishSpeech {
     return pcm;
   }
   async partial(): Promise<string | undefined> {
-    if (!this.stream || this.pending || !this.voiced || this.samples < 16000) return undefined;
+    if (
+      !this.stream ||
+      this.pending ||
+      !this.voiced ||
+      this.samples < 9600 ||
+      this.samples - this.previewed < 4800
+    )
+      return undefined;
+    this.previewed = this.samples;
     const pending = this.send("transcribe", 60000, prepareSpeechAudio(this.pcm()));
     this.inference = pending;
     try {
@@ -200,7 +226,7 @@ export class LocalEnglishSpeech {
     this.source = undefined;
     this.gain?.disconnect();
     this.gain = undefined;
-    this.stream?.getTracks().forEach((track) => track.stop());
+    if (this.stream !== this.held) this.stream?.getTracks().forEach((track) => track.stop());
     this.stream = undefined;
     if (this.context?.state !== "closed") void this.context?.close();
     this.context = undefined;
@@ -218,6 +244,7 @@ export class LocalEnglishSpeech {
   }
   dispose() {
     this.abort();
+    this.releaseMicrophone();
     this.worker?.terminate();
     this.worker = undefined;
     this.ready = false;

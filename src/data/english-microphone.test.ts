@@ -4,15 +4,16 @@ afterEach(() => {
   vi.unstubAllGlobals();
   vi.useRealTimers();
 });
-it("requests permission on demand and releases the microphone without recording", async () => {
+it("requests permission on demand and hands back the open stream without recording", async () => {
   const stop = vi.fn(),
-    getUserMedia = vi.fn().mockResolvedValue({ getTracks: () => [{ stop }] });
+    stream = { getTracks: () => [{ stop }] },
+    getUserMedia = vi.fn().mockResolvedValue(stream);
   vi.stubGlobal("isSecureContext", true);
   vi.stubGlobal("AudioWorkletNode", class {});
   vi.stubGlobal("navigator", { mediaDevices: { getUserMedia } });
   expect(getUserMedia).not.toHaveBeenCalled();
-  expect(await prepareEnglishMicrophone()).toBe(true);
-  expect(stop).toHaveBeenCalledOnce();
+  expect(await prepareEnglishMicrophone()).toBe(stream);
+  expect(stop).not.toHaveBeenCalled();
 });
 it("does not block the activity when permission is denied", async () => {
   vi.stubGlobal("isSecureContext", true);
@@ -22,7 +23,7 @@ it("does not block the activity when permission is denied", async () => {
       getUserMedia: vi.fn().mockRejectedValue(new DOMException("denied", "NotAllowedError")),
     },
   });
-  expect(await prepareEnglishMicrophone()).toBe(false);
+  expect(await prepareEnglishMicrophone()).toBeUndefined();
 });
 it("releases a permission grant arriving after the timeout", async () => {
   vi.useFakeTimers();
@@ -40,7 +41,7 @@ it("releases a permission grant arriving after the timeout", async () => {
   });
   const ready = prepareEnglishMicrophone();
   await vi.advanceTimersByTimeAsync(20000);
-  expect(await ready).toBe(false);
+  expect(await ready).toBeUndefined();
   grant!({ getTracks: () => [{ stop }] });
   await Promise.resolve();
   expect(stop).toHaveBeenCalledOnce();
