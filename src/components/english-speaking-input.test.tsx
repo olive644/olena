@@ -366,6 +366,8 @@ it("pauses in the middle of the sentence do not end a held recording", async () 
   vi.useFakeTimers({ toFake: ["Date"] });
   fireEvent.pointerDown(record());
   await screen.findByRole("button", { name: "Terminar fala" });
+  // O efeito que registra o ouvinte de silêncio pode rodar depois de o botão mudar.
+  await waitFor(() => expect(silence).toBeDefined());
   await act(async () => silence!());
   expect(speech.finish).not.toHaveBeenCalled();
   vi.setSystemTime(Date.now() + 1500);
