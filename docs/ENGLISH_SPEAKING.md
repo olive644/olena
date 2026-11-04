@@ -87,6 +87,10 @@ O preparo sozinho melhora o tiny.en em cerca de 1,6 ponto (84,5% para 86,1% na c
 
 **Limites.** Fala sintética não é microfone real: não mede sotaques reais, ruído de rua, hesitações, microfone ruim nem a captura do navegador. O sotaque brasileiro foi simulado. Os números mostram a direção e a ordem de grandeza, não a taxa que a pessoa vai ter. Não foi testado em celular físico.
 
-### Decisão que fica com a proprietária: modelo base.en
+### Decisão da proprietária, 04/11/2026: manter o tiny.en
+
+A proprietária decidiu não trocar para o base.en: não vale deixar a transcrição mais lenta e o download maior para ganhar precisão. O tiny.en fica, com o preparo do áudio e a tolerância curta. A análise abaixo fica registrada para uma revisão futura, por exemplo se a lentidão deixar de ser um problema.
+
+### Alternativa analisada: modelo base.en (não adotada)
 
 A maior melhora medida vem de trocar tiny.en por base.en: de 9,9% para 5,7% de frases recusadas, e de 12,5% para 7,8% no sotaque simulado. O custo, não verificado aqui: download cerca de 35 MB maior (estimativa a partir da arquitetura, pesos quantizados de aproximadamente 75 MB contra 41 MB) e inferência cerca de 30% mais lenta no PC, ainda mais no celular, onde a prévia a cada 2 s pode atrasar. Não foi incluído porque o Hugging Face estava bloqueado: não foi possível confirmar os nomes dos arquivos nem fixar a revisão do repositório onnx-community/whisper-base.en, e o projeto fixa revisões de modelos. Para ativar: abrir https://huggingface.co/onnx-community/whisper-base.en/commits/main, copiar o hash do commit escolhido, conferir que `onnx/encoder_model_quantized.onnx` e `onnx/decoder_model_merged_quantized.onnx` existem nele, trocar `MODEL` e `REVISION` em `src/data/english-asr.worker.ts`, atualizar o texto "cerca de 65 MB" (catálogos de idioma e política de privacidade) e repetir a prova no celular.
