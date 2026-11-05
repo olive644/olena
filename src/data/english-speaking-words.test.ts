@@ -84,3 +84,21 @@ it("treats the unstressed article a and of as the one allowed short-word confusi
   expect(accepted("It is a book.", "It is the book")).toBe(false);
   expect(accepted("I have a car.", "I have of cars here")).toBe(false);
 });
+it("accepts sounds-alike the model confuses, such as 'Air you from Brazil' for 'Are you from Brazil'", () => {
+  // Texto real ouvido no celular: o áudio de "are" e "air" não se distingue.
+  expect(accepted("Are you from Brazil?", "Air you from Brazil.")).toBe(true);
+  expect(
+    speakingWords("Are you from Brazil?", "Air you from Brazil.", true).map((x) => x.state),
+  ).toEqual(["correct", "correct", "correct", "correct"]);
+  expect(accepted("I want to go.", "I want too go")).toBe(true);
+  expect(accepted("I want to go.", "I want two go")).toBe(true);
+  expect(accepted("Where is your bag?", "Wear is your bag")).toBe(true);
+  expect(accepted("It is for you.", "it is four you")).toBe(true);
+});
+it("sounds-alike never rescue a wrong word, a missing word or an extra word", () => {
+  expect(accepted("Are you from Brazil?", "Are you from Japan")).toBe(false);
+  expect(accepted("Are you from Brazil?", "you from Brazil")).toBe(false);
+  expect(accepted("Are you from Brazil?", "Are you from Brazil today")).toBe(false);
+  expect(accepted("I have two cats.", "I have three cats")).toBe(false);
+  expect(accepted("I do not know.", "I do know")).toBe(false);
+});

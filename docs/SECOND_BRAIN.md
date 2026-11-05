@@ -1875,3 +1875,5 @@ A pedido do proprietário, Enviar resposta foi removido. AudioWorklet alimenta P
 2026-11-05, fala de Inglês: o worklet envia blocos de 100 ms e responde a flush; LocalEnglishSpeech.warm() mantém contexto e worklet prontos entre perguntas (fechados em releaseMicrophone); soltar o botão grava mais 300 ms; a tentativa que falha mostra "Ouvimos: ...". Detalhes em ENGLISH_SPEAKING.md.
 
 2026-11-05, fala de Inglês: microfone circular sem texto, secundários lado a lado, instruções só para leitores de tela; LocalEnglishSpeech reaproveita a última prévia como resultado final quando ela já cobriu toda a voz (voicedEnd). Detalhes em ENGLISH_SPEAKING.md.
+
+2026-11-05, Espaço do aluno: lastIslandOf (src/data/last-island.ts) escolhe a ilha do widget entre a última entrada (helena.lastIsland.v1) e a última prática; arte de Inglês dentro do recipiente quadrado student-island-art. english-speaking-words.ts tem grupos de palavras de mesmo som (SOUND_ALIKE). Detalhes em CURRENT_STATE_AUDIT.md e ENGLISH_SPEAKING.md.
