@@ -1866,6 +1866,8 @@ A pedido do proprietário, Enviar resposta foi removido. AudioWorklet alimenta P
 
 2026-11-04, fala de Inglês: o botão do microfone grava enquanto segurado e termina ao soltar (pointerdown/up com captura); toque curto liga o modo de toque e o teclado alterna. Silêncio não encerra a fala segurada. Detalhes em ENGLISH_SPEAKING.md.
 
+2026-11-04, conquistas: a celebração (.achievement-notice) usa z-index 1700 para aparecer acima das partidas em tela cheia (z-index 150) e do painel de novidades (1600). Detalhes em CURRENT_STATE_AUDIT.md.
+
 2026-11-04, amigos e fala: moldura do avatar na lista de conexões tem regras próprias em profile-customization.css (124% do avatar, centrada); nota de contatos oculta até 600 px; botão de segurar para falar não é desabilitado enquanto o microfone abre. Detalhes em CURRENT_STATE_AUDIT.md.
 
 2026-11-04, Espaço do aluno: o atalho de ilha usa a última prática entre Matemática e Inglês (arte do cenário de Inglês com a parte praticada) e abre direto o Inglês via sessionStorage olena:enter-english. O destaque do topo segue de Matemática. Detalhes em CURRENT_STATE_AUDIT.md.
