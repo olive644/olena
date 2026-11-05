@@ -46,6 +46,7 @@ beforeEach(() => {
   vi.spyOn(speech, "subscribeSilence").mockReturnValue(() => undefined);
   vi.spyOn(speech, "finish").mockResolvedValue("What is your name?");
   vi.spyOn(speech, "cancel").mockImplementation(() => undefined);
+  vi.spyOn(speech, "warm").mockResolvedValue();
 });
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -419,4 +420,37 @@ it("keeps the record button enabled while the microphone opens, so a finger on i
   fireEvent.click(record(), { detail: 0 });
   expect(speech.start).toHaveBeenCalledOnce();
   await act(async () => opened!());
+});
+it("warms the audio graph once the voice is ready, so the start of the speech is not lost", async () => {
+  mount();
+  expect(speech.warm).not.toHaveBeenCalled();
+  await prepare();
+  expect(speech.warm).toHaveBeenCalled();
+});
+it("keeps recording for a moment after the button is released, so the last word is not cut", async () => {
+  mount();
+  await prepare();
+  vi.useFakeTimers({ toFake: ["Date", "setTimeout", "clearTimeout"] });
+  fireEvent.pointerDown(record());
+  await act(async () => {});
+  vi.setSystemTime(Date.now() + 1500);
+  fireEvent.pointerUp(record());
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(200);
+  });
+  expect(speech.finish).not.toHaveBeenCalled();
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(200);
+  });
+  expect(speech.finish).toHaveBeenCalledOnce();
+});
+it("shows what was heard when the sentence needs another try, so a misrecognition is visible", async () => {
+  vi.mocked(speech.finish).mockResolvedValue("She is front Japon");
+  mount();
+  await prepare();
+  fireEvent.click(record(), { detail: 0 });
+  await screen.findByRole("button", { name: "Terminar fala" });
+  fireEvent.click(record(), { detail: 0 });
+  await screen.findByText("Ouvimos: “She is front Japon”");
+  expect(answer).not.toHaveBeenCalled();
 });

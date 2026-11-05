@@ -68,6 +68,7 @@ export function EnglishSpeakingInput({
   const held = useRef(false);
   const pressedAt = useRef(0);
   const releasedEarly = useRef(false);
+  const tail = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const generation = useRef(0);
   const stopping = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -78,6 +79,7 @@ export function EnglishSpeakingInput({
   const cancel = useCallback(() => {
     generation.current++;
     clearTimeout(timer.current);
+    clearTimeout(tail.current);
     speech.cancel();
   }, [speech]);
   useEffect(() => {
@@ -125,6 +127,10 @@ export function EnglishSpeakingInput({
       }
     })();
   }, [remembered, speech, supported]);
+  useEffect(() => {
+    // Contexto e worklet prontos antes de apertar: o começo da fala não se perde na abertura.
+    if (loaded && supported && speech.ready) void speech.warm();
+  }, [loaded, supported, speech]);
   async function download() {
     if (disabled || (!allowed && !accepted)) return;
     const id = ++generation.current;
@@ -241,7 +247,8 @@ export function EnglishSpeakingInput({
     held.current = false;
     setHolding(false);
     if (Date.now() - pressedAt.current < 400) return;
-    if (phase === "listening") void stop();
+    // Mantém a gravação por um instante: o fim da última palavra costuma sair depois de soltar.
+    if (phase === "listening") tail.current = setTimeout(() => void stop(), 300);
     else if (phase === "requesting") releasedEarly.current = true;
   }
   async function start() {
@@ -317,7 +324,14 @@ export function EnglishSpeakingInput({
               </span>
             </label>
           )}
-          <p className="english-speaking-status" role="status">
+          <p
+            className={
+              phase === "setup" || phase === "error" || phase === "retry"
+                ? "english-speaking-status visually-hidden"
+                : "english-speaking-status"
+            }
+            role="status"
+          >
             {phase === "downloading"
               ? remembered
                 ? uiText("Preparando a voz neste aparelho…")
@@ -340,6 +354,11 @@ export function EnglishSpeakingInput({
                             "Segure o botão e fale a frase em inglês. Solte para terminar. As palavras mudam de cor conforme são reconhecidas.",
                           )}
           </p>
+          {phase === "retry" && transcript && (
+            <p className="english-speaking-heard" lang="en">
+              {uiText("Ouvimos: “{0}”", [transcript])}
+            </p>
+          )}
           {busy && <HelenaLoading compact />}
           <div
             className="english-speaking-transcript english-speaking-words"
@@ -359,17 +378,7 @@ export function EnglishSpeakingInput({
               {error}
             </p>
           )}
-          <div className="english-actions">
-            {onListen && (
-              <button
-                className="secondary-button"
-                type="button"
-                disabled={disabled || busy || phase === "listening"}
-                onClick={onListen}
-              >
-                {uiText("Ouvir a fala")}
-              </button>
-            )}
+          <div className="english-speaking-controls">
             {!loaded ? (
               <button
                 className="primary-button"
@@ -383,6 +392,13 @@ export function EnglishSpeakingInput({
               <button
                 className="primary-button english-speaking-record"
                 type="button"
+                aria-label={
+                  phase === "listening"
+                    ? uiText("Terminar fala")
+                    : transcript
+                      ? uiText("Gravar novamente")
+                      : uiText("Falar agora")
+                }
                 // Com o dedo no botão ele não pode ser desabilitado enquanto o microfone abre: o
                 // navegador deixaria de entregar o fim do toque e a gravação nunca terminaria ao soltar.
                 disabled={disabled || (busy && phase !== "requesting") || phase === "ready"}
@@ -398,28 +414,35 @@ export function EnglishSpeakingInput({
                   void (phase === "listening" ? stop() : start());
                 }}
               >
-                <img src="/room-icons/microphone.svg" alt="" width="28" height="28" />
-                {phase === "listening"
-                  ? uiText("Terminar fala")
-                  : transcript
-                    ? uiText("Gravar novamente")
-                    : uiText("Falar agora")}
+                <img src="/room-icons/microphone.svg" alt="" width="40" height="40" />
               </button>
             )}
           </div>
         </>
       )}
-      <button
-        className="secondary-button"
-        type="button"
-        disabled={disabled}
-        onClick={() => {
-          cancel();
-          onAlternative();
-        }}
-      >
-        {uiText("Agora não posso falar")}
-      </button>
+      <div className="english-speaking-secondary">
+        {supported && onListen && (
+          <button
+            className="secondary-button"
+            type="button"
+            disabled={disabled || busy || phase === "listening"}
+            onClick={onListen}
+          >
+            {uiText("Ouvir a fala")}
+          </button>
+        )}
+        <button
+          className="secondary-button"
+          type="button"
+          disabled={disabled}
+          onClick={() => {
+            cancel();
+            onAlternative();
+          }}
+        >
+          {uiText("Agora não posso falar")}
+        </button>
+      </div>
     </section>
   );
 }

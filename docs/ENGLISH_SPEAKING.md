@@ -153,3 +153,23 @@ Relato: no celular o botão só funcionava como clique, não dava para segurar.
 - Causa provável, reproduzida em e2e com toque real (Chrome DevTools Protocol, `Input.dispatchTouchEvent`) e abertura lenta do microfone: ao apertar, a fase vira "requesting" e o botão ficava `disabled`. Com o dedo ainda em cima, o navegador pode parar de entregar o fim do toque a um controle desabilitado, e a gravação nunca terminava ao soltar. No mouse e no mock instantâneo isso não aparecia.
 - Correção: o botão continua habilitado durante "requesting" (`aria-busy` indica a abertura) e um clique de teclado durante a abertura é ignorado, para não abrir o microfone duas vezes.
 - Limite: a causa foi provada em Chromium com toque sintético; o comportamento em Chrome e Samsung Internet no aparelho real não foi verificado aqui.
+
+## Início e fim da fala não se perdem mais, 05/11/2026
+
+Relato: a pessoa fala a frase certa e o reconhecimento erra palavras diferentes a cada tentativa, ora as primeiras, ora as últimas.
+
+Esse padrão combina com áudio cortado nas pontas, e a leitura da captura achou duas perdas reais, independentes do modelo:
+
+- **Fim cortado.** O worklet só enviava blocos fechados (200 ms) e descartava o bloco parcial ao parar, perdendo até o final da última palavra. Agora os blocos são de 100 ms e, ao terminar, o cliente pede `flush` ao worklet e espera a sobra (até 150 ms) antes de montar o áudio. Soltar o botão também mantém a gravação por mais 300 ms.
+- **Começo cortado.** A cada pergunta o contexto de áudio, o carregamento do worklet e o nó eram criados só ao apertar, o que leva centenas de milissegundos no celular, e a primeira sílaba ("She") ficava de fora. `warm()` deixa contexto e worklet prontos assim que a voz está carregada, e apertar só liga a fonte. O contexto fica entre as perguntas e é fechado ao terminar a partida; sem `warm()` o comportamento é o antigo. Nada é capturado antes de apertar: o worklet só recebe áudio com a fonte ligada.
+- **O que foi ouvido.** Quando a frase precisa de outra tentativa, a tela mostra "Ouvimos: “...”" com o texto reconhecido, só na memória e só na tela. Antes só se via a cor das palavras, e não dava para saber se o erro era do modelo ou da captura.
+
+Limites: não foi possível medir a precisão real do modelo (sem microfone real nem acesso ao Hugging Face neste ambiente); as correções removem perdas de áudio provadas em teste, mas o tiny.en continua fraco com sotaque, palavras curtas e ruído. Se mesmo assim errar com a fala certa, o texto "Ouvimos" mostra o que o modelo entendeu e indica o próximo passo (modelo maior ou reconhecimento nativo do navegador, que envia o áudio a um serviço externo e exigiria consentimento próprio).
+
+## Controles sem texto e menos espera, 05/11/2026
+
+Pedido: tirar os textos de instrução, deixar o microfone como círculo sem texto, pôr "Ouvir a fala" e "Agora não posso falar" lado a lado embaixo dele e diminuir a espera.
+
+- **Controles.** O microfone é um círculo de 88 px só com o ícone; o nome acessível ("Falar agora", "Terminar fala", "Gravar novamente") vem do `aria-label`. Os dois botões secundários ficam lado a lado numa linha abaixo (em 320 px dividem a largura e o texto quebra em duas linhas). Os textos "Segure o botão e fale a frase em inglês..." e "As palavras em vermelho precisam de outra tentativa..." saíram da tela, mas continuam no DOM, escondidos (`visually-hidden`), para leitores de tela. O botão deixou de subir e descer no hover: com o cursor na borda do círculo ele alternava as duas posições sem parar.
+- **Espera.** Quase todo o tempo vem do modelo: o codificador do Whisper processa uma janela fixa de 30 s a cada passada, seja a fala de 1 s ou de 10 s, então cada passada custa o mesmo no celular. O que dá para reduzir sem trocar de modelo: (1) o resultado final reaproveita a última prévia quando ela já cobriu toda a voz (só faltava silêncio), poupando uma passada inteira, o que acontece sobretudo no fim automático por silêncio e quando a pessoa solta o botão depois de uma prévia completa; (2) blocos de áudio de 100 ms e contexto pronto (`warm()`), descritos acima.
+- **Limites do que foi feito.** Não foi possível medir o tempo real de uma passada no celular. A espera continua determinada pela velocidade do aparelho: a prévia mostra palavras só depois de cada passada terminar. Para mudar isso de verdade existem duas rotas, que não foram implementadas por exigirem medição em aparelho e decisão: executar o modelo na GPU (WebGPU, com pesos diferentes e download diferente do "cerca de 65 MB" informado) ou usar threads de WebAssembly (exige isolar a origem com COOP e COEP, o que pode quebrar o login com popup).
