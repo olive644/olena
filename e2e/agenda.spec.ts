@@ -631,7 +631,20 @@ test("agenda creates, edits, completes, reschedules and persists tasks on deskto
   await page.evaluate(() => {
     document.documentElement.dataset["theme"] = "dark";
   });
-  await expect(page.locator(".agenda-month-grid button").nth(10)).toHaveCSS(
+  // Uma célula comum do mês: a 11ª, ou a primeira depois dela que não seja hoje nem a selecionada.
+  // Com o índice fixo, o teste falhava justamente no dia em que hoje caía na 11ª célula.
+  const ordinary = await page
+    .locator(".agenda-month-grid button")
+    .evaluateAll((buttons) =>
+      buttons.findIndex(
+        (button, index) =>
+          index >= 10 &&
+          !button.classList.contains("is-today") &&
+          !button.classList.contains("is-selected"),
+      ),
+    );
+  expect(ordinary).toBeGreaterThanOrEqual(10);
+  await expect(page.locator(".agenda-month-grid button").nth(ordinary)).toHaveCSS(
     "background-color",
     "rgb(41, 36, 50)",
   );
