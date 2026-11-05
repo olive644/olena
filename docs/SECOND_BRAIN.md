@@ -1871,3 +1871,7 @@ A pedido do proprietário, Enviar resposta foi removido. AudioWorklet alimenta P
 2026-11-04, amigos e fala: moldura do avatar na lista de conexões tem regras próprias em profile-customization.css (124% do avatar, centrada); nota de contatos oculta até 600 px; botão de segurar para falar não é desabilitado enquanto o microfone abre. Detalhes em CURRENT_STATE_AUDIT.md.
 
 2026-11-04, Espaço do aluno: o atalho de ilha usa a última prática entre Matemática e Inglês (arte do cenário de Inglês com a parte praticada) e abre direto o Inglês via sessionStorage olena:enter-english. O destaque do topo segue de Matemática. Detalhes em CURRENT_STATE_AUDIT.md.
+
+2026-11-05, fala de Inglês: o worklet envia blocos de 100 ms e responde a flush; LocalEnglishSpeech.warm() mantém contexto e worklet prontos entre perguntas (fechados em releaseMicrophone); soltar o botão grava mais 300 ms; a tentativa que falha mostra "Ouvimos: ...". Detalhes em ENGLISH_SPEAKING.md.
+
+2026-11-05, fala de Inglês: microfone circular sem texto, secundários lado a lado, instruções só para leitores de tela; LocalEnglishSpeech reaproveita a última prévia como resultado final quando ela já cobriu toda a voz (voicedEnd). Detalhes em ENGLISH_SPEAKING.md.

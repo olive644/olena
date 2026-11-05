@@ -1,2 +1,2 @@
-export const CATALOG_VERSION = "77a83271feb0942b";
-export const CATALOG_SIZE = 3654;
+export const CATALOG_VERSION = "3d1c98a0370c91b9";
+export const CATALOG_SIZE = 3655;

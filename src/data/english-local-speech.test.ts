@@ -253,3 +253,132 @@ it("previews only when new audio arrived since the last pass", async () => {
   expect(await client.partial()).toBeUndefined();
   expect(worker.messages.filter((m) => m.type === "transcribe")).toHaveLength(1);
 });
+function countingAudio(options: { tail?: Float32Array } = {}) {
+  const made = { contexts: 0, modules: 0, closed: 0 };
+  vi.stubGlobal(
+    "AudioContext",
+    class {
+      state = "running";
+      sampleRate = 16000;
+      audioWorklet = {
+        addModule: async () => {
+          made.modules++;
+        },
+      };
+      destination = {};
+      constructor() {
+        made.contexts++;
+      }
+      createMediaStreamSource() {
+        return { connect: () => undefined, disconnect: () => undefined };
+      }
+      createGain() {
+        return { gain: { value: 1 }, connect: () => undefined, disconnect: () => undefined };
+      }
+      async resume() {}
+      async close() {
+        this.state = "closed";
+        made.closed++;
+      }
+    },
+  );
+  vi.stubGlobal(
+    "AudioWorkletNode",
+    class {
+      port: {
+        onmessage: ((event: { data: unknown }) => void) | null;
+        postMessage?: (message: unknown) => void;
+      } = { onmessage: null };
+      constructor() {
+        queueMicrotask(() =>
+          this.port.onmessage?.({
+            data: { samples: new Float32Array(16000).fill(0.02), sampleRate: 16000 },
+          }),
+        );
+        if (options.tail)
+          this.port.postMessage = (message) => {
+            if (message === "flush")
+              queueMicrotask(() =>
+                this.port.onmessage?.({
+                  data: { samples: options.tail, sampleRate: 16000, flush: true },
+                }),
+              );
+          };
+      }
+      connect() {}
+      disconnect() {}
+    },
+  );
+  return made;
+}
+it("keeps the audio graph ready between questions when it was warmed, and closes it on release", async () => {
+  const made = countingAudio();
+  await ready();
+  const live = {
+    getTracks: () => [{ stop }],
+    getAudioTracks: () => [{ readyState: "live" }],
+  } as unknown as MediaStream;
+  client.adoptMicrophone(live);
+  await client.warm();
+  expect(made).toMatchObject({ contexts: 1, modules: 1 });
+  await client.start();
+  await expect(client.finish())
+    .resolves.toBeDefined()
+    .catch(() => undefined);
+  await client.start();
+  client.abort();
+  expect(made).toMatchObject({ contexts: 1, modules: 1, closed: 0 });
+  client.releaseMicrophone();
+  expect(made.closed).toBe(1);
+});
+it("without warm() each recording builds and closes its own audio graph, as before", async () => {
+  const made = countingAudio();
+  await ready();
+  await client.start();
+  client.abort();
+  await client.start();
+  client.abort();
+  expect(made).toMatchObject({ contexts: 2, closed: 2 });
+});
+it("asks the worklet for the unsent tail and sends it to the model, so the last word is not cut", async () => {
+  countingAudio({ tail: new Float32Array(4000).fill(0.02) });
+  await ready();
+  await client.start();
+  const pending = client.finish();
+  await vi.waitFor(() => expect(worker.messages.at(-1)?.type).toBe("transcribe"));
+  // 16000 amostras já entregues mais as 4000 da sobra; sem o pedido de flush seriam só 16000.
+  expect(worker.messages.at(-1)?.audio?.length).toBe(20000);
+  worker.reply("result", "She is from Japan.");
+  await expect(pending).resolves.toBe("She is from Japan.");
+});
+it("reuses the last preview as the final text when it already heard all the speech, saving a model pass", async () => {
+  await ready();
+  capture(new Float32Array(16000).fill(0.02));
+  await client.start();
+  await vi.waitFor(() => expect(client["samples" as keyof typeof client]).toBe(16000));
+  const preview = client.partial();
+  worker.reply("result", "She is from Japan.");
+  await preview;
+  const transcribes = worker.messages.filter((m) => m.type === "transcribe").length;
+  await expect(client.finish()).resolves.toBe("She is from Japan.");
+  expect(worker.messages.filter((m) => m.type === "transcribe")).toHaveLength(transcribes);
+});
+it("runs a final pass when more speech arrived after the last preview", async () => {
+  await ready();
+  capture(new Float32Array(16000).fill(0.02));
+  await client.start();
+  await vi.waitFor(() => expect(client["samples" as keyof typeof client]).toBe(16000));
+  const preview = client.partial();
+  worker.reply("result", "She is");
+  await preview;
+  // O resto da frase chega depois da prévia.
+  holder.port!.onmessage!({
+    data: { samples: new Float32Array(8000).fill(0.02), sampleRate: 16000 },
+  });
+  const final = client.finish();
+  await vi.waitFor(() =>
+    expect(worker.messages.filter((m) => m.type === "transcribe")).toHaveLength(2),
+  );
+  worker.reply("result", "She is from Japan.");
+  await expect(final).resolves.toBe("She is from Japan.");
+});

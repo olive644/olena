@@ -164,31 +164,27 @@ async function setup(page: Page, part: number, theme: string, supported = true, 
       });
       Object.defineProperty(AudioContext.prototype, "audioWorklet", {
         configurable: true,
-        get: () => ({
-          // Abrir o microfone de verdade leva centenas de ms; com atraso 0 não há timer a esperar.
-          addModule: () =>
-            harness.openDelay
-              ? new Promise<void>((resolve) => setTimeout(resolve, harness.openDelay))
-              : Promise.resolve(),
-        }),
+        get: () => ({ addModule: async () => undefined }),
       });
-      Object.defineProperty(AudioContext.prototype, "createMediaStreamSource", {
+      // Abrir o microfone de verdade leva centenas de ms; com atraso 0 não há timer a esperar.
+      Object.defineProperty(AudioContext.prototype, "resume", {
         configurable: true,
-        value: () => ({ connect: () => undefined, disconnect: () => undefined }),
+        value: () =>
+          harness.openDelay
+            ? new Promise<void>((resolve) => setTimeout(resolve, harness.openDelay))
+            : Promise.resolve(),
       });
+      type CaptureEvent = { data: { samples: Float32Array; sampleRate: number } };
       class Capture {
-        port: {
-          onmessage:
-            ((event: { data: { samples: Float32Array; sampleRate: number } }) => void) | null;
-        } = { onmessage: null };
+        port: { onmessage: ((event: CaptureEvent) => void) | null } = { onmessage: null };
         timer: ReturnType<typeof setInterval> | undefined;
-        constructor() {
+        // Como o worklet real, só entrega áudio enquanto uma fonte está ligada a ele.
+        begin() {
           queueMicrotask(() =>
             this.port.onmessage?.({
               data: { samples: new Float32Array(16000).fill(0.02), sampleRate: 16000 },
             }),
           );
-          // O microfone real continua entregando áudio enquanto a pessoa fala.
           this.timer = setInterval(
             () =>
               this.port.onmessage?.({
@@ -197,11 +193,27 @@ async function setup(page: Page, part: number, theme: string, supported = true, 
             100,
           );
         }
-        connect() {}
-        disconnect() {
+        end() {
           clearInterval(this.timer);
         }
+        connect() {}
+        disconnect() {
+          this.end();
+        }
       }
+      Object.defineProperty(AudioContext.prototype, "createMediaStreamSource", {
+        configurable: true,
+        value: () => {
+          let target: Capture | undefined;
+          return {
+            connect: (node: Capture) => {
+              target = node;
+              node.begin();
+            },
+            disconnect: () => target?.end(),
+          };
+        },
+      });
       Object.defineProperty(window, "AudioWorkletNode", {
         configurable: true,
         value: supported ? Capture : undefined,
@@ -234,6 +246,8 @@ async function finish(page: Page, transcript: string) {
     (window as BrowserVoice).voiceTest.text = text;
   }, transcript);
   await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "listening");
+  // Como na fala real, a prévia acompanha o que foi dito: dá tempo de uma passada ouvir o texto novo.
+  await page.clock.runFor(700);
   // Clear the old hover after the permission error disappears and recenters the activity.
   await page.mouse.move(0, 0);
   await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
@@ -386,6 +400,41 @@ for (const theme of ["light", "dark"]) {
     await touch("touchEnd");
     await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", /ready|retry/);
   });
+  test(`the microphone is a text-free circle with the two secondary buttons side by side below: ${theme}`, async ({
+    page,
+  }, info) => {
+    if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
+    // Voz local de inglês simulada, para o botão "Ouvir a fala" aparecer.
+    await page.addInitScript(() => {
+      Object.defineProperty(window.speechSynthesis, "getVoices", {
+        configurable: true,
+        value: () => [{ lang: "en-US", name: "Teste", default: true, localService: true }],
+      });
+    });
+    await setup(page, 0, theme);
+    await prepare(page);
+    const mic = page.getByRole("button", { name: "Falar agora", exact: true });
+    await expect(mic).toHaveText("");
+    const box = (await mic.boundingBox())!;
+    expect(Math.abs(box.width - box.height)).toBeLessThan(1);
+    await expect(mic).toHaveCSS("border-top-left-radius", "50%");
+    const listen = (await page.getByRole("button", { name: "Ouvir a fala" }).boundingBox())!;
+    const later = (await page
+      .getByRole("button", { name: "Agora não posso falar" })
+      .boundingBox())!;
+    // Lado a lado (mesma linha), os dois abaixo do microfone e dentro da largura da tela.
+    expect(Math.abs(listen.y - later.y)).toBeLessThan(4);
+    expect(listen.y).toBeGreaterThan(box.y + box.height);
+    expect(listen.x + listen.width).toBeLessThanOrEqual(later.x + 1);
+    expect(later.x + later.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+    // Os dois textos de instrução saem da tela (ficam só para leitores de tela).
+    const instruction = (await page
+      .getByText("Segure o botão e fale a frase em inglês.")
+      .boundingBox())!;
+    expect(instruction.width).toBeLessThanOrEqual(1);
+    expect(instruction.height).toBeLessThanOrEqual(1);
+    await page.screenshot({ path: info.outputPath(`controles-${theme}.png`) });
+  });
   test(`speech denial, retry, private transcript and same-question fallback: ${theme}`, async ({
     page,
   }, info) => {
@@ -405,6 +454,9 @@ for (const theme of ["light", "dark"]) {
     await finish(page, "private microphone text do not save");
     await expect(page.locator(".english-speaking")).toHaveAttribute("data-phase", "retry");
     await expect(page.locator("[data-word-state=retry]").first()).toBeVisible();
+    // O que o modelo ouviu aparece, para um erro de reconhecimento ficar visível.
+    await expect(page.locator(".english-speaking-heard")).toContainText("private microphone text");
+    await page.screenshot({ path: info.outputPath(`ouvimos-${theme}.png`) });
     await expect(page.locator(".math-hearts")).toHaveAttribute("aria-label", /3/);
     const storage = await page.evaluate(() => JSON.stringify({ ...localStorage }));
     expect(storage).not.toContain("private microphone text");

@@ -1108,7 +1108,46 @@ html[data-reduce-motion="true"] .english-journey * {
   justify-content: center;
   gap: 12px;
 }
-.english-speaking-record {
+.english-speaking-heard {
+  margin: 0;
+  max-width: 100%;
+  font-size: 0.95rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.english-speaking-controls {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.english-speaking-secondary {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+.english-speaking-secondary > button {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+@media (max-width: 420px) {
+  .english-speaking-secondary > button {
+    flex: 1 1 0;
+    padding: 10px 8px;
+    font-size: 0.9rem;
+    line-height: 1.2;
+  }
+}
+/* Botão do microfone: só o ícone, em círculo. O nome acessível vem do aria-label. */
+/* Prefixo para vencer as regras compartilhadas de .primary-button (raio de papel, padding). */
+:root body .english-speaking .english-speaking-record {
+  width: 88px;
+  height: 88px;
+  min-width: 88px;
+  padding: 0;
+  padding-inline: 0;
+  border-radius: 50%;
+  justify-content: center;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1117,11 +1156,18 @@ html[data-reduce-motion="true"] .english-journey * {
   -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
-.english-speaking-record[data-holding="true"] {
+/* Sem o levantar/afundar do papel no hover e no toque: com o cursor na borda do círculo ele
+   alternava entre as duas posições sem parar, e ao segurar o botão não pode se mover. */
+:root body .english-speaking .english-speaking-record:is(:hover, :active):not(:disabled) {
+  translate: 0 0 !important;
+  transform: none;
+}
+:root body .english-speaking .english-speaking-record[data-holding="true"]:not(:disabled) {
+  translate: 0 0 !important;
   transform: scale(1.06);
 }
 @media (prefers-reduced-motion: reduce) {
-  .english-speaking-record[data-holding="true"] {
+  :root body .english-speaking .english-speaking-record[data-holding="true"]:not(:disabled) {
     transform: none;
   }
 }
