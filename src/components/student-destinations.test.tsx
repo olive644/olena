@@ -32,9 +32,13 @@ it("retoma a última parte matemática praticada e usa somente a última modalid
   saveStudentResume({ focus: { mode: "pomodoro", at: Date.now() } });
   const navigate = vi.fn();
   const { container } = render(<StudentDestinations workspace={workspace} onNavigate={navigate} />);
-  expect(container.querySelector(".student-island-art")?.getAttribute("src")).toContain(
-    "school-small.webp",
-  );
+  expect(
+    container
+      .querySelector(
+        ".student-destination--learn img[src*='-islands'], .student-destination--learn img[src*='/languages/']",
+      )
+      ?.getAttribute("src"),
+  ).toContain("school-small.webp");
   expect(container.querySelector(".student-focus-art .pomodoro-tomato")).toBeTruthy();
   expect(container.querySelector(".student-focus-art .pomodoro-tomato-live")).toBeTruthy();
   expect(container.querySelector(".student-focus-art .focus-rose")).toBeNull();
@@ -75,7 +79,9 @@ it("mostra e abre a última ilha praticada quando é o Cais das Boas-vindas de I
   const navigate = vi.fn();
   const { container } = render(<StudentDestinations workspace={workspace} onNavigate={navigate} />);
   const art = container.querySelector(".student-island-art");
-  expect(art?.getAttribute("src")).toBe("/languages/english-parts/welcome.webp");
+  expect(art?.querySelector("img")?.getAttribute("src")).toBe(
+    "/languages/english-parts/welcome.webp",
+  );
   expect(art?.getAttribute("data-island")).toBe("english");
   fireEvent.click(screen.getByRole("button", { name: /Explorar as ilhas/ }));
   expect(navigate).toHaveBeenCalledWith("learn");
@@ -104,7 +110,28 @@ it("volta à matemática quando ela é a mais recente depois do Inglês", () => 
     },
   ];
   const { container } = render(<StudentDestinations workspace={workspace} onNavigate={vi.fn()} />);
-  expect(container.querySelector(".student-island-art")?.getAttribute("src")).toContain(
-    "school-small.webp",
+  expect(
+    container
+      .querySelector(
+        ".student-destination--learn img[src*='-islands'], .student-destination--learn img[src*='/languages/']",
+      )
+      ?.getAttribute("src"),
+  ).toContain("school-small.webp");
+});
+it("o destino segue a última ilha em que a pessoa entrou, mesmo sem prática registrada", () => {
+  localStorage.setItem(
+    "helena.lastIsland.v1",
+    JSON.stringify({ owner: null, id: "english", part: 2, at: Date.now() - 1000 }),
   );
+  const { container } = render(
+    <StudentDestinations workspace={createInitialWorkspace()} onNavigate={vi.fn()} />,
+  );
+  expect(
+    container
+      .querySelector(
+        ".student-destination--learn img[src*='-islands'], .student-destination--learn img[src*='/languages/']",
+      )
+      ?.getAttribute("src"),
+  ).toBe("/languages/english-parts/memories.webp");
+  localStorage.clear();
 });

@@ -14,6 +14,20 @@ const PROTECTED = new Set([
   "neither",
   "without",
 ]);
+// Palavras que soam igual (ou que o reconhecimento confunde com a mesma pronúncia, como
+// "are" ouvido como "air"): o áudio não distingue, então valem como a mesma palavra. A primeira
+// de cada grupo é a forma de comparação. Os números ditos viram dígitos antes (two vira 2), então
+// só 2 e 4 entram, por soarem como to e for; as negações longas continuam fora.
+const SOUND_ALIKE =
+  "are air ar|our hour|to too 2|for 4 fore|there their|here hear|by buy bye|no know|right write|i eye|you u|where wear|weather whether|which witch|would wood|hi high|a uh";
+const SOUND_KEY = new Map<string, string>(
+  SOUND_ALIKE.split("|").flatMap((group) => {
+    const words = group.split(" ");
+    return words.map((word): [string, string] => [word, words[0]!]);
+  }),
+);
+/** Forma de comparação: palavras que soam igual viram a mesma. */
+export const soundKey = (word: string) => SOUND_KEY.get(word) ?? word;
 function editDistance(a: string, b: string) {
   const row = Array.from({ length: b.length + 1 }, (_, j) => j);
   for (let i = 1; i <= a.length; i++) {
@@ -86,7 +100,7 @@ export function speakingWords(expected: string, heard: string, final = false) {
   );
   const heardList = heardTokens(heard, expected);
   const pair = (i: number, j: number) =>
-    tokens[i - 1]!.text === heardList[j - 1]
+    soundKey(tokens[i - 1]!.text) === soundKey(heardList[j - 1]!)
       ? EXACT
       : nearSpokenWord(tokens[i - 1]!.text, heardList[j - 1]!)
         ? NEAR

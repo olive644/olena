@@ -41,10 +41,17 @@ for (const theme of ["light", "dark"]) {
     );
     await page.goto("/");
     const island = page.locator(".student-destination--learn .student-island-art");
-    await expect(island).toHaveAttribute("src", "/languages/english-parts/welcome.webp");
+    const art = island.locator("img");
+    await expect(art).toHaveAttribute("src", "/languages/english-parts/welcome.webp");
     await expect
-      .poll(() => island.evaluate((image: HTMLImageElement) => image.naturalWidth))
+      .poll(() => art.evaluate((image: HTMLImageElement) => image.naturalWidth))
       .toBeGreaterThan(0);
+    // A arte não pode sair esticada: o recipiente é quadrado e a imagem mantém a proporção.
+    const box = (await island.boundingBox())!;
+    expect(Math.abs(box.width - box.height)).toBeLessThan(1.5);
+    await expect(art).toHaveCSS("object-fit", "contain");
+    const shown = (await art.boundingBox())!;
+    expect(Math.abs(shown.width - shown.height)).toBeLessThan(1.5);
     await page.locator(".student-space-shortcuts").screenshot({
       path: info.outputPath(`espaco-${info.project.name}-${theme}.png`),
     });
@@ -53,5 +60,42 @@ for (const theme of ["light", "dark"]) {
     await expect(page.getByRole("button", { name: "Explorar lugar", exact: true })).toBeVisible();
     await expect(page.getByText("Cais das Boas-vindas").first()).toBeVisible();
     await expect(page.getByRole("button", { name: "Explorar Matemática" })).toHaveCount(0);
+  });
+}
+
+for (const theme of ["light", "dark"]) {
+  test(`entrar na ilha de Inglês muda o Espaço do aluno, sem prática registrada: ${theme}`, async ({
+    page,
+  }, info) => {
+    if (info.project.name === "mobile") await page.setViewportSize({ width: 360, height: 740 });
+    // Preferência de início em Idiomas, como no teste da fala, sem nenhuma prática registrada.
+    const workspace = createInitialWorkspace();
+    workspace.studyPreferences.initialIslandId = "languages";
+    await page.addInitScript(
+      ({ workspace, theme }) => {
+        localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+        localStorage.setItem("helena.guest.v1", "1");
+        localStorage.setItem("helenastudy.theme", theme);
+        if (!sessionStorage.getItem("space-fixture")) {
+          sessionStorage.setItem("space-fixture", "1");
+          localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace));
+        }
+      },
+      { workspace, theme },
+    );
+    await page.goto("/");
+    // Sem nada praticado nem aberto, o widget da ilha começa em Matemática.
+    await expect(
+      page.locator(".student-destination--learn .student-island-art img"),
+    ).toHaveAttribute("src", /math-islands/);
+    await page.goto("/aprender");
+    await page.getByRole("button", { name: "Explorar Inglês", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Explorar lugar", exact: true })).toBeVisible();
+    await page.goto("/");
+    await expect(
+      page.locator(".student-destination--learn .student-island-art img"),
+    ).toHaveAttribute("src", "/languages/english-parts/welcome.webp");
+    await page.getByRole("button", { name: "Explorar as ilhas", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Explorar lugar", exact: true })).toBeVisible();
   });
 }

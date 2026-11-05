@@ -3,7 +3,7 @@ import { uiText } from "../i18n/runtime";
 import type { AppView } from "./app-navigation";
 import type { WorkspaceState } from "../domain/workspace";
 import { MATH_COURSES } from "../data/math-courses";
-import { ENGLISH_PART_CATALOG } from "../data/english-part-catalog";
+import { lastIslandOf } from "../data/last-island";
 import { readStudentResume } from "../data/student-resume";
 import { FOCUS_SESSION_KEY, readFocusSession } from "../domain/focus-session";
 import { FocusRose } from "./focus-art";
@@ -12,6 +12,8 @@ import { tomatoStage } from "../domain/pomodoro-tomato";
 import { focusFlowerState } from "../domain/focus-flower";
 import { agendaTimeZone } from "../data/agenda-time-zone";
 import { useWallClock } from "../hooks/use-wall-clock";
+// Arte do cenário de cada parte de Inglês (mesma ordem de english-part-catalog.ts).
+const ENGLISH_ART = ["welcome", "habits", "memories", "plans", "ideas", "meaning"] as const;
 const IslandPreview = lazy(() => import("./student-island-preview"));
 export function StudentDestinations({
   workspace,
@@ -22,22 +24,13 @@ export function StudentDestinations({
 }) {
   const resume = readStudentResume();
   const now = useWallClock();
-  // A ilha de destino é a última em que a pessoa praticou, de Matemática ou de Inglês.
-  const recent = [...(workspace.practiceActivities ?? [])]
-    .filter(
-      (item) =>
-        item.answers > 0 &&
-        Date.parse(item.completedAt) <= now &&
-        (item.islandId === "english" ||
-          MATH_COURSES.some((course) => item.islandId === `mathematics:${course.id}`)),
-    )
-    .sort((a, b) => Date.parse(b.completedAt) - Date.parse(a.completedAt))[0];
-  const englishPart =
-    recent?.islandId === "english"
-      ? ENGLISH_PART_CATALOG[(recent.englishAttempt ?? recent.englishA1Attempt)?.part ?? 0]
-      : undefined;
+  // A ilha de destino é a última em que a pessoa entrou ou praticou, de Matemática ou de Inglês.
+  const destination = lastIslandOf(workspace.practiceActivities ?? [], now);
+  const englishArt = destination.id === "english" ? ENGLISH_ART[destination.part] : undefined;
   const course =
-    MATH_COURSES.find((item) => recent?.islandId === `mathematics:${item.id}`) ?? MATH_COURSES[0]!;
+    MATH_COURSES.find(
+      (item) => destination.id === "mathematics" && item.id === destination.course,
+    ) ?? MATH_COURSES[0]!;
   const session = readFocusSession(localStorage.getItem(FOCUS_SESSION_KEY), now);
   const mode = session?.mode ?? resume.focus?.mode;
   const flower = focusFlowerState(workspace.focusSessions, now, agendaTimeZone());
@@ -49,7 +42,7 @@ export function StudentDestinations({
         aria-label={uiText(2709)}
         onClick={() => {
           try {
-            if (englishPart) sessionStorage.setItem("olena:enter-english", "1");
+            if (englishArt) sessionStorage.setItem("olena:enter-english", "1");
             else sessionStorage.setItem("olena:enter-mathematics", course.id);
           } catch {
             /* O hub continua acessível. */
@@ -57,16 +50,23 @@ export function StudentDestinations({
           onNavigate("learn");
         }}
       >
-        {englishPart ? (
-          <img
+        {englishArt ? (
+          // Mesmo recipiente da prévia de Matemática: ele fixa o quadrado e a imagem se ajusta dentro.
+          // Imagem solta com width e height herdava o aspect-ratio e saía esticada.
+          <span
             className="student-island-art"
             data-island="english"
-            data-part={englishPart.id}
-            src={`/languages/english-parts/${englishPart.art}.webp`}
-            alt=""
-            width="180"
-            height="180"
-          />
+            data-part={englishArt}
+            aria-hidden="true"
+          >
+            <img
+              src={`/languages/english-parts/${englishArt}.webp`}
+              alt=""
+              width="180"
+              height="180"
+              decoding="async"
+            />
+          </span>
         ) : (
           <Suspense
             fallback={

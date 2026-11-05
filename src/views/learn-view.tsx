@@ -19,6 +19,7 @@ import { writeSyncedStorage } from "../data/synced-storage";
 import "../solo-journey.css";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
 import { lastPracticeIsland, rememberPracticeIsland } from "../data/practice-island-selection";
+import { rememberEnteredIsland } from "../data/last-island";
 import { PracticeIslandCarousel } from "../components/practice-island-carousel";
 import { MathIslandJourney } from "../components/math-island-journey";
 import { useStoredProfile } from "../hooks/use-stored-profile";
@@ -151,6 +152,10 @@ function PracticeHub({ dispatch, workspace }: LearnViewProps) {
   useEffect(() => {
     rememberPracticeIsland(world.id, preference);
   }, [world.id, preference]);
+  useEffect(() => {
+    // Entrar em Matemática; a entrada em Inglês é registrada pela própria jornada, com a parte.
+    if (insideWorld && world.id === "mathematics") rememberEnteredIsland("mathematics");
+  }, [insideWorld, world.id]);
 
   function enterMath() {
     if (!available) return;
