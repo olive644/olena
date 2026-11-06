@@ -4,13 +4,14 @@ import { PlannerView } from "./planner-view";
 import { createInitialWorkspace, type WorkspaceState } from "../domain/workspace";
 import { FOCUS_SESSION_KEY } from "../domain/focus-session";
 import { SYNCED_STORAGE_EVENT } from "../data/synced-storage";
+import { agendaTimeZone } from "../data/agenda-time-zone";
+import { zonedDateTime } from "../domain/agenda-calendar";
 
-const today = new Date();
-const key = [
-  today.getFullYear(),
-  String(today.getMonth() + 1).padStart(2, "0"),
-  String(today.getDate()).padStart(2, "0"),
-].join("-");
+// A agenda conta o dia no fuso dela (São Paulo por padrão), não no do computador: no CI, em UTC,
+// de madrugada, o dia local já é o seguinte.
+function todayKey() {
+  return zonedDateTime(Date.now(), agendaTimeZone()).date;
+}
 
 function workspaceWithStudy(): WorkspaceState {
   const base = createInitialWorkspace();
@@ -21,7 +22,7 @@ function workspaceWithStudy(): WorkspaceState {
         id: "study-1",
         title: "Revisar frações",
         subjectId: base.subjects[0]?.id ?? "math",
-        date: key,
+        date: todayKey(),
         time: "10:00",
         kind: "study",
         durationMinutes: 30,
