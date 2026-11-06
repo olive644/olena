@@ -525,7 +525,9 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
       plannedMinutes,
     };
     try {
-      localStorage.setItem(FOCUS_SESSION_KEY, JSON.stringify(session));
+      // writeSyncedStorage avisa a sincronização na hora; só gravar no aparelho deixava a sessão
+      // fora da conta até a tela de Foco montar e gravar de novo.
+      writeSyncedStorage(FOCUS_SESSION_KEY, JSON.stringify(session));
       onNavigate?.("focus");
     } catch {
       setNotice(uiText(1443));
