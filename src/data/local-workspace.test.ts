@@ -467,6 +467,53 @@ describe("espaço ilegível", () => {
     expect(storage.values.get(WORKSPACE_RECOVERY_KEY)).toBe(raw);
   });
 
+  it("um registro de Inglês de outra versão não zera o progresso do espaço", () => {
+    const base = createInitialWorkspace();
+    const known = {
+      id: "english:arcade:a:0",
+      islandId: "english",
+      islandName: "Cais dos Encontros · Inglês",
+      completedAt: "2026-11-05T10:00:00.000Z",
+      answers: 1,
+      correct: 1,
+      englishAttempt: {
+        curriculum: 4,
+        area: "english",
+        part: 1,
+        mode: "practice",
+        questions: [3],
+        correctQuestions: [3],
+      },
+    };
+    const math = {
+      id: "math:1",
+      islandId: "mathematics",
+      islandName: "Matemática",
+      completedAt: "2026-11-05T11:00:00.000Z",
+      answers: 4,
+      correct: 3,
+    };
+    // Parte e questão que só uma versão futura conhece.
+    const unknown = {
+      ...known,
+      id: "english:arcade:b:0",
+      englishAttempt: {
+        ...known.englishAttempt,
+        part: 9,
+        questions: [900],
+        correctQuestions: [900],
+      },
+    };
+    const raw = JSON.stringify({ ...base, practiceActivities: [known, unknown, math] });
+    const storage = memoryStorage({ [WORKSPACE_STORAGE_KEY]: raw });
+    const loaded = loadWorkspace(storage);
+    expect(loaded.practiceActivities?.map((item) => item.id)).toEqual([
+      "english:arcade:a:0",
+      "math:1",
+    ]);
+    expect(storage.values.get(WORKSPACE_RECOVERY_KEY)).toBe(raw);
+  });
+
   it("guarda também um conteúdo que nem é JSON", () => {
     const storage = memoryStorage({ [WORKSPACE_STORAGE_KEY]: "{quebrado" });
     loadWorkspace(storage);
