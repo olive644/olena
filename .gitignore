@@ -30,3 +30,10 @@ docs/CONTRATO_SOCIETARIO.md
 
 # Runtime de voz local, copiado do pacote instalado
 public/speech-runtime/
+
+# App Android: chaves de assinatura e saída do build nunca vão para o repositório.
+*.keystore
+*.jks
+android/build/
+android/app/
+android/.gradle/
