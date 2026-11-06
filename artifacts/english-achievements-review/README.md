@@ -23,3 +23,12 @@ Preview isolado dos componentes reais de atividade, sem autenticação nem requi
 | Celular 320 px | [Feed claro](mobile-english-feed-light.png)  | [Feed escuro](mobile-english-feed-dark.png)  |
 
 Reprodução: iniciar npm run dev na porta 4174 e executar node artifacts/english-achievements-review/capture-feed.mjs. O preview não conecta conta nem envia atividades.
+
+## Etapa intermediária sem personagem
+
+| Dispositivo | Claro                                              | Escuro                                            |
+| ----------- | -------------------------------------------------- | ------------------------------------------------- |
+| Desktop     | [Nível 25](desktop-english-intermediate-light.png) | [Nível 25](desktop-english-intermediate-dark.png) |
+| Celular     | [Nível 25](mobile-english-intermediate-light.png)  | [Nível 25](mobile-english-intermediate-dark.png)  |
+
+A inspeção permite alternar 25, 50 e 100. A imagem com Olena permanece no nível 100, com os mesmos IDs e datas históricos.
