@@ -5,6 +5,7 @@ import { createInitialWorkspace, type PracticeActivity } from "../src/domain/wor
 import { validEnglishCourse, englishQuestion } from "../src/data/english-journey";
 import { validA1Content } from "../src/data/english-a1-content";
 import { ENGLISH_PART_CATALOG } from "../src/data/english-part-catalog";
+import { ENGLISH_PART_ORDER } from "../src/domain/english-part-order";
 const raw: unknown = JSON.parse(readFileSync("public/languages/en/english-v4.json", "utf8"));
 if (!validEnglishCourse(raw)) throw new Error("Invalid English content");
 const a1: unknown = JSON.parse(readFileSync("public/languages/en/english-a1-v1.json", "utf8"));
@@ -72,8 +73,6 @@ async function answer(page: Page, correct = true) {
   const q = englishQuestion(course, 0, id);
   if (q.kind === "reply" || q.kind === "gap")
     await expect(page.locator(".english-reply-intent")).toHaveCSS("color", "rgb(255, 249, 239)");
-  if (await page.locator(".english-speaking").count())
-    await page.getByRole("button", { name: "Agora não posso falar", exact: true }).click();
   if (q.kind === "order") {
     const words = q.phrase.split(" ");
     const order = correct ? words : [...words].reverse();
@@ -173,7 +172,7 @@ for (const theme of ["light", "dark"]) {
     for (let i = 0; i < 8; i++)
       await page.getByRole("button", { name: "Mundo anterior", exact: true }).click();
     await parts(page);
-    await expect(page.locator(".math-journey-island")).toHaveCount(6);
+    await expect(page.locator(".math-journey-island")).toHaveCount(8);
     await page.route("**/languages/en/english-v4.json", (route) =>
       route.fulfill({ status: 503, body: "unavailable" }),
     );
@@ -206,21 +205,25 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("button", { name: "Próxima parte de Inglês", exact: true }).click();
     await expect(page.locator(".math-place-start")).toBeDisabled();
   });
-  test(`all six regions keep their own material and previously confirmed progress: ${theme}`, async ({
+  test(`all eight regions keep their own material and previously confirmed progress: ${theme}`, async ({
     page,
   }, info) => {
     if (info.project.name === "mobile") await page.setViewportSize({ width: 320, height: 568 });
     await seed(page, theme, legacyCompleted());
     await parts(page);
-    for (let i = 0; i < 5; i++)
-      await page.getByRole("button", { name: "Parte anterior de Inglês", exact: true }).click();
-    for (const [i, region] of ENGLISH_PART_CATALOG.entries()) {
+    for (let i = 0; i < ENGLISH_PART_ORDER.length - 1; i++) {
+      const previous = page.getByRole("button", { name: "Parte anterior de Inglês", exact: true });
+      if (await previous.isDisabled()) break;
+      await previous.click();
+    }
+    for (const [i, id] of ENGLISH_PART_ORDER.entries()) {
+      const region = ENGLISH_PART_CATALOG[id]!;
       await expect(
         page.getByRole("heading", { name: region.title["pt-BR"], exact: true }),
       ).toBeVisible();
       await expect(page.locator(".math-journey-completion")).toHaveAttribute(
         "aria-valuenow",
-        "100",
+        id < 6 ? "100" : "0",
       );
       await page.getByRole("button", { name: "Explorar lugar", exact: true }).click();
       await expect(page.locator(".english-entry")).toBeVisible();
@@ -236,10 +239,10 @@ for (const theme of ["light", "dark"]) {
       ).toHaveCount(0);
       await noOverflow(page);
       await page.getByRole("button", { name: "Voltar", exact: true }).click();
-      if (i < 5)
+      if (i < ENGLISH_PART_ORDER.length - 1)
         await page.getByRole("button", { name: "Próxima parte de Inglês", exact: true }).click();
     }
-    for (let i = 0; i < 3; i++)
+    for (let i = 0; i < ENGLISH_PART_ORDER.length - 1 - ENGLISH_PART_ORDER.indexOf(2); i++)
       await page.getByRole("button", { name: "Parte anterior de Inglês", exact: true }).click();
     await page.getByRole("button", { name: "Explorar lugar", exact: true }).click();
     await page

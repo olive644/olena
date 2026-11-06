@@ -68,7 +68,10 @@ it("validates final positions and answers and rejects malformed or out-of-bank c
     false,
   );
   expect(validEnglishCheckpoint({ ...point, question: 240 })).toBe(false);
-  expect(validEnglishCheckpoint({ ...point, part: 1 })).toBe(false);
+  expect(validEnglishCheckpoint({ ...point, part: 1, question: 151 })).toBe(true);
+  expect(validEnglishCheckpoint({ ...point, part: 2, question: 151 })).toBe(true);
+  expect(validEnglishCheckpoint({ ...point, part: 1, question: 176 })).toBe(false);
+  expect(validEnglishCheckpoint({ ...point, part: 5, question: 120 })).toBe(false);
   expect(validEnglishCheckpoint({ ...point, question: null })).toBe(true);
 });
 

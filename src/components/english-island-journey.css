@@ -1075,276 +1075,43 @@ html[data-reduce-motion="true"] .english-journey * {
   }
 }
 
-.english-speaking {
-  display: grid;
-  justify-items: center;
-  gap: 14px;
-  margin: 12px auto;
-  max-width: 640px;
-  text-align: center;
-  color: #fff9ef;
-}
-.english-speaking p {
-  margin: 0;
-}
-.english-speaking-consent {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 14px 16px;
-  background: var(--surface);
-  color: var(--text);
-  border-radius: 4px 20px 4px 14px;
-  box-shadow: 0 4px 0 var(--line);
-  font-size: 14px;
-  line-height: 1.5;
-  text-align: left;
-}
-.english-speaking-consent input {
-  flex: 0 0 auto;
-  margin-top: 2px;
-}
-.english-speaking .english-actions {
-  justify-content: center;
-  gap: 12px;
-}
-.english-speaking-heard {
-  margin: 0;
-  max-width: 100%;
-  font-size: 0.95rem;
-  text-align: center;
-  overflow-wrap: anywhere;
-}
-.english-speaking-controls {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-.english-speaking-secondary {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-}
-.english-speaking-secondary > button {
-  flex: 0 1 auto;
-  min-width: 0;
-}
-@media (max-width: 420px) {
-  .english-speaking-secondary > button {
-    flex: 1 1 0;
-    padding: 10px 8px;
-    font-size: 0.9rem;
-    line-height: 1.2;
-  }
-}
-/* Botão do microfone: só o ícone, em círculo. O nome acessível vem do aria-label. */
-/* Prefixo para vencer as regras compartilhadas de .primary-button (raio de papel, padding). */
-:root body .english-speaking .english-speaking-record {
-  width: 88px;
-  height: 88px;
-  min-width: 88px;
-  padding: 0;
-  padding-inline: 0;
-  border-radius: 50%;
-  justify-content: center;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-}
-/* Sem o levantar/afundar do papel no hover e no toque: com o cursor na borda do círculo ele
-   alternava entre as duas posições sem parar, e ao segurar o botão não pode se mover. */
-:root body .english-speaking .english-speaking-record:is(:hover, :active):not(:disabled) {
-  translate: 0 0 !important;
-  transform: none;
-}
-:root body .english-speaking .english-speaking-record[data-holding="true"]:not(:disabled) {
-  translate: 0 0 !important;
-  transform: scale(1.06);
-}
-@media (prefers-reduced-motion: reduce) {
-  :root body .english-speaking .english-speaking-record[data-holding="true"]:not(:disabled) {
-    transform: none;
-  }
-}
-.english-speaking small {
-  font-size: 12px;
-  line-height: 1.5;
-  max-width: 440px;
-}
-.english-speaking-transcript {
-  margin: 0;
-  padding: 14px 20px;
-  width: 100%;
-  background: #ffe17d;
-  background-image:
-    linear-gradient(145deg, #fff0ad 0 18px, transparent 18px),
-    linear-gradient(168deg, transparent 70%, #efc64d70);
-  color: #292432;
-  border-radius: 4px 20px 4px 14px;
-  box-shadow: 0 4px 0 #b58b2e;
-  overflow-wrap: anywhere;
-}
-.english-speaking-error {
-  max-width: 480px;
-}
-.english-speaking-wave {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  height: 44px;
-}
-.english-speaking-wave i {
-  width: 7px;
-  height: 12px;
-  background: #ffda19;
-  clip-path: polygon(0 12%, 75% 0, 100% 88%, 25% 100%);
-}
-.english-speaking-wave i:nth-child(3n) {
-  height: 30px;
-  background: #b68aff;
-}
-.english-speaking-wave i:nth-child(2n) {
-  height: 22px;
-}
-.english-speaking[data-phase="listening"] .english-speaking-wave i {
-  animation: english-voice-pulse 0.65s ease-in-out infinite alternate;
-}
-.english-speaking[data-phase="listening"] .english-speaking-wave i:nth-child(2n) {
-  animation-delay: -0.3s;
-}
-@keyframes english-voice-pulse {
-  to {
-    transform: scaleY(0.45);
-  }
-}
-:root[data-reduce-motion="true"] .english-speaking-wave i {
-  animation: none !important;
-}
-@media (prefers-reduced-motion: reduce) {
-  .english-speaking-wave i {
-    animation: none !important;
-  }
-}
-@media (max-width: 600px) {
-  .english-speaking {
-    gap: 10px;
-  }
-  .english-speaking-consent {
-    padding: 10px;
-    font-size: 12px;
-  }
-  .english-speaking-wave {
-    height: 32px;
-  }
-  .english-speaking .english-actions button {
-    padding: 10px 12px;
-  }
-  .english-speaking-status {
-    font-size: 14px;
-  }
-}
-.english-lesson > .math-answer-reaction {
-  position: relative;
-  left: auto;
-  top: auto;
-  transform: none;
-  width: fit-content;
-  margin: 12px auto;
-  animation: english-arrive 0.25s ease-out both;
-}
-@media (max-width: 600px) {
-  .english-island-interior .english-lesson.is-speaking .english-scene {
-    margin: 10px 0;
-  }
-  .english-speaking {
-    gap: 8px;
-  }
-  .english-speaking-wave {
-    height: 28px;
-  }
-}
-
-.english-speaking-words {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px;
-}
-.english-speaking-words span {
-  padding: 3px 6px;
-  border-radius: 3px 8px 3px 5px;
-  color: #40392e;
-  transition:
-    background-color 160ms ease,
-    color 160ms ease;
-}
-.english-speaking-words .is-correct {
-  color: #174b37;
-  background: #b3ecd1;
-  box-shadow: 0 3px #619d82;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-.english-speaking-words .is-retry {
-  color: #6a202e;
-  background: #ffc3cd;
-  box-shadow: 0 3px #b86777;
-  text-decoration: underline wavy;
-  text-underline-offset: 4px;
-}
-:root[data-reduce-motion="true"] .english-speaking-words span {
-  transition: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .english-speaking-words span {
-    transition: none;
-  }
-}
-
-/* Keep the existing return control reachable while live speech wraps on small screens. */
 .english-island-interior.is-practicing > .math-world-back {
   position: fixed;
 }
 
-@keyframes english-word-correct {
-  0% {
-    transform: translateY(0) scale(1);
-    filter: brightness(1);
-  }
-  45% {
-    transform: translateY(-3px) scale(1.05);
-    filter: brightness(1.15);
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    filter: brightness(1);
-  }
+.english-study-guide {
+  width: min(100%, 680px);
+  text-align: start;
 }
-@keyframes english-word-retry {
-  25% {
-    transform: translateX(-3px) rotate(-2deg);
-  }
-  75% {
-    transform: translateX(3px) rotate(2deg);
-  }
+.english-study-guide summary {
+  cursor: pointer;
 }
-.english-speaking-words .is-correct {
-  animation: english-word-correct 320ms ease-out;
+.english-study-guide section + section {
+  margin-top: 24px;
 }
-.english-speaking-words .is-retry {
-  animation: english-word-retry 240ms ease-out;
+.english-study-guide h2 {
+  font-size: 20px;
 }
-:root[data-reduce-motion="true"] .english-speaking-words span {
-  animation: none;
+.english-study-guide blockquote {
+  margin: 16px 0;
+  padding: 16px;
+  background: #ffe681;
+  color: #27212e;
+  border-radius: 4px 20px 4px 4px;
+  box-shadow: 0 4px 0 #bba34f;
 }
-@media (prefers-reduced-motion: reduce) {
-  .english-speaking-words span {
-    animation: none;
-  }
+.english-word-bank[hidden] {
+  display: none;
+}
+.english-written-answer {
+  display: grid;
+  gap: 16px;
+}
+.english-written-answer label {
+  display: grid;
+  gap: 8px;
+}
+.english-written-answer input {
+  width: 100%;
+  min-width: 0;
 }

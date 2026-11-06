@@ -348,7 +348,6 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Porto das Vozes, 02/11: +20,1 KiB, total 1693,2 KiB, entrada permanece 220,6 KiB.
 // Conteúdo e interface ingleses sob demanda, sem dependências novas. Mantida a autorização
 // do proprietário para crescimento de funcionalidades, com medição explícita e margem de 10,8 KiB.
-// Prática de fala de Inglês: captura local e Whisper opcional em worker isolado.
 // Medido 1725,2 KiB, entrada 220,7 KiB inalterada. Segue autorização vigente
 // do proprietário para crescimento medido de funcionalidades; teto anterior 1730 KiB.
 // Fala local progressiva: medidos 1731,1 KiB, entrada 220,7 KiB.
@@ -403,18 +402,10 @@ const sizes = await Promise.all(
 const ttsWorker = sizes.find(
   (item) => item.file.startsWith("piper-tts.worker-") || item.file.startsWith("kokoro-tts.worker-"),
 );
-// Whisper runs only after explicit model preparation, in its own worker.
-// Budget it separately, as with optional PDF/3D/TTS, without changing the app ceiling.
-const asrWorker = sizes.filter((item) => item.file.startsWith("english-asr.worker-"));
-const asrWorkerBytes = asrWorker.reduce((sum, item) => sum + item.bytes, 0);
-if (asrWorkerBytes > 1.1 * 1024 * 1024) throw new Error("Worker ASR excedeu 1,1 MiB.");
 const applicationTotal = sizes
   .filter(
     (item) =>
-      item !== ttsWorker &&
-      !asrWorker.includes(item) &&
-      !/^pdf[-.]/.test(item.file) &&
-      !NOTEBOOK_3D_CHUNK.test(item.file),
+      item !== ttsWorker && !/^pdf[-.]/.test(item.file) && !NOTEBOOK_3D_CHUNK.test(item.file),
   )
   .reduce((sum, item) => sum + item.bytes, 0);
 const pdfBytes = sizes
@@ -423,12 +414,7 @@ const pdfBytes = sizes
 const notebook3dBytes = sizes
   .filter((item) => NOTEBOOK_3D_CHUNK.test(item.file))
   .reduce((sum, item) => sum + item.bytes, 0);
-const asrWasmFiles = files.filter((file) => /^ort-wasm-/.test(file) && file.endsWith(".wasm"));
-const asrWasmBytes = (
-  await Promise.all(asrWasmFiles.map((file) => stat(join(fileURLToPath(assetsDirectory), file))))
-).reduce((sum, item) => sum + item.size, 0);
-if (asrWasmBytes > 22 * 1024 * 1024) throw new Error("WASM ASR excedeu 22 MiB.");
-const wasmFiles = files.filter((file) => file.endsWith(".wasm") && !asrWasmFiles.includes(file));
+const wasmFiles = files.filter((file) => file.endsWith(".wasm"));
 const wasmBytes = (
   await Promise.all(wasmFiles.map((file) => stat(join(fileURLToPath(assetsDirectory), file))))
 ).reduce((sum, item) => sum + item.size, 0);
@@ -441,7 +427,6 @@ console.log(`Cena do caderno 3D opcional: ${(notebook3dBytes / 1024).toFixed(1)}
 if (notebook3dBytes === 0) throw new Error("A cena do caderno 3D deixou de ser um chunk próprio.");
 if (notebook3dBytes > MAX_NOTEBOOK_3D_JS_BYTES)
   throw new Error("Cena do caderno 3D excedeu o orçamento de 600 KiB.");
-console.log(`Worker ASR opcional: ${(asrWorkerBytes / 1024).toFixed(1)} KiB`);
 console.log(`Worker TTS opcional: ${((ttsWorker?.bytes ?? 0) / 1024).toFixed(1)} KiB`);
 console.log(`WASM TTS opcional: ${(wasmBytes / 1024 / 1024).toFixed(1)} MiB`);
 if (initialBytes > MAX_INITIAL_JS_BYTES) {
@@ -489,11 +474,3 @@ console.log(`Tomate Rive opcional: ${(tomatoFile / 1024).toFixed(1)} KiB .riv`);
 if (tomatoFile > 700 * 1024) throw new Error("O tomato.riv excedeu 700 KiB.");
 
 // ONNX runtime copied locally; downloads never require third-party JavaScript.
-const speechRuntime = new URL("../dist/speech-runtime/", import.meta.url);
-const speechWasm = (await stat(new URL("ort-wasm-simd-threaded.jsep.wasm", speechRuntime))).size;
-const speechJs = (await stat(new URL("ort-wasm-simd-threaded.jsep.mjs", speechRuntime))).size;
-if (speechWasm > 22 * 1024 * 1024 || speechJs > 64 * 1024)
-  throw new Error("Runtime ASR excedeu 22 MiB WASM/64 KiB JS.");
-console.log(
-  `Runtime ASR opcional: ${(speechWasm / 1024 / 1024).toFixed(1)} MiB WASM, ${(speechJs / 1024).toFixed(1)} KiB JS`,
-);

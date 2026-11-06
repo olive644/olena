@@ -1,3 +1,5 @@
+import { ENGLISH_PART_COUNT } from "../domain/english-part-order";
+import { englishBankSize, LEGACY_ENGLISH_SCENES } from "../domain/english-difficulty";
 import { nextEnglishQuestion, type EnglishSelection } from "../domain/english-adaptive";
 import { uiLocale, uiText } from "../i18n/runtime";
 import { isEnglishArea, type EnglishArea } from "../domain/english-areas";
@@ -12,6 +14,7 @@ export type EnglishGuide = {
   meaning: EnglishText;
 };
 export type EnglishPart = {
+  interpretations?: EnglishText[];
   teaching: { level: number; focus: string; explanation: EnglishText }[];
   guide: EnglishGuide[];
   title: EnglishText;
@@ -47,19 +50,23 @@ export function validEnglishCourse(value: unknown): value is EnglishCourse {
   const parts = value["parts"];
   return (
     Array.isArray(parts) &&
-    parts.length === 6 &&
+    parts.length === ENGLISH_PART_COUNT &&
     parts.every(
-      (part: unknown) =>
+      (part: unknown, index) =>
         object(part) &&
         text(part["title"]) &&
         text(part["objective"]) &&
         text(part["lesson"]) &&
         typeof part["proficiency"] === "string" &&
         /^(A1|A2|B1|B2|C1|C2)$/.test(part["proficiency"]) &&
+        (part["interpretations"] === undefined ||
+          (Array.isArray(part["interpretations"]) &&
+            part["interpretations"].length === englishBankSize(index) / 4 &&
+            part["interpretations"].every((entry: unknown) => text(entry)))) &&
         Array.isArray(part["scenes"]) &&
-        part["scenes"].length === 30 &&
+        part["scenes"].length === englishBankSize(index) / 4 &&
         Array.isArray(part["teaching"]) &&
-        part["teaching"].length === 30 &&
+        part["teaching"].length === part["scenes"].length &&
         part["teaching"].every(
           (item: unknown) =>
             object(item) &&
@@ -102,6 +109,7 @@ export async function loadEnglishCourse(
   if (saved) return saved;
   const response = await fetch(`/languages/en/${area}-v4.json`, {
     signal,
+    cache: "no-cache",
     credentials: "omit",
     referrerPolicy: "no-referrer",
   });
@@ -165,20 +173,29 @@ export function englishQuestion(course: EnglishCourse, part: number, id: number)
   const scene = Math.floor(id / 4);
   const [phrase, translation, reply, word, replyTranslation] = scenes[scene]!;
   const kind = (["meaning", "gap", "reply", "order"] as const)[id % 4]!;
-  const meaning = uiLocale() === "pt-BR" ? translation : phrase;
+  const interpretation = course.parts[part]!.interpretations?.[scene];
+  const meaning = interpretation
+    ? englishText(interpretation)
+    : uiLocale() === "pt-BR"
+      ? translation
+      : phrase;
   const answer =
     kind === "meaning" ? meaning : kind === "gap" ? word : kind === "reply" ? reply : phrase;
+  const optionPool =
+    scene < LEGACY_ENGLISH_SCENES ? Math.min(LEGACY_ENGLISH_SCENES, scenes.length) : scenes.length;
   const others = Array.from(
-    { length: scenes.length - 1 },
-    (_, offset) => scenes[(scene + offset + 1) % scenes.length]!,
+    { length: optionPool - 1 },
+    (_, offset) => scenes[(scene + offset + 1) % optionPool]!,
   );
   const candidates = [
     answer,
     ...others.map((item) =>
       kind === "meaning"
-        ? uiLocale() === "pt-BR"
-          ? item[1]
-          : item[0]
+        ? course.parts[part]!.interpretations?.[scenes.indexOf(item)]
+          ? englishText(course.parts[part]!.interpretations![scenes.indexOf(item)]!)
+          : uiLocale() === "pt-BR"
+            ? item[1]
+            : item[0]
         : kind === "gap"
           ? item[3]
           : item[2],
@@ -249,7 +266,8 @@ export async function selectEnglishQuestion(input: EnglishSelection, signal: Abo
       !("id" in value) ||
       !Number.isInteger(value.id) ||
       Number(value.id) < 0 ||
-      Number(value.id) >= (input.curriculum === 5 && input.part === 0 ? A1_BANK : 120) ||
+      Number(value.id) >=
+        (input.curriculum === 5 && input.part === 0 ? A1_BANK : englishBankSize(input.part ?? 0)) ||
       input.exclude.includes(Number(value.id))
     )
       throw new Error("english-selection-invalid");

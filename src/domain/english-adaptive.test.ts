@@ -71,3 +71,81 @@ it("recovers with easier known material instead of forcing unseen advanced gramm
   });
   expect(englishDifficulty(0, result.id)).toBe(1);
 });
+
+it("revisits the same Habit Square skill through a different sentence", () => {
+  const wrong = 14 * 4 + 1;
+  const next = nextEnglishQuestion({
+    part: 1,
+    solved: [],
+    recent: [{ id: wrong, correct: false }],
+    exclude: [wrong],
+  });
+  const scene = Math.floor(next.id / 4);
+  expect(scene).not.toBe(14);
+  expect([13, 15, 33, 38, 39, 41]).toContain(scene);
+});
+
+it("varies accessible Habit Square contexts before forcing advanced grammar", () => {
+  const seen: number[] = [];
+  for (let index = 0; index < 44; index++) {
+    const next = nextEnglishQuestion({
+      part: 1,
+      solved: seen,
+      recent: seen.slice(-6).map((id) => ({ id, correct: true })),
+      exclude: seen,
+    });
+    const unseenAccessible = Array.from({ length: 44 }, (_, scene) => scene).filter(
+      (scene) =>
+        englishDifficulty(1, scene * 4) <= next.difficulty + 1 &&
+        !seen.some((id) => Math.floor(id / 4) === scene),
+    );
+    expect(seen).not.toContain(next.id);
+    expect(englishDifficulty(1, next.id)).toBeLessThanOrEqual(next.difficulty + 1);
+    if (unseenAccessible.length)
+      expect(seen.map((id) => Math.floor(id / 4))).not.toContain(Math.floor(next.id / 4));
+    seen.push(next.id);
+  }
+});
+
+it("reviews past questions with did in a different context at Memory Bridge", () => {
+  const wrong = 32 * 4 + 1;
+  const next = nextEnglishQuestion({
+    part: 2,
+    solved: [],
+    recent: [{ id: wrong, correct: false }],
+    exclude: [wrong],
+  });
+  expect([3, 16, 17, 39]).toContain(Math.floor(next.id / 4));
+});
+
+it("treats harbor and harbour as one Memory Bridge context when varying practice", () => {
+  const next = nextEnglishQuestion({ part: 2, solved: [], recent: [], exclude: [0] });
+  expect([0, 6]).not.toContain(Math.floor(next.id / 4));
+});
+
+it("revisits an evidence-based prediction at Plans Lookout in a different situation", () => {
+  const wrong = 13 * 4 + 1;
+  const next = nextEnglishQuestion({
+    part: 3,
+    solved: [],
+    recent: [{ id: wrong, correct: false }],
+    exclude: [wrong],
+  });
+  expect(Math.floor(next.id / 4)).toBe(35);
+});
+
+it("varies Plans Lookout contexts even when two historical IDs express the same idea", () => {
+  const next = nextEnglishQuestion({ part: 3, solved: [], recent: [], exclude: [5 * 4] });
+  expect([5, 8]).not.toContain(Math.floor(next.id / 4));
+});
+
+it("reviews requests for evidence in a different context at Ideas Courtyard", () => {
+  const wrong = 17 * 4 + 1;
+  const next = nextEnglishQuestion({
+    part: 4,
+    solved: [],
+    recent: [{ id: wrong, correct: false }],
+    exclude: [wrong],
+  });
+  expect(Math.floor(next.id / 4)).toBe(37);
+});

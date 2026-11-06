@@ -3653,5 +3653,10 @@
   "I authorize downloading the voice model. My speech will be transcribed on this device, without sending the audio.",
   "You can speak. Release the button to finish.",
   "Hold the button and say the sentence in English. Release to finish. Words change color as they are recognized.",
-  "We heard: “{0}”"
+  "We heard: “{0}”",
+  "English · Part {0} of {1}",
+  "Learn before practicing",
+  "Write the sentence in English",
+  "Use word support",
+  "Answer without word support"
 ]

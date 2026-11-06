@@ -154,3 +154,11 @@ Após a solicitação de remover Enviar resposta, as palavras usam estados neutr
 ## Fala incremental, 04/11/2026
 
 A frase reconhecida permanece no papel original. Palavras corretas pulsam em verde e divergências têm movimento curto vermelho; preservar sublinhado textual e respeitar movimento reduzido e preferências de som. Prévia de streaming nunca confirma sozinha uma resposta. Não reintroduzir parágrafos técnicos sobre o modelo no centro da atividade. Solicitar permissão de microfone ao iniciar, sem descontar tempo enquanto a pessoa decide, e manter consentimento separado para baixar o modelo.
+
+## Oito partes de Inglês, 05/11/2026
+
+Decisão posterior do proprietário amplia o percurso para oito cenários. A ordem visual é Cais das Boas-vindas, Praça dos Hábitos, Ponte das Memórias, Mirante dos Planos, Mercado dos Encontros (B1), Pátio das Ideias, Arquivo das Entrelinhas (C1) e Casa dos Sentidos. As setas, números, retrato, indicadores e botões usam os componentes atuais. Mercado e Arquivo têm artes próprias transparentes, derivadas da identidade visual aprovada da Praça, com pedra clara, telhados turquesa, canal e bandeira britânica. São partes compactas da ilha principal.
+
+## Apoio e produção escrita, 05/11/2026
+
+A direção aprovada mais recente permite estudo recolhível na entrada das oito partes. Não restaurar uma página extensa obrigatória antes de cada rodada. Usar os cartões de papel, dobra amarela e controles originais. Estudo não tem cronômetro. Resposta escrita opcional compartilha o mesmo ID, cronômetro e liquidação da ordenação com palavras. Campo rotulado, botão Conferir resposta e alternativa para retomar palavras devem funcionar por teclado e toque. Nunca aceitar frases apenas por conterem palavras da resposta. Explicações de erro continuam somente na revisão final.

@@ -1,3 +1,4 @@
+import { ENGLISH_PART_ORDER, englishPartUnlocked } from "../domain/english-part-order";
 import { lastEnglishCheckpointPart } from "../data/english-checkpoint";
 import { useEffect, useRef, useState } from "react";
 import { readLastIsland, rememberEnteredIsland } from "../data/last-island";
@@ -27,10 +28,8 @@ export function VoicesPortJourney({
     const opened = readLastIsland();
     const remembered =
       lastEnglishCheckpointPart() ?? (opened?.id === "english" ? opened.part : undefined);
-    if (remembered !== undefined && (remembered === 0 || parts[remembered - 1]!.confirmed))
-      return remembered;
-    const pending = parts.findIndex((part) => !part.confirmed);
-    return pending < 0 ? 5 : pending;
+    if (remembered !== undefined && englishPartUnlocked(parts, remembered)) return remembered;
+    return ENGLISH_PART_ORDER.find((id) => !parts[id]!.confirmed) ?? 5;
   });
   // Registra a entrada na ilha uma vez; a parte aberta é registrada em onSelect.
   const entered = useRef(false);

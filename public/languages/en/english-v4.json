@@ -684,6 +684,104 @@
           "Rest is important too.",
           "Sundays",
           "Descansar também é importante."
+        ],
+        [
+          "I feed the cat before breakfast.",
+          "Eu alimento o gato antes do café da manhã.",
+          "I feed mine after breakfast.",
+          "before",
+          "Eu alimento o meu depois do café da manhã."
+        ],
+        [
+          "The library closes at six.",
+          "A biblioteca fecha às seis.",
+          "Let's go at five.",
+          "six",
+          "Vamos às cinco."
+        ],
+        [
+          "She goes swimming on Tuesdays.",
+          "Ela vai nadar às terças-feiras.",
+          "I go on Thursdays.",
+          "Tuesdays",
+          "Eu vou às quintas-feiras."
+        ],
+        [
+          "Does your brother cook on weekends?",
+          "Seu irmão cozinha nos fins de semana?",
+          "Yes, he does.",
+          "cook",
+          "Sim, ele cozinha."
+        ],
+        [
+          "I take the bus twice a week.",
+          "Eu pego o ônibus duas vezes por semana.",
+          "I take it every day.",
+          "twice",
+          "Eu pego todos os dias."
+        ],
+        [
+          "We hardly ever order pizza.",
+          "Nós quase nunca pedimos pizza.",
+          "We usually cook at home.",
+          "hardly ever",
+          "Nós costumamos cozinhar em casa."
+        ],
+        [
+          "He usually cycles, but today he is walking.",
+          "Ele geralmente vai de bicicleta, mas hoje está indo a pé.",
+          "Is his bike at home?",
+          "walking",
+          "A bicicleta dele está em casa?"
+        ],
+        [
+          "How often does the night bus run?",
+          "Com que frequência passa o ônibus noturno?",
+          "It runs every half hour.",
+          "How often",
+          "Ele passa a cada meia hora."
+        ],
+        [
+          "Where does your aunt buy bread?",
+          "Onde sua tia compra pão?",
+          "She buys it at the market.",
+          "buy",
+          "Ela compra no mercado."
+        ],
+        [
+          "Does the museum open on Mondays?",
+          "O museu abre às segundas-feiras?",
+          "No, it opens on Tuesdays.",
+          "open",
+          "Não, ele abre às terças-feiras."
+        ],
+        [
+          "The bakery doesn't sell bread after noon.",
+          "A padaria não vende pão depois do meio-dia.",
+          "Let's go in the morning.",
+          "sell",
+          "Vamos de manhã."
+        ],
+        [
+          "Do you check the weather before cycling?",
+          "Você confere a previsão antes de pedalar?",
+          "Yes, I check it every morning.",
+          "check",
+          "Sim, confiro toda manhã."
+        ],
+        [
+          "Our neighbours put out the bins every other week.",
+          "Nossos vizinhos colocam as lixeiras para fora a cada duas semanas.",
+          "Is this their week?",
+          "every other week",
+          "É a semana deles?"
+        ],
+        [
+          "I normally eat at home, but I am having lunch at the café today.",
+          "Normalmente como em casa, mas hoje estou almoçando no café.",
+          "Is the food good?",
+          "having",
+          "A comida está boa?"
         ]
       ],
       "lesson": {
@@ -993,6 +1091,118 @@
             "pt-BR": "Usa on com dias e o plural Sundays para um hábito aos domingos.",
             "en-US": "Uses on with days and plural Sundays for a Sunday habit."
           }
+        },
+        {
+          "level": 1,
+          "focus": "before",
+          "explanation": {
+            "pt-BR": "Before indica que alimentar o gato acontece antes da refeição.",
+            "en-US": "Before puts feeding the cat ahead of breakfast."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "six",
+          "explanation": {
+            "pt-BR": "Closes concorda com the library. At six indica a hora exata.",
+            "en-US": "Closes agrees with the library. At six gives the exact time."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Tuesdays",
+          "explanation": {
+            "pt-BR": "Go vira goes com she. On Tuesdays marca uma rotina semanal.",
+            "en-US": "Go becomes goes with she. On Tuesdays marks a weekly routine."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "cook",
+          "explanation": {
+            "pt-BR": "Does marca a pergunta no presente. O verbo principal fica na forma cook.",
+            "en-US": "Does marks a present simple question. The main verb stays in the base form, cook."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "twice",
+          "explanation": {
+            "pt-BR": "Twice a week conta duas ocorrências na semana sem especificar os dias.",
+            "en-US": "Twice a week counts two occasions per week without naming the days."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "hardly ever",
+          "explanation": {
+            "pt-BR": "Hardly ever indica frequência muito baixa e vem antes de order.",
+            "en-US": "Hardly ever indicates very low frequency and goes before order."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "walking",
+          "explanation": {
+            "pt-BR": "Usually cycles descreve o hábito. Is walking mostra a ação de hoje.",
+            "en-US": "Usually cycles describes the habit. Is walking shows what is happening today."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "How often",
+          "explanation": {
+            "pt-BR": "How often pergunta a frequência. Every half hour dá o intervalo entre partidas.",
+            "en-US": "How often asks about frequency. Every half hour gives the interval between departures."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "buy",
+          "explanation": {
+            "pt-BR": "Depois de does, use buy. Na resposta afirmativa, she buys leva s.",
+            "en-US": "After does, use buy. In the affirmative answer, she buys takes s."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "open",
+          "explanation": {
+            "pt-BR": "Does já marca a terceira pessoa na pergunta. Open fica na forma básica.",
+            "en-US": "Does already marks the third person in the question. Open stays in the base form."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "sell",
+          "explanation": {
+            "pt-BR": "Depois de doesn't, use sell. A negação já está no auxiliar.",
+            "en-US": "After doesn't, use sell. The auxiliary already carries the negation."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "check",
+          "explanation": {
+            "pt-BR": "Use do com you para perguntar sobre um hábito. Before mostra o que acontece primeiro.",
+            "en-US": "Use do with you to ask about a habit. Before shows what happens first."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "every other week",
+          "explanation": {
+            "pt-BR": "Every other week alterna uma semana com atividade e outra sem.",
+            "en-US": "Every other week means alternating between weeks with and without the activity."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "having",
+          "explanation": {
+            "pt-BR": "Normally eat descreve o hábito. Am having lunch indica o que está acontecendo hoje.",
+            "en-US": "Normally eat describes the habit. Am having lunch describes what is happening today."
+          }
         }
       ]
     },
@@ -1209,6 +1419,104 @@
           "Tell me more about it.",
           "child",
           "Conte-me mais sobre isso."
+        ],
+        [
+          "We visited the museum yesterday.",
+          "Nós visitamos o museu ontem.",
+          "Did you see the boats?",
+          "visited",
+          "Vocês viram os barcos?"
+        ],
+        [
+          "I lost my keys on the bridge.",
+          "Eu perdi minhas chaves na ponte.",
+          "Let's look by the railing.",
+          "lost",
+          "Vamos procurar perto do corrimão."
+        ],
+        [
+          "Did you catch the last bus?",
+          "Você pegou o último ônibus?",
+          "Yes, I caught it at nine.",
+          "catch",
+          "Sim, eu peguei o ônibus às nove."
+        ],
+        [
+          "She didn't find her old notebook.",
+          "Ela não encontrou seu caderno antigo.",
+          "Did she check the drawer?",
+          "find",
+          "Ela olhou na gaveta?"
+        ],
+        [
+          "First we bought tickets, then we boarded the ferry.",
+          "Primeiro compramos os bilhetes, depois embarcamos na balsa.",
+          "Where did you sit?",
+          "boarded",
+          "Onde vocês se sentaram?"
+        ],
+        [
+          "There were three letters in the box.",
+          "Havia três cartas na caixa.",
+          "Who wrote them?",
+          "were",
+          "Quem as escreveu?"
+        ],
+        [
+          "I was reading when the lights went out.",
+          "Eu estava lendo quando as luzes se apagaram.",
+          "Did you find a flashlight?",
+          "reading",
+          "Você encontrou uma lanterna?"
+        ],
+        [
+          "By the time we arrived, the ferry had left.",
+          "Quando chegamos, a balsa já tinha partido.",
+          "When was the next one?",
+          "had left",
+          "Quando era a próxima?"
+        ],
+        [
+          "My cousins stayed with us last weekend.",
+          "Meus primos ficaram conosco no último fim de semana.",
+          "How long did they stay?",
+          "stayed",
+          "Quanto tempo eles ficaram?"
+        ],
+        [
+          "Did the courier bring the parcel?",
+          "O entregador trouxe o pacote?",
+          "Yes, it arrived this morning.",
+          "bring",
+          "Sim, ele chegou hoje de manhã."
+        ],
+        [
+          "We didn't take any photos inside the gallery.",
+          "Não tiramos nenhuma foto dentro da galeria.",
+          "Were cameras allowed?",
+          "take",
+          "Câmeras eram permitidas?"
+        ],
+        [
+          "The receptionist gave me a map.",
+          "A recepcionista me deu um mapa.",
+          "Did it show the bus stops?",
+          "gave",
+          "Ele mostrava as paradas de ônibus?"
+        ],
+        [
+          "While I was packing my bag, the phone rang.",
+          "Enquanto eu arrumava minha bolsa, o telefone tocou.",
+          "Who was calling?",
+          "packing",
+          "Quem estava ligando?"
+        ],
+        [
+          "The guests had eaten before the concert began.",
+          "Os convidados já tinham comido antes de o concerto começar.",
+          "Did they eat at the hotel?",
+          "had eaten",
+          "Eles comeram no hotel?"
         ]
       ],
       "lesson": {
@@ -1518,6 +1826,118 @@
             "pt-BR": "Situa lived em um período passado da vida, não na infância de outra pessoa.",
             "en-US": "Places lived in a past period of the speaker’s life, not somebody else’s childhood."
           }
+        },
+        {
+          "level": 0,
+          "focus": "visited",
+          "explanation": {
+            "pt-BR": "Visited é o passado regular de visit. Yesterday situa a visita no dia anterior.",
+            "en-US": "Visited is the regular past form of visit. Yesterday places the visit on the previous day."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "lost",
+          "explanation": {
+            "pt-BR": "Lost é o passado irregular de lose. On the bridge indica onde a perda aconteceu.",
+            "en-US": "Lost is the irregular past of lose. On the bridge gives the place where it happened."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "catch",
+          "explanation": {
+            "pt-BR": "Did marca o passado na pergunta. Use catch após did e caught na resposta afirmativa.",
+            "en-US": "Did marks the past in the question. Use catch after did and caught in the affirmative answer."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "find",
+          "explanation": {
+            "pt-BR": "Didn't já marca o passado e a negação. Por isso o verbo principal é find.",
+            "en-US": "Didn't marks both past time and negation, so the main verb stays in its base form, find."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "boarded",
+          "explanation": {
+            "pt-BR": "First e then mostram a ordem dos fatos. Bought é irregular, enquanto boarded termina em ed.",
+            "en-US": "First and then show the order of events. Bought is irregular, while boarded takes ed."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "were",
+          "explanation": {
+            "pt-BR": "There were indica existência no passado com plural. Para uma carta, seria there was.",
+            "en-US": "There were expresses past existence with a plural noun. For one letter, use there was."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "reading",
+          "explanation": {
+            "pt-BR": "Was reading é a ação em andamento. Went out é o evento que ocorreu durante a leitura.",
+            "en-US": "Was reading is the ongoing action. Went out is the event that occurred while it was happening."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "had left",
+          "explanation": {
+            "pt-BR": "Had left indica o fato mais antigo. A balsa partiu antes de chegarmos.",
+            "en-US": "Had left marks the earlier event. The ferry departed before we arrived."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "stayed",
+          "explanation": {
+            "pt-BR": "Stayed é o passado regular de stay. Last weekend situa a visita.",
+            "en-US": "Stayed is the regular past of stay. Last weekend locates the visit in time."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "bring",
+          "explanation": {
+            "pt-BR": "A pergunta já indica passado com did. Use bring, a forma básica.",
+            "en-US": "Did carries the past tense in the question. Use the base form bring."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "take",
+          "explanation": {
+            "pt-BR": "Depois de didn't, use take. Took é a forma do passado afirmativo.",
+            "en-US": "Use take after didn't. Took is the affirmative past form."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "gave",
+          "explanation": {
+            "pt-BR": "Gave é o passado irregular de give. Me indica quem recebeu o mapa.",
+            "en-US": "Gave is the irregular past of give. Me identifies who received the map."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "packing",
+          "explanation": {
+            "pt-BR": "Was packing descreve a ação em andamento. Rang marca o toque ocorrido durante essa ação.",
+            "en-US": "Was packing describes the ongoing action. Rang marks the event during that action."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "had eaten",
+          "explanation": {
+            "pt-BR": "Had eaten marca o fato anterior. A refeição aconteceu antes de o concerto começar.",
+            "en-US": "Had eaten marks the earlier event. The meal took place before the concert began."
+          }
         }
       ]
     },
@@ -1740,6 +2160,104 @@
           "Then we can review it.",
           "finished",
           "Então podemos revisar."
+        ],
+        [
+          "I am going to paint my room.",
+          "Vou pintar meu quarto.",
+          "What colour will you use?",
+          "paint",
+          "Que cor você vai usar?"
+        ],
+        [
+          "The kettle is boiling. I will turn it off.",
+          "A chaleira está fervendo. Vou desligá-la.",
+          "Thanks, I didn't notice.",
+          "turn",
+          "Obrigado, eu não percebi."
+        ],
+        [
+          "We are having dinner with Mia on Friday.",
+          "Vamos jantar com Mia na sexta-feira.",
+          "Have you booked a table?",
+          "having",
+          "Vocês reservaram uma mesa?"
+        ],
+        [
+          "The exhibition opens next Thursday.",
+          "A exposição abre na próxima quinta-feira.",
+          "Can we go after work?",
+          "opens",
+          "Podemos ir depois do trabalho?"
+        ],
+        [
+          "I think the new café will be popular.",
+          "Acho que o novo café vai fazer sucesso.",
+          "It already has good reviews.",
+          "popular",
+          "Ele já tem boas avaliações."
+        ],
+        [
+          "Look at that loose shelf. It is going to fall.",
+          "Olhe aquela prateleira solta. Ela vai cair.",
+          "I'll move the books.",
+          "fall",
+          "Vou tirar os livros."
+        ],
+        [
+          "Would you like to watch the match with us?",
+          "Você gostaria de assistir ao jogo com a gente?",
+          "I'd love to. What time is it?",
+          "watch",
+          "Adoraria. A que horas é?"
+        ],
+        [
+          "Shall we share a taxi after the concert?",
+          "Vamos dividir um táxi depois do concerto?",
+          "Good idea. The buses stop early.",
+          "share",
+          "Boa ideia. Os ônibus param cedo."
+        ],
+        [
+          "You should charge your phone before the trip.",
+          "Você deveria carregar o celular antes da viagem.",
+          "I'll plug it in now.",
+          "charge",
+          "Vou colocá-lo para carregar agora."
+        ],
+        [
+          "You don't have to print your boarding pass.",
+          "Você não precisa imprimir o cartão de embarque.",
+          "I'll show it on my phone.",
+          "print",
+          "Vou mostrá-lo no celular."
+        ],
+        [
+          "If the shop is closed, we will order online.",
+          "Se a loja estiver fechada, vamos pedir pela internet.",
+          "I can check the opening hours.",
+          "closed",
+          "Posso conferir o horário de funcionamento."
+        ],
+        [
+          "We might take a later train.",
+          "Talvez a gente pegue um trem mais tarde.",
+          "Let me know when you decide.",
+          "later",
+          "Me avise quando decidir."
+        ],
+        [
+          "I promise I will return the keys tonight.",
+          "Prometo que vou devolver as chaves hoje à noite.",
+          "Please leave them at reception.",
+          "return",
+          "Por favor, deixe-as na recepção."
+        ],
+        [
+          "By noon, they will have delivered the furniture.",
+          "Até o meio-dia, eles já terão entregado os móveis.",
+          "Then we can unpack this afternoon.",
+          "delivered",
+          "Então podemos desempacotar esta tarde."
         ]
       ],
       "lesson": {
@@ -2049,6 +2567,118 @@
             "pt-BR": "Indica que a ação estará concluída até sexta, não que começará na sexta.",
             "en-US": "Means the action will be completed by Friday, not that it starts on Friday."
           }
+        },
+        {
+          "level": 1,
+          "focus": "paint",
+          "explanation": {
+            "pt-BR": "Going to introduz uma intenção já formada.",
+            "en-US": "Going to introduces an intention you already have."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "turn",
+          "explanation": {
+            "pt-BR": "Will expressa uma decisão tomada ao perceber a chaleira fervendo.",
+            "en-US": "Will expresses a decision made on noticing the boiling kettle."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "having",
+          "explanation": {
+            "pt-BR": "O presente contínuo com on Friday indica um compromisso combinado.",
+            "en-US": "The present continuous with on Friday describes an arrangement."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "opens",
+          "explanation": {
+            "pt-BR": "Opens está no presente simples porque a data faz parte da programação.",
+            "en-US": "Opens is in the present simple because the date is scheduled."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "popular",
+          "explanation": {
+            "pt-BR": "I think introduz uma opinião, e will projeta a previsão para o futuro.",
+            "en-US": "I think introduces an opinion, and will expresses a prediction."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "fall",
+          "explanation": {
+            "pt-BR": "Going to indica uma previsão apoiada numa evidência visível.",
+            "en-US": "Going to makes a prediction based on visible evidence."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "watch",
+          "explanation": {
+            "pt-BR": "Would you like to introduz um convite educado, seguido do verbo watch.",
+            "en-US": "Would you like to introduces a polite invitation followed by watch."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "share",
+          "explanation": {
+            "pt-BR": "Shall we propõe uma ação que envolve quem fala e quem escuta.",
+            "en-US": "Shall we suggests an action for the speaker and listener together."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "charge",
+          "explanation": {
+            "pt-BR": "Should apresenta um conselho sobre o que seria sensato fazer.",
+            "en-US": "Should gives advice about what would be sensible."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "print",
+          "explanation": {
+            "pt-BR": "Don't have to indica que imprimir é opcional.",
+            "en-US": "Don't have to means printing is optional."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "closed",
+          "explanation": {
+            "pt-BR": "Use presente na condição com if e will para o possível resultado.",
+            "en-US": "Use the present in the if clause and will for the possible result."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "later",
+          "explanation": {
+            "pt-BR": "Might apresenta uma possibilidade que ainda está em aberto.",
+            "en-US": "Might presents a possibility that is still undecided."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "return",
+          "explanation": {
+            "pt-BR": "I promise com will assume um compromisso futuro.",
+            "en-US": "I promise with will makes a future commitment."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "delivered",
+          "explanation": {
+            "pt-BR": "Will have delivered mostra que a entrega estará concluída até o horário indicado.",
+            "en-US": "Will have delivered shows that delivery will be complete by the stated time."
+          }
         }
       ]
     },
@@ -2271,6 +2901,104 @@
           "We can combine our ideas.",
           "solution",
           "Podemos combinar nossas ideias."
+        ],
+        [
+          "I think the library needs more desks.",
+          "Acho que a biblioteca precisa de mais mesas.",
+          "Where could we put them?",
+          "think",
+          "Onde poderíamos colocá-las?"
+        ],
+        [
+          "I agree that the park should stay open.",
+          "Concordo que o parque deveria continuar aberto.",
+          "It gives people a place to exercise.",
+          "agree",
+          "Isso dá às pessoas um lugar para se exercitar."
+        ],
+        [
+          "I understand your concern, but the bus is cheaper.",
+          "Entendo sua preocupação, mas o ônibus é mais barato.",
+          "How much would we save?",
+          "concern",
+          "Quanto economizaríamos?"
+        ],
+        [
+          "We chose the hall because it has a ramp.",
+          "Escolhemos o salão porque ele tem uma rampa.",
+          "That will make it easier to get inside.",
+          "because",
+          "Isso vai facilitar a entrada."
+        ],
+        [
+          "Although the route is longer, it feels safer.",
+          "Embora o caminho seja mais longo, ele parece mais seguro.",
+          "Is there less traffic on that road?",
+          "Although",
+          "Há menos trânsito nessa via?"
+        ],
+        [
+          "For instance, we could lend tools to neighbours.",
+          "Por exemplo, poderíamos emprestar ferramentas aos vizinhos.",
+          "We could start with a small collection.",
+          "instance",
+          "Poderíamos começar com uma pequena coleção."
+        ],
+        [
+          "What do you mean by affordable?",
+          "O que você quer dizer com acessível?",
+          "I mean a ticket under five pounds.",
+          "affordable",
+          "Quero dizer um ingresso de menos de cinco libras."
+        ],
+        [
+          "Which survey supports your claim about cycling?",
+          "Qual pesquisa sustenta sua afirmação sobre o uso de bicicletas?",
+          "The council surveyed commuters last month.",
+          "claim",
+          "O conselho entrevistou quem se desloca para o trabalho no mês passado."
+        ],
+        [
+          "The printer is broken, so we will share the notes online.",
+          "A impressora está quebrada, então vamos compartilhar as anotações pela internet.",
+          "Please send me the link.",
+          "so",
+          "Por favor, me mande o link."
+        ],
+        [
+          "Both routes are safe, but only one has shade.",
+          "Os dois caminhos são seguros, mas só um tem sombra.",
+          "Let's take the shaded route at noon.",
+          "Both",
+          "Vamos pelo caminho com sombra ao meio-dia."
+        ],
+        [
+          "Despite the extra cost, the repair may last longer.",
+          "Apesar do custo extra, o conserto pode durar mais.",
+          "Can we compare the guarantees?",
+          "Despite",
+          "Podemos comparar as garantias?"
+        ],
+        [
+          "I would rather borrow a drill than buy one.",
+          "Eu preferiria pegar uma furadeira emprestada a comprar uma.",
+          "You can borrow mine on Saturday.",
+          "borrow",
+          "Você pode pegar a minha emprestada no sábado."
+        ],
+        [
+          "Fewer complaints do not necessarily mean better service.",
+          "Menos reclamações não significam necessariamente um atendimento melhor.",
+          "Perhaps it became harder to report problems.",
+          "necessarily",
+          "Talvez tenha ficado mais difícil relatar problemas."
+        ],
+        [
+          "On balance, a weekend trial seems worth trying.",
+          "Pesando os prós e contras, vale a pena testar por um fim de semana.",
+          "How will we decide whether it worked?",
+          "balance",
+          "Como vamos decidir se funcionou?"
         ]
       ],
       "lesson": {
@@ -2579,6 +3307,118 @@
           "explanation": {
             "pt-BR": "Convida à solução conjunta; together reforça cooperação.",
             "en-US": "Invites a joint solution; together emphasises cooperation."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "think",
+          "explanation": {
+            "pt-BR": "I think apresenta a ideia como uma opinião pessoal.",
+            "en-US": "I think introduces the statement as a personal opinion."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "agree",
+          "explanation": {
+            "pt-BR": "Agree that introduz a ideia com que você concorda.",
+            "en-US": "Agree that introduces the idea you share."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "concern",
+          "explanation": {
+            "pt-BR": "Reconheça a preocupação com I understand antes de introduzir outro ponto com but.",
+            "en-US": "Acknowledge the concern with I understand before introducing a different point with but."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "because",
+          "explanation": {
+            "pt-BR": "Because introduz o motivo da escolha do salão.",
+            "en-US": "Because introduces the reason for choosing the hall."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Although",
+          "explanation": {
+            "pt-BR": "Although apresenta uma desvantagem antes do ponto principal sobre segurança.",
+            "en-US": "Although introduces a drawback before the main point about safety."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "instance",
+          "explanation": {
+            "pt-BR": "For instance introduz um exemplo concreto da proposta.",
+            "en-US": "For instance introduces a concrete example of the proposal."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "affordable",
+          "explanation": {
+            "pt-BR": "What do you mean by pede que a pessoa esclareça um termo.",
+            "en-US": "What do you mean by asks the speaker to clarify a term."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "claim",
+          "explanation": {
+            "pt-BR": "Supports your claim pede evidência para avaliar a afirmação.",
+            "en-US": "Supports your claim asks for evidence that can be used to assess the statement."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "so",
+          "explanation": {
+            "pt-BR": "So apresenta a consequência do problema com a impressora.",
+            "en-US": "So introduces the consequence of the problem with the printer."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "Both",
+          "explanation": {
+            "pt-BR": "Both inclui as duas opções. Only one restringe a segunda característica a uma delas.",
+            "en-US": "Both includes the two options. Only one limits the second feature to one option."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "Despite",
+          "explanation": {
+            "pt-BR": "Despite vem antes do grupo nominal the extra cost e introduz um contraste.",
+            "en-US": "Despite comes before the noun phrase the extra cost and introduces a contrast."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "borrow",
+          "explanation": {
+            "pt-BR": "Would rather X than Y compara duas ações e indica preferência pela primeira.",
+            "en-US": "Would rather X than Y compares two actions and gives preference to the first."
+          }
+        },
+        {
+          "level": 5,
+          "focus": "necessarily",
+          "explanation": {
+            "pt-BR": "Not necessarily questiona a ligação automática entre o indicador e a conclusão.",
+            "en-US": "Not necessarily challenges an automatic link between the indicator and the conclusion."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "balance",
+          "explanation": {
+            "pt-BR": "On balance apresenta uma conclusão depois de pesar argumentos a favor e contra.",
+            "en-US": "On balance introduces a conclusion after weighing arguments for and against."
           }
         }
       ]
@@ -3105,6 +3945,1122 @@
             "pt-BR": "Representa um aspecto positivo em uma situação difícil.",
             "en-US": "Represents a positive aspect of a difficult situation."
           }
+        }
+      ]
+    },
+    {
+      "title": {
+        "pt-BR": "Situações práticas e negociação",
+        "en-US": "Practical situations and negotiation"
+      },
+      "objective": {
+        "pt-BR": "Resolver problemas e combinar soluções.",
+        "en-US": "Solve problems and agree on solutions."
+      },
+      "proficiency": "B1",
+      "lesson": {
+        "pt-BR": "Resolver problemas e combinar soluções.",
+        "en-US": "Solve problems and agree on solutions."
+      },
+      "scenes": [
+        [
+          "Could I exchange this shirt for a larger size?",
+          "Posso trocar esta camisa por um tamanho maior?",
+          "Do you have your receipt?",
+          "exchange",
+          "Você está com o recibo?"
+        ],
+        [
+          "The zip broke after I wore it once.",
+          "O zíper quebrou depois de eu usar uma vez.",
+          "We can offer you a refund.",
+          "broke",
+          "Podemos oferecer um reembolso."
+        ],
+        [
+          "I ordered blue mugs, but these are green.",
+          "Pedi canecas azuis, mas estas são verdes.",
+          "I'll check the order for you.",
+          "ordered",
+          "Vou conferir seu pedido."
+        ],
+        [
+          "Would it be possible to deliver it on Friday?",
+          "Seria possível entregar na sexta-feira?",
+          "We can arrange a morning delivery.",
+          "deliver",
+          "Podemos combinar uma entrega de manhã."
+        ],
+        [
+          "I have been waiting for twenty minutes.",
+          "Estou esperando há vinte minutos.",
+          "I'm sorry. Your table is almost ready.",
+          "waiting",
+          "Sinto muito. Sua mesa está quase pronta."
+        ],
+        [
+          "We missed the connection because the first train was delayed.",
+          "Perdemos a conexão porque o primeiro trem atrasou.",
+          "You can use the next train with this ticket.",
+          "delayed",
+          "Vocês podem usar este bilhete no próximo trem."
+        ],
+        [
+          "Is there another route that avoids the roadworks?",
+          "Há outro caminho que evite as obras?",
+          "You can take the riverside path.",
+          "avoids",
+          "Você pode pegar o caminho à beira do rio."
+        ],
+        [
+          "Could you let me know if the meeting time changes?",
+          "Você poderia me avisar se o horário da reunião mudar?",
+          "Of course. I'll send you a message.",
+          "changes",
+          "Claro. Vou mandar uma mensagem."
+        ],
+        [
+          "The return ticket is cheaper than two singles.",
+          "O bilhete de ida e volta é mais barato que dois de ida.",
+          "Let's buy the return, then.",
+          "cheaper",
+          "Então vamos comprar o de ida e volta."
+        ],
+        [
+          "I'd prefer a room away from the lift.",
+          "Eu preferiria um quarto longe do elevador.",
+          "We have one at the end of the corridor.",
+          "prefer",
+          "Temos um no fim do corredor."
+        ],
+        [
+          "Either morning works for me, but not Wednesday.",
+          "Qualquer uma das manhãs serve para mim, mas quarta-feira não.",
+          "Shall we book Thursday?",
+          "Either",
+          "Vamos marcar quinta-feira?"
+        ],
+        [
+          "If we book together, we can share the delivery fee.",
+          "Se fizermos o pedido juntos, podemos dividir a taxa de entrega.",
+          "I'll add my order to yours.",
+          "share",
+          "Vou juntar meu pedido ao seu."
+        ],
+        [
+          "I've already sent the form, but I haven't received a reply.",
+          "Já enviei o formulário, mas não recebi resposta.",
+          "Have you checked your spam folder?",
+          "already",
+          "Você conferiu a pasta de spam?"
+        ],
+        [
+          "Have you ever used this booking service?",
+          "Você já usou este serviço de reservas?",
+          "Yes, I used it last summer.",
+          "ever",
+          "Sim, usei no verão passado."
+        ],
+        [
+          "I used to cycle to work before I moved.",
+          "Eu costumava ir de bicicleta para o trabalho antes de me mudar.",
+          "How do you get there now?",
+          "used to",
+          "Como você vai até lá agora?"
+        ],
+        [
+          "The package was left at the wrong address.",
+          "O pacote foi deixado no endereço errado.",
+          "I'll contact the courier.",
+          "left",
+          "Vou entrar em contato com o entregador."
+        ],
+        [
+          "She said the repairs would take two days.",
+          "Ela disse que o conserto levaria dois dias.",
+          "Then it should be ready tomorrow.",
+          "would",
+          "Então deve estar pronto amanhã."
+        ],
+        [
+          "Do you know where I can collect my ticket?",
+          "Você sabe onde posso retirar meu bilhete?",
+          "At the desk beside the entrance.",
+          "collect",
+          "No balcão ao lado da entrada."
+        ],
+        [
+          "The room is too noisy for me to work.",
+          "O quarto é barulhento demais para eu trabalhar.",
+          "Would you like to move upstairs?",
+          "too",
+          "Você gostaria de ir para o andar de cima?"
+        ],
+        [
+          "There isn't enough space for both bags.",
+          "Não há espaço suficiente para as duas bolsas.",
+          "We can leave one in the locker.",
+          "enough",
+          "Podemos deixar uma no armário."
+        ],
+        [
+          "I can stay until six as long as we finish on time.",
+          "Posso ficar até as seis desde que terminemos no horário.",
+          "We'll keep the last section short.",
+          "as long as",
+          "Vamos encurtar a última parte."
+        ],
+        [
+          "Why don't we ask for a written estimate first?",
+          "Por que não pedimos um orçamento por escrito primeiro?",
+          "Good idea. Then we can compare prices.",
+          "estimate",
+          "Boa ideia. Assim podemos comparar os preços."
+        ],
+        [
+          "I'd rather postpone than rush the decision.",
+          "Eu preferiria adiar a tomar a decisão às pressas.",
+          "Let's discuss it again on Monday.",
+          "postpone",
+          "Vamos conversar de novo na segunda-feira."
+        ],
+        [
+          "What would you do if the shop refused a refund?",
+          "O que você faria se a loja recusasse o reembolso?",
+          "I would ask to speak to the manager.",
+          "refused",
+          "Eu pediria para falar com o gerente."
+        ],
+        [
+          "To sum up, we need a quieter room and a later checkout.",
+          "Resumindo, precisamos de um quarto mais silencioso e de uma saída mais tarde.",
+          "I'll check what is available.",
+          "quieter",
+          "Vou conferir o que está disponível."
+        ]
+      ],
+      "teaching": [
+        {
+          "level": 0,
+          "focus": "exchange",
+          "explanation": {
+            "pt-BR": "Exchange pede uma troca de produto, em vez de uma compra nova.",
+            "en-US": "Exchange requests a replacement for a product you already bought."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "broke",
+          "explanation": {
+            "pt-BR": "Broke conta o defeito no passado. After situa o momento em que ele apareceu.",
+            "en-US": "Broke is the past of break. After links the damage to the earlier use."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "ordered",
+          "explanation": {
+            "pt-BR": "But contrasta o pedido feito com o produto recebido.",
+            "en-US": "But contrasts the order with the items actually received."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "deliver",
+          "explanation": {
+            "pt-BR": "Would it be possible to suaviza um pedido sobre a entrega.",
+            "en-US": "Would it be possible to makes a delivery request more polite."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "waiting",
+          "explanation": {
+            "pt-BR": "Have been waiting liga o início da espera ao momento atual.",
+            "en-US": "Have been waiting describes an activity that started earlier and continues now."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "delayed",
+          "explanation": {
+            "pt-BR": "Because explica a causa da conexão perdida.",
+            "en-US": "Because introduces the cause of the missed connection."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "avoids",
+          "explanation": {
+            "pt-BR": "That avoids descreve a característica desejada no caminho alternativo.",
+            "en-US": "That avoids describes the kind of alternative route being requested."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "changes",
+          "explanation": {
+            "pt-BR": "Use presente depois de if para uma possível mudança futura.",
+            "en-US": "Use the present after if to describe a possible future change."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "cheaper",
+          "explanation": {
+            "pt-BR": "Cheaper than compara o custo das duas opções.",
+            "en-US": "Cheaper than compares the prices of two ticket options."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "prefer",
+          "explanation": {
+            "pt-BR": "I'd prefer expressa uma preferência de modo educado.",
+            "en-US": "I would prefer expresses a polite preference about the room."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Either",
+          "explanation": {
+            "pt-BR": "Either se refere a uma escolha entre duas opções disponíveis.",
+            "en-US": "Either refers to one of two available alternatives."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "share",
+          "explanation": {
+            "pt-BR": "If apresenta a condição que permite dividir o custo.",
+            "en-US": "If introduces the condition that makes sharing the cost possible."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "already",
+          "explanation": {
+            "pt-BR": "Already marca o envio concluído e haven't received indica a resposta ainda ausente.",
+            "en-US": "Already marks the completed action, while have not received describes the missing reply."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "ever",
+          "explanation": {
+            "pt-BR": "Ever pergunta sobre experiência em qualquer momento até agora.",
+            "en-US": "Ever asks about an experience at any time before now."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "used to",
+          "explanation": {
+            "pt-BR": "Used to descreve um hábito anterior que mudou.",
+            "en-US": "Used to describes a past habit that has since changed."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "left",
+          "explanation": {
+            "pt-BR": "Was left destaca o que aconteceu com o pacote, em voz passiva.",
+            "en-US": "Was left is passive and highlights what happened to the package."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "would",
+          "explanation": {
+            "pt-BR": "Would relata uma previsão futura feita num momento passado.",
+            "en-US": "Would reports a future prediction made at an earlier time."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "collect",
+          "explanation": {
+            "pt-BR": "Na pergunta indireta, use where I can, com ordem afirmativa.",
+            "en-US": "An indirect question uses where I can, with statement word order."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "too",
+          "explanation": {
+            "pt-BR": "Too noisy indica um excesso que impede a ação de trabalhar.",
+            "en-US": "Too noisy describes an excess that prevents working."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "enough",
+          "explanation": {
+            "pt-BR": "Enough space expressa a quantidade necessária de espaço.",
+            "en-US": "Enough space refers to the amount needed for both bags."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "as long as",
+          "explanation": {
+            "pt-BR": "As long as introduz uma condição para aceitar a proposta.",
+            "en-US": "As long as introduces the condition attached to accepting the proposal."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "estimate",
+          "explanation": {
+            "pt-BR": "Why don't we funciona como sugestão para uma ação conjunta.",
+            "en-US": "Why do we not, usually contracted to why don’t we, suggests a joint action."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "postpone",
+          "explanation": {
+            "pt-BR": "Would rather compara ações e indica preferência pelo adiamento.",
+            "en-US": "Would rather compares actions and expresses a preference for postponing."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "refused",
+          "explanation": {
+            "pt-BR": "Would com if e passado cria uma situação hipotética.",
+            "en-US": "Would with an if clause in the past describes a hypothetical situation."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "quieter",
+          "explanation": {
+            "pt-BR": "To sum up reúne os principais pedidos para confirmar o entendimento.",
+            "en-US": "To sum up brings the main requests together to check understanding."
+          }
+        }
+      ],
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Observe a situação 1",
+            "en-US": "Explore situation 1"
+          },
+          "text": {
+            "pt-BR": "Exchange pede uma troca de produto, em vez de uma compra nova.",
+            "en-US": "Read the whole situation, identify the speaker’s purpose, and compare possible responses."
+          },
+          "example": "Could I exchange this shirt for a larger size?",
+          "meaning": {
+            "pt-BR": "Posso trocar esta camisa por um tamanho maior?",
+            "en-US": "Could I exchange this shirt for a larger size?"
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Observe a situação 7",
+            "en-US": "Explore situation 7"
+          },
+          "text": {
+            "pt-BR": "That avoids descreve a característica desejada no caminho alternativo.",
+            "en-US": "Read the whole situation, identify the speaker’s purpose, and compare possible responses."
+          },
+          "example": "Is there another route that avoids the roadworks?",
+          "meaning": {
+            "pt-BR": "Há outro caminho que evite as obras?",
+            "en-US": "Is there another route that avoids the roadworks?"
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Observe a situação 13",
+            "en-US": "Explore situation 13"
+          },
+          "text": {
+            "pt-BR": "Already marca o envio concluído e haven't received indica a resposta ainda ausente.",
+            "en-US": "Read the whole situation, identify the speaker’s purpose, and compare possible responses."
+          },
+          "example": "I've already sent the form, but I haven't received a reply.",
+          "meaning": {
+            "pt-BR": "Já enviei o formulário, mas não recebi resposta.",
+            "en-US": "I've already sent the form, but I haven't received a reply."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Observe a situação 19",
+            "en-US": "Explore situation 19"
+          },
+          "text": {
+            "pt-BR": "Too noisy indica um excesso que impede a ação de trabalhar.",
+            "en-US": "Read the whole situation, identify the speaker’s purpose, and compare possible responses."
+          },
+          "example": "The room is too noisy for me to work.",
+          "meaning": {
+            "pt-BR": "O quarto é barulhento demais para eu trabalhar.",
+            "en-US": "The room is too noisy for me to work."
+          }
+        }
+      ],
+      "interpretations": [
+        {
+          "pt-BR": "O cliente quer substituir o produto por outro tamanho.",
+          "en-US": "The customer wants a replacement in a different size."
+        },
+        {
+          "pt-BR": "O item apresentou defeito depois de pouco uso.",
+          "en-US": "An item failed after very little use."
+        },
+        {
+          "pt-BR": "Os produtos recebidos diferem dos que foram pedidos.",
+          "en-US": "The delivered items do not match the order."
+        },
+        {
+          "pt-BR": "O cliente solicita uma data específica de entrega.",
+          "en-US": "The customer is requesting a specific delivery day."
+        },
+        {
+          "pt-BR": "A pessoa continua esperando depois de um atraso.",
+          "en-US": "The speaker is still waiting after a delay."
+        },
+        {
+          "pt-BR": "Um atraso causou a perda de uma conexão.",
+          "en-US": "A delay caused a missed connection."
+        },
+        {
+          "pt-BR": "A pessoa procura um trajeto que contorne as obras.",
+          "en-US": "The traveller wants to bypass construction."
+        },
+        {
+          "pt-BR": "A pessoa quer ser avisada caso o horário mude.",
+          "en-US": "The speaker wants notification of any schedule change."
+        },
+        {
+          "pt-BR": "Comprar ida e volta custa menos que comprar separadamente.",
+          "en-US": "A round trip costs less than separate tickets."
+        },
+        {
+          "pt-BR": "O hóspede prefere um quarto numa área mais silenciosa.",
+          "en-US": "The guest wants a room in a quieter location."
+        },
+        {
+          "pt-BR": "Duas manhãs são aceitáveis, com uma restrição de dia.",
+          "en-US": "Two mornings are acceptable, with one day excluded."
+        },
+        {
+          "pt-BR": "Um pedido conjunto pode diminuir o custo de cada pessoa.",
+          "en-US": "A joint order could reduce each person’s cost."
+        },
+        {
+          "pt-BR": "O formulário foi enviado e a resposta continua pendente.",
+          "en-US": "A submission is complete, but a response is pending."
+        },
+        {
+          "pt-BR": "A pessoa pergunta sobre uma experiência anterior.",
+          "en-US": "The speaker is asking about past experience."
+        },
+        {
+          "pt-BR": "O hábito de deslocamento mudou depois de uma mudança de casa.",
+          "en-US": "A former commuting habit changed after moving."
+        },
+        {
+          "pt-BR": "A encomenda foi entregue em outro endereço.",
+          "en-US": "A delivery went to an incorrect location."
+        },
+        {
+          "pt-BR": "A pessoa relata uma estimativa feita anteriormente.",
+          "en-US": "The speaker is reporting an earlier estimate."
+        },
+        {
+          "pt-BR": "A pessoa precisa saber onde retirar o bilhete.",
+          "en-US": "The traveller needs directions to the collection point."
+        },
+        {
+          "pt-BR": "O barulho atrapalha o trabalho do hóspede.",
+          "en-US": "The noise prevents the guest from working."
+        },
+        {
+          "pt-BR": "O espaço disponível é insuficiente para as duas bolsas.",
+          "en-US": "The available space cannot accommodate both bags."
+        },
+        {
+          "pt-BR": "A pessoa aceita desde que a reunião termine no horário.",
+          "en-US": "The speaker agrees provided the meeting ends punctually."
+        },
+        {
+          "pt-BR": "A pessoa sugere obter uma estimativa de preço antes de decidir.",
+          "en-US": "The speaker proposes getting a price estimate before deciding."
+        },
+        {
+          "pt-BR": "A pessoa prefere adiar a decidir às pressas.",
+          "en-US": "The speaker favours delay over a hurried choice."
+        },
+        {
+          "pt-BR": "A pergunta explora uma possível reação a uma recusa hipotética.",
+          "en-US": "The question explores a hypothetical response to refusal."
+        },
+        {
+          "pt-BR": "O hóspede retoma dois pedidos para confirmar o entendimento.",
+          "en-US": "The guest is restating two requirements."
+        }
+      ]
+    },
+    {
+      "title": {
+        "pt-BR": "Intenção, registro e inferência",
+        "en-US": "Intent, register and inference"
+      },
+      "objective": {
+        "pt-BR": "Interpretar ressalvas e comunicar ideias com precisão.",
+        "en-US": "Interpret qualifications and communicate precisely."
+      },
+      "proficiency": "C1",
+      "lesson": {
+        "pt-BR": "Interpretar ressalvas e comunicar ideias com precisão.",
+        "en-US": "Interpret qualifications and communicate precisely."
+      },
+      "scenes": [
+        [
+          "The report suggests that demand may be easing.",
+          "O relatório sugere que a demanda talvez esteja diminuindo.",
+          "Which indicators support that assessment?",
+          "suggests",
+          "Quais indicadores sustentam essa avaliação?"
+        ],
+        [
+          "It would appear that the deadline is negotiable.",
+          "Ao que parece, o prazo pode ser negociado.",
+          "Who should we discuss that with?",
+          "appear",
+          "Com quem devemos conversar sobre isso?"
+        ],
+        [
+          "The figures are encouraging, albeit incomplete.",
+          "Os números são animadores, embora incompletos.",
+          "What information is still missing?",
+          "albeit",
+          "Que informação ainda está faltando?"
+        ],
+        [
+          "I wouldn't rule out a smaller trial.",
+          "Eu não descartaria um teste menor.",
+          "What would such a trial involve?",
+          "rule out",
+          "O que esse teste envolveria?"
+        ],
+        [
+          "With respect, that isn't quite what the data show.",
+          "Com todo respeito, não é bem isso que os dados mostram.",
+          "Could you point to the relevant section?",
+          "quite",
+          "Você pode indicar o trecho pertinente?"
+        ],
+        [
+          "I take it that the decision has already been made.",
+          "Entendo, então, que a decisão já foi tomada.",
+          "Not yet. We're still consulting the team.",
+          "take it",
+          "Ainda não. Estamos consultando a equipe."
+        ],
+        [
+          "You might want to revisit the assumptions.",
+          "Talvez seja bom rever as premissas.",
+          "Which ones concern you?",
+          "revisit",
+          "Quais preocupam você?"
+        ],
+        [
+          "That's one way of looking at it.",
+          "Essa é uma forma de ver a questão.",
+          "What alternative would you suggest?",
+          "looking",
+          "Que alternativa você sugeriria?"
+        ],
+        [
+          "The proposal is not without merit.",
+          "A proposta tem seus méritos.",
+          "Which elements would you keep?",
+          "merit",
+          "Quais elementos você manteria?"
+        ],
+        [
+          "The results leave something to be desired.",
+          "Os resultados deixam a desejar.",
+          "Where should we focus the improvements?",
+          "desired",
+          "Onde devemos concentrar as melhorias?"
+        ],
+        [
+          "Much as I appreciate the effort, the plan needs revision.",
+          "Por mais que eu valorize o esforço, o plano precisa de revisão.",
+          "What should we address first?",
+          "Much as",
+          "O que devemos tratar primeiro?"
+        ],
+        [
+          "Were the budget to change, we would revise the scope.",
+          "Se o orçamento mudasse, revisaríamos o escopo.",
+          "Would the deadlines change as well?",
+          "Were",
+          "Os prazos também mudariam?"
+        ],
+        [
+          "Had we been consulted, we could have flagged the risk.",
+          "Se tivéssemos sido consultados, poderíamos ter apontado o risco.",
+          "How can we involve your team next time?",
+          "Had",
+          "Como podemos envolver sua equipe da próxima vez?"
+        ],
+        [
+          "Not until the final review did the discrepancy emerge.",
+          "Só na revisão final a divergência apareceu.",
+          "What had concealed it earlier?",
+          "did",
+          "O que a havia ocultado antes?"
+        ],
+        [
+          "What concerns me is the lack of a clear owner.",
+          "O que me preocupa é a falta de um responsável definido.",
+          "Let's assign one before we proceed.",
+          "concerns",
+          "Vamos definir um antes de prosseguir."
+        ],
+        [
+          "The supplier, whose records were incomplete, requested an extension.",
+          "O fornecedor, cujos registros estavam incompletos, pediu uma prorrogação.",
+          "Was the request approved?",
+          "whose",
+          "O pedido foi aprovado?"
+        ],
+        [
+          "Having reviewed the evidence, we recommend a pause.",
+          "Após revisar as evidências, recomendamos uma pausa.",
+          "How long would you recommend?",
+          "Having",
+          "Por quanto tempo vocês recomendariam?"
+        ],
+        [
+          "The policy is intended to support staff rather than monitor them.",
+          "A política pretende apoiar os funcionários em vez de monitorá-los.",
+          "How will that distinction be communicated?",
+          "rather than",
+          "Como essa distinção será comunicada?"
+        ],
+        [
+          "The summary omits the caveats attached to the forecast.",
+          "O resumo omite as ressalvas associadas à previsão.",
+          "Let's restore them in the next version.",
+          "caveats",
+          "Vamos recolocá-las na próxima versão."
+        ],
+        [
+          "Her response was measured, not dismissive.",
+          "A resposta dela foi ponderada, e não desdenhosa.",
+          "So she remains open to discussion?",
+          "measured",
+          "Então ela continua aberta à discussão?"
+        ],
+        [
+          "The suggestion was met with a degree of scepticism.",
+          "A sugestão foi recebida com certo ceticismo.",
+          "What evidence might address those doubts?",
+          "scepticism",
+          "Que evidência poderia responder a essas dúvidas?"
+        ],
+        [
+          "We should distinguish correlation from causation.",
+          "Devemos distinguir correlação de causalidade.",
+          "Can the study establish either?",
+          "causation",
+          "O estudo consegue estabelecer alguma delas?"
+        ],
+        [
+          "The findings hold only insofar as those conditions remain stable.",
+          "As conclusões se sustentam apenas na medida em que essas condições permaneçam estáveis.",
+          "Which conditions are most vulnerable to change?",
+          "insofar",
+          "Quais condições estão mais sujeitas a mudança?"
+        ],
+        [
+          "For the avoidance of doubt, the agreement excludes travel costs.",
+          "Para evitar dúvidas, o acordo exclui despesas de viagem.",
+          "I'll list those separately.",
+          "excludes",
+          "Vou listá-las separadamente."
+        ],
+        [
+          "In essence, the disagreement concerns priorities rather than goals.",
+          "Em essência, a divergência diz respeito às prioridades, e não aos objetivos.",
+          "Then we may be closer to an agreement than we thought.",
+          "priorities",
+          "Então talvez estejamos mais perto de um acordo do que imaginávamos."
+        ]
+      ],
+      "teaching": [
+        {
+          "level": 0,
+          "focus": "suggests",
+          "explanation": {
+            "pt-BR": "Suggests e may apresentam uma interpretação com cautela.",
+            "en-US": "Suggests and may qualify the claim rather than asserting certainty."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "appear",
+          "explanation": {
+            "pt-BR": "Would appear reduz o grau de certeza da afirmação.",
+            "en-US": "It would appear presents a tentative assessment that may be revised."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "albeit",
+          "explanation": {
+            "pt-BR": "Albeit introduz uma ressalva em registro formal.",
+            "en-US": "Albeit introduces a qualification in a formal register."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "rule out",
+          "explanation": {
+            "pt-BR": "Wouldn't rule out mantém uma opção aberta sem assumir compromisso.",
+            "en-US": "Would not rule out leaves an option open without committing to it."
+          }
+        },
+        {
+          "level": 0,
+          "focus": "quite",
+          "explanation": {
+            "pt-BR": "Not quite suaviza uma discordância sobre a interpretação dos dados.",
+            "en-US": "Not quite softens a disagreement about the interpretation of evidence."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "take it",
+          "explanation": {
+            "pt-BR": "I take it apresenta uma inferência e permite que o interlocutor a corrija.",
+            "en-US": "I take it introduces an inference and invites the listener to correct it."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "revisit",
+          "explanation": {
+            "pt-BR": "Might want to pode funcionar como recomendação indireta.",
+            "en-US": "Might want to can function as an indirect recommendation."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "looking",
+          "explanation": {
+            "pt-BR": "A resposta reconhece uma perspectiva e pode abrir espaço para discordância.",
+            "en-US": "The response acknowledges a perspective and can invite an alternative."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "merit",
+          "explanation": {
+            "pt-BR": "Not without merit expressa uma avaliação positiva de modo contido.",
+            "en-US": "Not without merit conveys a restrained positive assessment."
+          }
+        },
+        {
+          "level": 1,
+          "focus": "desired",
+          "explanation": {
+            "pt-BR": "A expressão indica insatisfação sem listar diretamente todos os problemas.",
+            "en-US": "Leave something to be desired expresses dissatisfaction indirectly."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Much as",
+          "explanation": {
+            "pt-BR": "Much as introduz uma concessão antes da crítica principal.",
+            "en-US": "Much as introduces a concession before the main criticism."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Were",
+          "explanation": {
+            "pt-BR": "Were seguido de sujeito e to cria uma condição formal equivalente a if.",
+            "en-US": "Were followed by a subject and to introduces a formal hypothetical condition."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "Had",
+          "explanation": {
+            "pt-BR": "Had we been é uma condição passada com inversão e consequência não realizada.",
+            "en-US": "Had we been uses inversion for a past condition that did not happen."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "did",
+          "explanation": {
+            "pt-BR": "Not until no início exige inversão com did na oração principal.",
+            "en-US": "Initial not until requires inversion with did in the main clause."
+          }
+        },
+        {
+          "level": 2,
+          "focus": "concerns",
+          "explanation": {
+            "pt-BR": "What concerns me destaca o problema que o falante considera central.",
+            "en-US": "What concerns me foregrounds the issue the speaker considers central."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "whose",
+          "explanation": {
+            "pt-BR": "Whose liga o fornecedor aos registros e acrescenta informação explicativa.",
+            "en-US": "Whose links the supplier to its records and adds explanatory information."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "Having",
+          "explanation": {
+            "pt-BR": "Having reviewed indica uma ação concluída antes da recomendação.",
+            "en-US": "Having reviewed marks an action completed before the recommendation."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "rather than",
+          "explanation": {
+            "pt-BR": "Rather than contrasta o objetivo declarado com outra interpretação possível.",
+            "en-US": "Rather than contrasts the stated purpose with another possible interpretation."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "caveats",
+          "explanation": {
+            "pt-BR": "Caveats são limitações importantes para interpretar uma conclusão.",
+            "en-US": "Caveats are qualifications needed to interpret a forecast responsibly."
+          }
+        },
+        {
+          "level": 3,
+          "focus": "measured",
+          "explanation": {
+            "pt-BR": "Measured descreve um tom controlado que não equivale a rejeição.",
+            "en-US": "Measured describes a controlled response, which can remain open to discussion."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "scepticism",
+          "explanation": {
+            "pt-BR": "A degree of limita a intensidade e evita generalizar a reação.",
+            "en-US": "A degree of limits the strength of the reaction being described."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "causation",
+          "explanation": {
+            "pt-BR": "Causation afirma influência causal, que não é demonstrada apenas por correlação.",
+            "en-US": "Causation is a causal relationship that correlation alone cannot establish."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "insofar",
+          "explanation": {
+            "pt-BR": "Insofar as delimita o alcance de uma afirmação.",
+            "en-US": "Insofar as limits the circumstances in which a claim holds."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "excludes",
+          "explanation": {
+            "pt-BR": "For the avoidance of doubt esclarece um limite em registro formal.",
+            "en-US": "For the avoidance of doubt explicitly clarifies the scope of an agreement."
+          }
+        },
+        {
+          "level": 4,
+          "focus": "priorities",
+          "explanation": {
+            "pt-BR": "In essence sintetiza a ideia central sem reproduzir cada detalhe.",
+            "en-US": "In essence summarises the central distinction without repeating every detail."
+          }
+        }
+      ],
+      "guide": [
+        {
+          "title": {
+            "pt-BR": "Observe a situação 1",
+            "en-US": "Explore situation 1"
+          },
+          "text": {
+            "pt-BR": "Suggests e may apresentam uma interpretação com cautela.",
+            "en-US": "Read the whole situation, identify the speaker’s purpose, and compare possible responses."
+          },
+          "example": "The report suggests that demand may be easing.",
+          "meaning": {
+            "pt-BR": "O relatório sugere que a demanda talvez esteja diminuindo.",
+            "en-US": "The report suggests that demand may be easing."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Observe a situação 7",
+            "en-US": "Explore situation 7"
+          },
+          "text": {
+            "pt-BR": "Might want to pode funcionar como recomendação indireta.",
+            "en-US": "Read the whole situation, identify the speaker’s purpose, and compare possible responses."
+          },
+          "example": "You might want to revisit the assumptions.",
+          "meaning": {
+            "pt-BR": "Talvez seja bom rever as premissas.",
+            "en-US": "You might want to revisit the assumptions."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Observe a situação 13",
+            "en-US": "Explore situation 13"
+          },
+          "text": {
+            "pt-BR": "Had we been é uma condição passada com inversão e consequência não realizada.",
+            "en-US": "Read the whole situation, identify the speaker’s purpose, and compare possible responses."
+          },
+          "example": "Had we been consulted, we could have flagged the risk.",
+          "meaning": {
+            "pt-BR": "Se tivéssemos sido consultados, poderíamos ter apontado o risco.",
+            "en-US": "Had we been consulted, we could have flagged the risk."
+          }
+        },
+        {
+          "title": {
+            "pt-BR": "Observe a situação 19",
+            "en-US": "Explore situation 19"
+          },
+          "text": {
+            "pt-BR": "Caveats são limitações importantes para interpretar uma conclusão.",
+            "en-US": "Read the whole situation, identify the speaker’s purpose, and compare possible responses."
+          },
+          "example": "The summary omits the caveats attached to the forecast.",
+          "meaning": {
+            "pt-BR": "O resumo omite as ressalvas associadas à previsão.",
+            "en-US": "The summary omits the caveats attached to the forecast."
+          }
+        }
+      ],
+      "interpretations": [
+        {
+          "pt-BR": "O relatório apresenta com cautela uma possível queda na demanda.",
+          "en-US": "The report offers a tentative interpretation of falling demand."
+        },
+        {
+          "pt-BR": "A pessoa considera possível negociar o prazo, sem afirmar certeza.",
+          "en-US": "The speaker cautiously infers that the deadline could change."
+        },
+        {
+          "pt-BR": "Os resultados positivos ainda apresentam lacunas importantes.",
+          "en-US": "Positive results still have important gaps."
+        },
+        {
+          "pt-BR": "A possibilidade de um teste menor continua aberta.",
+          "en-US": "A reduced trial remains a possibility."
+        },
+        {
+          "pt-BR": "A pessoa contesta educadamente uma interpretação dos dados.",
+          "en-US": "The speaker politely challenges an interpretation of evidence."
+        },
+        {
+          "pt-BR": "A pessoa confere uma suposição sobre o estado da decisão.",
+          "en-US": "The speaker is checking an assumption about the decision."
+        },
+        {
+          "pt-BR": "A pessoa recomenda de modo indireto uma revisão das premissas.",
+          "en-US": "The speaker indirectly recommends reviewing the premises."
+        },
+        {
+          "pt-BR": "A resposta reconhece uma perspectiva e abre espaço para outra.",
+          "en-US": "The speaker acknowledges a view while inviting another perspective."
+        },
+        {
+          "pt-BR": "A proposta recebe um elogio contido.",
+          "en-US": "The proposal receives restrained praise."
+        },
+        {
+          "pt-BR": "A pessoa indica insatisfação com os resultados.",
+          "en-US": "The speaker indicates that the results are unsatisfactory."
+        },
+        {
+          "pt-BR": "O reconhecimento do esforço acompanha um pedido de revisão.",
+          "en-US": "Appreciation of effort accompanies a request for revision."
+        },
+        {
+          "pt-BR": "Uma eventual mudança no orçamento levaria a rever o escopo.",
+          "en-US": "A hypothetical budget change would trigger a scope review."
+        },
+        {
+          "pt-BR": "Uma consulta anterior poderia ter revelado o risco.",
+          "en-US": "Earlier consultation could have revealed a risk."
+        },
+        {
+          "pt-BR": "A divergência só se tornou visível na etapa final.",
+          "en-US": "The inconsistency became visible only at the final stage."
+        },
+        {
+          "pt-BR": "A pessoa destaca a ausência de alguém responsável pela tarefa.",
+          "en-US": "The speaker foregrounds the absence of responsibility."
+        },
+        {
+          "pt-BR": "Um pedido de prazo maior acompanha registros incompletos.",
+          "en-US": "Incomplete documentation accompanies an extension request."
+        },
+        {
+          "pt-BR": "A análise das evidências leva à recomendação de uma pausa.",
+          "en-US": "Reviewing the evidence leads to a recommendation to pause."
+        },
+        {
+          "pt-BR": "A pessoa esclarece o propósito de apoiar os funcionários.",
+          "en-US": "The speaker clarifies the policy’s supportive purpose."
+        },
+        {
+          "pt-BR": "O resumo deixa de fora limitações importantes da previsão.",
+          "en-US": "The summary leaves out important qualifications."
+        },
+        {
+          "pt-BR": "Uma resposta controlada é diferenciada de uma rejeição.",
+          "en-US": "A restrained reply is being distinguished from rejection."
+        },
+        {
+          "pt-BR": "A sugestão foi recebida com alguma dúvida.",
+          "en-US": "The reaction involved some doubt about the suggestion."
+        },
+        {
+          "pt-BR": "Uma associação entre fatos não deve ser tratada automaticamente como causa.",
+          "en-US": "An observed association should not automatically be treated as cause."
+        },
+        {
+          "pt-BR": "A conclusão depende da continuidade de certas condições.",
+          "en-US": "The claim depends on specific conditions continuing."
+        },
+        {
+          "pt-BR": "A pessoa esclarece explicitamente algo excluído do acordo.",
+          "en-US": "The speaker explicitly clarifies an exclusion from the agreement."
+        },
+        {
+          "pt-BR": "A divergência está na prioridade das ações, apesar de objetivos compartilhados.",
+          "en-US": "The conflict concerns ordering priorities despite shared goals."
         }
       ]
     }

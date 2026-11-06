@@ -1,3 +1,4 @@
+import { ENGLISH_PART_ORDER, englishPartUnlocked } from "../domain/english-part-order";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { uiText, useLanguage } from "../i18n/runtime";
@@ -37,9 +38,11 @@ export function VoicesLanguageMap({
   const gesture = useRef<number | null>(null);
   const dragged = useRef(false);
   const wheel = useRef(0);
-  const [index, setIndex] = useState(initialPart);
-  const entries = ENGLISH_PART_CATALOG;
-  const current = progress.parts[index];
+  const [index, setIndex] = useState(
+    Math.max(0, ENGLISH_PART_ORDER.indexOf(initialPart as (typeof ENGLISH_PART_ORDER)[number])),
+  );
+  const entries = ENGLISH_PART_ORDER.map((id) => ENGLISH_PART_CATALOG[id]!);
+  const current = progress.parts[ENGLISH_PART_ORDER[index]!];
   const percent = current!.confirmed ? 100 : Math.min(99, current!.solved.size);
   const [phase, setPhase] = useState<"map" | "enter" | "exit">("map");
   const [direction, setDirection] = useState("right");
@@ -47,7 +50,7 @@ export function VoicesLanguageMap({
     if (phase === "map") return;
     const timer = window.setTimeout(
       () => {
-        if (phase === "enter") onSelect(index);
+        if (phase === "enter") onSelect(ENGLISH_PART_ORDER[index]!);
         else onBack();
       },
       isMotionReduced() ? 0 : 850,
@@ -71,7 +74,8 @@ export function VoicesLanguageMap({
       setIndex(next);
     }
   };
-  const unlocked = (position: number) => position === 0 || progress.parts[position - 1]!.confirmed;
+  const unlocked = (position: number) =>
+    englishPartUnlocked(progress.parts, ENGLISH_PART_ORDER[position]!);
   return createPortal(
     <section
       ref={root}
@@ -197,7 +201,7 @@ export function VoicesLanguageMap({
           </div>
         </div>
         <div className="math-journey-label" aria-live="polite">
-          <span>{uiText("Inglês · Parte {0} de 6", [index + 1])}</span>
+          <span>{uiText("Inglês · Parte {0} de {1}", [index + 1, entries.length])}</span>
           <h1>{englishText(course.title)}</h1>
           <p>{englishText(course.subject)}</p>
           <button

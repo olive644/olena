@@ -13,7 +13,16 @@ import { focusFlowerState } from "../domain/focus-flower";
 import { agendaTimeZone } from "../data/agenda-time-zone";
 import { useWallClock } from "../hooks/use-wall-clock";
 // Arte do cenário de cada parte de Inglês (mesma ordem de english-part-catalog.ts).
-const ENGLISH_ART = ["welcome", "habits", "memories", "plans", "ideas", "meaning"] as const;
+const ENGLISH_ART = [
+  "welcome",
+  "habits",
+  "memories",
+  "plans",
+  "ideas",
+  "meaning",
+  "market",
+  "archive",
+] as const;
 const IslandPreview = lazy(() => import("./student-island-preview"));
 export function StudentDestinations({
   workspace,

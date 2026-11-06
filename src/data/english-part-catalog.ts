@@ -6,8 +6,19 @@ const titles = [
   { "pt-BR": "Mirante dos Planos", "en-US": "Plans Lookout" },
   { "pt-BR": "Pátio das Ideias", "en-US": "Ideas Courtyard" },
   { "pt-BR": "Casa dos Sentidos", "en-US": "House of Meaning" },
+  { "pt-BR": "Mercado dos Encontros", "en-US": "Encounters Market" },
+  { "pt-BR": "Arquivo das Entrelinhas", "en-US": "Between-the-Lines Archive" },
 ] as const;
-const art = ["welcome", "habits", "memories", "plans", "ideas", "meaning"] as const;
+const art = [
+  "welcome",
+  "habits",
+  "memories",
+  "plans",
+  "ideas",
+  "meaning",
+  "market",
+  "archive",
+] as const;
 export const ENGLISH_PART_CATALOG = titles.map((title, index) => ({
   id: art[index]!,
   art: art[index]!,

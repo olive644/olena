@@ -1,3 +1,6 @@
+import { ENGLISH_PART_COUNT } from "./english-part-order.js";
+import { A1_BANK } from "./english-a1.js";
+import { englishBankSize } from "./english-difficulty.js";
 export type EnglishMiss = { id: number; choice: string; timedOut: boolean };
 export type EnglishCheckpoint = {
   owner: string | null;
@@ -19,13 +22,13 @@ export function validEnglishCheckpoint(value: unknown): value is EnglishCheckpoi
     ) ||
     !Number.isInteger(value["part"]) ||
     Number(value["part"]) < 0 ||
-    Number(value["part"]) > 5 ||
+    Number(value["part"]) >= ENGLISH_PART_COUNT ||
     !["practice", "final"].includes(String(value["mode"])) ||
     !Number.isSafeInteger(value["updatedAt"]) ||
     Number(value["updatedAt"]) < 0
   )
     return false;
-  const bank = value["part"] === 0 ? 240 : 120;
+  const bank = value["part"] === 0 ? A1_BANK : englishBankSize(Number(value["part"]));
   const id = (n: unknown): n is number => Number.isInteger(n) && Number(n) >= 0 && Number(n) < bank;
   if (value["question"] === null) return value["final"] === undefined;
   if (!id(value["question"])) return false;

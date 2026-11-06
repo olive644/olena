@@ -1,6 +1,6 @@
 // Versão e endereço da Política de Privacidade. A versão precisa ser igual à do
 // atributo data-policy-version em public/politica-de-privacidade.html (um teste confere).
-export const PRIVACY_POLICY_VERSION = "2026-11-03.1";
+export const PRIVACY_POLICY_VERSION = "2026-11-05";
 export const PRIVACY_POLICY_PATH = "/politica-de-privacidade.html";
 export const PRIVACY_CONSENT_CHANGED = "olena:privacy-consent-changed";
 export const PRIVACY_CONSENT_ITEM = "helena.privacy.v1";

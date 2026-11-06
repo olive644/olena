@@ -1,4 +1,8 @@
-import { prepareEnglishMicrophone } from "../data/english-microphone";
+import { englishPartUnlocked } from "../domain/english-part-order";
+import { englishAnswerKey } from "../domain/english-answer";
+import { EnglishStudyGuide } from "./english-study-guide";
+import { englishConfirmation, englishLearningReady } from "../domain/english-learning";
+import { englishBankSize } from "../domain/english-difficulty";
 import { RoomRewardNotice } from "./room-reward-notice";
 import { PaperDigits } from "./paper-digits";
 import { ArcadeResults } from "./arcade-results";
@@ -6,9 +10,6 @@ import { mathPlaceRewards, COMMON_CHEST_POINTS, type MathChest } from "../data/m
 import { ENGLISH_PART_CATALOG } from "../data/english-part-catalog";
 import { readEnglishCheckpoint, saveEnglishCheckpoint } from "../data/english-checkpoint";
 import { A1_BANK, a1Coverage } from "../domain/english-a1";
-import { isSpeakingQuestion, spokenEnglish } from "../data/english-speaking";
-import { LocalEnglishSpeech } from "../data/english-local-speech";
-import { EnglishSpeakingInput } from "./english-speaking-input";
 import {
   ARCADE_LIVES,
   ARCADE_RESERVE,
@@ -25,7 +26,6 @@ import type { PracticeActivity, WorkspaceState } from "../domain/workspace";
 import {
   englishProgress,
   englishAttemptOf,
-  ENGLISH_BANK,
   ENGLISH_TARGET,
   type LanguageAttempt,
 } from "../domain/language-progress";
@@ -110,20 +110,12 @@ export function EnglishIslandJourney({
   const [round, setRound] = useState<Round>();
   const [feedback, setFeedback] = useState<boolean>();
   const [words, setWords] = useState<number[]>([]);
+  const [typing, setTyping] = useState(false);
+  const [written, setWritten] = useState("");
   const [reviewing, setReviewing] = useState(false);
   const [choice, setChoice] = useState<string>();
   const [pending, setPending] = useState(false);
   const [hasVoice, setHasVoice] = useState(false);
-  const [speechClient] = useState(() => new LocalEnglishSpeech());
-  useEffect(() => () => speechClient.dispose(), [speechClient]);
-  // O microfone liberado no início da partida só fica aberto enquanto a partida durar.
-  const roundOpen = Boolean(round && !round.ended);
-  useEffect(() => {
-    if (!roundOpen) speechClient.releaseMicrophone();
-  }, [roundOpen, speechClient]);
-  const [speechAllowed, setSpeechAllowed] = useState(false);
-  const [speechFallback, setSpeechFallback] = useState(false);
-  const [speechPaused, setSpeechPaused] = useState(true);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const request = useRef<AbortController | null>(null);
   const answerLock = useRef(false);
@@ -136,12 +128,14 @@ export function EnglishIslandJourney({
   const audio = useRef<ReturnType<typeof createMathSound> | null>(null);
   const nextFocus = useRef<HTMLButtonElement>(null);
   const data = course?.parts[part];
-  const partUnlocked = progress.unlocked && (part === 0 || progress.parts[part - 1]!.confirmed);
+  const partUnlocked = progress.unlocked && englishPartUnlocked(progress.parts, part);
   const current = progress.parts[part]!;
   const isA1 = part === 0 && Boolean(course?.a1);
-  const bankSize = isA1 ? A1_BANK : ENGLISH_BANK;
+  const bankSize = isA1 ? A1_BANK : englishBankSize(part);
   const coverage = a1Coverage(current.solved);
-  const canConfirm = current.solved.size >= ENGLISH_TARGET && (!isA1 || coverage.ready);
+  const canConfirm =
+    current.solved.size >= ENGLISH_TARGET &&
+    (isA1 ? coverage.ready : englishLearningReady(part, current.solved));
   const question =
     round && course && round.at < round.ids.length
       ? englishQuestion(
@@ -155,7 +149,6 @@ export function EnglishIslandJourney({
       .split(" ")
       .map((text, id) => ({ text, id }))
       .reverse() ?? [];
-  const speaking = Boolean(question && isSpeakingQuestion(question) && !speechFallback);
   const timing = arcadeQuestionTiming(
     question?.phrase.length ?? 0,
     round?.mode === "final" ? 3 : Math.min(3, 1 + Math.floor((question?.level ?? 0) / 2)),
@@ -197,7 +190,11 @@ export function EnglishIslandJourney({
     const target = reviewing
       ? root.current?.querySelector<HTMLElement>(".english-mentor h1")
       : round
-        ? (nextFocus.current ?? root.current?.querySelector<HTMLElement>(".english-lesson h1"))
+        ? ((typing
+            ? root.current?.querySelector<HTMLElement>(
+                ".english-written-answer input:not([disabled])",
+              )
+            : nextFocus.current) ?? root.current?.querySelector<HTMLElement>(".english-lesson h1"))
         : root.current?.querySelector<HTMLElement>(
             summary ? ".math-results h1" : ".math-world-back",
           );
@@ -239,7 +236,6 @@ export function EnglishIslandJourney({
         activeRoundId.current = null;
         setReviewing(false);
         setPending(false);
-        setSpeechAllowed(false);
         if (timer.current) clearTimeout(timer.current);
         request.current?.abort();
         window.speechSynthesis?.cancel();
@@ -324,7 +320,6 @@ export function EnglishIslandJourney({
     const controller = new AbortController();
     request.current = controller;
     const owner = localStorage.getItem(ACCOUNT_OWNER_KEY);
-    const microphone = prepareEnglishMicrophone();
     setPending(true);
     try {
       const checkpoint = readEnglishCheckpoint(part, mode);
@@ -336,15 +331,13 @@ export function EnglishIslandJourney({
       if (controller.signal.aborted || owner !== localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
       audio.current?.unlock();
       audio.current?.play("start");
-      const bank = Array.from({ length: bankSize }, (_, id) => id);
-      const offset = progress.accepted.length % bankSize;
       const finalIds = isA1
         ? Array.from(
             { length: 5 },
             (_, i) =>
               120 + ((i + Math.floor(progress.accepted.length / 5)) % 6) * 20 + 16 + (i % 4),
           )
-        : bank.slice(offset).concat(bank.slice(0, offset)).slice(0, 5);
+        : englishConfirmation(part, progress.accepted.length);
       const id = resumedFinal?.id ?? `english:arcade:${crypto.randomUUID()}`;
       activeRoundId.current = id;
       const started: Round = {
@@ -362,12 +355,7 @@ export function EnglishIslandJourney({
         missed: resumedFinal?.missed ?? [],
         ended: false,
       };
-      const microphoneStream = await microphone;
-      if (controller.signal.aborted || owner !== localStorage.getItem(ACCOUNT_OWNER_KEY)) {
-        microphoneStream?.getTracks().forEach((track) => track.stop());
-        return;
-      }
-      if (microphoneStream) speechClient.adoptMicrophone(microphoneStream);
+      if (controller.signal.aborted || owner !== localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
       setRound(started);
       setCountdown(ARCADE_COUNTDOWN);
       setReviewIndex(0);
@@ -376,8 +364,7 @@ export function EnglishIslandJourney({
       setSettledSummary(undefined);
       setFeedback(undefined);
       setWords([]);
-      setSpeechFallback(false);
-      setSpeechPaused(true);
+      setWritten("");
       setWarning("");
       rememberRound(started);
       setReviewing(false);
@@ -444,8 +431,7 @@ export function EnglishIslandJourney({
         setRound(next);
         setFeedback(undefined);
         setWords([]);
-        setSpeechFallback(false);
-        setSpeechPaused(true);
+        setWritten("");
         setChoice(undefined);
         setReviewing(false);
         answerLock.current = false;
@@ -507,7 +493,11 @@ export function EnglishIslandJourney({
       ? Math.max(0, started.bank - (elapsed - started.elapsed) * timing.drain)
       : round.bank;
     timedOut ||= Math.min(timing.budget - elapsed * timing.drain, bank) <= 0;
-    const correct = !timedOut && normalizeEnglish(value) === normalizeEnglish(question.answer);
+    const correct =
+      !timedOut &&
+      (question.kind === "meaning"
+        ? normalizeEnglish(value) === normalizeEnglish(question.answer)
+        : englishAnswerKey(value) === englishAnswerKey(question.answer));
     const lives = round.lives - Number(!correct);
     const correctIds = correct ? [...round.correct, question.id] : round.correct;
     const ended =
@@ -515,7 +505,9 @@ export function EnglishIslandJourney({
       (round.mode === "final"
         ? round.at + 1 === 5
         : (new Set([...current.solved, ...correctIds]).size >= ENGLISH_TARGET &&
-            (!isA1 || a1Coverage([...current.solved, ...correctIds]).ready)) ||
+            (isA1
+              ? a1Coverage([...current.solved, ...correctIds]).ready
+              : englishLearningReady(part, [...current.solved, ...correctIds]))) ||
           round.at + 1 >= bankSize);
     const updated = {
       ...round,
@@ -571,15 +563,7 @@ export function EnglishIslandJourney({
   const playing = Boolean(round && !round.ended);
   const activeAt = round?.at;
   useEffect(() => {
-    if (
-      !playing ||
-      countdown ||
-      feedback !== undefined ||
-      pending ||
-      leave ||
-      (speaking && speechPaused)
-    )
-      return;
+    if (!playing || countdown || feedback !== undefined || pending || leave) return;
     clockStart.current = startClock();
     const handle = setInterval(tick, 100);
     document.addEventListener("visibilitychange", tick);
@@ -590,7 +574,7 @@ export function EnglishIslandJourney({
       document.removeEventListener("visibilitychange", tick);
       window.removeEventListener("pageshow", tick);
     };
-  }, [activeAt, playing, countdown, feedback, pending, leave, speaking, speechPaused]);
+  }, [activeAt, playing, countdown, feedback, pending, leave]);
   function listen() {
     if (!question) return;
     const voice = window.speechSynthesis
@@ -758,10 +742,7 @@ export function EnglishIslandJourney({
               </section>
             </section>
           ) : (
-            <div
-              className={`english-lesson${speaking ? " is-speaking" : ""}`}
-              data-question-id={question.id}
-            >
+            <div className="english-lesson" data-question-id={question.id}>
               <div className="math-game-stats">
                 <div className="math-score" aria-label={round.correct.length * 20 + uiText(2292)}>
                   <RoomPointsIcon />
@@ -815,62 +796,21 @@ export function EnglishIslandJourney({
               <div className="english-scene">
                 <div className="english-dialogue">
                   <span className="english-eyebrow">{uiText("Olena")}</span>
-                  <p
-                    lang={
-                      speaking && question.level <= 2
-                        ? "en"
-                        : question.kind === "order"
-                          ? undefined
-                          : "en"
-                    }
-                  >
-                    {speaking && question.level <= 2
-                      ? question.phrase
-                      : question.kind === "gap"
-                        ? question.phrase.replace(new RegExp(`\\b${question.answer}\\b`), "____")
-                        : question.kind === "order"
-                          ? question.meaning
-                          : question.phrase}
+                  <p lang={question.kind === "order" ? undefined : "en"}>
+                    {question.kind === "gap"
+                      ? question.phrase.replace(new RegExp(`\\b${question.answer}\\b`), "____")
+                      : question.kind === "order"
+                        ? question.meaning
+                        : question.phrase}
                   </p>
-                  {hasVoice && !speaking && (
+                  {hasVoice && (
                     <button className="secondary-button" type="button" onClick={listen}>
                       {uiText("Ouvir a fala")}
                     </button>
                   )}
                 </div>
               </div>
-              <h1 tabIndex={-1}>
-                {speaking
-                  ? question.level <= 2
-                    ? uiText("Leia a frase em voz alta.")
-                    : uiText("Fale a frase estudada em inglês.")
-                  : question.prompt}
-              </h1>
-              {speaking && (
-                <EnglishSpeakingInput
-                  key={`${round.id}:${round.at}:${leave}`}
-                  speech={speechClient}
-                  expected={question.answer}
-                  onRetrySound={() => audio.current?.play("wrong")}
-                  allowed={speechAllowed}
-                  disabled={feedback !== undefined || pending || leave}
-                  onAllow={() => setSpeechAllowed(true)}
-                  onPause={setSpeechPaused}
-                  onListen={hasVoice ? listen : undefined}
-                  onSound={() => {
-                    audio.current?.unlock();
-                    audio.current?.play("cosmicTap");
-                  }}
-                  onAlternative={() => setSpeechFallback(true)}
-                  onAnswer={(transcript) =>
-                    answer(
-                      spokenEnglish(transcript) === spokenEnglish(question.answer)
-                        ? question.answer
-                        : uiText("A fala enviada ainda não corresponde à frase pedida."),
-                    )
-                  }
-                />
-              )}
+              <h1 tabIndex={-1}>{question.prompt}</h1>
               {question.kind === "gap" && (
                 <p className="english-reply-intent">
                   {uiText("A fala quer dizer: {0}", [question.meaning])}
@@ -881,103 +821,139 @@ export function EnglishIslandJourney({
                   {uiText("Você quer dizer: {0}", [question.replyMeaning])}
                 </p>
               )}
-              {!speaking && question.kind === "order" && (
+              {question.kind === "order" && !typing && (
                 <div className="english-word-answer" aria-live="polite" lang="en">
                   {words.map((id) => question.phrase.split(" ")[id]).join(" ") ||
                     uiText("Escolha as palavras na ordem.")}
                 </div>
               )}
-              {!speaking && (
-                <div
-                  className={
-                    question.kind === "order"
-                      ? "english-word-bank math-answers"
-                      : "english-options math-answers"
-                  }
+              {question.kind === "order" && typing && (
+                <form
+                  className="english-written-answer"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    if (written.trim()) answer(written);
+                  }}
                 >
-                  {(question.kind === "order"
-                    ? tokens.map((token) => token.text)
-                    : question.options
-                  ).map((option, index) => {
-                    const token = tokens[index];
-                    const picked =
-                      question.kind === "order" ? feedback !== undefined : choice === option;
-                    return (
-                      <div className="math-answer-wrap" key={index}>
-                        <button
-                          ref={index === 0 ? nextFocus : undefined}
-                          className="math-answer-button"
-                          data-tone={index % 4}
-                          data-feedback={
-                            picked && feedback !== undefined
-                              ? feedback
-                                ? "correct"
-                                : "wrong"
-                              : undefined
+                  <label>
+                    {uiText("Escreva a fala em inglês")}
+                    <input
+                      lang="en"
+                      value={written}
+                      maxLength={500}
+                      autoComplete="off"
+                      spellCheck={false}
+                      disabled={feedback !== undefined || pending}
+                      onChange={(event) => setWritten(event.target.value)}
+                    />
+                  </label>
+                  <button
+                    type="submit"
+                    className="primary-button"
+                    disabled={!written.trim() || feedback !== undefined || pending}
+                  >
+                    {uiText("Conferir resposta")}
+                    <PaperArrow />
+                  </button>
+                  {feedback !== undefined && (
+                    <p role="status">
+                      {feedback ? uiText("Muito bem!") : uiText("Vamos entender juntos?")}
+                    </p>
+                  )}
+                </form>
+              )}
+              <div
+                hidden={question.kind === "order" && typing}
+                className={
+                  question.kind === "order"
+                    ? "english-word-bank math-answers"
+                    : "english-options math-answers"
+                }
+              >
+                {(question.kind === "order"
+                  ? tokens.map((token) => token.text)
+                  : question.options
+                ).map((option, index) => {
+                  const token = tokens[index];
+                  const picked =
+                    question.kind === "order" ? feedback !== undefined : choice === option;
+                  return (
+                    <div className="math-answer-wrap" key={index}>
+                      <button
+                        ref={index === 0 ? nextFocus : undefined}
+                        className="math-answer-button"
+                        data-tone={index % 4}
+                        data-feedback={
+                          picked && feedback !== undefined
+                            ? feedback
+                              ? "correct"
+                              : "wrong"
+                            : undefined
+                        }
+                        aria-disabled={
+                          feedback !== undefined ||
+                          pending ||
+                          (question.kind === "order" && words.includes(token!.id))
+                        }
+                        aria-pressed={picked}
+                        type="button"
+                        lang={question.kind === "meaning" ? undefined : "en"}
+                        onClick={() => {
+                          if (feedback !== undefined || pending) return;
+                          if (question.kind !== "order") {
+                            answer(option);
+                            return;
                           }
-                          aria-disabled={
-                            feedback !== undefined ||
-                            pending ||
-                            (question.kind === "order" && words.includes(token!.id))
-                          }
-                          aria-pressed={picked}
-                          type="button"
-                          lang={question.kind === "meaning" ? undefined : "en"}
-                          onClick={() => {
-                            if (feedback !== undefined || pending) return;
-                            if (question.kind !== "order") {
-                              answer(option);
-                              return;
-                            }
-                            if (!token || words.includes(token.id)) return;
-                            const selected = [...words, token.id];
-                            setWords(selected);
-                            if (selected.length === tokens.length)
-                              answer(
-                                selected.map((id) => question.phrase.split(" ")[id]).join(" "),
-                              );
-                          }}
-                        >
-                          <span>{option}</span>
-                          <span className="math-answer-fold" aria-hidden="true" />
-                        </button>
-                        {picked &&
-                          feedback !== undefined &&
-                          (question.kind !== "order" || index === 0) && (
-                            <div
-                              className={`math-answer-reaction ${feedback ? "is-correct" : "is-wrong"}`}
-                              role="status"
-                            >
-                              <MathUserAvatar mood={feedback ? "correct" : "wrong"} />
-                              <div>
-                                <b>
-                                  {feedback
-                                    ? uiText("Muito bem!")
-                                    : uiText("Vamos entender juntos?")}
-                                </b>
-                                {feedback && (
-                                  <span>
-                                    +<MathNumber value={20} />
-                                  </span>
-                                )}
-                              </div>
+                          if (!token || words.includes(token.id)) return;
+                          const selected = [...words, token.id];
+                          setWords(selected);
+                          if (selected.length === tokens.length)
+                            answer(selected.map((id) => question.phrase.split(" ")[id]).join(" "));
+                        }}
+                      >
+                        <span>{option}</span>
+                        <span className="math-answer-fold" aria-hidden="true" />
+                      </button>
+                      {picked &&
+                        feedback !== undefined &&
+                        (question.kind !== "order" || index === 0) && (
+                          <div
+                            className={`math-answer-reaction ${feedback ? "is-correct" : "is-wrong"}`}
+                            role="status"
+                          >
+                            <MathUserAvatar mood={feedback ? "correct" : "wrong"} />
+                            <div>
+                              <b>
+                                {feedback ? uiText("Muito bem!") : uiText("Vamos entender juntos?")}
+                              </b>
+                              {feedback && (
+                                <span>
+                                  +<MathNumber value={20} />
+                                </span>
+                              )}
                             </div>
-                          )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-              {speaking && feedback !== undefined && (
-                <div
-                  className={`math-answer-reaction ${feedback ? "is-correct" : "is-wrong"}`}
-                  role="status"
+                          </div>
+                        )}
+                    </div>
+                  );
+                })}
+              </div>
+              {question.kind === "order" && feedback === undefined && (
+                <button
+                  className="secondary-button"
+                  type="button"
+                  disabled={pending}
+                  onClick={() => {
+                    setTyping(!typing);
+                    setWritten("");
+                    setWords([]);
+                    setWritten("");
+                  }}
                 >
-                  <MathUserAvatar mood={feedback ? "correct" : "wrong"} />
-                  <b>{feedback ? uiText("Muito bem!") : uiText("Vamos entender juntos?")}</b>
-                </div>
+                  {typing ? uiText("Usar palavras de apoio") : uiText("Responder sem as palavras")}
+                </button>
               )}
-              {!speaking && question.kind === "order" && feedback === undefined && (
+              {question.kind === "order" && !typing && feedback === undefined && (
                 <button
                   className="secondary-button"
                   type="button"
@@ -1043,6 +1019,12 @@ export function EnglishIslandJourney({
           <div className="english-entry math-welcome">
             <h1 className="visually-hidden">{englishText(ENGLISH_PART_CATALOG[part]!.title)}</h1>
             <MathUserAvatar />
+            <EnglishStudyGuide
+              part={data}
+              {...(isA1 && course.a1
+                ? { guides: course.a1.units.flatMap((unit) => unit.guide) }
+                : {})}
+            />
             {!partUnlocked && (
               <p>{uiText("Confirme a parte anterior para liberar esta prática.")}</p>
             )}

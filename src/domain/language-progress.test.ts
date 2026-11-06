@@ -76,7 +76,7 @@ it("keeps later parts locked, deduplicates mastery and requires the final", () =
   expect(before.parts[0]!.solved.size).toBe(24);
   expect(before.parts[0]!.correct).toBe(24);
   expect(before.parts[1]!.solved.size).toBe(0);
-  expect(before.percent).toBe(4);
+  expect(before.percent).toBe(3);
   records.push(attempt(0, [0, 1, 2, 3, 4], [0, 1, 2, 3], "final"));
   records.push(attempt(1, [0, 1]));
   expect(englishProgress(records).parts[1]!.solved.size).toBe(2);
@@ -96,7 +96,7 @@ it("failed confirmation requires four correct reviews, errors never advance mast
   records.push(attempt(0, [5, 6, 7, 8, 9], [5, 6, 7, 8], "final"));
   expect(englishProgress(records).parts[0]!.confirmed).toBe(true);
 });
-it("reaches 100 percent only after all six confirmations", () => {
+it("preserves six historical confirmations at 75 percent of the expanded course", () => {
   const records: PracticeActivity[] = [];
   for (let part = 0; part < 6; part++) {
     for (let group = 0; group < 4; group++)
@@ -108,7 +108,7 @@ it("reaches 100 percent only after all six confirmations", () => {
       );
     records.push(attempt(part, [0, 5, 10, 15, 20], [0, 5, 10, 15], "final"));
   }
-  expect(englishProgress(records).percent).toBe(100);
+  expect(englishProgress(records).percent).toBe(75);
 });
 it("rejects malformed attempts and keeps account workspace merge additive", () => {
   expect(
@@ -195,9 +195,9 @@ it("uses the same six-part completion formula as mathematics", () => {
         ),
       );
     records.push(attempt(part, [0, 5, 10, 15, 20], [0, 5, 10, 15], "final"));
-    expect(englishProgress(records).percent).toBe(Math.floor(((part + 1) * 100) / 6));
+    expect(englishProgress(records).percent).toBe(Math.floor(((part + 1) * 100) / 8));
   }
-  expect(englishProgress(records).overall).toBe(100);
+  expect(englishProgress(records).overall).toBe(75);
 });
 
 it("retains preview history without treating changed curriculum IDs as new mastery", () => {

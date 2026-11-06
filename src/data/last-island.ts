@@ -1,3 +1,4 @@
+import { ENGLISH_PART_COUNT } from "../domain/english-part-order";
 import { ACCOUNT_OWNER_KEY } from "./personal-data";
 // A última ilha em que a pessoa entrou, para o Espaço do aluno continuar de onde ela parou.
 // Fica só neste aparelho, por conta, como a ilha selecionada em practice-island-selection.
@@ -28,7 +29,9 @@ export function readLastIsland(): LastIsland | undefined {
     )
       return undefined;
     const part =
-      value.part >= 0 && value.part < 6 && Number.isInteger(value.part) ? value.part : undefined;
+      value.part >= 0 && value.part < ENGLISH_PART_COUNT && Number.isInteger(value.part)
+        ? value.part
+        : undefined;
     return { id: value.id, at: value.at, ...(part === undefined ? {} : { part }) };
   } catch {
     return undefined;
@@ -65,5 +68,5 @@ export function lastIslandOf(
   const attempt = (english?.englishAttempt ?? english?.englishA1Attempt)?.part;
   const part =
     fresh && stored.id === "english" && stored.part !== undefined ? stored.part : attempt;
-  return { id, part: part !== undefined && part >= 0 && part < 6 ? part : 0 };
+  return { id, part: part !== undefined && part >= 0 && part < ENGLISH_PART_COUNT ? part : 0 };
 }
