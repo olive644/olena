@@ -5,7 +5,7 @@ import {
   decodeAchievements,
   encodeAchievements,
 } from "./achievement-wire";
-it("fits all 155 known IDs and precise dates inside the unchanged public request budget", () => {
+it("fits all known IDs and precise dates inside the unchanged public request budget", () => {
   const ids = ALL_ACHIEVEMENTS.map(({ id }) => id);
   const dates = Object.fromEntries(
     ids.map((id, i) => [id, new Date(1793520000123 + i * 86400000).toISOString()]),
@@ -49,4 +49,35 @@ it("rejects unknown tokens, duplicate IDs, unsafe dates, schema changes and over
     { ...good, items: Array(ALL_ACHIEVEMENTS.length + 1).fill(good.items[0]) },
   ])
     expect(decodeAchievements(value)).toBeUndefined();
+});
+
+it("uses v2 only when v1 exceeds the budget and keeps exact millisecond offsets", () => {
+  const ids = ALL_ACHIEVEMENTS.map(({ id }) => id);
+  const dates = Object.fromEntries(
+    ids.slice(1).map((id, i) => [id, new Date(1793520000123 + i * 86400123).toISOString()]),
+  );
+  const compact = compactAchievementAction({
+    action: "share",
+    enabled: true,
+    achievements: ids,
+    achievementDates: dates,
+  });
+  expect("achievementWire" in compact && compact.achievementWire?.v).toBe(2);
+  expect(
+    decodeAchievements("achievementWire" in compact ? compact.achievementWire : undefined),
+  ).toEqual({ ids, dates });
+  expect(decodeAchievements(encodeAchievements(ids, dates))).toEqual({ ids, dates });
+  const token = encodeAchievements([ids[0]!], {}).items[0]![0];
+  for (const items of [
+    ["unknown.0"],
+    [`${token}.00`],
+    [`${token}.-1`],
+    [`${token}.0.0`],
+    [`${token}.zzzzzzzzzzzzzz`],
+    [`${token}.0`, `${token}.0`],
+    [[token, 0]],
+    [null],
+  ]) {
+    expect(decodeAchievements({ v: 2, at: 0, items })).toBeUndefined();
+  }
 });

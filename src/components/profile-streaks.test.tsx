@@ -1,6 +1,6 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
-import { ProfileStreaks } from "./profile-streaks";
+import { ProfileStreaks, ProfileStreakValues } from "./profile-streaks";
 import { createInitialWorkspace } from "../domain/workspace";
 afterEach(() => {
   cleanup();
@@ -34,4 +34,18 @@ it("remove o fogo sem recarregar quando completa 24h", () => {
   expect(container.querySelector('img[src="/math-islands/flame.svg"]')).not.toBeNull();
   act(() => vi.advanceTimersByTime(1000));
   expect(container.querySelector('img[src="/math-islands/flame.svg"]')).toBeNull();
+});
+
+it("shows an inspectable English flame and supports legacy public profiles", () => {
+  const { rerender } = render(
+    <ProfileStreakValues streaks={{ pomodoro: 0, timer: 0, islands: 0, english: 3 }} />,
+  );
+  const button = screen.getByRole("button", { name: /Inglês: 3/ });
+  expect(button.querySelector("img")?.getAttribute("src")).toBe(
+    "/languages/english-streak-flame.svg",
+  );
+  fireEvent.click(button);
+  expect(screen.getByRole("status").textContent).toContain("Inglês: 3");
+  rerender(<ProfileStreakValues streaks={{ pomodoro: 0, timer: 0, islands: 0 }} />);
+  expect(screen.queryByRole("button", { name: /Inglês/ })).toBeNull();
 });

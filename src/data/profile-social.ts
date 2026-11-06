@@ -1,5 +1,6 @@
 import { uiText } from "../i18n/runtime.js";
 import { compactAchievementAction } from "../domain/achievement-wire";
+import { ENGLISH_PART_COUNT } from "../domain/english-part-order.js";
 import { isMathCourse } from "./math-courses";
 import { getFirebaseAccountServices } from "./firebase-account";
 import { PROFILE_AVATARS } from "../domain/profile-avatars";
@@ -29,12 +30,16 @@ function isActivity(value: unknown): boolean {
       : item["kind"] === "achievement"
         ? isAchievementId(item["ref"])
         : item["ref"] === undefined) &&
-    (item["course"] === undefined || isMathCourse(item["course"])) &&
+    (item["course"] === undefined ||
+      isMathCourse(item["course"]) ||
+      item["course"] === "english") &&
     (item["level"] === undefined ||
       (Number.isInteger(item["level"]) &&
         Number(item["level"]) >= 0 &&
-        Number(item["level"]) < 6)) &&
-    (item["kind"] !== "module" || (isMathCourse(item["course"]) && item["level"] !== undefined)) &&
+        Number(item["level"]) < (item["course"] === "english" ? ENGLISH_PART_COUNT : 6))) &&
+    (item["kind"] !== "module" ||
+      ((isMathCourse(item["course"]) || item["course"] === "english") &&
+        item["level"] !== undefined)) &&
     Number.isSafeInteger(item["value"]) &&
     Number(item["value"]) > 0 &&
     Number(item["value"]) <= 10000 &&

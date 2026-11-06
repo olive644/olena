@@ -13,12 +13,13 @@ function code(id: string) {
 }
 const known = new Map(ALL_ACHIEVEMENTS.map(({ id }) => [code(id), id]));
 if (known.size !== ALL_ACHIEVEMENTS.length) throw Error("Achievement catalog token collision");
-export type AchievementWire = { v: 1; at: number; items: [string, number | null][] };
+type AchievementWireV1 = { v: 1; at: number; items: [string, number | null][] };
+export type AchievementWire = AchievementWireV1 | { v: 2; at: number; items: string[] };
 
 export function encodeAchievements(
   ids: readonly string[],
   dates: Readonly<Record<string, string>>,
-): AchievementWire {
+): AchievementWireV1 {
   const times = ids.flatMap((id) => (dates[id] ? [Date.parse(dates[id]!)] : []));
   const at = times.length ? Math.min(...times) : 0;
   return {
@@ -37,7 +38,19 @@ export function compactAchievementAction(action: SocialAction) {
   )
     return action;
   const { achievements, achievementDates, ...rest } = action;
-  return { ...rest, achievementWire: encodeAchievements(achievements, achievementDates ?? {}) };
+  const wire = encodeAchievements(achievements, achievementDates ?? {});
+  const compact = { ...rest, achievementWire: wire };
+  if (new TextEncoder().encode(JSON.stringify(compact)).length <= 4096) return compact;
+  return {
+    ...rest,
+    achievementWire: {
+      v: 2 as const,
+      at: wire.at,
+      items: wire.items.map(
+        ([token, offset]) => `${token}.${offset === null ? "" : offset.toString(36)}`,
+      ),
+    },
+  };
 }
 export function decodeAchievements(
   value: unknown,
@@ -46,7 +59,7 @@ export function decodeAchievements(
   const item = value as Record<string, unknown>;
   if (
     Object.keys(item).some((key) => !["v", "at", "items"].includes(key)) ||
-    item["v"] !== 1 ||
+    (item["v"] !== 1 && item["v"] !== 2) ||
     !Number.isSafeInteger(item["at"]) ||
     Number(item["at"]) < 0 ||
     Number(item["at"]) > 253402300799999 ||
@@ -56,7 +69,15 @@ export function decodeAchievements(
     return;
   const ids: string[] = [],
     dates: Record<string, string> = {};
-  for (const pair of item["items"]) {
+  for (const entry of item["items"]) {
+    let pair: unknown = entry;
+    if (item["v"] === 2) {
+      if (typeof entry !== "string" || !/^[a-z0-9]{1,7}\.[a-z0-9]{0,10}$/.test(entry)) return;
+      const [token, offset] = entry.split(".");
+      const delta = offset ? Number.parseInt(offset, 36) : null;
+      if (delta !== null && delta.toString(36) !== offset) return;
+      pair = [token, delta];
+    }
     if (!Array.isArray(pair) || pair.length !== 2 || typeof pair[0] !== "string") return;
     const id = known.get(pair[0]);
     if (!id || ids.includes(id)) return;

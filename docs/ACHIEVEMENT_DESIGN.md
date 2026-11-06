@@ -54,11 +54,11 @@ O perfil público recebe apenas IDs conhecidos, datas comprovadas e até três f
 
 ## Inglês, 06/11/2026
 
-Inglês tem 42 objetivos em 14 famílias: seis famílias progressivas e oito conquistas de confirmação com Olena, uma por parte. A galeria agrupa etapas, mantém três favoritas compartilhadas entre categorias, datas reais, inspeção estática, arraste e PNG local de 1080 por 1350. Não criar outro sistema de recompensas.
+Inglês tem 74 objetivos em 22 famílias: seis famílias globais e duas famílias por parte, como a progressão de Matemática. Cada parte tem acertos (20 e 100), atividades distintas (25 e 50) e confirmação. Olena aparece somente na confirmação, etapa máxima da família de domínio da parte. IDs e datas das 42 conquistas anteriores permanecem estáveis. A galeria agrupa etapas, mantém três favoritas compartilhadas entre categorias, datas reais, inspeção estática, arraste e PNG local de 1080 por 1350. Não criar outro sistema de recompensas.
 
 As seis famílias medem rodadas, acertos, dias distintos no fuso da conta, partes confirmadas, rodadas perfeitas com pelo menos cinco respostas e questões distintas acertadas. Recibos individuais da mesma rodada não contam como rodadas separadas. Repetir uma questão não aumenta a variedade. Apenas confirmações aceitas do currículo atual concedem conquistas das oito partes. Histórico conhecido é preservado; data desconhecida continua desconhecida.
 
-Artes inglesas usam o porto de papel recortado: pedra creme, turquesa, roxo e amarelo, profundidade facetada, transparência real e placa vazia. Olena mantém anatomia e identidade do modelo aprovado, integrada em cada cena, não como avatar colado. WebP completo 512 px e miniatura 128 px. PaperDigits ocupa a placa, sem números gerados na imagem. Fontes e prompts estão em achievement-english-art-prompts.json. Brilho raro recortado pelo alpha e preferências globais de movimento e som continuam iguais às de Matemática.
+Cada nível inglês tem arte própria e progressiva, sem repetir a mesma imagem para todos os alvos. Artes inglesas usam o porto de papel recortado: pedra creme, turquesa, roxo e amarelo, profundidade facetada, transparência real e placa vazia. Olena mantém anatomia e identidade do modelo aprovado, integrada em cada cena, não como avatar colado. WebP completo 512 px e miniatura 128 px. PaperDigits ocupa a placa, sem números gerados na imagem. Fontes e prompts estão em achievement-english-art-prompts.json. Brilho raro recortado pelo alpha e preferências globais de movimento e som continuam iguais às de Matemática.
 
 A sequência de quatro acertos exibe VOCÊ ESTÁ INSANO com fogo facetado próprio de Inglês. Erro ou tempo esgotado zera a sequência. Nova rodada começa em zero. Não altera pontos, corações, tempo ou progressão.
 
@@ -67,3 +67,15 @@ Conquistas inglesas entram no mesmo sino e feed de Matemática: publicação con
 O envio de perfil permanece limitado a 4096 bytes. Publicações maiores usam achievementWire v1, com tokens estáveis FNV32 dos IDs públicos e diferenças exatas de milissegundos. Colisões, IDs desconhecidos, datas inválidas, duplicações e mistura com campos literais são rejeitados. Clientes antigos e cargas pequenas continuam aceitos. Armazenamento e respostas mantêm IDs e datas literais. Rollback do cliente pode usar a forma literal enquanto couber; não remover a decodificação do servidor enquanto houver clientes usando v1.
 
 Avisos de conquista aguardam toda a fase ativa do arcade compartilhado, incluindo preparação e revisão. A fila não expira enquanto oculta e o som só toca ao exibir. Resultado ou saída libera a celebração. Não resolver sobreposição com force-click, skips ou aumento de timeout. Regressão documentada no CI da PR584.
+
+### Ofensiva diária inglesa, 06/11/2026
+
+profileStreaks deriva inglês dos recibos aceitos por englishProgress, com dias únicos no fuso da conta e a mesma expiração de 24 horas de Matemática. A chama inglesa existente aparece no perfil próprio, no sino e no perfil público compartilhado. O campo público streaks.english é opcional para ler clientes antigos e validado como inteiro entre zero e 100000. Não confundir com a sequência de acertos dentro de uma rodada. Novos níveis por parte usam somente o currículo atual; recibos legados continuam contando nas famílias globais, sem confirmar novas partes.
+
+### Transporte da coleção ampliada
+
+A ampliação para 74 objetivos ingleses excedeu 4096 bytes no teste de coleção completa mesmo com achievementWire v1. Pedidos que ainda excedem esse limite usam v2: o mesmo token público FNV32, ponto e diferença em milissegundos codificada em base 36; sufixo vazio representa data desconhecida. A API continua lendo v1 e campos literais. v2 rejeita tokens desconhecidos, repetições, diferenças não canônicas, overflow, formatos misturados e campos extras. Não aumenta o limite da API. Publicar servidor com leitor v2 junto do cliente; não remover esse leitor em rollback. Dados armazenados e respostas continuam literais.
+
+### Sino de atividades e progresso inglês
+
+Prática inglesa usa o mesmo resumo diário de Matemática, a partir de dez respostas aceitas, com ID estável por modalidade e dia no fuso da conta. A confirmação real de cada parte usa module, course english e level entre 0 e 7. Não publicar conclusão só por abrir uma ilha, por percentual parcial ou por uma tentativa final recusada. Janela de 24 horas, teto de doze resumos, cotas de publicação, privacidade, leitura, curtidas, retenção e bloqueio permanecem compartilhados. Publicação não recupera histórico anterior ao consentimento. O cliente continua limitando módulos matemáticos a seis. A leitura de cartas inglesas reconhece os três campos históricos de tentativa e usa os dois ledgers existentes, sem leitura adicional.

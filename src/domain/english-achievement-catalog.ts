@@ -42,6 +42,16 @@ const partGoals = [
   ["Encontros no mercado", "Confirme a parte Mercado dos Encontros de inglês."],
   ["Leitora das entrelinhas", "Confirme a parte Arquivo das Entrelinhas de inglês."],
 ] as const;
+const partPracticeNames = [
+  "Vozes do cais",
+  "Palavras na praça",
+  "Relatos da ponte",
+  "Planos em palavras",
+  "Ideias em conversa",
+  "Sentidos nas palavras",
+  "Conversas no mercado",
+  "Palavras nas entrelinhas",
+] as const;
 export const ENGLISH_ACHIEVEMENTS: readonly EnglishAchievement[] = [
   ...families.flatMap(([metric, name, description, targets], art) =>
     targets.map((target, tier) => ({
@@ -61,16 +71,42 @@ export const ENGLISH_ACHIEVEMENTS: readonly EnglishAchievement[] = [
             : ("common" as const),
     })),
   ),
-  ...ENGLISH_PART_ORDER.map((part): EnglishAchievement => ({
-    category: "english",
-    id: `english-part-${part}`,
-    family: `english-part-${part}`,
-    part,
-    metric: "parts",
-    target: 1,
-    art: 6 + part,
-    rarity: "rare",
-    name: partGoals[part]![0],
-    description: partGoals[part]![1],
-  })),
+  ...ENGLISH_PART_ORDER.flatMap((part): EnglishAchievement[] => [
+    ...([20, 100] as const).map((target, tier): EnglishAchievement => ({
+      category: "english",
+      id: `english-part-${part}-correct-${target}`,
+      family: `english-part-${part}-correct`,
+      part,
+      metric: "correct",
+      target,
+      art: 6 + part,
+      rarity: tier === 0 ? "common" : "uncommon",
+      name: partPracticeNames[part]!,
+      description: "Acerte {0} atividades nesta parte de inglês.",
+    })),
+    ...([25, 50] as const).map((target, tier): EnglishAchievement => ({
+      category: "english",
+      id: `english-part-${part}-variety-${target}`,
+      family: `english-part-${part}`,
+      part,
+      metric: "variety",
+      target,
+      art: 6 + part,
+      rarity: tier === 0 ? "common" : "uncommon",
+      name: partGoals[part]![0],
+      description: "Acerte {0} atividades diferentes nesta parte de inglês.",
+    })),
+    {
+      category: "english",
+      id: `english-part-${part}`,
+      family: `english-part-${part}`,
+      part,
+      metric: "parts",
+      target: 100,
+      art: 6 + part,
+      rarity: "rare",
+      name: partGoals[part]![0],
+      description: partGoals[part]![1],
+    },
+  ]),
 ];

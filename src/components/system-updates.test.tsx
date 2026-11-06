@@ -278,3 +278,37 @@ it("rechecks updates when focus returns during an unfinished refresh", async () 
   await waitFor(() => expect(screen.getByText("New focus update")).toBeTruthy());
   expect(fetcher).toHaveBeenCalledTimes(2);
 });
+
+it("sino mostra prática, confirmação inglesa e conquista no mesmo feed de Matemática", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response("[]")),
+  );
+  const person = {
+    username: "alice",
+    name: "Alice",
+    photoUrl: "/profile-avatars/helena.webp",
+    followers: 0,
+    following: 1,
+    followsYou: true,
+    followed: false,
+    shared: true,
+  };
+  const base = { person, value: 1, at: Date.now(), liked: false, likes: [] };
+  social.feed = {
+    self: { ...person, username: "bob" },
+    notifications: [],
+    activities: [
+      { ...base, id: "a".repeat(32), kind: "practice", course: "english", value: 10 },
+      { ...base, id: "b".repeat(32), kind: "module", course: "english", level: 7 },
+      { ...base, id: "c".repeat(32), kind: "achievement", ref: "english-part-0" },
+      { ...base, id: "d".repeat(32), kind: "practice", course: "foundations", value: 12 },
+    ],
+  };
+  render(<SystemUpdates page />);
+  expect(await screen.findByText("Avançou em Inglês: 10 respostas praticadas.")).toBeTruthy();
+  expect(screen.getByText("Concluiu Arquivo das Entrelinhas na ilha de Inglês.")).toBeTruthy();
+  expect(screen.getByText("Desbloqueou uma nova conquista.")).toBeTruthy();
+  expect(screen.getByText("Avançou em Matemática: 12 respostas praticadas.")).toBeTruthy();
+  expect(document.querySelectorAll(".social-activity-card")).toHaveLength(4);
+});

@@ -10,6 +10,16 @@ const object = (value: unknown): Record<string, unknown> | undefined =>
     ? (value as Record<string, unknown>)
     : undefined;
 
+export function rewardLedgerKeys(raw: unknown): string[] {
+  return [
+    "helena.mathPlaceRewards.v1",
+    ...(typeof raw === "string" &&
+    /"(?:languageAttempt|englishAttempt|englishA1Attempt)"\s*:/.test(raw)
+      ? ["helena.englishRewards.v1"]
+      : []),
+  ];
+}
+
 // Teto explícito do ledger lido: o valor sincronizado já é limitado a 5 MB pelas regras e a
 // 5000 baús aqui. Acima disso, ou diante de qualquer baú incoerente, não há eventos de carta:
 // omitir é melhor do que anunciar como primeira uma cópia que talvez não seja a mais antiga.
