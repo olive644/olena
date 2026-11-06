@@ -29,6 +29,7 @@ import {
   ENGLISH_TARGET,
   type LanguageAttempt,
 } from "../domain/language-progress";
+import { scrambledWordOrder } from "../domain/english-word-order";
 import {
   englishQuestion,
   englishReplyMeaning,
@@ -145,11 +146,12 @@ export function EnglishIslandJourney({
           reviewing ? round.missed[reviewIndex]!.id : round.ids[round.at]!,
         )
       : undefined;
-  const tokens =
-    question?.phrase
-      .split(" ")
-      .map((text, id) => ({ text, id }))
-      .reverse() ?? [];
+  const tokens = question
+    ? scrambledWordOrder(question.phrase).map((id) => ({
+        text: question.phrase.split(" ")[id]!,
+        id,
+      }))
+    : [];
   const timing = arcadeQuestionTiming(
     question?.phrase.length ?? 0,
     round?.mode === "final" ? 3 : Math.min(3, 1 + Math.floor((question?.level ?? 0) / 2)),

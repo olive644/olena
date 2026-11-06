@@ -136,6 +136,13 @@ for (const theme of ["light", "dark"]) {
       const question = await setup(page, part, theme);
       await expect(page.locator(".english-speaking")).toHaveCount(0);
       await expect(page.getByRole("heading", { name: "Monte a fala em inglês." })).toBeVisible();
+      const words = question.phrase.split(" ");
+      const shown = await page.locator(".english-word-bank button").allInnerTexts();
+      expect([...shown].sort()).toEqual([...words].sort());
+      if (new Set(words).size === words.length && words.length >= 3) {
+        expect(shown).not.toEqual(words);
+        expect(shown).not.toEqual([...words].reverse());
+      }
       for (const word of question.phrase.split(" ")) {
         await page
           .locator('.english-word-bank button[aria-disabled="false"]')
