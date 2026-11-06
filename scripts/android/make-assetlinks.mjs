@@ -9,7 +9,7 @@
 //
 // Uso:
 //   node scripts/android/make-assetlinks.mjs --fingerprint AA:BB:...:FF [--fingerprint ...]
-//   opções: --package app.olenastudy (padrão: android/twa-manifest.json) e --stdout
+//   opções: --package olenastudy.app (padrão: android/twa-manifest.json) e --stdout
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 

@@ -1,5 +1,5 @@
 {
-  "packageId": "app.olenastudy",
+  "packageId": "olenastudy.app",
   "host": "olenastudy.vercel.app",
   "name": "OlenaStudy",
   "launcherName": "OlenaStudy",

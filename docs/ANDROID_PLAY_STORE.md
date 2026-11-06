@@ -14,8 +14,8 @@ Feito no repositório:
 - Ícones em `public/android/` (192 e 512 px, mais um 512 px "mascarável" com o desenho dentro da zona
   segura de 80 %) e o ícone da loja em `android/store/play-store-icon-512.png`. Gerados por
   `node scripts/android/render-android-icons.mjs` a partir de `public/olena-favicon.png`.
-- `android/twa-manifest.json`: configuração para o Bubblewrap, com o pacote **provisório**
-  `app.olenastudy`.
+- `android/twa-manifest.json`: configuração para o Bubblewrap, com o pacote `olenastudy.app`, o mesmo
+  do app já criado no Play Console.
 - `scripts/android/make-assetlinks.mjs`: gera `public/.well-known/assetlinks.json` quando houver a
   impressão digital real. O arquivo **não está commitado de propósito**: uma impressão errada faz a
   verificação falhar sem avisar.
@@ -27,10 +27,9 @@ estado antigo do aluno, o que o projeto proíbe. Se um dia houver modo offline, 
 
 ## Passos da proprietária (fora do repositório)
 
-1. **Decidir o nome do pacote.** Ele não muda depois de criado no Play Console. O valor provisório é
-   `app.olenastudy`; se houver domínio próprio, prefira o dele invertido. Para trocar, edite
-   `packageId` em `android/twa-manifest.json` (o teste confere o formato) e use o mesmo nome no
-   formulário "Criar app". Conferir a disponibilidade com o botão "Ver disponibilidade".
+1. **Nome do pacote: `olenastudy.app`.** É o do app que já existe no Play Console (conferido na lista de
+   apps em 2026-11-06) e não muda mais. `android/twa-manifest.json` usa o mesmo valor, e
+   `scripts/android/make-assetlinks.mjs` o lê de lá; o teste confere o formato.
 2. **Gerar o pacote Android (.aab).** Duas opções, a primeira é a mais simples:
    - PWABuilder (pwabuilder.com): informe `https://olenastudy.vercel.app`, escolha Android e o
      pacote da etapa 1. Ele gera o .aab e as instruções de assinatura.
