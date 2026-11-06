@@ -13,6 +13,11 @@ export const ENGLISH_ISLAND_CATALOG = [
         "pt-BR": "Ironia, atenuação e subentendidos",
         "en-US": "Irony, understatement and implication",
       },
+      {
+        "pt-BR": "Situações práticas e negociação",
+        "en-US": "Practical situations and negotiation",
+      },
+      { "pt-BR": "Intenção, registro e inferência", "en-US": "Intent, register and inference" },
     ],
   },
 ] as const;

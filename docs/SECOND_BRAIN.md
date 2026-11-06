@@ -1877,3 +1877,9 @@ A pedido do proprietário, Enviar resposta foi removido. AudioWorklet alimenta P
 2026-11-05, fala de Inglês: microfone circular sem texto, secundários lado a lado, instruções só para leitores de tela; LocalEnglishSpeech reaproveita a última prévia como resultado final quando ela já cobriu toda a voz (voicedEnd). Detalhes em ENGLISH_SPEAKING.md.
 
 2026-11-05, Espaço do aluno: lastIslandOf (src/data/last-island.ts) escolhe a ilha do widget entre a última entrada (helena.lastIsland.v1) e a última prática; arte de Inglês dentro do recipiente quadrado student-island-art. english-speaking-words.ts tem grupos de palavras de mesmo som (SOUND_ALIKE). Detalhes em CURRENT_STATE_AUDIT.md e ENGLISH_SPEAKING.md.
+
+2026-11-05, oito partes de Inglês: english-part-order.ts define apresentação [0,1,2,3,6,4,7,5] e preserva portões históricos. ID6 é Mercado dos Encontros/B1, ID7 é Arquivo das Entrelinhas/C1. englishBankSize deriva o banco da tabela de dificuldade. Contador geral usa oito partes; mapa converte posição visual para ID persistente. Cliente antigo precisa atualizar antes de interpretar atividades e cursores novos. Detalhes e rollback em VOICES_PORT.md.
+
+## Inglês, aprendizado por habilidades, 05/11/2026
+
+Camada pura src/domain/english-learning.ts reúne prontidão para novas confirmações e amostragem de cinco contextos distintos. english-skills.ts cobre todas as oito partes. english-adaptive.ts limita dificuldade antes de diversidade e intercala revisão de evidência antiga quando elegível. A1 mantém o seletor e a cobertura próprios. Estudo recolhível em english-study-guide.tsx e escrita opcional no componente existente, sem nova dependência, armazenamento ou serviço. english-answer.ts expande apenas contrações inequívocas. Não mudar formato do ledger nem reavaliar confirmações antigas. Provas e limites em VOICES_PORT.md; validação final será registrada no audit.

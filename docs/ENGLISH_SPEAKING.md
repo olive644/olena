@@ -179,3 +179,7 @@ Pedido: tirar os textos de instrução, deixar o microfone como círculo sem tex
 Texto real ouvido no celular, depois da correção da captura: "Air you from Brazil." para "Are you from Brazil?". O áudio estava inteiro; o modelo trocou "are" por "air", que soam igual. Em `english-speaking-words.ts`, grupos de palavras de mesmo som (are/air, to/too/2, for/4, there/their, here/hear, no/know, by/buy/bye, I/eye, where/wear, entre outras) valem como a mesma palavra na conferência, sem custo de tempo. Números em dígitos, negações longas e palavras diferentes continuam como antes, e palavra a mais ou a menos continua reprovando. Isso não melhora o modelo: só deixa de reprovar o que o áudio não distingue.
 
 Por que não houve troca de modelo nem de decodificação: a quantização do codificador não melhorou nada na medição, e beam, modelo maior e uso de GPU custam tempo ou download. Dar a frase esperada ao decodificador como prompt melhoraria o reconhecimento sem custo de tempo, mas foi descartado por ora: não há como validar sem baixar o modelo (Hugging Face inacessível neste ambiente) e o prompt faz o Whisper repetir a frase esperada diante de silêncio, o que aceitaria fala errada.
+
+## Retirada do microfone, 05/11/2026
+
+A prática de Inglês usa montagem de frases nas questões antes oferecidas por voz, com os mesmos IDs, respostas e pontuação. O botão Ouvir a fala continua disponível quando há voz de reprodução compatível. O reconhecimento e seus modelos foram retirados. As seções anteriores registram o histórico.

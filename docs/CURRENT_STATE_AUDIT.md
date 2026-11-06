@@ -4466,3 +4466,23 @@ Pedidos da proprietária: melhorar o reconhecimento sem ficar mais lento; o widg
 - Provas: testes unitários de `lastIslandOf` e da persistência por conta, do widget com entrada sem prática e das palavras de mesmo som (com casos que nunca devem passar); e2e do Espaço em PC e celular, claro e escuro, incluindo o fluxo real de entrar na ilha de Inglês e voltar ao Espaço, e proporção quadrada da arte; captura do widget conferida.
 - Limites: a precisão do tiny.en no celular segue sem medição; relato de "atividades voltando ao começo" sem causa confirmada (ver mensagem). A ilha segue prática ou entrada registradas neste aparelho: não sincroniza entre aparelhos.
 - Orçamento: aplicação 1741,0 KiB sobre a base de 1739,5 KiB (+1,5 KiB), entrada inalterada. Tentei enxugar (tabela de palavras de mesmo som reduzida, `lastIslandOf` em uma passada, arte de Inglês sem importar o catálogo de partes) e o ganho foi de poucas centenas de bytes. O teto subiu de 1740 para 1742 KiB (limite e teto absoluto juntos) sob a autorização vigente da proprietária para crescimento medido de funcionalidades. Se ela discordar, reverter o teto e retirar o acompanhamento da última entrada ou a tabela de palavras de mesmo som.
+
+## Retirada do microfone em Inglês, 05/11/2026
+
+Todas as questões de montagem são respondidas por palavras. A revisão, os IDs e os registros anteriores conservam o formato. Removidos o modelo de transcrição, o código de captura e o acesso ao microfone na política de permissões. A política de privacidade foi atualizada.
+
+## B1 e C1 no percurso de oito partes, 05/11/2026
+
+Inseridos Mercado dos Encontros e Arquivo das Entrelinhas com IDs 6 e 7. Ordem visual independente, recuperação do último cenário e widget do aluno usam os IDs persistentes. Arte nova em market.webp e archive.webp. Imagens mantêm transparência e dimensão 800x800. Conteúdo soma 200 atividades autorais, com explicações bilíngues e interpretação em inglês por paráfrases. Provas focadas cobrem serialização, workspace merge, 100% com oito confirmações, retenção dos portões históricos e validade dos limites dos bancos. Validação final e provas de navegador serão registradas ao concluir.
+
+## Inglês, aprendizagem nas oito partes, 05/11/2026
+
+Implementados apoio de estudo recolhível sem relógio, escrita opcional no mesmo ID, normalização conservadora de contrações, famílias para todos os bancos, limite de dificuldade antes de diversidade, revisão intercalada e confirmação variando contextos. Prontidão nova verifica compreensão e construção por família sem retirar confirmações antigas. Sem microfone, dependências novas ou mudanças de painéis/regras externas. Fonte continua conteúdo autoral da aplicação; não foi medido ganho real de aprendizagem. A rodada experimental com vmThreads falhou por ambientes sem ReadableStream e uma animação; não conta como verify aprovado. Nova verificação padrão e navegador em andamento, resultados finais pendentes.
+
+### Fechamento da validação local, 05/11/2026
+
+Suíte padrão: 402 arquivos e 2.606 testes aprovados em english-learning-tests.log. Navegador final: 100 cenários Edge/Chromium PC/mobile 320x568, claro/escuro, sem skips, em english-learning-release-browser.log. Inclui as oito partes com palavras/escrita, 12 guias A1 e quatro nas demais, continuidade dos seis registros históricos, novas partes sem progresso inventado, confirmação, revisão final, retomada e envio offline. O teste de carrossel foi atualizado para a ordem visual de oito IDs e navegação até a primeira parte, preservando as expectativas de conclusão antiga e retomada do ID.
+
+Lint completo sem erros e 27 avisos existentes, formatação, idiomas e tipos conferidos. O primeiro verify parou na checagem Node ESM devido a importação sem .js em local-workspace.ts, introduzida na ampliação; a correção foi comprovada por nova api:check verde. As etapas restantes foram executadas separadamente e passaram. Build e desempenho finais verdes: entrada 220,7 KiB, aplicação 1.728,1 KiB, sem alteração de tetos. Logs english-learning-final-build.log, english-learning-performance.log e english-learning-api.log ficam em b, fora do repositório. O resultado da tentativa experimental vmThreads não é usado como aprovação.
+
+Previews e fixtures são locais; nenhum usuário real, OAuth, Firebase ou áudio físico foi exercitado. Não foi medido aprendizado de pessoas reais. Escrita aceita frases-alvo e contrações inequívocas, não sinônimos ou equivalência semântica geral. Revisão é intercalada entre tarefas elegíveis, sem calendário de retenção. Mantidos progressos, IDs, registros, cursores, pontos e recibos antigos. Entrega por PR em rascunho, sem autorização nova de merge nesta etapa.

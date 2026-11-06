@@ -1,5 +1,6 @@
-import { ENGLISH_BANK } from "./language-progress.js";
-import { englishDifficulty } from "./english-difficulty.js";
+import { ENGLISH_PART_COUNT } from "./english-part-order.js";
+import { englishContext, englishSkill } from "./english-skills.js";
+import { englishBankSize, englishDifficulty } from "./english-difficulty.js";
 import { A1_BANK, A1_UNIT_TARGET, a1Unit, a1Difficulty } from "./english-a1.js";
 
 export type EnglishEvidence = { id: number; correct: boolean };
@@ -13,7 +14,10 @@ export type EnglishSelection = {
 export function validEnglishSelection(value: unknown): value is EnglishSelection {
   if (!value || typeof value !== "object") return false;
   const item = value as Record<string, unknown>;
-  const bank = item["curriculum"] === 5 && item["part"] === 0 ? A1_BANK : ENGLISH_BANK;
+  const bank =
+    item["curriculum"] === 5 && item["part"] === 0
+      ? A1_BANK
+      : englishBankSize(Number(item["part"] ?? 0));
   const id = (n: unknown) => Number.isInteger(n) && Number(n) >= 0 && Number(n) < bank;
   const ids = (list: unknown): list is number[] =>
     Array.isArray(list) &&
@@ -25,7 +29,9 @@ export function validEnglishSelection(value: unknown): value is EnglishSelection
       item["curriculum"] === 4 ||
       (item["curriculum"] === 5 && item["part"] === 0)) &&
     (item["part"] === undefined ||
-      (Number.isInteger(item["part"]) && Number(item["part"]) >= 0 && Number(item["part"]) < 6)) &&
+      (Number.isInteger(item["part"]) &&
+        Number(item["part"]) >= 0 &&
+        Number(item["part"]) < ENGLISH_PART_COUNT)) &&
     ids(item["solved"]) &&
     ids(item["exclude"]) &&
     Array.isArray(item["recent"]) &&
@@ -59,8 +65,28 @@ export function nextEnglishQuestion(input: EnglishSelection) {
     const candidates = Array.from({ length: A1_BANK }, (_, id) => id).filter(
       (id) => !excluded.has(id),
     );
+    if (
+      !wrong &&
+      recent.length === 6 &&
+      recent.every((entry) => entry.correct) &&
+      input.exclude.length % 6 === 0
+    ) {
+      const review = candidates.filter(
+        (id) => solved.has(id) && !recent.some((entry) => entry.id === id),
+      );
+      const id = review[Math.floor(input.exclude.length / 6) % Math.max(1, review.length)];
+      if (id !== undefined) return { id, difficulty: a1Difficulty(id), recovery: false };
+    }
     const score = (id: number) =>
       Number(a1Unit(id) !== targetUnit) * 100000 +
+      Number(
+        input.recent.some((entry) =>
+          id < 120 && entry.id < 120
+            ? Math.floor(id / 4) === Math.floor(entry.id / 4)
+            : id === entry.id,
+        ),
+      ) *
+        20000 +
       Number(solved.has(id)) * (wrong ? 100 : 10000) +
       Math.abs(a1Difficulty(id) - (wrong ? Math.max(0, a1Difficulty(wrong.id) - 1) : difficulty)) *
         1000 +
@@ -93,15 +119,54 @@ export function nextEnglishQuestion(input: EnglishSelection) {
   const excluded = new Set(input.exclude);
   const solved = new Set(input.solved);
   const failedScene = last && !last.correct ? Math.floor(last.id / 4) : undefined;
-  const candidates = Array.from({ length: ENGLISH_BANK }, (_, id) => id).filter(
+  let candidates = Array.from({ length: englishBankSize(part) }, (_, id) => id).filter(
     (id) => !excluded.has(id),
   );
+  // Variety must not force advanced grammar after an error or at the start.
+  const accessible = candidates.filter((id) => englishDifficulty(part, id) <= difficulty + 1);
+  if (accessible.length) candidates = accessible;
+  const seenContexts = new Set(
+    [...input.exclude, ...input.recent.map(({ id }) => id)].map((id) =>
+      englishContext(part, Math.floor(id / 4)),
+    ),
+  );
+  const variesContexts = true;
+  const reviewDue =
+    recent.length === 6 && recent.every((entry) => entry.correct) && input.exclude.length % 6 === 0;
+  if (reviewDue) {
+    const recentContexts = new Set(
+      recent.map(({ id }) => englishContext(part, Math.floor(id / 4))),
+    );
+    const reviewCandidates = candidates.filter(
+      (id) =>
+        solved.has(id) &&
+        !recentContexts.has(englishContext(part, Math.floor(id / 4))) &&
+        englishDifficulty(part, id) <= difficulty,
+    );
+    if (reviewCandidates.length) candidates = reviewCandidates;
+  }
+  const recoverySkill =
+    variesContexts && failedScene !== undefined ? englishSkill(part, failedScene) : -1;
+  const failedContext = failedScene === undefined ? undefined : englishContext(part, failedScene);
   candidates.sort((a, b) => {
-    const score = (id: number) =>
-      Number(solved.has(id)) * (last && !last.correct ? 200 : 10000) +
-      Math.abs(englishDifficulty(part, id) - difficulty) * 1000 +
-      Math.abs((id % 4) - format) * 100 +
-      (failedScene !== undefined ? Math.abs(Math.floor(id / 4) - failedScene) : Math.floor(id / 4));
+    const score = (id: number) => {
+      const scene = Math.floor(id / 4);
+      const variety = variesContexts
+        ? Number(englishContext(part, scene) === failedContext) * 1000000 +
+          Number(recoverySkill >= 0 && englishSkill(part, scene) !== recoverySkill) * 100000 +
+          Number(seenContexts.has(englishContext(part, scene))) * 20000
+        : 0;
+      return (
+        variety +
+        Number(reviewDue && !solved.has(id)) * 12000 +
+        Number(solved.has(id)) * (last && !last.correct ? 200 : 10000) +
+        Math.abs(englishDifficulty(part, id) - difficulty) * 1000 +
+        Math.abs((id % 4) - format) * 100 +
+        (failedScene !== undefined
+          ? Math.abs(Math.floor(id / 4) - failedScene)
+          : Math.floor(id / 4))
+      );
+    };
     return score(a) - score(b) || a - b;
   });
   return { id: candidates[0] ?? 0, difficulty, recovery: Boolean(last && !last.correct) };

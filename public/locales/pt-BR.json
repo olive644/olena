@@ -3653,5 +3653,10 @@
   "Autorizo baixar o modelo de voz. Minha fala será transcrita neste aparelho, sem envio do áudio.",
   "Pode falar. Solte o botão para terminar.",
   "Segure o botão e fale a frase em inglês. Solte para terminar. As palavras mudam de cor conforme são reconhecidas.",
-  "Ouvimos: “{0}”"
+  "Ouvimos: “{0}”",
+  "Inglês · Parte {0} de {1}",
+  "Aprender antes de praticar",
+  "Escreva a fala em inglês",
+  "Usar palavras de apoio",
+  "Responder sem as palavras"
 ]

@@ -148,3 +148,47 @@ ENGLISH_SPEAKING.md substitui a descrição histórica de ausência de microfone
 ## Reconhecimento local, 03/11/2026
 
 A implementação de fala opcional passou do serviço nativo do navegador para Whisper no aparelho, pois o Brave encerrou a API nativa com network apesar da permissão. ENGLISH_SPEAKING.md registra modelo/revisão, consentimento, cache, CSP, limites e provas. Gravação/transcrição somente em memória; progresso continua registrando resultado canônico ou rótulo neutro. Nenhuma regra Firebase, serviço pago ou painel externo novo.
+
+## Praça dos Hábitos e Ponte das Memórias, 05/11/2026
+
+Cada parte recebeu oito situações bilíngues inéditas. Cada situação oferece interpretação, lacuna, resposta contextual e montagem, totalizando 32 atividades novas por parte e 152 atividades em cada banco. A Praça trabalha rotina, horários, frequência e o contraste entre hábito e ação do momento. A Ponte trabalha passado regular e irregular, perguntas e negativas com did, sequência de fatos e ações em andamento no passado.
+
+Os IDs novos vão de 120 a 151 nas duas partes. IDs, alternativas, respostas e critérios de confirmação anteriores permanecem estáveis. O seletor, a API e os validadores de progresso e retomada consultam o tamanho por parte. Uma versão anterior precisa ser recarregada antes de praticar e sincronizar os IDs novos, pois seu validador só conhece 120 questões nessas partes.
+
+### Variantes por habilidade na Praça dos Hábitos
+
+Seis contextos autorais acrescentam 24 atividades, com IDs de 152 a 175. A Praça passa a ter 44 situações e 176 atividades. As famílias de habilidade ficam em english-skills.ts e usam os índices estáveis das situações. Na recuperação, o seletor prioriza outra situação da mesma família. Na prática regular, situações ainda não vistas na rodada têm preferência. Depois de esgotar os contextos inéditos, outros formatos da mesma situação podem voltar. A seleção respeita a exclusão de IDs já respondidos.
+
+### Variantes por habilidade na Ponte das Memórias
+
+A Ponte acrescenta seis situações e 24 atividades (IDs 152 a 175). O banco soma 176 atividades em 44 situações cadastradas. O seletor usa as famílias de passado em english-skills.ts para recuperar uma habilidade em outro contexto e dá preferência a contextos inéditos na rodada. Harbor e harbour têm IDs históricos distintos, mas são tratados como um contexto na seleção.
+
+### Variantes por habilidade no Mirante dos Planos
+
+O Mirante ganhou 14 situações e 56 atividades, com IDs de 120 a 175. O banco reúne 176 atividades. Há exercícios de intenção, decisão espontânea, previsão com ou sem evidência, compromissos, horários, convites, condições e prazos. O seletor distingue um compromisso combinado de um horário de tabela e alterna os contextos. As duas frases históricas sobre chegar atrasado compartilham um contexto na seleção e conservam seus IDs.
+
+### Variantes por habilidade no Pátio das Ideias
+
+O Pátio ganhou 14 situações e 56 atividades, com IDs de 120 a 175. As novas situações exercitam opinião, concordância, discordância, justificativa, concessão, pedidos de esclarecimento e de evidência. O seletor volta à mesma habilidade em outro contexto e prioriza situações inéditas na rodada.
+
+## Expansão B1 e C1, 05/11/2026
+
+Os IDs históricos 0 a 5 continuam associados às mesmas partes. Mercado e Arquivo usam IDs 6 e 7. ENGLISH_PART_ORDER determina somente a apresentação visual. Mercado abre após o Mirante, Arquivo após o Pátio. Os portões históricos do Pátio e da Casa continuam aceitando as confirmações anteriores, preservando acesso de quem já avançou. O percentual geral usa oito partes, por isso seis confirmações equivalem a 75%. Pontos, datas, recibos e registros anteriores permanecem no ledger.
+
+Cada módulo novo contém 25 situações autorais, 100 atividades em quatro formatos, quatro exemplos de apoio e explicações bilíngues específicas. Os exercícios de interpretação na interface inglesa têm paráfrases próprias. A seleção varia os contextos e recupera a habilidade do erro. As metas existentes continuam em 100 questões distintas corretas e uma confirmação de 4/5.
+
+Objetivos seguem a escala global do Council of Europe. B1 trabalha situações de viagem, serviços e negociações cotidianas; C1 trabalha significado implícito, cautela, registro e síntese. Referência consultada em 05/11/2026: https://www.coe.int/en/web/common-european-framework-reference-languages/table-1-cefr-3.3-common-reference-levels-global-scale/ . Os módulos oferecem prática orientada por esses descritores. Cobertura de certificação e resultados educacionais exigem avaliação independente.
+
+Compatibilidade de versões: clientes anteriores conhecem seis partes e precisam carregar a atualização para interpretar atividades e cursores dos IDs 6 e 7. Rollback deve preservar os leitores de oito partes e o ledger, mesmo ao ocultar o mapa novo. Nunca renumerar as seis partes antigas nem converter IDs das perguntas.
+
+## Aprendizado por habilidades nas oito partes, 05/11/2026
+
+As oito partes reutilizam as tarefas autorais existentes e os IDs estáveis. Quantidade de tarefas não equivale a situações independentes nem certificação CEFR. Os quatro formatos de uma situação continuam sendo quatro tarefas, mas a cobertura didática conta o contexto uma única vez.
+
+Entrada oferece Aprender antes de praticar, recolhível, sem relógio e sem gerar atividade ou recompensa. Preserva objetivos, regras bilíngues, exemplos e significados já escritos. Praticar continua separado do estudo. Na ordenação, Responder sem as palavras permite escrever a frase; voltar ao apoio limpa a resposta parcial sem reiniciar relógio ou questão. A avaliação aceita apenas o alvo e expansões inequívocas de contrações, nunca aproximação por palavras semelhantes. Não há correção semântica livre, pontuação de pronúncia ou microfone.
+
+Famílias explícitas cobrem os oito bancos. Recuperação procura outra situação da mesma habilidade. A seleção limita os candidatos à dificuldade atual e no máximo uma faixa acima, quando há material elegível, antes de aplicar diversidade. A cada seis respostas corretas, pode recuperar um item já acertado que esteja fora dos contextos recentes e fora da rodada; sem candidato adequado, continua material novo. Isso é revisão intercalada baseada no histórico disponível, não agendamento por dias nem um modelo estatístico de retenção.
+
+Novas confirmações das partes além do Cais exigem o alvo histórico de 100 IDs e evidência de compreensão e construção nas famílias, em dois contextos quando disponíveis. O Cais mantém seus seis assuntos e a cobertura A1 existente. A confirmação amostra cinco situações e, quando disponíveis, cinco famílias, sem cinco formatos consecutivos de uma frase. Mantém quatro acertos em cinco, corações, tempo, XP, recibos e revisão final. Confirmações interrompidas continuam usando os IDs salvos. Registros históricos confirmados e percentuais existentes não são recalculados para retirar progresso.
+
+Limites: resposta escrita confere frases-alvo, não uma conversa aberta; revisão entre partes não foi adicionada; não há medição de retenção a longo prazo nem validação com turma real. Banco e guias não certificam um curso completo de cada nível A1 a C2. A primeira entrega melhora a prática do conteúdo existente, não anuncia novas centenas de situações.

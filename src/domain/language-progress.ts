@@ -1,3 +1,9 @@
+import {
+  ENGLISH_PART_COUNT,
+  LEGACY_ENGLISH_PART_COUNT,
+  englishPartUnlocked,
+} from "./english-part-order.js";
+import { englishBankSize } from "./english-difficulty.js";
 import { ENGLISH_AREAS, isEnglishArea, type EnglishArea } from "./english-areas.js";
 import type { PracticeActivity } from "./workspace";
 import { A1_BANK, a1Coverage } from "./english-a1.js";
@@ -12,8 +18,7 @@ export type LanguageAttempt = {
   questions: number[];
   correctQuestions: number[];
 };
-export const ENGLISH_PARTS = 6;
-export const ENGLISH_BANK = 120;
+export const ENGLISH_PARTS = ENGLISH_PART_COUNT;
 export const ENGLISH_TARGET = 100;
 
 export function validLanguageAttempt(value: unknown): value is LanguageAttempt {
@@ -29,7 +34,11 @@ export function validLanguageAttempt(value: unknown): value is LanguageAttempt {
         Number.isInteger(id) &&
         Number(id) >= 0 &&
         Number(id) <
-          (item["curriculum"] === 5 ? A1_BANK : item["curriculum"] === 4 ? ENGLISH_BANK : 24),
+          (item["curriculum"] === 5
+            ? A1_BANK
+            : item["curriculum"] === 4
+              ? englishBankSize(Number(item["part"]))
+              : 24),
     );
   const questions = item["questions"];
   return (
@@ -44,7 +53,8 @@ export function validLanguageAttempt(value: unknown): value is LanguageAttempt {
     (item["level"] === undefined || isEnglishLevel(item["level"])) &&
     Number.isInteger(item["part"]) &&
     Number(item["part"]) >= 0 &&
-    Number(item["part"]) < ENGLISH_PARTS &&
+    Number(item["part"]) <
+      (Number(item["curriculum"]) >= 3 ? ENGLISH_PARTS : LEGACY_ENGLISH_PART_COUNT) &&
     (item["mode"] === "practice" || item["mode"] === "final") &&
     indexes(questions) &&
     Array.isArray(item["correctQuestions"]) &&
@@ -69,7 +79,7 @@ export function englishProgress(
   );
   const accepted: PracticeActivity[] = [];
   const legacy = ENGLISH_LEVELS.map(() =>
-    Array.from({ length: ENGLISH_PARTS }, () => ({
+    Array.from({ length: LEGACY_ENGLISH_PART_COUNT }, () => ({
       solved: new Set<number>(),
       correct: 0,
       errors: 0,
@@ -102,7 +112,7 @@ export function englishProgress(
     if (islandIndex > 0 && !islands[islandIndex - 1]!.every((part) => part.confirmed)) continue;
     const parts = islands[islandIndex]!;
     const part = parts[attempt.part]!;
-    if (attempt.part > 0 && !parts[attempt.part - 1]!.confirmed) continue;
+    if (!englishPartUnlocked(parts, attempt.part)) continue;
     if (
       attempt.mode === "final" &&
       (part.solved.size <

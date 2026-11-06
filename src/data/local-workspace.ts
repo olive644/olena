@@ -1,3 +1,4 @@
+import { ENGLISH_PART_COUNT } from "../domain/english-part-order.js";
 import { uiText } from "../i18n/runtime.js";
 import { validLanguageAttempt } from "../domain/language-progress.js";
 import { validLibraryMetadata, validMaterialLinks } from "../domain/library.js";
@@ -801,7 +802,8 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
             (activity["moduleLevel"] === undefined ||
               (Number.isInteger(activity["moduleLevel"]) &&
                 Number(activity["moduleLevel"]) >= 0 &&
-                Number(activity["moduleLevel"]) < 6)) &&
+                Number(activity["moduleLevel"]) <
+                  (activity["islandId"] === "english" ? ENGLISH_PART_COUNT : 6))) &&
             isString(activity["completedAt"]) &&
             Number.isFinite(new Date(activity["completedAt"]).getTime()) &&
             typeof activity["answers"] === "number" &&
