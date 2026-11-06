@@ -13,6 +13,13 @@ export const ACHIEVEMENT_THEMES: Record<
   AchievementTheme,
   { label: string; face: string; depth: string; accent: string; paper: string }
 > = {
+  english: {
+    label: "Inglês",
+    face: "#147d89",
+    depth: "#10505f",
+    accent: "#facc15",
+    paper: "#fff9ef",
+  },
   mathematics: {
     label: "Matemática",
     face: "#1264e8",
@@ -44,10 +51,19 @@ export const ACHIEVEMENT_THEMES: Record<
   },
 };
 export function achievementTheme(item: Achievement): AchievementTheme {
-  return item.category === "general" ? item.theme : "mathematics";
+  return item.category === "general"
+    ? item.theme
+    : item.category === "english"
+      ? "english"
+      : "mathematics";
+}
+export function achievementArtPath(item: Achievement, thumb = false) {
+  const folder =
+    item.category === "general" ? "general" : item.category === "english" ? "english" : "math";
+  return `/achievement-badges/${folder}/${thumb ? "thumb/" : ""}${item.category === "english" ? (item.part !== undefined ? `part-${item.part}` : item.metric) : item.id}.webp`;
 }
 export function achievementFamily(item: Achievement) {
-  return item.category === "general"
+  return item.category === "general" || item.category === "english"
     ? item.family
     : `${item.course ?? "mathematics"}-${item.metric}`;
 }

@@ -23,7 +23,8 @@ export type GeneralMetric =
   | "explorer"
   | "subjects"
   | "perfect";
-export type AchievementTheme = "mathematics" | "focus" | "notebooks" | "friends" | "routine";
+export type AchievementTheme =
+  "mathematics" | "focus" | "notebooks" | "friends" | "routine" | "english";
 export type GeneralAchievement = Omit<
   MathAchievement,
   "metric" | "category" | "name" | "description"
@@ -99,16 +100,3 @@ export const GENERAL_ACHIEVEMENTS: readonly GeneralAchievement[] = [
     rarity: art % 3 === 0 ? "rare" : "uncommon",
   })),
 ];
-
-export function generalAchievementHistory(value: unknown): Record<string, string> {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
-  return Object.fromEntries(
-    GENERAL_ACHIEVEMENTS.flatMap(({ id }) => {
-      const date = (value as Record<string, unknown>)[id];
-      return typeof date === "string" &&
-        (date === "" || (/^\d{4}-\d{2}-\d{2}T/.test(date) && Number.isFinite(Date.parse(date))))
-        ? [[id, date]]
-        : [];
-    }),
-  );
-}

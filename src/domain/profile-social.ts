@@ -1,4 +1,5 @@
 import type { SocialProfileDetails } from "./social-profile-details.js";
+import type { AchievementWire } from "./achievement-wire.js";
 export type SocialProfile = {
   blocked?: boolean;
   achievements?: string[];
@@ -72,6 +73,7 @@ export type SocialAction =
       details?: SocialProfileDetails;
       achievements?: string[];
       achievementDates?: Record<string, string>;
+      achievementWire?: AchievementWire;
       achievementFavorites?: string[];
       cards?: string[];
       cardDates?: Record<string, string>;

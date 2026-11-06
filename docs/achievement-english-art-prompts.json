@@ -1,0 +1,27 @@
+{
+  "tool": "Built-in imagegen",
+  "references": [
+    "public/achievement-badges/math/correct-100.webp",
+    "public/languages/characters/olena-english-v2.webp"
+  ],
+  "prompt": "Square achievement badge in the approved Olena low-poly cut-paper style. Chunky cream stone frame, teal harbor details, purple and yellow accents, dark faceted underside, real transparent alpha. Blank ivory number plate centered at 21-79 percent width and 71-85 percent height. No letters, numbers, gradients or photorealism. Keep scene above plate. Character scenes preserve Olena black-purple facets, yellow eyes, one ear star, exactly two arms and two legs, original anatomy and scarf. Integrate character naturally, never paste an avatar.",
+  "subjects": {
+    "rounds": "Boat at a harbor dock",
+    "correct": "Book and dialogue tiles",
+    "days": "Harbor lighthouse",
+    "parts": "Bridge joining harbor platforms",
+    "perfect": "Golden laurel and checked book",
+    "variety": "Market of books and ideas",
+    "part-0": "Olena welcoming visitors at harbor gate and boat",
+    "part-1": "Olena with clock and tea at habits square",
+    "part-2": "Olena with postcards at memories bridge",
+    "part-3": "Olena with compass and chart at plans lookout",
+    "part-4": "Olena at ideas lectern",
+    "part-5": "Olena with lantern and dialogue tiles at doorway",
+    "part-6": "Olena with tickets at encounters market",
+    "part-7": "Olena reading among archive shelves"
+  },
+  "output": "public/achievement-badges/english/{subject}.webp",
+  "conversion": "512x512 WebP quality 90; thumb/128x128 quality 85; preserve alpha",
+  "source": "Original PNGs retained in local Codex generated_images, outside repository"
+}

@@ -170,3 +170,24 @@ it("conquistas só geram evento com data comprovada e ID conhecido", () => {
   ).toEqual([]);
   expect(achievementActivities(undefined, undefined, now)).toEqual([]);
 });
+it("usa a mesma identidade estável para conquistas de Inglês, sem inventar datas", () => {
+  const first = achievementActivities(
+    { "english-part-0": true, "english-correct-1": true },
+    { "english-part-0": "2026-10-10T10:00:00.123Z" },
+    now,
+  );
+  expect(first).toHaveLength(1);
+  expect(first[0]).toMatchObject({
+    kind: "achievement",
+    ref: "english-part-0",
+    value: 1,
+    at: Date.parse("2026-10-10T10:00:00.123Z"),
+  });
+  expect(
+    achievementActivities(
+      { "english-part-0": true },
+      { "english-part-0": "2026-10-10T10:00:00.123Z" },
+      now,
+    )[0]?.id,
+  ).toBe(first[0]?.id);
+});

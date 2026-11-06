@@ -5,6 +5,7 @@ import { mathAchievements } from "../domain/math-achievements";
 import type { WorkspaceState } from "../domain/workspace";
 import { agendaTimeZone } from "../data/agenda-time-zone";
 import { generalAchievements } from "../domain/general-achievements";
+import { englishAchievements } from "../domain/english-achievements";
 import { readStoredProfile, useStoredProfile } from "./use-stored-profile";
 import { writeSyncedStorage } from "../data/synced-storage";
 import { useSocialFeed } from "./use-social-feed";
@@ -24,10 +25,15 @@ export function useMathAchievements(workspace: WorkspaceState) {
   const feed = useSocialFeed(true);
   const social =
     profile.username && profile.username === feed?.self.username ? feed.self : undefined;
-  const general = generalAchievements(workspace, social, agendaTimeZone()).map((item) => {
+  const general = [
+    ...generalAchievements(workspace, social, agendaTimeZone()),
+    ...englishAchievements(workspace.practiceActivities, agendaTimeZone()),
+  ].map((item) => {
     const date = profile.achievementHistory?.[item.id];
+    const earliest =
+      item.earnedAt && (!date || item.earnedAt < date) ? item.earnedAt : date || undefined;
     return date !== undefined
-      ? { ...item, value: item.target, earned: true, earnedAt: date || undefined }
+      ? { ...item, value: item.target, earned: true, earnedAt: earliest }
       : item;
   });
   const history = JSON.stringify(

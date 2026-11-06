@@ -3,7 +3,87 @@ import { expect, it } from "vitest";
 import { createProfileSocialHandler, type SocialState } from "./profile-social-handler";
 import type { HandleRegistry } from "./profile-handle-handler";
 import type { SocialFeed } from "../domain/profile-social";
+import { ALL_ACHIEVEMENTS } from "../domain/math-achievements";
+import { encodeAchievements } from "../domain/achievement-wire";
 const key = (uid: string) => createHash("sha256").update(uid).digest("hex");
+it("conquistas de Inglês chegam ao sino e feed uma vez, respeitando leitura, privacidade e bloqueio", async () => {
+  const start = Date.parse("2026-10-17T12:00:00Z");
+  const app = setup();
+  await app.request("b", { action: "follow", username: "alice" });
+  await app.request("a", { action: "activity-privacy", enabled: true });
+  app.advance(5000);
+  await app.request("a", {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    achievements: ["english-part-0"],
+    achievementDates: { "english-part-0": new Date(start + 2000).toISOString() },
+  });
+  await app.request("a", { action: "publish-activities" });
+  const first = await app.feed("b", "rewards=1");
+  expect(first.activities?.filter((item) => item.ref === "english-part-0")).toHaveLength(1);
+  expect(
+    first.notifications.filter((item) => item.activity?.ref === "english-part-0"),
+  ).toHaveLength(1);
+  await app.request("b", { action: "read" });
+  await app.request("a", { action: "publish-activities" });
+  const repeated = await app.feed("b", "rewards=1");
+  expect(
+    repeated.notifications.filter((item) => item.activity?.ref === "english-part-0"),
+  ).toHaveLength(1);
+  expect(repeated.notifications.find((item) => item.activity?.ref === "english-part-0")?.read).toBe(
+    true,
+  );
+  await app.request("a", { action: "activity-privacy", enabled: false });
+  const hidden = await app.feed("b", "rewards=1");
+  expect(hidden.activities?.some((item) => item.ref === "english-part-0")).toBe(false);
+  expect(hidden.notifications.some((item) => item.activity?.ref === "english-part-0")).toBe(false);
+  await app.request("b", { action: "block", username: "alice" });
+  expect(
+    (await app.feed("b", "rewards=1")).notifications.some(
+      (item) => item.activity?.ref === "english-part-0",
+    ),
+  ).toBe(false);
+});
+it("preserva IDs, datas e três destaques de Inglês no pedido compacto e oculta após bloqueio", async () => {
+  const app = setup();
+  const ids = ALL_ACHIEVEMENTS.map(({ id }) => id);
+  const dates = Object.fromEntries(ids.map((id) => [id, "2026-11-01T12:00:00.123Z"]));
+  const legacy = {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    achievements: ids,
+    achievementDates: dates,
+  };
+  expect((await app.request("a", legacy)).status).toBe(413);
+  const action = {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    achievementWire: encodeAchievements(ids, dates),
+    achievementFavorites: ["english-part-0", "english-correct-1", "general-pomodoro-bronze"],
+  };
+  expect((await app.request("a", action)).status).toBe(200);
+  const profile = (await app.feed("b", "username=alice")).profile!;
+  expect(profile.achievements).toEqual(ids);
+  expect(profile.achievementDates).toEqual(dates);
+  expect(profile.achievementFavorites).toEqual(action.achievementFavorites);
+  expect((await app.request("a", { ...action, achievements: [] })).status).toBe(400);
+  expect(
+    (
+      await app.request("a", {
+        ...action,
+        achievementWire: { v: 1, at: 0, items: [["unknown", null]] },
+      })
+    ).status,
+  ).toBe(400);
+  await app.request("b", { action: "block", username: "alice" });
+  expect((await app.feed("b", "username=alice")).profile?.achievements).toBeUndefined();
+});
 it("publica até três destaques conquistados, permite limpar e oculta após bloqueio", async () => {
   const app = setup();
   const share = {

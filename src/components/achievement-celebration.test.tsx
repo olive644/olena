@@ -65,3 +65,34 @@ it("guarda a celebração enquanto a folha está aberta e a mostra somente ao sa
   expect(screen.getByLabelText("Nova conquista")).toBeTruthy();
   expect(mocks.play).toHaveBeenCalledOnce();
 });
+
+it.each([
+  "math-arcade english-island-interior is-ready",
+  "math-arcade is-playing",
+  "math-arcade is-countdown",
+  "math-arcade is-finished is-reviewing",
+])("preserva aviso e som até terminar a atividade %s", async (className) => {
+  vi.useFakeTimers();
+  const activity = document.createElement("div");
+  activity.className = className;
+  document.body.append(activity);
+  const props = { workspace: createInitialWorkspace(), username: "", nameFallback: "Ana" };
+  const { rerender, unmount } = render(<AchievementAnnouncer {...props} />);
+  const item = GENERAL_ACHIEVEMENTS[0]!;
+  mocks.values = [{ ...item, value: item.target, earned: true, earnedAt: undefined }];
+  rerender(<AchievementAnnouncer {...props} />);
+  try {
+    expect(screen.queryByLabelText("Nova conquista")).toBeNull();
+    expect(mocks.play).not.toHaveBeenCalled();
+    act(() => vi.advanceTimersByTime(20000));
+    await act(async () => {
+      activity.className = "math-arcade is-finished";
+      await Promise.resolve();
+    });
+    expect(screen.getByLabelText("Nova conquista")).toBeTruthy();
+    expect(mocks.play).toHaveBeenCalledOnce();
+  } finally {
+    activity.remove();
+    unmount();
+  }
+});
