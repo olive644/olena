@@ -1,4 +1,5 @@
 import { uiText } from "../i18n/runtime.js";
+import { compactAchievementAction } from "../domain/achievement-wire";
 import { isMathCourse } from "./math-courses";
 import { getFirebaseAccountServices } from "./firebase-account";
 import { PROFILE_AVATARS } from "../domain/profile-avatars";
@@ -82,7 +83,7 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
       method: action ? "POST" : "GET",
       signal: AbortSignal.timeout(15000),
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      ...(action ? { body: JSON.stringify(action) } : {}),
+      ...(action ? { body: JSON.stringify(compactAchievementAction(action)) } : {}),
     });
   // Falha de rede chega do navegador como "Failed to fetch". Leitura é repetida uma vez
   // (nada muda no servidor); ação não, para nunca seguir ou bloquear duas vezes.

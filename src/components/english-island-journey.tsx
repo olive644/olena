@@ -61,6 +61,7 @@ type Round = {
   correct: number[];
   at: number;
   lives: number;
+  streak: number;
   bank: number;
   elapsed: number;
   missed: { id: number; choice: string; timedOut: boolean }[];
@@ -350,6 +351,7 @@ export function EnglishIslandJourney({
         correct: resumedFinal?.correct ?? [],
         at: resumedFinal?.at ?? 0,
         lives: ARCADE_LIVES,
+        streak: 0,
         bank: ARCADE_RESERVE,
         elapsed: 0,
         missed: resumedFinal?.missed ?? [],
@@ -511,6 +513,7 @@ export function EnglishIslandJourney({
           round.at + 1 >= bankSize);
     const updated = {
       ...round,
+      streak: correct ? round.streak + 1 : 0,
       correct: correctIds,
       lives,
       elapsed,
@@ -811,6 +814,24 @@ export function EnglishIslandJourney({
                 </div>
               </div>
               <h1 tabIndex={-1}>{question.prompt}</h1>
+              {round.streak > 3 && (
+                <div className="math-insane english-insane" role="status" key={round.streak}>
+                  <img
+                    className="math-flame"
+                    src="/languages/english-streak-flame.svg"
+                    alt=""
+                    width="32"
+                    height="38"
+                  />
+                  <span>
+                    {uiText(615)}{" "}
+                    <b>
+                      <PaperDigits value={String(round.streak)} />
+                      {uiText(289)}
+                    </b>
+                  </span>
+                </div>
+              )}
               {question.kind === "gap" && (
                 <p className="english-reply-intent">
                   {uiText("A fala quer dizer: {0}", [question.meaning])}

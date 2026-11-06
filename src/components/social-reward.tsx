@@ -24,7 +24,7 @@ export default function SocialReward({ activity }: { activity: SocialActivitySum
       <button
         className="profile-cards__tile"
         onClick={() => setOpen(true)}
-        aria-label={uiText("Inspecionar {0}", [card?.title ?? badge!.name])}
+        aria-label={uiText("Inspecionar {0}", [card?.title ?? uiText(badge!.name)])}
       >
         {card && id ? (
           <>
@@ -37,7 +37,7 @@ export default function SocialReward({ activity }: { activity: SocialActivitySum
         ) : badge ? (
           <>
             <AchievementArt item={badge} thumb />
-            <strong>{badge.name}</strong>
+            <strong>{uiText(badge.name)}</strong>
           </>
         ) : null}
       </button>

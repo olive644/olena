@@ -4,6 +4,7 @@ import { countSolved } from "./math-game-progress.js";
 import type { PracticeActivity } from "./workspace.js";
 import { zonedDateTime } from "./agenda-calendar.js";
 import { GENERAL_ACHIEVEMENTS, type GeneralAchievement } from "./general-achievement-catalog.js";
+import { ENGLISH_ACHIEVEMENTS, type EnglishAchievement } from "./english-achievement-catalog.js";
 
 export type MathAchievement = {
   category?: "mathematics";
@@ -16,7 +17,7 @@ export type MathAchievement = {
   course?: MathCourseId;
   art: number;
 };
-export type Achievement = MathAchievement | GeneralAchievement;
+export type Achievement = MathAchievement | GeneralAchievement | EnglishAchievement;
 const milestones: readonly [MathAchievement["metric"], string, string, readonly number[]][] = [
   [
     "rounds",
@@ -74,6 +75,7 @@ export const MATH_ACHIEVEMENTS: readonly MathAchievement[] = [
 export const ALL_ACHIEVEMENTS: readonly Achievement[] = [
   ...MATH_ACHIEVEMENTS,
   ...GENERAL_ACHIEVEMENTS,
+  ...ENGLISH_ACHIEVEMENTS,
 ];
 export function validAchievementFavorites(value: unknown): value is string[] {
   return validAchievementIds(value) && value.length <= 3;

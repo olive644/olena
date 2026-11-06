@@ -12,7 +12,7 @@ Artes gerais ficam em `public/achievement-badges/general/{id}.webp`, quadradas, 
 
 ## Galeria e perfil
 
-- Duas categorias: Matemática e Gerais. Uma peça por família na galeria, mostrando o maior nível obtido ou a primeira etapa bloqueada. Todas as etapas continuam acessíveis na inspeção.
+- Três categorias: Matemática, Inglês e Gerais. Uma peça por família na galeria, mostrando o maior nível obtido ou a primeira etapa bloqueada. Todas as etapas continuam acessíveis na inspeção.
 - Celular usa três colunas. As peças ficam sem fundo individual. O perfil destaca até três conquistas obtidas escolhidas pelo usuário, na ordem escolhida.
 - Preferência ausente usa três conquistas obtidas como sugestão. Lista vazia significa que o usuário removeu os destaques; não repopular silenciosamente.
 - Insígnias têm inspeção estática. Não adicionar rotação, verso ou controles 3D. O arraste na galeria apenas organiza destaques. Cartas do Oliver continuam com sua inspeção própria.
@@ -51,3 +51,17 @@ O perfil público recebe apenas IDs conhecidos, datas comprovadas e até três f
 4. Testar limiar, ausência de progresso, datas e isolamento da conta. Testar favoritos públicos e bloqueio se alterar contrato social.
 5. Conferir inspeção, PNG real, teclado e três colunas em celular, temas claro e escuro. Não baixar navegadores novamente se já houver limitação conhecida do ambiente.
 6. Rodar verify e testes de navegador afetados sem aumentar limites de JavaScript ou enfraquecer CI.
+
+## Inglês, 06/11/2026
+
+Inglês tem 42 objetivos em 14 famílias: seis famílias progressivas e oito conquistas de confirmação com Olena, uma por parte. A galeria agrupa etapas, mantém três favoritas compartilhadas entre categorias, datas reais, inspeção estática, arraste e PNG local de 1080 por 1350. Não criar outro sistema de recompensas.
+
+As seis famílias medem rodadas, acertos, dias distintos no fuso da conta, partes confirmadas, rodadas perfeitas com pelo menos cinco respostas e questões distintas acertadas. Recibos individuais da mesma rodada não contam como rodadas separadas. Repetir uma questão não aumenta a variedade. Apenas confirmações aceitas do currículo atual concedem conquistas das oito partes. Histórico conhecido é preservado; data desconhecida continua desconhecida.
+
+Artes inglesas usam o porto de papel recortado: pedra creme, turquesa, roxo e amarelo, profundidade facetada, transparência real e placa vazia. Olena mantém anatomia e identidade do modelo aprovado, integrada em cada cena, não como avatar colado. WebP completo 512 px e miniatura 128 px. PaperDigits ocupa a placa, sem números gerados na imagem. Fontes e prompts estão em achievement-english-art-prompts.json. Brilho raro recortado pelo alpha e preferências globais de movimento e som continuam iguais às de Matemática.
+
+A sequência de quatro acertos exibe VOCÊ ESTÁ INSANO com fogo facetado próprio de Inglês. Erro ou tempo esgotado zera a sequência. Nova rodada começa em zero. Não altera pontos, corações, tempo ou progressão.
+
+Conquistas inglesas entram no mesmo sino e feed de Matemática: publicação consentida, data comprovada, IDs estáveis, deduplicação, leitura e bloqueio. O publicador observa também os metadados publicados de recompensas, pois o compartilhamento pode terminar depois do salvamento do workspace. Mantém o intervalo existente de 60 segundos.
+
+O envio de perfil permanece limitado a 4096 bytes. Publicações maiores usam achievementWire v1, com tokens estáveis FNV32 dos IDs públicos e diferenças exatas de milissegundos. Colisões, IDs desconhecidos, datas inválidas, duplicações e mistura com campos literais são rejeitados. Clientes antigos e cargas pequenas continuam aceitos. Armazenamento e respostas mantêm IDs e datas literais. Rollback do cliente pode usar a forma literal enquanto couber; não remover a decodificação do servidor enquanto houver clientes usando v1.

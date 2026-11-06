@@ -1,6 +1,6 @@
 import { mergeEnglishCheckpoints } from "./english-checkpoint.js";
 import { mergeXpLedgers } from "./xp-ledger";
-import { generalAchievementHistory } from "./general-achievement-catalog";
+import { retainedAchievementHistory } from "./achievement-history.js";
 export const ACCOUNT_PROFILE_KEY = "helena.profile.v1";
 export function profileRecord(raw: string | null | undefined): Record<string, unknown> {
   try {
@@ -36,7 +36,7 @@ export function mergeProfileProgress(
   const history: Record<string, string> = {};
   for (const profile of profiles)
     for (const [id, date] of Object.entries(
-      generalAchievementHistory(profile["achievementHistory"]),
+      retainedAchievementHistory(profile["achievementHistory"]),
     )) {
       if (!(id in history) || !history[id] || (date && date < history[id]!)) history[id] = date;
     }

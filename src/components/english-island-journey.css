@@ -1115,3 +1115,16 @@ html[data-reduce-motion="true"] .english-journey * {
   width: 100%;
   min-width: 0;
 }
+
+.english-insane {
+  margin: 12px auto;
+}
+.english-insane b {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.english-insane .paper-digits {
+  height: 20px;
+  vertical-align: middle;
+}
