@@ -1,3 +1,4 @@
+import { englishProgress } from "./language-progress";
 import { shiftDate } from "./agenda";
 import { focusFlowerState } from "./focus-flower";
 import type { WorkspaceState } from "./workspace";
@@ -12,15 +13,30 @@ export function currentDailyStreak(days: string[], today: string): number {
   return count;
 }
 export function mathematicsStreak(workspace: WorkspaceState, now: Date, timeZone: string): number {
+  return practiceStreak(
+    (workspace.practiceActivities ?? []).filter((item) =>
+      /^(math|mathematics)(:|$)/.test(item.islandId),
+    ),
+    now,
+    timeZone,
+  );
+}
+export function englishStreak(workspace: WorkspaceState, now: Date, timeZone: string): number {
+  return practiceStreak(englishProgress(workspace.practiceActivities).accepted, now, timeZone);
+}
+function practiceStreak(
+  activities: NonNullable<WorkspaceState["practiceActivities"]>,
+  now: Date,
+  timeZone: string,
+): number {
   const formatter = new Intl.DateTimeFormat("en-CA", {
     timeZone,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   });
-  const records = (workspace.practiceActivities ?? []).filter(
+  const records = activities.filter(
     (item) =>
-      /^(math|mathematics)(:|$)/.test(item.islandId) &&
       item.answers > 0 &&
       Number.isFinite(Date.parse(item.completedAt)) &&
       Date.parse(item.completedAt) <= now.getTime(),
@@ -66,5 +82,6 @@ export function profileStreaks(
       : currentDailyStreak(timerDays, today),
     pomodoro: currentDailyStreak(pomodoroDays, today),
     islands: mathematicsStreak(workspace, now, timeZone),
+    english: englishStreak(workspace, now, timeZone),
   };
 }

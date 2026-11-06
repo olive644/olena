@@ -1,3 +1,4 @@
+import { achievementArtPath, achievementFamilies } from "./achievement-presentation";
 import { expect, it } from "vitest";
 import { englishAchievements } from "./english-achievements";
 import { ENGLISH_ACHIEVEMENTS } from "./english-achievement-catalog";
@@ -30,10 +31,10 @@ function receipt(
     },
   };
 }
-it("has six milestone families and eight Olena location achievements without invented progress", () => {
-  expect(ENGLISH_ACHIEVEMENTS).toHaveLength(42);
-  expect(new Set(ENGLISH_ACHIEVEMENTS.map((item) => item.id)).size).toBe(42);
-  expect(new Set(ENGLISH_ACHIEVEMENTS.map((item) => item.family)).size).toBe(14);
+it("has progressive global and per-part families without invented progress", () => {
+  expect(ENGLISH_ACHIEVEMENTS).toHaveLength(74);
+  expect(new Set(ENGLISH_ACHIEVEMENTS.map((item) => item.id)).size).toBe(74);
+  expect(new Set(ENGLISH_ACHIEVEMENTS.map((item) => item.family)).size).toBe(22);
   expect(
     englishAchievements([], undefined, now).every(
       (item) => !item.earned && item.value === 0 && !item.earnedAt,
@@ -184,4 +185,58 @@ it("retains only known English history and the earliest proven date through sync
       "english-perfect-1": "bad",
     }),
   ).toEqual({ "english-correct-1": "" });
+});
+
+it("gives each part intermediate milestones and keeps Olena as its final tier", () => {
+  for (let part = 0; part < 8; part++) {
+    const family = ENGLISH_ACHIEVEMENTS.filter((goal) => goal.family === `english-part-${part}`);
+    expect(family.map((goal) => goal.id)).toEqual([
+      `english-part-${part}-variety-25`,
+      `english-part-${part}-variety-50`,
+      `english-part-${part}`,
+    ]);
+    expect(family.at(-1)?.rarity).toBe("rare");
+    expect(family.map((goal) => goal.target)).toEqual([25, 50, 100]);
+  }
+});
+it("counts accepted current receipts per part with dates and distinct tasks", () => {
+  const records = Array.from({ length: 50 }, (_, index) => receipt(index));
+  const goals = englishAchievements([...records, ...records], undefined, now);
+  expect(goals.find((goal) => goal.id === "english-part-0-correct-20")).toMatchObject({
+    earned: true,
+    value: 20,
+    earnedAt: records[19]!.completedAt,
+  });
+  expect(goals.find((goal) => goal.id === "english-part-0-variety-50")).toMatchObject({
+    earned: true,
+    value: 50,
+    earnedAt: records[49]!.completedAt,
+  });
+  expect(goals.find((goal) => goal.id === "english-part-0")?.earned).toBe(false);
+  expect(goals.filter((goal) => goal.part === 1).every((goal) => goal.value === 0)).toBe(true);
+  const repeated = records.map((record, index) => ({
+    ...record,
+    englishAttempt: { ...record.englishAttempt!, questions: [0], correctQuestions: [0] },
+    id: `english:arcade:repeat:${index}`,
+  }));
+  expect(
+    englishAchievements(repeated, undefined, now).find(
+      (goal) => goal.id === "english-part-0-variety-25",
+    )?.value,
+  ).toBe(1);
+});
+
+it("uses distinct art for every level and shows the highest earned tier per family", () => {
+  expect(new Set(ENGLISH_ACHIEVEMENTS.map((goal) => achievementArtPath(goal))).size).toBe(74);
+  const ids = new Set(["english-part-0-variety-25", "english-part-0-variety-50"]);
+  const families = achievementFamilies(ENGLISH_ACHIEVEMENTS, ids);
+  expect(families.find((goal) => "family" in goal && goal.family === "english-part-0")?.id).toBe(
+    "english-part-0-variety-50",
+  );
+  ids.add("english-part-0");
+  expect(
+    achievementFamilies(ENGLISH_ACHIEVEMENTS, ids).find(
+      (goal) => "family" in goal && goal.family === "english-part-0",
+    )?.id,
+  ).toBe("english-part-0");
 });

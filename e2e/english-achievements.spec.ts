@@ -23,7 +23,7 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("button", { name: "Ver todas as conquistas" }).click();
     const gallery = page.getByRole("dialog", { name: "Todas as conquistas", exact: true });
     await gallery.getByRole("tab", { name: "Inglês", exact: true }).click();
-    await expect(gallery.locator(".achievement-tile")).toHaveCount(14);
+    await expect(gallery.locator(".achievement-tile")).toHaveCount(22);
     expect(await gallery.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
     await gallery.screenshot({
       path: info.outputPath(`english-gallery-${theme}.png`),
@@ -40,6 +40,22 @@ for (const theme of ["light", "dark"]) {
         `/achievement-badges/english/part-${part}.webp`,
       );
       await expect(inspection.locator("time")).toHaveAttribute("datetime", "2026-11-01T12:00:00Z");
+      const tiers = inspection.locator(".achievement-tier-steps button");
+      await expect(tiers).toHaveCount(3);
+      for (const [index, target] of [25, 50].entries()) {
+        await tiers.nth(index).click();
+        await expect(inspection.locator("image:not([data-achievement-preview])")).toHaveAttribute(
+          "href",
+          `/achievement-badges/english/english-part-${part}-variety-${target}.webp`,
+        );
+        if (part === 0 && index === 0) {
+          await inspection.screenshot({
+            path: info.outputPath(`english-intermediate-${theme}.png`),
+            animations: "disabled",
+          });
+        }
+      }
+      await tiers.last().click();
       expect(await inspection.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
       if (part === 0) {
         await inspection.screenshot({

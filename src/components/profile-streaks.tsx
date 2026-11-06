@@ -18,7 +18,11 @@ export function ProfileStreaks({ workspace }: { workspace: WorkspaceState }) {
   return <ProfileStreakValues streaks={streaks} />;
 }
 
-export function ProfileStreakValues({ streaks }: { streaks: ReturnType<typeof profileStreaks> }) {
+export function ProfileStreakValues({
+  streaks,
+}: {
+  streaks: Omit<ReturnType<typeof profileStreaks>, "english"> & { english?: number };
+}) {
   useLanguage();
   const [inspecting, setInspecting] = useState("");
   return (
@@ -28,10 +32,11 @@ export function ProfileStreakValues({ streaks }: { streaks: ReturnType<typeof pr
           ["pomodoro", uiText(1606)],
           ["timer", uiText(103)],
           ["islands", uiText(1921)],
+          ["english", uiText("Inglês")],
         ] as const
       ).map(
         ([key, label]) =>
-          streaks[key] > 0 && (
+          (streaks[key] ?? 0) > 0 && (
             <span className="profile-streak-inspection" key={key}>
               <button
                 type="button"
@@ -40,7 +45,9 @@ export function ProfileStreakValues({ streaks }: { streaks: ReturnType<typeof pr
                 onClick={() => setInspecting(inspecting === key ? "" : key)}
                 aria-label={`${label}: ${streaks[key]} ${streaks[key] === 1 ? uiText(1922) : uiText(1923)}`}
               >
-                {key === "islands" ? (
+                {key === "english" ? (
+                  <img src="/languages/english-streak-flame.svg" alt="" width="28" height="28" />
+                ) : key === "islands" ? (
                   <img src="/math-islands/flame.svg" alt="" width="28" height="28" />
                 ) : key === "pomodoro" ? (
                   <i className="streak-tomato is-active" aria-hidden="true" />

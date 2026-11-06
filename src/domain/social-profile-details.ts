@@ -11,7 +11,7 @@ export type SocialProfileDetails = {
   level: number;
   frame?: ProfileFrame;
   background?: ProfileBackground;
-  streaks: { pomodoro: number; timer: number; islands: number };
+  streaks: { pomodoro: number; timer: number; islands: number; english?: number };
   socialLinks: string[];
   updatedAt?: number;
 };
@@ -29,8 +29,12 @@ export function validSocialProfileDetails(value: unknown): value is SocialProfil
     typeof item.streaks === "object" &&
     ["pomodoro", "timer", "islands"].every((key) => {
       const count = item.streaks![key as keyof SocialProfileDetails["streaks"]];
-      return Number.isSafeInteger(count) && count >= 0 && count <= 100_000;
+      return Number.isSafeInteger(count) && Number(count) >= 0 && Number(count) <= 100_000;
     }) &&
+    (item.streaks.english === undefined ||
+      (Number.isSafeInteger(item.streaks.english) &&
+        Number(item.streaks.english) >= 0 &&
+        Number(item.streaks.english) <= 100_000)) &&
     Array.isArray(item.socialLinks) &&
     item.socialLinks.length <= 5 &&
     item.socialLinks.every((link) => typeof link === "string" && !!recognizeSocialLink(link))

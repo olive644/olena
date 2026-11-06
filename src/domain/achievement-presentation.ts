@@ -60,7 +60,7 @@ export function achievementTheme(item: Achievement): AchievementTheme {
 export function achievementArtPath(item: Achievement, thumb = false) {
   const folder =
     item.category === "general" ? "general" : item.category === "english" ? "english" : "math";
-  return `/achievement-badges/${folder}/${thumb ? "thumb/" : ""}${item.category === "english" ? (item.part !== undefined ? `part-${item.part}` : item.metric) : item.id}.webp`;
+  return `/achievement-badges/${folder}/${thumb ? "thumb/" : ""}${item.category === "english" ? (item.part !== undefined && item.metric === "parts" ? `part-${item.part}` : item.id) : item.id}.webp`;
 }
 export function achievementFamily(item: Achievement) {
   return item.category === "general" || item.category === "english"

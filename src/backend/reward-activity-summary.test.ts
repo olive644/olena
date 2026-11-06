@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { expect, it } from "vitest";
-import { achievementActivities, cardActivities } from "./reward-activity-summary";
+import { achievementActivities, cardActivities, rewardLedgerKeys } from "./reward-activity-summary";
 
 const now = Date.parse("2026-10-20T12:00:00Z");
 const at = (day: number) => Date.parse(`2026-10-${String(day).padStart(2, "0")}T10:00:00Z`);
@@ -190,4 +190,16 @@ it("usa a mesma identidade estável para conquistas de Inglês, sem inventar dat
       now,
     )[0]?.id,
   ).toBe(first[0]?.id);
+});
+
+it("lê no máximo dois ledgers e reconhece todos os formatos de recibo inglês", () => {
+  for (const key of ["languageAttempt", "englishAttempt", "englishA1Attempt"]) {
+    expect(rewardLedgerKeys(JSON.stringify({ practiceActivities: [{ [key]: {} }] }))).toEqual([
+      "helena.mathPlaceRewards.v1",
+      "helena.englishRewards.v1",
+    ]);
+  }
+  for (const raw of [null, 42, "{}", JSON.stringify({ notes: ['"englishAttempt":'] })]) {
+    expect(rewardLedgerKeys(raw)).toEqual(["helena.mathPlaceRewards.v1"]);
+  }
 });

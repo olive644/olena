@@ -634,6 +634,7 @@ export function createProfileSocialHandler(options: {
                   pomodoro: details.streaks.pomodoro,
                   timer: details.streaks.timer,
                   islands: details.streaks.islands,
+                  english: details.streaks.english ?? 0,
                 },
                 socialLinks: [
                   ...new Set(details.socialLinks.map((link) => recognizeSocialLink(link)!.url)),

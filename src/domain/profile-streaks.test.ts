@@ -1,5 +1,10 @@
 import { expect, it } from "vitest";
-import { currentDailyStreak, profileStreaks, mathematicsStreak } from "./profile-streaks";
+import {
+  currentDailyStreak,
+  profileStreaks,
+  mathematicsStreak,
+  englishStreak,
+} from "./profile-streaks";
 import { createInitialWorkspace } from "./workspace";
 it("conta dias únicos até hoje ou ontem e ignora futuro, lacunas e dados inválidos", () => {
   expect(
@@ -61,7 +66,7 @@ it("separa modalidades, inclui legado pomodoro e usa o fuso da conta", () => {
       new Date("2026-10-16T15:00:00Z"),
       "America/Sao_Paulo",
     ),
-  ).toEqual({ timer: 1, pomodoro: 2, islands: 0 });
+  ).toEqual({ timer: 1, pomodoro: 2, islands: 0, english: 0 });
 });
 it("fogo matemático expira em 24h, ignora outras ilhas e futuro", () => {
   const workspace = createInitialWorkspace();
@@ -96,4 +101,39 @@ it("a flor do perfil usa a mesma expiração da tela de Cronômetro", () => {
   ];
   expect(profileStreaks(workspace, [], new Date("2026-10-19T09:59:59Z"), "UTC").timer).toBe(1);
   expect(profileStreaks(workspace, [], new Date("2026-10-19T10:00:00Z"), "UTC").timer).toBe(0);
+});
+
+it("counts only accepted English days in the account timezone and expires after 24h", () => {
+  const workspace = createInitialWorkspace();
+  workspace.practiceActivities = ["2026-11-05T02:00:00Z", "2026-11-05T23:00:00Z"].map(
+    (completedAt, index) => ({
+      id: `english:arcade:streak:${index}`,
+      islandId: "english",
+      islandName: "English",
+      answers: 1,
+      correct: 1,
+      completedAt,
+      englishAttempt: {
+        curriculum: 4,
+        area: "english",
+        part: 0,
+        mode: "practice",
+        questions: [index],
+        correctQuestions: [index],
+      },
+    }),
+  );
+  const now = new Date("2026-11-06T02:00:00Z");
+  expect(englishStreak(workspace, now, "America/Sao_Paulo")).toBe(2);
+  expect(englishStreak(workspace, now, "UTC")).toBe(1);
+  expect(profileStreaks(workspace, [], now, "America/Sao_Paulo")).toMatchObject({
+    english: 2,
+    islands: 0,
+  });
+  expect(englishStreak(workspace, new Date("2026-11-06T23:00:00Z"), "UTC")).toBe(0);
+  workspace.practiceActivities = workspace.practiceActivities.map((record) => ({
+    ...record,
+    correct: 2,
+  }));
+  expect(englishStreak(workspace, now, "UTC")).toBe(0);
 });

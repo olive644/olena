@@ -2,13 +2,20 @@ import { lazy, Suspense, useState } from "react";
 import { RewardDate } from "./reward-date";
 import { HelenaLoading } from "./helena-loading";
 const SocialReward = lazy(() => import("./social-reward"));
-import { uiText } from "../i18n/runtime";
+import { ENGLISH_PART_CATALOG } from "../data/english-part-catalog";
+import { uiLocale, uiText } from "../i18n/runtime";
 import { requestSocial, visitSocialProfile } from "../data/profile-social";
 import type { SocialActivity, SocialActivitySummary, SocialNotice } from "../domain/profile-social";
 import { MATH_COURSES } from "../data/math-courses";
 
 export function activityLabel(activity: SocialActivitySummary) {
   const course = MATH_COURSES.find((item) => item.id === activity.course);
+  if (activity.course === "english" && activity.kind === "module")
+    return uiText("Concluiu {0} na ilha de Inglês.", [
+      ENGLISH_PART_CATALOG[activity.level ?? -1]?.title[uiLocale()] ?? uiText("Inglês"),
+    ]);
+  if (activity.course === "english" && activity.kind === "practice")
+    return uiText("Avançou em Inglês: {0} respostas praticadas.", [activity.value]);
   if (activity.kind === "module")
     return uiText(2734, [
       course?.topics[activity.level ?? -1] ?? uiText(1406),
