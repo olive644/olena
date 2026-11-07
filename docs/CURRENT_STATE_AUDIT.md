@@ -2,6 +2,10 @@
 
 `src/domain/notebook-search.test.ts` ("varre seis mil folhas") media uma única execução contra 120 ms e falhou em runners lentos do CI sem regressão (129,6 ms e 121,5 ms em duas execuções de PRs que não tocam a busca; passa em cerca de 14 ms localmente, não verificado o tempo típico do CI). O teste passa a executar cinco vezes e comparar o menor tempo com os mesmos 120 ms: ruído de CPU compartilhada só soma tempo, então o mínimo reflete o custo real, e uma regressão de verdade deixa todas as medições acima do limite. Limite, teste e cobertura mantidos; nenhum teste pulado ou desativado. Conferido que o teste ainda falha com um limite de 1 ms.
 
+## Teste e2e do Oliver acompanha a versão da arte, 07/11/2026
+
+`e2e/app.spec.ts:97` ainda esperava `/oliver-peeking-widget.webp`, mas o app passou a servir `/oliver-peeking-widget.webp?v=2` no commit `223c6ab9` (ajuste dos widgets, #593), que atualizou `e2e/oliver-hero.spec.ts` e o teste unitário e deixou este para trás. O teste falhava de forma consistente (3 de 3 tentativas) em todo CI de desktop depois da #593, inclusive no push na `main`. Corrigido o valor esperado; conferido que o teste falha na `main` e passa com a correção, em desktop e mobile. Nenhum teste pulado.
+
 ## CI: desktop em duas partes, 07/11/2026
 
 `scripts/ci-scope.mjs` divide o e2e desktop em `desktop shard 1/2` e `2/2` (`--shard`), em pull request e no push na `main`. O workflow ganha o gate `desktop-result`, que mantém o nome `Desktop and mobile smoke tests (desktop)` para a proteção da branch. Motivo: o job único estourava os 20 min do passo em runners lentos. Limites: o tempo por parte e o custo em minutos ainda não foram medidos; o desktop da própria PR é a primeira medição. Detalhes em `docs/CI_MINUTOS.md`.
@@ -4622,3 +4626,11 @@ Direção adicional da responsável: o carrossel abre na ofensiva ativa que esti
 Após incluir a prioridade por ofensiva, 20 cenários de navegador aprovados em desktop/celular, incluindo maior streak, expiração próxima, escolha manual, widget nos dois temas, Rive sob CSP, movimento reduzido, agenda e privacidade. Build atual mede 1741,1 KiB de JavaScript da aplicação, abaixo do teto de 1742, e Rive de Oliver 310,5 KiB.
 
 Validação final desta revisão: lint sem erros, formatação/API/idiomas aprovados; suíte geral com 2672 aprovados e uma falha no limite temporal de notebook-search.test.ts. O mesmo teste foi executado isoladamente na branch (128,0 ms) e em checkout limpo de origin/main 8fa80df (121,0 ms), ambos acima do limite existente de 120 ms. Fonte e teste de busca não foram alterados; nenhum limite, timeout ou teste foi relaxado. Build e orçamento aprovados: entrada 220,8 KiB e aplicação 1741,1 KiB de 1742. Vinte cenários de navegador aprovados. Safari, aparelhos físicos e contas reais não verificados.
+
+## Selos, livro da Olena e atualização em papel, 07/11/2026
+
+Solicitação: remover DEV e GALAXIA do @bizzok, retirar o borrão do livro no widget inglês e apresentar uma atualização por gesto com desenho próprio. A regra compartilhada de selos preserva BETA TESTER. A imagem aprovada foi limpa por edição localizada e exportada com transparência em WebP 900x600, reduzindo 56.562 para 49.232 bytes. Origem e hashes em `artifacts/profile-refresh/art-source.json`.
+
+A atualização usa um livro e estrela facetados nas cores oficiais, com mensagens traduzidas, anúncio de estado e movimento reduzido. Atua no topo de Espaço, Perfil e Notificações, sem substituir gestos das telas de criação, prática ou cronômetro. Indicadores externos do navegador/sistema não são desenhados pela página; Android físico e Safari não verificados. O gesto tem limite, cancelamento e exclusão de controles, diálogos e áreas com rolagem própria. Não há dependência nova nem mudança de sincronização ou orçamento de desempenho.
+
+Validação: `npm run verify` passou com 413 arquivos e 2.676 testes, além dos 14 cenários de navegador. Lint sem erros e 27 avisos existentes. JavaScript inicial 219,5 KiB e total 1741,8 KiB, dentro dos limites originais. Capturas e limites em `artifacts/profile-refresh/README.md`.

@@ -1,0 +1,46 @@
+html.paper-refresh-enabled,
+.paper-refresh-enabled body {
+  overscroll-behavior-y: contain;
+}
+.paper-refresh {
+  position: fixed;
+  z-index: 1400;
+  top: env(safe-area-inset-top, 0px);
+  left: 50%;
+  width: min(248px, calc(100vw - 32px));
+  padding: 8px 16px 12px;
+  background: var(--surface);
+  border-radius: 0 0 20px 12px;
+  box-shadow: 0 5px 0 var(--line);
+  pointer-events: none;
+}
+.paper-refresh .helena-loading {
+  min-height: 80px;
+  gap: 0;
+  font-size: 0.8rem;
+  color: var(--text);
+}
+.paper-refresh .helena-refresh-book {
+  width: 64px;
+  height: 48px;
+  overflow: visible;
+}
+.helena-refresh-book {
+  transform-origin: center;
+}
+.paper-refresh[data-ready="true"] .helena-refresh-book {
+  transform: rotate(18deg) scale(1.12);
+}
+.paper-refresh[data-busy="true"] .helena-refresh-book {
+  animation: paper-refresh-star 1s ease-in-out infinite;
+}
+@keyframes paper-refresh-star {
+  50% {
+    transform: translateY(-5px) rotate(30deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .paper-refresh[data-busy="true"] .helena-refresh-book {
+    animation: none;
+  }
+}

@@ -26,7 +26,7 @@ it("alterna por botão e teclado e abre a modalidade escolhida", () => {
   expect(screen.queryByText("Uma nova conversa começa aqui.")).toBeNull();
   expect(screen.queryByText("A próxima descoberta é sua.")).toBeNull();
   expect(screen.getByAltText("Olena convida você a praticar Inglês").getAttribute("src")).toBe(
-    "/languages/olena-english-widget.webp?v=2",
+    "/languages/olena-english-widget.webp?v=3",
   );
   fireEvent.click(screen.getByRole("button", { name: "Explorar Inglês" }));
   expect(english).toHaveBeenCalledOnce();
@@ -123,7 +123,7 @@ it("prepara a arte em baixa prioridade e reaproveita a preparação ao focar o s
     act(() => vi.advanceTimersByTime(1500));
     expect(created).toHaveLength(1);
     expect(created[0]).toMatchObject({
-      src: "/languages/olena-english-widget.webp?v=2",
+      src: "/languages/olena-english-widget.webp?v=3",
       fetchPriority: "low",
     });
     fireEvent.focus(screen.getByRole("button", { name: "Mostrar Inglês" }));

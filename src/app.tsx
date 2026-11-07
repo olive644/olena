@@ -2,6 +2,7 @@ import { uiText, useLanguage } from "./i18n/runtime";
 import { lazy, Suspense, useState, useEffect } from "react";
 import { useAppView } from "./hooks/use-app-view";
 import { MobileNavigation, Sidebar } from "./components/app-navigation";
+import { PullToRefresh } from "./components/pull-to-refresh";
 import { HelenaLoading } from "./components/helena-loading";
 import { MobileMenuContext } from "./components/mobile-menu-context";
 import { isGuestSession, requiresLogin } from "./domain/guest-session";
@@ -163,6 +164,9 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   return (
     <MobileMenuContext.Provider value={{ open: moreOpen, setOpen: setMoreOpen }}>
       <div className="app-shell">
+        {(view === "today" || view === "profile" || view === "notifications") && !moreOpen && (
+          <PullToRefresh />
+        )}
         {cloud.authenticated === true && (
           <Suspense fallback={null}>
             <AccountVerification verificationOnly />
