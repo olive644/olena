@@ -37,7 +37,7 @@ for (const theme of ["light", "dark"]) {
       const inspection = page.locator(".achievement-inspection");
       await expect(inspection.locator("image:not([data-achievement-preview])")).toHaveAttribute(
         "href",
-        `/achievement-badges/english/part-${part}.webp`,
+        `/achievement-badges/english/part-${part}.webp?v=20261107`,
       );
       await expect(inspection.locator("time")).toHaveAttribute("datetime", "2026-11-01T12:00:00Z");
       const tiers = inspection.locator(".achievement-tier-steps button");
@@ -46,7 +46,7 @@ for (const theme of ["light", "dark"]) {
         await tiers.nth(index).click();
         await expect(inspection.locator("image:not([data-achievement-preview])")).toHaveAttribute(
           "href",
-          `/achievement-badges/english/english-part-${part}-variety-${target}.webp`,
+          `/achievement-badges/english/english-part-${part}-variety-${target}.webp?v=20261107`,
         );
         if (part === 0 && index === 0) {
           await inspection.screenshot({

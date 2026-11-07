@@ -22,7 +22,7 @@
     "part-7": "Olena reading among archive shelves"
   },
   "output": "public/achievement-badges/english/{subject}.webp",
-  "conversion": "512x512 WebP quality 90; thumb/128x128 quality 85; preserve alpha",
+  "conversion": "RETIRED: use native >=512 px cells through english_art.py; current 627 px cells downsample to 512, thumbnails128",
   "source": "Original PNGs retained in local Codex generated_images, outside repository",
   "progression": {
     "date": "2026-11-06",
@@ -46,6 +46,8 @@
       "prompt": "Four progressive compositions per row in approved cut-paper style, teal cream purple and yellow, blank plaque, no characters. Transparent alpha. Preserve each location motif and add objects and architecture by tier. Remove background without changing the grid."
     },
     "conversion": "scripts/achievement-art/extract-english-atlases.py converts equal cells to 512px WebP and 128px thumbnails, preserving alpha. Source cells are approximately 157px in the global atlas and 256px in the part atlas; exports do not imply native 512px detail.",
-    "maximum": "Existing approved part-{id}.webp with Olena is the final confirmation tier, never used by an intermediate milestone."
-  }
+    "maximum": "Existing approved part-{id}.webp with Olena is the final confirmation tier, never used by an intermediate milestone.",
+    "retired": true
+  },
+  "supersededBy": "achievement-english-art-sources.json"
 }

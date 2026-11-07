@@ -14,6 +14,8 @@ def export(atlas, columns, rows, column, row, name):
     width, height = atlas.size
     cell = atlas.crop((round(column * width / columns), round(row * height / rows),
                        round((column + 1) * width / columns), round((row + 1) * height / rows)))
+    if min(cell.size) < 512:
+        raise ValueError("Native source is smaller than 512px; use english_art.py without upscaling")
     # Keep the grid geometry and transparent margins, without altering the artwork.
     cell.resize((512, 512), Image.Resampling.LANCZOS).save(root / f"{name}.webp", quality=90)
     cell.resize((128, 128), Image.Resampling.LANCZOS).save(root / "thumb" / f"{name}.webp", quality=85)

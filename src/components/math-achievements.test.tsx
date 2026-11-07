@@ -180,6 +180,6 @@ it("Inglês reúne 74 objetivos em 22 famílias com Olena e navegação entre tr
     document
       .querySelector(".achievement-inspection image:not([data-achievement-preview])")
       ?.getAttribute("href"),
-  ).toBe("/achievement-badges/english/part-0.webp");
+  ).toBe("/achievement-badges/english/part-0.webp?v=20261107");
   expect(document.querySelector(".achievement-inspection .achievement-foil")).not.toBeNull();
 });

@@ -240,3 +240,13 @@ it("uses distinct art for every level and shows the highest earned tier per fami
     )?.id,
   ).toBe("english-part-0");
 });
+
+it("versions full English art and thumbnails to replace the previous week-long browser cache", () => {
+  const goal = ENGLISH_ACHIEVEMENTS[0]!;
+  expect(achievementArtPath(goal)).toBe(
+    "/achievement-badges/english/english-rounds-1.webp?v=20261107",
+  );
+  expect(achievementArtPath(goal, true)).toBe(
+    "/achievement-badges/english/thumb/english-rounds-1.webp?v=20261107",
+  );
+});
