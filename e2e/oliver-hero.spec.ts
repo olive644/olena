@@ -9,6 +9,22 @@ const policy = config.headers[0]!.headers.find(
 )!.value;
 const ALT = "Oliver aparece por trás do widget de Matemática";
 
+async function expectNoSymbols(source: import("@playwright/test").Locator) {
+  const result = await source.evaluate((element: HTMLImageElement | HTMLCanvasElement) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 900;
+    canvas.height = 600;
+    const ctx = canvas.getContext("2d")!;
+    ctx.drawImage(element, 0, 0, 900, 600);
+    const patch = ctx.getImageData(710, 70, 150, 290).data;
+    let alpha = 0;
+    for (let i = 3; i < patch.length; i += 4) alpha = Math.max(alpha, patch[i]!);
+    return { alpha, body: ctx.getImageData(450, 300, 1, 1).data[3] };
+  });
+  expect(result.body).toBeGreaterThan(200);
+  expect(result.alpha).toBe(0);
+}
+
 async function open(page: import("@playwright/test").Page, requests: string[], errors: string[]) {
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("request", (request) => {
@@ -37,7 +53,7 @@ test("Oliver espreita por trás do widget sob CSP com imagem transparente e conv
     errors: string[] = [];
   await open(page, requests, errors);
   const art = page.getByAltText(ALT);
-  await expect(art).toHaveAttribute("src", "/oliver-peeking-widget.webp");
+  await expect(art).toHaveAttribute("src", "/oliver-peeking-widget.webp?v=2");
   await expect.poll(() => art.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(900);
   await art.evaluate(async () => {
     await Promise.all(
@@ -61,6 +77,7 @@ test("Oliver espreita por trás do widget sob CSP com imagem transparente e conv
     return ctx.getImageData(0, 0, 1, 1).data[3];
   });
   expect(alpha).toBeLessThan(255);
+  await expectNoSymbols(art);
   await expect(page.getByRole("searchbox", { name: "Buscar no Espaço", exact: true })).toHaveCount(
     0,
   );
@@ -71,6 +88,7 @@ test("Oliver espreita por trás do widget sob CSP com imagem transparente e conv
   await expect(page.locator(".math-hero-peek")).toHaveAttribute("data-ready", "true", {
     timeout: 15000,
   });
+  await expectNoSymbols(page.locator(".math-hero-peek canvas"));
   expect(requests.some((url) => url.includes("/oliver-peeking-widget/oliver.riv"))).toBe(true);
   expect(errors).toEqual([]);
 });

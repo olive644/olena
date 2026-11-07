@@ -115,7 +115,9 @@ const CONDITION_VALUE = 157;
 
 // ---------- arquivo: uma imagem por camada ----------
 const fileObjects = [[T.Backboard, []]];
-const ASSET_ORDER = meta.order;
+const ASSET_ORDER = meta.order.filter((name) =>
+  ["body", "mouth", "eyeL", "eyeR", "handL", "handR"].includes(name),
+);
 ASSET_ORDER.forEach((name, i) => {
   const L = layers[name];
   fileObjects.push([
@@ -199,17 +201,6 @@ part(corpo, "olhoE", "eyeL");
 part(corpo, "olhoD", "eyeR");
 part(char, "maoE", "handL");
 part(char, "maoD", "handR");
-const mais = part(null, "mais", null, layers.plus.pivot);
-part(mais, "maisPulso", "pulsePlus");
-part(mais, "maisBrilho", "glowPlus");
-part(mais, "maisSinal", "plus");
-const divisao = part(null, "divisao", null, layers.divBar.pivot);
-part(divisao, "divPulso", "pulseDiv");
-part(divisao, "divBrilho", "glowDiv");
-part(divisao, "divBarra", "divBar");
-part(divisao, "divPontoCima", "divDotTop");
-part(divisao, "divPontoBaixo", "divDotBottom");
-
 // A ordem de pintura vem de layers.json (de trás para frente), não da ordem dos nós.
 pictures.sort((a, b) => ASSET_ORDER.indexOf(b[1]) - ASSET_ORDER.indexOf(a[1]));
 const hidden = (process.env["PEEK_HIDE"] ?? "").split(",");
@@ -294,22 +285,6 @@ amb("boca", {
   sx: (t) => 1 + 0.014 * osc(t, 6) + 0.03 * heartbeat(t, 5),
   sy: (t) => 1 + 0.03 * osc(t, 3, 0.1) + 0.06 * heartbeat(t, 5),
 });
-const floaty = (name, period, ampY, ampRot, phase) =>
-  amb(name, {
-    y: (t) => ampY * osc(t, period, phase),
-    rot: (t) => ampRot * osc(t, period * 2, phase + 0.2),
-  });
-floaty("mais", 6, 7, 0.06, 0.0);
-floaty("divisao", 4, 5, 0.06, 0.3);
-// O sinal e o brilho original são uma peça só (a borda do sinal está no brilho), então só o grupo
-// se mexe. O halo respira por uma cópia sem borda, por trás, que infla e acende de leve.
-amb("mais", { ...scaleBoth((t) => 1 + 0.035 * osc(t, 3, 0.3)) });
-amb("divisao", { ...scaleBoth((t) => 1 + 0.025 * osc(t, 4, 0.1)) });
-const breathe = (t, period) => (1 - Math.cos((TAU * t) / period)) / 2;
-amb("maisPulso", { ...scaleBoth((t) => 1 + 0.07 * breathe(t, 3)) });
-amb("divPulso", { ...scaleBoth((t) => 1 + 0.07 * breathe(t, 4)) });
-ambient.push([PIC.pulsePlus, P.op, (t) => 0.5 * breathe(t, 3)]);
-ambient.push([PIC.pulseDiv, P.op, (t) => 0.5 * breathe(t, 4)]);
 const A_AMBIENTE = anim("ambiente", LOOP, 30, 1, ambient);
 
 // ---------- reações (clique) ----------
@@ -344,14 +319,6 @@ const A_PULO = reactAnim("pulo", 1.4, (r) => {
       scaleBoth((t) => 1 + 0.12 * Math.sin(Math.PI * smooth(0.2, 1.0, t))),
     );
   r("boca", { sy: (t) => 1 + 0.18 * Math.sin(Math.PI * smooth(0.25, 1.0, t)) });
-  for (const [name, d] of [
-    ["mais", 0],
-    ["divisao", 0.06],
-  ])
-    r(name, {
-      ...scaleBoth((t) => 1 + 0.13 * Math.sin(Math.PI * smooth(0.25 + d, 1.05 + d, t))),
-      y: (t) => -9 * Math.sin(Math.PI * smooth(0.25 + d, 1.0 + d, t)),
-    });
 });
 const A_BALANCO = reactAnim("balanco", 1.7, (r) => {
   const env = (t) => smooth(0, 0.15, t) * (1 - smooth(1.2, 1.7, t));
@@ -364,8 +331,6 @@ const A_BALANCO = reactAnim("balanco", 1.7, (r) => {
       side,
       scaleBoth((t) => 1 + 0.08 * env(t)),
     );
-  r("mais", { rot: (t) => 0.1 * env(t) * Math.sin(TAU * (t / 0.7) + 1) });
-  r("divisao", { rot: (t) => -0.09 * env(t) * Math.sin(TAU * (t / 0.7) + 1) });
 });
 const A_CORACAO = reactAnim("coracao", 1.8, (r) => {
   const beat = (t) => heartbeat(t, 0.1) + heartbeat(t, 0.75);
@@ -376,14 +341,6 @@ const A_CORACAO = reactAnim("coracao", 1.8, (r) => {
     });
   r("boca", { sx: (t) => 1 + 0.05 * beat(t), sy: (t) => 1 + 0.22 * beat(t) });
   r("personagem", { sy: (t) => 1 + 0.01 * beat(t), sx: (t) => 1 - 0.004 * beat(t) });
-  r("mais", {
-    rot: (t) => TAU * smooth(0.1, 1.3, t),
-    ...scaleBoth((t) => 1 + 0.1 * bump(t, 0.1, 1.3)),
-  });
-  r("divisao", {
-    rot: (t) => -0.35 * Math.sin(Math.PI * smooth(0.15, 1.4, t)),
-    ...scaleBoth((t) => 1 + 0.1 * bump(t, 0.15, 1.3)),
-  });
 });
 const A_REPOUSO = anim("repouso", 0.5, 30, 1, [[R.personagem.r, K.y, () => 0]]);
 
@@ -398,8 +355,6 @@ const lean = (name, x) => {
   l("boca", { x: () => 5 * x });
   l("maoE", { x: () => 0.5 * x });
   l("maoD", { x: () => 0.5 * x });
-  l("mais", { x: () => -5 * x });
-  l("divisao", { x: () => -6 * x });
   return anim(name, 0.5, 30, 1, list);
 };
 const A_OLHAR_E = lean("olhar-esquerda", -1);

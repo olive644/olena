@@ -1,8 +1,7 @@
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { WorkspaceState } from "../domain/workspace";
-import { englishProgress } from "../domain/language-progress";
-import { englishStreak, mathematicsStreak } from "../domain/profile-streaks";
+import { practiceHeroPriority } from "../domain/practice-hero-priority";
 import { agendaTimeZone } from "../data/agenda-time-zone";
 import { useWallClock } from "../hooks/use-wall-clock";
 import { OliverHeroArt } from "./oliver-hero-art";
@@ -19,25 +18,34 @@ export function MathPracticeHero({
 }) {
   useLanguage();
   const now = useWallClock();
-  const [english, setEnglish] = useState(false);
+  const priority = practiceHeroPriority(workspace, new Date(now), agendaTimeZone());
+  const [selection, setSelection] = useState<boolean | null>(null);
+  const english = selection ?? priority.preferred === "english";
   const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const streak = (english ? englishStreak : mathematicsStreak)(
-    workspace,
-    new Date(now),
-    agendaTimeZone(),
-  );
-  const activities = english
-    ? englishProgress(workspace.practiceActivities).accepted
-    : (workspace.practiceActivities ?? []).filter((item) =>
-        /^(math|mathematics)(:|$)/.test(item.islandId),
-      );
-  const latest = Math.max(
-    0,
-    ...activities
-      .filter((item) => item.answers > 0 && Date.parse(item.completedAt) <= now)
-      .map((item) => Date.parse(item.completedAt)),
-  );
-  const minutesLeft = Math.max(0, Math.ceil((latest + 86400000 - now) / 60000));
+  const preparedArt = useRef<HTMLImageElement | null>(null);
+  const prepareEnglishArt = useCallback(() => {
+    if (preparedArt.current) return;
+    const image = new Image(900, 600);
+    image.decoding = "async";
+    image.fetchPriority = "low";
+    preparedArt.current = image;
+    image.src = "/languages/olena-english-widget.webp?v=2";
+    void image.decode?.().catch(() => {
+      preparedArt.current = null;
+    });
+  }, []);
+  useEffect(() => {
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } })
+      .connection;
+    if (connection?.saveData) return;
+    if (typeof window.requestIdleCallback === "function") {
+      const idle = window.requestIdleCallback(prepareEnglishArt, { timeout: 1500 });
+      return () => window.cancelIdleCallback(idle);
+    }
+    const timer = window.setTimeout(prepareEnglishArt, 1000);
+    return () => window.clearTimeout(timer);
+  }, [prepareEnglishArt]);
+  const { streak, minutesLeft } = english ? priority.english : priority.math;
   return (
     <section
       className="math-hero-carousel"
@@ -46,7 +54,7 @@ export function MathPracticeHero({
       onKeyDown={(event) => {
         if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
           event.preventDefault();
-          setEnglish((current) => !current);
+          setSelection(!english);
         }
       }}
       onTouchStart={(event) => {
@@ -60,7 +68,7 @@ export function MathPracticeHero({
         if (!touch || !start) return;
         const dx = touch.clientX - start.x;
         if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(touch.clientY - start.y)) {
-          setEnglish(dx < 0);
+          setSelection(dx < 0);
         }
       }}
       onTouchCancel={() => {
@@ -71,7 +79,31 @@ export function MathPracticeHero({
         className={`math-hero-slide math-hero-slide--peek${english ? " english-hero-slide" : ""}`}
         aria-label={uiText(english ? "Inglês" : 620)}
       >
-        {!english && (
+        {english ? (
+          <div
+            className="math-hero-math-decoration english-hero-decoration"
+            aria-hidden="true"
+            data-hero-decoration="english"
+          >
+            <svg viewBox="0 0 280 200" fill="none">
+              <path
+                d="M30 58 105 36l75 22v110l-75-22-75 22V58Zm75-22v110M47 76l40-12m-40 32 40-12m37-17 39 11m-39 10 39 12"
+                stroke="currentColor"
+                strokeWidth="3"
+              />
+              <path
+                d="m202 47 22-8 32 89-22 8-32-89Zm32 89 13 17 9-25M200 43l-3-9a12 12 0 0 1 23-8l4 13"
+                stroke="currentColor"
+                strokeWidth="3"
+              />
+              <path
+                d="M145 15h10v12h-10V15Zm20 0h10v12h-10V15ZM44 29l8-18 8 18m-13-6h10"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+            </svg>
+          </div>
+        ) : (
           <div className="math-hero-math-decoration" aria-hidden="true">
             <svg viewBox="0 0 280 200" fill="none">
               <path
@@ -96,17 +128,13 @@ export function MathPracticeHero({
           </div>
         )}
         <div className="math-hero-copy" aria-live="polite" aria-atomic="true">
-          <h1>
-            {uiText(
-              english
-                ? streak > 0
-                  ? "Seu inglês está ganhando ritmo!"
-                  : "Uma nova conversa começa aqui."
-                : streak > 0
-                  ? "Seu fogo matemático está aceso!"
-                  : "A próxima descoberta é sua.",
-            )}
-          </h1>
+          {streak > 0 && (
+            <h2>
+              {uiText(
+                english ? "Seu inglês está ganhando ritmo!" : "Seu fogo matemático está aceso!",
+              )}
+            </h2>
+          )}
           {streak === 0 ? (
             <p>
               {uiText(
@@ -155,12 +183,13 @@ export function MathPracticeHero({
         {english ? (
           <span className="math-hero-peek english-hero-art">
             <img
-              src="/languages/olena-english-widget.webp"
+              src="/languages/olena-english-widget.webp?v=2"
               width="900"
               height="600"
               alt={uiText("Olena convida você a praticar Inglês")}
               draggable={false}
               decoding="async"
+              fetchPriority="high"
             />
           </span>
         ) : (
@@ -172,15 +201,18 @@ export function MathPracticeHero({
           type="button"
           aria-label={uiText("Mostrar Matemática")}
           aria-pressed={!english}
-          onClick={() => setEnglish(false)}
+          onClick={() => setSelection(false)}
         >
           <span />
         </button>
         <button
           type="button"
           aria-label={uiText("Mostrar Inglês")}
+          onPointerEnter={prepareEnglishArt}
+          onFocus={prepareEnglishArt}
+          onTouchStart={prepareEnglishArt}
           aria-pressed={english}
-          onClick={() => setEnglish(true)}
+          onClick={() => setSelection(true)}
         >
           <span />
         </button>

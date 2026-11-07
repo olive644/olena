@@ -20,7 +20,7 @@ try {
       }, theme);
       await page.goto(process.env["WIDGET_PREVIEW_ORIGIN"] ?? "http://127.0.0.1:4174/");
       await page.getByRole("button", { name: "Mostrar Inglês", exact: true }).click();
-      await page.getByRole("heading", { name: "Uma nova conversa começa aqui." }).waitFor();
+      await page.getByRole("button", { name: "Explorar Inglês", exact: true }).waitFor();
       await page
         .getByRole("img", { name: "Olena convida você a praticar Inglês" })
         .evaluate(async (img) => {

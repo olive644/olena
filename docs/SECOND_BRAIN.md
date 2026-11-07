@@ -1905,3 +1905,11 @@ Regressões: `python -m unittest discover -s scripts/achievement-art -p 'test_*.
 MathPracticeHero passa a alternar manualmente entre Matemática e Inglês. TodayView fornece onEnglishPractice, usando o mesmo sinal olena:enter-english e a navegação learn já existentes para abrir diretamente o percurso. englishStreak e englishProgress fornecem somente recibos aceitos, no fuso da conta, com a mesma expiração de 24 horas; um recibo inglês inválido não adia o aviso. Não cria dados ou progresso paralelos.
 
 Arte inglesa escolhida pela responsável, sem os dois balões, em languages/olena-english-widget.webp; fonte e hashes em artifacts/english-student-widget/art-source.json. Seletores, teclado e toque testados em math-practice-hero.test.tsx; entrada direta coberta por app.test.tsx e e2e/english-student-widget.spec.ts. Capturas em artifacts/english-student-widget. Textos novos acrescentados aos catálogos pt-BR/en-US sem renumerar os anteriores.
+
+### Widgets: decoração e preparação da Olena, 07/11/2026 (Recife)
+
+MathPracticeHero prepara a imagem inglesa com Image/decode em idle e por intenção no seletor, respeitando saveData durante idle. A imagem visível tem fetchPriority high e não espera o efeito de entrada. Arte e Rive usam revisão v2.
+
+Oliver: generate.cjs publica somente as seis imagens do personagem; nós e trilhas dos sinais foram retirados. O corpo foi limpo do fragmento amarelo remanescente. Exportar o primeiro quadro com `node scripts/oliver-peek-rive/export.mjs http://127.0.0.1:4176 /tmp/oliver-widget-rest.png` após gerar o Rive, mantendo 900 × 600. slice.cjs e camadas de sinais ficam como histórico da decomposição inicial, não devem refazer a arte atual. Manifesto e capturas em artifacts/student-widget-cleanup.
+
+practice-hero-priority.ts deriva os dois resumos da regra compartilhada practiceStreak e de englishProgress aceito, no fuso da conta. Prioriza expiração em até uma hora, depois mais dias; datas futuras, recibos ingleses inválidos e ofensivas vencidas não ganham prioridade. MathPracticeHero mantém seleção manual separada da recomendação, inclusive quando chega histórico depois da primeira renderização.

@@ -24,7 +24,7 @@ export function mathematicsStreak(workspace: WorkspaceState, now: Date, timeZone
 export function englishStreak(workspace: WorkspaceState, now: Date, timeZone: string): number {
   return practiceStreak(englishProgress(workspace.practiceActivities).accepted, now, timeZone);
 }
-function practiceStreak(
+export function practiceStreak(
   activities: NonNullable<WorkspaceState["practiceActivities"]>,
   now: Date,
   timeZone: string,
