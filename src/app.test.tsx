@@ -51,6 +51,15 @@ describe("App", () => {
     ).toBeTruthy();
   }, 30000);
 
+  it("abre diretamente Inglês pelo widget da Olena", async () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Mostrar Inglês" }));
+    fireEvent.click(screen.getByRole("button", { name: "Explorar Inglês" }));
+    expect(
+      await screen.findByRole("heading", { name: "Cais das Boas-vindas" }, { timeout: 20000 }),
+    ).toBeTruthy();
+  }, 30000);
+
   it("expande a navegação lateral para revelar categorias e nomes", () => {
     render(<App />);
     const sidebar = screen.getByRole("complementary", { name: "" });

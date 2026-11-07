@@ -1899,3 +1899,9 @@ studyActivitySummary aceita recibos ingleses atuais e legados através de englis
 O pipeline scripts/achievement-art/english_art.py substitui a ampliação dos atlas antigos. Executar `python scripts/achievement-art/english_art.py --plan docs/achievement-english-art-sources.json` com os PNGs originais presentes nos caminhos do manifesto. Cada recorte precisa ter pelo menos 512 px; exportação atual reduz 627 para 512 e gera thumb de 256. O manifesto registra SHA256 de fontes e saídas. O comando também gera src/data/english-achievement-plates.ts para centrar PaperDigits nas placas reais. As URLs inglesas carregam revisão de cache em achievementArtPath.
 
 Regressões: `python -m unittest discover -s scripts/achievement-art -p 'test_*.py'` impede ampliação e sobrescrita parcial; english-achievement-art.test.ts verifica 74 imagens, dimensões, hashes e mapa de placas. Evidências de comparação em escala igual e oito poses estão em artifacts/english-art-quality-review.
+
+### Espaço do aluno: widget inglês, 06/11/2026 (Recife)
+
+MathPracticeHero passa a alternar manualmente entre Matemática e Inglês. TodayView fornece onEnglishPractice, usando o mesmo sinal olena:enter-english e a navegação learn já existentes para abrir diretamente o percurso. englishStreak e englishProgress fornecem somente recibos aceitos, no fuso da conta, com a mesma expiração de 24 horas; um recibo inglês inválido não adia o aviso. Não cria dados ou progresso paralelos.
+
+Arte inglesa escolhida pela responsável, sem os dois balões, em languages/olena-english-widget.webp; fonte e hashes em artifacts/english-student-widget/art-source.json. Seletores, teclado e toque testados em math-practice-hero.test.tsx; entrada direta coberta por app.test.tsx e e2e/english-student-widget.spec.ts. Capturas em artifacts/english-student-widget. Textos novos acrescentados aos catálogos pt-BR/en-US sem renumerar os anteriores.
