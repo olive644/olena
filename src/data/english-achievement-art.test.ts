@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { basename } from "node:path";
 import { expect, it } from "vitest";
 import { ENGLISH_ACHIEVEMENTS } from "../domain/english-achievement-catalog";
@@ -51,5 +51,26 @@ it("provides native source evidence and exact output hashes for every English ac
     expect(webpSize(thumb)).toEqual([256, 256]);
     expect(createHash("sha256").update(full).digest("hex")).toBe(cell.outputSha256);
     expect(createHash("sha256").update(thumb).digest("hex")).toBe(cell.thumbnailSha256);
+  }
+});
+
+it("keeps thumbnail resolution equal across English, Mathematics and general achievements", () => {
+  for (const folder of ["english", "math", "general"]) {
+    for (const file of readdirSync(`public/achievement-badges/${folder}/thumb`)) {
+      if (file.endsWith(".webp")) {
+        const bytes = readFileSync(`public/achievement-badges/${folder}/thumb/${file}`);
+        const kind = bytes.toString("ascii", 12, 16);
+        const size =
+          kind === "VP8X"
+            ? webpSize(bytes)
+            : kind === "VP8 "
+              ? [bytes.readUInt16LE(26) & 0x3fff, bytes.readUInt16LE(28) & 0x3fff]
+              : [
+                  (bytes.readUInt32LE(21) & 0x3fff) + 1,
+                  ((bytes.readUInt32LE(21) >> 14) & 0x3fff) + 1,
+                ];
+        expect(size).toEqual([256, 256]);
+      }
+    }
   }
 });
