@@ -636,7 +636,7 @@ export function SocialDirectory({
         </>
       )}
       {confirmationPanel}
-      {sharing && error && <p role="alert">{uiText(error)}</p>}
+      {sharing && feed && error && <p role="alert">{uiText(error)}</p>}
     </dialog>
   );
 }

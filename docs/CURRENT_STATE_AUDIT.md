@@ -4658,3 +4658,15 @@ Solicitação: remover DEV e GALAXIA do @bizzok, retirar o borrão do livro no w
 A atualização usa um livro e estrela facetados nas cores oficiais, com mensagens traduzidas, anúncio de estado e movimento reduzido. Atua no topo de Espaço, Perfil e Notificações, sem substituir gestos das telas de criação, prática ou cronômetro. Indicadores externos do navegador/sistema não são desenhados pela página; Android físico e Safari não verificados. O gesto tem limite, cancelamento e exclusão de controles, diálogos e áreas com rolagem própria. Não há dependência nova nem mudança de sincronização ou orçamento de desempenho.
 
 Validação: `npm run verify` passou com 413 arquivos e 2.676 testes, além dos 14 cenários de navegador. Lint sem erros e 27 avisos existentes. JavaScript inicial 219,5 KiB e total 1741,8 KiB, dentro dos limites originais. Capturas e limites em `artifacts/profile-refresh/README.md`.
+
+## Compartilhar perfil: "Aguarde um pouco" ao criar o card, 07/11/2026
+
+Relato da dona, com captura do celular: ao abrir o card de compartilhar perfil, a janela mostrou duas vezes "Aguarde um pouco antes de tentar novamente.", sem o card.
+
+Causa: a mensagem é a resposta 429 de `/api/profile-social`, cujo limite é de 30 consultas por minuto por conta. Sino, perfil, publicador de atividades, privacidade e conquistas usam o mesmo `useSocialFeed`, cada um com um relógio de 10 s. O cache compartilhado durava só 2 s, então relógios fora de fase faziam uma consulta cada, até 30 por minuto, que é o limite inteiro, antes de contar a publicação do perfil e a abertura do card. Sem feed, o card não abre. A mensagem aparecia duas vezes porque o menu de busca e o rodapé da janela mostravam o mesmo erro.
+
+Correção: o cache do feed passa a durar 8 s (menos que o intervalo de 10 s), então os componentes dividem uma consulta por ciclo (cerca de 6 por minuto no total). Alterações sociais continuam zerando o cache. O aviso do rodapé só aparece quando o card está na tela. O limite do servidor não foi alterado, para manter o teto de custo do banco.
+
+Testes: um novo em `use-social-feed.test.tsx` (cinco componentes fora de fase fazem 1 consulta, e não 4) e um em `profile-social.test.tsx` (aviso uma só vez). Os dois falhavam antes da correção.
+
+Limites: a causa foi deduzida pelo código e pelos números do limite, sem acesso à conta da dona nem aos registros do servidor (não verificado em produção). Para conferir depois do deploy, abrir o Perfil, esperar um minuto e criar o card. Se o aviso persistir, medir as chamadas a `/api/profile-social` por minuto na aba Rede do navegador.
