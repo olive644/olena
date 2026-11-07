@@ -1,3 +1,7 @@
+## Teste de desempenho da busca de cadernos menos frágil, 07/11/2026
+
+`src/domain/notebook-search.test.ts` ("varre seis mil folhas") media uma única execução contra 120 ms e falhou em runners lentos do CI sem regressão (129,6 ms e 121,5 ms em duas execuções de PRs que não tocam a busca; passa em cerca de 14 ms localmente, não verificado o tempo típico do CI). O teste passa a executar cinco vezes e comparar o menor tempo com os mesmos 120 ms: ruído de CPU compartilhada só soma tempo, então o mínimo reflete o custo real, e uma regressão de verdade deixa todas as medições acima do limite. Limite, teste e cobertura mantidos; nenhum teste pulado ou desativado. Conferido que o teste ainda falha com um limite de 1 ms.
+
 ## Teste e2e do Oliver acompanha a versão da arte, 07/11/2026
 
 `e2e/app.spec.ts:97` ainda esperava `/oliver-peeking-widget.webp`, mas o app passou a servir `/oliver-peeking-widget.webp?v=2` no commit `223c6ab9` (ajuste dos widgets, #593), que atualizou `e2e/oliver-hero.spec.ts` e o teste unitário e deixou este para trás. O teste falhava de forma consistente (3 de 3 tentativas) em todo CI de desktop depois da #593, inclusive no push na `main`. Corrigido o valor esperado; conferido que o teste falha na `main` e passa com a correção, em desktop e mobile. Nenhum teste pulado.

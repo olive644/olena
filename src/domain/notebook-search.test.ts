@@ -135,10 +135,15 @@ describe("busca em bibliotecas grandes", () => {
         }),
       ),
     );
-    const start = performance.now();
-    searchNotebooks({ notebooks, notes }, "zzzz");
-    const elapsed = performance.now() - start;
+    // Ruído de CPU compartilhada só soma tempo, nunca subtrai: o menor de vários tempos é o que
+    // mais se aproxima do custo real da busca. Uma regressão de verdade deixa todos os tempos
+    // acima do limite, então o teste continua pegando.
+    const runs = Array.from({ length: 5 }, () => {
+      const start = performance.now();
+      searchNotebooks({ notebooks, notes }, "zzzz");
+      return performance.now() - start;
+    });
     // Antes da normalização rápida isso levava mais de 160 ms; o limite deixa folga para CI lento.
-    expect(elapsed).toBeLessThan(120);
+    expect(Math.min(...runs)).toBeLessThan(120);
   });
 });
