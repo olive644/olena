@@ -53,6 +53,22 @@ it("consulta em dez segundos e atualiza ao voltar para uma aba visível", async 
   await act(async () => document.dispatchEvent(new Event("visibilitychange")));
   await waitFor(() => expect(mocks.request).toHaveBeenCalledTimes(2));
 });
+it("vários componentes com relógios fora de fase compartilham a mesma consulta", async () => {
+  mocks.request.mockResolvedValue(feed("alice"));
+  // Sino, perfil, publicador, privacidade e conquistas usam o mesmo feed: juntos, não podem
+  // gastar o limite de 30 consultas por minuto da conta.
+  for (let index = 0; index < 5; index++) renderHook(() => useSocialFeed(true));
+  await waitFor(() => expect(mocks.request).toHaveBeenCalledTimes(1));
+  const now = Date.now();
+  for (const offset of [3000, 5000, 7000]) {
+    vi.spyOn(Date, "now").mockReturnValue(now + offset);
+    await act(async () => document.dispatchEvent(new Event("visibilitychange")));
+  }
+  expect(mocks.request).toHaveBeenCalledTimes(1);
+  vi.spyOn(Date, "now").mockReturnValue(now + 11000);
+  await act(async () => document.dispatchEvent(new Event("visibilitychange")));
+  await waitFor(() => expect(mocks.request).toHaveBeenCalledTimes(2));
+});
 it("compartilha consulta em andamento entre sino e perfil", async () => {
   let finish: ((value: SocialFeed) => void) | undefined;
   mocks.request.mockImplementation(

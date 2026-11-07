@@ -19,6 +19,13 @@ const alice: SocialProfile = {
 };
 const bob: SocialProfile = { ...alice, username: "bob", name: "Bob", followsYou: true };
 const feed: SocialFeed = { self: alice, notifications: [], suggestions: [] };
+it("card de perfil sem feed mostra o aviso de limite uma só vez", async () => {
+  mocks.request.mockRejectedValue(new Error("Aguarde um pouco antes de tentar novamente."));
+  render(<SocialDirectory initialSharing nameFallback="Alice" onClose={vi.fn()} />);
+  await screen.findAllByText("Aguarde um pouco antes de tentar novamente.");
+  await waitFor(() => expect(screen.queryByLabelText("Carregando")).toBeNull());
+  expect(screen.getAllByText("Aguarde um pouco antes de tentar novamente.")).toHaveLength(1);
+});
 it("inspeção mostra nível, streak e redes, mas deixa atividades somente no sino", async () => {
   mocks.request.mockResolvedValue({
     ...feed,
