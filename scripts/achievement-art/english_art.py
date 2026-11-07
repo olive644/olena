@@ -77,6 +77,8 @@ def digest(path):
 
 def export_plan(plan_path, output, selected=None):
     plan = json.loads(plan_path.read_text())
+    plan["exportSize"] = SIZE
+    plan["thumbnailSize"] = THUMBNAIL
     columns, rows = plan["grid"]
     staged = []
     groups = [group for group in plan["groups"] if not selected or group["id"] in selected]
