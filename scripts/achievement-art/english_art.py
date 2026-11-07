@@ -12,7 +12,7 @@ from pathlib import Path
 from PIL import Image
 
 SIZE = 512
-THUMBNAIL = 128
+THUMBNAIL = 256
 ROOT = Path(__file__).resolve().parents[2]
 
 

@@ -82,7 +82,7 @@ Prática inglesa usa o mesmo resumo diário de Matemática, a partir de dez resp
 
 ### Resolução nativa e poses inglesas, 07/11/2026
 
-As 74 artes inglesas usam recortes nativos de 627 × 627 px, reduzidos para WebP 512 × 512 e miniaturas 128 × 128. Nunca ampliar recortes menores que 512 px. O exportador english_art.py rejeita fontes insuficientes antes de sobrescrever arquivos. A geração usa folhas 2 × 2, com transparência real. O manifesto achievement-english-art-sources.json registra prompts, hashes, dimensões e recortes. Os atlas anteriores de 8 × 8 e 4 × 6 ficam aposentados.
+As 74 artes inglesas usam recortes nativos de 627 × 627 px, reduzidos para WebP 512 × 512 e miniaturas 256 × 256. Nunca ampliar recortes menores que 512 px. O exportador english_art.py rejeita fontes insuficientes antes de sobrescrever arquivos. A geração usa folhas 2 × 2, com transparência real. O manifesto achievement-english-art-sources.json registra prompts, hashes, dimensões e recortes. Os atlas anteriores de 8 × 8 e 4 × 6 ficam aposentados.
 
 Olena aparece somente no nível máximo de cada parte, com oito ações e silhuetas distintas: amarrar barco, tomar chá apontando o relógio, examinar cartões, usar telescópio, apresentar ideias, caminhar com lanterna, preparar mala e ler sentada. Preservar anatomia e identidade aprovadas.
 

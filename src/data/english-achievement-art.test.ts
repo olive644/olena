@@ -48,7 +48,7 @@ it("provides native source evidence and exact output hashes for every English ac
     const full = readFileSync(`public${path}`);
     const thumb = readFileSync(`public${achievementArtPath(goal, true).split("?")[0]}`);
     expect(webpSize(full)).toEqual([512, 512]);
-    expect(webpSize(thumb)).toEqual([128, 128]);
+    expect(webpSize(thumb)).toEqual([256, 256]);
     expect(createHash("sha256").update(full).digest("hex")).toBe(cell.outputSha256);
     expect(createHash("sha256").update(thumb).digest("hex")).toBe(cell.thumbnailSha256);
   }
