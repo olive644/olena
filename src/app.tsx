@@ -199,6 +199,11 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
             {uiText(2)}
           </p>
         )}
+        {!storageFull && cloud.rejectedKeys && (
+          <p className="storage-full-banner" role="status">
+            {uiText(3713)}
+          </p>
+        )}
         <Sidebar view={view} onNavigate={setView} />
         {workspace.events.some((event) => event.reminders?.length) && (
           <Suspense fallback={null}>

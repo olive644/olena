@@ -356,10 +356,13 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Consentimento por UID, eventos entre abas e streaming incremental: crescimento medido, teto 1740 KiB.
 // Última ilha acessada no Espaço do aluno e palavras de mesmo som na fala: base 1739,5 KiB, medidos
 // 1741,0 KiB (+1,5 KiB), entrada inalterada; teto 1742 KiB, sob a autorização vigente de crescimento medido.
-const MAX_TOTAL_JS_BYTES = 1742 * 1024;
+// Envio à conta que isola chave recusada pelas regras e avisa na tela: medidos 1742,4 KiB com o código já
+// enxugado e o texto do aviso por ID do catálogo (1742,5 KiB antes disso), entrada 219,5 KiB; teto
+// 1743 KiB, aumento autorizado pela dona do projeto em 07/11/2026. A base da main não foi medida.
+const MAX_TOTAL_JS_BYTES = 1743 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
-const HARD_CEILING_TOTAL_JS_BYTES = 1742 * 1024;
+const HARD_CEILING_TOTAL_JS_BYTES = 1743 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 // Cena do caderno 3D (three.js e o código da cena): medida em 528.8 KiB, mais a tela e os sons. É baixada somente quando
 // a pessoa abre um caderno com o recurso ligado e vale o mesmo precedente do leitor PDF: orçamento

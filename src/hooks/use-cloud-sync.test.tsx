@@ -86,6 +86,8 @@ function firebaseServer(initial: ServerNode | null = null) {
     node: initial,
     failWrites: false,
     failPatch: false,
+    /** Nomes de rede (k_...) que as regras da conta recusam, como o Firebase faz com 401. */
+    deniedKeys: [] as string[],
     calls: [] as { method: string; url: string; body: unknown }[],
     fetch: vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       const method = init?.method ?? "GET";
@@ -98,6 +100,19 @@ function firebaseServer(initial: ServerNode | null = null) {
       }
       if (server.failWrites || (server.failPatch && method === "PATCH"))
         return new Response("failure", { status: 503 });
+      // Regra recusando uma chave: o PUT e o PATCH são tudo ou nada, nada é gravado.
+      const written = Object.entries((body ?? {}) as Record<string, unknown>).flatMap(
+        ([path, value]) =>
+          path.startsWith("items/")
+            ? value === null
+              ? []
+              : [path.slice("items/".length)]
+            : path === "items" && value && typeof value === "object"
+              ? Object.keys(value)
+              : [],
+      );
+      if (written.some((key) => server.deniedKeys.includes(key)))
+        return Response.json({ error: "Permission denied" }, { status: 401 });
       if (method === "PUT") server.node = body as ServerNode;
       if (method === "PATCH") {
         const next: ServerNode = server.node
@@ -1355,4 +1370,39 @@ it("o primeiro envio de uma conta sem dados continua sendo o estado inteiro (PUT
   expect(server.writes()[0]!.method).toBe("PUT");
   expect(server.items()["helenastudy.theme"]).toBe("dark");
   expect(server.node!.version).toBe(2);
+});
+
+it("uma chave recusada pelas regras da conta não derruba o salvamento do resto, e a pessoa é avisada", async () => {
+  signedInUser("denied-user");
+  const { server } = accountServer();
+  const rewards = "helena.englishRewards.v1";
+  server.deniedKeys = [wire(rewards)];
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  act(() => {
+    writeSyncedStorage(rewards, JSON.stringify({ stars: 3 }));
+    writeSyncedStorage("helena.soloProgress", "11");
+  });
+  await waitFor(() => expect(server.items()["helena.soloProgress"]).toBe("11"));
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  expect(server.items()[rewards]).toBeUndefined();
+  expect(server.items()["helenastudy.theme"]).toBe("light");
+  expect(result.current.rejectedKeys).toEqual([rewards]);
+  expect(result.current.lastSyncedAt).toBeGreaterThan(0);
+  // A chave recusada continua só no aparelho e não gera um laço de novas tentativas.
+  expect(localStorage.getItem(rewards)).toBe(JSON.stringify({ stars: 3 }));
+  const writes = server.writes().length;
+  await new Promise((resolve) => setTimeout(resolve, 5500));
+  expect(server.writes().length).toBe(writes);
+});
+
+it("se todas as chaves forem recusadas ou a sessão for inválida, continua sendo falha de envio", async () => {
+  signedInUser("denied-all-user");
+  const { server } = accountServer();
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  server.deniedKeys = [wire("helena.soloProgress")];
+  act(() => writeSyncedStorage("helena.soloProgress", "4"));
+  await waitFor(() => expect(result.current.status).toBe("offline"));
+  expect(result.current.rejectedKeys).toBeUndefined();
 });
