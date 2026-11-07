@@ -201,9 +201,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
         )}
         {!storageFull && cloud.rejectedKeys && (
           <p className="storage-full-banner" role="status">
-            {uiText(
-              "Parte do seu progresso não pôde ser enviada à sua conta e ficou só neste aparelho. O restante foi salvo.",
-            )}
+            {uiText(3713)}
           </p>
         )}
         <Sidebar view={view} onNavigate={setView} />

@@ -61,17 +61,10 @@ function itemsDelta(base: SyncedItems, next: SyncedItems): Record<string, string
   return delta;
 }
 
-/** Falha HTTP do Realtime Database, com o status para separar recusa de regra de falta de rede. */
-class SyncHttpError extends Error {
-  constructor(readonly status: number) {
-    super("sync");
-  }
-}
-
-/** 401 e 403 do Firebase significam regra recusando a gravação, não rede fora do ar. */
-function isPermissionDenied(cause: unknown): boolean {
-  return cause instanceof SyncHttpError && (cause.status === 401 || cause.status === 403);
-}
+/** 401 e 403 do Firebase são regra recusando a gravação, não rede fora do ar. */
+const syncError = (status: number) => Object.assign(new Error("sync"), { status });
+const isPermissionDenied = (cause: unknown) =>
+  [401, 403].includes((cause as { status?: number } | null)?.status ?? 0);
 
 export type CloudSyncState = {
   ready: boolean;
@@ -349,7 +342,7 @@ export function useCloudSync() {
               `${legacy ? legacyUrl : url}?auth=${encodeURIComponent(token)}${method === "PUT" ? "&print=silent" : ""}`,
               init,
             );
-            if (!response.ok) throw new SyncHttpError(response.status);
+            if (!response.ok) throw syncError(response.status);
             if (method === "PUT") return null;
             const result = (await response.json()) as CloudState | null;
             if (!currentAccount()) throw new Error("Account changed");
@@ -362,7 +355,7 @@ export function useCloudSync() {
               ...init,
               signal,
             });
-            if (!response.ok) throw new SyncHttpError(response.status);
+            if (!response.ok) throw syncError(response.status);
             return response;
           };
           // Lê só o campo `updatedAt` (um número), em vez do estado inteiro. Devolve undefined
