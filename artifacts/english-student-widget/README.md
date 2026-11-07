@@ -14,3 +14,5 @@ Capturas reais, visitante sem dados pessoais, movimento reduzido: desktop 1280 �
 Reproduzir os cenários com `npm run test:e2e -- e2e/english-student-widget.spec.ts e2e/student-resume.spec.ts e2e/student-space-haptics.spec.ts`. Conta real, Safari e aparelhos físicos não verificados. A arte não é uma nova animação Rive.
 
 Para refazer estas quatro capturas, iniciar `npm run dev -- --host 127.0.0.1 --port 4174` e executar `node artifacts/english-student-widget/capture.mjs`, com Chromium em /usr/bin/chromium.
+
+Validação final: 2665 testes gerais e 16 cenários de navegador aprovados. A arte tem 56544 bytes (55,2 KiB). No build de produção, zero requisições dessa arte antes de selecionar Inglês e uma requisição depois. JavaScript da aplicação 1739,5 KiB, abaixo do teto de 1742.
