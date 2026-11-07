@@ -4670,3 +4670,17 @@ Correção: o cache do feed passa a durar 8 s (menos que o intervalo de 10 s), e
 Testes: um novo em `use-social-feed.test.tsx` (cinco componentes fora de fase fazem 1 consulta, e não 4) e um em `profile-social.test.tsx` (aviso uma só vez). Os dois falhavam antes da correção.
 
 Limites: a causa foi deduzida pelo código e pelos números do limite, sem acesso à conta da dona nem aos registros do servidor (não verificado em produção). Para conferir depois do deploy, abrir o Perfil, esperar um minuto e criar o card. Se o aviso persistir, medir as chamadas a `/api/profile-social` por minuto na aba Rede do navegador.
+
+## Seguidores e Seguindo abriam o card de compartilhar, 07/11/2026
+
+Relato da dona: ao tocar em Seguidores no Perfil, abria o card de compartilhar perfil em vez da lista.
+
+Causa: em `profile-showcase.tsx`, o botão do QR liga `sharingProfile`, mas os botões Seguidores e Seguindo só ajustavam a lista e o `friends`, sem desligá-lo. Depois de abrir e fechar o QR, o estado ficava ligado e o diretório abria com `initialSharing` verdadeiro, que vence a lista.
+
+Correção: os dois botões desligam `sharingProfile`, e `SocialDirectory` dá prioridade à lista (`initialSharing && !initialList`), para que um valor antigo nunca abra o card no lugar dela.
+
+Testes: um novo em `profile-showcase.test.tsx` (abrir e fechar o QR, depois Seguidores e Seguindo) e um em `profile-social.test.tsx` (lista tem prioridade sobre o card). Os dois falham sem a correção e passam com ela.
+
+Validação em navegador (Chromium, Pixel 7, convidado, app local): após abrir e fechar o QR, Seguidores e Seguindo mostram o diretório "Encontre seus amigos" nos temas claro e escuro. Sem a correção, os dois mostram "Compartilhar perfil". Capturas em `scratchpad/val/seg-*.png` (fora do repositório).
+
+Limites: como convidado, a lista não carrega pessoas (exige conta), então o conteúdo real da lista foi coberto só pelos testes de componente. Não testado no PC (largura de desktop) nem em produção com conta real. Para conferir depois do deploy: abrir o Perfil logado, tocar no QR, fechar, tocar em Seguidores.

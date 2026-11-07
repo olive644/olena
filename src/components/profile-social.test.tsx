@@ -340,3 +340,21 @@ it("does not show the unsupported contacts notice", async () => {
     ),
   ).toBeNull();
 });
+it("lista de seguidores tem prioridade sobre o card de compartilhar", async () => {
+  mocks.request.mockImplementation(async (_action, query) =>
+    query?.includes("list=")
+      ? { ...feed, connections: { kind: "followers", owner: "alice", people: [bob] } }
+      : feed,
+  );
+  render(
+    <SocialDirectory
+      initialSharing
+      initialList="followers"
+      nameFallback="Alice"
+      onClose={vi.fn()}
+    />,
+  );
+  expect(await screen.findByRole("button", { name: "Visitar perfil de @bob" })).toBeTruthy();
+  expect(screen.queryByLabelText("QR code do perfil")).toBeNull();
+  expect(screen.queryByRole("heading", { name: "Compartilhar perfil" })).toBeNull();
+});
