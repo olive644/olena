@@ -1406,3 +1406,43 @@ it("se todas as chaves forem recusadas ou a sessão for inválida, continua send
   await waitFor(() => expect(result.current.status).toBe("offline"));
   expect(result.current.rejectedKeys).toBeUndefined();
 });
+
+const LEDGER_KEY = "helena.englishProgress.v1";
+const ledgerOf = (solved: number[], confirmed = false) =>
+  JSON.stringify({
+    english: Array.from({ length: 8 }, (_, index) => ({
+      solved: index === 0 ? solved : [],
+      confirmed: index === 0 && confirmed,
+    })),
+  });
+const firstPartSolved = (raw: string | null | undefined) =>
+  (JSON.parse(raw ?? "{}") as { english?: { solved: number[] }[] }).english?.[0]?.solved;
+
+it("o livro de Inglês que só existe no aparelho não é apagado ao abrir e sobe para a conta", async () => {
+  signedInUser("ledger-local-user");
+  localStorage.setItem(LEDGER_KEY, ledgerOf([4, 7]));
+  const { server } = accountServer();
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  expect(firstPartSolved(localStorage.getItem(LEDGER_KEY))).toEqual([4, 7]);
+  await waitFor(() => expect(firstPartSolved(server.items()[LEDGER_KEY])).toEqual([4, 7]));
+});
+
+it("os livros de Inglês do aparelho e da conta viram a união, sem perder nenhum lado", async () => {
+  signedInUser("ledger-union-user");
+  localStorage.setItem(LEDGER_KEY, ledgerOf([2, 3]));
+  const server = firebaseServer({
+    updatedAt: 100,
+    version: 2,
+    items: encodeCloudItems({ "helenastudy.theme": "light", [LEDGER_KEY]: ledgerOf([1, 2], true) }),
+  });
+  vi.stubGlobal("fetch", server.fetch);
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  expect(firstPartSolved(localStorage.getItem(LEDGER_KEY))).toEqual([1, 2, 3]);
+  await waitFor(() => expect(firstPartSolved(server.items()[LEDGER_KEY])).toEqual([1, 2, 3]));
+  expect(
+    (JSON.parse(localStorage.getItem(LEDGER_KEY)!) as { english: { confirmed: boolean }[] })
+      .english[0]!.confirmed,
+  ).toBe(true);
+});

@@ -1,5 +1,11 @@
 import { startAccountActivity } from "../data/account-activity";
 import { useEffect, useState } from "react";
+import {
+  ENGLISH_PROGRESS_KEY,
+  mergeEnglishLedgers,
+  parseEnglishLedger,
+  serializeEnglishLedger,
+} from "../domain/english-progress-ledger";
 import { rememberReturningVisitor } from "../data/returning-visitor";
 import { prepareAccountLog, reauthenticateAccount } from "../data/account-auth";
 import { getFirebaseAccountServices } from "../data/firebase-account";
@@ -461,6 +467,15 @@ export function useCloudSync() {
               if (!currentAccount()) return;
               merged[streakKey] = streakMerge.items[streakKey]!;
             }
+            // Livro de progresso de Inglês: só cresce, então a conta e o aparelho se unem. Sem isto, uma
+            // chave que só existe aqui seria apagada ao abrir e a da conta venceria sem a união.
+            if (localAfterGet[ENGLISH_PROGRESS_KEY] || cloud.items[ENGLISH_PROGRESS_KEY])
+              merged[ENGLISH_PROGRESS_KEY] = serializeEnglishLedger(
+                mergeEnglishLedgers(
+                  parseEnglishLedger(localAfterGet[ENGLISH_PROGRESS_KEY]),
+                  parseEnglishLedger(cloud.items[ENGLISH_PROGRESS_KEY]),
+                ),
+              );
             if (localAfterGet[FOCUS_SESSION_KEY] || cloud.items[FOCUS_SESSION_KEY]) {
               const activeMerge = await mergeItems(
                 {},
@@ -479,6 +494,7 @@ export function useCloudSync() {
                 rewardKeys.includes(key) ||
                 key === SYSTEM_UPDATES_READ_KEY ||
                 key === streakKey ||
+                key === ENGLISH_PROGRESS_KEY ||
                 key === FOCUS_SESSION_KEY
               )
                 continue;
