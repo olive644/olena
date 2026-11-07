@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import type { RiveInput } from "../data/rive-runtime";
@@ -77,7 +78,7 @@ it("com movimento reduzido mantém só a imagem e não baixa nada", () => {
   expect(view.container.querySelector("canvas")).toBeNull();
   expect(created).toHaveLength(0);
   const art = view.getByAltText("Oliver aparece por trás do widget de Matemática");
-  expect(art.getAttribute("src")).toBe("/oliver-peeking-widget.webp");
+  expect(art.getAttribute("src")).toBe("/oliver-peeking-widget.webp?v=2");
 });
 
 it("a preferência do app por menos movimento também mantém a imagem estática", () => {
@@ -97,7 +98,7 @@ it("espera o primeiro quadro e carrega o arquivo na máquina Oliver, do próprio
   expect(created).toHaveLength(0);
   expect(view.container.querySelector("canvas")).toBeNull();
   const { instance, stage } = await activate(view);
-  expect(instance.options.src).toBe("/oliver-peeking-widget/oliver.riv?v=1");
+  expect(instance.options.src).toBe("/oliver-peeking-widget/oliver.riv?v=2");
   expect(instance.options.stateMachines).toBe("Oliver");
   expect(wasm).toHaveBeenCalledWith("/helena-assistant/rive.wasm?v=2.43.0");
   expect(stage.getAttribute("data-ready")).toBe("true");
@@ -213,4 +214,21 @@ it("libera o Rive ao sair da tela", async () => {
   const { instance } = await activate(view);
   view.unmount();
   expect(instance.cleanup).toHaveBeenCalledTimes(1);
+});
+
+it("publica o Rive sem imagens ou nós dos sinais retirados", () => {
+  const bytes = readFileSync("public/oliver-peeking-widget/oliver.riv");
+  for (const name of [
+    "pulsePlus",
+    "pulseDiv",
+    "glowPlus",
+    "glowDiv",
+    "maisSinal",
+    "divBarra",
+    "divPontoCima",
+    "divPontoBaixo",
+  ])
+    expect(bytes.includes(Buffer.from(name))).toBe(false);
+  for (const name of ["body", "mouth", "eyeL", "eyeR", "handL", "handR"])
+    expect(bytes.includes(Buffer.from(name))).toBe(true);
 });
