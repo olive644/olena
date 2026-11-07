@@ -9,6 +9,7 @@ import {
   achievementFamily,
   ACHIEVEMENT_MATERIALS,
 } from "../domain/achievement-presentation";
+import { englishBadgeDigits } from "../domain/english-badge-digits";
 import type { WorkspaceState } from "../domain/workspace";
 import { useMathAchievements, type AchievementProgress } from "../hooks/use-math-achievements";
 import { useStoredProfile, readStoredProfile } from "../hooks/use-stored-profile";
@@ -48,6 +49,8 @@ export function AchievementArt({
   thumb?: boolean;
 }) {
   const general = item.category === "general";
+  const english = item.category === "english";
+  const artName = achievementArtPath(item).split("/").pop()!.replace(".webp", "");
 
   return (
     <span
@@ -91,16 +94,26 @@ export function AchievementArt({
             } as CSSProperties
           }
         >
-          {[...String(item.target)].map((digit, i, all) => (
-            <use
-              key={i}
-              href={"/paper-digits.svg#digit-" + digit}
-              x={general ? 80 - all.length * 6 + i * 12 : 80 - all.length * 7 + i * 14}
-              y={general ? "109" : "115"}
-              width={general ? "12" : "14"}
-              height={general ? "18" : "21"}
-            />
-          ))}
+          {[...String(item.target)].map((digit, i, all) => {
+            // As artes de Inglês têm a placa em pontos ligeiramente diferentes: posição por arte.
+            const placed = english ? englishBadgeDigits(artName, all.length) : undefined;
+            return (
+              <use
+                key={i}
+                href={"/paper-digits.svg#digit-" + digit}
+                x={
+                  placed
+                    ? placed.x + i * 14 * placed.scale
+                    : general
+                      ? 80 - all.length * 6 + i * 12
+                      : 80 - all.length * 7 + i * 14
+                }
+                y={placed ? placed.y : general ? "109" : "115"}
+                width={placed ? 14 * placed.scale : general ? "12" : "14"}
+                height={placed ? 21 * placed.scale : general ? "18" : "21"}
+              />
+            );
+          })}
         </g>
       </svg>
       {(item.rarity === "rare" || (general && item.tier)) && !locked && (
