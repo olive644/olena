@@ -1,3 +1,4 @@
+import { ENGLISH_ACHIEVEMENT_PLATES } from "../data/english-achievement-plates";
 import type { Achievement } from "./math-achievements";
 import type { AchievementTheme, AchievementTier } from "./general-achievements";
 export const ACHIEVEMENT_MATERIALS: Record<
@@ -60,7 +61,14 @@ export function achievementTheme(item: Achievement): AchievementTheme {
 export function achievementArtPath(item: Achievement, thumb = false) {
   const folder =
     item.category === "general" ? "general" : item.category === "english" ? "english" : "math";
-  return `/achievement-badges/${folder}/${thumb ? "thumb/" : ""}${item.category === "english" ? (item.part !== undefined && item.metric === "parts" ? `part-${item.part}` : item.id) : item.id}.webp`;
+  const path = `/achievement-badges/${folder}/${thumb ? "thumb/" : ""}${item.category === "english" ? (item.part !== undefined && item.metric === "parts" ? `part-${item.part}` : item.id) : item.id}.webp`;
+  return item.category === "english" ? `${path}?v=20261107` : path;
+}
+export function achievementNumberY(item: Achievement): number {
+  if (item.category === "general") return 109;
+  if (item.category !== "english") return 115;
+  const key = item.part !== undefined && item.metric === "parts" ? `part-${item.part}` : item.id;
+  return ENGLISH_ACHIEVEMENT_PLATES[key] ?? 115;
 }
 export function achievementFamily(item: Achievement) {
   return item.category === "general" || item.category === "english"

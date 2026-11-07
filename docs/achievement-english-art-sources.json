@@ -1,0 +1,874 @@
+{
+  "version": 2,
+  "date": "2026-11-07",
+  "exportSize": 512,
+  "thumbnailSize": 128,
+  "minimumNativeCell": 512,
+  "grid": [2, 2],
+  "groups": [
+    {
+      "id": "global-00",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-rounds-1",
+          "scene": "harbor sailboat and mooring dock; progressive level 1 of 6: simple single main object, plain platform and minimal props",
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "49c569a9c03f082e6e16600ed251eebcd833a5ff4928f96903caa0ab5686639d",
+          "thumbnailSha256": "0f49f6035ef492b02d2fc601b031d1d5fbe91816e45ded2569ff03ccd222bc88",
+          "numberY": 111.86
+        },
+        {
+          "id": "english-rounds-5",
+          "scene": "harbor sailboat and mooring dock; progressive level 2 of 6: main object plus one functional prop and a small secondary platform",
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "b6fb91e6d677b629598df854af9ce8dad3d537719f0454d9fa70bcd4b710638a",
+          "thumbnailSha256": "500ad0c6b4eb198997593763c0299153433a826cfe0625682f48574cb3e6112e",
+          "numberY": 111.86
+        },
+        {
+          "id": "english-rounds-10",
+          "scene": "harbor sailboat and mooring dock; progressive level 3 of 6: richer scene with extra architecture, secondary object and pennant",
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "37d868d9e3a99893578c6bfcde1b08b152aab6a7c58b750d36b0cd6df614ae27",
+          "thumbnailSha256": "29caf14802bf4054c8ca22c6f1b050e0682a5937953dfc4eb0f9d01d383e6ea3",
+          "numberY": 111.86
+        },
+        {
+          "id": "english-rounds-25",
+          "scene": "harbor sailboat and mooring dock; progressive level 4 of 6: large developed scene with supporting buildings and several purposeful objects",
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "ccca8bf8849bfa0b2f4f5a1ece589acba9daaf419df880f19489e6166bc3a9fa",
+          "thumbnailSha256": "f348adf39254b824da3e3ba5e88ff77c4eb948d9707a4a4dc42b65339acc7472",
+          "numberY": 111.86
+        }
+      ],
+      "source": "/workspace/generated_images/exec-0f68442a-417c-4055-bf6d-b1827035b1cb.png",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "560ca300bf67a99094b4a4ad0bea952e75e775ff11afc279ecefab68597410cd",
+      "generationPrompt": "Four progressive harbor sailboat badges; native square 2x2 canvas at minimum 1024px; cream stone, teal trim, blank plaques, sharp Mathematics facet style."
+    },
+    {
+      "id": "global-01",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-rounds-50",
+          "scene": "harbor sailboat and mooring dock; progressive level 5 of 6: grand developed scene, more books or objects and gold architectural caps",
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "410955ee5d54f79096ce3f3d00e62fc479266be2f34a7adf9141ed51031180f1",
+          "thumbnailSha256": "61f24027a02118d1c4f884346b8ecf93931730f71d9317b5362186051cb69f52",
+          "numberY": 115.82
+        },
+        {
+          "id": "english-rounds-100",
+          "scene": "harbor sailboat and mooring dock; progressive level 6 of 6: most complete scene, strongest main silhouette, large developed architecture and three gold stars",
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "4005ab87dd8b2df0743b7e472c2b9906d3a512d58122a2a54388a5bbf2f3b213",
+          "thumbnailSha256": "fa0de5b7cb55ea954fc765ab26a3f8076a3a1fe062b7c6c72bb4ddd2794bd3fd",
+          "numberY": 115.82
+        },
+        {
+          "id": "english-correct-1",
+          "scene": "open book and colorful polygon dialogue bubbles; progressive level 1 of 8: simple single main object, plain platform and minimal props",
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "8dd1f8acae01f3532a84a65874a7924f721dcece02efa98594815c76bf364c18",
+          "thumbnailSha256": "424b601a18a333530eba3fed0dff011603de2ee09013a72d0720cb77b6af0aee",
+          "numberY": 115.94
+        },
+        {
+          "id": "english-correct-10",
+          "scene": "open book and colorful polygon dialogue bubbles; progressive level 2 of 8: main object plus one functional prop and a small secondary platform",
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "586a23987c6f25bbaf6b1df36cd9ed4d0e8f7191c8a3fe6fc16c6fa9fa9c75f1",
+          "thumbnailSha256": "745c5c5ad30b7869607a95053b30fee8dbb223bee356f4d011b55e31b92159c1",
+          "numberY": 115.94
+        }
+      ],
+      "source": "/workspace/generated_images/exec-0a1f5622-a51e-471f-afb9-e2e1dbeef74d.png",
+      "generationPrompt": "Production achievement art. Request a 2048x2048 square canvas, MINIMUM 1024x1024, EXACT regular 2 columns by 2 rows grid of FOUR separate square badges. Native source detail at least 512x512 PER CELL, not enlarged small icons. Each badge fills 96% of its own cell, full silhouette inside its cell, equal centered scale. Actual transparent alpha between and outside badges, no shadows or haze outside silhouettes. No text, digits, labels, dividers, sheet frame or background. Match the supplied Mathematics badge EXACTLY in crisp sharp straight low-poly faceted cut-paper edges and geometry, chunky cream stone arch, dark navy faceted rock base, green polygon leaves, top yellow diamond. Change blue trim to rich TEAL with tiny purple and gold details for English. Same orthographic isometric camera, polygon scale and construction as Mathematics, NOT painterly, blurry, glossy or soft clay. Lower blank ivory plaque MUST stay x21..79%, y71..85% of EACH square badge; clean empty center, suitable for numeric overlay. Keep all action above plaque. Strong simple readable silhouettes at 128px, detailed crisp polygons at 512px. Four specific cells in reading order:\nTOP LEFT: harbor sailboat and mooring dock; progressive level 5 of 6: grand developed scene, more books or objects and gold architectural caps.\nTOP RIGHT: harbor sailboat and mooring dock; progressive level 6 of 6: most complete scene, strongest main silhouette, large developed architecture and three gold stars.\nBOTTOM LEFT: open book and colorful polygon dialogue bubbles; progressive level 1 of 8: simple single main object, plain platform and minimal props.\nBOTTOM RIGHT: open book and colorful polygon dialogue bubbles; progressive level 2 of 8: main object plus one functional prop and a small secondary platform.\nNO CHARACTERS in these four cells. No cats, no faces, no Oliver or Olena.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "36eaa20c8cfda006ab6d5c14920bf2c91a92de39fef43ae169a15c53d6b47ba6"
+    },
+    {
+      "id": "global-02",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-correct-50",
+          "scene": "open book and colorful polygon dialogue bubbles; progressive level 3 of 8: larger main object, two supporting props and a short cream architectural feature",
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "adb5933ad0c34754695ace996d201bd692c611237c03c8ee92cf38decde9557b",
+          "thumbnailSha256": "e28df1b1447238027b3c57bdf0ef215a83b039e9cf3fcc8d3c1afe110327f453",
+          "numberY": 115.18
+        },
+        {
+          "id": "english-correct-100",
+          "scene": "open book and colorful polygon dialogue bubbles; progressive level 4 of 8: richer scene with extra architecture, secondary object and pennant",
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "3ee51e9d6c6b5afe932f3e4efcb562ffcc0cb30233b5e0f723ad2f35fac74cd4",
+          "thumbnailSha256": "00642826c7f3b8391b2306d09ec3299cebcbeff6b5896a0d4ae3c7b7267dbc0b",
+          "numberY": 115.18
+        },
+        {
+          "id": "english-correct-250",
+          "scene": "open book and colorful polygon dialogue bubbles; progressive level 5 of 8: large developed scene with supporting buildings and several purposeful objects",
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "a41622a4760d12daa430f2cfb3e6bfbc2ad7a91d092dd89bab5536b999770b75",
+          "thumbnailSha256": "b4838f14303afa15a17be38736d81a69657169863bbc5fd28c1947160ec89991",
+          "numberY": 115.31
+        },
+        {
+          "id": "english-correct-500",
+          "scene": "open book and colorful polygon dialogue bubbles; progressive level 6 of 8: complete elaborate scene, balanced architecture, three gold stars and full functional props",
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "e61762ebffdf790fde0d063d979dc6bef0f2081f129e78dc4f1972c000e7ac6c",
+          "thumbnailSha256": "58f8adc29d90cbd8182d3829748676dd351596009da22cfe92bfe0610e0c4193",
+          "numberY": 115.31
+        }
+      ],
+      "source": "/workspace/generated_images/exec-98b8e1ae-2b4e-4b3e-b31e-aed2acb3e60c.png",
+      "generationPrompt": "Production achievement art. Request a 2048x2048 square canvas, MINIMUM 1024x1024, EXACT regular 2 columns by 2 rows grid of FOUR separate square badges. Native source detail at least 512x512 PER CELL, not enlarged small icons. Each badge fills 96% of its own cell, full silhouette inside its cell, equal centered scale. Actual transparent alpha between and outside badges, no shadows or haze outside silhouettes. No text, digits, labels, dividers, sheet frame or background. Match the supplied Mathematics badge EXACTLY in crisp sharp straight low-poly faceted cut-paper edges and geometry, chunky cream stone arch, dark navy faceted rock base, green polygon leaves, top yellow diamond. Change blue trim to rich TEAL with tiny purple and gold details for English. Same orthographic isometric camera, polygon scale and construction as Mathematics, NOT painterly, blurry, glossy or soft clay. Lower blank ivory plaque MUST stay x21..79%, y71..85% of EACH square badge; clean empty center, suitable for numeric overlay. Keep all action above plaque. Strong simple readable silhouettes at 128px, detailed crisp polygons at 512px. Four specific cells in reading order:\nTOP LEFT: open book and colorful polygon dialogue bubbles; progressive level 3 of 8: larger main object, two supporting props and a short cream architectural feature.\nTOP RIGHT: open book and colorful polygon dialogue bubbles; progressive level 4 of 8: richer scene with extra architecture, secondary object and pennant.\nBOTTOM LEFT: open book and colorful polygon dialogue bubbles; progressive level 5 of 8: large developed scene with supporting buildings and several purposeful objects.\nBOTTOM RIGHT: open book and colorful polygon dialogue bubbles; progressive level 6 of 8: complete elaborate scene, balanced architecture, three gold stars and full functional props.\nNO CHARACTERS in these four cells. No cats, no faces, no Oliver or Olena.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "2d4e6a852bdf624522a338f41d88b809ac67f53ed198679b075cbf65da92ce3f"
+    },
+    {
+      "id": "global-03",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-correct-1000",
+          "scene": "open book and colorful polygon dialogue bubbles; progressive level 7 of 8: grand developed scene, more books or objects and gold architectural caps",
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "b6a737579a8674bf338862811d44602ddf9e652e9ff3d428c49e3225fb8ce0fa",
+          "thumbnailSha256": "3fc4f32a7bbe2b0be9f0b8157540da26e250afe650d3dca66caa86bc918cb26d",
+          "numberY": 117.73
+        },
+        {
+          "id": "english-correct-2500",
+          "scene": "open book and colorful polygon dialogue bubbles; progressive level 8 of 8: most complete scene, strongest main silhouette, large developed architecture and three gold stars",
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "a673699358d1e6df3826369ddaae512679763e61c3d38a4b46482ff074870515",
+          "thumbnailSha256": "7bcc300392c128c4a7e64fb54805b17b5506588efe4cb40c982097198e70ced4",
+          "numberY": 117.73
+        },
+        {
+          "id": "english-days-1",
+          "scene": "harbor lighthouse and lantern; progressive level 1 of 5: simple single main object, plain platform and minimal props",
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "4d2bc43ff7f31804576f2376b232209bd44da6b9fd9cb9c89380e9d39eac298a",
+          "thumbnailSha256": "2605566f7ca7763150714b5ce29b43a7e6a6fb332e0e7a762450e8901d762196",
+          "numberY": 117.73
+        },
+        {
+          "id": "english-days-3",
+          "scene": "harbor lighthouse and lantern; progressive level 2 of 5: larger main object, two supporting props and a short cream architectural feature",
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "69991551b312e4c96d81e02b179f345fab018899a65f11156a44118a5046ba1b",
+          "thumbnailSha256": "4a7c137e07d9c885f7aa0c160b2b8bbfeec58a9d3a2488dcd9802176369d68ca",
+          "numberY": 117.73
+        }
+      ],
+      "source": "/workspace/generated_images/exec-649f832e-cd03-4169-b15f-81c36b40d3d4.png",
+      "generationPrompt": "Production achievement art. Request a 2048x2048 square canvas, MINIMUM 1024x1024, EXACT regular 2 columns by 2 rows grid of FOUR separate square badges. Native source detail at least 512x512 PER CELL, not enlarged small icons. Each badge fills 96% of its own cell, full silhouette inside its cell, equal centered scale. Actual transparent alpha between and outside badges, no shadows or haze outside silhouettes. No text, digits, labels, dividers, sheet frame or background. Match the supplied Mathematics badge EXACTLY in crisp sharp straight low-poly faceted cut-paper edges and geometry, chunky cream stone arch, dark navy faceted rock base, green polygon leaves, top yellow diamond. Change blue trim to rich TEAL with tiny purple and gold details for English. Same orthographic isometric camera, polygon scale and construction as Mathematics, NOT painterly, blurry, glossy or soft clay. Lower blank ivory plaque MUST stay x21..79%, y71..85% of EACH square badge; clean empty center, suitable for numeric overlay. Keep all action above plaque. Strong simple readable silhouettes at 128px, detailed crisp polygons at 512px. Four specific cells in reading order:\nTOP LEFT: open book and colorful polygon dialogue bubbles; progressive level 7 of 8: grand developed scene, more books or objects and gold architectural caps.\nTOP RIGHT: open book and colorful polygon dialogue bubbles; progressive level 8 of 8: most complete scene, strongest main silhouette, large developed architecture and three gold stars.\nBOTTOM LEFT: harbor lighthouse and lantern; progressive level 1 of 5: simple single main object, plain platform and minimal props.\nBOTTOM RIGHT: harbor lighthouse and lantern; progressive level 2 of 5: larger main object, two supporting props and a short cream architectural feature.\nNO CHARACTERS in these four cells. No cats, no faces, no Oliver or Olena.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "6e6679009fa294037189c99d8b9df2f7c6151e02196b2e4bdb08cec0412731a9"
+    },
+    {
+      "id": "global-04",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-days-7",
+          "scene": "harbor lighthouse and lantern; progressive level 3 of 5: large developed scene with supporting buildings and several purposeful objects",
+          "numberY": 114.41,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "087006fa0dfe52abb94bf9b8aff3d58ed24b8ae171f8c071f4aacf9e7d9a9311",
+          "thumbnailSha256": "142a4aa3b2b4cf227646b796f50d3643e6014d649091c5346c95bd944e84ae21"
+        },
+        {
+          "id": "english-days-14",
+          "scene": "harbor lighthouse and lantern; progressive level 4 of 5: complete elaborate scene, balanced architecture, three gold stars and full functional props",
+          "numberY": 114.41,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "60af86ab8f72a6d0b42ba6689d0cf9cdd3155dc460433d2f0039c9dc0de08808",
+          "thumbnailSha256": "4f77e7038495ef5b1fbbe04d707e46a70a41482f1efc1c90c2664c973aaab507"
+        },
+        {
+          "id": "english-days-30",
+          "scene": "harbor lighthouse and lantern; progressive level 5 of 5: most complete scene, strongest main silhouette, large developed architecture and three gold stars",
+          "numberY": 114.41,
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "53ee5e006a526ef56f24f19cb4848770a13be9bc57e7cdd45ce5f6cdb089a9db",
+          "thumbnailSha256": "55faa29945473938909060ce902a6c5af85befcf2e6f7baa50e3edeb369cee08"
+        },
+        {
+          "id": "english-parts-1",
+          "scene": "cream stone bridge connecting teal water quays; progressive level 1 of 5: simple single main object, plain platform and minimal props",
+          "numberY": 114.41,
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "757b1edb8cd17402171af00457261296ed1ed07c8a90d660680f17d4d038527a",
+          "thumbnailSha256": "7f1195d4c86b6994b6fb9fc814932c0aac678461b8c4765f77de11467d2e75cb"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-0bbe0d30-7dd4-453e-a7bc-f74a1f88c016.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: harbor lighthouse and lantern; progressive level 3 of 5: large developed scene with supporting buildings and several purposeful objects.\nTOP RIGHT: harbor lighthouse and lantern; progressive level 4 of 5: complete elaborate scene, balanced architecture, three gold stars and full functional props.\nBOTTOM LEFT: harbor lighthouse and lantern; progressive level 5 of 5: most complete scene, strongest main silhouette, large developed architecture and three gold stars.\nBOTTOM RIGHT: cream stone bridge connecting teal water quays; progressive level 1 of 5: simple single main object, plain platform and minimal props.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "c83791b15dc1dbaf8c572eadfe1ee9e3e5508427e5783828fcd2238fb1e221ab"
+    },
+    {
+      "id": "global-05",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-parts-2",
+          "scene": "cream stone bridge connecting teal water quays; progressive level 2 of 5: larger main object, two supporting props and a short cream architectural feature",
+          "numberY": 119.52,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "78e4a6640d2dbe4eb67b3e4b07811854e8331ab28cc42bb450760d871faa9cdc",
+          "thumbnailSha256": "6047954c0089fc589334c7f84ffd82b0b72bd01ac3c2f52dba203a940830a319"
+        },
+        {
+          "id": "english-parts-4",
+          "scene": "cream stone bridge connecting teal water quays; progressive level 3 of 5: large developed scene with supporting buildings and several purposeful objects",
+          "numberY": 119.52,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "9e74047d1cbae0f4e162f808a875be42201e9962b7836d2748b8d306503af7ae",
+          "thumbnailSha256": "a54b1910e3999b6ec126e2b41f330c4264105bdb9bc7df0df78cbe0a63765cb7"
+        },
+        {
+          "id": "english-parts-6",
+          "scene": "cream stone bridge connecting teal water quays; progressive level 4 of 5: complete elaborate scene, balanced architecture, three gold stars and full functional props",
+          "numberY": 119.52,
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "10ba0e490513d617bb4fea09d5fb039e3f8a93143729fdcfefe46563d65dc7ac",
+          "thumbnailSha256": "8c9ad68e8cf421527d75baaa6a6b3c76cfc03019416537b841bddced175e1fe7"
+        },
+        {
+          "id": "english-parts-8",
+          "scene": "cream stone bridge connecting teal water quays; progressive level 5 of 5: most complete scene, strongest main silhouette, large developed architecture and three gold stars",
+          "numberY": 119.52,
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "2931c79081d82bc3fa7e7091a1813e4f944aa69fc1c945a5382b69302d5c3f19",
+          "thumbnailSha256": "2e1b0148f44e2dd6ae75ab1098727f66041521ca8b6f312e0cd954350c9c7fc8"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-3ec62f0f-8239-42f9-b59e-274ab08367f2.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: cream stone bridge connecting teal water quays; progressive level 2 of 5: larger main object, two supporting props and a short cream architectural feature.\nTOP RIGHT: cream stone bridge connecting teal water quays; progressive level 3 of 5: large developed scene with supporting buildings and several purposeful objects.\nBOTTOM LEFT: cream stone bridge connecting teal water quays; progressive level 4 of 5: complete elaborate scene, balanced architecture, three gold stars and full functional props.\nBOTTOM RIGHT: cream stone bridge connecting teal water quays; progressive level 5 of 5: most complete scene, strongest main silhouette, large developed architecture and three gold stars.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "fb15ab60afc61c749eeded581f541d0527139baca4737bfc48dcf990bc3d2f2b"
+    },
+    {
+      "id": "global-06",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-perfect-1",
+          "scene": "golden laurel and open book with purple folded check tile; progressive level 1 of 4: simple single main object, plain platform and minimal props",
+          "numberY": 117.22,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "fa3e63a81987dd45acb225d201ed7fb50048290bd267047126117732439bed3a",
+          "thumbnailSha256": "ccb66629473dd65a3eb39be0f04acc5dad14863e8ebaceb53ea242dcbef4e809"
+        },
+        {
+          "id": "english-perfect-5",
+          "scene": "golden laurel and open book with purple folded check tile; progressive level 2 of 4: larger main object, two supporting props and a short cream architectural feature",
+          "numberY": 117.22,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "21b41c8fbd35ff4ad47f8963da4f843d691a76f693f578d9d9e0a9643881a73d",
+          "thumbnailSha256": "57614bb50fb93c7968c00be6939e8722355c5faa31a7b941a333a880903570d7"
+        },
+        {
+          "id": "english-perfect-10",
+          "scene": "golden laurel and open book with purple folded check tile; progressive level 3 of 4: complete elaborate scene, balanced architecture, three gold stars and full functional props",
+          "numberY": 117.22,
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "373760db0932080a4729b35ed651242bed32c509ec4eaf34e95dd8754899ba51",
+          "thumbnailSha256": "3087fbfc32d47fcd0151e80419a313ca06f19656126fb854ae806ad6e7d2e129"
+        },
+        {
+          "id": "english-perfect-25",
+          "scene": "golden laurel and open book with purple folded check tile; progressive level 4 of 4: most complete scene, strongest main silhouette, large developed architecture and three gold stars",
+          "numberY": 117.22,
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "6b2fae1555113596438dcbda7dd3103634f5070456362daea60a2088b1590ced",
+          "thumbnailSha256": "79c609150b88db9c68bef390191c058a6bc58c0844a484cf06970ee8b97dadc3"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-0edfc745-50ee-4dc8-89cb-1c3a39c9b76c.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: golden laurel and open book with purple folded check tile; progressive level 1 of 4: simple single main object, plain platform and minimal props.\nTOP RIGHT: golden laurel and open book with purple folded check tile; progressive level 2 of 4: larger main object, two supporting props and a short cream architectural feature.\nBOTTOM LEFT: golden laurel and open book with purple folded check tile; progressive level 3 of 4: complete elaborate scene, balanced architecture, three gold stars and full functional props.\nBOTTOM RIGHT: golden laurel and open book with purple folded check tile; progressive level 4 of 4: most complete scene, strongest main silhouette, large developed architecture and three gold stars.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "d579dd80f22dd8aab227fc39fdf015ed1b7f3b8a95bca5659e77ed57fbe22ff7"
+    },
+    {
+      "id": "global-07",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-variety-10",
+          "scene": "market of books and ideas with purple and yellow awnings; progressive level 1 of 6: simple single main object, plain platform and minimal props",
+          "numberY": 117.73,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "7d9e464e83a905f77b161e5167be3b205ab0fcab53a3c52b65001eb26a297e39",
+          "thumbnailSha256": "6d93000b9e4df880f20a4a510561a55159dfbc456297fb47c80abb9a71fbcec6"
+        },
+        {
+          "id": "english-variety-50",
+          "scene": "market of books and ideas with purple and yellow awnings; progressive level 2 of 6: main object plus one functional prop and a small secondary platform",
+          "numberY": 117.73,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "84078bc263d8134515ec7bb2ce3e6f305bec7f3c5e55df15c40b362514084f5c",
+          "thumbnailSha256": "e8d85870eb8e407c9fda6944e04f70d83d4b206826ab0f63a3fc3535b6d0e48a"
+        },
+        {
+          "id": "english-variety-100",
+          "scene": "market of books and ideas with purple and yellow awnings; progressive level 3 of 6: richer scene with extra architecture, secondary object and pennant",
+          "numberY": 117.73,
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "5e96b9f2f1f566a42427d077ce81f162c7fd89568852714c782203025909b799",
+          "thumbnailSha256": "ef5fc1bba3afb47daf75a8451426ff0e94973d11c3792f9cb487ad0396e921e0"
+        },
+        {
+          "id": "english-variety-250",
+          "scene": "market of books and ideas with purple and yellow awnings; progressive level 4 of 6: large developed scene with supporting buildings and several purposeful objects",
+          "numberY": 117.73,
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "ee809567a998735f8cf73d61f235aa15bee92bf2882a5c67649b2ba85be1fd16",
+          "thumbnailSha256": "9508f58cad0c18863100f4eada7ac7dfc7fa38b1e6fcac421ba9db0bd4d5f6cf"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-eaf150da-d1a1-4b98-bde4-d02b6f1914d2.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: market of books and ideas with purple and yellow awnings; progressive level 1 of 6: simple single main object, plain platform and minimal props.\nTOP RIGHT: market of books and ideas with purple and yellow awnings; progressive level 2 of 6: main object plus one functional prop and a small secondary platform.\nBOTTOM LEFT: market of books and ideas with purple and yellow awnings; progressive level 3 of 6: richer scene with extra architecture, secondary object and pennant.\nBOTTOM RIGHT: market of books and ideas with purple and yellow awnings; progressive level 4 of 6: large developed scene with supporting buildings and several purposeful objects.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "3d4755950f8b7a3c0bbca3c3b12032ec0e3586758a4b54a8ea9a0404f6cfe98b"
+    },
+    {
+      "id": "global-08",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-variety-500",
+          "scene": "market of books and ideas with purple and yellow awnings; progressive level 5 of 6: grand developed scene, more books or objects and gold architectural caps",
+          "numberY": 122.71,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "bff41b26558863daeb08ea52fcd98d40faa72a41abe611ba5af6d9033d42b4f6",
+          "thumbnailSha256": "074c5fc6eb9541f6144ea3afbdb987db9ad252bed0124700e71273a94e92c615"
+        },
+        {
+          "id": "english-variety-1000",
+          "scene": "market of books and ideas with purple and yellow awnings; progressive level 6 of 6: most complete scene, strongest main silhouette, large developed architecture and three gold stars",
+          "numberY": 122.71,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "367518440357bbcba36fbbbf4f2fa2717ef0ed2bfb6f9054c363dbf253317783",
+          "thumbnailSha256": "2dcb008a703fe43ce2254ec12042f95bbdaf70aa83f716fd2fe794f24bbe6470"
+        },
+        {
+          "id": null,
+          "scene": "a quiet harbor book on a cream plinth, unused spare cell"
+        },
+        {
+          "id": null,
+          "scene": "a quiet harbor book on a cream plinth, unused spare cell"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-bad317a1-3831-4461-9294-1751a94e5c2c.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: market of books and ideas with purple and yellow awnings; progressive level 5 of 6: grand developed scene, more books or objects and gold architectural caps.\nTOP RIGHT: market of books and ideas with purple and yellow awnings; progressive level 6 of 6: most complete scene, strongest main silhouette, large developed architecture and three gold stars.\nBOTTOM LEFT: a quiet harbor book on a cream plinth, unused spare cell.\nBOTTOM RIGHT: a quiet harbor book on a cream plinth, unused spare cell.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "dcebb392150146c658fd57aaeb79b21e1830aea71b1ca0fef3f936186797c8bc"
+    },
+    {
+      "id": "part-0",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-part-0-correct-20",
+          "scene": "welcoming harbor gate, folded sailboat and mooring dock; simple scene with a single main object",
+          "numberY": 117.47,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "57a8e19cd06bbbbec024dd61ba97499e3872ec86640f0972b1c8935980a8a1ff",
+          "thumbnailSha256": "8ec65525751b80482eeb8b04f87a50b75b87f21c222a66a097ae8c88cd55b803"
+        },
+        {
+          "id": "english-part-0-correct-100",
+          "scene": "welcoming harbor gate, folded sailboat and mooring dock; developed scene with two functional supporting objects and a cream platform",
+          "numberY": 117.47,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "204d41657db568f3aca02db7e6fd0af0de0cb8ccc84493373c32c5b939c876c6",
+          "thumbnailSha256": "93735e6aad6aceee46b9c057866f2b5a29909c6e28145a50b67b41226b8a88e0"
+        },
+        {
+          "id": "english-part-0-variety-25",
+          "scene": "welcoming harbor gate, folded sailboat and mooring dock; richer scene with complete main motif, two objects and short architecture",
+          "numberY": 117.47,
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "ce1023ad013df9d89f35246cbba98bd3153b43ea4fda45a3c0200c31959aa7e6",
+          "thumbnailSha256": "23242e28e98faa78af29351b84f4b40e31e79d80267f2e2dfd29e097dc3e1bd4"
+        },
+        {
+          "id": "english-part-0-variety-50",
+          "scene": "welcoming harbor gate, folded sailboat and mooring dock; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier",
+          "numberY": 117.47,
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "77131ae97851b28889a8c3881a8e762efad04b554c87fa8070dcb7f79f9b5d07",
+          "thumbnailSha256": "eed7906f656c66d378de885a3e479957acddda8082d734adf4f523449e05ebe4"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-9d620645-ca1c-4671-aa1c-ab76c4ff44b4.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: welcoming harbor gate, folded sailboat and mooring dock; simple scene with a single main object.\nTOP RIGHT: welcoming harbor gate, folded sailboat and mooring dock; developed scene with two functional supporting objects and a cream platform.\nBOTTOM LEFT: welcoming harbor gate, folded sailboat and mooring dock; richer scene with complete main motif, two objects and short architecture.\nBOTTOM RIGHT: welcoming harbor gate, folded sailboat and mooring dock; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "6b3a7c6d5ab3bdcb6a5592d9ab0f02fc9cc36b005d307895891d861a01eb050e"
+    },
+    {
+      "id": "part-1",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-part-1-correct-20",
+          "scene": "habits square with tea cup, clock and cream benches; simple scene with a single main object",
+          "numberY": 119.77,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "dddef197f2ed43286964332734ddefb4b6bd6363d70e92a1adfa220e998d81c3",
+          "thumbnailSha256": "f03c8d296a6cbe1b0dad112ac0e53c217b89a0d55008699719f1aa533ac3e7d6"
+        },
+        {
+          "id": "english-part-1-correct-100",
+          "scene": "habits square with tea cup, clock and cream benches; developed scene with two functional supporting objects and a cream platform",
+          "numberY": 119.77,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "fce8329305032377841a29fb49063b859a6cf3106013952d6fa40d938ce73c4b",
+          "thumbnailSha256": "cb943250a108b0ba08af1f398d25e925f84413dc1505d3177877bc8005655947"
+        },
+        {
+          "id": "english-part-1-variety-25",
+          "scene": "habits square with tea cup, clock and cream benches; richer scene with complete main motif, two objects and short architecture",
+          "numberY": 119.77,
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "ea907af94e2d450a32ee6725260aee26883bf90f62c065e3bfae8b098c3d6c9d",
+          "thumbnailSha256": "b92c71dafebaa4b676309f30a0dafdba9e9077936078ca81dbe0abf905052c98"
+        },
+        {
+          "id": "english-part-1-variety-50",
+          "scene": "habits square with tea cup, clock and cream benches; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier",
+          "numberY": 119.77,
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "3c7e63068da3f0d5673539a04c44452ef3b226075a774ee526cf4e35e94d83fa",
+          "thumbnailSha256": "0dd297c52e33fdb7f609e37e7d8c8ce5cf2ca95c595cb0163b3f9985aab700ae"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-b40cbc46-0b86-4906-9d4b-185bd266fce4.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: habits square with tea cup, clock and cream benches; simple scene with a single main object.\nTOP RIGHT: habits square with tea cup, clock and cream benches; developed scene with two functional supporting objects and a cream platform.\nBOTTOM LEFT: habits square with tea cup, clock and cream benches; richer scene with complete main motif, two objects and short architecture.\nBOTTOM RIGHT: habits square with tea cup, clock and cream benches; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "d5246987fa86cce877653889bcbf4d396b230a54bf8db1a89eaae6f0684d09af"
+    },
+    {
+      "id": "part-2",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-part-2-correct-20",
+          "scene": "memories bridge with postcards and envelopes; simple scene with a single main object",
+          "numberY": 117.73,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "ab11484db797af70ad775142f3620000dc49118755862f61c26aa3fe3f7c0d86",
+          "thumbnailSha256": "852d82f5fde0f34696ea64823f97f100057cb8339f47c82a2a914d104a2aa657"
+        },
+        {
+          "id": "english-part-2-correct-100",
+          "scene": "memories bridge with postcards and envelopes; developed scene with two functional supporting objects and a cream platform",
+          "numberY": 117.73,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "76bb0484bf3bab80169d28ea085b152b0d26f1346d907a920d89d1296de75601",
+          "thumbnailSha256": "56e840a1ba541f482938a2a12b3931870fb952250407601e03dbe70fdd4bbe4c"
+        },
+        {
+          "id": "english-part-2-variety-25",
+          "scene": "memories bridge with postcards and envelopes; richer scene with complete main motif, two objects and short architecture",
+          "numberY": 117.73,
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "5ee7d74e409d77ed6442598e9d75187c25edc09f35de382e2e720a19aaceeeab",
+          "thumbnailSha256": "d92a84db40d1a3a94d6e9d1c8e99fa1206d24545d251941d30f31264040ac44a"
+        },
+        {
+          "id": "english-part-2-variety-50",
+          "scene": "memories bridge with postcards and envelopes; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier",
+          "numberY": 117.73,
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "7630afb9f40fe0a4d6685cbb40231063c92610270b9a570efe6c65559d138d1d",
+          "thumbnailSha256": "935f887c2a9ce9021c2e37e07305a5f7b3fd71379367c1e8746fe4841590e859"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-9050af4c-a8a9-49b2-9021-14c5e6953a30.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: memories bridge with postcards and envelopes; simple scene with a single main object.\nTOP RIGHT: memories bridge with postcards and envelopes; developed scene with two functional supporting objects and a cream platform.\nBOTTOM LEFT: memories bridge with postcards and envelopes; richer scene with complete main motif, two objects and short architecture.\nBOTTOM RIGHT: memories bridge with postcards and envelopes; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "2ce1a5d6b3daa44e8ab8115fe4abc6331f08b39cc79614497e3bb8620633f9f4"
+    },
+    {
+      "id": "part-3",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-part-3-correct-20",
+          "scene": "plans lookout with compass and folded map; simple scene with a single main object",
+          "numberY": 117.6,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "d968cb087f4d5bc7fd64520a097d206ff2a4654688cc4ec0761363f823b05500",
+          "thumbnailSha256": "53a80784d9be33a9484e909f39d8dfb38fecb9c398d4e7e76f197a972dc23f7a"
+        },
+        {
+          "id": "english-part-3-correct-100",
+          "scene": "plans lookout with compass and folded map; developed scene with two functional supporting objects and a cream platform",
+          "numberY": 117.6,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "439cb1d49d6bd3ad66d09012807cf7db367adcbb872c808d4c1c76931609570d",
+          "thumbnailSha256": "acb96cbc914c506a037c9b10faf52d12b6cf309088f25db647090bafc5f668bc"
+        },
+        {
+          "id": "english-part-3-variety-25",
+          "scene": "plans lookout with compass and folded map; richer scene with complete main motif, two objects and short architecture",
+          "numberY": 117.6,
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "1b2feec294f88d8132d50cb589f4e27bc1d07691aeb0625b3e20e756f0f76fc0",
+          "thumbnailSha256": "f714bec5cbc096fdfd4d2ea2399d820b969afa0f303230f34a0a813fc7310db6"
+        },
+        {
+          "id": "english-part-3-variety-50",
+          "scene": "plans lookout with compass and folded map; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier",
+          "numberY": 117.6,
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "80ea979f310c0a1ebdb4247d5b093bb7ef580a2530b898c427d77e94bd0e98ca",
+          "thumbnailSha256": "1d212a93b996a6ffd7dd0fdb8323b8842400a0986211b1afd479404e4e389063"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-8782e989-2ade-4228-9c23-e004f3157b58.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: plans lookout with compass and folded map; simple scene with a single main object.\nTOP RIGHT: plans lookout with compass and folded map; developed scene with two functional supporting objects and a cream platform.\nBOTTOM LEFT: plans lookout with compass and folded map; richer scene with complete main motif, two objects and short architecture.\nBOTTOM RIGHT: plans lookout with compass and folded map; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "37d63e576a73804cb3021cd8ef30c59dee41a2d923b799455ffec68d91e851b0"
+    },
+    {
+      "id": "part-4",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-part-4-correct-20",
+          "scene": "ideas courtyard with lectern and polygon dialogue tiles; simple scene with a single main object",
+          "numberY": 117.47,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "8fb1be17d55381299ec5ce4d9718be9861b87ae3d399fa275c0f6a34fe0318a1",
+          "thumbnailSha256": "aa6de64b54d9fbf1cb091def6260a4e7a1e76daebb10296fcdc06317111ae582"
+        },
+        {
+          "id": "english-part-4-correct-100",
+          "scene": "ideas courtyard with lectern and polygon dialogue tiles; developed scene with two functional supporting objects and a cream platform",
+          "numberY": 117.47,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "32b8b95a0a74895345282a0711cea1f79390880777d753699eb33e3c184dd789",
+          "thumbnailSha256": "514a9681940ba59ca0a264fe85a5762c8b77ecfb07ff9a617b10f6812cac8b3a"
+        },
+        {
+          "id": "english-part-4-variety-25",
+          "scene": "ideas courtyard with lectern and polygon dialogue tiles; richer scene with complete main motif, two objects and short architecture",
+          "numberY": 117.35,
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "d63651c6f3ed9c7cb393d68f6bf62aa801f4b9cbc58afc41ff41f5d09d600db5",
+          "thumbnailSha256": "ab8c2c468c9b9c930afac4afc6fc69c1bd479cecd0b6e4b6be7a72e65cbbcd82"
+        },
+        {
+          "id": "english-part-4-variety-50",
+          "scene": "ideas courtyard with lectern and polygon dialogue tiles; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier",
+          "numberY": 117.47,
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "f49909ca0aef7df1b266c3feb6db303abcba1d0067110fc68bcb2cb27da96781",
+          "thumbnailSha256": "3f9a63e8aa2cdcce2dcd322984085f0e85ee9d8ea4d8390e703dbd5562d0946e"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-08079ec9-dd25-424b-a25a-dae5b087b750.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: ideas courtyard with lectern and polygon dialogue tiles; simple scene with a single main object.\nTOP RIGHT: ideas courtyard with lectern and polygon dialogue tiles; developed scene with two functional supporting objects and a cream platform.\nBOTTOM LEFT: ideas courtyard with lectern and polygon dialogue tiles; richer scene with complete main motif, two objects and short architecture.\nBOTTOM RIGHT: ideas courtyard with lectern and polygon dialogue tiles; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "299d5b6c1a89f253a9c356c6a6b0cf10108e1c39e88bd9e4e0a3f66e411c0bb1"
+    },
+    {
+      "id": "part-5",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-part-5-correct-20",
+          "scene": "meaning house with lantern and phrase tiles; simple scene with a single main object",
+          "numberY": 120.15,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "2d75e81cbf6ced9ddd4d09538b1674627b21f3e6fd75dd77c34d28ba6b0267dd",
+          "thumbnailSha256": "7a33ffa4f629a07debe3aca78cbf443585e5f9be0c4d83b3b365cfe2f66a4b99"
+        },
+        {
+          "id": "english-part-5-correct-100",
+          "scene": "meaning house with lantern and phrase tiles; developed scene with two functional supporting objects and a cream platform",
+          "numberY": 120.03,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "5c518bb8f9135589c08c26853bbab7e9d8c06037300a6531084ab421458b52f5",
+          "thumbnailSha256": "9a7ea07ac92321eee3f3579ebede89e84594c86c19eef760e634087144ffba68"
+        },
+        {
+          "id": "english-part-5-variety-25",
+          "scene": "meaning house with lantern and phrase tiles; richer scene with complete main motif, two objects and short architecture",
+          "numberY": 120.15,
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "0cb32663b325383d1768b8e0b0184e69b35972249c5c2cb47c7e67ac01dcdcc6",
+          "thumbnailSha256": "43c6f9301ed873db804e1bf7686aa074353d19f644b4d9ac5dcb2e36be3feb64"
+        },
+        {
+          "id": "english-part-5-variety-50",
+          "scene": "meaning house with lantern and phrase tiles; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier",
+          "numberY": 120.15,
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "552f1c2a0501913373f08d8b5c4bcf9b3b9a34d3b950ea94510b91c9a63a0e50",
+          "thumbnailSha256": "9f4d3fe958465cc7a5fc166b0f032944a8b52c0c00f6c3dbcd349cc09f448ec3"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-602d9139-67e6-4c8d-a93c-76f605b86915.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: meaning house with lantern and phrase tiles; simple scene with a single main object.\nTOP RIGHT: meaning house with lantern and phrase tiles; developed scene with two functional supporting objects and a cream platform.\nBOTTOM LEFT: meaning house with lantern and phrase tiles; richer scene with complete main motif, two objects and short architecture.\nBOTTOM RIGHT: meaning house with lantern and phrase tiles; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "c6e81028f9241b4eb672dc21c39e644b917ae846127c3b106f126b04f280431a"
+    },
+    {
+      "id": "part-6",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-part-6-correct-20",
+          "scene": "encounters market with travel tickets and suitcase; simple scene with a single main object",
+          "numberY": 115.43,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "82a946360440c571f266e93c000a297e8838bf9f02a46ad2156539e9ded3e4b0",
+          "thumbnailSha256": "8b8271bf418406a8b75ebc22f6b5ea1b9f494a89872b2542bdeb765d6f008a6b"
+        },
+        {
+          "id": "english-part-6-correct-100",
+          "scene": "encounters market with travel tickets and suitcase; developed scene with two functional supporting objects and a cream platform",
+          "numberY": 115.43,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "29a85f9b459616562b9734770940c34b96ecad4145fba293bb55e907b278f407",
+          "thumbnailSha256": "941555a36fb04280339a824ee9ba8564459abf566299b5dc185ca03215c0a454"
+        },
+        {
+          "id": "english-part-6-variety-25",
+          "scene": "encounters market with travel tickets and suitcase; richer scene with complete main motif, two objects and short architecture",
+          "numberY": 115.43,
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "9b84947fc54d2720101ebafbfd36d61bffafc729638af34b3d77ab14df4123e6",
+          "thumbnailSha256": "561aaae6ad9b1cb57d84b742c00c58a405244fb35e24b92fd3c38c627da7a437"
+        },
+        {
+          "id": "english-part-6-variety-50",
+          "scene": "encounters market with travel tickets and suitcase; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier",
+          "numberY": 115.43,
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "fc8c5d2415870dcc59153d1c5cfb9fc45a91e14c2304efda88de7f72237fb4ba",
+          "thumbnailSha256": "bc0652fff87b4281807b590bef189be919941c61b0dc64c5c34a8b4b4c19b581"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-e0f42cc7-9c1d-4e24-b899-009be1e1ec2c.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: encounters market with travel tickets and suitcase; simple scene with a single main object.\nTOP RIGHT: encounters market with travel tickets and suitcase; developed scene with two functional supporting objects and a cream platform.\nBOTTOM LEFT: encounters market with travel tickets and suitcase; richer scene with complete main motif, two objects and short architecture.\nBOTTOM RIGHT: encounters market with travel tickets and suitcase; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "073bc636de62339f965ade419a9ce31307ec01d2e35fbea4c18f0851eb9c49cf"
+    },
+    {
+      "id": "part-7",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-part-7-correct-20",
+          "scene": "archive with bookshelves and open book; simple scene with a single main object",
+          "numberY": 118.11,
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "5c2e702e89ee8ae1b112dfe1c6d2674fdf9571002821f38cbe4cd111c3223e40",
+          "thumbnailSha256": "f91e6555fcaa17484153519c3e8cea049d0692c166eea44e19056a9ff79e8fa9"
+        },
+        {
+          "id": "english-part-7-correct-100",
+          "scene": "archive with bookshelves and open book; developed scene with two functional supporting objects and a cream platform",
+          "numberY": 118.11,
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "013bf3db1b7409bbffe15b380904ce27d1b66b3a71b68370ca16a1b512e9c0ee",
+          "thumbnailSha256": "7a66e16f415429fafe84f4e3e7f48a87d6e159a1def68b42c552b505bf2b9f94"
+        },
+        {
+          "id": "english-part-7-variety-25",
+          "scene": "archive with bookshelves and open book; richer scene with complete main motif, two objects and short architecture",
+          "numberY": 118.11,
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "21670ea08707150d079149dc48a0ec14ee02bd9859a8e48d07ae358a157868a2",
+          "thumbnailSha256": "78ae7f2c34911fcea53fafe79c894da3460be9480928301e4556c4ebee581cd3"
+        },
+        {
+          "id": "english-part-7-variety-50",
+          "scene": "archive with bookshelves and open book; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier",
+          "numberY": 118.11,
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "a43731cb15ba9d1c88b7bff749496c2503c19b335aad89fe36a627351505e47a",
+          "thumbnailSha256": "b5ace7974607d0abd5eb1a1a357cbcea2298ffaff80701032ceeb11fd3b388c5"
+        }
+      ],
+      "source": "/workspace/generated_images/exec-99636acb-6a62-41a4-9029-a62f02e2f5f6.png",
+      "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: archive with bookshelves and open book; simple scene with a single main object.\nTOP RIGHT: archive with bookshelves and open book; developed scene with two functional supporting objects and a cream platform.\nBOTTOM LEFT: archive with bookshelves and open book; richer scene with complete main motif, two objects and short architecture.\nBOTTOM RIGHT: archive with bookshelves and open book; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "70ee2a6bdd4aa61d0926b58e1a5a7a92b71d32ab837b0ccc1a2de52d6c30fa7f"
+    },
+    {
+      "id": "olena-0",
+      "kind": "character",
+      "cells": [
+        {
+          "id": "part-0",
+          "scene": "welcoming harbor gate, folded sailboat and mooring dock. Olena on the LEFT foreground quay, WALKING toward the right in clear side three-quarter view, both legs visibly stepping, both paws handling a mooring rope tied to the folded sailboat. Tail curved behind left. No book and no waving. The welcoming gate stays at the back right.",
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "2c6ae35c1dd4e220090d0a0fcf49bc57f67de993a6b1bbbafcbc8a5f83951509",
+          "thumbnailSha256": "176a33a92a8ba0e974c8d96eb1e49d44fc162048713c62d8dc04bc8fa74fea2b",
+          "numberY": 119.64
+        },
+        {
+          "id": "part-1",
+          "scene": "habits square with tea cup, clock and cream benches. Olena SEATED on a bench at the RIGHT of habits square, body turned LEFT in side profile, one paw resting near a tea cup and the other pointing UP to a wall clock at the left. Both bent legs visible. Face looks up left. Tail curls under the bench. No book, no frontal standing pose.",
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "caffb157f417c250ca0589e1f42503af313c37300ec18254d778f71740c0a92c",
+          "thumbnailSha256": "178efd840fde0425db4acc7b2d3718b019da34fe48c35e60f6c1ce3071499bfc",
+          "numberY": 119.64
+        },
+        {
+          "id": "part-2",
+          "scene": "memories bridge with postcards and envelopes. Olena LOW at the LEFT center beside the memories bridge, crouching over postcards laid on a cream ledge. Body angled toward the RIGHT, head looking downward, both paws sorting two postcards. Tail extends to the left, bent legs visible. No waving and no standing book pose.",
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "6414290464948395a46ce52ff91082fe99372c003a0f3380a7b3a37cbfa070ac",
+          "thumbnailSha256": "a282f5c46ae72ca75097ad8688baee4060a6ce843e782c2b2b6855e92d353e23",
+          "numberY": 119.64
+        },
+        {
+          "id": "part-3",
+          "scene": "plans lookout with compass and folded map. Olena STANDING at the FAR RIGHT of the plans lookout, body in BACK THREE-QUARTER view facing upper LEFT, looking through a golden telescope on a tripod. One paw on telescope and other holding a rolled chart at her side. Two legs visible, tail arcs to right. Face partly in profile, no frontal book pose.",
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "e664a1459fa29340abd54dd2ca72a408a722d9142cddf62aa977420a16fbc0c8",
+          "thumbnailSha256": "a60105fcc64b89b433a892f713e8d54e4a65c83754bc7df46eb93f90ef93bf99",
+          "numberY": 119.64
+        }
+      ],
+      "source": "/workspace/generated_images/exec-3ce21f8d-3c69-46aa-b92b-2ef75520cf82.png",
+      "generationPrompt": "Production achievement art. Request a 2048x2048 square canvas, MINIMUM 1024x1024, EXACT regular 2 columns by 2 rows grid of FOUR separate square badges. Native source detail at least 512x512 PER CELL, not enlarged small icons. Each badge fills 96% of its own cell, full silhouette inside its cell, equal centered scale. Actual transparent alpha between and outside badges, no shadows or haze outside silhouettes. No text, digits, labels, dividers, sheet frame or background. Match the supplied Mathematics badge EXACTLY in crisp sharp straight low-poly faceted cut-paper edges and geometry, chunky cream stone arch, dark navy faceted rock base, green polygon leaves, top yellow diamond. Change blue trim to rich TEAL with tiny purple and gold details for English. Same orthographic isometric camera, polygon scale and construction as Mathematics, NOT painterly, blurry, glossy or soft clay. Lower blank ivory plaque MUST stay x21..79%, y71..85% of EACH square badge; clean empty center, suitable for numeric overlay. Keep all action above plaque. Strong simple readable silhouettes at 128px, detailed crisp polygons at 512px. Four specific cells in reading order:\nTOP LEFT: welcoming harbor gate, folded sailboat and mooring dock. Olena on the LEFT foreground quay, WALKING toward the right in clear side three-quarter view, both legs visibly stepping, both paws handling a mooring rope tied to the folded sailboat. Tail curved behind left. No book and no waving. The welcoming gate stays at the back right..\nTOP RIGHT: habits square with tea cup, clock and cream benches. Olena SEATED on a bench at the RIGHT of habits square, body turned LEFT in side profile, one paw resting near a tea cup and the other pointing UP to a wall clock at the left. Both bent legs visible. Face looks up left. Tail curls under the bench. No book, no frontal standing pose..\nBOTTOM LEFT: memories bridge with postcards and envelopes. Olena LOW at the LEFT center beside the memories bridge, crouching over postcards laid on a cream ledge. Body angled toward the RIGHT, head looking downward, both paws sorting two postcards. Tail extends to the left, bent legs visible. No waving and no standing book pose..\nBOTTOM RIGHT: plans lookout with compass and folded map. Olena STANDING at the FAR RIGHT of the plans lookout, body in BACK THREE-QUARTER view facing upper LEFT, looking through a golden telescope on a tripod. One paw on telescope and other holding a rolled chart at her side. Two legs visible, tail arcs to right. Face partly in profile, no frontal book pose..\nOlena is the SAME approved character in every scene: dark black-purple polygon cat, huge angular yellow eyes, one gold star on her ear, yellow scarf, purple chest panels, exactly two arms and two legs, original anatomy and proportions. Pose and location MUST differ substantially across all four cells as described, not the same front-facing cutout moved or mirrored. Do NOT paste reference avatar or repeat its waving standing book pose. Her paws naturally interact with each scene's prop. Preserve her identity while changing silhouette and orientation. Exactly ONE Olena in each cell.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "8ae018cd082d9a96b30e896ffa5441320f39b04640e1add487bcde5c7c94e2c6"
+    },
+    {
+      "id": "olena-1",
+      "kind": "character",
+      "cells": [
+        {
+          "id": "part-4",
+          "scene": "ideas courtyard with lectern and polygon dialogue tiles. Olena at the LEFT behind an ideas courtyard lectern, body turned RIGHT, leaning forward while presenting a purple dialogue tile toward the center with one paw; other paw rests on lectern. Feet visible beside lectern. Tail lifted behind left. No book and no frontal waving.",
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "6957d2c5cab8a34fcca22c51657653a5411d66d76309f9bf74f341bc63a5f904",
+          "thumbnailSha256": "3a4575d8328a866a0b02e980513126bc7312c4c8fa35f3f587065dcc256904d0",
+          "numberY": 119.9
+        },
+        {
+          "id": "part-5",
+          "scene": "meaning house with lantern and phrase tiles. Olena WALKING down a cream step on the RIGHT of meaning house, turned LEFT in side three-quarter view, carrying a lantern forward in one paw and holding a folded phrase tile near her chest with the other. Two stepping legs, tail swept behind right. Head looks left, no frontal book pose.",
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "15fc07bcac38a0c0f7e3011fc8409295a12407f534209410a92e7785b5cf96be",
+          "thumbnailSha256": "bdbb593c969b71541c6370562389e0386f8ead6854b6d8de4ab84ac222ab68a1",
+          "numberY": 119.9
+        },
+        {
+          "id": "part-6",
+          "scene": "encounters market with travel tickets and suitcase. Olena KNEELING at the FRONT LEFT of encounters market, body turned RIGHT, packing travel tickets into an open purple suitcase with both paws. One knee bent on floor and one foot planted, face looking down right. Tail curls on left floor. Market stall behind right. No book and no waving.",
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "4bfe3d755f4016cf92d16b4bf549864f223169e85e816ddb76e0f0cae6e76998",
+          "thumbnailSha256": "49d383a435d8c51722b0a86b3e457e647c99ee141a547424146b8d7f91000582",
+          "numberY": 120.03
+        },
+        {
+          "id": "part-7",
+          "scene": "archive with bookshelves and open book. Olena SITTING on the LEFT library bench in archive, in clear RIGHT-FACING SIDE PROFILE with a large open book ON HER LAP, head inclined down to read, both paws resting on pages and both feet hanging visibly from bench. Tail curled below bench. Tall shelves fill back right. No frontal standing or waving.",
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "c85699252c8ea4fb712f2a8ea4e105abc87ffdacd4f075dc20aaecd709fd36e5",
+          "thumbnailSha256": "56baa91d936a742e3f4d3936569fc7c6cacadc48953ff706079b5c0989709eca",
+          "numberY": 120.03
+        }
+      ],
+      "source": "/workspace/generated_images/exec-e93a801e-806e-447e-b7e8-d00adf241e10.png",
+      "generationPrompt": "Production achievement art. Request a 2048x2048 square canvas, MINIMUM 1024x1024, EXACT regular 2 columns by 2 rows grid of FOUR separate square badges. Native source detail at least 512x512 PER CELL, not enlarged small icons. Each badge fills 96% of its own cell, full silhouette inside its cell, equal centered scale. Actual transparent alpha between and outside badges, no shadows or haze outside silhouettes. No text, digits, labels, dividers, sheet frame or background. Match the supplied Mathematics badge EXACTLY in crisp sharp straight low-poly faceted cut-paper edges and geometry, chunky cream stone arch, dark navy faceted rock base, green polygon leaves, top yellow diamond. Change blue trim to rich TEAL with tiny purple and gold details for English. Same orthographic isometric camera, polygon scale and construction as Mathematics, NOT painterly, blurry, glossy or soft clay. Lower blank ivory plaque MUST stay x21..79%, y71..85% of EACH square badge; clean empty center, suitable for numeric overlay. Keep all action above plaque. Strong simple readable silhouettes at 128px, detailed crisp polygons at 512px. Four specific cells in reading order:\nTOP LEFT: ideas courtyard with lectern and polygon dialogue tiles. Olena at the LEFT behind an ideas courtyard lectern, body turned RIGHT, leaning forward while presenting a purple dialogue tile toward the center with one paw; other paw rests on lectern. Feet visible beside lectern. Tail lifted behind left. No book and no frontal waving..\nTOP RIGHT: meaning house with lantern and phrase tiles. Olena WALKING down a cream step on the RIGHT of meaning house, turned LEFT in side three-quarter view, carrying a lantern forward in one paw and holding a folded phrase tile near her chest with the other. Two stepping legs, tail swept behind right. Head looks left, no frontal book pose..\nBOTTOM LEFT: encounters market with travel tickets and suitcase. Olena KNEELING at the FRONT LEFT of encounters market, body turned RIGHT, packing travel tickets into an open purple suitcase with both paws. One knee bent on floor and one foot planted, face looking down right. Tail curls on left floor. Market stall behind right. No book and no waving..\nBOTTOM RIGHT: archive with bookshelves and open book. Olena SITTING on the LEFT library bench in archive, in clear RIGHT-FACING SIDE PROFILE with a large open book ON HER LAP, head inclined down to read, both paws resting on pages and both feet hanging visibly from bench. Tail curled below bench. Tall shelves fill back right. No frontal standing or waving..\nOlena is the SAME approved character in every scene: dark black-purple polygon cat, huge angular yellow eyes, one gold star on her ear, yellow scarf, purple chest panels, exactly two arms and two legs, original anatomy and proportions. Pose and location MUST differ substantially across all four cells as described, not the same front-facing cutout moved or mirrored. Do NOT paste reference avatar or repeat its waving standing book pose. Her paws naturally interact with each scene's prop. Preserve her identity while changing silhouette and orientation. Exactly ONE Olena in each cell.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "18896608c72fdf9f5cc11881fd0026a2449c77eab1e6123ebcc93e9b9aa7b785"
+    }
+  ]
+}

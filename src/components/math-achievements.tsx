@@ -5,6 +5,7 @@ import { MATH_COURSES, type MathCourseId } from "../data/math-courses";
 import { ALL_ACHIEVEMENTS, type Achievement } from "../domain/math-achievements";
 import {
   achievementArtPath,
+  achievementNumberY,
   achievementFamilies,
   achievementFamily,
   ACHIEVEMENT_MATERIALS,
@@ -96,7 +97,7 @@ export function AchievementArt({
               key={i}
               href={"/paper-digits.svg#digit-" + digit}
               x={general ? 80 - all.length * 6 + i * 12 : 80 - all.length * 7 + i * 14}
-              y={general ? "109" : "115"}
+              y={achievementNumberY(item)}
               width={general ? "12" : "14"}
               height={general ? "18" : "21"}
             />

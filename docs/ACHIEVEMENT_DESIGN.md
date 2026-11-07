@@ -79,3 +79,11 @@ A ampliação para 74 objetivos ingleses excedeu 4096 bytes no teste de coleçã
 ### Sino de atividades e progresso inglês
 
 Prática inglesa usa o mesmo resumo diário de Matemática, a partir de dez respostas aceitas, com ID estável por modalidade e dia no fuso da conta. A confirmação real de cada parte usa module, course english e level entre 0 e 7. Não publicar conclusão só por abrir uma ilha, por percentual parcial ou por uma tentativa final recusada. Janela de 24 horas, teto de doze resumos, cotas de publicação, privacidade, leitura, curtidas, retenção e bloqueio permanecem compartilhados. Publicação não recupera histórico anterior ao consentimento. O cliente continua limitando módulos matemáticos a seis. A leitura de cartas inglesas reconhece os três campos históricos de tentativa e usa os dois ledgers existentes, sem leitura adicional.
+
+### Resolução nativa e poses inglesas, 07/11/2026
+
+As 74 artes inglesas usam recortes nativos de 627 × 627 px, reduzidos para WebP 512 × 512 e miniaturas 128 × 128. Nunca ampliar recortes menores que 512 px. O exportador english_art.py rejeita fontes insuficientes antes de sobrescrever arquivos. A geração usa folhas 2 × 2, com transparência real. O manifesto achievement-english-art-sources.json registra prompts, hashes, dimensões e recortes. Os atlas anteriores de 8 × 8 e 4 × 6 ficam aposentados.
+
+Olena aparece somente no nível máximo de cada parte, com oito ações e silhuetas distintas: amarrar barco, tomar chá apontando o relógio, examinar cartões, usar telescópio, apresentar ideias, caminhar com lanterna, preparar mala e ler sentada. Preservar anatomia e identidade aprovadas.
+
+A posição vertical de PaperDigits é calibrada pela placa de cada imagem no arquivo gerado english-achievement-plates.ts, mantendo tamanho e renderização compartilhados com Matemática. URLs inglesas usam revisão v=20261107 para invalidar o cache anterior de sete dias.
