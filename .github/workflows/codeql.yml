@@ -17,6 +17,10 @@ permissions:
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
+    # Em repositório privado a varredura exige code scanning pago (GitHub Code Security) e o passo
+    # "Perform CodeQL analysis" falha com "Code scanning is not enabled". Pulado, o check fica
+    # "skipped" em vez de vermelho. Volta sozinho se o repositório for público de novo.
+    if: ${{ !github.event.repository.private }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:

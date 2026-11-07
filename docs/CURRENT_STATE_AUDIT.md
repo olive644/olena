@@ -1,3 +1,7 @@
+## CI: .well-known sem e2e e CodeQL em repositório privado, 07/11/2026
+
+`scripts/ci-scope.mjs` trata `public/.well-known/*.txt` e `*.json` como escopo sem e2e (teste em `scripts/ci-scope.test.mjs`; a PR do assetlinks rodou o e2e completo por falta disso). O job do `CodeQL` passa a ser pulado quando o repositório é privado, porque o code scanning não está habilitado e o passo de análise falhava. Nomes dos checks inalterados. Limite: não verificado se há plano pago de code scanning; se a dona contratar, remover a condição do job. Detalhes em `docs/CI_MINUTOS.md`.
+
 ## Porto das Vozes e Inglês introdutório, 02/11/2026
 
 Porto das Vozes abre Inglês com seis partes, 36 falas próprias e 144 tarefas em quatro formatos. Domínio 20/24, confirmação 4/5, revisão após reprovação, acertos/erros, pontos, XP e poeira cósmica usam a progressão documentada em VOICES_PORT.md. Inglês não modifica domínio ou pontos matemáticos. A coleção Arcano é comum. Áudio opcional somente com voz inglesa local; texto disponível e nenhuma IA generativa ou API didática remota ativada.
@@ -4581,8 +4585,16 @@ Validação de navegador: 16 cenários aprovados em desktop e celular, incluindo
 
 Otimização solicitada: arte inglesa em WebP 900 × 600, qualidade 85 e método 6, com 56544 bytes (55,2 KiB). Ela só entra no DOM ao selecionar Inglês, sem download inicial da nova arte, sem nova dependência de animação ou mudança de cache global.
 
+## Repositório privado: medição do CI e pendências, 07/11/2026
+
+A API do GitHub passou a mostrar o repositório como privado em 07/11/2026. Antes disso as execuções mostravam 0 minutos cobrados. Medido pelos horários dos jobs de 101 execuções do `application.yml` e 100 do `codeql.yml` desde 01/11 (cada job arredondado para cima): cerca de 5.168 minutos em 7 dias, 22.000 por mês projetados, contra um teto gratuito que se diz ser de 2.000 (não confirmado). O e2e é 69% do total, o push na `main` 22%, o CodeQL 7%. Uma execução completa de pull request passou de 47 para 61 minutos. O job `e2e` não depende de `quality`, então roda mesmo com o lint vermelho (210 minutos em 4 execuções). Nenhum corte isolado cabe no teto; o cenário mais radical ainda deixa cerca de 5.100 minutos por mês. Nenhum workflow, teste ou regra foi alterado nesta entrada: os cortes e as opções de pagar ou rodar o e2e fora do GitHub estão em `docs/CI_MINUTOS.md` e ficam com a dona.
+
+Pendências registradas em `docs/OPERACAO_E_CUSTOS.md` (4.2 e 4.3): conferir cobrança, CodeQL, Vercel, proteção da `main` e colaboradores; `security.txt`, `SECURITY.md` e `llms.txt` ainda apontam para o repositório, e sem o relato privado do GitHub não há canal público para vulnerabilidades até a dona escolher um e-mail. Não verificado: preço do minuto pago, comportamento do CodeQL e da proteção de branch em privado, e o plano da Vercel.
+
 ## Android: assetlinks publicado com as chaves de assinatura e de envio
 
 A TWA abria com a barra do navegador porque o site não publicava `/.well-known/assetlinks.json`. O arquivo foi gerado com `scripts/android/make-assetlinks.mjs` para o pacote `olenastudy.app` e dois SHA-256: o da chave de assinatura do app da Play (o que vale no app instalado pela loja, copiado da Play Console) e o da chave de envio, lido do certificado do .aab aceito pela Console (SHA-1 `CC:CE:04:CA:...`, igual ao que a Console exigiu). Não verificado em aparelho real. Conferir depois do deploy em `https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https://olenastudy.vercel.app&relation=delegate_permission/common.handle_all_urls` e, no aparelho, desinstalar e instalar de novo o app, porque o Android guarda a verificação em cache.
 
 Validação final: npm run verify aprovado com 411 arquivos e 2665 testes, lint sem erros, formatação/API/idiomas/build/performance aprovados. Entrada 220,8 KiB e aplicação 1739,5 KiB, abaixo do teto de 1742 KiB. No build final, medição de rede em Chromium registrou zero requisições da arte inglesa antes da seleção e uma requisição de 56544 bytes depois. Capturas atualizadas no build otimizado. Integrada main 78170dc, preservando a atualização de assetlinks Android. Conta real, Safari e aparelhos físicos não verificados.
+
+Mesclagem da PR593 autorizada explicitamente pela responsável com o repositório privado. Integrada main a6f96fd e resolvido somente conflito de acréscimos neste documento, preservando ambos. O CI anterior teve falhas de CodeQL por recurso desativado, Vercel sem conta verificada e falhas nos testes desktop notebook-showcase/page-index seguidas de timeout; mobile e validação geral passaram. Essas falhas não são registradas como CI verde.
