@@ -4,6 +4,7 @@ import { createProfileSocialHandler, type SocialState } from "./profile-social-h
 import type { HandleRegistry } from "./profile-handle-handler";
 import type { SocialFeed } from "../domain/profile-social";
 import { studyActivitySummary } from "./study-activity-summary";
+import { groupedActivities, groupedNotices, meaningfulActivity } from "../domain/activity-feed";
 import { ALL_ACHIEVEMENTS } from "../domain/math-achievements";
 import { encodeAchievements, compactAchievementAction } from "../domain/achievement-wire";
 const key = (uid: string) => createHash("sha256").update(uid).digest("hex");
@@ -883,4 +884,140 @@ it("publica progressão e conquista inglesas no sino com consentimento, leitura 
   await app.request("b", { action: "unblock", username: "alice" });
   await app.request("a", { action: "activity-privacy", enabled: false });
   expect((await app.feed("b", "rewards=1")).activities).toEqual([]);
+});
+
+// Duas contas que se seguem, cada uma estuda depois de consentir e publica. Usa o servidor real, o
+// leitor real do espaço de estudos (studyActivitySummary) e o agrupamento real que desenha a aba
+// Atividades do sino. Não usa dados de produção nem rede.
+const english = (
+  id: string,
+  at: number,
+  part: number,
+  mode: "practice" | "final",
+  q: number[],
+) => ({
+  id,
+  islandId: "english",
+  completedAt: new Date(at).toISOString(),
+  answers: q.length,
+  correct: q.length,
+  englishAttempt: { curriculum: 4, area: "english", part, mode, questions: q, correctQuestions: q },
+});
+const math = (id: string, at: number) => ({
+  id,
+  islandId: "mathematics:foundations",
+  completedAt: new Date(at).toISOString(),
+  answers: 12,
+  correct: 10,
+});
+const bellOf = (feed: SocialFeed) => ({
+  atividades: groupedActivities(feed.activities ?? []),
+  grupos: groupedNotices(feed.notifications),
+});
+function twoAccounts() {
+  const start = Date.parse("2026-10-17T12:00:00Z");
+  const cloud: Record<string, unknown[]> = { a: [], b: [] };
+  let clock = start;
+  const owner = { current: "a" };
+  const app = setup(async () =>
+    studyActivitySummary(JSON.stringify({ practiceActivities: cloud[owner.current] }), clock),
+  );
+  const publish = async (uid: string) => {
+    owner.current = uid;
+    clock = Date.parse("2026-10-17T12:00:00Z") + (app.state() ? 0 : 0) + elapsed.ms;
+    return app.request(uid, { action: "publish-activities" });
+  };
+  const elapsed = { ms: 0 };
+  const advance = (ms: number) => {
+    elapsed.ms += ms;
+    app.advance(ms);
+  };
+  return { app, cloud, publish, advance, start, at: (ms: number) => start + ms };
+}
+
+it("duas contas que se seguem veem as atividades uma da outra, em Inglês e Matemática, no sino", async () => {
+  const { app, cloud, publish, advance, at } = twoAccounts();
+  await app.request("a", { action: "activity-privacy", enabled: true });
+  await app.request("b", { action: "activity-privacy", enabled: true });
+  await app.request("a", { action: "follow", username: "bob" });
+  await app.request("b", { action: "follow", username: "alice" });
+  advance(60_000);
+  // Alice estuda Inglês (110 respostas e a prova da parte 0) e Matemática; Bob só Matemática.
+  const practice = Array.from({ length: 100 }, (_, i) =>
+    english(`en:a:${i}`, at(61_000 + i), 0, "practice", [i]),
+  );
+  cloud["a"] = [
+    ...practice,
+    english("en:a:final", at(62_000), 0, "final", [0, 1, 2, 3, 4]),
+    math("m:a", at(63_000)),
+  ];
+  cloud["b"] = [math("m:b", at(64_000))];
+  advance(120_000);
+  expect((await publish("a")).status).toBe(200);
+  expect((await publish("b")).status).toBe(200);
+
+  const alice = await app.feed("a");
+  const bob = await app.feed("b");
+  const kinds = (feed: SocialFeed) =>
+    (feed.activities ?? []).map(
+      (item) => `${item.person.username}:${item.kind}:${item.course ?? ""}`,
+    );
+  // Cada um vê as próprias atividades e as do amigo.
+  expect(kinds(alice)).toEqual(
+    expect.arrayContaining([
+      "alice:practice:english",
+      "alice:module:english",
+      "alice:practice:foundations",
+      "bob:practice:foundations",
+    ]),
+  );
+  expect(kinds(bob)).toEqual(expect.arrayContaining(kinds(alice)));
+  // O que a aba desenha não fica vazio para nenhum dos dois.
+  expect(bellOf(alice).atividades.length).toBeGreaterThanOrEqual(4);
+  expect(bellOf(bob).atividades.length).toBeGreaterThanOrEqual(4);
+  // Cada um recebe avisos só do OUTRO (nunca de si mesmo).
+  const noticeOwners = (feed: SocialFeed) =>
+    feed.notifications.filter((n) => n.kind === "activity").map((n) => n.person.username);
+  expect(new Set(noticeOwners(bob))).toEqual(new Set(["alice"]));
+  expect(new Set(noticeOwners(alice))).toEqual(new Set(["bob"]));
+  // Os avisos de atividade alimentam o contador de não lidos do sino (não viram grupos na lista).
+  const unread = (feed: SocialFeed) =>
+    feed.notifications.filter(
+      (n) => n.kind === "activity" && !n.read && n.activity && meaningfulActivity(n.activity),
+    ).length;
+  expect(unread(bob)).toBeGreaterThanOrEqual(3);
+  expect(unread(alice)).toBeGreaterThanOrEqual(1);
+});
+
+it("sem atividades no espaço da nuvem a aba fica vazia para as duas contas, mesmo seguindo-se", async () => {
+  const { app, publish, advance } = twoAccounts();
+  await app.request("a", { action: "activity-privacy", enabled: true });
+  await app.request("b", { action: "activity-privacy", enabled: true });
+  await app.request("a", { action: "follow", username: "bob" });
+  await app.request("b", { action: "follow", username: "alice" });
+  advance(120_000);
+  expect((await publish("a")).status).toBe(200);
+  expect((await publish("b")).status).toBe(200);
+  for (const uid of ["a", "b"]) {
+    const feed = await app.feed(uid);
+    expect(feed.activities).toEqual([]);
+    expect(bellOf(feed).atividades).toEqual([]);
+    expect(feed.notifications.filter((notice) => notice.kind === "activity")).toEqual([]);
+    // O aviso de "começou a seguir" continua existindo: seguir não depende de atividades.
+    expect(bellOf(feed).grupos.length).toBeGreaterThan(0);
+  }
+});
+
+it("atividade feita ANTES de consentir não aparece; só a feita depois", async () => {
+  const { app, cloud, publish, advance, at } = twoAccounts();
+  cloud["a"] = [math("antes", at(-3_600_000))];
+  await app.request("a", { action: "activity-privacy", enabled: true });
+  await app.request("b", { action: "follow", username: "alice" });
+  advance(60_000);
+  cloud["a"] = [math("antes", at(-3_600_000)), math("depois", at(30_000))];
+  advance(60_000);
+  expect((await publish("a")).status).toBe(200);
+  const feed = await app.feed("b");
+  expect(feed.activities).toHaveLength(1);
+  expect(feed.activities?.[0]?.kind).toBe("practice");
 });
