@@ -100,6 +100,8 @@ A IA não consegue fazer nem ler vários destes itens (a sessão só acessa endp
 6. **Dependabot e alertas de segurança:** devem continuar em privado; confirme em Settings, Code security.
 7. **Chaves e segredos:** privar não desfaz o que já foi público. Se alguma chave ou token alguma vez esteve no histórico, troque-a.
 
+8. **Novidades e versão do sino (Vercel):** o build lista as pull requests mescladas pela API do GitHub (`scripts/generate-system-updates.mjs`). Em repositório privado essa chamada sem credencial dá 404 e o site mantém o arquivo antigo (sem Novidades e com versão parada). Crie um **token só de leitura** (GitHub, Settings, Developer settings, Fine-grained tokens, só o repositório `olive644/olena`, permissões `Pull requests: Read-only` e `Metadata: Read-only`) e cadastre na Vercel (Settings, Environment Variables) como `GITHUB_READ_TOKEN`, para Production (e Preview se quiser). Não commite o token. Depois faça um novo deploy e confira `https://olenastudy.vercel.app/system-updates.json` e `/app-version.json`. Sem o token o app continua funcionando, só sem Novidades novas.
+
 ### 4.3 Links públicos que apontam para o repositório (precisam de decisão)
 
 Estes arquivos do site citam o repositório e passam a não funcionar para quem não é colaborador:
