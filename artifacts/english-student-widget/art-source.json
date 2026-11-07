@@ -10,5 +10,6 @@
   "edit": "Remove only the two speech bubbles on the left; preserve the chosen Olena, book, pose, colors and transparency.",
   "webpQuality": 85,
   "webpMethod": 6,
-  "outputBytes": 56544
+  "outputBytes": 56544,
+  "supersededBy": "../student-widget-cleanup/art-sources.json"
 }

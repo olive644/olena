@@ -120,7 +120,7 @@
 .math-hero-copy {
   max-width: 650px;
 }
-.math-hero-copy h1 {
+.math-hero-copy :is(h1, h2) {
   font-size: clamp(25px, 3.2vw, 44px);
   line-height: 1.12;
   margin: 14px 0;
@@ -213,7 +213,7 @@
   .math-hero-slide--peek::before {
     opacity: 0.06;
   }
-  .math-hero-copy h1 {
+  .math-hero-copy :is(h1, h2) {
     font-size: 29px;
   }
   .student-space .metric-row article > .paper-action-icon {
@@ -507,4 +507,12 @@ html[data-reduce-motion="true"] .student-space *::after {
   .math-hero-slide:not(.english-hero-slide) {
     padding-bottom: 172px;
   }
+}
+
+.english-hero-decoration {
+  color: var(--violet);
+}
+
+.english-hero-art > img {
+  animation: none;
 }

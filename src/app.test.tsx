@@ -28,7 +28,7 @@ describe("App", () => {
 
   it("apresenta a marca textual sem avisos ou mascote decorativa no cabeçalho", () => {
     render(<App />);
-    expect(screen.getByRole("heading", { name: "A próxima descoberta é sua." })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Espaço do aluno" })).toBeTruthy();
     expect(screen.queryByText(/dados salvos neste dispositivo/i)).toBeNull();
     const sidebar = screen.getByRole("complementary", { name: "" });
     fireEvent.click(within(sidebar).getByRole("button", { name: "Expandir menu lateral" }));
@@ -40,7 +40,7 @@ describe("App", () => {
 
   it("mostra Oliver e abre diretamente as ilhas de Matemática", async () => {
     render(<App />);
-    expect(screen.getByRole("heading", { name: "A próxima descoberta é sua." })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Espaço do aluno" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Explorar Matemática" }));
     expect(
       await screen.findByRole(

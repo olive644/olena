@@ -1,0 +1,16 @@
+<svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 96 72"
+
+
+        >
+          <path fill="#51259B" d="M5 40 44 36 48 42 52 36 91 40 88 66 48 71 8 65Z" />
+          <path fill="#FFF9EF" d="M10 34 31 30 48 37 65 30 86 34 82 58 62 57 48 65 34 57 14 58Z" />
+          <path fill="#E8D1A3" d="m31 30 17 7v28l-14-8-20 1 19-6ZM65 30 48 37v28l14-8 20 1-19-6Z" />
+          <path fill="#A779EF" d="m5 40 5-6 4 24 20-1 14 8v6L8 65Z" />
+          <g class="star">
+            <path fill="#FACC15" d="m48 2 6 10 12 2-9 9 2 12-11-6-11 6 2-12-9-9 12-2Z" />
+            <path fill="#FFE88D" d="M48 2v18L30 14l12-2Z" />
+            <path fill="#D5A71A" d="m48 20 11 15-2-12 9-9Z" />
+          </g>
+        </svg>
