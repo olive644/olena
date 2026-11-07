@@ -18,13 +18,13 @@ Feito no repositório:
   do app já criado no Play Console.
 - `scripts/android/make-assetlinks.mjs`: gera `public/.well-known/assetlinks.json` a partir de impressões
   digitais reais (uma impressão errada faz a verificação falhar sem avisar).
-- Em 2026-11-07 o arquivo foi publicado com uma impressão: o SHA-256 da **chave de envio** do app
-  (`E0:42:9B:A6:DA:85:49:55:29:13:BB:23:2D:06:4D:AC:A5:FB:6F:0E:CB:D7:A0:E8:07:01:1C:D0:FF:77:B3:A0`),
-  lido do certificado dentro do .aab que a Play Console aceitou (SHA-1 `CC:CE:04:CA:...`, o mesmo que a
-  Console exige). Isso faz abrir sem barra um APK do pacote `olenastudy.app` instalado direto, assinado
-  com essa chave. **Falta** a impressão da chave de assinatura do app da Play (Integridade do app >
-  Assinatura de apps): é a que vale no app instalado pela loja, e deve ser acrescentada com mais um
-  `--fingerprint`. Um APK do pacote antigo `app.vercel.olenastudy.twa` nunca abre sem barra.
+- Em 2026-11-07 o arquivo foi publicado com duas impressões digitais (SHA-256) do pacote `olenastudy.app`:
+  a da **chave de assinatura do app da Play** (`E8:69:A2:89:BB:4B:F6:3E:74:FD:30:14:F3:35:4D:37:A5:69:CD:03:C9:08:F3:E7:DB:19:66:0F:A3:F6:B5:07`,
+  copiada por quem administra a Play Console), que vale no app instalado pela loja, e a da **chave de envio**
+  (`E0:42:9B:A6:DA:85:49:55:29:13:BB:23:2D:06:4D:AC:A5:FB:6F:0E:CB:D7:A0:E8:07:01:1C:D0:FF:77:B3:A0`,
+  lida do certificado do .aab que a Console aceitou; SHA-1 `CC:CE:04:CA:...`, o mesmo que a Console exige),
+  que vale num APK instalado direto e assinado com ela. Um APK do pacote antigo `app.vercel.olenastudy.twa`
+  nunca abre sem barra.
 - Cabeçalhos de `Content-Type` do manifesto e do assetlinks em `vercel.json`, `.gitignore` para
   `*.keystore`, `*.jks` e a saída do build, e `src/android-twa.test.ts` cobrindo tudo isso.
 
