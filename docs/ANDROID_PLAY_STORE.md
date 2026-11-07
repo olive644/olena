@@ -16,9 +16,15 @@ Feito no repositório:
   `node scripts/android/render-android-icons.mjs` a partir de `public/olena-favicon.png`.
 - `android/twa-manifest.json`: configuração para o Bubblewrap, com o pacote `olenastudy.app`, o mesmo
   do app já criado no Play Console.
-- `scripts/android/make-assetlinks.mjs`: gera `public/.well-known/assetlinks.json` quando houver a
-  impressão digital real. O arquivo **não está commitado de propósito**: uma impressão errada faz a
-  verificação falhar sem avisar.
+- `scripts/android/make-assetlinks.mjs`: gera `public/.well-known/assetlinks.json` a partir de impressões
+  digitais reais (uma impressão errada faz a verificação falhar sem avisar).
+- Em 2026-11-07 o arquivo foi publicado com uma impressão: o SHA-256 da **chave de envio** do app
+  (`E0:42:9B:A6:DA:85:49:55:29:13:BB:23:2D:06:4D:AC:A5:FB:6F:0E:CB:D7:A0:E8:07:01:1C:D0:FF:77:B3:A0`),
+  lido do certificado dentro do .aab que a Play Console aceitou (SHA-1 `CC:CE:04:CA:...`, o mesmo que a
+  Console exige). Isso faz abrir sem barra um APK do pacote `olenastudy.app` instalado direto, assinado
+  com essa chave. **Falta** a impressão da chave de assinatura do app da Play (Integridade do app >
+  Assinatura de apps): é a que vale no app instalado pela loja, e deve ser acrescentada com mais um
+  `--fingerprint`. Um APK do pacote antigo `app.vercel.olenastudy.twa` nunca abre sem barra.
 - Cabeçalhos de `Content-Type` do manifesto e do assetlinks em `vercel.json`, `.gitignore` para
   `*.keystore`, `*.jks` e a saída do build, e `src/android-twa.test.ts` cobrindo tudo isso.
 

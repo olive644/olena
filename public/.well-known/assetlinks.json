@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "olenastudy.app",
+      "sha256_cert_fingerprints": [
+        "E0:42:9B:A6:DA:85:49:55:29:13:BB:23:2D:06:4D:AC:A5:FB:6F:0E:CB:D7:A0:E8:07:01:1C:D0:FF:77:B3:A0"
+      ]
+    }
+  }
+]
