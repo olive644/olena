@@ -669,16 +669,7 @@ export function EnglishIslandJourney({
               aria-label={uiText("Revisão com a Olena")}
             >
               <section className="oliver-review__lesson">
-                <div className="oliver-review__character">
-                  <img
-                    src="/languages/characters/olena-english-v2.webp"
-                    alt={uiText("Olena")}
-                    width="330"
-                    height="330"
-                  />
-                </div>
                 <div className="oliver-review__speech" data-state="explain">
-                  <span className="oliver-review__speaker">{uiText("Olena")}</span>
                   <h1 tabIndex={-1}>{uiText("Vamos entender juntos?")}</h1>
                   <p className="oliver-review__reason">
                     {uiText("Sua resposta: {0}", [

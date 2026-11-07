@@ -338,12 +338,16 @@ for (const theme of ["light", "dark"]) {
     }
     await expect(page.getByRole("region", { name: "Revisão com a Olena" })).toBeVisible();
     await expect(page.locator(".math-hearts")).toHaveCount(0);
-    if (info.project.name === "mobile") {
-      // No celular a Olena fica à direita, alinhada à borda do cartão de explicação.
-      const art = (await page.locator(".english-mentor .oliver-review__character").boundingBox())!;
+    // A explicação não mostra a Olena (nem imagem, nem rótulo) e o cartão usa a largura toda.
+    await expect(
+      page.locator('.english-mentor img[src*="characters"], .english-mentor img[alt="Olena"]'),
+    ).toHaveCount(0);
+    await expect(page.locator(".english-mentor .oliver-review__speaker")).toHaveCount(0);
+    await expect(page.locator(".english-mentor .oliver-review__character")).toHaveCount(0);
+    {
+      const lesson = (await page.locator(".english-mentor .oliver-review__lesson").boundingBox())!;
       const speech = (await page.locator(".english-mentor .oliver-review__speech").boundingBox())!;
-      expect(art.x + art.width).toBeGreaterThan(speech.x + speech.width - 24);
-      expect(art.x).toBeGreaterThan(speech.x + speech.width / 2 - 40);
+      expect(speech.width).toBeGreaterThan(lesson.width - 2);
     }
     await page.keyboard.press("Tab");
     await page.locator(".english-mentor h1").focus();
