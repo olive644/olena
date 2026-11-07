@@ -17,7 +17,17 @@ import { execFileSync } from "node:child_process";
 import { appendFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
-const DOCS_ONLY = [/^docs\//, /\.md$/i, /^LICENSE/, /^\.gitignore$/, /^\.gitleaksignore$/];
+const DOCS_ONLY = [
+  /^docs\//,
+  /\.md$/i,
+  /^LICENSE/,
+  /^\.gitignore$/,
+  /^\.gitleaksignore$/,
+  // Arquivos de verificação servidos em /.well-known/ (security.txt, assetlinks.json): texto e
+  // JSON estáticos que o app não importa, testados por testes unitários (src/security-txt.test.ts,
+  // src/android-twa.test.ts). Só um nível, para não pegar subpastas com outro uso.
+  /^public\/\.well-known\/[^/]+\.(txt|json)$/,
+];
 
 const MATRIX = {
   desktop: { project: "desktop", label: "desktop", browser: "chromium", workers: 2, shard: "1/1" },
@@ -82,7 +92,10 @@ export function evaluateGate({ job, scope, changesResult, e2eResult }) {
     return { ok: false, message: `Não foi possível decidir o escopo do e2e (${changesResult}).` };
   if (scope === "none")
     return e2eResult === "skipped"
-      ? { ok: true, message: "Só documentação mudou: e2e dispensado." }
+      ? {
+          ok: true,
+          message: "Só documentação ou arquivos de verificação estáticos mudaram: e2e dispensado.",
+        }
       : { ok: false, message: `Escopo "none" com e2e em estado "${e2eResult}".` };
   if (scope === "desktop")
     return e2eResult === "success"

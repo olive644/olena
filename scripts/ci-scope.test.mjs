@@ -186,3 +186,20 @@ test("comandos do Discord com backend e documentação rodam só o desktop, e co
     "full",
   );
 });
+
+test("arquivos de /.well-known/ não pedem e2e, mas nada além deles", () => {
+  assert.equal(
+    decideScope({
+      event: "pull_request",
+      changedFiles: ["public/.well-known/assetlinks.json", "public/.well-known/security.txt"],
+    }),
+    "none",
+  );
+  for (const file of [
+    "public/.well-known/sub/x.json",
+    "public/.well-known/script.js",
+    "public/manifest.webmanifest",
+    "public/other/.well-known/a.json",
+  ])
+    assert.equal(decideScope({ event: "pull_request", changedFiles: [file] }), "full");
+});
