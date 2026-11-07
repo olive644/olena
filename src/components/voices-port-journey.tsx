@@ -3,7 +3,7 @@ import { lastEnglishCheckpointPart } from "../data/english-checkpoint";
 import { useEffect, useRef, useState } from "react";
 import { readLastIsland, rememberEnteredIsland } from "../data/last-island";
 import type { PracticeActivity, WorkspaceState } from "../domain/workspace";
-import { englishProgress } from "../domain/language-progress";
+import { useEnglishProgress } from "../hooks/use-english-progress";
 import { EnglishIslandJourney } from "./english-island-journey";
 import { VoicesLanguageMap } from "./voices-language-map";
 export function VoicesPortJourney({
@@ -22,8 +22,9 @@ export function VoicesPortJourney({
     size: number;
     id: string;
   }>();
+  const english = useEnglishProgress(workspace.practiceActivities);
   const [partIndex, setPartIndex] = useState(() => {
-    const parts = englishProgress(workspace.practiceActivities).parts;
+    const parts = english.parts;
     // A última parte aberta (ou a do checkpoint) vale se já estiver liberada.
     const opened = readLastIsland();
     const remembered =
@@ -57,7 +58,7 @@ export function VoicesPortJourney({
       key="english-parts"
       initialPart={partIndex}
       deliveryOrigin={deliveryOrigin}
-      progress={englishProgress(workspace.practiceActivities)}
+      progress={english}
       onSelect={(part) => {
         setDeliveryOrigin(undefined);
         setPartIndex(part);

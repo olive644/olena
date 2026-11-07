@@ -8,6 +8,7 @@ import { ENGLISH_AREAS, isEnglishArea, type EnglishArea } from "./english-areas.
 import type { PracticeActivity } from "./workspace";
 import { A1_BANK, a1Coverage } from "./english-a1.js";
 import { ENGLISH_LEVELS, isEnglishLevel, type EnglishLevel } from "./english-levels.js";
+import type { EnglishLedger } from "./english-progress-ledger.js";
 
 export type LanguageAttempt = {
   curriculum?: 2 | 3 | 4 | 5;
@@ -67,13 +68,16 @@ export function validLanguageAttempt(value: unknown): value is LanguageAttempt {
 export function englishProgress(
   activities: readonly PracticeActivity[] = [],
   area: EnglishArea = "english",
+  ledger: EnglishLedger = {},
 ) {
-  const areas = ENGLISH_AREAS.map(() =>
-    Array.from({ length: ENGLISH_PARTS }, () => ({
-      solved: new Set<number>(),
+  // O livro guardado na conta é o ponto de partida: o que já foi resolvido ou confirmado não
+  // depende de a lista de atividades ainda existir. As atividades só acrescentam a partir dele.
+  const areas = ENGLISH_AREAS.map((name) =>
+    Array.from({ length: ENGLISH_PARTS }, (_, index) => ({
+      solved: new Set<number>(ledger[name]?.[index]?.solved ?? []),
       correct: 0,
       errors: 0,
-      confirmed: false,
+      confirmed: ledger[name]?.[index]?.confirmed === true,
       review: 0,
     })),
   );

@@ -359,10 +359,12 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Envio à conta que isola chave recusada pelas regras e avisa na tela: medidos 1742,4 KiB com o código já
 // enxugado e o texto do aviso por ID do catálogo (1742,5 KiB antes disso), entrada 219,5 KiB; teto
 // 1743 KiB, aumento autorizado pela dona do projeto em 07/11/2026. A base da main não foi medida.
-const MAX_TOTAL_JS_BYTES = 1743 * 1024;
+// Progresso de Inglês em chave própria sincronizada (livro, hook e merge): medidos 1744,3 KiB, entrada
+// 219,5 KiB inalterada; teto 1745 KiB, mesma autorização de aumento medido da dona do projeto.
+const MAX_TOTAL_JS_BYTES = 1745 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
-const HARD_CEILING_TOTAL_JS_BYTES = 1743 * 1024;
+const HARD_CEILING_TOTAL_JS_BYTES = 1745 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 // Cena do caderno 3D (three.js e o código da cena): medida em 528.8 KiB, mais a tela e os sons. É baixada somente quando
 // a pessoa abre um caderno com o recurso ligado e vale o mesmo precedente do leitor PDF: orçamento

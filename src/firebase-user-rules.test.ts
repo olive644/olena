@@ -125,7 +125,7 @@ describe("regras de /users/<uid>", () => {
     const others = Object.keys(
       encodeCloudItems(Object.fromEntries(SYNCED_STORAGE_KEYS.slice(1).map((name) => [name, "v"]))),
     );
-    expect(others).toHaveLength(17);
+    expect(others).toHaveLength(SYNCED_STORAGE_KEYS.length - 1);
     for (const wire of others) expect(expression).toContain(`'${wire}'`);
     // Expressão estática do repositório, nunca entrada de usuário.
     const evaluate = new Function("newData", `return (${expression});`) as (
