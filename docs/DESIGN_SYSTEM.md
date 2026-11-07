@@ -397,3 +397,9 @@ Cartas de arcano seguem exclusivamente [ARCANA_CARD_DESIGN.md](ARCANA_CARD_DESIG
 ## Foco informativo e realce global, 03/11/2026
 
 Realçar seleções controla somente o reforço opcional de aria-pressed/aria-selected/input marcado, aplicado pela preferência global data-highlight-selections. Foco de teclado em controles é obrigatório mesmo com a opção desligada. Títulos e marcos de leitura com tabindex=-1 recebem foco programático para anúncio e continuidade, mas nunca sublinhado, filtro ou sombra de botão. A exceção global em paper-controls.css exclui botões, links, campos, summary, papéis interativos e edição. Não adicionar CSS local forçando sublinhado em títulos informativos. Testar após navegação por teclado, não apenas clique, pois :focus-visible muda com a modalidade.
+
+## Widget de Inglês no Espaço do aluno, 06/11/2026 (Recife)
+
+O carrossel inicial reúne Matemática com Oliver e Inglês com Olena. Troca manual por dois seletores de 48 × 44 px, setas do teclado e gesto horizontal; não trocar automaticamente. Rolagem vertical permanece disponível. A seleção ativa é anunciada com aria-pressed e o texto do cartão com aria-live polite. Ambos usam a estrutura e os controles compartilhados.
+
+A responsável escolheu a Olena sobre um livro aberto e pediu remover os dois balões. Usar public/languages/olena-english-widget.webp, 900 × 600, transparente, preservando rosto, olhos, estrela, lenço e pose da imagem escolhida. Não substituir por outro redesenho nem recolocar balões na decoração do widget. Matemática conserva seu Oliver e Rive; a nova arte inglesa é estática e respeita redução de movimento.
