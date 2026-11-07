@@ -94,7 +94,7 @@ test("mostra Oliver e o convite de Matemática nos dois temas", async ({ page })
     ).toBeVisible();
     const art = page.getByAltText("Oliver aparece por trás do widget de Matemática");
     await expect(art).toBeVisible();
-    await expect(art).toHaveAttribute("src", "/oliver-peeking-widget.webp");
+    await expect(art).toHaveAttribute("src", "/oliver-peeking-widget.webp?v=2");
 
     if (theme === "light") {
       await setTestTheme(page, "dark");
