@@ -19,12 +19,12 @@ import {
   arcadeElapsed,
 } from "../domain/arcade-clock";
 import { RoomPointsIcon, RoomClockIcon, RoomSecondsUnit } from "./room-paper-icons";
-import { useEffect, useEffectEvent, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useEffectEvent, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { PracticeActivity, WorkspaceState } from "../domain/workspace";
+import { useEnglishProgress } from "../hooks/use-english-progress";
 import {
-  englishProgress,
   englishAttemptOf,
   ENGLISH_TARGET,
   type LanguageAttempt,
@@ -99,10 +99,7 @@ export function EnglishIslandJourney({
   const [contentError, setContentError] = useState(false);
   const [loadRevision, setLoadRevision] = useState(0);
   const course = loaded?.area === area ? loaded : undefined;
-  const progress = useMemo(
-    () => englishProgress(workspace.practiceActivities, area),
-    [workspace.practiceActivities, area],
-  );
+  const progress = useEnglishProgress(workspace.practiceActivities, area);
   const part = initialPart;
   const [countdown, setCountdown] = useState(0);
   const [reviewIndex, setReviewIndex] = useState(0);

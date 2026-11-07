@@ -68,4 +68,19 @@ describe("mergeSyncedItems", () => {
       conflicts: [],
     });
   });
+
+  it("une o progresso de Inglês dos dois aparelhos em vez de escolher um lado", () => {
+    const key = "helena.englishProgress.v1";
+    const part = (solved: number[], confirmed = false) => ({ solved, confirmed });
+    const side = (parts: ReturnType<typeof part>[]) => JSON.stringify({ english: parts });
+    const merged = mergeSyncedItems(
+      {},
+      { [key]: side([part([1, 2]), part([])]) },
+      { [key]: side([part([2, 3], true), part([9])]) },
+    );
+    const result = JSON.parse(merged.items[key]!) as { english: ReturnType<typeof part>[] };
+    expect(result.english[0]).toEqual({ solved: [1, 2, 3], confirmed: true });
+    expect(result.english[1]).toEqual({ solved: [9], confirmed: false });
+    expect(merged.conflicts).not.toContain(key);
+  });
 });
