@@ -1,3 +1,7 @@
+## Teste de desempenho da busca de cadernos menos frágil, 07/11/2026
+
+`src/domain/notebook-search.test.ts` ("varre seis mil folhas") media uma única execução contra 120 ms e falhou em runners lentos do CI sem regressão (129,6 ms e 121,5 ms em duas execuções de PRs que não tocam a busca; passa em cerca de 14 ms localmente, não verificado o tempo típico do CI). O teste passa a executar cinco vezes e comparar o menor tempo com os mesmos 120 ms: ruído de CPU compartilhada só soma tempo, então o mínimo reflete o custo real, e uma regressão de verdade deixa todas as medições acima do limite. Limite, teste e cobertura mantidos; nenhum teste pulado ou desativado. Conferido que o teste ainda falha com um limite de 1 ms.
+
 ## CI: desktop em duas partes, 07/11/2026
 
 `scripts/ci-scope.mjs` divide o e2e desktop em `desktop shard 1/2` e `2/2` (`--shard`), em pull request e no push na `main`. O workflow ganha o gate `desktop-result`, que mantém o nome `Desktop and mobile smoke tests (desktop)` para a proteção da branch. Motivo: o job único estourava os 20 min do passo em runners lentos. Limites: o tempo por parte e o custo em minutos ainda não foram medidos; o desktop da própria PR é a primeira medição. Detalhes em `docs/CI_MINUTOS.md`.
