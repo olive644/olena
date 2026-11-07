@@ -11,7 +11,7 @@ import {
   readSyncedStorage,
   SYNCED_STORAGE_EVENT,
 } from "../data/synced-storage";
-import { mergeWorkspaceStates } from "../domain/workspace-sync-merge";
+import { mergeAccountWorkspace, mergeWorkspaceStates } from "../domain/workspace-sync-merge";
 import type { SyncedItems, SyncedMergeResult } from "../data/sync-conflict";
 import { mergeReadUpdates, SYSTEM_UPDATES_READ_KEY } from "../data/system-updates";
 import { FOCUS_SESSION_KEY } from "../domain/focus-session";
@@ -403,15 +403,9 @@ export function useCloudSync() {
                 const account = loadWorkspace({
                   getItem: () => accountSerialized,
                 });
-                const sessions = new Map(
-                  account.focusSessions.map((session) => [session.id, session]),
+                merged[WORKSPACE_STORAGE_KEY] = serializeWorkspace(
+                  mergeAccountWorkspace(cached, account),
                 );
-                for (const session of cached.focusSessions)
-                  if (!sessions.has(session.id)) sessions.set(session.id, session);
-                merged[WORKSPACE_STORAGE_KEY] = serializeWorkspace({
-                  ...account,
-                  focusSessions: [...sessions.values()],
-                });
               }
             }
             if (localAfterGet[SYSTEM_UPDATES_READ_KEY] || cloud.items[SYSTEM_UPDATES_READ_KEY])
