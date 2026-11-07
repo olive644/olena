@@ -13,3 +13,10 @@ Comparação no componente real AchievementArt, com Matemática e Inglês no mes
 - [Poses mobile escuras](mobile-poses-dark.png)
 
 Reproduzir com `npm run dev -- --host 127.0.0.1 --port 4174` e `node artifacts/english-art-quality-review/capture.mjs`. O roteiro usa Chromium instalado em /usr/bin/chromium. Exportar com `python scripts/achievement-art/english_art.py --plan docs/achievement-english-art-sources.json`.
+
+## Ajuste aprovado em 06/11, Recife
+
+Removidos os grupos de três raios amarelos de oito artes: acertos globais 50/100/250, quatro níveis de objetos da parte 4 e a confirmação dessa parte com Olena. As outras células dos atlas editados mantêm as fontes anteriores. Bordas turquesa conferidas nas 74 conquistas; folha azul descartada permanece fora da entrega.
+
+- [Oito correções no desktop](desktop-cleanup-light.png)
+- [Oito correções no celular escuro](mobile-cleanup-dark.png)

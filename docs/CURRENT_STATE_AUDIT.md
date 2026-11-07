@@ -4564,3 +4564,9 @@ Relato: as conquistas de Inglês pareciam borradas e demoravam mais que as de Ma
 Integração com main 2b864e5: preservadas miniaturas de 256 px e revisão de erros sem avatar. A tabela antiga de placas foi substituída pelo mapa gerado das novas fontes; a regressão de paridade das miniaturas foi incorporada a english-achievement-art.test.ts.
 
 Validação final desta correção: npm run verify aprovado, 410 arquivos e 2661 testes, lint/formatação/API/idiomas/build/performance aprovados. Entrada 220,8 KiB, aplicação 1737,9 KiB, abaixo do teto de 1742. Cinco testes Python do exportador aprovados. Dezesseis cenários Playwright das galerias inglesa, matemática e geral aprovados em desktop e celular, incluindo claro/escuro, inspeção, destaques e PNG. Chromium do ambiente usado via configuração temporária removida após a execução. Conta real, aparelhos físicos e Safari não verificados.
+
+### 06/11/2026, Recife: remoção dos três raios nas conquistas inglesas
+
+Revisadas visualmente as 74 artes finais. Encontrado o grupo de três raios amarelos nas quatro artes de objetos da parte 4, em acertos globais 50/100/250 e na confirmação máxima da parte 4 com Olena. Oito artes corrigidas via edição de imagem, mantendo poses e bordas turquesa. As tentativas azuis descartadas não constam no manifesto ou nos arquivos publicados. Fontes e prompts de edição preservados no manifesto; somente as oito células afetadas foram substituídas. Mantidos 627 px nativos, WebP 512 e miniaturas 256. Capturas cleanup em artifacts/english-art-quality-review mostram as oito no componente real, desktop e celular 320 px, claro/escuro e sem overflow horizontal.
+
+Validação após a remoção: npm run verify aprovado novamente, 410 arquivos e 2661 testes; cinco testes do exportador aprovados; quatro cenários Playwright ingleses aprovados em desktop/mobile e claro/escuro. Capturas cleanup atualizadas. Entrada 220,8 KiB e aplicação 1737,9 KiB, sem alteração nos limites.

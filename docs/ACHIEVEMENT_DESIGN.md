@@ -87,3 +87,5 @@ As 74 artes inglesas usam recortes nativos de 627 × 627 px, reduzidos para WebP
 Olena aparece somente no nível máximo de cada parte, com oito ações e silhuetas distintas: amarrar barco, tomar chá apontando o relógio, examinar cartões, usar telescópio, apresentar ideias, caminhar com lanterna, preparar mala e ler sentada. Preservar anatomia e identidade aprovadas.
 
 A posição vertical de PaperDigits é calibrada pela placa de cada imagem no arquivo gerado english-achievement-plates.ts, mantendo tamanho e renderização compartilhados com Matemática. URLs inglesas usam revisão v=20261107 para invalidar o cache anterior de sete dias.
+
+Direção visual confirmada pela responsável em 06/11/2026 (Recife): não usar grupos de três raios amarelos, marcas de atenção ou traços de som nas conquistas inglesas, inclusive junto dos balões e da Olena. Molduras inglesas permanecem turquesa; tentativas descartadas com azul não integram o manifesto publicado.

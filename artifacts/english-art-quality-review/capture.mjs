@@ -24,10 +24,17 @@ try {
         path: fileURLToPath(new URL(`${device}-comparison-${theme}.png`, import.meta.url)),
         animations: "disabled",
       });
-      await page.locator(".quality-poses").screenshot({
-        path: fileURLToPath(new URL(`${device}-poses-${theme}.png`, import.meta.url)),
+      await page.locator(".quality-cleanup").screenshot({
+        path: fileURLToPath(new URL(`${device}-cleanup-${theme}.png`, import.meta.url)),
         animations: "disabled",
       });
+      await page
+        .locator(".quality-poses")
+        .last()
+        .screenshot({
+          path: fileURLToPath(new URL(`${device}-poses-${theme}.png`, import.meta.url)),
+          animations: "disabled",
+        });
       await page.close();
       console.log(`${device} ${theme}: same-scale resolution and eight poses captured`);
     }

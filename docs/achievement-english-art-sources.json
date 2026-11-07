@@ -103,7 +103,7 @@
       "kind": "objects",
       "cells": [
         {
-          "id": "english-correct-50",
+          "id": null,
           "scene": "open book and colorful polygon dialogue bubbles; progressive level 3 of 8: larger main object, two supporting props and a short cream architectural feature",
           "sourceRect": [0, 0, 627, 627],
           "nativeSize": [627, 627],
@@ -112,7 +112,7 @@
           "numberY": 115.18
         },
         {
-          "id": "english-correct-100",
+          "id": null,
           "scene": "open book and colorful polygon dialogue bubbles; progressive level 4 of 8: richer scene with extra architecture, secondary object and pennant",
           "sourceRect": [627, 0, 1254, 627],
           "nativeSize": [627, 627],
@@ -121,7 +121,7 @@
           "numberY": 115.18
         },
         {
-          "id": "english-correct-250",
+          "id": null,
           "scene": "open book and colorful polygon dialogue bubbles; progressive level 5 of 8: large developed scene with supporting buildings and several purposeful objects",
           "sourceRect": [0, 627, 627, 1254],
           "nativeSize": [627, 627],
@@ -604,8 +604,8 @@
           "numberY": 117.47,
           "sourceRect": [0, 0, 627, 627],
           "nativeSize": [627, 627],
-          "outputSha256": "8fb1be17d55381299ec5ce4d9718be9861b87ae3d399fa275c0f6a34fe0318a1",
-          "thumbnailSha256": "5c6fdc0336f37e840295760524857ea91e00f11f6fa1b96699860399f3176fdc"
+          "outputSha256": "82a4ffee37a74a5bff70bccc554c9ed4c4ced430da6e77620fa5f9405b507799",
+          "thumbnailSha256": "c732a6b4f439462f458db2384a39c69b3e3613dd435fc760b44c0e6efafc2440"
         },
         {
           "id": "english-part-4-correct-100",
@@ -613,17 +613,17 @@
           "numberY": 117.47,
           "sourceRect": [627, 0, 1254, 627],
           "nativeSize": [627, 627],
-          "outputSha256": "32b8b95a0a74895345282a0711cea1f79390880777d753699eb33e3c184dd789",
-          "thumbnailSha256": "f890acd81d2cd99222eccfe288f15414381878227ae124cb74e2aaa84576458a"
+          "outputSha256": "697473f205fe448d7c04d0b14a275987b2e984a568c351398839a8ed9f1fa84a",
+          "thumbnailSha256": "651c4959d24c20dc1cdb22ad987c5d632409fbe02ef46cfded01c326019418fc"
         },
         {
           "id": "english-part-4-variety-25",
           "scene": "ideas courtyard with lectern and polygon dialogue tiles; richer scene with complete main motif, two objects and short architecture",
-          "numberY": 117.35,
+          "numberY": 117.47,
           "sourceRect": [0, 627, 627, 1254],
           "nativeSize": [627, 627],
-          "outputSha256": "d63651c6f3ed9c7cb393d68f6bf62aa801f4b9cbc58afc41ff41f5d09d600db5",
-          "thumbnailSha256": "69ba37e343bb00ec43c3576aa0f3daf24f977c9ce149185de84fb503f8744496"
+          "outputSha256": "189c1620bb3b0035aba184bc3ee0fa37fc3d8a20d2ce8ae8dfd7ee2f359246c4",
+          "thumbnailSha256": "d86f4db89f5b6ac6df0c36553950980940166cf3a1b7032ae7861c713b0e9821"
         },
         {
           "id": "english-part-4-variety-50",
@@ -631,14 +631,17 @@
           "numberY": 117.47,
           "sourceRect": [627, 627, 1254, 1254],
           "nativeSize": [627, 627],
-          "outputSha256": "f49909ca0aef7df1b266c3feb6db303abcba1d0067110fc68bcb2cb27da96781",
-          "thumbnailSha256": "a0bbf45c718bd4047023eadd05c386faa00df4f4bb0a31176ae9961d3540a484"
+          "outputSha256": "499e6bbf267e1b0ead0b38f92c38acc5c292a3556dc649481eb5c1f5c8928d7d",
+          "thumbnailSha256": "2cac0d2ca88b8cd81ee889a3f81758958a847b704322be235fd5e7011f3b7853"
         }
       ],
-      "source": "/workspace/generated_images/exec-08079ec9-dd25-424b-a25a-dae5b087b750.png",
+      "source": "/workspace/generated_images/exec-eb317166-8a1d-4f86-aae4-537b1d86057b.png",
       "generationPrompt": "NATIVE HIGH RESOLUTION square production atlas. Request 2048x2048, MINIMUM 1024x1024. EXACTLY FOUR separate square achievement badges in a regular 2x2 grid (two columns, two rows), each badge fills 96% of its square cell. Real transparent alpha outside each complete silhouette, no visible background or external shadows. At least 512x512 native pixels PER badge, not upscaled small icons. Match Mathematics reference EXACTLY in crisp sharp angular LOW-POLY CUT PAPER edges, chunky cream stone arch, floating dark navy faceted rock base, green polygon leaves and one top gold diamond. ALL FOUR badges use rich TEAL trim, TEAL geometric roofs and TEAL plaque edging with tiny purple and yellow accents, NEVER royal blue mathematical edging. Same frame, camera and polygon scale in all four cells. A blank ivory plaque in EACH badge at x21..79%,y71..85%, no content on plate. Keep scenes above plaque. FEW LARGE FORMS, no palaces, no domes, no intricate gilding or tiny baroque details, no photorealism, no blur, no soft clay, no painterly texture, no glow. NO text, letters, numbers, characters, cats, faces, Oliver or Olena anywhere. Reading order cells:\nTOP LEFT: ideas courtyard with lectern and polygon dialogue tiles; simple scene with a single main object.\nTOP RIGHT: ideas courtyard with lectern and polygon dialogue tiles; developed scene with two functional supporting objects and a cream platform.\nBOTTOM LEFT: ideas courtyard with lectern and polygon dialogue tiles; richer scene with complete main motif, two objects and short architecture.\nBOTTOM RIGHT: ideas courtyard with lectern and polygon dialogue tiles; nearly complete scene with extra purposeful architecture and supporting props, ready for final character tier.\nDo NOT repeat the reference character. Teal English border in all four cells. Preserve blank ivory number plates and true alpha outside. Every individual cell must be a full sharp 512px-native-or-higher badge.",
       "sourceSize": [1254, 1254],
-      "sourceSha256": "299d5b6c1a89f253a9c356c6a6b0cf10108e1c39e88bd9e4e0a3f66e411c0bb1"
+      "sourceSha256": "0400e076694b44934be02c9c74ea43193892e96ad79da812c3407ecc017d9b84",
+      "editPrompt": "Edit the supplied transparent 2x2 achievement atlas with a strictly minimal correction. REMOVE every group of THREE SMALL YELLOW TRIANGULAR RAYS / attention marks / sound burst wedges beside or above the speech bubbles, including the rays beside Olena in the top-left cell if present. Fill only those tiny removed ornaments with matching plain cream stone backdrop. Keep the speech bubbles and their three dots, all stars, top diamonds, buildings, books, blank number plaques, and Olena's exact pose and identity intact. Do not replace the rays with any other decoration. Preserve the original exact 2 columns x 2 rows grid and four separate square cells, framing, scales, positions, crisp low-poly paper geometry, teal borders and full transparent alpha. Output at the SAME 1254x1254 or larger square resolution, minimum 1024x1024, so every native cell remains at least512px. Do not add blue trim, text, digits, rays or exclamation accents anywhere.",
+      "previousSource": "/workspace/generated_images/exec-08079ec9-dd25-424b-a25a-dae5b087b750.png",
+      "previousSourceSha256": "299d5b6c1a89f253a9c356c6a6b0cf10108e1c39e88bd9e4e0a3f66e411c0bb1"
     },
     {
       "id": "part-5",
@@ -829,7 +832,7 @@
       "kind": "character",
       "cells": [
         {
-          "id": "part-4",
+          "id": null,
           "scene": "ideas courtyard with lectern and polygon dialogue tiles. Olena at the LEFT behind an ideas courtyard lectern, body turned RIGHT, leaning forward while presenting a purple dialogue tile toward the center with one paw; other paw rests on lectern. Feet visible beside lectern. Tail lifted behind left. No book and no frontal waving.",
           "sourceRect": [0, 0, 627, 627],
           "nativeSize": [627, 627],
@@ -869,6 +872,104 @@
       "generationPrompt": "Production achievement art. Request a 2048x2048 square canvas, MINIMUM 1024x1024, EXACT regular 2 columns by 2 rows grid of FOUR separate square badges. Native source detail at least 512x512 PER CELL, not enlarged small icons. Each badge fills 96% of its own cell, full silhouette inside its cell, equal centered scale. Actual transparent alpha between and outside badges, no shadows or haze outside silhouettes. No text, digits, labels, dividers, sheet frame or background. Match the supplied Mathematics badge EXACTLY in crisp sharp straight low-poly faceted cut-paper edges and geometry, chunky cream stone arch, dark navy faceted rock base, green polygon leaves, top yellow diamond. Change blue trim to rich TEAL with tiny purple and gold details for English. Same orthographic isometric camera, polygon scale and construction as Mathematics, NOT painterly, blurry, glossy or soft clay. Lower blank ivory plaque MUST stay x21..79%, y71..85% of EACH square badge; clean empty center, suitable for numeric overlay. Keep all action above plaque. Strong simple readable silhouettes at 128px, detailed crisp polygons at 512px. Four specific cells in reading order:\nTOP LEFT: ideas courtyard with lectern and polygon dialogue tiles. Olena at the LEFT behind an ideas courtyard lectern, body turned RIGHT, leaning forward while presenting a purple dialogue tile toward the center with one paw; other paw rests on lectern. Feet visible beside lectern. Tail lifted behind left. No book and no frontal waving..\nTOP RIGHT: meaning house with lantern and phrase tiles. Olena WALKING down a cream step on the RIGHT of meaning house, turned LEFT in side three-quarter view, carrying a lantern forward in one paw and holding a folded phrase tile near her chest with the other. Two stepping legs, tail swept behind right. Head looks left, no frontal book pose..\nBOTTOM LEFT: encounters market with travel tickets and suitcase. Olena KNEELING at the FRONT LEFT of encounters market, body turned RIGHT, packing travel tickets into an open purple suitcase with both paws. One knee bent on floor and one foot planted, face looking down right. Tail curls on left floor. Market stall behind right. No book and no waving..\nBOTTOM RIGHT: archive with bookshelves and open book. Olena SITTING on the LEFT library bench in archive, in clear RIGHT-FACING SIDE PROFILE with a large open book ON HER LAP, head inclined down to read, both paws resting on pages and both feet hanging visibly from bench. Tail curled below bench. Tall shelves fill back right. No frontal standing or waving..\nOlena is the SAME approved character in every scene: dark black-purple polygon cat, huge angular yellow eyes, one gold star on her ear, yellow scarf, purple chest panels, exactly two arms and two legs, original anatomy and proportions. Pose and location MUST differ substantially across all four cells as described, not the same front-facing cutout moved or mirrored. Do NOT paste reference avatar or repeat its waving standing book pose. Her paws naturally interact with each scene's prop. Preserve her identity while changing silhouette and orientation. Exactly ONE Olena in each cell.",
       "sourceSize": [1254, 1254],
       "sourceSha256": "18896608c72fdf9f5cc11881fd0026a2449c77eab1e6123ebcc93e9b9aa7b785"
+    },
+    {
+      "id": "global-02-without-rays",
+      "kind": "objects",
+      "cells": [
+        {
+          "id": "english-correct-50",
+          "scene": "open book and colorful polygon dialogue bubbles; progressive level 3 of 8: larger main object, two supporting props and a short cream architectural feature",
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "4cadd9784176d580c2f398c0727c60515d7571d73935cf9be24b0d28502c40c5",
+          "thumbnailSha256": "adb3041dd1fc7a9ad7c7f27d1933547b3ca333ff2424746834add422682338bb",
+          "numberY": 115.18
+        },
+        {
+          "id": "english-correct-100",
+          "scene": "open book and colorful polygon dialogue bubbles; progressive level 4 of 8: richer scene with extra architecture, secondary object and pennant",
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "3bae0631bba37e9108199cec1e3ff494dd68121b0606994e94f545a5907e2a35",
+          "thumbnailSha256": "5f2c102bc5960cc9f245240578b9a6efaa6360e5e41e123ddcede678b6ebd888",
+          "numberY": 115.18
+        },
+        {
+          "id": "english-correct-250",
+          "scene": "open book and colorful polygon dialogue bubbles; progressive level 5 of 8: large developed scene with supporting buildings and several purposeful objects",
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "cda9c8ed3adfa485f052343a3d2f2e77e798489d14a8531e03d6cf48625a15c4",
+          "thumbnailSha256": "aa44a1c3a6f1bad1d2f3eb891537d00fa4470c5671d6550e0f677ef96820e379",
+          "numberY": 115.31
+        },
+        {
+          "id": null,
+          "scene": "open book and colorful polygon dialogue bubbles; progressive level 6 of 8: complete elaborate scene, balanced architecture, three gold stars and full functional props",
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "e61762ebffdf790fde0d063d979dc6bef0f2081f129e78dc4f1972c000e7ac6c",
+          "thumbnailSha256": "f49f3069f535dac07fb166b351a7f719bd5e9a026e7cede7565d405a1c1b616a",
+          "numberY": 115.31
+        }
+      ],
+      "source": "/workspace/generated_images/exec-8ed4fdcc-6405-4aef-8fbe-bb828234e52d.png",
+      "generationPrompt": "Production achievement art. Request a 2048x2048 square canvas, MINIMUM 1024x1024, EXACT regular 2 columns by 2 rows grid of FOUR separate square badges. Native source detail at least 512x512 PER CELL, not enlarged small icons. Each badge fills 96% of its own cell, full silhouette inside its cell, equal centered scale. Actual transparent alpha between and outside badges, no shadows or haze outside silhouettes. No text, digits, labels, dividers, sheet frame or background. Match the supplied Mathematics badge EXACTLY in crisp sharp straight low-poly faceted cut-paper edges and geometry, chunky cream stone arch, dark navy faceted rock base, green polygon leaves, top yellow diamond. Change blue trim to rich TEAL with tiny purple and gold details for English. Same orthographic isometric camera, polygon scale and construction as Mathematics, NOT painterly, blurry, glossy or soft clay. Lower blank ivory plaque MUST stay x21..79%, y71..85% of EACH square badge; clean empty center, suitable for numeric overlay. Keep all action above plaque. Strong simple readable silhouettes at 128px, detailed crisp polygons at 512px. Four specific cells in reading order:\nTOP LEFT: open book and colorful polygon dialogue bubbles; progressive level 3 of 8: larger main object, two supporting props and a short cream architectural feature.\nTOP RIGHT: open book and colorful polygon dialogue bubbles; progressive level 4 of 8: richer scene with extra architecture, secondary object and pennant.\nBOTTOM LEFT: open book and colorful polygon dialogue bubbles; progressive level 5 of 8: large developed scene with supporting buildings and several purposeful objects.\nBOTTOM RIGHT: open book and colorful polygon dialogue bubbles; progressive level 6 of 8: complete elaborate scene, balanced architecture, three gold stars and full functional props.\nNO CHARACTERS in these four cells. No cats, no faces, no Oliver or Olena.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "bb49a11fc08ece37b80821e456649d8bd94905b60b6112ff7585b9b4aa022a75",
+      "editPrompt": "Edit the supplied transparent 2x2 achievement atlas with a strictly minimal correction. REMOVE every group of THREE SMALL YELLOW TRIANGULAR RAYS / attention marks / sound burst wedges beside or above the speech bubbles, including the rays beside Olena in the top-left cell if present. Fill only those tiny removed ornaments with matching plain cream stone backdrop. Keep the speech bubbles and their three dots, all stars, top diamonds, buildings, books, blank number plaques, and Olena's exact pose and identity intact. Do not replace the rays with any other decoration. Preserve the original exact 2 columns x 2 rows grid and four separate square cells, framing, scales, positions, crisp low-poly paper geometry, teal borders and full transparent alpha. Output at the SAME 1254x1254 or larger square resolution, minimum 1024x1024, so every native cell remains at least512px. Do not add blue trim, text, digits, rays or exclamation accents anywhere.",
+      "previousSource": "/workspace/generated_images/exec-98b8e1ae-2b4e-4b3e-b31e-aed2acb3e60c.png",
+      "previousSourceSha256": "2d4e6a852bdf624522a338f41d88b809ac67f53ed198679b075cbf65da92ce3f"
+    },
+    {
+      "id": "olena-1-without-rays",
+      "kind": "character",
+      "cells": [
+        {
+          "id": "part-4",
+          "scene": "ideas courtyard with lectern and polygon dialogue tiles. Olena at the LEFT behind an ideas courtyard lectern, body turned RIGHT, leaning forward while presenting a purple dialogue tile toward the center with one paw; other paw rests on lectern. Feet visible beside lectern. Tail lifted behind left. No book and no frontal waving.",
+          "sourceRect": [0, 0, 627, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "f2b1eba9ef8bcdfeb2d6c4345572d221e55f522b9d6eb1ffde21d39103453926",
+          "thumbnailSha256": "fa44aea8867cfeae9e9ce2505c45e4d24819d2cb3f9ec28c0aac4b8cfd0b6b91",
+          "numberY": 119.9
+        },
+        {
+          "id": null,
+          "scene": "meaning house with lantern and phrase tiles. Olena WALKING down a cream step on the RIGHT of meaning house, turned LEFT in side three-quarter view, carrying a lantern forward in one paw and holding a folded phrase tile near her chest with the other. Two stepping legs, tail swept behind right. Head looks left, no frontal book pose.",
+          "sourceRect": [627, 0, 1254, 627],
+          "nativeSize": [627, 627],
+          "outputSha256": "15fc07bcac38a0c0f7e3011fc8409295a12407f534209410a92e7785b5cf96be",
+          "thumbnailSha256": "71530207429dc071f4d78c2f002ab236244b8f323a42aa556b9486274df62429",
+          "numberY": 119.9
+        },
+        {
+          "id": null,
+          "scene": "encounters market with travel tickets and suitcase. Olena KNEELING at the FRONT LEFT of encounters market, body turned RIGHT, packing travel tickets into an open purple suitcase with both paws. One knee bent on floor and one foot planted, face looking down right. Tail curls on left floor. Market stall behind right. No book and no waving.",
+          "sourceRect": [0, 627, 627, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "4bfe3d755f4016cf92d16b4bf549864f223169e85e816ddb76e0f0cae6e76998",
+          "thumbnailSha256": "a11e851c54add379744e13e32ee76ed42177bda19f72f9e6dd61636e3bb07d53",
+          "numberY": 120.03
+        },
+        {
+          "id": null,
+          "scene": "archive with bookshelves and open book. Olena SITTING on the LEFT library bench in archive, in clear RIGHT-FACING SIDE PROFILE with a large open book ON HER LAP, head inclined down to read, both paws resting on pages and both feet hanging visibly from bench. Tail curled below bench. Tall shelves fill back right. No frontal standing or waving.",
+          "sourceRect": [627, 627, 1254, 1254],
+          "nativeSize": [627, 627],
+          "outputSha256": "c85699252c8ea4fb712f2a8ea4e105abc87ffdacd4f075dc20aaecd709fd36e5",
+          "thumbnailSha256": "666930a912578650f8e8c161766360aa0518c16b94030a20f8d9f4cc35c14c9f",
+          "numberY": 120.03
+        }
+      ],
+      "source": "/workspace/generated_images/exec-7630341b-da39-4d3c-816b-9c972b7fc449.png",
+      "generationPrompt": "Production achievement art. Request a 2048x2048 square canvas, MINIMUM 1024x1024, EXACT regular 2 columns by 2 rows grid of FOUR separate square badges. Native source detail at least 512x512 PER CELL, not enlarged small icons. Each badge fills 96% of its own cell, full silhouette inside its cell, equal centered scale. Actual transparent alpha between and outside badges, no shadows or haze outside silhouettes. No text, digits, labels, dividers, sheet frame or background. Match the supplied Mathematics badge EXACTLY in crisp sharp straight low-poly faceted cut-paper edges and geometry, chunky cream stone arch, dark navy faceted rock base, green polygon leaves, top yellow diamond. Change blue trim to rich TEAL with tiny purple and gold details for English. Same orthographic isometric camera, polygon scale and construction as Mathematics, NOT painterly, blurry, glossy or soft clay. Lower blank ivory plaque MUST stay x21..79%, y71..85% of EACH square badge; clean empty center, suitable for numeric overlay. Keep all action above plaque. Strong simple readable silhouettes at 128px, detailed crisp polygons at 512px. Four specific cells in reading order:\nTOP LEFT: ideas courtyard with lectern and polygon dialogue tiles. Olena at the LEFT behind an ideas courtyard lectern, body turned RIGHT, leaning forward while presenting a purple dialogue tile toward the center with one paw; other paw rests on lectern. Feet visible beside lectern. Tail lifted behind left. No book and no frontal waving..\nTOP RIGHT: meaning house with lantern and phrase tiles. Olena WALKING down a cream step on the RIGHT of meaning house, turned LEFT in side three-quarter view, carrying a lantern forward in one paw and holding a folded phrase tile near her chest with the other. Two stepping legs, tail swept behind right. Head looks left, no frontal book pose..\nBOTTOM LEFT: encounters market with travel tickets and suitcase. Olena KNEELING at the FRONT LEFT of encounters market, body turned RIGHT, packing travel tickets into an open purple suitcase with both paws. One knee bent on floor and one foot planted, face looking down right. Tail curls on left floor. Market stall behind right. No book and no waving..\nBOTTOM RIGHT: archive with bookshelves and open book. Olena SITTING on the LEFT library bench in archive, in clear RIGHT-FACING SIDE PROFILE with a large open book ON HER LAP, head inclined down to read, both paws resting on pages and both feet hanging visibly from bench. Tail curled below bench. Tall shelves fill back right. No frontal standing or waving..\nOlena is the SAME approved character in every scene: dark black-purple polygon cat, huge angular yellow eyes, one gold star on her ear, yellow scarf, purple chest panels, exactly two arms and two legs, original anatomy and proportions. Pose and location MUST differ substantially across all four cells as described, not the same front-facing cutout moved or mirrored. Do NOT paste reference avatar or repeat its waving standing book pose. Her paws naturally interact with each scene's prop. Preserve her identity while changing silhouette and orientation. Exactly ONE Olena in each cell.",
+      "sourceSize": [1254, 1254],
+      "sourceSha256": "d6972e6aa8a37c14675079d55ea72792af15756f63cdde3ededfac57bb4fdc47",
+      "editPrompt": "Edit the supplied transparent 2x2 achievement atlas with a strictly minimal correction. REMOVE every group of THREE SMALL YELLOW TRIANGULAR RAYS / attention marks / sound burst wedges beside or above the speech bubbles, including the rays beside Olena in the top-left cell if present. Fill only those tiny removed ornaments with matching plain cream stone backdrop. Keep the speech bubbles and their three dots, all stars, top diamonds, buildings, books, blank number plaques, and Olena's exact pose and identity intact. Do not replace the rays with any other decoration. Preserve the original exact 2 columns x 2 rows grid and four separate square cells, framing, scales, positions, crisp low-poly paper geometry, teal borders and full transparent alpha. Output at the SAME 1254x1254 or larger square resolution, minimum 1024x1024, so every native cell remains at least512px. Do not add blue trim, text, digits, rays or exclamation accents anywhere.",
+      "previousSource": "/workspace/generated_images/exec-e93a801e-806e-447e-b7e8-d00adf241e10.png",
+      "previousSourceSha256": "18896608c72fdf9f5cc11881fd0026a2449c77eab1e6123ebcc93e9b9aa7b785"
     }
   ]
 }

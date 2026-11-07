@@ -13,6 +13,17 @@ localStorage.setItem("helenastudy.theme", theme);
 await initializeLanguage();
 const math = MATH_ACHIEVEMENTS.find((item) => item.id === "rounds-1")!;
 const english = ENGLISH_ACHIEVEMENTS.find((item) => item.id === "english-rounds-1")!;
+const cleanupIds = new Set([
+  "english-correct-50",
+  "english-correct-100",
+  "english-correct-250",
+  "english-part-4-correct-20",
+  "english-part-4-correct-100",
+  "english-part-4-variety-25",
+  "english-part-4-variety-50",
+  "english-part-4",
+]);
+const cleanup = ENGLISH_ACHIEVEMENTS.filter((item) => cleanupIds.has(item.id));
 const poses = ENGLISH_ACHIEVEMENTS.filter(
   (item) => item.part !== undefined && item.metric === "parts",
 );
@@ -32,6 +43,15 @@ createRoot(document.getElementById("root")!).render(
         <AchievementArt item={english} />
         <figcaption>Inglês, arte refeita</figcaption>
       </figure>
+    </section>
+    <h2>Artes sem os três raios</h2>
+    <section className="quality-poses quality-cleanup" aria-label="Artes corrigidas">
+      {cleanup.map((item) => (
+        <figure key={item.id}>
+          <AchievementArt item={item} />
+          <figcaption>{item.name}</figcaption>
+        </figure>
+      ))}
     </section>
     <h2>Oito cenas da Olena</h2>
     <section className="quality-poses" aria-label="Poses da Olena">
