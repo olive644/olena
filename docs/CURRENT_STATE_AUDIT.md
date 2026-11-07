@@ -1,3 +1,7 @@
+## Teste e2e do Oliver acompanha a versão da arte, 07/11/2026
+
+`e2e/app.spec.ts:97` ainda esperava `/oliver-peeking-widget.webp`, mas o app passou a servir `/oliver-peeking-widget.webp?v=2` no commit `223c6ab9` (ajuste dos widgets, #593), que atualizou `e2e/oliver-hero.spec.ts` e o teste unitário e deixou este para trás. O teste falhava de forma consistente (3 de 3 tentativas) em todo CI de desktop depois da #593, inclusive no push na `main`. Corrigido o valor esperado; conferido que o teste falha na `main` e passa com a correção, em desktop e mobile. Nenhum teste pulado.
+
 ## CI: desktop em duas partes, 07/11/2026
 
 `scripts/ci-scope.mjs` divide o e2e desktop em `desktop shard 1/2` e `2/2` (`--shard`), em pull request e no push na `main`. O workflow ganha o gate `desktop-result`, que mantém o nome `Desktop and mobile smoke tests (desktop)` para a proteção da branch. Motivo: o job único estourava os 20 min do passo em runners lentos. Limites: o tempo por parte e o custo em minutos ainda não foram medidos; o desktop da própria PR é a primeira medição. Detalhes em `docs/CI_MINUTOS.md`.
