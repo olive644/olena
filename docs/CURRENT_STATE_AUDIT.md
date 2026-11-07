@@ -4618,3 +4618,11 @@ Direção adicional da responsável: o carrossel abre na ofensiva ativa que esti
 Após incluir a prioridade por ofensiva, 20 cenários de navegador aprovados em desktop/celular, incluindo maior streak, expiração próxima, escolha manual, widget nos dois temas, Rive sob CSP, movimento reduzido, agenda e privacidade. Build atual mede 1741,1 KiB de JavaScript da aplicação, abaixo do teto de 1742, e Rive de Oliver 310,5 KiB.
 
 Validação final desta revisão: lint sem erros, formatação/API/idiomas aprovados; suíte geral com 2672 aprovados e uma falha no limite temporal de notebook-search.test.ts. O mesmo teste foi executado isoladamente na branch (128,0 ms) e em checkout limpo de origin/main 8fa80df (121,0 ms), ambos acima do limite existente de 120 ms. Fonte e teste de busca não foram alterados; nenhum limite, timeout ou teste foi relaxado. Build e orçamento aprovados: entrada 220,8 KiB e aplicação 1741,1 KiB de 1742. Vinte cenários de navegador aprovados. Safari, aparelhos físicos e contas reais não verificados.
+
+## Selos, livro da Olena e atualização em papel, 07/11/2026
+
+Solicitação: remover DEV e GALAXIA do @bizzok, retirar o borrão do livro no widget inglês e apresentar uma atualização por gesto com desenho próprio. A regra compartilhada de selos preserva BETA TESTER. A imagem aprovada foi limpa por edição localizada e exportada com transparência em WebP 900x600, reduzindo 56.562 para 49.232 bytes. Origem e hashes em `artifacts/profile-refresh/art-source.json`.
+
+A atualização usa um livro e estrela facetados nas cores oficiais, com mensagens traduzidas, anúncio de estado e movimento reduzido. Atua no topo de Espaço, Perfil e Notificações, sem substituir gestos das telas de criação, prática ou cronômetro. Indicadores externos do navegador/sistema não são desenhados pela página; Android físico e Safari não verificados. O gesto tem limite, cancelamento e exclusão de controles, diálogos e áreas com rolagem própria. Não há dependência nova nem mudança de sincronização ou orçamento de desempenho.
+
+Validação: `npm run verify` passou com 413 arquivos e 2.676 testes, além dos 14 cenários de navegador. Lint sem erros e 27 avisos existentes. JavaScript inicial 219,5 KiB e total 1741,8 KiB, dentro dos limites originais. Capturas e limites em `artifacts/profile-refresh/README.md`.

@@ -1,6 +1,6 @@
 export function profileLabelNames(username: string, creks: boolean): string[] {
   return username === "bizzok"
-    ? ["DEV", "GALAXIA", "BETA TESTER"]
+    ? ["BETA TESTER"]
     : username === "dreyxnn"
       ? ["GALAXIA", "BETA TESTER"]
       : username === "eito" || username === "pranksterbrain"

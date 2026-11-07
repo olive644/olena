@@ -1,0 +1,217 @@
+          <svg xmlns="http://www.w3.org/2000/svg" class="helena-pencil" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+<style>.helena-pencil [class] {
+  animation-duration: 3s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.helena-pencil__body1 {
+  animation-name: helena-pencil-body1;
+}
+.helena-pencil__body2 {
+  animation-name: helena-pencil-body2;
+}
+.helena-pencil__body3 {
+  animation-name: helena-pencil-body3;
+}
+.helena-pencil__eraser {
+  animation-name: helena-pencil-eraser;
+}
+.helena-pencil__eraser-skew {
+  animation-name: helena-pencil-skew;
+  animation-timing-function: ease-in-out !important;
+}
+.helena-pencil__point {
+  animation-name: helena-pencil-point;
+}
+.helena-pencil__rotate {
+  animation-name: helena-pencil-rotate;
+}
+.helena-pencil__stroke {
+  animation-name: helena-pencil-stroke;
+}
+@keyframes helena-pencil-body1 {
+  from,
+  to {
+    stroke-dashoffset: 351.86;
+    transform: rotate(-90deg);
+  }
+  50% {
+    stroke-dashoffset: 150.8;
+    transform: rotate(-225deg);
+  }
+}
+@keyframes helena-pencil-body2 {
+  from,
+  to {
+    stroke-dashoffset: 406.84;
+    transform: rotate(-90deg);
+  }
+  50% {
+    stroke-dashoffset: 174.36;
+    transform: rotate(-225deg);
+  }
+}
+@keyframes helena-pencil-body3 {
+  from,
+  to {
+    stroke-dashoffset: 296.88;
+    transform: rotate(-90deg);
+  }
+  50% {
+    stroke-dashoffset: 127.23;
+    transform: rotate(-225deg);
+  }
+}
+@keyframes helena-pencil-eraser {
+  from,
+  to {
+    transform: rotate(-45deg) translate(49px, 0);
+  }
+  50% {
+    transform: rotate(0deg) translate(49px, 0);
+  }
+}
+@keyframes helena-pencil-skew {
+  from,
+  32.5%,
+  67.5%,
+  to {
+    transform: skewX(0);
+  }
+  35%,
+  65% {
+    transform: skewX(-4deg);
+  }
+  37.5%,
+  62.5% {
+    transform: skewX(8deg);
+  }
+  40%,
+  45%,
+  50%,
+  55%,
+  60% {
+    transform: skewX(-15deg);
+  }
+  42.5%,
+  47.5%,
+  52.5%,
+  57.5% {
+    transform: skewX(15deg);
+  }
+}
+@keyframes helena-pencil-point {
+  from,
+  to {
+    transform: rotate(-90deg) translate(49px, -30px);
+  }
+  50% {
+    transform: rotate(-225deg) translate(49px, -30px);
+  }
+}
+@keyframes helena-pencil-rotate {
+  from {
+    transform: translate(100px, 100px) rotate(0);
+  }
+  to {
+    transform: translate(100px, 100px) rotate(720deg);
+  }
+}
+@keyframes helena-pencil-stroke {
+  from {
+    stroke-dashoffset: 439.82;
+    transform: translate(100px, 100px) rotate(-113deg);
+  }
+  50% {
+    stroke-dashoffset: 164.93;
+    transform: translate(100px, 100px) rotate(-113deg);
+  }
+  75%,
+  to {
+    stroke-dashoffset: 439.82;
+    transform: translate(100px, 100px) rotate(112deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .helena-pencil [class] {
+    animation: none;
+  }
+  .helena-pencil__rotate {
+    transform: translate(100px, 100px);
+  }
+  .helena-pencil__body1 {
+    stroke-dashoffset: 351.86;
+    transform: rotate(-90deg);
+  }
+  .helena-pencil__body2 {
+    stroke-dashoffset: 406.84;
+    transform: rotate(-90deg);
+  }
+  .helena-pencil__body3 {
+    stroke-dashoffset: 296.88;
+    transform: rotate(-90deg);
+  }
+  .helena-pencil__point {
+    transform: rotate(-90deg) translate(49px, -30px);
+  }
+  .helena-pencil__eraser {
+    transform: rotate(-45deg) translate(49px, 0);
+  }
+  .helena-pencil__stroke {
+    stroke-dashoffset: 330;
+    transform: translate(100px, 100px) rotate(-113deg);
+  }
+}
+</style>
+            <circle
+              class="helena-pencil__stroke"
+              cx="0"
+              cy="0"
+              r="70"
+              fill="none"
+              stroke="#7C3AED"
+              stroke-width="2"
+              stroke-dasharray="439.82 439.82"
+            />
+            <g class="helena-pencil__rotate">
+              <g fill="none">
+                <circle
+                  class="helena-pencil__body1"
+                  r="64"
+                  stroke="#7C3AED"
+                  stroke-width="30"
+                  stroke-dasharray="402.12 402.12"
+                />
+                <circle
+                  class="helena-pencil__body2"
+                  r="74"
+                  stroke="#A779EF"
+                  stroke-width="10"
+                  stroke-dasharray="464.96 464.96"
+                />
+                <circle
+                  class="helena-pencil__body3"
+                  r="54"
+                  stroke="#51259B"
+                  stroke-width="10"
+                  stroke-dasharray="339.29 339.29"
+                />
+              </g>
+              <g class="helena-pencil__eraser">
+                <g class="helena-pencil__eraser-skew">
+                  <path fill="#FACC15" d="M0 0H30V25L25 30H4L0 26Z" />
+                  <path fill="#FFE88D" d="M0 0H9L5 30H4L0 26Z" />
+                  <path fill="#D5A71A" d="M24 0H30V25L25 30H20Z" />
+                  <path fill="#FFF9EF" d="M0 0H30V20H0Z" />
+                  <path fill="#C9BBA2" d="M0 0H6V20H0ZM22 0H30V20H22Z" />
+                  <path fill="#51465D" d="M0 6H30V8H0ZM0 13H30V15H0Z" />
+                </g>
+              </g>
+              <g class="helena-pencil__point">
+                <path fill="#F1D8A7" d="M15 0 30 30H0Z" />
+                <path fill="#C9A56F" d="M15 0 7 30H0Z" />
+                <path fill="#FFF9EF" d="M15 0 30 30H22Z" />
+                <path fill="#292432" d="M15 0 20 10H10Z" />
+              </g>
+            </g>
+          </svg>

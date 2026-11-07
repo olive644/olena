@@ -29,5 +29,6 @@
   "sourceSha256": {
     "olena": "3fdbd558025c89b68bbf7c296b025ea9550a5579be274e3eb2746812705788ff",
     "oliverBody": "0d368bca185f656092636f887e1d0a8b8c4ee1476cb4a68069f5691cfe11bbe1"
-  }
+  },
+  "supersededEnglishBookArt": "../profile-refresh/art-source.json"
 }

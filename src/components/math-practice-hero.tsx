@@ -29,7 +29,7 @@ export function MathPracticeHero({
     image.decoding = "async";
     image.fetchPriority = "low";
     preparedArt.current = image;
-    image.src = "/languages/olena-english-widget.webp?v=2";
+    image.src = "/languages/olena-english-widget.webp?v=3";
     void image.decode?.().catch(() => {
       preparedArt.current = null;
     });
@@ -183,7 +183,7 @@ export function MathPracticeHero({
         {english ? (
           <span className="math-hero-peek english-hero-art">
             <img
-              src="/languages/olena-english-widget.webp?v=2"
+              src="/languages/olena-english-widget.webp?v=3"
               width="900"
               height="600"
               alt={uiText("Olena convida você a praticar Inglês")}
