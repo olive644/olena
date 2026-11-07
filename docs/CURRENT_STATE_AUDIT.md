@@ -1,3 +1,7 @@
+## CI: .well-known sem e2e e CodeQL em repositório privado, 07/11/2026
+
+`scripts/ci-scope.mjs` trata `public/.well-known/*.txt` e `*.json` como escopo sem e2e (teste em `scripts/ci-scope.test.mjs`; a PR do assetlinks rodou o e2e completo por falta disso). O job do `CodeQL` passa a ser pulado quando o repositório é privado, porque o code scanning não está habilitado e o passo de análise falhava. Nomes dos checks inalterados. Limite: não verificado se há plano pago de code scanning; se a dona contratar, remover a condição do job. Detalhes em `docs/CI_MINUTOS.md`.
+
 ## Porto das Vozes e Inglês introdutório, 02/11/2026
 
 Porto das Vozes abre Inglês com seis partes, 36 falas próprias e 144 tarefas em quatro formatos. Domínio 20/24, confirmação 4/5, revisão após reprovação, acertos/erros, pontos, XP e poeira cósmica usam a progressão documentada em VOICES_PORT.md. Inglês não modifica domínio ou pontos matemáticos. A coleção Arcano é comum. Áudio opcional somente com voz inglesa local; texto disponível e nenhuma IA generativa ou API didática remota ativada.
