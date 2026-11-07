@@ -1,3 +1,7 @@
+## CI: desktop em duas partes, 07/11/2026
+
+`scripts/ci-scope.mjs` divide o e2e desktop em `desktop shard 1/2` e `2/2` (`--shard`), em pull request e no push na `main`. O workflow ganha o gate `desktop-result`, que mantém o nome `Desktop and mobile smoke tests (desktop)` para a proteção da branch. Motivo: o job único estourava os 20 min do passo em runners lentos. Limites: o tempo por parte e o custo em minutos ainda não foram medidos; o desktop da própria PR é a primeira medição. Detalhes em `docs/CI_MINUTOS.md`.
+
 ## CI: .well-known sem e2e e CodeQL em repositório privado, 07/11/2026
 
 `scripts/ci-scope.mjs` trata `public/.well-known/*.txt` e `*.json` como escopo sem e2e (teste em `scripts/ci-scope.test.mjs`; a PR do assetlinks rodou o e2e completo por falta disso). O job do `CodeQL` passa a ser pulado quando o repositório é privado, porque o code scanning não está habilitado e o passo de análise falhava. Nomes dos checks inalterados. Limite: não verificado se há plano pago de code scanning; se a dona contratar, remover a condição do job. Detalhes em `docs/CI_MINUTOS.md`.

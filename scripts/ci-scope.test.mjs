@@ -93,11 +93,11 @@ test("push na main roda só o desktop, mesmo que só documentação tenha mudado
 test("a matriz corresponde ao escopo", () => {
   assert.deepEqual(
     matrixFor("full").include.map((entry) => entry.label),
-    ["desktop", "mobile shard 1/2", "mobile shard 2/2"],
+    ["desktop shard 1/2", "desktop shard 2/2", "mobile shard 1/2", "mobile shard 2/2"],
   );
   assert.deepEqual(
     matrixFor("desktop").include.map((entry) => entry.label),
-    ["desktop"],
+    ["desktop shard 1/2", "desktop shard 2/2"],
   );
   assert.ok(matrixFor("full").include.every((entry) => entry.browser === "chromium"));
 });
@@ -202,4 +202,25 @@ test("arquivos de /.well-known/ não pedem e2e, mas nada além deles", () => {
     "public/other/.well-known/a.json",
   ])
     assert.equal(decideScope({ event: "pull_request", changedFiles: [file] }), "full");
+});
+
+test("o desktop roda em duas partes que cobrem tudo, sem repetir nem faltar", () => {
+  for (const scope of ["desktop", "full"]) {
+    const desktop = matrixFor(scope).include.filter((entry) => entry.project === "desktop");
+    assert.deepEqual(
+      desktop.map((entry) => entry.shard),
+      ["1/2", "2/2"],
+    );
+  }
+  const labels = matrixFor("full").include.map((entry) => entry.label);
+  assert.equal(new Set(labels).size, labels.length);
+});
+
+test("o gate do desktop segue o resultado do e2e e mantém o nome histórico do check", () => {
+  const base = { job: "desktop", changesResult: "success" };
+  assert.equal(evaluateGate({ ...base, scope: "desktop", e2eResult: "success" }).ok, true);
+  assert.equal(evaluateGate({ ...base, scope: "full", e2eResult: "success" }).ok, true);
+  assert.equal(evaluateGate({ ...base, scope: "none", e2eResult: "skipped" }).ok, true);
+  assert.equal(evaluateGate({ ...base, scope: "full", e2eResult: "failure" }).ok, false);
+  assert.equal(evaluateGate({ ...base, scope: "full", e2eResult: "cancelled" }).ok, false);
 });
