@@ -30,7 +30,20 @@ const DOCS_ONLY = [
 ];
 
 const MATRIX = {
-  desktop: { project: "desktop", label: "desktop", browser: "chromium", workers: 2, shard: "1/1" },
+  desktop1: {
+    project: "desktop",
+    label: "desktop shard 1/2",
+    browser: "chromium",
+    workers: 2,
+    shard: "1/2",
+  },
+  desktop2: {
+    project: "desktop",
+    label: "desktop shard 2/2",
+    browser: "chromium",
+    workers: 2,
+    shard: "2/2",
+  },
   mobile1: {
     project: "mobile",
     label: "mobile shard 1/2",
@@ -76,12 +89,12 @@ export function decideScope({ event, changedFiles }) {
 }
 
 export function matrixFor(scope) {
+  // O desktop roda em duas partes, como o mobile: um job só passava de 20 minutos em runners
+  // lentos e estourava o limite. O total de minutos é quase o mesmo (uma instalação a mais).
   const include =
-    scope === "desktop"
-      ? [MATRIX.desktop]
-      : scope === "full"
-        ? [MATRIX.desktop, MATRIX.mobile1, MATRIX.mobile2]
-        : [MATRIX.desktop];
+    scope === "full"
+      ? [MATRIX.desktop1, MATRIX.desktop2, MATRIX.mobile1, MATRIX.mobile2]
+      : [MATRIX.desktop1, MATRIX.desktop2];
   return { include };
 }
 
@@ -149,7 +162,7 @@ function main(argv, env) {
     console.log(result.message);
     return result.ok ? 0 : 1;
   }
-  console.error("Uso: ci-scope.mjs scope | gate --job=e2e|mobile");
+  console.error("Uso: ci-scope.mjs scope | gate --job=e2e|desktop|mobile");
   return 2;
 }
 

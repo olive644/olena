@@ -114,6 +114,23 @@ jobs:
           E2E_RESULT: ${{ needs.e2e.result }}
         run: node scripts/ci-scope.mjs gate --job=mobile
 
+  # Preserva o check histórico do desktop, que agora roda em duas partes (desktop shard 1/2 e 2/2).
+  desktop-result:
+    name: Desktop and mobile smoke tests (desktop)
+    needs: [changes, e2e]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Require the desktop result the scope demands
+        env:
+          SCOPE: ${{ needs.changes.outputs.scope }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          E2E_RESULT: ${{ needs.e2e.result }}
+        run: node scripts/ci-scope.mjs gate --job=desktop
+
   # Mantém o nome histórico do check, para quem exige "Desktop and mobile smoke tests".
   e2e-result:
     name: Desktop and mobile smoke tests
