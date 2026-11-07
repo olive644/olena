@@ -199,6 +199,13 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
             {uiText(2)}
           </p>
         )}
+        {!storageFull && cloud.rejectedKeys && (
+          <p className="storage-full-banner" role="status">
+            {uiText(
+              "Parte do seu progresso não pôde ser enviada à sua conta e ficou só neste aparelho. O restante foi salvo.",
+            )}
+          </p>
+        )}
         <Sidebar view={view} onNavigate={setView} />
         {workspace.events.some((event) => event.reminders?.length) && (
           <Suspense fallback={null}>

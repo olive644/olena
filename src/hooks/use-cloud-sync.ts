@@ -61,6 +61,18 @@ function itemsDelta(base: SyncedItems, next: SyncedItems): Record<string, string
   return delta;
 }
 
+/** Falha HTTP do Realtime Database, com o status para separar recusa de regra de falta de rede. */
+class SyncHttpError extends Error {
+  constructor(readonly status: number) {
+    super("sync");
+  }
+}
+
+/** 401 e 403 do Firebase significam regra recusando a gravação, não rede fora do ar. */
+function isPermissionDenied(cause: unknown): boolean {
+  return cause instanceof SyncHttpError && (cause.status === 401 || cause.status === 403);
+}
+
 export type CloudSyncState = {
   ready: boolean;
   revision: number;
@@ -70,6 +82,8 @@ export type CloudSyncState = {
   displayName?: string | undefined;
   email?: string | undefined;
   lastSyncedAt?: number | undefined;
+  /** Chaves que as regras da conta recusaram no último envio. O resto do estado foi salvo. */
+  rejectedKeys?: string[] | undefined;
   syncNow?: (() => void) | undefined;
   signOut?: ((discardPending?: boolean) => Promise<void>) | undefined;
   // Apaga a conta e os estudos da nuvem. Rejeita com AccountDeletionError.
@@ -113,6 +127,8 @@ export function useCloudSync() {
     let changeRevision = 0;
     let conflictPending = false;
     let accountRevision = 0;
+    // Chaves que as regras da conta recusaram. Só saem daqui quando uma gravação posterior passa.
+    const rejectedKeys = new Set<string>();
 
     function parseItems(serialized: string): SyncedItems {
       try {
@@ -333,7 +349,7 @@ export function useCloudSync() {
               `${legacy ? legacyUrl : url}?auth=${encodeURIComponent(token)}${method === "PUT" ? "&print=silent" : ""}`,
               init,
             );
-            if (!response.ok) throw new Error("sync");
+            if (!response.ok) throw new SyncHttpError(response.status);
             if (method === "PUT") return null;
             const result = (await response.json()) as CloudState | null;
             if (!currentAccount()) throw new Error("Account changed");
@@ -346,7 +362,7 @@ export function useCloudSync() {
               ...init,
               signal,
             });
-            if (!response.ok) throw new Error("sync");
+            if (!response.ok) throw new SyncHttpError(response.status);
             return response;
           };
           // Lê só o campo `updatedAt` (um número), em vez do estado inteiro. Devolve undefined
@@ -579,22 +595,52 @@ export function useCloudSync() {
                 changedKeys.length > 0 && changedKeys.every((key) => key === FOCUS_SESSION_KEY);
               const updatedAt = sessionOnly ? cloudUpdatedAt : fullUpdatedAt;
               inflightUpdatedAt = updatedAt;
+              let rejectedNow = 0;
               try {
-                if (!delta) await request("PUT", { version: 2, updatedAt, items });
-                else if (changedKeys.length > 0) {
-                  const patch: Record<string, string | number | null> = {};
-                  for (const key of changedKeys) patch[`items/${cloudWireName(key)}`] = delta[key]!;
-                  if (!sessionOnly) patch["updatedAt"] = updatedAt;
-                  try {
-                    await patchState(patch);
-                  } catch (cause) {
-                    if (!currentAccount()) throw cause;
-                    // Caminho de reserva: se o envio parcial falhar, repete com o estado inteiro.
-                    inflightUpdatedAt = fullUpdatedAt;
-                    await request("PUT", { version: 2, updatedAt: fullUpdatedAt, items });
-                    cloudUpdatedAt = Math.max(cloudUpdatedAt, fullUpdatedAt);
+                try {
+                  if (!delta) await request("PUT", { version: 2, updatedAt, items });
+                  else if (changedKeys.length > 0) {
+                    const patch: Record<string, string | number | null> = {};
+                    for (const key of changedKeys)
+                      patch[`items/${cloudWireName(key)}`] = delta[key]!;
+                    if (!sessionOnly) patch["updatedAt"] = updatedAt;
+                    try {
+                      await patchState(patch);
+                    } catch (cause) {
+                      if (!currentAccount()) throw cause;
+                      // Caminho de reserva: se o envio parcial falhar, repete com o estado inteiro.
+                      inflightUpdatedAt = fullUpdatedAt;
+                      await request("PUT", { version: 2, updatedAt: fullUpdatedAt, items });
+                      cloudUpdatedAt = Math.max(cloudUpdatedAt, fullUpdatedAt);
+                    }
                   }
+                } catch (cause) {
+                  // O PATCH e o PUT são tudo ou nada: uma única chave que as regras da conta
+                  // recusam derrubava o envio inteiro, e nada do estado chegava à nuvem.
+                  if (!currentAccount() || !isPermissionDenied(cause) || sessionOnly) throw cause;
+                  inflightUpdatedAt = updatedAt;
+                  const pending: Record<string, string | null> = delta
+                    ? Object.fromEntries(changedKeys.map((key) => [key, delta[key]!]))
+                    : items;
+                  // Gravação de controle: só o updatedAt. Se até ela for recusada, o problema é a
+                  // sessão (e não uma chave), e o envio segue como falha comum.
+                  await patchState({ version: 2, updatedAt });
+                  for (const [key, value] of Object.entries(pending)) {
+                    try {
+                      await patchState({ [`items/${cloudWireName(key)}`]: value });
+                      rejectedKeys.delete(key);
+                    } catch (single) {
+                      if (!currentAccount() || !isPermissionDenied(single)) throw single;
+                      rejectedKeys.add(key);
+                      rejectedNow += 1;
+                    }
+                  }
+                  if (rejectedNow === Object.keys(pending).length) throw cause;
                 }
+                // Gravação comum que passou: o que foi enviado deixa de estar recusado.
+                if (rejectedNow === 0)
+                  for (const key of delta ? changedKeys : Object.keys(items))
+                    rejectedKeys.delete(key);
               } finally {
                 inflightUpdatedAt = undefined;
               }
@@ -608,6 +654,7 @@ export function useCloudSync() {
                 ...current,
                 status: dirty ? "syncing" : conflictPending ? "conflict" : "synced",
                 lastSyncedAt: savedAt,
+                rejectedKeys: rejectedKeys.size ? [...rejectedKeys] : undefined,
               }));
               if (dirty) {
                 clearTimeout(uploadTimer);
