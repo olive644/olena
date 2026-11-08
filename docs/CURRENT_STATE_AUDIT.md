@@ -4684,3 +4684,15 @@ Testes: um novo em `profile-showcase.test.tsx` (abrir e fechar o QR, depois Segu
 Validação em navegador (Chromium, Pixel 7, convidado, app local): após abrir e fechar o QR, Seguidores e Seguindo mostram o diretório "Encontre seus amigos" nos temas claro e escuro. Sem a correção, os dois mostram "Compartilhar perfil". Capturas em `scratchpad/val/seg-*.png` (fora do repositório).
 
 Limites: como convidado, a lista não carrega pessoas (exige conta), então o conteúdo real da lista foi coberto só pelos testes de componente. Não testado no PC (largura de desktop) nem em produção com conta real. Para conferir depois do deploy: abrir o Perfil logado, tocar no QR, fechar, tocar em Seguidores.
+
+## Salvar o card de perfil falhava por um enfeite, 08/11/2026
+
+Relato da dona, no celular: ao tocar em Salvar cartão, aparecia "Não foi possível salvar o cartão" e nenhum arquivo era baixado.
+
+Causa provável: `save()` em `profile-share-card.tsx` montava a imagem numa cadeia única. Qualquer etapa que falhasse, mesmo um enfeite, derrubava o cartão inteiro: fundo e moldura do perfil, número do nível, logo do QR, conquistas em destaque e cartas favoritas. Em produção (conta nova, desktop e largura de celular, Chromium) e num cartão completo montado em ambiente de teste o download funcionou, então a etapa que falha no aparelho da dona não foi identificada (não verificado em Android real). Os arquivos de fundo, moldura e capa foram conferidos um a um: todos existem e nenhum é grande.
+
+Correção: foto, capa e QR continuam essenciais. Fundo, moldura, número do nível, logo do QR, conquistas e cartas passam por `optional(...)`: se uma etapa falhar, o cartão sai sem ela e o motivo vai para `console.warn("Cartão: <etapa> indisponível")`. O QR é desenhado antes do logo, então continua legível sem ele.
+
+Teste: `profile-share-catalog.test.tsx` simula fundo, moldura, número do nível e logo indisponíveis; antes da correção o download não ocorria, agora ocorre e mostra "Cartão salvo.". No navegador, com `/profile-cosmetics/` e o logo bloqueados, o card falhava com a mensagem de erro sem a correção e baixa com ela (PNG de 280 KB, completo, sem moldura e fundo).
+
+Limites: o cartão pode sair sem um enfeite sem avisar a pessoa (só o console registra). Se o problema persistir no aparelho da dona, abrir o console do Chrome remoto e ler o `console.warn` indica a etapa. Não testado em Android real.
