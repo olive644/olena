@@ -23,6 +23,19 @@ vi.mock("../hooks/use-profile-handle", () => ({
   }),
 }));
 
+// O diretório social é carregado sob demanda e fala com a API: aqui só interessa como é aberto.
+vi.mock("./profile-social", () => ({
+  SocialDirectory: (props: { initialSharing?: boolean; initialList?: string; onClose(): void }) => (
+    <div
+      data-testid="directory"
+      data-sharing={String(!!props.initialSharing)}
+      data-list={props.initialList ?? ""}
+    >
+      <button onClick={props.onClose}>Fechar diretório</button>
+    </div>
+  ),
+}));
+
 afterEach(() => {
   serverHandle.username = "oli";
   serverHandle.creks = false;
@@ -356,3 +369,23 @@ it.each(["eito", "pranksterbrain"])(
     expect(screen.queryByLabelText("Selo GALAXIA")).toBeNull();
   },
 );
+it("seguidores e seguindo abrem a lista, não o card, depois de abrir e fechar o QR", async () => {
+  render(
+    <ProfileShowcase nameFallback="Aluno" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Compartilhar perfil por QR code" }));
+  const card = await screen.findByTestId("directory");
+  expect(card.getAttribute("data-sharing")).toBe("true");
+  fireEvent.click(screen.getByRole("button", { name: "Fechar diretório" }));
+  fireEvent.click(screen.getByRole("button", { name: /Seguidores/ }));
+  const followers = await screen.findByTestId("directory");
+  expect(followers.getAttribute("data-list")).toBe("followers");
+  expect(followers.getAttribute("data-sharing")).toBe("false");
+  fireEvent.click(screen.getByRole("button", { name: "Fechar diretório" }));
+  fireEvent.click(screen.getByRole("button", { name: /Seguindo/ }));
+  const following = await screen.findByTestId("directory");
+  expect(following.getAttribute("data-list")).toBe("following");
+  expect(following.getAttribute("data-sharing")).toBe("false");
+});

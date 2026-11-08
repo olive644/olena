@@ -277,6 +277,7 @@ export function ProfileShowcase({
                 <button
                   type="button"
                   onClick={() => {
+                    setSharingProfile(false);
                     setConnectionList("followers");
                     setFriends("");
                   }}
@@ -288,6 +289,7 @@ export function ProfileShowcase({
                 <button
                   type="button"
                   onClick={() => {
+                    setSharingProfile(false);
                     setConnectionList("following");
                     setFriends("");
                   }}
