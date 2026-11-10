@@ -1,7 +1,7 @@
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, expect, it, vi } from "vitest";
 import OnboardingView from "./onboarding-view";
 import { prepareOnboarding, type OnboardingAnswers } from "../domain/onboarding-configuration";
 import {

@@ -7,7 +7,8 @@ test.beforeEach(async ({ page }) => {
 
 test("conversa mantém arte aprovada e exige autenticação para concluir", async ({ page }) => {
   await page.goto("/?onboarding=1");
-  await expect(page.getByText("Olá! Eu sou a Olena.", { exact: true })).toBeAttached();
+  // O texto existe duas vezes (versão para leitor de tela e a animada): basta uma presente.
+  await expect(page.getByText("Olá! Eu sou a Olena.", { exact: true }).first()).toBeAttached();
   let source: string | null = null;
   await answerOnboarding(page, async () => {
     const image = page.locator(".onboarding__helena:visible");
@@ -36,9 +37,13 @@ test("Voltar preserva resposta e foco de teclado original", async ({ page }) => 
   await page.goto("/?onboarding=1");
   await welcomeOnboarding(page);
   const choice = page.getByRole("button", { name: "Estudo por conta própria", exact: true });
-  await choice.focus();
-  await page.keyboard.press("Tab");
-  await page.keyboard.press("Shift+Tab");
+  // A animação do passo pode recriar os botões logo depois do foco: repete até o foco assentar.
+  await expect(async () => {
+    await choice.focus();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+    await expect(choice).toBeFocused({ timeout: 500 });
+  }).toPass();
   await expect(choice).toHaveCSS("outline-style", "none");
   await expect(choice).toHaveCSS("text-decoration-line", "underline");
   expect(await choice.evaluate((el) => getComputedStyle(el).textDecorationColor)).not.toBe(
