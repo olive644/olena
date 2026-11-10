@@ -51,7 +51,7 @@ export function ProfileAvatarDialog({
 }: {
   onClose(): void;
   initialCategory?: Category;
-  workspace?: WorkspaceState;
+  workspace?: WorkspaceState | undefined;
 }) {
   useLanguage();
   const dialog = useRef<HTMLDialogElement>(null);

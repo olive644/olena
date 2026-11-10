@@ -5,7 +5,7 @@ export function ProfileCoverDialog({
   workspace,
 }: {
   onClose(): void;
-  workspace?: WorkspaceState;
+  workspace?: WorkspaceState | undefined;
 }) {
   return <ProfileAvatarDialog initialCategory="cover" onClose={onClose} workspace={workspace} />;
 }
