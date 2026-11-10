@@ -62,7 +62,7 @@ for (const theme of ["light", "dark"]) {
       "src",
       "/profile-avatars/teco.webp",
     );
-    await expect(cover.locator(".profile-frame-art").first()).toHaveAttribute(
+    await expect(avatar.locator(".profile-frame-art")).toHaveAttribute(
       "src",
       "/profile-cosmetics/english.svg",
     );
