@@ -1,3 +1,11 @@
+## Teco e personalização de Inglês, 09/11/2026
+
+Integração autorizada pela proprietária: Teco usa a imagem aprovada do guaxinim com boina, exportada em WebP 512x512 com alpha. Avatar livre, sem requisito de progresso. Cosméticos ingleses usam o ID english, com header panorâmico, moldura octogonal de abertura circular transparente e fundo opaco que cobre a superfície inteira. Paleta britânica azul, vermelho e branco, livros e conversa, sem raios. SVGs nativos implementam a composição aprovada e mantêm os mesmos caminhos e proporções de Matemática.
+
+A moldura Guardião das palavras requer concluir todas as oito partes da ilha de Inglês (english-parts-8). Header Horizonte das palavras e fundo Guardião das palavras requerem 100 acertos ingleses (english-correct-100). Não aceitar conquistas de Matemática como substituto. O cálculo usa atividades aceitas e o livro inglês sincronizado, preservando conquistas registradas no perfil. O seletor recebe o workspace atual e verifica novamente o livro e as conquistas ao salvar. Nada concede XP ou progresso pela decoração. Os catálogos compartilhados permitem os mesmos IDs no perfil, visita, prévia e PNG; não há nova chave Firebase ou mudança de regras.
+
+Preparação: sintaxe TS/TSX, diff sem espaços inválidos, fixture estrutural dos streaks e limiares isolados dos cosméticos passaram. Rasterização dos SVGs confirmou fundo totalmente opaco e abertura transparente; Teco conserva quatro cantos transparentes. Verificação completa, React e provas reais de claro/escuro em PC/celular serão conferidas no CI desta PR. Não interpretar esses checks isolados como execução do aplicativo. Detalhes em ENGLISH_PROFILE_COSMETICS.md.
+
 ## Ofensivas agrupadas no perfil e sino, 09/11/2026
 
 ProfileStreakValues agrupa duas ou mais ofensivas ativas em details/summary nativo, inicialmente recolhido. O resumo usa os ícones originais sobrepostos e a quantidade de sequências, sem somar dias. Abrir revela nome e dias de cada sequência. Uma sequência conserva a inspeção anterior; zero não monta indicador. Mudança no conjunto ativo recria o grupo recolhido. Escape recolhe e devolve foco ao resumo. Sem mudança de progresso, sincronização ou contrato público.

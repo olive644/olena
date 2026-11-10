@@ -1,6 +1,12 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
-import { readStoredProfile } from "../hooks/use-stored-profile";
+import { readStoredProfile, useStoredProfile } from "../hooks/use-stored-profile";
+import { useEnglishProgress } from "../hooks/use-english-progress";
+import { englishProgress } from "../domain/language-progress";
+import { ENGLISH_PROGRESS_KEY, parseEnglishLedger } from "../domain/english-progress-ledger";
+import { englishCosmeticGoals } from "../domain/english-cosmetics";
+import type { StoredProfile } from "../domain/profile-identity";
+import type { WorkspaceState } from "../domain/workspace";
 import { profileAvatarSource } from "../domain/profile-avatars";
 import { PROFILE_COVERS, profileCover } from "../domain/profile-covers";
 import {
@@ -26,12 +32,26 @@ const tabs = [
   ["cover", "Headers"],
   ["background", "Fundo do perfil"],
 ] as const;
+function cosmeticAchievements(
+  english: ReturnType<typeof englishProgress>,
+  history: StoredProfile["achievementHistory"],
+) {
+  return new Set([
+    ...mathAchievements(readMathGame())
+      .filter((item) => item.earned)
+      .map((item) => item.id),
+    ...Object.keys(history ?? {}),
+    ...englishCosmeticGoals(english),
+  ]);
+}
 export function ProfileAvatarDialog({
   onClose,
   initialCategory = "avatar",
+  workspace,
 }: {
   onClose(): void;
   initialCategory?: Category;
+  workspace?: WorkspaceState;
 }) {
   useLanguage();
   const dialog = useRef<HTMLDialogElement>(null);
@@ -47,11 +67,9 @@ export function ProfileAvatarDialog({
     };
   });
   const [error, setError] = useState("");
-  const earned = new Set(
-    mathAchievements(readMathGame())
-      .filter((item) => item.earned)
-      .map((item) => item.id),
-  );
+  const english = useEnglishProgress(workspace?.practiceActivities);
+  const [profile] = useStoredProfile();
+  const earned = cosmeticAchievements(english, profile.achievementHistory);
   useEffect(() => {
     dialog.current?.showModal();
   }, []);
@@ -154,9 +172,13 @@ export function ProfileAvatarDialog({
                 {!unlocked && (
                   <small>
                     {uiText(
-                      category === "frame"
-                        ? "Complete uma ilha de Matemática."
-                        : "Acerte 100 contas em Matemática.",
+                      item.id === "english"
+                        ? category === "frame"
+                          ? "Complete a ilha de Inglês."
+                          : "Acerte 100 atividades de Inglês."
+                        : category === "frame"
+                          ? "Complete uma ilha de Matemática."
+                          : "Acerte 100 contas em Matemática.",
                     )}
                   </small>
                 )}
@@ -176,12 +198,20 @@ export function ProfileAvatarDialog({
           onClick={() => {
             try {
               const current = readStoredProfile();
+              const latestEarned = cosmeticAchievements(
+                englishProgress(
+                  workspace?.practiceActivities,
+                  "english",
+                  parseEnglishLedger(localStorage.getItem(ENGLISH_PROGRESS_KEY)),
+                ),
+                current.achievementHistory,
+              );
               const allowed = { ...chosen };
-              if (!cosmeticUnlocked("frame", chosen.frame, earned))
+              if (!cosmeticUnlocked("frame", chosen.frame, latestEarned))
                 allowed.frame = profileFrame(current.frame);
-              if (!cosmeticUnlocked("cover", chosen.cover, earned))
+              if (!cosmeticUnlocked("cover", chosen.cover, latestEarned))
                 allowed.cover = profileCover(current.cover);
-              if (!cosmeticUnlocked("background", chosen.background, earned))
+              if (!cosmeticUnlocked("background", chosen.background, latestEarned))
                 allowed.background = profileBackground(current.background);
               writeSyncedStorage(
                 "helena.profile.v1",

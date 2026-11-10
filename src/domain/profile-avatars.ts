@@ -14,6 +14,7 @@ export const PROFILE_AVATARS = [
   ["Anonha", "anonha-panda.svg"],
   ["Moguel", "moguel-porquinho.svg"],
   ["Leo", "leo.svg"],
+  ["Teco", "teco.webp"],
 ].map(([name, file]) => ({ name: name!, photoUrl: `/profile-avatars/${file}` }));
 export function profileAvatarSource(value?: string): string {
   return (

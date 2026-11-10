@@ -18,6 +18,7 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
     "Miau",
     "Luizão",
     "Leo",
+    "Teco",
   ];
   for (const theme of ["Claro", "Escuro"]) {
     await setTestTheme(page, theme === "Claro" ? "light" : "dark");

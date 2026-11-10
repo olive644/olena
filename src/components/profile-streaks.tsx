@@ -106,4 +106,3 @@ function StreakIcon({ kind }: { kind: "pomodoro" | "timer" | "islands" | "englis
   if (kind === "pomodoro") return <i className="streak-tomato is-active" aria-hidden="true" />;
   return <PaperFlower active />;
 }
-

@@ -67,9 +67,7 @@ it("groups multiple active streaks without adding their day counts", () => {
   expect(group.querySelector(".profile-streak-group-list")?.textContent).toContain(
     "7 dias seguidos",
   );
-  expect(group.querySelector(".profile-streak-group-list")?.textContent).toContain(
-    "1 dia seguido",
-  );
+  expect(group.querySelector(".profile-streak-group-list")?.textContent).toContain("1 dia seguido");
   group.open = true;
   fireEvent.keyDown(group.querySelector("summary")!, { key: "Escape" });
   expect(group.open).toBe(false);
@@ -91,4 +89,3 @@ it("returns to a single streak and hides the group when streaks expire", () => {
   rerender(<ProfileStreakValues streaks={{ pomodoro: 0, timer: 0, islands: 0 }} />);
   expect(container.childElementCount).toBe(0);
 });
-

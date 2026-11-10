@@ -8,6 +8,7 @@ export const PROFILE_COVERS = localizeResource([
   { id: "ocean", name: "Oceano" },
   ...PRIDE_THEMES,
   { id: "mathematics", name: "Horizonte dos números" },
+  { id: "english", name: "Horizonte das palavras" },
 ] as const);
 export type ProfileCover = (typeof PROFILE_COVERS)[number]["id"];
 export function profileCover(value: unknown): ProfileCover {

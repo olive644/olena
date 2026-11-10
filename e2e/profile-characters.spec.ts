@@ -44,10 +44,20 @@ for (const theme of ["light", "dark"]) {
     await expect(page.locator('input[type="file"]')).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Editar capa" })).toBeVisible();
     const connections = page.getByLabel("Sequências de estudo");
+    const streakGroup = connections.locator(".profile-streak-group");
+    await expect(streakGroup).not.toHaveAttribute("open", "");
+    await streakGroup.locator("summary").click();
     for (const name of ["Pomodoro", "Cronômetro", "Ilhas"])
-      await expect(connections.getByLabel(`${name}: 1 dia seguido`)).toBeVisible();
-    await expect(connections.locator(".agenda-week-flower.is-active")).toBeVisible();
-    await expect(connections.locator('img[src="/math-islands/flame.svg"]')).toBeVisible();
+      await expect(
+        streakGroup.locator(".profile-streak-group-row").filter({ hasText: name }),
+      ).toContainText("1 dia seguido");
+    await expect(
+      streakGroup.locator(".profile-streak-group-list .agenda-week-flower.is-active"),
+    ).toBeVisible();
+    await expect(
+      streakGroup.locator('.profile-streak-group-list img[src="/math-islands/flame.svg"]'),
+    ).toBeVisible();
+    await streakGroup.locator("summary").click();
     const name = await page.locator(".profile-cover__name").boundingBox();
     const edit = await page
       .getByRole("button", { name: "Editar perfil", exact: true })
@@ -73,7 +83,7 @@ for (const theme of ["light", "dark"]) {
           }),
         );
       });
-    expect(transparent).toHaveLength(15);
+    expect(transparent).toHaveLength(16);
     expect(transparent.every(Boolean)).toBe(true);
     await expect(dialog.locator('input[type="file"]')).toHaveCount(0);
     await dialog.getByRole("button", { name: "Ninho", exact: true }).click();
