@@ -73,7 +73,8 @@ it("inspeção mostra nível, streak e redes, mas deixa atividades somente no si
   expect(screen.getByRole("link", { name: "GitHub" }).getAttribute("href")).toBe(
     "https://github.com/bob",
   );
-  const streakGroup = document.querySelector<HTMLDetailsElement>(".social-profile-streaks details")!;
+  const streakGroup =
+    document.querySelector<HTMLDetailsElement>(".social-profile-streaks details")!;
   expect(streakGroup.open).toBe(false);
   expect(streakGroup.querySelector("summary strong")?.textContent).toBe("2");
   fireEvent.click(streakGroup.querySelector("summary")!);
