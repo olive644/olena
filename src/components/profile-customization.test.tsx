@@ -72,8 +72,8 @@ it("offers Teco freely and locks English cosmetics without English progress", ()
   localStorage.removeItem(ENGLISH_PROGRESS_KEY);
   localStorage.setItem("helena.profile.v1", JSON.stringify({ name: "Oli" }));
   const { unmount } = render(<ProfileAvatarDialog onClose={vi.fn()} />);
-  fireEvent.click(screen.getByRole("button", { name: "Teco", exact: true }));
-  fireEvent.click(screen.getByRole("button", { name: "Molduras", exact: true }));
+  fireEvent.click(screen.getByRole("button", { name: /^Teco$/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Molduras$/ }));
   const frame = screen.getByRole("button", { name: /Guardião das palavras/ });
   expect(frame.getAttribute("aria-disabled")).toBe("true");
   fireEvent.click(frame);
@@ -91,13 +91,13 @@ it("saves English cosmetics earned from the ledger and rechecks them at save tim
   );
   localStorage.setItem("helena.profile.v1", JSON.stringify({ name: "Oli" }));
   const { unmount } = render(<ProfileAvatarDialog onClose={vi.fn()} initialCategory="frame" />);
-  const frame = screen.getByRole("button", { name: "Guardião das palavras", exact: true });
+  const frame = screen.getByRole("button", { name: /^Guardião das palavras$/ });
   expect(frame.getAttribute("aria-disabled")).toBe("false");
   fireEvent.click(frame);
-  fireEvent.click(screen.getByRole("button", { name: "Headers", exact: true }));
-  fireEvent.click(screen.getByRole("button", { name: "Horizonte das palavras", exact: true }));
-  fireEvent.click(screen.getByRole("button", { name: "Fundo do perfil", exact: true }));
-  fireEvent.click(screen.getByRole("button", { name: "Guardião das palavras", exact: true }));
+  fireEvent.click(screen.getByRole("button", { name: /^Headers$/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Horizonte das palavras$/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Fundo do perfil$/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Guardião das palavras$/ }));
   localStorage.removeItem(ENGLISH_PROGRESS_KEY);
   fireEvent.click(screen.getByRole("button", { name: "Salvar personalização" }));
   expect(readStoredProfile()).toMatchObject({
