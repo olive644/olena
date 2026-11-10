@@ -1670,3 +1670,38 @@ html[data-theme="dark"] .onboarding__actions[data-first-question="true"] {
     right: 2px;
   }
 }
+
+.olena-cover__copy {
+  width: min(100%, 540px);
+}
+.olena-cover__copy h1 {
+  max-width: none;
+  font-size: clamp(2.8rem, 6vw, 5.8rem);
+  letter-spacing: 0;
+}
+.olena-cover__copy h1 .paper-card-title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.08em 0.22em;
+}
+.olena-cover__copy h1 .paper-card-word {
+  display: inline-flex;
+}
+.olena-cover__copy h1 svg {
+  width: 0.58em;
+  height: 1em;
+}
+.olena-cover__copy .onboarding__actions,
+.olena-cover__copy .onboarding__actions button {
+  width: 100%;
+}
+.olena-cover__login .account-access__notice {
+  position: sticky;
+  bottom: 8px;
+  right: auto;
+  order: 5;
+  z-index: 4;
+  margin: 12px 0;
+  max-width: 100%;
+  background: var(--surface, #fffdf8);
+}

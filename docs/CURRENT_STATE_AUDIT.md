@@ -4716,3 +4716,19 @@ Limites: o cartão pode sair sem um enfeite sem avisar a pessoa (só o console r
 O questionário tem uma coluna central, poses originais, reação curta ao confirmar e som local sujeito à preferência de efeitos. Mantém o indicador textual de etapa e remove a barra, o texto redundante e o rodapé desse fluxo. A marca usa o favicon à esquerda e o lettering preto e roxo. As nove respostas, revisão, acesso e configuração pela API continuam no fluxo existente. Em telas compactas a resposta anterior fica oculta para caberem as opções.
 
 A arte fornecida alimenta os PNGs de instalação Android. A variante mascarável preserva a área segura. O favicon do navegador continua separado. O novo ícone chega a instalações por APK após regenerar e assinar o pacote, conforme ANDROID_PLAY_STORE.md. A validação local usa Chromium/Edge e dados de teste. O pacote Android assinado não foi gerado neste checkout.
+
+## Entrada e feedback de autenticação, 10/11/2026
+
+Título da capa reutiliza PaperCardTitle e botão acompanha sua largura. Cadastro exige oito caracteres sem composição adicional local; Firebase continua autoritativo. Validação de email e senha no modal usa a notificação de papel compartilhada. OAuth externo mantém formulário acessível, cancelamento Google libera controles e pageshow restaura estado ao retornar do Discord. Sem alteração de configuração externa.
+
+Validação: 30 testes de autenticação passaram; capa e modal conferidos em Edge 1280 e 390 px, claro/escuro, sem overflow. OAuth real não verificado. Primeira tentativa integral bloqueada por erros react-hooks em app.tsx e onboarding-view.tsx; a correção posterior da transição removeu esses erros, sem declarar o gate integral aprovado.
+
+## Conta existente entre métodos, 10/11/2026
+
+Proprietário confirmou uma única conta no Firebase; Google substituiu método manual e onboarding piscou por cerca de um segundo durante sincronização. App decide retorno de forma síncrona quando conclusão já chegou e OnboardingView aguarda conta após autenticação. Nenhuma fusão ou remoção de usuário. Google com colisão exige autenticação original antes de linkWithCredential; OAuth fica em memória. Discord consulta e-mail retornado pelo provedor e só associa automaticamente se único e verificado nas duas pontas; demais casos entram pela conta original para vínculo explícito. Configurações leem os provedores reais e o vínculo privado. Ver AUTHENTICATION.md para limites do Firebase em senha de e-mail não verificado. Testes locais com serviços simulados, OAuth e contas reais não verificados.
+
+## Teto de JavaScript autorizado, 10/11/2026
+
+Proprietário pediu explicitamente subir o teto após a medição de 1761,1 KiB. Orçamento total e teto rígido passam de 1748 para 1764 KiB, com 2,9 KiB de margem na medição atual. Entrada, dependências, outros orçamentos, workflows e tempos permanecem iguais. Ampliação cobre a entrada visual e a associação/retorno de contas; não foi alegada redução de tamanho nem de custo.
+
+Validação final desta correção: 108 testes focados de entrada, associação Google/Discord, estados das configurações e política aprovados; um teste adicional do hook real recupera onboarding e progresso do mesmo UID ao voltar com Google. Quatro E2E de entrada em Edge PC/mobile claro/escuro passaram. TypeScript e build passaram; orçamento após autorização também passou (1761,1 de 1764 KiB, entrada 219,5 KiB). A tentativa integral anterior registrou treze falhas: doze expectativas antigas de onboarding/ícones/isolamento e uma redação técnica da política, esta última corrigida e revalidada no conjunto focado. Não foi alegado verify integral verde. OAuth/contas reais não exercitados, sem alterações externas e sem publicação/merge nesta revisão.

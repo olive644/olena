@@ -3,7 +3,7 @@ import type { KvStore } from "./kv-store.js";
 import { clientAddress } from "./client-address.js";
 import { checkRateLimit } from "./rate-limit.js";
 
-export type DiscordIdentity = { id: string; name: string };
+export type DiscordIdentity = { id: string; name: string; email?: string; verified?: boolean };
 type AuthRecord = { binding: string; uid?: string; linked?: boolean; verifier?: string };
 type Dependencies = {
   clientId: string;
@@ -109,7 +109,7 @@ export function createDiscordAuthHandler(deps: Dependencies) {
         authorize.search = new URLSearchParams({
           client_id: deps.clientId,
           response_type: "code",
-          scope: "identify",
+          scope: "identify email",
           redirect_uri: callback,
           state,
           prompt: "consent",
@@ -127,12 +127,12 @@ export function createDiscordAuthHandler(deps: Dependencies) {
           digest(cookieValue),
         );
         if (!record) return json(403, { error: "state" });
-        const failure = () =>
+        const failure = (association = false) =>
           new Response(null, {
             status: 303,
             headers: {
               ...headers,
-              Location: `${deps.origin}/?login=1&authError=discord`,
+              Location: `${deps.origin}/?login=1&authError=${association ? "discord-link" : "discord"}`,
               "Set-Cookie": cookie("", 0),
             },
           });
@@ -185,10 +185,28 @@ export function createDiscordAuthHandler(deps: Dependencies) {
           typeof profile.username !== "string"
         )
           return failure();
-        const uid = await deps.resolve(
-          { id: profile.id, name: profile.username.slice(0, 80) },
-          record.uid,
-        );
+        let uid: string;
+        try {
+          uid = await deps.resolve(
+            {
+              id: profile.id,
+              name: profile.username.slice(0, 80),
+              ...("email" in profile &&
+              typeof profile.email === "string" &&
+              profile.email.length <= 320
+                ? {
+                    email: profile.email,
+                    verified: "verified" in profile && profile.verified === true,
+                  }
+                : {}),
+            },
+            record.uid,
+          );
+        } catch (cause) {
+          if (cause instanceof Error && cause.message === "email-association-required")
+            return failure(true);
+          throw cause;
+        }
         const exchange = nonce();
         await deps.store.set(
           `room-limits/oauth-exchange-${digest(exchange)}`,

@@ -1,3 +1,4 @@
+import { AccountFeedbackNotice } from "./account-feedback-notice";
 import { useId, useRef, useState } from "react";
 import { uiText } from "../i18n/runtime";
 import { accountAuthError, setAccountLanguage, type AccountServices } from "../data/account-auth";
@@ -12,15 +13,17 @@ export function EmailAuthForm({
   inline = false,
   linkToCurrent = false,
   onOpenChange,
+  initialEmail = "",
 }: {
   services: AccountServices | undefined;
   accepted: boolean;
-  onAuthenticated: () => void;
+  onAuthenticated: () => void | Promise<void>;
   onBusy: (busy: boolean) => void;
   initialRegister?: boolean;
   inline?: boolean;
   linkToCurrent?: boolean;
   onOpenChange?: (open: boolean) => void;
+  initialEmail?: string;
 }) {
   const id = useId();
   const [open, setOpen] = useState(linkToCurrent || inline);
@@ -28,7 +31,7 @@ export function EmailAuthForm({
     initialRegister || linkToCurrent ? "register" : "login",
   );
   const [email, setEmail] = useState(
-    linkToCurrent ? (services?.auth.currentUser?.email ?? "") : "",
+    linkToCurrent ? (services?.auth.currentUser?.email ?? "") : initialEmail,
   );
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -47,6 +50,10 @@ export function EmailAuthForm({
   }
   async function submit() {
     if (!services || pending.current || (!accepted && mode !== "reset")) return;
+    if (mode === "register" && !linkToCurrent && password.length < 8) {
+      setMessage(uiText("Use pelo menos 8 caracteres na senha."));
+      return;
+    }
     if (linkToCurrent && mode === "register" && password.length < 12) {
       setMessage(uiText("Use pelo menos 12 caracteres. Prefira uma frase única e longa."));
       return;
@@ -126,7 +133,7 @@ export function EmailAuthForm({
         // com credenciais não é encaminhado para o restante da interface.
         if (services.auth.currentUser?.uid !== credential.user.uid)
           throw new Error("auth/user-mismatch");
-        onAuthenticated();
+        await onAuthenticated();
       }
     } catch (cause) {
       setMessage(accountAuthError(cause));
@@ -172,8 +179,21 @@ export function EmailAuthForm({
             </div>
           )}
           <form
+            noValidate
             onSubmit={(event) => {
               event.preventDefault();
+              const invalid = Array.from(
+                event.currentTarget.querySelectorAll<HTMLInputElement>("input"),
+              ).find((input) => !input.validity.valid);
+              if (inline && invalid) {
+                setMessage(
+                  invalid.validity.tooShort && mode === "register" && !linkToCurrent
+                    ? uiText("Use pelo menos 8 caracteres na senha.")
+                    : invalid.validationMessage,
+                );
+                invalid.focus();
+                return;
+              }
               void submit();
             }}
           >
@@ -230,7 +250,7 @@ export function EmailAuthForm({
                     placeholder={inline ? uiText("Coloque sua senha") : undefined}
                     onChange={(e) => setPassword(e.target.value)}
                     autoComplete={mode === "register" ? "new-password" : "current-password"}
-                    minLength={linkToCurrent && mode === "register" ? 12 : 1}
+                    minLength={mode === "register" ? (linkToCurrent ? 12 : 8) : 1}
                     maxLength={128}
                     required
                     disabled={busy}
@@ -322,10 +342,22 @@ export function EmailAuthForm({
                 )}
               </>
             )}
-            <p role="status" aria-live="polite">
-              {message}
-            </p>
-            <button type="submit" disabled={!services || busy || (!accepted && mode !== "reset")}>
+            {inline ? (
+              <AccountFeedbackNotice message={message} onClose={() => setMessage("")} />
+            ) : (
+              <p role="status" aria-live="polite">
+                {message}
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={
+                !services ||
+                busy ||
+                (!accepted && mode !== "reset") ||
+                (mode === "register" && !linkToCurrent && password.length < 8)
+              }
+            >
               {busy
                 ? uiText("Aguarde…")
                 : linkToCurrent

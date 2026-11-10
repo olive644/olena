@@ -1077,7 +1077,7 @@ it("outra conta no mesmo aparelho não recebe os dados da anterior", async () =>
   expect(localStorage.getItem("helenastudy.workspace.history.v1")).toBeNull();
   expect(localStorage.getItem("helena.account.v1")).toBe("beto");
   expect(uploads.join("")).not.toContain("Ana");
-  expect(localStorage.getItem("helena.onboarding.v1")).toBe('{"completed":true}');
+  expect(localStorage.getItem("helena.onboarding.v1")).toBeNull();
 });
 
 it("combines notification reading from both devices during login", async () => {
@@ -1445,4 +1445,45 @@ it("os livros de Inglês do aparelho e da conta viram a união, sem perder nenhu
     (JSON.parse(localStorage.getItem(LEDGER_KEY)!) as { english: { confirmed: boolean }[] })
       .english[0]!.confirmed,
   ).toBe(true);
+});
+
+it("restores onboarding and progress when Google returns to the original manual UID", async () => {
+  const user = {
+    uid: "manual-owner",
+    email: "learner@example.test",
+    getIdToken: vi.fn(async () => "token"),
+    getIdTokenResult: vi.fn(async () => ({ signInProvider: "google.com" })),
+    providerData: [{ providerId: "google.com" }],
+  };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onIdTokenChanged: () => () => {},
+      onAuthStateChanged: (_: unknown, listener: (value: typeof user) => void) => {
+        listener(user);
+        return () => {};
+      },
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  const completed = JSON.stringify({
+    completed: true,
+    configurationOwner: user.uid,
+    details: { name: "Original" },
+  });
+  const progress = JSON.stringify({ island: "english", score: 460 });
+  const server = firebaseServer({
+    version: 2,
+    updatedAt: 1,
+    items: encodeCloudItems({ "helena.onboarding.v1": completed, "helena.soloProgress": progress }),
+  });
+  vi.stubGlobal("fetch", server.fetch);
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.ready).toBe(true));
+  expect(localStorage.getItem("helena.account.v1")).toBe(user.uid);
+  expect(localStorage.getItem("helena.onboarding.v1")).toBe(completed);
+  expect(localStorage.getItem("helena.soloProgress")).toBe(progress);
+  expect(server.fullGets().every((call) => call.url.includes("/users/" + user.uid + "/"))).toBe(
+    true,
+  );
 });

@@ -5,6 +5,7 @@ import { reducedMotion } from "../data/reduced-motion";
 import { OnboardingPaperIcon } from "../components/onboarding-paper-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { PaperCardTitle } from "../components/paper-card-title";
+import { HelenaLoading } from "../components/helena-loading";
 import "./onboarding.css";
 import {
   GoogleLogin,
@@ -164,18 +165,20 @@ export default function OnboardingView({
   onFinish,
   loginOnly = false,
   authenticated = false,
+  accountLoading = false,
   showCover: initialCover = false,
 }: {
   onFinish: (setup?: OnboardingSetup) => void;
   loginOnly?: boolean;
   authenticated?: boolean;
+  accountLoading?: boolean;
   showCover?: boolean;
 }) {
   useLanguage();
   const [showCover] = useState(initialCover);
   const [coverLoginClosing, setCoverLoginClosing] = useState(false);
   const [coverDismissed, setCoverDismissed] = useState(false);
-  const cover = showCover && !coverDismissed && !hasPendingGoogleRedirect();
+  const cover = showCover && !coverDismissed && !authenticated && !hasPendingGoogleRedirect();
 
   const [answers, setAnswers] = useState<OnboardingAnswer[]>(() =>
     hasPendingGoogleRedirect() ? [...readPendingGoogleAnswers()] : [],
@@ -196,6 +199,7 @@ export default function OnboardingView({
       hasPendingGoogleRedirect(),
   );
   const [directLogin, setDirectLogin] = useState(loginOnly);
+  const [awaitingAccount, setAwaitingAccount] = useState(false);
   const [introDismissed, setIntroDismissed] = useState(false);
   const [welcomeStep, setWelcomeStep] = useState<"intro" | "name" | "avatar">("intro");
   const welcomeTarget = useRef<HTMLInputElement>(null);
@@ -263,6 +267,7 @@ export default function OnboardingView({
   const messages = useRef<HTMLDivElement>(null);
   const focusTarget = useRef<HTMLHeadingElement>(null);
   const question = questions[step];
+  const [titleLength, setTitleLength] = useState(1);
   const talking = stage !== "ask" && !showLogin;
   const answersKey = JSON.stringify(answers);
   const configuration = prepared?.key === answersKey ? prepared.value : undefined;
@@ -365,7 +370,6 @@ export default function OnboardingView({
   }, [stage, step]);
 
   const questionTitle = question?.title ?? "";
-  const [titleLength, setTitleLength] = useState(1);
   const firstWordLength = questionTitle.split(" ").slice(0, 2).join(" ").length;
   const visibleTitleLength = reducedMotion()
     ? questionTitle.length
@@ -492,13 +496,7 @@ export default function OnboardingView({
     showLogin,
   ]);
 
-  useEffect(() => {
-    if (!authenticated || hasPendingGoogleRedirect()) return;
-    setCoverDismissed(true);
-    setShowLogin(false);
-  }, [authenticated]);
-
-  const coverLogin = showCover && coverDismissed && showLogin && registerFirst;
+  const coverLogin = showCover && coverDismissed && showLogin && registerFirst && !authenticated;
   function finishCoverLoginClose() {
     setCoverLoginClosing(false);
     setRegisterFirst(false);
@@ -522,6 +520,7 @@ export default function OnboardingView({
       answers={directLogin ? [] : answers}
       configuration={directLogin ? undefined : configuration}
       onFinish={() => {
+        setAwaitingAccount(true);
         if (answers.length === questions.length) {
           onFinish({ ...buildSetup(answers), ...(configuration ? { configuration } : {}) });
         } else {
@@ -542,6 +541,9 @@ export default function OnboardingView({
     />
   );
 
+  if (accountLoading || (awaitingAccount && !authenticated))
+    return <HelenaLoading label={uiText("Carregando sua conta…")} />;
+
   if (cover || coverLogin)
     return (
       <main className="onboarding olena-cover" id="main-content">
@@ -553,7 +555,9 @@ export default function OnboardingView({
         </header>
         <section className="olena-cover__hero">
           <div className="olena-cover__copy">
-            <h1>{uiText("Estude do seu jeito")}</h1>
+            <h1>
+              <PaperCardTitle value={uiText("Estude do seu jeito")} />
+            </h1>
             <div className="onboarding__actions onboarding__actions--chat">
               <button
                 type="button"
@@ -607,7 +611,7 @@ export default function OnboardingView({
       </main>
     );
 
-  if (showLogin) return loginWidget;
+  if (showLogin && !authenticated) return loginWidget;
 
   const multipleReady = Array.isArray(answers[step]) && answers[step].length > 0;
 
@@ -1003,7 +1007,11 @@ export default function OnboardingView({
         </section>
       )}
       <section
-        hidden={Boolean(schoolStep) || finished}
+        hidden={
+          Boolean(schoolStep) ||
+          finished ||
+          (step === 0 && !introDismissed && (authenticated || window.innerWidth >= 720))
+        }
         className="onboarding__form"
         data-finished={finished}
       >
