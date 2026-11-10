@@ -4710,3 +4710,9 @@ Correção: foto, capa e QR continuam essenciais. Fundo, moldura, número do ní
 Teste: `profile-share-catalog.test.tsx` simula fundo, moldura, número do nível e logo indisponíveis; antes da correção o download não ocorria, agora ocorre e mostra "Cartão salvo.". No navegador, com `/profile-cosmetics/` e o logo bloqueados, o card falhava com a mensagem de erro sem a correção e baixa com ela (PNG de 280 KB, completo, sem moldura e fundo).
 
 Limites: o cartão pode sair sem um enfeite sem avisar a pessoa (só o console registra). Se o problema persistir no aparelho da dona, abrir o console do Chrome remoto e ler o `console.warn` indica a etapa. Não testado em Android real.
+
+## Onboarding e ícones Android, 10/11/2026
+
+O questionário tem uma coluna central, poses originais, reação curta ao confirmar e som local sujeito à preferência de efeitos. Mantém o indicador textual de etapa e remove a barra, o texto redundante e o rodapé desse fluxo. A marca usa o favicon à esquerda e o lettering preto e roxo. As nove respostas, revisão, acesso e configuração pela API continuam no fluxo existente. Em telas compactas a resposta anterior fica oculta para caberem as opções.
+
+A arte fornecida alimenta os PNGs de instalação Android. A variante mascarável preserva a área segura. O favicon do navegador continua separado. O novo ícone chega a instalações por APK após regenerar e assinar o pacote, conforme ANDROID_PLAY_STORE.md. A validação local usa Chromium/Edge e dados de teste. O pacote Android assinado não foi gerado neste checkout.

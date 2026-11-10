@@ -5,7 +5,7 @@ import { OnboardingPaperIcon } from "../components/onboarding-paper-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { PaperCardTitle } from "../components/paper-card-title";
 import "./onboarding.css";
-import { BrandFooter } from "../components/brand-footer";
+import { playRoomFeedbackSound, prepareRoomFeedbackSound } from "../data/room-feedback-sound";
 import { GoogleLogin, hasPendingGoogleRedirect, readPendingGoogleAnswers } from "./google-login";
 import type { StudyModality, StudyPreferences } from "../domain/study-preferences";
 import {
@@ -308,6 +308,11 @@ export default function OnboardingView({
     });
   }
 
+  function confirmAnswer() {
+    playRoomFeedbackSound(true, prepareRoomFeedbackSound());
+    setStage("reacting");
+  }
+
   function choose(option: string) {
     if (stage !== "ask" || !question) return;
     if (question.multiple) {
@@ -320,7 +325,7 @@ export default function OnboardingView({
       return;
     }
     answer(option);
-    setStage("reacting");
+    confirmAnswer();
   }
 
   function goBack() {
@@ -374,7 +379,11 @@ export default function OnboardingView({
       <h1 className="sr-only">{uiText(1198)}</h1>
       <header className="onboarding__header">
         <span className="onboarding__brand">
-          <PaperCardTitle value="OlenaStudy" />
+          <img src="/olena-favicon-180.png" alt="" width="32" height="32" />
+          <span>
+            <PaperCardTitle value="Olena" />
+            <PaperCardTitle value="Study" />
+          </span>
         </span>
         {step === 0 && (
           <button
@@ -397,13 +406,8 @@ export default function OnboardingView({
           <p aria-live="polite">
             {question ? uiText(2020, [step + 1, questions.length]) : uiText(1434)}
           </p>
-          <progress
-            value={question ? step + 1 : questions.length}
-            max={questions.length}
-            aria-label={uiText(1435)}
-          />
         </div>
-        <div className="onboarding__stage">
+        <div className="onboarding__stage" data-reacting={stage === "reacting"}>
           <img
             key={pose}
             src={poseSource(pose)}
@@ -416,17 +420,21 @@ export default function OnboardingView({
         </div>
         <div className="onboarding__chat" role="group" aria-label={uiText("Conversa com a Olena")}>
           <div className="onboarding__messages" ref={messages}>
-            <p className="onboarding__message onboarding__message--olena onboarding__intro">
-              {uiText("Oi! Eu sou a Olena, sua assistente de estudos.")}
-            </p>
-            <p className="onboarding__message onboarding__message--olena onboarding__message--second onboarding__intro">
-              {uiText(
-                "Vou te fazer {0} perguntas rápidas para deixar o OlenaStudy com o seu jeito.",
-                [questions.length],
-              )}
-            </p>
+            {step === 0 && (
+              <>
+                <p className="onboarding__message onboarding__message--olena onboarding__intro">
+                  {uiText("Oi! Eu sou a Olena, sua assistente de estudos.")}
+                </p>
+                <p className="onboarding__message onboarding__message--olena onboarding__message--second onboarding__intro">
+                  {uiText(
+                    "Vou te fazer {0} perguntas rápidas para deixar o OlenaStudy com o seu jeito.",
+                    [questions.length],
+                  )}
+                </p>
+              </>
+            )}
             {questions.map((item, index) => {
-              if (index > step) return null;
+              if (index > step || index < step - 1) return null;
               const current = index === step;
               const replied = index < step || (current && stage === "reacting");
               if (current && stage === "typing") return null;
@@ -551,9 +559,7 @@ export default function OnboardingView({
                 type="button"
                 className="is-primary"
                 disabled={!multipleReady}
-                onClick={() => {
-                  setStage("reacting");
-                }}
+                onClick={confirmAnswer}
               >
                 {uiText(1436)} <PaperArrow />
               </button>
@@ -570,12 +576,8 @@ export default function OnboardingView({
               </button>
             )}
           </div>
-          <p className="onboarding__privacy">
-            {uiText("A Olena configura seu espaço com estas respostas.")}
-          </p>
         </div>
       </section>
-      <BrandFooter withOlena />
     </main>
   );
 }

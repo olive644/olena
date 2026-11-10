@@ -16,14 +16,14 @@ it("mostra o nome OlenaStudy na marca do onboarding", () => {
   expect(brand?.textContent).toBe("OlenaStudy");
 });
 
-it("mostra o rodapé da Galeria.Oli com o ícone em todos os passos", () => {
+it("usa o favicon na marca e dispensa rodapé e barra de progresso no questionário", () => {
   const { container } = render(<OnboardingView onFinish={vi.fn()} />);
-  const footer = container.querySelector("footer.brand-footer");
-  expect(footer?.textContent).toBe("Todos os direitos Galeria.Oli - OlenaStudy");
-  expect([...footer!.querySelectorAll("img")].map((image) => image.getAttribute("src"))).toEqual([
+  expect(container.querySelector(".onboarding__brand img")?.getAttribute("src")).toBe(
     "/olena-favicon-180.png",
-    "/galeria-oli-icon.svg",
-  ]);
+  );
+  expect(container.querySelector("footer.brand-footer")).toBeNull();
+  expect(screen.queryByRole("progressbar")).toBeNull();
+  expect(screen.queryByText("A Olena configura seu espaço com estas respostas.")).toBeNull();
 });
 
 describe("conversa da Olena", () => {

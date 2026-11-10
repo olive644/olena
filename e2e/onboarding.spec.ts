@@ -25,7 +25,7 @@ test("a Olena conduz as perguntas em conversa até o login com Google", async ({
     await expect
       .poll(() => image.evaluate((element) => (element as HTMLImageElement).naturalWidth))
       .toBeGreaterThan(0);
-    await expect(page.locator(".onboarding__message--you")).toHaveCount(step - 1);
+    await expect(page.locator(".onboarding__message--you")).toHaveCount(step === 1 ? 0 : 1);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
@@ -33,7 +33,7 @@ test("a Olena conduz as perguntas em conversa até o login com Google", async ({
   await expect(
     page.getByText("Prontinho! Seu começo está preparado. Vamos criar seu espaço?"),
   ).toBeVisible();
-  await expect(page.locator(".onboarding__message--you")).toHaveCount(9);
+  await expect(page.locator(".onboarding__message--you")).toHaveCount(1);
   await expect(page.getByRole("button", { name: "Entrar como convidado" })).toHaveCount(0);
   // A pose é PNG recortado: nada de caixa clara atrás da Olena nem mistura de cor.
   await expect(page.locator(".onboarding__helena")).toHaveCSS("mix-blend-mode", "normal");
@@ -43,7 +43,7 @@ test("a Olena conduz as perguntas em conversa até o login com Google", async ({
   await expect(page.getByRole("heading", { name: "Vamos começar?" })).toBeVisible();
   await page.getByRole("button", { name: "Voltar", exact: true }).click();
   await expect(page.getByRole("button", { name: "Registre-se" })).toBeVisible();
-  await expect(page.locator(".onboarding__message--you")).toHaveCount(9);
+  await expect(page.locator(".onboarding__message--you")).toHaveCount(1);
 });
 
 test("Voltar refaz uma resposta e o foco do teclado não usa realce amarelo", async ({ page }) => {
