@@ -5,8 +5,9 @@ for (const theme of ["light", "dark"]) {
     page,
   }) => {
     await page.addInitScript((value) => localStorage.setItem("helenastudy.theme", value), theme);
-    await page.goto("/?onboarding=1");
-    await page.getByRole("button", { name: "Já tenho uma conta" }).click();
+    // Navegador que já teve uma conta (marca sem identidade) e pede o login direto.
+    await page.addInitScript(() => localStorage.setItem("olena.returning.v1", "1"));
+    await page.goto("/?login=1");
     await expect(page.getByRole("heading", { name: "Boas-vindas de volta!" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
     await expect(page.locator(".onboarding__choices")).toHaveCount(0);
@@ -26,13 +27,20 @@ for (const theme of ["light", "dark"]) {
     );
     await page.screenshot({ path: test.info().outputPath("welcome-back.png") });
     await page.getByRole("button", { name: "Primeira vez por aqui? Crie sua conta" }).click();
-    await expect(page.getByRole("button", { name: "Ensino médio", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Vamos começar?" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
+    await expect(page.locator(".login-page__perched--returning")).toHaveCount(0);
   });
 }
 
-test("navegador reconhecido abre boas-vindas sem identificar uma pessoa", async ({ page }) => {
+test("navegador reconhecido abre a capa e leva ao login sem identificar uma pessoa", async ({
+  page,
+}) => {
   await page.addInitScript(() => localStorage.setItem("olena.returning.v1", "1"));
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Boas-vindas de volta!" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Estude do seu jeito" })).toBeVisible();
+  await expect(page.locator(".onboarding__choices")).toHaveCount(0);
+  await page.getByRole("button", { name: "Começar agora" }).click();
+  await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
   await expect(page.locator(".onboarding__choices")).toHaveCount(0);
 });

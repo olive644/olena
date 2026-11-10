@@ -16,16 +16,17 @@ for (const theme of ["light", "dark"]) {
     const configuration: unknown = await prepared.json();
     await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
     expect(await page.evaluate(() => localStorage.getItem("helena.onboarding.v1"))).toBeNull();
-    // Fixture de uma conclusão pertencente à conta, sem simular OAuth nem login real.
-    // O callback que grava esta estrutura é exercitado pelo componente autenticado no Vitest.
+    // Fixture de uma conclusão guardada no navegador, sem simular OAuth nem login real: sem conta
+    // autenticada, o app só aplica a configuração pendente numa sessão de convidado. O callback que
+    // grava esta estrutura para uma conta é exercitado pelo componente autenticado no Vitest.
     await page.evaluate(
       ({ configuration, answers }) => {
-        localStorage.setItem("helena.account.v1", "e2e-owner");
+        localStorage.setItem("helena.guest.v1", "1");
         localStorage.setItem(
           "helena.onboarding.v1",
           JSON.stringify({
             completed: true,
-            configurationOwner: "e2e-owner",
+            configurationOwner: "guest",
             configurationPending: true,
             configuration,
             answers,
