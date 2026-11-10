@@ -12,7 +12,7 @@ import { StrictMode } from "react";
 
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
 
-it("shows the original loading while Discord prepares the external redirect", async () => {
+it("keeps the form accessible while Discord prepares the external redirect", async () => {
   vi.mocked(getFirebaseAccountServices).mockResolvedValue({
     auth: {},
     authApi: {},
@@ -33,8 +33,8 @@ it("shows the original loading while Discord prepares the external redirect", as
   const button = screen.getByRole("button", { name: "Entrar com Discord" });
   await waitFor(() => expect(button.hasAttribute("disabled")).toBe(false));
   fireEvent.click(button);
-  expect(await screen.findByText("Preparando seu login…")).toBeTruthy();
-  expect(document.querySelector(".login-page__loading .helena-pencil")).toBeTruthy();
+  expect(screen.queryByText("Preparando seu login…")).toBeNull();
+  expect(document.querySelector(".login-page__loading")).toBeNull();
   finishRequest(Response.json({ error: "provider-unavailable" }, { status: 503 }));
   await screen.findByRole("alert");
   expect(document.querySelector(".login-page__loading")).toBeNull();
@@ -490,4 +490,88 @@ describe("entrar como convidado", () => {
     await waitFor(() => expect(finish).toHaveBeenCalledOnce());
     expect(isGuestSession()).toBe(false);
   });
+});
+
+it("restores Google controls after a cancelled popup without hiding the form", async () => {
+  let rejectPopup: (reason: unknown) => void = () => {};
+  class GoogleProvider {
+    setCustomParameters() {}
+  }
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: {},
+    redirectResult: null,
+    authApi: {
+      GoogleAuthProvider: GoogleProvider,
+      signInWithPopup: vi.fn(
+        () =>
+          new Promise((_, reject) => {
+            rejectPopup = reject;
+          }),
+      ),
+    },
+  } as never);
+  render(<GoogleLogin answers={[]} onFinish={vi.fn()} embedded registerFirst />);
+  const button = await screen.findByRole("button", { name: "Entrar com Google" });
+  await waitFor(() => expect(button.hasAttribute("disabled")).toBe(false));
+  fireEvent.click(button);
+  expect(screen.queryByText("Preparando seu login…")).toBeNull();
+  expect(screen.getByLabelText("E-mail", { exact: true })).toBeTruthy();
+  rejectPopup({ code: "auth/popup-closed-by-user" });
+  await waitFor(() => expect(button.hasAttribute("disabled")).toBe(false));
+  expect(screen.getByRole("status").className).toContain("account-access__notice");
+});
+
+it("links Google to the authenticated original email account without overwriting its onboarding", async () => {
+  const providerCredential = { providerId: "google.com" };
+  class GoogleProvider {
+    setCustomParameters() {}
+    static credentialFromError() {
+      return providerCredential;
+    }
+  }
+  const original = { uid: "manual-owner", email: "learner@example.test" };
+  const auth: { currentUser: typeof original | null; languageCode?: string } = {
+    currentUser: null,
+  };
+  const linkWithCredential = vi.fn(async () => ({ user: original }));
+  const signInWithEmailAndPassword = vi.fn(async () => {
+    auth.currentUser = original;
+    return { user: original };
+  });
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth,
+    redirectResult: null,
+    authApi: {
+      GoogleAuthProvider: GoogleProvider,
+      signInWithPopup: vi.fn(async () => {
+        throw {
+          code: "auth/account-exists-with-different-credential",
+          customData: { email: original.email },
+        };
+      }),
+      signInWithEmailAndPassword,
+      linkWithCredential,
+      reload: vi.fn(async () => {}),
+    },
+  } as never);
+  const saved = JSON.stringify({
+    completed: true,
+    configurationOwner: original.uid,
+    details: { name: "Original" },
+  });
+  localStorage.setItem("helena.onboarding.v1", saved);
+  const finish = vi.fn();
+  render(<GoogleLogin answers={[]} onFinish={finish} embedded registerFirst />);
+  const google = screen.getByRole("button", { name: "Entrar com Google" });
+  await waitFor(() => expect(google.hasAttribute("disabled")).toBe(false));
+  fireEvent.click(google);
+  await screen.findByRole("button", { name: "Entrar com e-mail" });
+  expect(screen.getByLabelText("E-mail", { exact: true })).toHaveProperty("value", original.email);
+  fireEvent.change(screen.getByPlaceholderText("Coloque sua senha"), {
+    target: { value: "original-password" },
+  });
+  fireEvent.submit(screen.getByRole("button", { name: "Entrar com e-mail" }).closest("form")!);
+  await waitFor(() => expect(finish).toHaveBeenCalledOnce());
+  expect(linkWithCredential).toHaveBeenCalledWith(original, providerCredential);
+  expect(localStorage.getItem("helena.onboarding.v1")).toBe(saved);
 });

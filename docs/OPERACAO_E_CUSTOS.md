@@ -161,3 +161,7 @@ Medição final com o layout sem arte nas perguntas: aplicação 1710,8 KiB de 1
 Build inicial medido em 1716,3 KiB, contra 1710,8 KiB da revisão anterior, entrada 220,7 KiB. Sob autorização vigente do proprietário, teto total e rígido passam de 1712 para 1720 KiB, sem alterar entrada, workflows ou tempos. Os 120 novos exercícios e doze guias ficam em JSON sob demanda, sem biblioteca ou serviço novo. A camada de seleção, validação e compatibilidade responde pelo crescimento funcional; não foi alegada economia não medida. Conferir medição final no audit.
 
 Medição com a retomada: aplicação 1719,8 KiB de 1720 e entrada 220,7 KiB. O cursor reutiliza o perfil privado e a fila de sincronização existentes, sem chave de nuvem, regra ou serviço novo. Nenhum aumento adicional de teto.
+
+## Teto de JavaScript autorizado, 10/11/2026
+
+Proprietário pediu explicitamente subir o teto após a medição de 1761,1 KiB. Orçamento total e teto rígido passam de 1748 para 1764 KiB, com 2,9 KiB de margem na medição atual. Entrada, dependências, outros orçamentos, workflows e tempos permanecem iguais. Ampliação cobre a entrada visual e a associação/retorno de contas; não foi alegada redução de tamanho nem de custo.

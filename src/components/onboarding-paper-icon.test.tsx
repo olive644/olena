@@ -16,8 +16,10 @@ it("uses original journey symbols without changing icons shared by other screens
     "image/svg+xml",
   );
   const icons = [...journey.querySelectorAll("symbol")];
-  expect(icons).toHaveLength(40);
-  expect(new Set(icons.map((icon) => icon.innerHTML)).size).toBe(40);
+  expect(icons).toHaveLength(47);
+  expect(new Set(icons.map((icon) => icon.innerHTML)).size).toBe(47);
+  for (const year of [1, 2, 3, 6, 7, 8, 9])
+    expect(journey.getElementById(`year-${year}`)).not.toBeNull();
   for (const icon of icons) {
     expect(icon.querySelectorAll("path").length).toBeGreaterThanOrEqual(2);
     const view = render(<OnboardingPaperIcon name={`journey-${icon.id}`} />);

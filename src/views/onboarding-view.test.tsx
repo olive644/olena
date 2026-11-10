@@ -1,178 +1,204 @@
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import OnboardingView from "./onboarding-view";
-import { PRACTICE_ISLANDS } from "../data/practice-islands";
 import { prepareOnboarding, type OnboardingAnswers } from "../domain/onboarding-configuration";
+import {
+  advanceOnboarding,
+  chooseOnboarding,
+  welcomeOnboarding,
+  secondaryOnboarding,
+} from "../test/onboarding-steps";
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
+vi.mock("../data/reduced-motion", () => ({ reducedMotion: () => true }));
 vi.mock("../data/onboarding-client", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../data/onboarding-client")>()),
   requestOnboardingConfiguration: vi.fn(async (answers: OnboardingAnswers) =>
     prepareOnboarding(answers, "onboarding-v1-0123456789abcdef01234567"),
   ),
 }));
-
-it("mostra o nome OlenaStudy na marca do onboarding", () => {
-  const { container } = render(<OnboardingView onFinish={vi.fn()} />);
-  const brand = container.querySelector(".onboarding__brand");
-  expect(brand?.textContent).toBe("OlenaStudy");
+const user = { uid: "onboarding-owner" };
+const updateProfile = vi.fn(async () => {});
+beforeEach(() => {
+  localStorage.clear();
+  sessionStorage.clear();
+  window.history.replaceState(null, "", "/");
+  localStorage.setItem(ACCOUNT_OWNER_KEY, user.uid);
+  updateProfile.mockClear();
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: { updateProfile },
+    redirectResult: null,
+  } as never);
 });
-
-it("usa o favicon na marca e dispensa rodapé e barra de progresso no questionário", () => {
-  const { container } = render(<OnboardingView onFinish={vi.fn()} />);
+function renderOnboarding(finish = vi.fn()) {
+  return render(<OnboardingView authenticated onFinish={finish} />);
+}
+async function throughGoal() {
+  renderOnboarding();
+  await welcomeOnboarding();
+  chooseOnboarding("Estudo por conta própria");
+  chooseOnboarding("Matemática");
+  chooseOnboarding("Inglês");
+  chooseOnboarding("Criar uma rotina");
+}
+it("keeps original branding without footer, step counter or progress bar", () => {
+  const { container } = renderOnboarding();
+  expect(container.querySelector(".onboarding__brand")?.textContent).toBe("OlenaStudy");
   expect(container.querySelector(".onboarding__brand img")?.getAttribute("src")).toBe(
     "/olena-favicon-180.png",
   );
   expect(container.querySelector("footer.brand-footer")).toBeNull();
   expect(screen.queryByRole("progressbar")).toBeNull();
-  expect(screen.queryByText("A Olena configura seu espaço com estas respostas.")).toBeNull();
+  expect(screen.queryByText(/Passo \d de/)).toBeNull();
 });
-
-describe("conversa da Olena", () => {
-  it("entrar novamente sem questionário não redefine preferências existentes", async () => {
-    const finish = vi.fn();
-    render(<OnboardingView loginOnly onFinish={finish} />);
-    fireEvent.click(await screen.findByRole("button", { name: "Entrar como convidado" }));
-    expect(finish).toHaveBeenCalledWith(undefined);
-  });
-  it("oferece todas as matérias das ilhas e idiomas asiáticos com ícones próprios", () => {
-    const { container } = render(<OnboardingView onFinish={vi.fn()} />);
-    expect(container.querySelector(".onboarding__eyebrow")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Ensino médio" }));
-    const languages = new Set(["english", "spanish", "japanese", "chinese"]);
-    const subjects = new Set(
-      PRACTICE_ISLANDS.map((island) => (languages.has(island.id) ? "Idiomas" : island.subject)),
-    );
-    for (const subject of subjects)
-      expect(screen.getByRole("button", { name: subject })).toBeTruthy();
-    for (const icon of container.querySelectorAll(".onboarding__choices use"))
-      expect(icon.getAttribute("href")).toContain("/onboarding-journey.svg#");
-    fireEvent.click(screen.getByRole("button", { name: "Matemática" }));
-    for (const name of ["Inglês", "Espanhol", "Japonês", "Chinês"])
-      expect(screen.getByRole("button", { name })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Chinês" })).toBeTruthy();
-  });
-  it("abre com a Olena se apresentando e a primeira pergunta como resposta rápida", () => {
-    render(<OnboardingView onFinish={vi.fn()} />);
-    expect(screen.getByText("Oi! Eu sou a Olena, sua assistente de estudos.")).toBeTruthy();
-    expect(
-      screen.getByRole("heading", { name: "Em que fase dos estudos você está?" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Ensino médio" })).toBeTruthy();
-  });
-
-  it("responde em balão, a Olena reage e a próxima pergunta entra", () => {
-    render(<OnboardingView onFinish={vi.fn()} />);
-    fireEvent.click(screen.getByRole("button", { name: "Ensino médio" }));
-    expect(screen.getByText("Boa! Já dá para montar um começo sob medida.")).toBeTruthy();
-    expect(screen.getByText(/Sua resposta:/).parentElement?.textContent).toContain("Ensino médio");
-    expect(
-      screen.getByRole("heading", { name: "Qual matéria desperta sua curiosidade?" }),
-    ).toBeTruthy();
-  });
-
-  it("pergunta de várias respostas só avança com Continuar e ao menos uma escolha", () => {
-    render(<OnboardingView onFinish={vi.fn()} />);
-    for (const choice of ["Ensino médio", "Matemática", "Inglês", "Criar uma rotina"])
-      fireEvent.click(screen.getByRole("button", { name: choice }));
-    const next = screen.getByRole("button", { name: "Continuar" });
-    expect((next as HTMLButtonElement).disabled).toBe(true);
-    const visual = screen.getByRole("button", { name: "Visual" });
-    fireEvent.click(visual);
-    expect(visual.getAttribute("aria-pressed")).toBe("true");
-    expect((next as HTMLButtonElement).disabled).toBe(false);
-    fireEvent.click(next);
-    expect(
-      screen.getByRole("heading", { name: "Como você gosta de organizar o estudo?" }),
-    ).toBeTruthy();
-  });
-
-  it("Voltar reabre a pergunta anterior com a resposta marcada", () => {
-    render(<OnboardingView onFinish={vi.fn()} />);
-    fireEvent.click(screen.getByRole("button", { name: "Ensino médio" }));
-    fireEvent.click(screen.getByRole("button", { name: "Voltar" }));
-    expect(
-      screen.getByRole("heading", { name: "Em que fase dos estudos você está?" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Ensino médio" }).className).toContain("is-selected");
-    expect(screen.queryByRole("button", { name: "Voltar" })).toBeNull();
-  });
-
-  it("depois da última pergunta mostra Registre-se sem antecipar o acesso", async () => {
-    render(<OnboardingView onFinish={vi.fn()} />);
-    for (const choice of ["Ensino médio", "Matemática", "Inglês", "Criar uma rotina", "Visual"]) {
-      fireEvent.click(screen.getByRole("button", { name: choice }));
-      if (choice === "Visual") fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
-    }
-    for (const choice of ["Passo a passo", "Foco contínuo", "Agora não", "15 minutos"])
-      fireEvent.click(screen.getByRole("button", { name: choice }));
-    expect(
-      screen.getByText("Prontinho! Seu começo está preparado. Vamos criar seu espaço?"),
-    ).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Registre-se" })).toBeTruthy();
-    expect(screen.queryByRole("button", { name: "Entrar com Google" })).toBeNull();
-    expect(screen.queryByRole("button", { name: "Entrar como convidado" })).toBeNull();
-    expect(await screen.findByText("Meta diária")).toBeTruthy();
-  });
-
-  it("oferece convidado somente na tela final e preserva as respostas", async () => {
-    const finish = vi.fn();
-    render(<OnboardingView onFinish={finish} />);
-    for (const choice of ["Ensino médio", "Matemática", "Inglês", "Criar uma rotina", "Visual"]) {
-      fireEvent.click(screen.getByRole("button", { name: choice }));
-      if (choice === "Visual") fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
-    }
-    for (const choice of ["Passo a passo", "Foco contínuo", "Agora não", "15 minutos"])
-      fireEvent.click(screen.getByRole("button", { name: choice }));
-    expect(screen.queryByRole("button", { name: "Entrar como convidado" })).toBeNull();
-    await waitFor(() =>
-      expect(
-        (screen.getByRole("button", { name: "Registre-se" }) as HTMLButtonElement).disabled,
-      ).toBe(false),
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Registre-se" }));
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Entrar como convidado" })).toBeTruthy(),
-    );
-    expect(finish).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole("button", { name: "Entrar como convidado" }));
-    expect(finish).toHaveBeenCalledTimes(1);
-    expect(localStorage.getItem("helena.guest.v1")).toBe("1");
-    expect(JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "{}").completed).toBe(true);
-    localStorage.removeItem("helena.guest.v1");
-  });
-
-  it("a Olena usa arte recortada, sem fundo marfim nem mistura de cor", () => {
-    const { container } = render(<OnboardingView onFinish={vi.fn()} />);
-    expect(container.querySelector(".onboarding__helena")?.getAttribute("src")).toMatch(
-      /-cutout\.webp$/,
-    );
-  });
+it("does not offer guest access or reset existing preferences on return", async () => {
+  const saved = JSON.stringify({ completed: true, configurationOwner: user.uid });
+  localStorage.setItem("helena.onboarding.v1", saved);
+  const finish = vi.fn();
+  render(<OnboardingView loginOnly onFinish={finish} />);
+  expect(await screen.findByRole("button", { name: "Entrar com Google" })).toBeTruthy();
+  expect(screen.queryByRole("button", { name: "Entrar como convidado" })).toBeNull();
+  expect(finish).not.toHaveBeenCalled();
+  expect(localStorage.getItem("helena.onboarding.v1")).toBe(saved);
 });
-
-it("saves the onboarding name in the authenticated Firebase account", async () => {
-  const user = { uid: "onboarding-name-owner" };
-  const updateProfile = vi.fn(async () => {});
-  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
-    auth: { currentUser: user },
-    authApi: { updateProfile },
-  } as never);
-  localStorage.setItem(ACCOUNT_OWNER_KEY, user.uid);
-  try {
-    const { container } = render(<OnboardingView authenticated onFinish={vi.fn()} />);
-    fireEvent.click(await screen.findByRole("button", { name: "Prosseguir" }, { timeout: 4500 }));
-    fireEvent.change(screen.getByRole("textbox", { name: "Como devo te chamar?" }), {
-      target: { value: "  Ana Souza  " },
-    });
-    fireEvent.click(
-      within(container.querySelector(".onboarding__welcome")!).getByRole("button", {
-        name: "Avançar",
-      }),
-    );
-    await screen.findByRole("heading", { name: "Personalize seu visual!" });
-    expect(updateProfile).toHaveBeenCalledWith(user, { displayName: "Ana Souza" });
-  } finally {
-    localStorage.removeItem(ACCOUNT_OWNER_KEY);
-  }
+it("introduces Olena before name, then shows a separate selectable avatar stage", async () => {
+  renderOnboarding();
+  expect(screen.getByText("Olá! Eu sou a Olena.")).toBeTruthy();
+  expect(screen.queryByRole("button", { name: "Estudante do ensino secundário" })).toBeNull();
+  await welcomeOnboarding();
+  expect(updateProfile).toHaveBeenCalledWith(user, { displayName: "Ana Souza" });
+  expect(screen.getByRole("heading", { name: "Em que fase dos estudos você está?" })).toBeTruthy();
+});
+it("requires confirmation through secondary type, year and optional institution", async () => {
+  renderOnboarding();
+  await welcomeOnboarding();
+  fireEvent.click(screen.getByRole("button", { name: "Estudante do ensino secundário" }));
+  expect(screen.queryByRole("heading", { name: "Qual modalidade você cursa?" })).toBeNull();
+  advanceOnboarding();
+  expect(screen.getByRole("heading", { name: "Qual modalidade você cursa?" })).toBeTruthy();
+  chooseOnboarding("Ensino médio");
+  for (const year of ["1º ano do médio", "2º ano do médio", "3º ano do médio"])
+    expect(screen.getByRole("button", { name: year })).toBeTruthy();
+  chooseOnboarding("2º ano do médio");
+  expect(screen.getByRole("heading", { name: "Onde você estuda?" })).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Ignorar" }));
+  expect(
+    screen.getByRole("heading", { name: "Qual disciplina você mais tem dificuldade?" }),
+  ).toBeTruthy();
+});
+it("offers approved subjects and Asian languages with original journey icons", async () => {
+  const { container } = renderOnboarding();
+  await welcomeOnboarding();
+  secondaryOnboarding();
+  for (const subject of [
+    "Idiomas",
+    "Português",
+    "Matemática",
+    "Química",
+    "Biologia",
+    "Ciências",
+    "História",
+    "Programação",
+    "Ainda estou descobrindo",
+  ])
+    expect(screen.getByRole("button", { name: subject })).toBeTruthy();
+  expect(screen.queryByRole("button", { name: "Artes e tecnologia" })).toBeNull();
+  for (const icon of container.querySelectorAll(".onboarding__choices use"))
+    expect(icon.getAttribute("href")).toContain("/onboarding-journey.svg#");
+  chooseOnboarding("Matemática");
+  for (const name of ["Inglês", "Espanhol", "Japonês", "Chinês"])
+    expect(screen.getByRole("button", { name })).toBeTruthy();
+  expect(screen.queryByRole("button", { name: "Outro idioma" })).toBeNull();
+});
+it("keeps selection on the current question until advancing, without old reaction bubbles", async () => {
+  renderOnboarding();
+  await welcomeOnboarding();
+  chooseOnboarding("Estudo por conta própria");
+  const math = screen.getByRole("button", { name: "Matemática" });
+  fireEvent.click(math);
+  expect(math.getAttribute("aria-pressed")).toBe("true");
+  expect(screen.queryByRole("button", { name: "Inglês" })).toBeNull();
+  expect(screen.queryByText("Boa! Já dá para montar um começo sob medida.")).toBeNull();
+  advanceOnboarding();
+  expect(screen.getByRole("heading", { name: "Qual idioma você quer praticar?" })).toBeTruthy();
+});
+it("requires at least one modality and preserves explicit next navigation", async () => {
+  await throughGoal();
+  const next = screen.getByRole("button", { name: "Avançar" });
+  expect(next.hasAttribute("disabled")).toBe(true);
+  const visual = screen.getByRole("button", { name: "Visual" });
+  fireEvent.click(visual);
+  expect(visual.getAttribute("aria-pressed")).toBe("true");
+  expect(screen.queryByRole("button", { name: "Passo a passo" })).toBeNull();
+  expect(next.hasAttribute("disabled")).toBe(false);
+  fireEvent.click(next);
+  expect(
+    screen.getByRole("heading", { name: "Como você gosta de organizar o estudo?" }),
+  ).toBeTruthy();
+});
+it("back restores the preceding answer as selected", async () => {
+  renderOnboarding();
+  await welcomeOnboarding();
+  chooseOnboarding("Estudo por conta própria");
+  fireEvent.click(screen.getByRole("button", { name: "Voltar" }));
+  expect(screen.getByRole("heading", { name: "Em que fase dos estudos você está?" })).toBeTruthy();
+  expect(
+    screen.getByRole("button", { name: "Estudo por conta própria" }).getAttribute("aria-pressed"),
+  ).toBe("true");
+});
+it("prepares and saves all choices, then enters without final sign-up or guest buttons", async () => {
+  const finish = vi.fn();
+  renderOnboarding(finish);
+  await welcomeOnboarding();
+  secondaryOnboarding();
+  for (const choice of [
+    "Matemática",
+    "Inglês",
+    "Criar uma rotina",
+    "Visual",
+    "Passo a passo",
+    "Foco contínuo",
+    "HTML e CSS",
+    "15 minutos",
+  ])
+    chooseOnboarding(choice);
+  await waitFor(() => expect(finish).toHaveBeenCalledOnce());
+  expect(screen.queryByRole("button", { name: "Registre-se" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Entrar como convidado" })).toBeNull();
+  const stored = JSON.parse(localStorage.getItem("helena.onboarding.v1")!);
+  expect(stored).toMatchObject({
+    completed: true,
+    configurationOwner: user.uid,
+    details: {
+      name: "Ana Souza",
+      schoolLevel: "Ensino médio",
+      schoolYear: "2º ano do médio",
+      institution: "",
+    },
+  });
+  expect(stored.answers).toEqual([
+    "Ensino médio",
+    "Matemática",
+    "Inglês",
+    "Criar uma rotina",
+    ["Visual"],
+    "Passo a passo",
+    "Foco contínuo",
+    "HTML e CSS",
+    "15 minutos",
+  ]);
+  expect(finish).toHaveBeenCalledWith(
+    expect.objectContaining({
+      displayName: "Ana Souza",
+      preferences: expect.objectContaining({ programming: "html-css", modalities: ["visual"] }),
+    }),
+  );
+});
+it("uses the approved cutout at the same size for the conversation", () => {
+  const { container } = renderOnboarding();
+  expect(container.querySelector(".onboarding__helena")?.getAttribute("src")).toMatch(
+    /-cutout\.webp$/,
+  );
 });

@@ -115,13 +115,15 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     }
   });
 
-  useEffect(() => {
-    if (cloud.ready && cloud.authenticated === true && hasCompletedOnboarding())
-      setOnboarding(false);
-  }, [cloud.authenticated, cloud.ready]);
+  const returningAccount = cloud.ready && cloud.authenticated === true && hasCompletedOnboarding();
 
   useEffect(() => {
-    if (onboarding || !cloud.ready || (!guest && cloud.authenticated !== true)) return;
+    if (
+      (onboarding && !returningAccount) ||
+      !cloud.ready ||
+      (!guest && cloud.authenticated !== true)
+    )
+      return;
     try {
       const raw = localStorage.getItem("helena.onboarding.v1");
       const configuration = readPendingOnboardingConfiguration(
@@ -142,6 +144,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     }
   }, [
     onboarding,
+    returningAccount,
     cloud.ready,
     cloud.authenticated,
     guest,
@@ -156,10 +159,11 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
       </Suspense>
     );
 
-  if (onboarding)
+  if (onboarding && !returningAccount)
     return (
       <Suspense fallback={<HelenaLoading label={uiText(0)} />}>
         <OnboardingView
+          accountLoading={cloud.authenticated === true && !cloud.ready}
           authenticated={cloud.authenticated === true && cloud.ready}
           showCover={
             (previewCover && cloud.authenticated !== true) ||

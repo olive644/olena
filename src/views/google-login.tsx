@@ -1,3 +1,4 @@
+import { AccountFeedbackNotice } from "../components/account-feedback-notice";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { BrandFooter } from "../components/brand-footer";
@@ -20,7 +21,8 @@ import { EmailAuthForm } from "../components/email-auth-form";
 import { AccountProviderIcon } from "../components/account-provider-icon";
 import { prepareAccountLog, accountAuthError, setAccountLanguage } from "../data/account-auth";
 import type { AccountServices } from "../data/account-auth";
-import type { UserCredential } from "firebase/auth";
+import type { User, OAuthCredential, UserCredential } from "firebase/auth";
+import type { FirebaseError } from "firebase/app";
 
 const PENDING_ANSWERS_KEY = "helena.pending-google-answers";
 let discordExchange:
@@ -77,6 +79,28 @@ function googleLoginError(cause: unknown): string {
   if (code === "auth/network-request-failed") return uiText(1193);
   if (code === "auth/unauthorized-domain") return uiText(1194);
   return uiText(1195);
+}
+
+function googleAccountCollision(cause: unknown, services: AccountServices) {
+  if (
+    !cause ||
+    typeof cause !== "object" ||
+    !("code" in cause) ||
+    cause.code !== "auth/account-exists-with-different-credential"
+  )
+    return undefined;
+  const customData = "customData" in cause ? cause.customData : undefined;
+  const email =
+    customData &&
+    typeof customData === "object" &&
+    "email" in customData &&
+    typeof customData.email === "string"
+      ? customData.email
+      : undefined;
+  const credential = services.authApi.GoogleAuthProvider.credentialFromError(
+    cause as FirebaseError,
+  );
+  return email && credential ? { provider: "google" as const, email, credential } : undefined;
 }
 
 function applyGoogleLogin(
@@ -162,13 +186,26 @@ export function GoogleLogin({
     useState<Awaited<ReturnType<typeof getFirebaseAccountServices>>>();
   const [error, setError] = useState("");
   const [embeddedSignIn, setEmbeddedSignIn] = useState(false);
+  const [association, setAssociation] = useState<
+    { provider: "google"; email: string; credential: OAuthCredential } | { provider: "discord" }
+  >();
   const [busy, setBusy] = useState(true);
   // Nunca vem marcada: o aceite da política precisa ser um ato da pessoa.
   const [consentChecked, setAccepted] = useState(false);
   const accepted = embedded || consentChecked;
   const [signingIn, setSigningIn] = useState(false);
-  const [emailOpen, setEmailOpen] = useState(false);
   const pending = useRef(false);
+  const [externalProvider, setExternalProvider] = useState<"google" | "discord">();
+  useEffect(() => {
+    const resume = () => {
+      pending.current = false;
+      setExternalProvider(undefined);
+      setSigningIn(false);
+    };
+    window.addEventListener("pageshow", resume);
+    return () => window.removeEventListener("pageshow", resume);
+  }, []);
+  const [emailOpen, setEmailOpen] = useState(false);
   const discordCode = useRef(new URL(window.location.href).searchParams.get("discord"));
   const discordIntent = useRef({
     answers: readPendingGoogleAnswers(),
@@ -198,9 +235,23 @@ export function GoogleLogin({
           return;
         }
         if (url.searchParams.has("authError")) {
+          const needsAssociation = url.searchParams.get("authError") === "discord-link";
           window.history.replaceState(null, "", url.pathname);
           clearPendingAnswers();
-          if (active) setError(uiText(3116));
+          if (active) {
+            if (needsAssociation) {
+              setAssociation({ provider: "discord" });
+              setEmbeddedSignIn(true);
+              setEmailOpen(true);
+            }
+            setError(
+              needsAssociation
+                ? uiText(
+                    "Já existe uma conta com este e-mail. Entre nela para confirmar a associação e preservar seus estudos.",
+                  )
+                : uiText(3116),
+            );
+          }
         }
         // Retorno de um login que precisou de redirecionamento de página
         // inteira (pop-up bloqueado): completa o fluxo com as respostas que
@@ -208,6 +259,17 @@ export function GoogleLogin({
         // resolvido de getFirebaseAccountServices (antes de mexer na
         // persistência) porque o Firebase só entrega esse resultado uma vez.
         if (hasPendingGoogleRedirect()) {
+          const collision = googleAccountCollision(loaded.redirectError, loaded);
+          if (active && collision) {
+            setAssociation(collision);
+            setEmbeddedSignIn(true);
+            setEmailOpen(true);
+            setError(
+              uiText(
+                "Já existe uma conta com este e-mail. Entre nela para confirmar a associação e preservar seus estudos.",
+              ),
+            );
+          }
           if (loaded.redirectResult) {
             endGuestSession();
             applyGoogleLogin(
@@ -240,10 +302,11 @@ export function GoogleLogin({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function startDiscord() {
+  async function startDiscord(linkUser?: User) {
     if (!services || pending.current || !accepted) return;
     pending.current = true;
     setSigningIn(true);
+    setExternalProvider("discord");
     setError("");
     try {
       if (!embedded) recordPrivacyConsent(window.localStorage);
@@ -254,6 +317,9 @@ export function GoogleLogin({
       const response = await fetch("/api/olena?action=account-auth&step=start", {
         method: "POST",
         credentials: "same-origin",
+        ...(linkUser
+          ? { headers: { Authorization: `Bearer ${await linkUser.getIdToken()}` } }
+          : {}),
       });
       if (!response.ok) {
         const failure: unknown = await response.json().catch(() => null);
@@ -275,6 +341,7 @@ export function GoogleLogin({
       clearPendingAnswers();
       pending.current = false;
       setSigningIn(false);
+      setExternalProvider(undefined);
       setError(
         cause && typeof cause === "object" && "code" in cause
           ? accountAuthError(cause)
@@ -287,10 +354,10 @@ export function GoogleLogin({
     if (!services || pending.current || !accepted) return;
     pending.current = true;
     setSigningIn(true);
+    setExternalProvider("google");
     // O aceite é registrado antes de sair para o Google: o login pode virar um
     // redirecionamento de página inteira e a pessoa voltaria sem o registro.
     if (!embedded) recordPrivacyConsent(window.localStorage);
-    setBusy(true);
     setError("");
     setAccountLanguage(services);
     const provider = new services.authApi.GoogleAuthProvider();
@@ -301,6 +368,18 @@ export function GoogleLogin({
       applyGoogleLogin(answers, configuration, credential?.user?.uid);
       onFinish();
     } catch (cause) {
+      const collision = googleAccountCollision(cause, services);
+      if (collision) {
+        setAssociation(collision);
+        setEmbeddedSignIn(true);
+        setEmailOpen(true);
+        setError(
+          uiText(
+            "Já existe uma conta com este e-mail. Entre nela para confirmar a associação e preservar seus estudos.",
+          ),
+        );
+        return;
+      }
       if (isPopupBlockedError(cause)) {
         // Alguns navegadores (extensões, bloqueadores de pop-up) impedem a
         // janela do Google mesmo em um clique legítimo. O redirecionamento
@@ -331,6 +410,10 @@ export function GoogleLogin({
       pending.current = false;
       setSigningIn(false);
       setBusy(false);
+    } finally {
+      pending.current = false;
+      setSigningIn(false);
+      setExternalProvider(undefined);
     }
   }
 
@@ -393,12 +476,18 @@ export function GoogleLogin({
               {returning ? uiText("Use o mesmo método de acesso da sua conta.") : uiText(1208)}
             </p>
           )}
-          {(busy || signingIn || (!services && !error)) && (
+          {(busy || (signingIn && !externalProvider) || (!services && !error)) && (
             <div className="login-page__loading">
               <HelenaLoading compact label={uiText("Preparando seu login…")} />
             </div>
           )}
-          {error && (!embedded || error !== uiText(1196)) && <p role="alert">{uiText(error)}</p>}
+          {error &&
+            (!embedded || error !== uiText(1196)) &&
+            (embedded ? (
+              <AccountFeedbackNotice message={uiText(error)} onClose={() => setError("")} />
+            ) : (
+              <p role="alert">{uiText(error)}</p>
+            ))}
           {!embedded && (
             <>
               <label className="login-page__consent" hidden={emailOpen}>
@@ -424,19 +513,37 @@ export function GoogleLogin({
             </>
           )}
           <EmailAuthForm
-            key={embeddedSignIn ? "sign-in" : "default"}
+            key={
+              association
+                ? `associate-${association.provider}`
+                : embeddedSignIn
+                  ? "sign-in"
+                  : "default"
+            }
             inline={embedded}
             services={busy || signingIn ? undefined : services}
             accepted={accepted}
             initialRegister={
-              embedded ? !embeddedSignIn : !returning && (registerFirst || answers.length > 0)
+              !association &&
+              (embedded ? !embeddedSignIn : !returning && (registerFirst || answers.length > 0))
             }
+            initialEmail={association?.provider === "google" ? association.email : ""}
             onBusy={setSigningIn}
             onOpenChange={setEmailOpen}
-            onAuthenticated={() => {
+            onAuthenticated={async () => {
               const user = services?.auth.currentUser;
               if (!user) {
                 setError(accountAuthError(null));
+                return;
+              }
+              if (association?.provider === "google" && services) {
+                if (user.email?.toLowerCase() !== association.email.toLowerCase())
+                  throw { code: "auth/user-mismatch" };
+                await services.authApi.linkWithCredential(user, association.credential);
+                await services.authApi.reload(user);
+                setAssociation(undefined);
+              } else if (association?.provider === "discord") {
+                await startDiscord(user);
                 return;
               }
               if (!embedded) recordPrivacyConsent(window.localStorage);
@@ -496,7 +603,7 @@ export function GoogleLogin({
           ) : (
             <p className="login-page__local">{uiText(1212)}</p>
           )}
-          {embedded && (
+          {embedded && !association && (
             <button
               className="login-page__switch email-auth__link"
               type="button"

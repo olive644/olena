@@ -1,3 +1,4 @@
+@import "./account-feedback-notice.css";
 .account-access {
   padding: 18px;
   margin: 12px 0;
@@ -217,31 +218,6 @@
 .account-access__cooldown {
   color: var(--muted);
   font-size: 12px;
-}
-.account-access__notice {
-  position: fixed;
-  right: 20px;
-  bottom: 24px;
-  z-index: 18000;
-  max-width: min(390px, calc(100vw - 32px));
-  padding: 20px;
-  border: 1px solid var(--line);
-  border-bottom-width: 5px;
-  border-radius: 6px 20px 6px 14px;
-  box-shadow: 5px 6px 0 var(--line);
-  background: var(--surface);
-  color: var(--text);
-  animation: account-mail-in 220ms ease both;
-}
-.account-access__notice > button {
-  float: right;
-}
-.account-access__notice h3 {
-  margin: 6px 0 10px;
-}
-.account-access__notice p {
-  line-height: 1.6;
-  margin: 0;
 }
 :root[data-theme="dark"] .account-access__provider-button[data-linked="true"] {
   background-color: #24543f;

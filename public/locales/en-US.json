@@ -3760,5 +3760,8 @@
   "Enter your password",
   "I already have an account",
   "Well, welcome back!",
-  "Could not save your name. Try again."
+  "Could not save your name. Try again.",
+  "Use at least 8 characters for your password.",
+  "Dismiss notification",
+  "An account already uses this email. Sign in to confirm linking and preserve your studies."
 ]

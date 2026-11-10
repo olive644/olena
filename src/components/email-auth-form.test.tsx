@@ -58,15 +58,15 @@ it("does not complete against a different active account after the credential re
 it("registers inline with Firebase policy and leaves the display name to onboarding", async () => {
   const s = setup(true, true, true);
   s.fill("E-mail", "learner@example.test");
-  s.fill("Senha", "abcdef");
+  s.fill("Senha", "abcdefgh");
   expect(screen.queryByRole("meter")).toBeNull();
   fireEvent.submit(screen.getByRole("button", { name: "Criar conta com e-mail" }).closest("form")!);
   await waitFor(() => expect(s.complete).toHaveBeenCalledOnce());
-  expect(s.api.validatePassword).toHaveBeenCalledWith(s.services.auth, "abcdef");
+  expect(s.api.validatePassword).toHaveBeenCalledWith(s.services.auth, "abcdefgh");
   expect(s.api.createUserWithEmailAndPassword).toHaveBeenCalledWith(
     s.services.auth,
     "learner@example.test",
-    "abcdef",
+    "abcdefgh",
   );
   expect(s.api.sendEmailVerification).toHaveBeenCalledWith(s.user);
   expect(s.api.updateProfile).not.toHaveBeenCalled();
@@ -113,4 +113,25 @@ it("password recovery does not disclose whether an account exists", async () => 
     ).toBeTruthy(),
   );
   expect(s.complete).not.toHaveBeenCalled();
+});
+
+it("blocks registration below eight characters", () => {
+  const s = setup(true, true, true);
+  s.fill("E-mail", "learner@example.test");
+  s.fill("Senha", "abcdefg");
+  const button = screen.getByRole("button", { name: "Criar conta com e-mail" });
+  expect(button.hasAttribute("disabled")).toBe(true);
+  fireEvent.submit(button.closest("form")!);
+  expect(s.api.createUserWithEmailAndPassword).not.toHaveBeenCalled();
+});
+
+it("shows invalid email through the paper notification", () => {
+  const s = setup(true, true, true);
+  s.fill("E-mail", "invalid");
+  s.fill("Senha", "abcdefgh");
+  fireEvent.submit(screen.getByRole("button", { name: "Criar conta com e-mail" }).closest("form")!);
+  expect(screen.getByRole("status").className).toContain("account-access__notice");
+  expect(s.api.createUserWithEmailAndPassword).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("button", { name: "Fechar aviso" }));
+  expect(screen.queryByRole("status")).toBeNull();
 });
