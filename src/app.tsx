@@ -167,8 +167,10 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
           authenticated={cloud.authenticated === true && cloud.ready}
           showCover={
             (previewCover && cloud.authenticated !== true) ||
+            // A marca de convidado só dispensa a capa de quem já concluiu o onboarding (o convidado que
+            // toca em Entrar dentro do app). Quem a guarda de antes, sem ter concluído, vê a capa.
             (cloud.authenticated !== true &&
-              !isGuestSession() &&
+              (!isGuestSession() || !hasCompletedOnboarding()) &&
               !new URLSearchParams(window.location.search).has("onboarding") &&
               !new URLSearchParams(window.location.search).has("login"))
           }

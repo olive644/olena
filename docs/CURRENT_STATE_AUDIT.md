@@ -4746,3 +4746,15 @@ As duas PRs de hoje (#611 redesenho do onboarding e #612 entrada e associação 
 Pendente de decisão da dona (não alterado): navegador reconhecido agora vê a capa em `/` em vez de ir direto para "Boas-vindas de volta!", e a documentação (`docs/SECOND_BRAIN.md`, linhas de Retorno e Arte do retorno) ainda descreve o fluxo antigo. Os testes foram ajustados ao comportamento atual do app; se a capa para quem já tem conta não for intencional, o ajuste é no app (`showCover` em `src/app.tsx`) e no spec.
 
 Validação local: lint sem erros, formatação e idiomas ok, 2.715 testes unitários aprovados (as 8 falhas de `listening-audio.test.ts` ocorrem só neste sandbox e já falhavam na `main` limpa), e os três specs com desktop e celular aprovados (24 de 24). Limite: o e2e completo não foi rodado aqui; o CI da PR decide o restante, inclusive os jobs de celular, que não chegaram a executar nas duas execuções vermelhas.
+
+## Site caía direto nas perguntas do onboarding em vez da capa, 10/11/2026
+
+Relato da dona, com captura: o endereço abria o onboarding em vez da capa ("Estude do seu jeito", "Começar agora").
+
+Causa: em `src/app.tsx`, a capa era dispensada sempre que o navegador guardava a marca de convidado (`helena.guest.v1`), para que o convidado que toca em Entrar dentro do app vá direto ao login. Navegadores que guardam essa marca de quando existia "Entrar como convidado" e nunca concluíram o onboarding caíam direto nas perguntas. Medido com estados guardados em navegador: visitante novo, navegador reconhecido, conta guardada e dono divergente abrem a capa; só a marca de convidado sem onboarding concluído pulava.
+
+Correção: a marca de convidado só dispensa a capa de quem já concluiu o onboarding (`!isGuestSession() || !hasCompletedOnboarding()`).
+
+Testes: `src/app-account-entry.test.tsx` (falhava antes, passa agora) e um caso em `e2e/welcome-back.spec.ts`.
+
+Limite: uma conta autenticada com onboarding incompleto continua indo direto às perguntas ao abrir o site, sem a capa (testado em produção com uma conta de teste). Não alterei isso porque, depois de entrar pela própria capa ou por redirecionamento do Google, a pessoa precisa seguir para as perguntas sem ver a capa de novo; se a capa também for desejada nesse caso, é uma mudança própria.

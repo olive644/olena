@@ -44,3 +44,14 @@ test("navegador reconhecido abre a capa e leva ao login sem identificar uma pess
   await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
   await expect(page.locator(".onboarding__choices")).toHaveCount(0);
 });
+
+test("convidado antigo sem onboarding concluído abre a capa, não as perguntas", async ({
+  page,
+}) => {
+  // A marca de convidado sobrevive de quando existia "Entrar como convidado".
+  await page.addInitScript(() => localStorage.setItem("helena.guest.v1", "1"));
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "Estude do seu jeito" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Começar agora" })).toBeVisible();
+  await expect(page.locator(".onboarding__helena")).toHaveCount(0);
+});

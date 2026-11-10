@@ -54,3 +54,21 @@ it("opens onboarding for a genuinely new authenticated account after loading", a
   expect(await screen.findByText("Olá! Eu sou a Olena.", {}, { timeout: 5000 })).toBeTruthy();
   expect(screen.queryByRole("heading", { name: "Espaço do aluno" })).toBeNull();
 });
+
+it("abre a capa, e não as perguntas, para um convidado antigo que nunca concluiu o onboarding", async () => {
+  localStorage.clear();
+  // A marca de convidado sobrevive em navegadores de quando existia "Entrar como convidado".
+  localStorage.setItem("helena.guest.v1", "1");
+  window.history.replaceState(null, "", "/");
+  vi.mocked(useCloudSync).mockReturnValue({
+    enabled: true,
+    ready: true,
+    authenticated: false,
+    status: "signed-out",
+    revision: 1,
+  });
+  render(<App />);
+  expect(await screen.findByRole("heading", { name: "Estude do seu jeito" })).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Começar agora" })).toBeTruthy();
+  expect(screen.queryByText("Olá! Eu sou a Olena.")).toBeNull();
+});
