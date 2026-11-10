@@ -361,10 +361,12 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // 1743 KiB, aumento autorizado pela dona do projeto em 07/11/2026. A base da main não foi medida.
 // Progresso de Inglês em chave própria sincronizada (livro, hook e merge): medidos 1744,3 KiB, entrada
 // 219,5 KiB inalterada; teto 1745 KiB, mesma autorização de aumento medido da dona do projeto.
-const MAX_TOTAL_JS_BYTES = 1745 * 1024;
+// Teco, cosméticos de Inglês e ofensivas agrupadas: 1746,6 KiB no total, 219,5 KiB na entrada.
+// Teto de 1748 KiB autorizado pelo proprietário para a PR 610.
+const MAX_TOTAL_JS_BYTES = 1748 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
-const HARD_CEILING_TOTAL_JS_BYTES = 1745 * 1024;
+const HARD_CEILING_TOTAL_JS_BYTES = 1748 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 // Cena do caderno 3D (three.js e o código da cena): medida em 528.8 KiB, mais a tela e os sons. É baixada somente quando
 // a pessoa abre um caderno com o recurso ligado e vale o mesmo precedente do leitor PDF: orçamento

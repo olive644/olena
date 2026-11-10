@@ -10,7 +10,7 @@ it("oferece capas originais e novas, cancelar não grava e salvar preserva a fic
   const { rerender } = render(<ProfileCoverDialog onClose={close} />);
   expect(
     screen.getByRole("group", { name: "Temas de capa" }).querySelectorAll("button"),
-  ).toHaveLength(18);
+  ).toHaveLength(19);
   fireEvent.click(screen.getByRole("button", { name: "Oceano" }));
   expect(screen.getByRole("button", { name: "Oceano" }).getAttribute("aria-pressed")).toBe("true");
   fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));

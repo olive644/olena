@@ -16,11 +16,13 @@ export const PROFILE_FRAMES = [
   { id: "none", name: "Sem moldura" },
   ...PRIDE_THEMES,
   { id: "mathematics", name: "Guardião dos números" },
+  { id: "english", name: "Guardião das palavras" },
 ] as const;
 export const PROFILE_BACKGROUNDS = [
   { id: "paper", name: "Papel original" },
   ...PRIDE_THEMES,
   { id: "mathematics", name: "Guardião dos números" },
+  { id: "english", name: "Guardião das palavras" },
   { id: "night", name: "Céu de papel" },
   { id: "geometry", name: "Caderno geométrico" },
 ] as const;
@@ -37,5 +39,7 @@ export function cosmeticUnlocked(
   id: string,
   earned: ReadonlySet<string>,
 ) {
+  if (id === "english")
+    return earned.has(kind === "frame" ? "english-parts-8" : "english-correct-100");
   return id !== "mathematics" || earned.has(kind === "frame" ? "islands-1" : "correct-100");
 }

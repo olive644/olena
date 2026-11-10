@@ -52,3 +52,9 @@ Toda alteração visual exige PC e celular, claro e escuro, teclado, toque, aus�
 Retirado o aviso de contatos indisponíveis da lista de amigos. Busca e compartilhamento continuam disponíveis; o seletor sem suporte continua desabilitado. Voltar na lista usa somente a seta original, sem placa ou texto visível, preservando nome acessível e área de toque de 44 pixels.
 
 Na inspeção, o selo de nível fica acima da moldura do avatar. Prova de layout usa o selo real do app dentro de uma fixture de inspeção, nos dois temas e em desktop/mobile; não representa uma visita autenticada real.
+
+## Cosméticos de Inglês e Teco, 09/11/2026
+
+Teco é um avatar livre com imagem aprovada em /profile-avatars/teco.webp. A moldura inglesa Guardião das palavras requer concluir a ilha inteira, oito partes. O header Horizonte das palavras e o fundo inglês requerem cem acertos de Inglês. IDs english-parts-8 e english-correct-100 mantêm os cursos separados. Livro sincronizado e histórico de conquistas preservam o acesso após a lista de atividades mudar. Conferir o requisito ao selecionar e novamente ao salvar.
+
+As três artes usam azul, vermelho e branco da bandeira britânica, sem raios decorativos. SVGs nativos mantêm anel octogonal transparente, header 1200x320 e fundo 900x1200 opaco com preserveAspectRatio=none. O fundo reutiliza a composição de tema escuro e a exportação do perfil existentes. Referência aprovada e validação em ENGLISH_PROFILE_COSMETICS.md.

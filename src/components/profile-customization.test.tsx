@@ -2,6 +2,7 @@ import { expect, it, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ProfileAvatarDialog } from "./profile-avatar-dialog";
 import { readStoredProfile } from "../hooks/use-stored-profile";
+import { ENGLISH_PROGRESS_KEY } from "../domain/english-progress-ledger";
 it("bandeiras são livres, exclusivos ficam bloqueados e cancelar não altera o perfil", () => {
   localStorage.setItem(
     "helena.profile.v1",
@@ -64,5 +65,45 @@ it("oferece as doze bandeiras também como fundo e protege o fundo matemático",
   fireEvent.click(screen.getByRole("button", { name: "Bissexual" }));
   fireEvent.click(screen.getByRole("button", { name: "Salvar personalização" }));
   expect(readStoredProfile().background).toBe("bi");
+  unmount();
+});
+
+it("offers Teco freely and locks English cosmetics without English progress", () => {
+  localStorage.removeItem(ENGLISH_PROGRESS_KEY);
+  localStorage.setItem("helena.profile.v1", JSON.stringify({ name: "Oli" }));
+  const { unmount } = render(<ProfileAvatarDialog onClose={vi.fn()} />);
+  fireEvent.click(screen.getByRole("button", { name: /^Teco$/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Molduras$/ }));
+  const frame = screen.getByRole("button", { name: /Guardião das palavras/ });
+  expect(frame.getAttribute("aria-disabled")).toBe("true");
+  fireEvent.click(frame);
+  fireEvent.click(screen.getByRole("button", { name: "Salvar personalização" }));
+  expect(readStoredProfile().photoUrl).toBe("/profile-avatars/teco.webp");
+  expect(readStoredProfile().frame).toBeUndefined();
+  unmount();
+});
+
+it("saves English cosmetics earned from the ledger and rechecks them at save time", () => {
+  const solved = Array.from({ length: 100 }, (_, index) => index);
+  localStorage.setItem(
+    ENGLISH_PROGRESS_KEY,
+    JSON.stringify({ english: Array.from({ length: 8 }, () => ({ solved, confirmed: true })) }),
+  );
+  localStorage.setItem("helena.profile.v1", JSON.stringify({ name: "Oli" }));
+  const { unmount } = render(<ProfileAvatarDialog onClose={vi.fn()} initialCategory="frame" />);
+  const frame = screen.getByRole("button", { name: /^Guardião das palavras$/ });
+  expect(frame.getAttribute("aria-disabled")).toBe("false");
+  fireEvent.click(frame);
+  fireEvent.click(screen.getByRole("button", { name: /^Headers$/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Horizonte das palavras$/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Fundo do perfil$/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Guardião das palavras$/ }));
+  localStorage.removeItem(ENGLISH_PROGRESS_KEY);
+  fireEvent.click(screen.getByRole("button", { name: "Salvar personalização" }));
+  expect(readStoredProfile()).toMatchObject({
+    frame: "none",
+    cover: "helena",
+    background: "paper",
+  });
   unmount();
 });
