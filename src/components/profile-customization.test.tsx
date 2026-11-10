@@ -90,9 +90,7 @@ it("saves English cosmetics earned from the ledger and rechecks them at save tim
     JSON.stringify({ english: Array.from({ length: 8 }, () => ({ solved, confirmed: true })) }),
   );
   localStorage.setItem("helena.profile.v1", JSON.stringify({ name: "Oli" }));
-  const { unmount } = render(
-    <ProfileAvatarDialog onClose={vi.fn()} initialCategory="frame" />,
-  );
+  const { unmount } = render(<ProfileAvatarDialog onClose={vi.fn()} initialCategory="frame" />);
   const frame = screen.getByRole("button", { name: "Guardião das palavras", exact: true });
   expect(frame.getAttribute("aria-disabled")).toBe("false");
   fireEvent.click(frame);

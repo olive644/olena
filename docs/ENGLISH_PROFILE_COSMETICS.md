@@ -2,12 +2,12 @@
 
 ## Escolhas e requisitos
 
-| Categoria | Nome | Requisito |
-| --- | --- | --- |
-| Avatar | Teco | Livre |
-| Moldura | Guardião das palavras | Concluir todas as oito partes da ilha de Inglês |
-| Header | Horizonte das palavras | Cem acertos em Inglês |
-| Fundo | Guardião das palavras | Cem acertos em Inglês |
+| Categoria | Nome                   | Requisito                                       |
+| --------- | ---------------------- | ----------------------------------------------- |
+| Avatar    | Teco                   | Livre                                           |
+| Moldura   | Guardião das palavras  | Concluir todas as oito partes da ilha de Inglês |
+| Header    | Horizonte das palavras | Cem acertos em Inglês                           |
+| Fundo     | Guardião das palavras  | Cem acertos em Inglês                           |
 
 Os requisitos seguem a escala de Matemática, mas são calculados exclusivamente com Inglês.
 A moldura usa english-parts-8 e header/fundo usam english-correct-100. O livro sincronizado
