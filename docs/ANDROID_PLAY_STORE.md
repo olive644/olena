@@ -13,7 +13,7 @@ Feito no repositório:
 - `public/manifest.webmanifest` e a ligação no `index.html`.
 - Ícones em `public/android/` (192 e 512 px, mais um 512 px "mascarável" com o desenho dentro da zona
   segura de 80 %) e o ícone da loja em `android/store/play-store-icon-512.png`. Gerados por
-  `node scripts/android/render-android-icons.mjs` a partir de `public/olena-favicon.png`.
+  `node scripts/android/render-android-icons.mjs` a partir da arte amarela aprovada em `android/store/play-store-icon-512.png`.
 - `android/twa-manifest.json`: configuração para o Bubblewrap, com o pacote `olenastudy.app`, o mesmo
   do app já criado no Play Console.
 - `scripts/android/make-assetlinks.mjs`: gera `public/.well-known/assetlinks.json` a partir de impressões
@@ -88,7 +88,7 @@ Nada abaixo foi testado: não houve aparelho Android nem Bubblewrap nesta mudan�
 
 ## Como atualizar
 
-Ícones: rode `node scripts/android/render-android-icons.mjs` depois de mudar o mascote. Cores ou
+Ícones: atualize a arte Android de 512 px e rode `node scripts/android/render-android-icons.mjs`. Após o deploy, regenere os recursos Android e gere um novo APK/AAB com a assinatura do app para atualizar o ícone do pacote instalado. Cores ou
 nome: altere `public/manifest.webmanifest` e `android/twa-manifest.json` juntos (o teste confere que
 combinam). Para publicar uma nova versão do app, aumente `appVersion` e `appVersionName` no
 `twa-manifest.json` e gere um novo .aab.

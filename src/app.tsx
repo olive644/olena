@@ -64,7 +64,12 @@ const ProfileView = lazy(() =>
 
 function hasCompletedOnboarding() {
   try {
-    return JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "null")?.completed === true;
+    const record = JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "null");
+    const owner = localStorage.getItem(ACCOUNT_OWNER_KEY);
+    return (
+      record?.completed === true &&
+      (!owner || !record.configurationOwner || record.configurationOwner === owner)
+    );
   } catch {
     return false;
   }
@@ -91,9 +96,14 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   const { workspace, storageFull, dispatch, history, restoreSnapshot } = useWorkspace();
   // Convidado só vale sem conta: quem entrou com Google nunca aparece como Guest.
   const guest = cloud.authenticated !== true && isGuestSession();
+  const previewCover =
+    import.meta.env.DEV && new URLSearchParams(window.location.search).has("preview-cover");
   // A identidade confirmada fica pronta antes da primeira visita ao Perfil.
   const { handle } = useProfileHandle(cloud.authenticated !== true);
+  const [profileName, setProfileName] = useState<string>();
   const [onboarding, setOnboarding] = useState(() => {
+    if (cloud.authenticated === true && hasCompletedOnboarding()) return false;
+    if (previewCover) return true;
     if (joinCode) return false;
     if (signedOut) return true;
     const entry = new URLSearchParams(window.location.search);
@@ -104,6 +114,11 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
       return true;
     }
   });
+
+  useEffect(() => {
+    if (cloud.ready && cloud.authenticated === true && hasCompletedOnboarding())
+      setOnboarding(false);
+  }, [cloud.authenticated, cloud.ready]);
 
   useEffect(() => {
     if (onboarding || !cloud.ready || (!guest && cloud.authenticated !== true)) return;
@@ -145,17 +160,30 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     return (
       <Suspense fallback={<HelenaLoading label={uiText(0)} />}>
         <OnboardingView
+          authenticated={cloud.authenticated === true && cloud.ready}
+          showCover={
+            (previewCover && cloud.authenticated !== true) ||
+            (cloud.authenticated !== true &&
+              !isGuestSession() &&
+              !new URLSearchParams(window.location.search).has("onboarding") &&
+              !new URLSearchParams(window.location.search).has("login"))
+          }
           loginOnly={
-            (signedOut && hasCompletedOnboarding()) ||
-            (cloud.authenticated !== true && isReturningVisitor())
+            !(
+              import.meta.env.DEV && new URLSearchParams(window.location.search).has("onboarding")
+            ) &&
+            ((signedOut && hasCompletedOnboarding()) ||
+              (cloud.authenticated !== true && isReturningVisitor()))
           }
           onFinish={(setup) => {
             if (setup) {
+              setProfileName(setup.displayName);
               if (setup.configuration)
                 dispatch({ type: "onboarding/configured", configuration: setup.configuration });
               else dispatch({ type: "study/preferences-updated", preferences: setup.preferences });
             }
-            setOnboarding(false);
+            if (setup || (cloud.authenticated === true && cloud.ready && hasCompletedOnboarding()))
+              setOnboarding(false);
           }}
         />
       </Suspense>
@@ -286,7 +314,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
             <ProfileView
               workspace={workspace}
               dispatch={dispatch}
-              cloud={cloud}
+              cloud={profileName ? { ...cloud, displayName: profileName } : cloud}
               guest={guest}
               onSignIn={() => setOnboarding(true)}
               history={history}

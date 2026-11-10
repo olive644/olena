@@ -162,16 +162,14 @@ test("o rodapé da Galeria.Oli aparece com o ícone carregado na política", asy
   expect(iconBox!.x + iconBox!.width).toBeLessThanOrEqual(textBox!.x + 1);
 });
 
-test("o rodapé da Galeria.Oli aparece no onboarding e no login", async ({ page }, testInfo) => {
+test("o rodapé da Galeria.Oli fica no login e sai do questionário", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Fluxo verificado no desktop.");
   await page.goto("/?onboarding=1");
-  const onboarding = page.locator("footer.brand-footer");
-  await expect(onboarding).toContainText("Todos os direitos Galeria.Oli - OlenaStudy");
-  expect(
-    await onboarding
-      .locator('img[src="/galeria-oli-icon.svg"]')
-      .evaluate((image: HTMLImageElement) => image.naturalWidth),
-  ).toBeGreaterThan(0);
+  await expect(page.locator("footer.brand-footer")).toHaveCount(0);
+  await expect(page.locator(".onboarding__brand img")).toHaveAttribute(
+    "src",
+    "/olena-favicon-180.png",
+  );
   await page.goto("/?onboarding=1&login=1");
   const login = page.locator("footer.brand-footer");
   await expect(login).toContainText("Todos os direitos Galeria.Oli - OlenaStudy");

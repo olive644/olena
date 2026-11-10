@@ -1,8 +1,11 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { getFirebaseAccountServices } from "../data/firebase-account";
+import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import OnboardingView from "./onboarding-view";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
 import { prepareOnboarding, type OnboardingAnswers } from "../domain/onboarding-configuration";
+vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
 vi.mock("../data/onboarding-client", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../data/onboarding-client")>()),
   requestOnboardingConfiguration: vi.fn(async (answers: OnboardingAnswers) =>
@@ -16,14 +19,14 @@ it("mostra o nome OlenaStudy na marca do onboarding", () => {
   expect(brand?.textContent).toBe("OlenaStudy");
 });
 
-it("mostra o rodapé da Galeria.Oli com o ícone em todos os passos", () => {
+it("usa o favicon na marca e dispensa rodapé e barra de progresso no questionário", () => {
   const { container } = render(<OnboardingView onFinish={vi.fn()} />);
-  const footer = container.querySelector("footer.brand-footer");
-  expect(footer?.textContent).toBe("Todos os direitos Galeria.Oli - OlenaStudy");
-  expect([...footer!.querySelectorAll("img")].map((image) => image.getAttribute("src"))).toEqual([
+  expect(container.querySelector(".onboarding__brand img")?.getAttribute("src")).toBe(
     "/olena-favicon-180.png",
-    "/galeria-oli-icon.svg",
-  ]);
+  );
+  expect(container.querySelector("footer.brand-footer")).toBeNull();
+  expect(screen.queryByRole("progressbar")).toBeNull();
+  expect(screen.queryByText("A Olena configura seu espaço com estas respostas.")).toBeNull();
 });
 
 describe("conversa da Olena", () => {
@@ -146,4 +149,30 @@ describe("conversa da Olena", () => {
       /-cutout\.webp$/,
     );
   });
+});
+
+it("saves the onboarding name in the authenticated Firebase account", async () => {
+  const user = { uid: "onboarding-name-owner" };
+  const updateProfile = vi.fn(async () => {});
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: { updateProfile },
+  } as never);
+  localStorage.setItem(ACCOUNT_OWNER_KEY, user.uid);
+  try {
+    const { container } = render(<OnboardingView authenticated onFinish={vi.fn()} />);
+    fireEvent.click(await screen.findByRole("button", { name: "Prosseguir" }, { timeout: 4500 }));
+    fireEvent.change(screen.getByRole("textbox", { name: "Como devo te chamar?" }), {
+      target: { value: "  Ana Souza  " },
+    });
+    fireEvent.click(
+      within(container.querySelector(".onboarding__welcome")!).getByRole("button", {
+        name: "Avançar",
+      }),
+    );
+    await screen.findByRole("heading", { name: "Personalize seu visual!" });
+    expect(updateProfile).toHaveBeenCalledWith(user, { displayName: "Ana Souza" });
+  } finally {
+    localStorage.removeItem(ACCOUNT_OWNER_KEY);
+  }
 });

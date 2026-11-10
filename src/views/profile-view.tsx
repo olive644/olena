@@ -544,6 +544,7 @@ export function ProfileView({
                       ["python", uiText(2016)],
                       ["javascript", uiText(2044)],
                       ["python-javascript", uiText(2017)],
+                      ["html-css", uiText("HTML e CSS")],
                     ],
                   ],
                 ] as const

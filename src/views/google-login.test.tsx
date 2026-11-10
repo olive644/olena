@@ -456,24 +456,14 @@ describe("entrar como convidado", () => {
     vi.clearAllMocks();
   });
 
-  it("entra como Guest sem Google, sem aceitar a política e sem a nuvem configurada", async () => {
+  it("does not offer guest entry when authentication is unavailable", async () => {
     vi.mocked(getFirebaseAccountServices).mockRejectedValue(new Error("setup"));
     const finish = vi.fn();
-    render(<GoogleLogin answers={["Inglês"]} onFinish={finish} />);
+    render(<GoogleLogin answers={[]} onFinish={finish} />);
     await waitFor(() => expect(screen.getByRole("alert")).toBeTruthy());
-    expect(screen.getByText(/você aparece como Guest/)).toBeTruthy();
-    const guest = screen.getByRole("button", { name: "Entrar como convidado" });
-    expect(guest.hasAttribute("disabled")).toBe(false);
-
-    fireEvent.click(guest);
-
-    expect(finish).toHaveBeenCalledOnce();
-    expect(localStorage.getItem(GUEST_SESSION_KEY)).toBe("1");
-    expect(JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "{}")).toEqual({
-      answers: ["Inglês"],
-      completed: true,
-    });
-    expect(localStorage.getItem(PRIVACY_CONSENT_ITEM)).toBeNull();
+    expect(screen.queryByRole("button", { name: "Entrar como convidado" })).toBeNull();
+    expect(localStorage.getItem(GUEST_SESSION_KEY)).toBeNull();
+    expect(finish).not.toHaveBeenCalled();
   });
 
   it("deixa de ser convidado quando a pessoa entra com Google", async () => {

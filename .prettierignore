@@ -11,3 +11,6 @@ package-lock.json
 public/helena-assistant/rive.js
 # Saída gerada por scripts/oliver-rive/slice.cjs.
 scripts/oliver-rive/layers/layers.json
+
+# Catálogos compactos gerados a partir dos microdados do Inep.
+public/data/*-inep-2024.json

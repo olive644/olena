@@ -9,6 +9,7 @@ export function EmailAuthForm({
   onAuthenticated,
   onBusy,
   initialRegister = false,
+  inline = false,
   linkToCurrent = false,
   onOpenChange,
 }: {
@@ -17,11 +18,12 @@ export function EmailAuthForm({
   onAuthenticated: () => void;
   onBusy: (busy: boolean) => void;
   initialRegister?: boolean;
+  inline?: boolean;
   linkToCurrent?: boolean;
   onOpenChange?: (open: boolean) => void;
 }) {
   const id = useId();
-  const [open, setOpen] = useState(linkToCurrent);
+  const [open, setOpen] = useState(linkToCurrent || inline);
   const [mode, setMode] = useState<"login" | "register" | "reset">(
     initialRegister || linkToCurrent ? "register" : "login",
   );
@@ -45,7 +47,7 @@ export function EmailAuthForm({
   }
   async function submit() {
     if (!services || pending.current || (!accepted && mode !== "reset")) return;
-    if (mode === "register" && password.length < 12) {
+    if (linkToCurrent && mode === "register" && password.length < 12) {
       setMessage(uiText("Use pelo menos 12 caracteres. Prefira uma frase única e longa."));
       return;
     }
@@ -53,11 +55,11 @@ export function EmailAuthForm({
       setMessage(accountAuthError(null));
       return;
     }
-    if (mode === "register" && password !== confirmation) {
+    if (mode === "register" && !inline && password !== confirmation) {
       setMessage(uiText("As senhas precisam ser iguais."));
       return;
     }
-    if (mode === "register" && !checks.every(Boolean)) {
+    if (linkToCurrent && mode === "register" && !checks.every(Boolean)) {
       setMessage(uiText("Use 12 caracteres, maiúscula, minúscula, número e símbolo."));
       return;
     }
@@ -111,9 +113,11 @@ export function EmailAuthForm({
                 );
         if (mode === "register" && !linkToCurrent) {
           // Falhas no envio não transformam uma conta já criada em cadastro inexistente.
-          await services.authApi
-            .updateProfile(credential.user, { displayName: name.trim() })
-            .catch(() => {});
+          if (!inline && name.trim()) {
+            await services.authApi
+              .updateProfile(credential.user, { displayName: name.trim() })
+              .catch(() => {});
+          }
           await services.authApi.sendEmailVerification(credential.user).catch(() => {});
         }
         setPassword("");
@@ -147,7 +151,7 @@ export function EmailAuthForm({
         </button>
       ) : (
         <>
-          {!linkToCurrent && (
+          {!linkToCurrent && !inline && (
             <div className="email-auth__tabs">
               <button
                 type="button"
@@ -173,7 +177,7 @@ export function EmailAuthForm({
               void submit();
             }}
           >
-            {mode === "register" && !linkToCurrent && (
+            {mode === "register" && !linkToCurrent && !inline && (
               <label htmlFor={`${id}-name`}>
                 {uiText("Seu nome")}
                 <input
@@ -192,6 +196,7 @@ export function EmailAuthForm({
               <input
                 id={`${id}-email`}
                 type="email"
+                placeholder={inline ? "eu@exemplo.com" : undefined}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
@@ -203,64 +208,118 @@ export function EmailAuthForm({
             </label>
             {mode !== "reset" && (
               <>
-                <label htmlFor={`${id}-password`}>
+                <label
+                  className={inline ? "email-auth__password-inline" : undefined}
+                  htmlFor={`${id}-password`}
+                >
                   {uiText("Senha")}
+                  {inline && mode === "login" && (
+                    <button
+                      type="button"
+                      className="email-auth__recovery-inline email-auth__link"
+                      disabled={busy}
+                      onClick={() => change("reset")}
+                    >
+                      {uiText("Esqueci minha senha")}
+                    </button>
+                  )}
                   <input
                     id={`${id}-password`}
                     type={visible ? "text" : "password"}
                     value={password}
+                    placeholder={inline ? uiText("Coloque sua senha") : undefined}
                     onChange={(e) => setPassword(e.target.value)}
                     autoComplete={mode === "register" ? "new-password" : "current-password"}
-                    minLength={mode === "register" ? 12 : 1}
+                    minLength={linkToCurrent && mode === "register" ? 12 : 1}
                     maxLength={128}
                     required
                     disabled={busy}
-                    aria-describedby={mode === "register" ? `${id}-policy` : undefined}
+                    aria-describedby={
+                      linkToCurrent && mode === "register" ? `${id}-policy` : undefined
+                    }
                   />
+                  {inline && (
+                    <button
+                      className="email-auth__eye"
+                      type="button"
+                      aria-label={uiText("Mostrar senha")}
+                      aria-pressed={visible}
+                      onClick={() => setVisible(!visible)}
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        width={20}
+                        height={20}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill="currentColor"
+                          stroke="none"
+                          d="m1 12 6-6 5-2 5 2 6 6-6 6-5 2-5-2z"
+                        />
+                        <path fill="#292432" stroke="none" d="m12 7 4 3v4l-4 3-4-3v-4z" />
+                        {visible && (
+                          <>
+                            <path stroke="#292432" strokeWidth="4" d="m3 3 18 18" />
+                            <path stroke="currentColor" strokeWidth="2" d="m3 3 18 18" />
+                          </>
+                        )}
+                      </svg>
+                    </button>
+                  )}
                 </label>
                 {mode === "register" && (
                   <>
-                    <div className="email-auth__strength" id={`${id}-policy`}>
-                      <meter
-                        min={0}
-                        max={3}
-                        low={1}
-                        high={2}
-                        optimum={3}
-                        value={strength}
-                        aria-label={uiText("Força da senha")}
-                      />
-                      <strong>
-                        {uiText(strength < 2 ? "Fraca" : strength === 2 ? "Razoável" : "Forte")}
-                      </strong>
-                      <span>
-                        {uiText("Use 12 caracteres, maiúscula, minúscula, número e símbolo.")}
-                      </span>
-                    </div>
-                    <label htmlFor={`${id}-confirm`}>
-                      {uiText("Confirmar senha")}
-                      <input
-                        id={`${id}-confirm`}
-                        type={visible ? "text" : "password"}
-                        value={confirmation}
-                        onChange={(e) => setConfirmation(e.target.value)}
-                        autoComplete="new-password"
-                        maxLength={128}
-                        required
-                        disabled={busy}
-                      />
-                    </label>
+                    {linkToCurrent && (
+                      <div className="email-auth__strength" id={`${id}-policy`}>
+                        <meter
+                          min={0}
+                          max={3}
+                          low={1}
+                          high={2}
+                          optimum={3}
+                          value={strength}
+                          aria-label={uiText("Força da senha")}
+                        />
+                        <strong>
+                          {uiText(strength < 2 ? "Fraca" : strength === 2 ? "Razoável" : "Forte")}
+                        </strong>
+                        <span>
+                          {uiText("Use 12 caracteres, maiúscula, minúscula, número e símbolo.")}
+                        </span>
+                      </div>
+                    )}
+                    {!inline && (
+                      <label htmlFor={`${id}-confirm`}>
+                        {uiText("Confirmar senha")}
+                        <input
+                          id={`${id}-confirm`}
+                          type={visible ? "text" : "password"}
+                          value={confirmation}
+                          onChange={(e) => setConfirmation(e.target.value)}
+                          autoComplete="new-password"
+                          maxLength={128}
+                          required
+                          disabled={busy}
+                        />
+                      </label>
+                    )}
                   </>
                 )}
-                <label className="email-auth__show">
-                  <input
-                    type="checkbox"
-                    className="paper-checkbox"
-                    checked={visible}
-                    onChange={(e) => setVisible(e.target.checked)}
-                  />
-                  {uiText("Mostrar senha")}
-                </label>
+                {!inline && (
+                  <label className="email-auth__show">
+                    <input
+                      type="checkbox"
+                      className="paper-checkbox"
+                      checked={visible}
+                      onChange={(e) => setVisible(e.target.checked)}
+                    />
+                    {uiText("Mostrar senha")}
+                  </label>
+                )}
               </>
             )}
             <p role="status" aria-live="polite">
@@ -280,7 +339,17 @@ export function EmailAuthForm({
           </form>
           {!linkToCurrent && (
             <div className="email-auth__navigation">
-              {mode !== "reset" && (
+              {inline && mode === "reset" && (
+                <button
+                  type="button"
+                  className="email-auth__link"
+                  disabled={busy}
+                  onClick={() => change("login")}
+                >
+                  {uiText(374)}
+                </button>
+              )}
+              {!inline && mode !== "reset" && (
                 <button
                   type="button"
                   className="email-auth__link"
@@ -290,19 +359,21 @@ export function EmailAuthForm({
                   {uiText("Esqueci minha senha")}
                 </button>
               )}
-              <button
-                type="button"
-                className="email-auth__link"
-                disabled={busy}
-                onClick={() => {
-                  setOpen(false);
-                  onOpenChange?.(false);
-                  setPassword("");
-                  setConfirmation("");
-                }}
-              >
-                {uiText("Outros métodos de acesso")}
-              </button>
+              {!inline && (
+                <button
+                  type="button"
+                  className="email-auth__link"
+                  disabled={busy}
+                  onClick={() => {
+                    setOpen(false);
+                    onOpenChange?.(false);
+                    setPassword("");
+                    setConfirmation("");
+                  }}
+                >
+                  {uiText("Outros métodos de acesso")}
+                </button>
+              )}
             </div>
           )}
         </>

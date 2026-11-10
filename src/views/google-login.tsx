@@ -6,7 +6,7 @@ import { HelenaLoading } from "../components/helena-loading";
 import { PaperArrow } from "../components/paper-arrow";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { writeSyncedStorage } from "../data/synced-storage";
-import { GUEST_NAME, endGuestSession, startGuestSession } from "../domain/guest-session";
+import { endGuestSession } from "../domain/guest-session";
 import { PRIVACY_POLICY_PATH, recordPrivacyConsent } from "../domain/privacy-policy";
 import "./google-login.css";
 import "./auth-paper.css";
@@ -95,25 +95,25 @@ function applyGoogleLogin(
       })
       .catch(() => {});
   }
-  // Login direto não cria conclusão fictícia nem substitui respostas da conta.
-  if (answers.length === 0 && configurationOwner !== "guest") return;
+  if (answers.length > 0) saveOnboardingCompletion(answers, configuration, configurationOwner);
+}
+
+export function saveOnboardingCompletion(
+  answers: readonly (string | string[])[],
+  configuration?: OnboardingConfiguration,
+  configurationOwner?: string,
+  details?: Record<string, string>,
+) {
   writeSyncedStorage(
     "helena.onboarding.v1",
     JSON.stringify({
       answers,
       completed: true,
-      ...(configuration ? { configuration, configurationOwner, configurationPending: true } : {}),
+      ...(details ? { details } : {}),
+      ...(configurationOwner ? { configurationOwner } : {}),
+      ...(configuration ? { configuration, configurationPending: true } : {}),
     }),
   );
-}
-
-/** Entrada como convidado: nada vai a servidor algum, as respostas ficam só neste aparelho. */
-export function enterAsGuest(
-  answers: readonly (string | string[])[],
-  configuration?: OnboardingConfiguration,
-) {
-  startGuestSession();
-  applyGoogleLogin(answers, configuration, "guest");
 }
 
 export function readPendingGoogleAnswers(): readonly (string | string[])[] {
@@ -143,6 +143,8 @@ export function GoogleLogin({
   onFinish,
   onBack,
   returning = false,
+  registerFirst = false,
+  embedded = false,
   onCreateAccount,
 }: {
   answers: readonly (string | string[])[];
@@ -150,6 +152,8 @@ export function GoogleLogin({
   onFinish: () => void;
   onBack?: () => void;
   returning?: boolean;
+  registerFirst?: boolean;
+  embedded?: boolean;
   onCreateAccount?: () => void;
 }) {
   useLanguage();
@@ -157,9 +161,11 @@ export function GoogleLogin({
   const [services, setServices] =
     useState<Awaited<ReturnType<typeof getFirebaseAccountServices>>>();
   const [error, setError] = useState("");
+  const [embeddedSignIn, setEmbeddedSignIn] = useState(false);
   const [busy, setBusy] = useState(true);
   // Nunca vem marcada: o aceite da política precisa ser um ato da pessoa.
-  const [accepted, setAccepted] = useState(false);
+  const [consentChecked, setAccepted] = useState(false);
+  const accepted = embedded || consentChecked;
   const [signingIn, setSigningIn] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
   const pending = useRef(false);
@@ -240,7 +246,7 @@ export function GoogleLogin({
     setSigningIn(true);
     setError("");
     try {
-      recordPrivacyConsent(window.localStorage);
+      if (!embedded) recordPrivacyConsent(window.localStorage);
       sessionStorage.setItem(
         PENDING_ANSWERS_KEY,
         JSON.stringify(configuration ? { answers, configuration } : answers),
@@ -283,7 +289,7 @@ export function GoogleLogin({
     setSigningIn(true);
     // O aceite é registrado antes de sair para o Google: o login pode virar um
     // redirecionamento de página inteira e a pessoa voltaria sem o registro.
-    recordPrivacyConsent(window.localStorage);
+    if (!embedded) recordPrivacyConsent(window.localStorage);
     setBusy(true);
     setError("");
     setAccountLanguage(services);
@@ -328,73 +334,103 @@ export function GoogleLogin({
     }
   }
 
-  // Nada é enviado a servidor nenhum: os estudos ficam só neste aparelho, então
-  // não há aceite de política a registrar como no login com Google.
-  function continueAsGuest() {
-    if (pending.current) return;
-    enterAsGuest(answers, configuration);
-    onFinish();
-  }
-
+  const Container = embedded ? "div" : "main";
   return (
-    <main className="onboarding login-page" id="main-content" aria-label={uiText(1197)}>
+    <Container
+      className="onboarding login-page"
+      id={embedded ? undefined : "main-content"}
+      aria-label={uiText(1197)}
+    >
       <h1 className="sr-only">{uiText(1198)}</h1>
-      <header className="onboarding__header">
-        <span className="onboarding__brand">
-          <PaperCardTitle value="OlenaStudy" />
-        </span>
-      </header>
+      {!embedded && (
+        <header className="onboarding__header">
+          <span className="onboarding__brand">
+            <PaperCardTitle value="OlenaStudy" />
+          </span>
+        </header>
+      )}
       <div className="login-page__layout">
         <section className="login-page__card">
-          <img
-            className={
-              returning
-                ? "login-page__perched login-page__perched--returning"
-                : "login-page__perched"
-            }
-            src={returning ? "/helena-welcome-back.webp" : "/helena-login-peeking.png"}
-            alt={uiText(1204)}
-            width="640"
-            height="640"
-            fetchPriority="high"
-          />
+          {!embedded && (
+            <img
+              className={
+                returning
+                  ? "login-page__perched login-page__perched--returning"
+                  : "login-page__perched"
+              }
+              src={returning ? "/helena-welcome-back.webp" : "/helena-login-peeking.png"}
+              alt={uiText(1204)}
+              width="640"
+              height="640"
+              fetchPriority="high"
+            />
+          )}
           <span className="login-page__eyebrow">{uiText(1205)}</span>
-          <h2>{returning ? uiText("Boas-vindas de volta!") : uiText(1206)}</h2>
-          <p className="login-page__intro">
-            {returning ? uiText("Seu espaço de estudos espera por você.") : uiText(1207)}
-            <br />
-            {returning ? uiText("Use o mesmo método de acesso da sua conta.") : uiText(1208)}
-          </p>
+          {embedded && (
+            <img
+              className="login-page__mode-icon"
+              src={
+                embeddedSignIn
+                  ? "/navigation-icons/paper/settings-account.svg"
+                  : "/navigation-icons/paper/profile-friend.svg"
+              }
+              width={48}
+              height={48}
+              alt=""
+            />
+          )}
+          <h2>
+            {embedded && embeddedSignIn
+              ? uiText("Então, boas-vindas de volta!")
+              : returning
+                ? uiText("Boas-vindas de volta!")
+                : uiText(1206)}
+          </h2>
+          {!embedded && (
+            <p className="login-page__intro">
+              {returning ? uiText("Seu espaço de estudos espera por você.") : uiText(1207)}
+              <br />
+              {returning ? uiText("Use o mesmo método de acesso da sua conta.") : uiText(1208)}
+            </p>
+          )}
           {(busy || signingIn || (!services && !error)) && (
             <div className="login-page__loading">
               <HelenaLoading compact label={uiText("Preparando seu login…")} />
             </div>
           )}
-          {error && <p role="alert">{uiText(error)}</p>}
-          <label className="login-page__consent" hidden={emailOpen}>
-            <input
-              type="checkbox"
-              className="paper-checkbox"
-              checked={accepted}
-              aria-describedby="login-consent-help"
-              onChange={(event) => setAccepted(event.target.checked)}
-            />
-            <span>
-              {uiText(1210)}{" "}
-              <a href={PRIVACY_POLICY_PATH} target="_blank" rel="noopener noreferrer">
-                {uiText(411)}
-                <span className="sr-only"> {uiText(412)}</span>
-              </a>
-              {uiText(2567)}
-            </span>
-          </label>
-          <p id="login-consent-help" className="login-page__consent-help" hidden={emailOpen}>
-            {accepted ? "" : uiText(1211)}
-          </p>
+          {error && (!embedded || error !== uiText(1196)) && <p role="alert">{uiText(error)}</p>}
+          {!embedded && (
+            <>
+              <label className="login-page__consent" hidden={emailOpen}>
+                <input
+                  type="checkbox"
+                  className="paper-checkbox"
+                  checked={accepted}
+                  aria-describedby="login-consent-help"
+                  onChange={(event) => setAccepted(event.target.checked)}
+                />
+                <span>
+                  {uiText(1210)}{" "}
+                  <a href={PRIVACY_POLICY_PATH} target="_blank" rel="noopener noreferrer">
+                    {uiText(411)}
+                    <span className="sr-only"> {uiText(412)}</span>
+                  </a>
+                  {uiText(2567)}
+                </span>
+              </label>
+              <p id="login-consent-help" className="login-page__consent-help" hidden={emailOpen}>
+                {accepted ? "" : uiText(1211)}
+              </p>
+            </>
+          )}
           <EmailAuthForm
+            key={embeddedSignIn ? "sign-in" : "default"}
+            inline={embedded}
             services={busy || signingIn ? undefined : services}
             accepted={accepted}
-            initialRegister={!returning && answers.length > 0}
+            initialRegister={
+              embedded ? !embeddedSignIn : !returning && (registerFirst || answers.length > 0)
+            }
             onBusy={setSigningIn}
             onOpenChange={setEmailOpen}
             onAuthenticated={() => {
@@ -403,7 +439,7 @@ export function GoogleLogin({
                 setError(accountAuthError(null));
                 return;
               }
-              recordPrivacyConsent(window.localStorage);
+              if (!embedded) recordPrivacyConsent(window.localStorage);
               endGuestSession();
               applyGoogleLogin(answers, configuration, user.uid);
               onFinish();
@@ -416,7 +452,7 @@ export function GoogleLogin({
                 aria-label={uiText(870)}
                 type="button"
                 disabled={!services || busy || signingIn || !accepted}
-                aria-describedby="login-consent-help"
+                aria-describedby={embedded ? undefined : "login-consent-help"}
                 onClick={() => void login()}
               >
                 <span className="sr-only">{uiText(870)}</span>
@@ -432,7 +468,11 @@ export function GoogleLogin({
                 onClick={() => void startDiscord()}
               >
                 <img
-                  src="/navigation-icons/paper/profile-discord.svg"
+                  src={
+                    embedded
+                      ? "/navigation-icons/paper/discord-access.svg"
+                      : "/navigation-icons/paper/profile-discord.svg"
+                  }
                   alt=""
                   width="24"
                   height="24"
@@ -441,15 +481,31 @@ export function GoogleLogin({
               </button>
             </div>
           </div>
-          <p className="login-page__local">{uiText(1212)}</p>
-          <div className="login-page__guest">
-            <button type="button" disabled={signingIn} onClick={continueAsGuest}>
-              {uiText(1213)}
-            </button>
-            <p>
-              {uiText(1214)} {GUEST_NAME} {uiText(1215)}
+          {embedded ? (
+            <p className="login-page__registration-notice">
+              {uiText("Ao se registrar, você concorda com nossos")}{" "}
+              <a href="/termos-de-uso.html" target="_blank" rel="noopener noreferrer">
+                {uiText("Termos de Uso")}
+              </a>
+              . {uiText("Leia nossa")}{" "}
+              <a href={PRIVACY_POLICY_PATH} target="_blank" rel="noopener noreferrer">
+                {uiText(411)}
+              </a>{" "}
+              {uiText("para saber como coletamos, usamos e compartilhamos seus dados pessoais.")}
             </p>
-          </div>
+          ) : (
+            <p className="login-page__local">{uiText(1212)}</p>
+          )}
+          {embedded && (
+            <button
+              className="login-page__switch email-auth__link"
+              type="button"
+              disabled={signingIn}
+              onClick={() => setEmbeddedSignIn(!embeddedSignIn)}
+            >
+              {uiText(embeddedSignIn ? "Criar conta" : "Já passei por isso")}
+            </button>
+          )}
           <div className="login-page__divider" />
           {returning && onCreateAccount && (
             <button
@@ -470,8 +526,12 @@ export function GoogleLogin({
           )}
         </section>
       </div>
-      <footer className="login-page__footer">{uiText(1216)}</footer>
-      <BrandFooter withOlena />
-    </main>
+      {!embedded && (
+        <>
+          <footer className="login-page__footer">{uiText(1216)}</footer>
+          <BrandFooter withOlena />
+        </>
+      )}
+    </Container>
   );
 }

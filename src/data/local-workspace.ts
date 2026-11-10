@@ -677,7 +677,9 @@ function isStudyPreferences(value: unknown): value is StudyPreferences {
     ) &&
     (value["processing"] === "sequencial" || value["processing"] === "global") &&
     (value["rhythm"] === "focado" || value["rhythm"] === "difuso") &&
-    ["nenhum", "python", "javascript", "python-javascript"].includes(String(value["programming"]))
+    ["nenhum", "python", "javascript", "python-javascript", "html-css"].includes(
+      String(value["programming"]),
+    )
   );
 }
 

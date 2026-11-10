@@ -1935,3 +1935,7 @@ practice-hero-priority.ts deriva os dois resumos da regra compartilhada practice
 A apresentação usa `HelenaLoading` com variante `refresh` e SVG original de livro/estrela em papel. O lápis existente foi extraído para um arquivo SVG com a mesma animação CSS, reduzindo JavaScript; movimento reduzido continua desativando a animação. SVGs são recursos do próprio app, sem biblioteca nova. A arte inglesa mantém 900x600, WebP de 49.232 bytes e revisão `v=3` tanto na preparação quanto na imagem exibida.
 
 `profileLabelNames` mantém somente BETA TESTER para o nome confirmado `bizzok`, removendo DEV e GALAXIA em todos os consumidores, incluindo os cartões públicos. As permissões dos outros nomes não mudam.
+
+## Ícone Android e onboarding, 10/11/2026
+
+O questionário usa palco central, uma pergunta visível por etapa e a mesma configuração da API. A arte Android de referência é android/store/play-store-icon-512.png. Rode node scripts/android/render-android-icons.mjs para gerar os ícones do manifesto. A troca no pacote instalado depende de gerar um novo APK/AAB assinado.
