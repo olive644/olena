@@ -52,14 +52,20 @@ export function clearPersonalData(storage: Storage, keep: readonly string[] = []
 // Registra a conta dona dos dados deste aparelho. Se outra conta já era a dona,
 // os dados dela são apagados antes de a nova conta sincronizar, senão o espaço
 // da pessoa anterior seria enviado para a conta nova. Devolve true na troca.
-// A marca de onboarding é preservada: o login a grava no mesmo instante em que
-// a sessão começa, e apagá-la mandaria a pessoa de volta ao onboarding.
+// Preserva uma conclusão recém-gravada somente quando pertence à conta que entra.
 export function claimDeviceForAccount(storage: Storage, uid: string): boolean {
   try {
     const owner = storage.getItem(ACCOUNT_OWNER_KEY);
     const switched = owner !== null && owner !== uid;
     if (switched) {
-      clearPersonalData(storage, ["helena.onboarding.v1"]);
+      let preserveOnboarding = false;
+      try {
+        preserveOnboarding =
+          JSON.parse(storage.getItem("helena.onboarding.v1") ?? "null")?.configurationOwner === uid;
+      } catch {
+        /* Registro inválido é descartado na troca de conta. */
+      }
+      clearPersonalData(storage, preserveOnboarding ? ["helena.onboarding.v1"] : []);
       window.dispatchEvent(new Event(SYNCED_STORAGE_APPLIED_EVENT));
     }
     storage.setItem(ACCOUNT_OWNER_KEY, uid);

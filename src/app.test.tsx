@@ -14,15 +14,11 @@ describe("App", () => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
 
-  it("abre o onboarding na primeira visita", async () => {
+  it("abre a capa na primeira visita", async () => {
     localStorage.removeItem("helena.onboarding.v1");
     render(<App />);
     expect(
-      await screen.findByRole(
-        "heading",
-        { name: "Em que fase dos estudos você está?" },
-        { timeout: 5000 },
-      ),
+      await screen.findByRole("heading", { name: "Estude do seu jeito" }, { timeout: 5000 }),
     ).toBeTruthy();
   });
 

@@ -413,3 +413,7 @@ A estrela da Olena mantém a peça facetada e perde somente o halo amarelo exter
 A arte inglesa é preparada e decodificada em baixa prioridade no tempo ocioso, com antecipação ao focar, apontar ou tocar o seletor. Economia de dados impede a preparação ociosa. A imagem selecionada tem prioridade alta e aparece sem animação de entrada. Não adicionar temporizador de troca automática.
 
 O foco inicial do carrossel prioriza ofensivas ativas com até 60 minutos restantes. Entre duas urgentes, vence a expiração mais próxima; empate usa mais dias. Sem urgência, vence a maior ofensiva, com Matemática como desempate. A escolha manual fica fixa até sair do Espaço; não adicionar rodízio por temporizador.
+
+### Transições do onboarding
+
+Cada avanço apresenta uma etapa própria, com foco no campo ou no título que passa a orientar a interação. Use a animação de entrada do onboarding e respeite a preferência por movimento reduzido. Nome e avatar ocupam etapas separadas. O campo de nome usa a superfície, a borda em papel e os raios dos campos de acesso.

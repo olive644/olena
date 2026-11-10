@@ -10,7 +10,7 @@ export type StudyPreferences = {
   modalities: StudyModality[];
   processing: "sequencial" | "global";
   rhythm: "focado" | "difuso";
-  programming: "nenhum" | "python" | "javascript" | "python-javascript";
+  programming: "nenhum" | "python" | "javascript" | "python-javascript" | "html-css";
 };
 
 export const defaultStudyPreferences: StudyPreferences = {

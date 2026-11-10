@@ -84,7 +84,7 @@ describe("claimDeviceForAccount", () => {
 
     window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, applied);
     for (const key of PERSONAL_KEYS) expect(localStorage.getItem(key)).toBeNull();
-    expect(localStorage.getItem("helena.onboarding.v1")).toBe('{"completed":true}');
+    expect(localStorage.getItem("helena.onboarding.v1")).toBeNull();
     expect(localStorage.getItem(ACCOUNT_OWNER_KEY)).toBe("beto");
     expect(applied).toHaveBeenCalledTimes(1);
   });

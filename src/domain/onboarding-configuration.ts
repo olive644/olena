@@ -25,7 +25,7 @@ export const ONBOARDING_OPTIONS: readonly (readonly string[])[] = [
   ["Visual", "Ouvindo e conversando", "Lendo e escrevendo", "Praticando"],
   ["Passo a passo", "Visão geral primeiro"],
   ["Foco contínuo", "Alternar estudo e pausas"],
-  ["Python", "JavaScript", "Python e JavaScript", "Agora não"],
+  ["Python", "JavaScript", "Python e JavaScript", "HTML e CSS", "Agora não"],
   ["5 minutos", "15 minutos", "30 minutos", "Prefiro decidir a cada dia"],
 ];
 export type OnboardingAnswers = (string | string[])[];
@@ -111,7 +111,9 @@ export function prepareOnboarding(answers: OnboardingAnswers, id: string): Onboa
             ? "javascript"
             : answers[7] === "Python e JavaScript"
               ? "python-javascript"
-              : "nenhum",
+              : answers[7] === "HTML e CSS"
+                ? "html-css"
+                : "nenhum",
       ...(minutes !== undefined ? { dailyGoalMinutes: minutes } : {}),
       ...(chosen ? { initialSubjectName: subjectName } : {}),
       ...(chosen?.island ? { initialIslandId: chosen.island } : {}),
