@@ -4759,6 +4759,14 @@ Testes: `src/app-account-entry.test.tsx` (falhava antes, passa agora) e um caso 
 
 Limite: uma conta autenticada com onboarding incompleto continua indo direto às perguntas ao abrir o site, sem a capa (testado em produção com uma conta de teste). Não alterei isso porque, depois de entrar pela própria capa ou por redirecionamento do Google, a pessoa precisa seguir para as perguntas sem ver a capa de novo; se a capa também for desejada nesse caso, é uma mudança própria.
 
+## Olena lendo animada em Rive, 2026-11-10
+
+- `public/olena-reading/olena.riv` (cerca de 373 KiB) anima a arte do passo 1 do onboarding (`public/helena-onboarding-step-1-cutout.webp`, a Olena lendo o caderno roxo) por 24 camadas recortadas da própria imagem. Cinco esperas de 8 a 12 s que se alternam sozinhas (lendo, curiosa, cochilo, feliz, estrela), pálpebras próprias para piscar e fechar os olhos, cauda em duas partes com a ponta atrasada, orelhas, estrela da orelha, patas que apertam o livro e uma folha que vira. Entradas da máquina de estados `Olena`: `clique` (1 dispara o pulinho de alegria) e `variacao` (1 a 5 pula para uma espera).
+- Ainda não está ligado ao onboarding: só o arquivo, o gerador e a verificação entram nesta mudança. O quadro do Rive tem 720 x 720 (arte de 640 x 640 com 40 px de folga em volta, porque a cauda, as orelhas e a estrela saem do quadro da imagem quando se mexem); o componente que trocar a imagem precisa considerar essa folga.
+- Decisões de corte: cada junta tem uma aba escondida (a peça de trás continua por baixo da da frente); as bordas suavizadas e o halo claro da silhueta são separados em cor e transparência, e a borda entre peças que se mexem entre si fica com a peça da frente; a pálpebra é feita da própria pelagem e leva o risco do olho fechado, e o olho não achata mais ao piscar.
+- Verificação no runtime oficial em Chromium: repouso igual à arte (diferença máxima de 1/255, e 30/255 sobre o fundo creme só em pixels soltos de borda), cada espera começa e termina no repouso, detectores sobre todos os quadros das cinco esperas (fresta estreita, buraco fechado, costura translúcida e pixel tocando a borda do quadro). Ficam diferenças de 1 a 2 px, só visíveis com zoom, em poses mais abertas das orelhas, da cauda e do fim da virada da folha. Detalhes em `scripts/olena-reading-rive/README.md`.
+- `performance:check` passa a medir `dist/olena-reading/olena.riv` (teto de 512 KiB). Não verificado: Safari/WebKit e mobile real, que ficam para o CI e para a ligação ao onboarding.
+
 ## Conta com progresso não volta ao onboarding, 2026-11-10
 
 - Relato: a conta principal voltou ao onboarding ao atualizar a página, em dois aparelhos. A nuvem (`users/<uid>/stateV2`) seguia com pontos de Matemática e de Inglês, acertos, conquistas e espaço de trabalho; só faltava `helena.onboarding.v1`, a marca de conclusão, e o nível apareceu como 1 até a nuvem ser aplicada. O aviso "Parte do seu progresso não pôde ser enviada" estava na tela.
