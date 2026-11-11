@@ -642,6 +642,8 @@ export function useCloudSync() {
                       if (!currentAccount() || !isPermissionDenied(single)) throw single;
                       rejectedKeys.add(key);
                       rejectedNow += 1;
+                      // O aviso na tela não diz qual parte; o nome da chave fica no console.
+                      console.warn("[Olena] A nuvem recusou a chave:", key);
                     }
                   }
                   if (rejectedNow === Object.keys(pending).length) throw cause;

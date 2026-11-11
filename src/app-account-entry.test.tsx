@@ -72,3 +72,52 @@ it("abre a capa, e não as perguntas, para um convidado antigo que nunca conclui
   expect(screen.getByRole("button", { name: "Começar agora" })).toBeTruthy();
   expect(screen.queryByText("Olá! Eu sou a Olena.")).toBeNull();
 });
+
+it("não volta ao onboarding uma conta com progresso na nuvem a que falta a marca de conclusão", async () => {
+  localStorage.clear();
+  window.history.replaceState(null, "", "/");
+  localStorage.setItem("helena.account.v1", "uid-com-progresso");
+  // Estado que a nuvem entregou: pontos e acertos reais, mas sem "helena.onboarding.v1".
+  localStorage.setItem(
+    "helena.mathPlaceRewards.v1",
+    JSON.stringify({ foundations: { points: 3644, receipts: ["math:foundations:aaa"] } }),
+  );
+  localStorage.setItem(
+    "helena.mathGame.v5",
+    JSON.stringify({ foundations: { level: 3, correct: 123, solved: [8255455] } }),
+  );
+  vi.mocked(useCloudSync).mockReturnValue({
+    enabled: true,
+    ready: true,
+    authenticated: true,
+    status: "synced",
+    revision: 3,
+  });
+  render(<App />);
+  expect(await screen.findByRole("heading", { name: "Espaço do aluno" })).toBeTruthy();
+  expect(document.querySelector(".onboarding")).toBeNull();
+  expect(screen.queryByText("Olá! Eu sou a Olena.")).toBeNull();
+  // A marca é regravada para o próximo aparelho, com a conta dona.
+  const record = JSON.parse(localStorage.getItem("helena.onboarding.v1")!);
+  expect(record.completed).toBe(true);
+  expect(record.configurationOwner).toBe("uid-com-progresso");
+});
+
+it("mostra o onboarding a uma conta nova mesmo com chaves de progresso vazias", async () => {
+  localStorage.clear();
+  window.history.replaceState(null, "", "/");
+  localStorage.setItem("helena.account.v1", "uid-novo");
+  localStorage.setItem(
+    "helena.mathPlaceRewards.v1",
+    JSON.stringify({ foundations: { points: 0, receipts: [] } }),
+  );
+  vi.mocked(useCloudSync).mockReturnValue({
+    enabled: true,
+    ready: true,
+    authenticated: true,
+    status: "synced",
+    revision: 1,
+  });
+  render(<App />);
+  expect(await screen.findByText("Olá! Eu sou a Olena.", {}, { timeout: 5000 })).toBeTruthy();
+});
