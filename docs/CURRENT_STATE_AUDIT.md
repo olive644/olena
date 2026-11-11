@@ -4784,3 +4784,11 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - O console passa a registrar `[Olena] A nuvem recusou a chave: <nome>`, para a recusa deixar de ser um mistério. Nenhum texto novo na interface.
 - Testes: `src/data/account-progress.test.ts` e dois casos em `src/app-account-entry.test.tsx` (conta com progresso e sem marca não abre as perguntas e regrava a marca; conta nova com chaves zeradas abre). O primeiro falha sem a mudança em `app.tsx`.
 - Não verificado: o comportamento em produção com a conta real, o tamanho atual das chaves da conta e Safari/WebKit.
+
+## O onboarding não troca o nome de conta existente, 2026-11-11
+
+- O passo do nome do onboarding gravava o texto digitado como nome da conta no Firebase (`updateProfile`) sem checar nada, e renomeou uma conta que já tinha nome e progresso. Agora não troca quando a conta já tem nome e progresso; conta nova (sem progresso) continua gravando o nome escolhido.
+- O sinal de progresso (`src/data/account-progress.ts`) usa só os pontos de Matemática e de Inglês, o que mantém o JavaScript da aplicação dentro do teto sem aumento.
+- As origens do domínio próprio ficaram na #618 (`src/domain/site-origins.ts`); esta mudança não mexe nelas.
+- Testes: dois casos em `src/views/onboarding-view.test.tsx` (o do nome falha sem a mudança).
+- Não verificado: o comportamento em produção depois do deploy.

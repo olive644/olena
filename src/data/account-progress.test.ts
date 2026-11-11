@@ -19,21 +19,12 @@ describe("accountHasProgress", () => {
     ).toBe(true);
   });
 
-  it("reconhece acertos e itens resolvidos da Matemática", () => {
-    expect(
-      accountHasProgress(
-        storage({ "helena.mathGame.v5": '{"foundations":{"level":3,"correct":123,"solved":[1]}}' }),
-      ),
-    ).toBe(true);
-  });
-
   it("não conta chaves vazias, zeradas, ilegíveis ou ausentes", () => {
     expect(accountHasProgress(storage({}))).toBe(false);
     expect(
       accountHasProgress(
         storage({
           "helena.mathPlaceRewards.v1": '{"foundations":{"points":0,"receipts":[]}}',
-          "helena.mathGame.v5": '{"foundations":{"level":1,"correct":0,"solved":[]}}',
           "helena.englishRewards.v1": "isso não é JSON",
         }),
       ),

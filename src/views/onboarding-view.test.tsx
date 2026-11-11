@@ -71,6 +71,33 @@ it("introduces Olena before name, then shows a separate selectable avatar stage"
   expect(updateProfile).toHaveBeenCalledWith(user, { displayName: "Ana Souza" });
   expect(screen.getByRole("heading", { name: "Em que fase dos estudos você está?" })).toBeTruthy();
 });
+it("não troca o nome de uma conta que já tem nome e progresso ao refazer o onboarding", async () => {
+  const existing = { uid: user.uid, displayName: "José Gilson" };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: existing },
+    authApi: { updateProfile },
+    redirectResult: null,
+  } as never);
+  localStorage.setItem(
+    "helena.mathPlaceRewards.v1",
+    JSON.stringify({ foundations: { points: 3644, receipts: ["math:foundations:aaa"] } }),
+  );
+  renderOnboarding();
+  await welcomeOnboarding();
+  expect(updateProfile).not.toHaveBeenCalled();
+  expect(screen.getByRole("heading", { name: "Em que fase dos estudos você está?" })).toBeTruthy();
+});
+it("troca o nome de uma conta com nome, mas sem progresso (conta nova)", async () => {
+  const fresh = { uid: user.uid, displayName: "Nome do Google" };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: fresh },
+    authApi: { updateProfile },
+    redirectResult: null,
+  } as never);
+  renderOnboarding();
+  await welcomeOnboarding();
+  expect(updateProfile).toHaveBeenCalledWith(fresh, { displayName: "Ana Souza" });
+});
 it("requires confirmation through secondary type, year and optional institution", async () => {
   renderOnboarding();
   await welcomeOnboarding();
