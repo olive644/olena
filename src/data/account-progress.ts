@@ -5,7 +5,6 @@ const PROGRESS_KEYS = [
   "helena.mathPlaceRewards.v1",
   "helena.englishRewards.v1",
   "helena.mathGame.v5",
-  "helena.englishProgress.v1",
 ] as const;
 
 const COUNTERS = new Set(["points", "correct"]);
