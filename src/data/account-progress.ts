@@ -5,13 +5,11 @@ const PROGRESS_KEYS = [
   "helena.mathPlaceRewards.v1",
   "helena.englishRewards.v1",
   "helena.mathGame.v5",
-  "helena.mathGame.v4",
-  "helena.mathGame.v3",
   "helena.englishProgress.v1",
 ] as const;
 
-const COUNTERS = new Set(["points", "correct", "mastery"]);
-const LISTS = new Set(["receipts", "solved", "seen"]);
+const COUNTERS = new Set(["points", "correct"]);
+const LISTS = new Set(["receipts", "solved"]);
 
 function hasProgressSign(value: unknown, depth = 0): boolean {
   if (depth > 6 || value === null || typeof value !== "object") return false;
