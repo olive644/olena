@@ -78,8 +78,11 @@ Configurar no servidor, nunca com prefixo VITE para segredos:
 
 - `CLOUDFLARE_ACCOUNT_ID` e `CLOUDFLARE_API_TOKEN`, com permissão Workers AI.
 - `OLENA_TEACHER_MODEL`, padrão `@cf/meta/llama-3.1-8b-instruct-fp8-fast`.
-- `HELENA_ALLOWED_ORIGINS`, lista exata separada por vírgulas. Produção padrão:
-  `https://olenastudy.vercel.app`. Adicionar origem de preview explicitamente.
+- `HELENA_ALLOWED_ORIGINS`, lista exata separada por vírgulas. Produção padrão
+  (quando a variável falta ou está vazia): `https://www.olenastudy.com.br`,
+  `https://olenastudy.com.br` e `https://olenastudy.vercel.app`
+  (`src/domain/site-origins.ts`). Adicionar origem de preview explicitamente; ao definir a
+  variável, ela substitui o padrão.
 - Firebase existente: `VITE_FIREBASE_PROJECT_ID`, `FIREBASE_DATABASE_URL`,
   `FIREBASE_CLIENT_EMAIL` e `FIREBASE_PRIVATE_KEY`.
 

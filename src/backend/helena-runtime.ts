@@ -1,3 +1,4 @@
+import { parseAllowedOrigins } from "../domain/site-origins.js";
 import { createFirebaseAccountIdentity } from "./firebase-account-identity.js";
 import { createFirebaseRealtimeStore } from "./firebase-realtime-store.js";
 import { createHelenaHandler } from "./helena-handler.js";
@@ -15,10 +16,7 @@ const store = createFirebaseRealtimeStore({
 });
 const identity = createFirebaseAccountIdentity(process.env["VITE_FIREBASE_PROJECT_ID"] ?? "");
 const handler = createHelenaHandler({
-  allowedOrigins: (process.env["HELENA_ALLOWED_ORIGINS"] ?? "https://olenastudy.vercel.app")
-    .split(",")
-    .map((value) => value.trim())
-    .filter(Boolean),
+  allowedOrigins: parseAllowedOrigins(process.env["HELENA_ALLOWED_ORIGINS"]),
   async identifyClient(request) {
     // Contas anônimas são baratas de criar: com elas a cota por usuário não protegeria a cota
     // global. A Olena exige conta de verdade, como o resto das ações da conta.

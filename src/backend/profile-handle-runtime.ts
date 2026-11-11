@@ -1,3 +1,4 @@
+import { parseAllowedOrigins } from "../domain/site-origins.js";
 import { createFirebaseAccountIdentity } from "./firebase-account-identity.js";
 import {
   createFirebaseAccessTokenProvider,
@@ -18,7 +19,7 @@ const rateStore = createFirebaseRealtimeStore(config);
 const identity = createFirebaseAccountIdentity(process.env["VITE_FIREBASE_PROJECT_ID"] ?? "");
 const url = `${config.databaseUrl}/privateProfileHandles.json`;
 export const profileAllowedOrigins = [
-  ...(process.env["HELENA_ALLOWED_ORIGINS"] ?? "https://olenastudy.vercel.app").split(","),
+  ...parseAllowedOrigins(process.env["HELENA_ALLOWED_ORIGINS"]),
   ...[process.env["VERCEL_URL"], process.env["VERCEL_BRANCH_URL"]]
     .filter(Boolean)
     .map((host) => `https://${host}`),
