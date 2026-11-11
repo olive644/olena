@@ -4758,3 +4758,12 @@ Correção: a marca de convidado só dispensa a capa de quem já concluiu o onbo
 Testes: `src/app-account-entry.test.tsx` (falhava antes, passa agora) e um caso em `e2e/welcome-back.spec.ts`.
 
 Limite: uma conta autenticada com onboarding incompleto continua indo direto às perguntas ao abrir o site, sem a capa (testado em produção com uma conta de teste). Não alterei isso porque, depois de entrar pela própria capa ou por redirecionamento do Google, a pessoa precisa seguir para as perguntas sem ver a capa de novo; se a capa também for desejada nesse caso, é uma mudança própria.
+
+## Conta com progresso não volta ao onboarding, 2026-11-10
+
+- Relato: a conta principal voltou ao onboarding ao atualizar a página, em dois aparelhos. A nuvem (`users/<uid>/stateV2`) seguia com pontos de Matemática e de Inglês, acertos, conquistas e espaço de trabalho; só faltava `helena.onboarding.v1`, a marca de conclusão, e o nível apareceu como 1 até a nuvem ser aplicada. O aviso "Parte do seu progresso não pôde ser enviada" estava na tela.
+- Regras do Firebase conferidas: o texto publicado era idêntico a `firebase-room.rules.json` e aceita essa chave, então regras desatualizadas foram descartadas. Causa da marca não ter chegado à nuvem: não confirmada. Hipótese em aberto: o teto de 8.000.000 de caracteres da soma das chaves do `stateV2` (todas menos o espaço de trabalho) recusa chaves novas quando a conta está perto dele. Para conferir, medir o tamanho de cada chave `helena.*` do armazenamento (comando no PR).
+- Mudança: `src/data/account-progress.ts` reconhece progresso real (pontos, acertos ou itens resolvidos nas chaves de Matemática e Inglês). `app.tsx` trata como conta que já passou pelo onboarding quem tem a marca OU esse progresso, e regrava a marca (com a conta dona) para o próximo aparelho. Uma conta nova, com chaves zeradas, continua vendo o onboarding.
+- O console passa a registrar `[Olena] A nuvem recusou a chave: <nome>` e o aviso na tela leva `data-rejected-keys` com os nomes, para a recusa deixar de ser um mistério. Nenhum texto novo na interface.
+- Testes: `src/data/account-progress.test.ts` e dois casos em `src/app-account-entry.test.tsx` (conta com progresso e sem marca não abre as perguntas e regrava a marca; conta nova com chaves zeradas abre). O primeiro falha sem a mudança em `app.tsx`.
+- Não verificado: o comportamento em produção com a conta real, o tamanho atual das chaves da conta e Safari/WebKit.

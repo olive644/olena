@@ -13,6 +13,7 @@ import { TodayView } from "./views/today-view";
 import { useProfileHandle } from "./hooks/use-profile-handle";
 import { useAccountDevice } from "./hooks/use-account-device";
 import { readPendingOnboardingConfiguration } from "./data/onboarding-client";
+import { accountHasProgress } from "./data/account-progress";
 import { ACCOUNT_OWNER_KEY } from "./data/personal-data";
 import { writeSyncedStorage } from "./data/synced-storage";
 import { isReturningVisitor } from "./data/returning-visitor";
@@ -75,6 +76,13 @@ function hasCompletedOnboarding() {
   }
 }
 
+// Conta que já passou pelo onboarding ou que já tem progresso. A marca de conclusão é só mais uma
+// chave sincronizada e pode faltar (aparelho novo, nuvem sem ela); o progresso real não deixa a
+// pessoa voltar às perguntas.
+function hasReturningAccountData() {
+  return hasCompletedOnboarding() || accountHasProgress(localStorage);
+}
+
 function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signedOut?: boolean }) {
   useLanguage();
 
@@ -102,7 +110,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   const { handle } = useProfileHandle(cloud.authenticated !== true);
   const [profileName, setProfileName] = useState<string>();
   const [onboarding, setOnboarding] = useState(() => {
-    if (cloud.authenticated === true && hasCompletedOnboarding()) return false;
+    if (cloud.authenticated === true && hasReturningAccountData()) return false;
     if (previewCover) return true;
     if (joinCode) return false;
     if (signedOut) return true;
@@ -115,7 +123,22 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     }
   });
 
-  const returningAccount = cloud.ready && cloud.authenticated === true && hasCompletedOnboarding();
+  const returningAccount = cloud.ready && cloud.authenticated === true && hasReturningAccountData();
+
+  // Conta com progresso e sem a marca: grava a marca, que também vai para a nuvem, para o próximo
+  // aparelho não depender de adivinhar.
+  useEffect(() => {
+    if (!returningAccount || hasCompletedOnboarding()) return;
+    const owner = localStorage.getItem(ACCOUNT_OWNER_KEY);
+    writeSyncedStorage(
+      "helena.onboarding.v1",
+      JSON.stringify({
+        answers: [],
+        completed: true,
+        ...(owner ? { configurationOwner: owner } : {}),
+      }),
+    );
+  }, [returningAccount]);
 
   useEffect(() => {
     if (
@@ -188,7 +211,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
                 dispatch({ type: "onboarding/configured", configuration: setup.configuration });
               else dispatch({ type: "study/preferences-updated", preferences: setup.preferences });
             }
-            if (setup || (cloud.authenticated === true && cloud.ready && hasCompletedOnboarding()))
+            if (setup || (cloud.authenticated === true && cloud.ready && hasReturningAccountData()))
               setOnboarding(false);
           }}
         />
@@ -234,7 +257,11 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
           </p>
         )}
         {!storageFull && cloud.rejectedKeys && (
-          <p className="storage-full-banner" role="status">
+          <p
+            className="storage-full-banner"
+            role="status"
+            data-rejected-keys={cloud.rejectedKeys.join(",")}
+          >
             {uiText(3713)}
           </p>
         )}
