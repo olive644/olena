@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Excluir conta e dados do OlenaStudy</title>
+    <meta
+      name="description"
+      content="Como excluir a sua conta e os seus dados no OlenaStudy: o passo a passo no aplicativo, o que é apagado na hora e o que pode continuar por um prazo curto."
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://olenastudy.vercel.app/excluir-conta.html" />
+    <link rel="icon" href="/olena-favicon-32.png" type="image/png" />
+    <meta name="color-scheme" content="light dark" />
+    <style>
+      :root {
+        --page: #fff9ef;
+        --paper: #ffffff;
+        --paper-edge: #e4dacb;
+        --paper-base: #e8dfd0;
+        --ink: #292432;
+        --muted: #5a5266;
+        --violet: #7c3aed;
+        --violet-deep: #51259b;
+        --violet-base: #51259b;
+        --summary: #7c3aed;
+        --summary-base: #51259b;
+        --on-violet: #fff9ef;
+        --lilac: #f3ecff;
+        --lilac-edge: #dccfee;
+        --yellow: #facc15;
+        --yellow-base: #c99a06;
+        --on-yellow: #292432;
+        --shadow: rgb(0 0 0 / 5%);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --page: #211c29;
+          --paper: #2d2738;
+          --paper-edge: #443b52;
+          --paper-base: #191520;
+          --ink: #fff9ef;
+          --muted: #cfc6dc;
+          --violet: #a779ef;
+          --violet-deep: #cdb6f8;
+          --violet-base: #3b1c73;
+          --summary: #5b2fb0;
+          --summary-base: #3b1c73;
+          --on-violet: #fff9ef;
+          --lilac: #382f49;
+          --lilac-edge: #52476a;
+          --yellow: #facc15;
+          --yellow-base: #8f6d03;
+          --on-yellow: #292432;
+          --shadow: rgb(0 0 0 / 25%);
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 1rem;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+      @font-face {
+        font-family: "Manrope";
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+        src: url("/fonts/manrope-latin-600-normal.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Manrope";
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url("/fonts/manrope-latin-700-normal.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Manrope";
+        font-style: normal;
+        font-weight: 800;
+        font-display: swap;
+        src: url("/fonts/manrope-latin-800-normal.woff2") format("woff2");
+      }
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--ink);
+        font-family:
+          "Manrope",
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          "Helvetica Neue",
+          Arial,
+          sans-serif;
+        line-height: 1.7;
+      }
+      .wrap {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 1.25rem 1rem 1rem;
+      }
+      header.brand {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 0.4rem 0 1.4rem;
+      }
+      .logo {
+        font-size: 1.7rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        text-decoration: none;
+        color: var(--ink);
+      }
+      .logo span {
+        color: var(--violet);
+      }
+      .back {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        color: var(--violet-deep);
+        font-weight: 700;
+      }
+      /* Papel recortado: cantos assimétricos e base deslocada, como os cartões do app. */
+      .paper {
+        position: relative;
+        margin: 0 0 1.6rem;
+        padding: 1.4rem 1.4rem 1.6rem;
+        background: var(--paper);
+        border: 1px solid var(--paper-edge);
+        border-radius: 28px 28px 36px 12px;
+        box-shadow:
+          7px 9px 0 var(--paper-base),
+          0 16px 35px var(--shadow);
+      }
+      .paper > :first-child {
+        margin-top: 0;
+      }
+      .paper > :last-child {
+        margin-bottom: 0;
+      }
+      .hero h1 {
+        margin: 0 0 0.3rem;
+        font-size: 2rem;
+        line-height: 1.15;
+        letter-spacing: -0.03em;
+      }
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+      }
+      .summary {
+        background: var(--summary);
+        border-color: var(--summary-base);
+        color: var(--on-violet);
+        border-radius: 36px 12px 28px 28px;
+        box-shadow:
+          7px 9px 0 var(--summary-base),
+          0 16px 35px var(--shadow);
+      }
+      .summary h2 {
+        color: var(--on-violet);
+      }
+      .summary a {
+        color: var(--on-violet);
+      }
+      .summary strong {
+        color: #ffe88d;
+      }
+      .pending {
+        background: var(--yellow);
+        border-color: var(--yellow-base);
+        color: var(--on-yellow);
+        border-radius: 12px 28px 28px 28px;
+        box-shadow:
+          6px 8px 0 var(--yellow-base),
+          0 16px 35px var(--shadow);
+        font-weight: 700;
+      }
+      .toc {
+        background: var(--lilac);
+        border: 2px dashed var(--lilac-edge);
+        border-radius: 24px 12px 24px 24px;
+        box-shadow: none;
+      }
+      h2 {
+        margin: 0 0 0.6rem;
+        font-size: 1.3rem;
+        letter-spacing: -0.02em;
+        color: var(--violet-deep);
+      }
+      h3 {
+        margin: 1.3rem 0 0.4rem;
+        font-size: 1.02rem;
+      }
+      p,
+      li {
+        max-width: 66ch;
+      }
+      ul,
+      ol {
+        padding-left: 1.3rem;
+      }
+      .toc ol {
+        margin: 0.3rem 0 0;
+        columns: 2 240px;
+      }
+      .toc strong {
+        font-size: 1.05rem;
+      }
+      .table-scroll {
+        overflow-x: auto;
+        margin: 0.8rem 0 0.4rem;
+        border: 1px solid var(--lilac-edge);
+        border-radius: 18px 18px 22px 8px;
+        background: var(--paper);
+      }
+      table {
+        width: 100%;
+        min-width: 640px;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+        line-height: 1.55;
+      }
+      th,
+      td {
+        padding: 0.75rem 0.8rem;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--lilac-edge);
+      }
+      thead th {
+        background: var(--lilac);
+        font-size: 0.86rem;
+      }
+      tbody th {
+        background: transparent;
+        font-weight: 800;
+      }
+      tr:last-child th,
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      a {
+        color: var(--violet-deep);
+        text-underline-offset: 3px;
+      }
+      a:focus-visible {
+        outline: 3px solid var(--violet);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+      footer.brand-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        margin: 2.2rem 0 1rem;
+        padding-top: 1rem;
+        border-top: 1px dashed var(--paper-edge);
+        color: var(--muted);
+        font-size: 0.9rem;
+        text-align: left;
+      }
+      footer.brand-footer img {
+        width: 30px;
+        height: 30px;
+        flex: none;
+      }
+      @media (max-width: 520px) {
+        .hero h1 {
+          font-size: 1.6rem;
+        }
+        .paper {
+          padding: 1.1rem 1rem 1.3rem;
+          box-shadow:
+            5px 7px 0 var(--paper-base),
+            0 12px 28px var(--shadow);
+        }
+      }
+      @media print {
+        body {
+          background: #fff;
+          color: #000;
+        }
+        .paper {
+          box-shadow: none;
+          border: 1px solid #999;
+        }
+        .back,
+        .toc {
+          display: none;
+        }
+      }
+      .brand-footer a {
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="brand">
+        <a class="logo" href="/">Olena<span>Study</span></a>
+        <a class="back" href="/">Voltar ao aplicativo</a>
+      </header>
+
+      <main>
+        <section class="paper hero">
+          <h1>Excluir conta e dados do OlenaStudy</h1>
+          <p>
+            Esta página explica como pedir a exclusão da sua conta e dos seus dados no OlenaStudy,
+            da empresa Galeria.Oli: o passo a passo, o que é apagado na hora e o que pode continuar
+            por um prazo curto.
+          </p>
+        </section>
+
+        <section class="paper summary" aria-labelledby="resumo">
+          <h2 id="resumo">Resumo em poucas palavras</h2>
+          <ul>
+            <li>
+              A exclusão é feita <strong>por você, dentro do aplicativo</strong>, em Perfil,
+              Configurações, Conta.
+            </li>
+            <li>
+              Ela apaga a conta, os estudos guardados na nuvem e os dados deste aparelho
+              <strong>na hora</strong> e <strong>não pode ser desfeita</strong>.
+            </li>
+            <li>
+              Só um registro mínimo de acesso pode continuar por <strong>até 30 dias</strong>.
+            </li>
+          </ul>
+        </section>
+
+        <nav class="paper toc" aria-label="Índice">
+          <strong>Nesta página</strong>
+          <ol>
+            <li><a href="#passos">Como excluir a sua conta</a></li>
+            <li><a href="#apagado">O que é apagado na hora</a></li>
+            <li><a href="#mantido">O que pode continuar por um tempo</a></li>
+            <li><a href="#parcial">Apagar só alguns dados, sem excluir a conta</a></li>
+            <li><a href="#sem-acesso">Se você não consegue entrar</a></li>
+          </ol>
+        </nav>
+
+        <section class="paper" aria-labelledby="passos">
+          <h2 id="passos">1. Como excluir a sua conta</h2>
+          <ol>
+            <li>
+              Abra o OlenaStudy (o aplicativo Android ou olenastudy.vercel.app) e entre na conta que
+              você quer excluir.
+            </li>
+            <li>
+              Abra <strong>Perfil</strong>, depois <strong>Configurações</strong> e
+              <strong>Conta</strong>.
+            </li>
+            <li>Use o botão <strong>Excluir minha conta</strong>.</li>
+            <li>
+              Confirme que é você: com a senha, com o login do Google ou com a autorização do
+              Discord, conforme o método da sua conta, e digite o nome da conta quando o aplicativo
+              pedir.
+            </li>
+            <li>
+              Pronto. A exclusão acontece na hora e <strong>não pode ser desfeita</strong>. Se você
+              entrar de novo pelo mesmo método, será uma conta nova, sem os dados antigos.
+            </li>
+          </ol>
+        </section>
+
+        <section class="paper" aria-labelledby="apagado">
+          <h2 id="apagado">2. O que é apagado na hora</h2>
+          <ul>
+            <li>
+              A conta de acesso ao OlenaStudy e o vínculo com Google, Discord ou e-mail e senha.
+            </li>
+            <li>
+              Os estudos guardados na nuvem: agenda, tarefas, cadernos, folhas, flashcards, foco,
+              progresso, preferências e perfil.
+            </li>
+            <li>O perfil público e o nome de usuário (@), que fica livre para outras pessoas.</li>
+            <li>
+              As conversas com o atendimento do aplicativo e os registros de aparelhos da conta.
+            </li>
+            <li>Os dados pessoais guardados neste aparelho.</li>
+          </ul>
+        </section>
+
+        <section class="paper" aria-labelledby="mantido">
+          <h2 id="mantido">3. O que pode continuar por um tempo</h2>
+          <ul>
+            <li>
+              <strong>Registro mínimo de acesso:</strong> eventos de criação, entrada, saída e
+              exclusão da conta, com nome de exibição, método de acesso, horário e uma referência
+              pseudônima. Não inclui e-mail, senha nem estudos. É removido em até
+              <strong>30 dias</strong>.
+            </li>
+            <li>
+              <strong>Salas de estudo e áudio da sala:</strong> até 4 horas depois da criação da
+              sala, com limpeza automática diária.
+            </li>
+            <li><strong>Link de leitura de um caderno:</strong> até 7 dias.</li>
+            <li>
+              <strong>Controle de uso pelo endereço de rede:</strong> cerca de um a dois minutos, só
+              de forma embaralhada.
+            </li>
+            <li>
+              Os registros mantidos pelo Google e pela hospedagem seguem os prazos das políticas
+              deles.
+            </li>
+          </ul>
+          <p>
+            Os detalhes completos de cada prazo estão na
+            <a href="/politica-de-privacidade.html">Política de Privacidade</a>.
+          </p>
+        </section>
+
+        <section class="paper" aria-labelledby="parcial">
+          <h2 id="parcial">4. Apagar só alguns dados, sem excluir a conta</h2>
+          <p>
+            Você pode apagar folhas, cadernos e anotações quando quiser, direto no aplicativo, e a
+            conta continua. Sair da conta também apaga os seus dados pessoais do aparelho, sem
+            excluir a conta nem os estudos da nuvem.
+          </p>
+        </section>
+
+        <section class="paper" aria-labelledby="sem-acesso">
+          <h2 id="sem-acesso">5. Se você não consegue entrar</h2>
+          <p>
+            Se você esqueceu a senha, use a opção de redefinir a senha por e-mail na tela de entrada
+            e depois siga os passos da seção 1. Se a conta foi criada com Google ou Discord, entre
+            por esse mesmo método.
+          </p>
+          <p class="paper pending" role="note">
+            Em definição: o canal de atendimento para quem não consegue entrar será publicado aqui e
+            na Política de Privacidade.
+          </p>
+        </section>
+      </main>
+
+      <footer class="brand-footer">
+        <img src="/galeria-oli-icon.svg" alt="" width="30" height="30" />
+        <span>
+          Todos os direitos Galeria.Oli - OlenaStudy ·
+          <a href="/politica-de-privacidade.html">Política de Privacidade</a>
+        </span>
+      </footer>
+    </div>
+  </body>
+</html>

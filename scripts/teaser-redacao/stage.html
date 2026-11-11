@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Teaser Redação, palco de renderização</title>
+    <link rel="stylesheet" href="/fonts/fonts.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #fff9ef;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- p5.brush 3.0.0 (MIT, Alejandro Campos Uribe), versão independente: só exige WebGL2. -->
+    <script src="/scripts/teaser-redacao/vendor/brush.js"></script>
+    <script type="module">
+      import { SCENES, FPS, WIDTH, HEIGHT, drawFrame, loadAssets } from "/scripts/teaser-redacao/scenes.js";
+      import { DEMO_SECONDS, drawDemoFrame } from "/scripts/teaser-redacao/demo.js";
+      import { loadOlena } from "/scripts/teaser-redacao/olena-rig.js";
+      const out = document.createElement("canvas");
+      out.id = "out";
+      out.width = WIDTH;
+      out.height = HEIGHT;
+      document.body.append(out);
+      const assets = await loadAssets();
+      assets.rig = await loadOlena();
+      await document.fonts.load('800 80px "Manrope"');
+      await document.fonts.load('600 40px "Nunito"');
+      const created = brush.createCanvas(WIDTH, HEIGHT, { pixelDensity: 1 });
+      const brushCanvas = created instanceof HTMLCanvasElement ? created : [...document.querySelectorAll("canvas")].find((c) => c.id !== "out");
+      brush.scaleBrushes(3.2);
+      brush.angleMode(brush.DEGREES);
+      // Chamado pelo renderizador: desenha o quadro n e deixa o resultado em #out.
+      window.renderFrame = (frame) => {
+        drawFrame({ brush, brushCanvas, ctx: out.getContext("2d"), frame, assets });
+      };
+      window.renderDemoFrame = (frame) => {
+        drawDemoFrame({ brush, brushCanvas, ctx: out.getContext("2d"), frame, assets });
+      };
+      window.teaser = { SCENES, FPS, WIDTH, HEIGHT, DEMO_SECONDS };
+      window.stageReady = true;
+    </script>
+  </body>
+</html>
