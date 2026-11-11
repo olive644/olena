@@ -3,7 +3,7 @@ import { expect, it, vi } from "vitest";
 import { EmailAuthForm } from "./email-auth-form";
 import type { AccountServices } from "../data/account-auth";
 
-function setup(register = false, accepted = true) {
+function setup(register = false, accepted = true, inline = false) {
   const user = { uid: "email-owner", email: "learner@example.test", displayName: "Learner" };
   const api = {
     validatePassword: vi.fn(async () => ({ isValid: true })),
@@ -21,11 +21,13 @@ function setup(register = false, accepted = true) {
       services={services}
       accepted={accepted}
       initialRegister={register}
+      inline={inline}
       onAuthenticated={complete}
       onBusy={vi.fn()}
     />,
   );
-  fireEvent.click(screen.getByRole("button", { name: "Entrar ou criar conta com e-mail" }));
+  if (!inline)
+    fireEvent.click(screen.getByRole("button", { name: "Entrar ou criar conta com e-mail" }));
   const fill = (label: string, value: string) =>
     fireEvent.change(screen.getByLabelText(label, { exact: true }), { target: { value } });
   return { api, complete, fill, services, user, authState };
@@ -53,13 +55,32 @@ it("does not complete against a different active account after the credential re
   await screen.findByText("Não foi possível entrar. Confira seus dados e tente novamente.");
   expect(s.complete).not.toHaveBeenCalled();
 });
-it("rejects incomplete composition before contacting Firebase and exposes the local meter", () => {
-  const s = setup(true);
-  s.fill("Senha", "a long lowercase phrase");
-  s.fill("Confirmar senha", "a long lowercase phrase");
+it("registers inline with Firebase policy and leaves the display name to onboarding", async () => {
+  const s = setup(true, true, true);
+  s.fill("E-mail", "learner@example.test");
+  s.fill("Senha", "abcdefgh");
+  expect(screen.queryByRole("meter")).toBeNull();
   fireEvent.submit(screen.getByRole("button", { name: "Criar conta com e-mail" }).closest("form")!);
-  expect(s.api.validatePassword).not.toHaveBeenCalled();
-  expect(screen.getByRole("meter", { name: "Força da senha" }).getAttribute("value")).toBe("1");
+  await waitFor(() => expect(s.complete).toHaveBeenCalledOnce());
+  expect(s.api.validatePassword).toHaveBeenCalledWith(s.services.auth, "abcdefgh");
+  expect(s.api.createUserWithEmailAndPassword).toHaveBeenCalledWith(
+    s.services.auth,
+    "learner@example.test",
+    "abcdefgh",
+  );
+  expect(s.api.sendEmailVerification).toHaveBeenCalledWith(s.user);
+  expect(s.api.updateProfile).not.toHaveBeenCalled();
+});
+it("signs in to the existing account without creating another account", async () => {
+  const s = setup(false, true, true);
+  s.fill("E-mail", "learner@example.test");
+  fireEvent.change(screen.getByPlaceholderText("Coloque sua senha"), {
+    target: { value: "abcdef" },
+  });
+  fireEvent.submit(screen.getByRole("button", { name: "Entrar com e-mail" }).closest("form")!);
+  await waitFor(() => expect(s.complete).toHaveBeenCalledOnce());
+  expect(s.api.signInWithEmailAndPassword).toHaveBeenCalledOnce();
+  expect(s.api.createUserWithEmailAndPassword).not.toHaveBeenCalled();
 });
 it("rejects mismatched passwords before any request", async () => {
   const s = setup(true);
@@ -92,4 +113,25 @@ it("password recovery does not disclose whether an account exists", async () => 
     ).toBeTruthy(),
   );
   expect(s.complete).not.toHaveBeenCalled();
+});
+
+it("blocks registration below eight characters", () => {
+  const s = setup(true, true, true);
+  s.fill("E-mail", "learner@example.test");
+  s.fill("Senha", "abcdefg");
+  const button = screen.getByRole("button", { name: "Criar conta com e-mail" });
+  expect(button.hasAttribute("disabled")).toBe(true);
+  fireEvent.submit(button.closest("form")!);
+  expect(s.api.createUserWithEmailAndPassword).not.toHaveBeenCalled();
+});
+
+it("shows invalid email through the paper notification", () => {
+  const s = setup(true, true, true);
+  s.fill("E-mail", "invalid");
+  s.fill("Senha", "abcdefgh");
+  fireEvent.submit(screen.getByRole("button", { name: "Criar conta com e-mail" }).closest("form")!);
+  expect(screen.getByRole("status").className).toContain("account-access__notice");
+  expect(s.api.createUserWithEmailAndPassword).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("button", { name: "Fechar aviso" }));
+  expect(screen.queryByRole("status")).toBeNull();
 });

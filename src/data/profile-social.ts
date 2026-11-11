@@ -1,4 +1,6 @@
 import { uiText } from "../i18n/runtime.js";
+import { compactAchievementAction } from "../domain/achievement-wire";
+import { ENGLISH_PART_COUNT } from "../domain/english-part-order.js";
 import { isMathCourse } from "./math-courses";
 import { getFirebaseAccountServices } from "./firebase-account";
 import { PROFILE_AVATARS } from "../domain/profile-avatars";
@@ -28,12 +30,16 @@ function isActivity(value: unknown): boolean {
       : item["kind"] === "achievement"
         ? isAchievementId(item["ref"])
         : item["ref"] === undefined) &&
-    (item["course"] === undefined || isMathCourse(item["course"])) &&
+    (item["course"] === undefined ||
+      isMathCourse(item["course"]) ||
+      item["course"] === "english") &&
     (item["level"] === undefined ||
       (Number.isInteger(item["level"]) &&
         Number(item["level"]) >= 0 &&
-        Number(item["level"]) < 6)) &&
-    (item["kind"] !== "module" || (isMathCourse(item["course"]) && item["level"] !== undefined)) &&
+        Number(item["level"]) < (item["course"] === "english" ? ENGLISH_PART_COUNT : 6))) &&
+    (item["kind"] !== "module" ||
+      ((isMathCourse(item["course"]) || item["course"] === "english") &&
+        item["level"] !== undefined)) &&
     Number.isSafeInteger(item["value"]) &&
     Number(item["value"]) > 0 &&
     Number(item["value"]) <= 10000 &&
@@ -82,7 +88,7 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
       method: action ? "POST" : "GET",
       signal: AbortSignal.timeout(15000),
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      ...(action ? { body: JSON.stringify(action) } : {}),
+      ...(action ? { body: JSON.stringify(compactAchievementAction(action)) } : {}),
     });
   // Falha de rede chega do navegador como "Failed to fetch". Leitura é repetida uma vez
   // (nada muda no servidor); ação não, para nunca seguir ou bloquear duas vezes.

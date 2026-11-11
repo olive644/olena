@@ -1,8 +1,41 @@
+import { englishProgress, validLanguageAttempt } from "../domain/language-progress.js";
+import type { PracticeActivity } from "../domain/workspace.js";
 import { createHash } from "node:crypto";
 import { isMathCourse } from "../data/math-courses.js";
 import type { SocialActivitySummary } from "../domain/profile-social.js";
 export type StudyActivity = SocialActivitySummary;
 const identity = (value: string) => createHash("sha256").update(value).digest("hex").slice(0, 32);
+function acceptedEnglish(records: unknown, now: number): PracticeActivity[] {
+  if (!Array.isArray(records)) return [];
+  const candidates: PracticeActivity[] = [];
+  for (const record of records.slice(-5000)) {
+    if (!record || typeof record !== "object") continue;
+    const item = record as Record<string, unknown>;
+    const attempt = item["englishA1Attempt"] ?? item["englishAttempt"] ?? item["languageAttempt"];
+    if (
+      (item["islandId"] !== "english" && item["islandId"] !== "languages") ||
+      typeof item["id"] !== "string" ||
+      typeof item["completedAt"] !== "string" ||
+      Date.parse(item["completedAt"]) > now ||
+      !validLanguageAttempt(attempt) ||
+      typeof item["answers"] !== "number" ||
+      typeof item["correct"] !== "number"
+    )
+      continue;
+    candidates.push({
+      id: item["id"],
+      islandId: item["islandId"],
+      islandName: "",
+      completedAt: item["completedAt"],
+      answers: item["answers"],
+      correct: item["correct"],
+      englishAttempt: attempt,
+      ...(item["englishFinalFailure"] === true ? { englishFinalFailure: true } : {}),
+      ...(item["englishA1FinalFailure"] === true ? { englishA1FinalFailure: true } : {}),
+    });
+  }
+  return englishProgress(candidates).accepted;
+}
 // Apenas IDs de cursos/módulos oficiais e totais numéricos, nunca textos privados.
 export function studyActivitySummary(
   raw: string | null,
@@ -48,6 +81,11 @@ export function studyActivitySummary(
         typeof item["id"] !== "string"
       )
         continue;
+      if (
+        kind === "practice" &&
+        (item["islandId"] === "english" || item["islandId"] === "languages")
+      )
+        continue;
       latest = Math.max(latest, at);
       const date = day.format(new Date(at));
       days.add(date);
@@ -75,6 +113,35 @@ export function studyActivitySummary(
         ...(kind === "practice" ? { course } : {}),
       });
     }
+  }
+  for (const record of acceptedEnglish(workspace["practiceActivities"], now)) {
+    const at = Date.parse(record.completedAt);
+    const date = day.format(new Date(at));
+    days.add(date);
+    latest = Math.max(latest, at);
+    if (now - at > 86400000) continue;
+    const attempt = record.englishAttempt!;
+    if (Number(attempt.curriculum) >= 3 && attempt.mode === "final" && record.correct >= 4) {
+      const id = identity(`module:english:${attempt.part}`);
+      if (!grouped.has(id))
+        grouped.set(id, {
+          id,
+          kind: "module",
+          course: "english",
+          level: attempt.part,
+          value: 1,
+          at,
+        });
+    }
+    const id = identity(`practice:${date}:english`);
+    const previous = grouped.get(id);
+    grouped.set(id, {
+      id,
+      kind: "practice",
+      course: "english",
+      value: Math.min(10000, (previous?.value ?? 0) + record.answers),
+      at: Math.max(previous?.at ?? 0, at),
+    });
   }
   const today = day.format(new Date(now));
   let streak = 0;

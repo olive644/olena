@@ -70,6 +70,9 @@ async function forgetOwner(uid: string, id: string) {
   if (!removed.ok && removed.status !== 412) throw new Error("owner-delete");
 }
 type Account = {
+  localId?: string;
+  email?: string;
+  emailVerified?: boolean;
   disabled?: boolean;
   passwordHash?: string;
   providerUserInfo?: { providerId?: string }[];
@@ -96,6 +99,27 @@ async function account(uid: string, idToken?: string): Promise<Account | undefin
   const current = body.users?.[0];
   if (idToken && current?.localId !== uid) throw new Error("account-mismatch");
   return current;
+}
+async function accountWithEmail(email: string): Promise<Account | undefined> {
+  const response = await fetch(
+    `https://identitytoolkit.googleapis.com/v1/projects/${encodeURIComponent(project)}/accounts:lookup`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${await adminToken()}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: [email] }),
+      signal: AbortSignal.timeout(10000),
+    },
+  );
+  if (!response.ok) throw new Error("account-lookup");
+  const body = (await response.json()) as { users?: Account[] };
+  const matches = (body.users ?? []).filter(
+    (value) => value.email?.toLowerCase() === email.toLowerCase(),
+  );
+  if (matches.length > 1) throw new Error("email-association-required");
+  return matches[0];
 }
 const oauthHandler = createDiscordAuthHandler({
   clientId:
@@ -168,6 +192,9 @@ const oauthHandler = createDiscordAuthHandler({
             body: JSON.stringify({
               localId: saved.uid,
               displayName: profile.name,
+              ...(profile.email && profile.verified
+                ? { email: profile.email, emailVerified: true }
+                : {}),
               targetProjectId: project,
             }),
             signal: AbortSignal.timeout(10000),
@@ -189,23 +216,32 @@ const oauthHandler = createDiscordAuthHandler({
         await rememberOwner(saved.uid, profile.id, profile.name);
         return saved.uid;
       }
-      const uid = linkUid ?? `discord-${randomUUID()}`;
-      if (linkUid) {
-        const target = await account(linkUid);
+      // O e-mail vem do OAuth do Discord, nunca de um campo enviado pelo navegador.
+      const matching =
+        !linkUid && profile.email ? await accountWithEmail(profile.email) : undefined;
+      if (
+        matching &&
+        (!profile.verified || !matching.emailVerified || !matching.localId || matching.disabled)
+      )
+        throw new Error("email-association-required");
+      const targetUid = linkUid ?? matching?.localId;
+      const uid = targetUid ?? `discord-${randomUUID()}`;
+      if (targetUid) {
+        const target = await account(targetUid);
         if (!target || target.disabled) throw new Error("missing-account");
-        await rememberOwner(linkUid, profile.id, profile.name);
+        await rememberOwner(targetUid, profile.id, profile.name);
       }
       const version = response.headers.get("etag");
       if (!version) throw new Error("version");
       const write = await fetch(path, {
         method: "PUT",
         headers: { ...headers, "if-match": version, "Content-Type": "application/json" },
-        body: JSON.stringify({ uid, ready: !!linkUid }),
+        body: JSON.stringify({ uid, ready: !!targetUid }),
         signal: AbortSignal.timeout(10000),
       });
       if (write.status === 412) continue;
       if (!write.ok) throw new Error("identity-write");
-      if (linkUid) return uid;
+      if (targetUid) return uid;
     }
     throw new Error("identity-contention");
   },

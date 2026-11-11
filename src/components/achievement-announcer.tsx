@@ -31,9 +31,19 @@ export function AchievementAnnouncer({
   const [editing, setEditing] = useState(false);
   const sound = useRef<ReturnType<typeof createMathSound> | null>(null);
   useEffect(() => {
-    const sync = () => setEditing(!!document.querySelector(".handwriting-studio"));
+    const sync = () =>
+      setEditing(
+        !!document.querySelector(
+          ".handwriting-studio, .math-arcade:not(.is-finished), .math-arcade.is-reviewing",
+        ),
+      );
     const observer = new MutationObserver(sync);
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class"],
+    });
     sync();
     return () => observer.disconnect();
   }, []);

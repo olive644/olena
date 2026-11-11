@@ -26,12 +26,17 @@ async function loadFirebaseAccountServices() {
   // trocar a persistencia (abaixo) pode fazer o SDK perder o rastro do login
   // pendente se isso acontecer antes de getRedirectResult ser lido, fazendo a
   // pessoa "voltar" pro login mesmo depois de escolher a conta no Google.
-  const redirectResult = await authApi.getRedirectResult(auth).catch(() => null);
+  let redirectError: unknown;
+  const redirectResult = await authApi.getRedirectResult(auth).catch((cause: unknown) => {
+    redirectError = cause;
+    return null;
+  });
   await authApi.setPersistence(auth, authApi.browserLocalPersistence);
   return {
     auth,
     authApi,
     databaseURL,
     redirectResult,
+    ...(redirectError ? { redirectError } : {}),
   };
 }

@@ -1,55 +1,55 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { answerOnboarding, onboardingAnswers } from "./onboarding-helpers";
 test.use({ storageState: { cookies: [], origins: [] } });
-async function answers(page: Page) {
-  for (const choice of [
-    "Ensino médio",
-    "Química",
-    "Inglês",
-    "Criar uma rotina",
-    "Visual",
-    "Passo a passo",
-    "Alternar estudo e pausas",
-    "Agora não",
-    "30 minutos",
-  ]) {
-    await page.getByRole("button", { name: choice, exact: true }).click();
-    if (choice === "Visual")
-      await page.getByRole("button", { name: "Continuar", exact: true }).click();
-  }
-}
 for (const theme of ["light", "dark"]) {
-  test(`API prepara o espaço e não desfaz edições ao recarregar: ${theme}`, async ({ page }) => {
-    await page.addInitScript((theme) => localStorage.setItem("helenastudy.theme", theme), theme);
+  test(`API prepara escolhas e configuração persistida respeita edições: ${theme}`, async ({
+    page,
+  }) => {
+    await page.addInitScript((value) => localStorage.setItem("helenastudy.theme", value), theme);
     await page.emulateMedia({ reducedMotion: "reduce" });
-    const response = page.waitForResponse((response) =>
-      response.url().includes("action=onboarding"),
-    );
+    const response = page.waitForResponse((value) => value.url().includes("action=onboarding"));
     await page.goto("/?onboarding=1");
-    await answers(page);
-    expect((await response).status()).toBe(200);
-    await expect(page.getByRole("button", { name: "Registre-se" })).toBeEnabled();
-    await expect(page.locator(".onboarding-preparation .paper-digits").first()).toHaveCSS(
-      "--digit-face",
-      "#292432",
+    await answerOnboarding(page);
+    const prepared = await response;
+    expect(prepared.status()).toBe(200);
+    expect(prepared.request().postDataJSON().answers).toEqual(onboardingAnswers);
+    const configuration: unknown = await prepared.json();
+    await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
+    expect(await page.evaluate(() => localStorage.getItem("helena.onboarding.v1"))).toBeNull();
+    // Fixture de uma conclusão guardada no navegador, sem simular OAuth nem login real: sem conta
+    // autenticada, o app só aplica a configuração pendente numa sessão de convidado. O callback que
+    // grava esta estrutura para uma conta é exercitado pelo componente autenticado no Vitest.
+    await page.evaluate(
+      ({ configuration, answers }) => {
+        localStorage.setItem("helena.guest.v1", "1");
+        localStorage.setItem(
+          "helena.onboarding.v1",
+          JSON.stringify({
+            completed: true,
+            configurationOwner: "guest",
+            configurationPending: true,
+            configuration,
+            answers,
+          }),
+        );
+      },
+      { configuration, answers: onboardingAnswers },
     );
-    await expect(page.getByRole("definition").filter({ hasText: "Química" })).toBeVisible();
-    await page.screenshot({ path: test.info().outputPath("preparado-pela-olena.png") });
-    await page.getByRole("button", { name: "Registre-se" }).click();
-    await page.getByRole("button", { name: "Entrar como convidado" }).click();
+    await page.goto("/");
     await expect(page.getByText("0 de 30 minutos da meta diária")).toBeVisible();
     const privacy = page.getByRole("region", { name: "Privacidade no OlenaStudy" });
     await privacy.getByRole("button", { name: "Entendi" }).click();
     await page.goto("/foco");
     await expect
-      .poll(async () =>
+      .poll(() =>
         page.evaluate(() => {
-          const session = JSON.parse(localStorage.getItem("olena.focus-session.v1") ?? "null");
-          return session
+          const value = JSON.parse(localStorage.getItem("olena.focus-session.v1") ?? "null");
+          return value
             ? {
-                mode: session.mode,
-                duration: session.duration,
-                running: session.running,
-                subjectId: session.subjectId,
+                mode: value.mode,
+                duration: value.duration,
+                running: value.running,
+                subjectId: value.subjectId,
               }
             : null;
         }),
@@ -85,7 +85,7 @@ for (const theme of ["light", "dark"]) {
     );
   });
 }
-test("falha da API permite tentar novamente ou continuar sem configuração automática", async ({
+test("falha da API permite repetir ou continuar para autenticação sem configuração", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -95,20 +95,16 @@ test("falha da API permite tentar novamente ou continuar sem configuração auto
     return route.fulfill({ status: 503, contentType: "application/json", body: "{}" });
   });
   await page.goto("/?onboarding=1");
-  await answers(page);
+  await answerOnboarding(page);
   await expect(page.getByRole("alert")).toContainText(
     "Não foi possível preparar suas preferências agora.",
   );
-  await expect(page.getByRole("button", { name: "Registre-se" })).toBeDisabled();
+  await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "88");
+  expect(await page.evaluate(() => localStorage.getItem("helena.onboarding.v1"))).toBeNull();
   await page.getByRole("button", { name: "Tentar novamente", exact: true }).click();
   await expect.poll(() => requests).toBe(2);
   await page.getByRole("button", { name: "Continuar sem configuração automática" }).click();
-  await page.getByRole("button", { name: "Registre-se" }).click();
-  await page.getByRole("button", { name: "Entrar como convidado" }).click();
-  await expect(page.locator(".app-shell")).toBeVisible();
-  expect(
-    await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "{}").configuration,
-    ),
-  ).toBeUndefined();
+  await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Entrar como convidado" })).toHaveCount(0);
+  expect(await page.evaluate(() => localStorage.getItem("helena.onboarding.v1"))).toBeNull();
 });

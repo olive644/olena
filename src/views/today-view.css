@@ -120,7 +120,7 @@
 .math-hero-copy {
   max-width: 650px;
 }
-.math-hero-copy h1 {
+.math-hero-copy :is(h1, h2) {
   font-size: clamp(25px, 3.2vw, 44px);
   line-height: 1.12;
   margin: 14px 0;
@@ -213,7 +213,7 @@
   .math-hero-slide--peek::before {
     opacity: 0.06;
   }
-  .math-hero-copy h1 {
+  .math-hero-copy :is(h1, h2) {
     font-size: 29px;
   }
   .student-space .metric-row article > .paper-action-icon {
@@ -440,4 +440,79 @@ html[data-reduce-motion="true"] .student-space *::after {
 .student-space .metric-row small.student-daily-goal {
   display: block;
   line-height: 1.4;
+}
+
+.math-hero-pagination {
+  gap: 4px;
+  padding-top: 4px;
+}
+.math-hero-pagination button {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.math-hero-pagination button span {
+  background: var(--muted);
+  opacity: 0.45;
+  width: 16px;
+  transition: width 150ms ease;
+}
+.math-hero-pagination button[aria-pressed="true"] span {
+  background: #26bdd3;
+  width: 28px;
+  opacity: 1;
+}
+.math-hero-pagination button:last-child[aria-pressed="true"] span {
+  background: var(--violet);
+}
+.english-hero-slide::before {
+  background: var(--violet);
+}
+.english-hero-slide::after {
+  background: var(--yellow);
+}
+.english-hero-art {
+  bottom: -8px;
+}
+@media (max-width: 560px) {
+  .english-hero-art {
+    bottom: -6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .math-hero-pagination button span {
+    transition: none;
+  }
+}
+:root[data-reduce-motion="true"] .math-hero-pagination button span {
+  transition: none;
+}
+
+.english-hero-art {
+  height: auto;
+}
+.english-hero-art > img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+@media (max-width: 560px) {
+  .math-hero-slide:not(.english-hero-slide) {
+    padding-bottom: 172px;
+  }
+}
+
+.english-hero-decoration {
+  color: var(--violet);
+}
+
+.english-hero-art > img {
+  animation: none;
 }

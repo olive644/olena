@@ -164,3 +164,22 @@ it("troca de etapa remonta a arte e indica o sentido da transição", () => {
   fireEvent.click(screen.getByRole("button", { name: "Ver etapa Bronze" }));
   expect(stage()?.getAttribute("data-direction")).toBe("down");
 });
+
+it("Inglês reúne 74 objetivos em 22 famílias com Olena e navegação entre três categorias", async () => {
+  const { ENGLISH_ACHIEVEMENTS } = await import("../domain/english-achievement-catalog");
+  render(<AchievementCollection ids={ENGLISH_ACHIEVEMENTS.map((item) => item.id)} />);
+  const tab = screen.getByRole("tab", { name: "Inglês" });
+  fireEvent.click(tab);
+  expect(document.querySelectorAll(".achievement-tile")).toHaveLength(22);
+  expect(tab.textContent).toBe("");
+  fireEvent.keyDown(tab, { key: "ArrowRight" });
+  expect(screen.getByRole("tab", { name: "Gerais" }).getAttribute("aria-selected")).toBe("true");
+  fireEvent.click(tab);
+  fireEvent.click(document.querySelector('[data-art="english-part-0"]')!.closest("button")!);
+  expect(
+    document
+      .querySelector(".achievement-inspection image:not([data-achievement-preview])")
+      ?.getAttribute("href"),
+  ).toBe("/achievement-badges/english/part-0.webp?v=20261107");
+  expect(document.querySelector(".achievement-inspection .achievement-foil")).not.toBeNull();
+});

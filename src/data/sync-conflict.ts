@@ -9,6 +9,12 @@ import { FOCUS_SESSION_KEY, readFocusSession } from "../domain/focus-session";
 import { isMathCourse, validMathProgress, type MathProgress } from "./math-courses";
 import { MATH_GAME_KEY, mergeMathGame, parseMathGame } from "../domain/math-game-progress";
 import {
+  ENGLISH_PROGRESS_KEY,
+  mergeEnglishLedgers,
+  parseEnglishLedger,
+  serializeEnglishLedger,
+} from "../domain/english-progress-ledger";
+import {
   MASTERY_KEY,
   mergeMasteryProgress,
   parseMasteryProgress,
@@ -85,6 +91,13 @@ export function mergeSyncedItems(
       for (const [id, p] of Object.entries(right))
         if (isMathCourse(id)) merged[id] = left[id] ? mergeChallengeProgress(left[id], p) : p;
       items[key] = JSON.stringify(merged);
+      continue;
+    }
+    if (key === ENGLISH_PROGRESS_KEY) {
+      // O que foi resolvido em qualquer aparelho continua resolvido: união, nunca conflito.
+      items[key] = serializeEnglishLedger(
+        mergeEnglishLedgers(parseEnglishLedger(localValue), parseEnglishLedger(remoteValue)),
+      );
       continue;
     }
     if (key === MATH_GAME_KEY) {

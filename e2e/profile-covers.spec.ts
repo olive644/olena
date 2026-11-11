@@ -37,7 +37,7 @@ for (const theme of ["light", "dark"]) {
     await expect(editCover).toHaveCSS("box-shadow", "none");
     await editCover.click();
     const dialog = page.getByRole("dialog", { name: "Personalize seu perfil", exact: true });
-    await expect(dialog.getByRole("group").getByRole("button")).toHaveCount(18);
+    await expect(dialog.getByRole("group").getByRole("button")).toHaveCount(19);
     for (const name of ["Noite da Olena", "Eclipse Solar", "Aurora", "Bosque", "Oceano"]) {
       await dialog.getByRole("button", { name, exact: true }).click();
       await expect(dialog.locator(".profile-customizer-preview > img")).toHaveJSProperty(

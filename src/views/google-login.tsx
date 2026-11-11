@@ -1,3 +1,4 @@
+import { AccountFeedbackNotice } from "../components/account-feedback-notice";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { BrandFooter } from "../components/brand-footer";
@@ -6,7 +7,7 @@ import { HelenaLoading } from "../components/helena-loading";
 import { PaperArrow } from "../components/paper-arrow";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { writeSyncedStorage } from "../data/synced-storage";
-import { GUEST_NAME, endGuestSession, startGuestSession } from "../domain/guest-session";
+import { endGuestSession } from "../domain/guest-session";
 import { PRIVACY_POLICY_PATH, recordPrivacyConsent } from "../domain/privacy-policy";
 import "./google-login.css";
 import "./auth-paper.css";
@@ -20,7 +21,8 @@ import { EmailAuthForm } from "../components/email-auth-form";
 import { AccountProviderIcon } from "../components/account-provider-icon";
 import { prepareAccountLog, accountAuthError, setAccountLanguage } from "../data/account-auth";
 import type { AccountServices } from "../data/account-auth";
-import type { UserCredential } from "firebase/auth";
+import type { User, OAuthCredential, UserCredential } from "firebase/auth";
+import type { FirebaseError } from "firebase/app";
 
 const PENDING_ANSWERS_KEY = "helena.pending-google-answers";
 let discordExchange:
@@ -79,6 +81,28 @@ function googleLoginError(cause: unknown): string {
   return uiText(1195);
 }
 
+function googleAccountCollision(cause: unknown, services: AccountServices) {
+  if (
+    !cause ||
+    typeof cause !== "object" ||
+    !("code" in cause) ||
+    cause.code !== "auth/account-exists-with-different-credential"
+  )
+    return undefined;
+  const customData = "customData" in cause ? cause.customData : undefined;
+  const email =
+    customData &&
+    typeof customData === "object" &&
+    "email" in customData &&
+    typeof customData.email === "string"
+      ? customData.email
+      : undefined;
+  const credential = services.authApi.GoogleAuthProvider.credentialFromError(
+    cause as FirebaseError,
+  );
+  return email && credential ? { provider: "google" as const, email, credential } : undefined;
+}
+
 function applyGoogleLogin(
   answers: readonly (string | string[])[],
   configuration?: OnboardingConfiguration,
@@ -95,25 +119,25 @@ function applyGoogleLogin(
       })
       .catch(() => {});
   }
-  // Login direto não cria conclusão fictícia nem substitui respostas da conta.
-  if (answers.length === 0 && configurationOwner !== "guest") return;
+  if (answers.length > 0) saveOnboardingCompletion(answers, configuration, configurationOwner);
+}
+
+export function saveOnboardingCompletion(
+  answers: readonly (string | string[])[],
+  configuration?: OnboardingConfiguration,
+  configurationOwner?: string,
+  details?: Record<string, string>,
+) {
   writeSyncedStorage(
     "helena.onboarding.v1",
     JSON.stringify({
       answers,
       completed: true,
-      ...(configuration ? { configuration, configurationOwner, configurationPending: true } : {}),
+      ...(details ? { details } : {}),
+      ...(configurationOwner ? { configurationOwner } : {}),
+      ...(configuration ? { configuration, configurationPending: true } : {}),
     }),
   );
-}
-
-/** Entrada como convidado: nada vai a servidor algum, as respostas ficam só neste aparelho. */
-export function enterAsGuest(
-  answers: readonly (string | string[])[],
-  configuration?: OnboardingConfiguration,
-) {
-  startGuestSession();
-  applyGoogleLogin(answers, configuration, "guest");
 }
 
 export function readPendingGoogleAnswers(): readonly (string | string[])[] {
@@ -143,6 +167,8 @@ export function GoogleLogin({
   onFinish,
   onBack,
   returning = false,
+  registerFirst = false,
+  embedded = false,
   onCreateAccount,
 }: {
   answers: readonly (string | string[])[];
@@ -150,6 +176,8 @@ export function GoogleLogin({
   onFinish: () => void;
   onBack?: () => void;
   returning?: boolean;
+  registerFirst?: boolean;
+  embedded?: boolean;
   onCreateAccount?: () => void;
 }) {
   useLanguage();
@@ -157,12 +185,27 @@ export function GoogleLogin({
   const [services, setServices] =
     useState<Awaited<ReturnType<typeof getFirebaseAccountServices>>>();
   const [error, setError] = useState("");
+  const [embeddedSignIn, setEmbeddedSignIn] = useState(false);
+  const [association, setAssociation] = useState<
+    { provider: "google"; email: string; credential: OAuthCredential } | { provider: "discord" }
+  >();
   const [busy, setBusy] = useState(true);
   // Nunca vem marcada: o aceite da política precisa ser um ato da pessoa.
-  const [accepted, setAccepted] = useState(false);
+  const [consentChecked, setAccepted] = useState(false);
+  const accepted = embedded || consentChecked;
   const [signingIn, setSigningIn] = useState(false);
-  const [emailOpen, setEmailOpen] = useState(false);
   const pending = useRef(false);
+  const [externalProvider, setExternalProvider] = useState<"google" | "discord">();
+  useEffect(() => {
+    const resume = () => {
+      pending.current = false;
+      setExternalProvider(undefined);
+      setSigningIn(false);
+    };
+    window.addEventListener("pageshow", resume);
+    return () => window.removeEventListener("pageshow", resume);
+  }, []);
+  const [emailOpen, setEmailOpen] = useState(false);
   const discordCode = useRef(new URL(window.location.href).searchParams.get("discord"));
   const discordIntent = useRef({
     answers: readPendingGoogleAnswers(),
@@ -192,9 +235,23 @@ export function GoogleLogin({
           return;
         }
         if (url.searchParams.has("authError")) {
+          const needsAssociation = url.searchParams.get("authError") === "discord-link";
           window.history.replaceState(null, "", url.pathname);
           clearPendingAnswers();
-          if (active) setError(uiText(3116));
+          if (active) {
+            if (needsAssociation) {
+              setAssociation({ provider: "discord" });
+              setEmbeddedSignIn(true);
+              setEmailOpen(true);
+            }
+            setError(
+              needsAssociation
+                ? uiText(
+                    "Já existe uma conta com este e-mail. Entre nela para confirmar a associação e preservar seus estudos.",
+                  )
+                : uiText(3116),
+            );
+          }
         }
         // Retorno de um login que precisou de redirecionamento de página
         // inteira (pop-up bloqueado): completa o fluxo com as respostas que
@@ -202,6 +259,17 @@ export function GoogleLogin({
         // resolvido de getFirebaseAccountServices (antes de mexer na
         // persistência) porque o Firebase só entrega esse resultado uma vez.
         if (hasPendingGoogleRedirect()) {
+          const collision = googleAccountCollision(loaded.redirectError, loaded);
+          if (active && collision) {
+            setAssociation(collision);
+            setEmbeddedSignIn(true);
+            setEmailOpen(true);
+            setError(
+              uiText(
+                "Já existe uma conta com este e-mail. Entre nela para confirmar a associação e preservar seus estudos.",
+              ),
+            );
+          }
           if (loaded.redirectResult) {
             endGuestSession();
             applyGoogleLogin(
@@ -234,13 +302,14 @@ export function GoogleLogin({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function startDiscord() {
+  async function startDiscord(linkUser?: User) {
     if (!services || pending.current || !accepted) return;
     pending.current = true;
     setSigningIn(true);
+    setExternalProvider("discord");
     setError("");
     try {
-      recordPrivacyConsent(window.localStorage);
+      if (!embedded) recordPrivacyConsent(window.localStorage);
       sessionStorage.setItem(
         PENDING_ANSWERS_KEY,
         JSON.stringify(configuration ? { answers, configuration } : answers),
@@ -248,6 +317,9 @@ export function GoogleLogin({
       const response = await fetch("/api/olena?action=account-auth&step=start", {
         method: "POST",
         credentials: "same-origin",
+        ...(linkUser
+          ? { headers: { Authorization: `Bearer ${await linkUser.getIdToken()}` } }
+          : {}),
       });
       if (!response.ok) {
         const failure: unknown = await response.json().catch(() => null);
@@ -269,6 +341,7 @@ export function GoogleLogin({
       clearPendingAnswers();
       pending.current = false;
       setSigningIn(false);
+      setExternalProvider(undefined);
       setError(
         cause && typeof cause === "object" && "code" in cause
           ? accountAuthError(cause)
@@ -281,10 +354,10 @@ export function GoogleLogin({
     if (!services || pending.current || !accepted) return;
     pending.current = true;
     setSigningIn(true);
+    setExternalProvider("google");
     // O aceite é registrado antes de sair para o Google: o login pode virar um
     // redirecionamento de página inteira e a pessoa voltaria sem o registro.
-    recordPrivacyConsent(window.localStorage);
-    setBusy(true);
+    if (!embedded) recordPrivacyConsent(window.localStorage);
     setError("");
     setAccountLanguage(services);
     const provider = new services.authApi.GoogleAuthProvider();
@@ -295,6 +368,18 @@ export function GoogleLogin({
       applyGoogleLogin(answers, configuration, credential?.user?.uid);
       onFinish();
     } catch (cause) {
+      const collision = googleAccountCollision(cause, services);
+      if (collision) {
+        setAssociation(collision);
+        setEmbeddedSignIn(true);
+        setEmailOpen(true);
+        setError(
+          uiText(
+            "Já existe uma conta com este e-mail. Entre nela para confirmar a associação e preservar seus estudos.",
+          ),
+        );
+        return;
+      }
       if (isPopupBlockedError(cause)) {
         // Alguns navegadores (extensões, bloqueadores de pop-up) impedem a
         // janela do Google mesmo em um clique legítimo. O redirecionamento
@@ -325,85 +410,143 @@ export function GoogleLogin({
       pending.current = false;
       setSigningIn(false);
       setBusy(false);
+    } finally {
+      pending.current = false;
+      setSigningIn(false);
+      setExternalProvider(undefined);
     }
   }
 
-  // Nada é enviado a servidor nenhum: os estudos ficam só neste aparelho, então
-  // não há aceite de política a registrar como no login com Google.
-  function continueAsGuest() {
-    if (pending.current) return;
-    enterAsGuest(answers, configuration);
-    onFinish();
-  }
-
+  const Container = embedded ? "div" : "main";
   return (
-    <main className="onboarding login-page" id="main-content" aria-label={uiText(1197)}>
+    <Container
+      className="onboarding login-page"
+      id={embedded ? undefined : "main-content"}
+      aria-label={uiText(1197)}
+    >
       <h1 className="sr-only">{uiText(1198)}</h1>
-      <header className="onboarding__header">
-        <span className="onboarding__brand">
-          <PaperCardTitle value="OlenaStudy" />
-        </span>
-      </header>
+      {!embedded && (
+        <header className="onboarding__header">
+          <span className="onboarding__brand">
+            <PaperCardTitle value="OlenaStudy" />
+          </span>
+        </header>
+      )}
       <div className="login-page__layout">
         <section className="login-page__card">
-          <img
-            className={
-              returning
-                ? "login-page__perched login-page__perched--returning"
-                : "login-page__perched"
-            }
-            src={returning ? "/helena-welcome-back.webp" : "/helena-login-peeking.png"}
-            alt={uiText(1204)}
-            width="640"
-            height="640"
-            fetchPriority="high"
-          />
+          {!embedded && (
+            <img
+              className={
+                returning
+                  ? "login-page__perched login-page__perched--returning"
+                  : "login-page__perched"
+              }
+              src={returning ? "/helena-welcome-back.webp" : "/helena-login-peeking.png"}
+              alt={uiText(1204)}
+              width="640"
+              height="640"
+              fetchPriority="high"
+            />
+          )}
           <span className="login-page__eyebrow">{uiText(1205)}</span>
-          <h2>{returning ? uiText("Boas-vindas de volta!") : uiText(1206)}</h2>
-          <p className="login-page__intro">
-            {returning ? uiText("Seu espaço de estudos espera por você.") : uiText(1207)}
-            <br />
-            {returning ? uiText("Use o mesmo método de acesso da sua conta.") : uiText(1208)}
-          </p>
-          {(busy || signingIn || (!services && !error)) && (
+          {embedded && (
+            <img
+              className="login-page__mode-icon"
+              src={
+                embeddedSignIn
+                  ? "/navigation-icons/paper/settings-account.svg"
+                  : "/navigation-icons/paper/profile-friend.svg"
+              }
+              width={48}
+              height={48}
+              alt=""
+            />
+          )}
+          <h2>
+            {embedded && embeddedSignIn
+              ? uiText("Então, boas-vindas de volta!")
+              : returning
+                ? uiText("Boas-vindas de volta!")
+                : uiText(1206)}
+          </h2>
+          {!embedded && (
+            <p className="login-page__intro">
+              {returning ? uiText("Seu espaço de estudos espera por você.") : uiText(1207)}
+              <br />
+              {returning ? uiText("Use o mesmo método de acesso da sua conta.") : uiText(1208)}
+            </p>
+          )}
+          {(busy || (signingIn && !externalProvider) || (!services && !error)) && (
             <div className="login-page__loading">
               <HelenaLoading compact label={uiText("Preparando seu login…")} />
             </div>
           )}
-          {error && <p role="alert">{uiText(error)}</p>}
-          <label className="login-page__consent" hidden={emailOpen}>
-            <input
-              type="checkbox"
-              className="paper-checkbox"
-              checked={accepted}
-              aria-describedby="login-consent-help"
-              onChange={(event) => setAccepted(event.target.checked)}
-            />
-            <span>
-              {uiText(1210)}{" "}
-              <a href={PRIVACY_POLICY_PATH} target="_blank" rel="noopener noreferrer">
-                {uiText(411)}
-                <span className="sr-only"> {uiText(412)}</span>
-              </a>
-              {uiText(2567)}
-            </span>
-          </label>
-          <p id="login-consent-help" className="login-page__consent-help" hidden={emailOpen}>
-            {accepted ? "" : uiText(1211)}
-          </p>
+          {error &&
+            (!embedded || error !== uiText(1196)) &&
+            (embedded ? (
+              <AccountFeedbackNotice message={uiText(error)} onClose={() => setError("")} />
+            ) : (
+              <p role="alert">{uiText(error)}</p>
+            ))}
+          {!embedded && (
+            <>
+              <label className="login-page__consent" hidden={emailOpen}>
+                <input
+                  type="checkbox"
+                  className="paper-checkbox"
+                  checked={accepted}
+                  aria-describedby="login-consent-help"
+                  onChange={(event) => setAccepted(event.target.checked)}
+                />
+                <span>
+                  {uiText(1210)}{" "}
+                  <a href={PRIVACY_POLICY_PATH} target="_blank" rel="noopener noreferrer">
+                    {uiText(411)}
+                    <span className="sr-only"> {uiText(412)}</span>
+                  </a>
+                  {uiText(2567)}
+                </span>
+              </label>
+              <p id="login-consent-help" className="login-page__consent-help" hidden={emailOpen}>
+                {accepted ? "" : uiText(1211)}
+              </p>
+            </>
+          )}
           <EmailAuthForm
+            key={
+              association
+                ? `associate-${association.provider}`
+                : embeddedSignIn
+                  ? "sign-in"
+                  : "default"
+            }
+            inline={embedded}
             services={busy || signingIn ? undefined : services}
             accepted={accepted}
-            initialRegister={!returning && answers.length > 0}
+            initialRegister={
+              !association &&
+              (embedded ? !embeddedSignIn : !returning && (registerFirst || answers.length > 0))
+            }
+            initialEmail={association?.provider === "google" ? association.email : ""}
             onBusy={setSigningIn}
             onOpenChange={setEmailOpen}
-            onAuthenticated={() => {
+            onAuthenticated={async () => {
               const user = services?.auth.currentUser;
               if (!user) {
                 setError(accountAuthError(null));
                 return;
               }
-              recordPrivacyConsent(window.localStorage);
+              if (association?.provider === "google" && services) {
+                if (user.email?.toLowerCase() !== association.email.toLowerCase())
+                  throw { code: "auth/user-mismatch" };
+                await services.authApi.linkWithCredential(user, association.credential);
+                await services.authApi.reload(user);
+                setAssociation(undefined);
+              } else if (association?.provider === "discord") {
+                await startDiscord(user);
+                return;
+              }
+              if (!embedded) recordPrivacyConsent(window.localStorage);
               endGuestSession();
               applyGoogleLogin(answers, configuration, user.uid);
               onFinish();
@@ -416,7 +559,7 @@ export function GoogleLogin({
                 aria-label={uiText(870)}
                 type="button"
                 disabled={!services || busy || signingIn || !accepted}
-                aria-describedby="login-consent-help"
+                aria-describedby={embedded ? undefined : "login-consent-help"}
                 onClick={() => void login()}
               >
                 <span className="sr-only">{uiText(870)}</span>
@@ -432,7 +575,11 @@ export function GoogleLogin({
                 onClick={() => void startDiscord()}
               >
                 <img
-                  src="/navigation-icons/paper/profile-discord.svg"
+                  src={
+                    embedded
+                      ? "/navigation-icons/paper/discord-access.svg"
+                      : "/navigation-icons/paper/profile-discord.svg"
+                  }
                   alt=""
                   width="24"
                   height="24"
@@ -441,15 +588,31 @@ export function GoogleLogin({
               </button>
             </div>
           </div>
-          <p className="login-page__local">{uiText(1212)}</p>
-          <div className="login-page__guest">
-            <button type="button" disabled={signingIn} onClick={continueAsGuest}>
-              {uiText(1213)}
-            </button>
-            <p>
-              {uiText(1214)} {GUEST_NAME} {uiText(1215)}
+          {embedded ? (
+            <p className="login-page__registration-notice">
+              {uiText("Ao se registrar, você concorda com nossos")}{" "}
+              <a href="/termos-de-uso.html" target="_blank" rel="noopener noreferrer">
+                {uiText("Termos de Uso")}
+              </a>
+              . {uiText("Leia nossa")}{" "}
+              <a href={PRIVACY_POLICY_PATH} target="_blank" rel="noopener noreferrer">
+                {uiText(411)}
+              </a>{" "}
+              {uiText("para saber como coletamos, usamos e compartilhamos seus dados pessoais.")}
             </p>
-          </div>
+          ) : (
+            <p className="login-page__local">{uiText(1212)}</p>
+          )}
+          {embedded && !association && (
+            <button
+              className="login-page__switch email-auth__link"
+              type="button"
+              disabled={signingIn}
+              onClick={() => setEmbeddedSignIn(!embeddedSignIn)}
+            >
+              {uiText(embeddedSignIn ? "Criar conta" : "Já passei por isso")}
+            </button>
+          )}
           <div className="login-page__divider" />
           {returning && onCreateAccount && (
             <button
@@ -470,8 +633,12 @@ export function GoogleLogin({
           )}
         </section>
       </div>
-      <footer className="login-page__footer">{uiText(1216)}</footer>
-      <BrandFooter withOlena />
-    </main>
+      {!embedded && (
+        <>
+          <footer className="login-page__footer">{uiText(1216)}</footer>
+          <BrandFooter withOlena />
+        </>
+      )}
+    </Container>
   );
 }

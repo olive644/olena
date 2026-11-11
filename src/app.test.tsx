@@ -14,21 +14,17 @@ describe("App", () => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
 
-  it("abre o onboarding na primeira visita", async () => {
+  it("abre a capa na primeira visita", async () => {
     localStorage.removeItem("helena.onboarding.v1");
     render(<App />);
     expect(
-      await screen.findByRole(
-        "heading",
-        { name: "Em que fase dos estudos você está?" },
-        { timeout: 5000 },
-      ),
+      await screen.findByRole("heading", { name: "Estude do seu jeito" }, { timeout: 5000 }),
     ).toBeTruthy();
   });
 
   it("apresenta a marca textual sem avisos ou mascote decorativa no cabeçalho", () => {
     render(<App />);
-    expect(screen.getByRole("heading", { name: "A próxima descoberta é sua." })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Espaço do aluno" })).toBeTruthy();
     expect(screen.queryByText(/dados salvos neste dispositivo/i)).toBeNull();
     const sidebar = screen.getByRole("complementary", { name: "" });
     fireEvent.click(within(sidebar).getByRole("button", { name: "Expandir menu lateral" }));
@@ -40,7 +36,7 @@ describe("App", () => {
 
   it("mostra Oliver e abre diretamente as ilhas de Matemática", async () => {
     render(<App />);
-    expect(screen.getByRole("heading", { name: "A próxima descoberta é sua." })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Espaço do aluno" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Explorar Matemática" }));
     expect(
       await screen.findByRole(
@@ -48,6 +44,15 @@ describe("App", () => {
         { name: "Pátio das Primeiras Contas" },
         { timeout: 20000 },
       ),
+    ).toBeTruthy();
+  }, 30000);
+
+  it("abre diretamente Inglês pelo widget da Olena", async () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Mostrar Inglês" }));
+    fireEvent.click(screen.getByRole("button", { name: "Explorar Inglês" }));
+    expect(
+      await screen.findByRole("heading", { name: "Cais das Boas-vindas" }, { timeout: 20000 }),
     ).toBeTruthy();
   }, 30000);
 

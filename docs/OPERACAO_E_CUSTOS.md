@@ -83,6 +83,37 @@ Desenho detalhado de uma sincronização em banco próprio, ainda como proposta:
 - **Custos de privar** (conferir): o teto mensal de minutos do GitHub Actions (ver `docs/CI_MINUTOS.md`), CodeQL e varredura nativa de segredos que em privado costumam exigir plano pago (o `gitleaks` do CI continua funcionando), e a Vercel, cujo plano gratuito (Hobby), pelo que se sabe, não permite uso comercial (não verificado).
 - **Se ficasse público:** criptografar ou ofuscar o código não funciona (quebra CodeQL, Dependabot, diffs e o build da Vercel, e o cliente já é público). O que protege é: nenhum segredo no repositório, lógica que vale dinheiro no servidor, conteúdo sensível fora do repositório, licença (protege no papel) e, se necessário, dividir em um repositório público e outro privado. Um levantamento do que seria problema se ficasse público (prompts, dados de treino, regras de planos) pode ser feito sem alterar nada.
 
+### 4.0 Estado em 07/11/2026: o repositório está privado
+
+- **Verificado pela API do GitHub em 07/11/2026:** `olive644/olena` tem `private: true`, 2 estrelas, 0 forks e não usa GitHub Pages. O texto de 18/10 acima ("é público, com 1 fork") ficou histórico. Até poucas horas antes, as execuções do CI mostravam 0 minutos cobrados, e a mudança para privado aconteceu fora desta sessão (a IA não privou nada).
+- **A partir daí os minutos do CI contam.** A medição, os cenários de corte e a conclusão estão em `docs/CI_MINUTOS.md` (seção "Medição de 01 a 07/11/2026"): cerca de 5.168 min em 7 dias, 22.000 por mês projetados, contra um teto gratuito que se diz ser de 2.000 (não confirmado).
+
+### 4.2 Depois de privar: o que conferir (passos da dona)
+
+A IA não consegue fazer nem ler vários destes itens (a sessão só acessa endpoints do próprio repositório e a proteção da branch devolve HTTP 403). Confira na interface do GitHub e da Vercel e anote o resultado aqui.
+
+1. **Cobrança do Actions:** Settings, Billing and plans. Veja o uso do mês e o **limite de gasto**. O padrão do plano gratuito é US$ 0, o que faz o CI parar em vez de cobrar; confirme que é esse. Se o CI parar, nada é mesclado, porque a regra do projeto só mescla com todos os checks verdes.
+2. **CodeQL:** a análise de código em repositório privado costuma exigir plano pago do GitHub (não verificado). Se os checks `Analyze (...)` passarem a falhar, o `codeql.yml` precisa de `if: ${{ !github.event.repository.private }}` ou a aba Security precisa do plano. Hoje eles custam cerca de 380 min por semana.
+3. **Vercel:** confirme que o deploy da `main` e as prévias de pull request continuam saindo depois de privar. O plano Hobby, pelo que se sabe, não permite uso comercial (não verificado), e o app terá planos pagos.
+4. **Proteção da branch `main`:** em repositório privado no plano gratuito, regras de proteção de branch podem não valer (não verificado). Se existiam checks obrigatórios, confira se continuam bloqueando a mescla.
+5. **Colaboradores:** quem precisa de acesso (segundo dev) tem de ser adicionado em Settings, Collaborators. A IA não consegue listar.
+6. **Dependabot e alertas de segurança:** devem continuar em privado; confirme em Settings, Code security.
+7. **Chaves e segredos:** privar não desfaz o que já foi público. Se alguma chave ou token alguma vez esteve no histórico, troque-a.
+
+8. **Novidades e versão do sino (Vercel):** o build lista as pull requests mescladas pela API do GitHub (`scripts/generate-system-updates.mjs`). Em repositório privado essa chamada sem credencial dá 404 e o site mantém o arquivo antigo (sem Novidades e com versão parada). Crie um **token só de leitura** (GitHub, Settings, Developer settings, Fine-grained tokens, só o repositório `olive644/olena`, permissões `Pull requests: Read-only` e `Metadata: Read-only`) e cadastre na Vercel (Settings, Environment Variables) como `GITHUB_READ_TOKEN`, para Production (e Preview se quiser). Não commite o token. Depois faça um novo deploy e confira `https://olenastudy.vercel.app/system-updates.json` e `/app-version.json`. Sem o token o app continua funcionando, só sem Novidades novas.
+
+### 4.3 Links públicos que apontam para o repositório (precisam de decisão)
+
+Estes arquivos do site citam o repositório e passam a não funcionar para quem não é colaborador:
+
+| Arquivo                           | O que diz                                                                                            | Problema depois de privar                                                          |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `public/.well-known/security.txt` | `Contact:` aponta para o relato de vulnerabilidade do GitHub e `Policy:` para o `SECURITY.md`        | o relato privado só funciona para colaboradores e o `SECURITY.md` dá 404 para fora |
+| `public/llms.txt`                 | "Repositório no GitHub: código-fonte aberto do OlenaStudy"                                           | o link dá 404 e "aberto" deixa de ser verdade (o projeto é proprietário)           |
+| `SECURITY.md`                     | via 1 é o relato privado no GitHub; via 2 diz que o contato da Galeria.Oli "ainda está em definição" | sobra **nenhum canal público para relatar vulnerabilidade**                        |
+
+Falta decidir um **e-mail de contato de segurança** (e-mail que a dona escolher). Com ele, ajustar `security.txt` (`Contact:` e remover a `Policy:` do GitHub), o `SECURITY.md`, a Política de Privacidade e remover a linha do `llms.txt`. `src/security-txt.test.ts` confere o `security.txt`. Nenhum desses arquivos foi alterado nesta entrada, e eu não inventei endereço.
+
 ### 4.1 Contrato societário
 
 `docs/CONTRATO_SOCIETARIO.md` estava versionado em repositório público. Foi removido da árvore atual na #471 e o caminho está no `.gitignore`. O conteúdo **continua no histórico do Git** e em forks. A dona guardou uma cópia fora do repositório. Reescrever o histórico para apagá-lo só vale a pena se o conteúdo for muito grave, altera todas as branches e PRs e exige decisão explícita. Nenhuma IA leu o arquivo (regra do projeto).
@@ -104,12 +135,14 @@ O `.gitleaksignore` contém a impressão digital `ee79bb7…:firebase-room.rules
 ## 7. Decisões que continuam com a dona
 
 - Publicar as regras do Firebase e conferir `FIREBASE_APPCHECK_ENFORCE` na Vercel.
-- Tornar o repositório privado e adicionar o segundo dev como colaborador.
+- Tornar o repositório privado (feito em 07/11/2026) e adicionar o segundo dev como colaborador.
 - Pagar ou não o plano Blaze do Firebase e o plano da Vercel para uso comercial.
 - Contato e política de privacidade do `SECURITY.md`.
 - Aumentar ou não o tamanho do código de sala.
 - Reescrever ou não o histórico por causa do contrato.
 - Aceitar ou não rodar o mobile completo só à noite, para economizar minutos de CI.
+- Como pagar o CI em repositório privado: pagar minutos, rodar o e2e fora do GitHub (máquina própria ou local) ou reduzir muito as execuções (ver `docs/CI_MINUTOS.md`). Nenhum corte sozinho cabe no teto gratuito.
+- Escolher o e-mail de contato de segurança (seção 4.3).
 
 ## Orçamento de Idiomas, 02/11/2026
 
@@ -128,3 +161,7 @@ Medição final com o layout sem arte nas perguntas: aplicação 1710,8 KiB de 1
 Build inicial medido em 1716,3 KiB, contra 1710,8 KiB da revisão anterior, entrada 220,7 KiB. Sob autorização vigente do proprietário, teto total e rígido passam de 1712 para 1720 KiB, sem alterar entrada, workflows ou tempos. Os 120 novos exercícios e doze guias ficam em JSON sob demanda, sem biblioteca ou serviço novo. A camada de seleção, validação e compatibilidade responde pelo crescimento funcional; não foi alegada economia não medida. Conferir medição final no audit.
 
 Medição com a retomada: aplicação 1719,8 KiB de 1720 e entrada 220,7 KiB. O cursor reutiliza o perfil privado e a fila de sincronização existentes, sem chave de nuvem, regra ou serviço novo. Nenhum aumento adicional de teto.
+
+## Teto de JavaScript autorizado, 10/11/2026
+
+Proprietário pediu explicitamente subir o teto após a medição de 1761,1 KiB. Orçamento total e teto rígido passam de 1748 para 1764 KiB, com 2,9 KiB de margem na medição atual. Entrada, dependências, outros orçamentos, workflows e tempos permanecem iguais. Ampliação cobre a entrada visual e a associação/retorno de contas; não foi alegada redução de tamanho nem de custo.

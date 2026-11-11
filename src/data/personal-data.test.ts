@@ -16,6 +16,7 @@ const PERSONAL_KEYS = [
   "helena.soloProgress",
   "helena.mathPlaceRewards.v1",
   "helena.englishRewards.v1",
+  "helena.englishProgress.v1",
   "helena:local-room-session:v1",
   "helena-study:word-frequency:v1",
   "noteoli.pomodoro-streak.v1",
@@ -83,7 +84,7 @@ describe("claimDeviceForAccount", () => {
 
     window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, applied);
     for (const key of PERSONAL_KEYS) expect(localStorage.getItem(key)).toBeNull();
-    expect(localStorage.getItem("helena.onboarding.v1")).toBe('{"completed":true}');
+    expect(localStorage.getItem("helena.onboarding.v1")).toBeNull();
     expect(localStorage.getItem(ACCOUNT_OWNER_KEY)).toBe("beto");
     expect(applied).toHaveBeenCalledTimes(1);
   });

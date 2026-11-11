@@ -1,0 +1,15 @@
+{
+  "source": "/workspace/generated_images/exec-548a3601-f772-463c-9c6e-ec44b8e11494.png",
+  "sourceSize": [1536, 1024],
+  "sourceSha256": "2a01f0d3a4d0d49d64097a48516afc37946ed089cbe051f93104310a69b140ff",
+  "output": "public/languages/olena-english-widget.webp",
+  "outputSize": [900, 600],
+  "outputSha256": "375bd8bf173831a2c124c1a0a07090ba13497e1767382813ac0c34d6f45f85fe",
+  "approvedReference": "1000096986.png",
+  "tool": "image_gen",
+  "edit": "Remove only the two speech bubbles on the left; preserve the chosen Olena, book, pose, colors and transparency.",
+  "webpQuality": 85,
+  "webpMethod": 6,
+  "outputBytes": 56544,
+  "supersededBy": "../student-widget-cleanup/art-sources.json"
+}

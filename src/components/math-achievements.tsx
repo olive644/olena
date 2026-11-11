@@ -4,6 +4,8 @@ import { uiLocale, uiText, useLanguage } from "../i18n/runtime";
 import { MATH_COURSES, type MathCourseId } from "../data/math-courses";
 import { ALL_ACHIEVEMENTS, type Achievement } from "../domain/math-achievements";
 import {
+  achievementArtPath,
+  achievementNumberY,
   achievementFamilies,
   achievementFamily,
   ACHIEVEMENT_MATERIALS,
@@ -47,7 +49,7 @@ export function AchievementArt({
   thumb?: boolean;
 }) {
   const general = item.category === "general";
-  const folder = (general ? "general/" : "math/") + (thumb ? "thumb/" : "");
+
   return (
     <span
       className={
@@ -63,13 +65,7 @@ export function AchievementArt({
         {!thumb && (
           <image
             data-achievement-preview=""
-            href={
-              "/achievement-badges/" +
-              (general ? "general" : "math") +
-              "/thumb/" +
-              item.id +
-              ".webp"
-            }
+            href={achievementArtPath(item, true)}
             width="160"
             height="160"
             preserveAspectRatio="xMidYMid meet"
@@ -79,7 +75,7 @@ export function AchievementArt({
           <GeneralAchievementScene item={item} thumb={thumb} />
         ) : (
           <image
-            href={"/achievement-badges/" + folder + item.id + ".webp"}
+            href={achievementArtPath(item, thumb)}
             width="160"
             height="160"
             preserveAspectRatio="xMidYMid meet"
@@ -101,7 +97,7 @@ export function AchievementArt({
               key={i}
               href={"/paper-digits.svg#digit-" + digit}
               x={general ? 80 - all.length * 6 + i * 12 : 80 - all.length * 7 + i * 14}
-              y={general ? "109" : "115"}
+              y={achievementNumberY(item)}
               width={general ? "12" : "14"}
               height={general ? "18" : "21"}
             />
@@ -111,7 +107,7 @@ export function AchievementArt({
       {(item.rarity === "rare" || (general && item.tier)) && !locked && (
         <span
           className="achievement-foil"
-          style={{ maskImage: "url(/achievement-badges/" + folder + item.id + ".webp)" }}
+          style={{ maskImage: `url(${achievementArtPath(item, thumb)})` }}
           aria-hidden="true"
         />
       )}
@@ -148,8 +144,12 @@ export function AchievementCollection({
   // Sentido da troca de etapa: a arte nova entra pelo lado de onde a etapa vem.
   const [direction, setDirection] = useState<"up" | "down">("up");
   const [gallery, setGallery] = useState(!compact);
-  const [category, setCategory] = useState<"mathematics" | "general">(
-    initialId?.startsWith("general-") ? "general" : "mathematics",
+  const [category, setCategory] = useState<"mathematics" | "english" | "general">(
+    initialId?.startsWith("english-")
+      ? "english"
+      : initialId?.startsWith("general-")
+        ? "general"
+        : "mathematics",
   );
   const [sharing, setSharing] = useState(false),
     [preview, setPreview] = useState(""),
@@ -221,7 +221,7 @@ export function AchievementCollection({
     )) {
       for (const size of ["thumb/", ""]) {
         const image = new Image();
-        image.src = `/achievement-badges/${item.category === "general" ? "general" : "math"}/${size}${item.id}.webp`;
+        image.src = achievementArtPath(item, size === "thumb/");
         void image.decode?.().catch(() => {});
       }
     }
@@ -257,12 +257,7 @@ export function AchievementCollection({
     );
     const timer = window.setTimeout(() => {
       for (const item of wanted) {
-        new Image().src =
-          "/achievement-badges/" +
-          (item.category === "general" ? "general/" : "math/") +
-          "thumb/" +
-          item.id +
-          ".webp";
+        new Image().src = achievementArtPath(item, true);
       }
     }, 300);
     return () => window.clearTimeout(timer);
@@ -502,14 +497,16 @@ export function AchievementCollection({
               </section>
             )}
             <div role="tablist" aria-label={uiText(2853)} className="achievement-tabs">
-              {(["mathematics", "general"] as const)
+              {(["mathematics", "english", "general"] as const)
                 .filter((tab) => !courseId || tab === "mathematics")
                 .map((tab) => (
                   <button
                     type="button"
                     role="tab"
-                    aria-label={uiText(tab === "general" ? 2851 : 1406)}
-                    title={uiText(tab === "general" ? 2851 : 1406)}
+                    aria-label={uiText(
+                      tab === "english" ? "Inglês" : tab === "general" ? 2851 : 1406,
+                    )}
+                    title={uiText(tab === "english" ? "Inglês" : tab === "general" ? 2851 : 1406)}
                     key={tab}
                     aria-selected={category === tab}
                     className={category === tab ? "is-selected" : ""}
@@ -521,18 +518,19 @@ export function AchievementCollection({
                       )
                         return;
                       event.preventDefault();
+                      const tabs = ["mathematics", "english", "general"] as const;
+                      const index = tabs.indexOf(tab);
                       const next =
                         event.key === "Home"
-                          ? "mathematics"
+                          ? 0
                           : event.key === "End"
-                            ? "general"
-                            : tab === "mathematics"
-                              ? "general"
-                              : "mathematics";
-                      setCategory(next);
+                            ? tabs.length - 1
+                            : (index + (event.key === "ArrowRight" ? 1 : tabs.length - 1)) %
+                              tabs.length;
+                      setCategory(tabs[next]!);
                       event.currentTarget.parentElement
                         ?.querySelectorAll<HTMLButtonElement>("button")
-                        [next === "general" ? 1 : 0]?.focus();
+                        [next]?.focus();
                     }}
                   >
                     <img
@@ -544,7 +542,16 @@ export function AchievementCollection({
                   </button>
                 ))}
             </div>
-            <div role="tabpanel" aria-label={uiText(category === "general" ? 2852 : 2789)}>
+            <div
+              role="tabpanel"
+              aria-label={uiText(
+                category === "english"
+                  ? "Conquistas de inglês"
+                  : category === "general"
+                    ? 2852
+                    : 2789,
+              )}
+            >
               {tiles(visible)}
             </div>
             {error && <p role="alert">{error}</p>}

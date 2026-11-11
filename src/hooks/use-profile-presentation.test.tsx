@@ -1,3 +1,4 @@
+import { englishAchievements } from "../domain/english-achievements";
 import { afterEach, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, renderHook, waitFor } from "@testing-library/react";
 import { useProfilePresentation } from "./use-profile-presentation";
@@ -30,7 +31,7 @@ it("publica nível, streaks e redes sem enviar registros privados", async () => 
   await waitFor(() => expect(mocks.request).toHaveBeenCalled());
   expect(mocks.request.mock.calls[0]?.[0].details).toEqual({
     level: 1,
-    streaks: { islands: 0, timer: 0, pomodoro: 0 },
+    streaks: { islands: 0, timer: 0, pomodoro: 0, english: 0 },
     socialLinks: ["github.com/alice"],
   });
   expect(mocks.request.mock.calls[0]?.[0].workspace).toBeUndefined();
@@ -176,4 +177,41 @@ it("com as 78 cartas obtidas publica só três destaques e um payload compacto",
   expect(Object.keys(sent.cardDates).sort()).toEqual(["major-00", "pentacles-14"]);
   expect(new TextEncoder().encode(JSON.stringify(sent)).length).toBeLessThan(2048);
   expect(localStorage.getItem("helena.mathPlaceRewards.v1")).toBe(ledgerBefore);
+});
+
+it("publica ofensiva e conquista inglesas sem enviar as respostas da conta", async () => {
+  mocks.request.mockResolvedValue({});
+  localStorage.setItem("helena.account.v1", "alice-id");
+  const workspace = createInitialWorkspace();
+  workspace.practiceActivities = [
+    {
+      id: "english:arcade:profile:0",
+      islandId: "english",
+      islandName: "English",
+      answers: 1,
+      correct: 1,
+      completedAt: new Date(Date.now() - 1000).toISOString(),
+      englishAttempt: {
+        curriculum: 4,
+        area: "english",
+        part: 0,
+        mode: "practice",
+        questions: [0],
+        correctQuestions: [0],
+      },
+    },
+  ];
+  renderHook(() =>
+    useProfilePresentation(
+      "alice",
+      "Alice",
+      workspace,
+      englishAchievements(workspace.practiceActivities),
+    ),
+  );
+  await waitFor(() => expect(mocks.request).toHaveBeenCalled());
+  const published = mocks.request.mock.calls[0]?.[0];
+  expect(published.details.streaks.english).toBe(1);
+  expect(published.achievements).toContain("english-correct-1");
+  expect(JSON.stringify(published)).not.toContain("correctQuestions");
 });

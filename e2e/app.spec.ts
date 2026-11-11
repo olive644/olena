@@ -94,7 +94,7 @@ test("mostra Oliver e o convite de Matemática nos dois temas", async ({ page })
     ).toBeVisible();
     const art = page.getByAltText("Oliver aparece por trás do widget de Matemática");
     await expect(art).toBeVisible();
-    await expect(art).toHaveAttribute("src", "/oliver-peeking-widget.webp");
+    await expect(art).toHaveAttribute("src", "/oliver-peeking-widget.webp?v=2");
 
     if (theme === "light") {
       await setTestTheme(page, "dark");
@@ -253,7 +253,9 @@ test("troca o tema somente pela acessibilidade do Perfil", async ({ page }, test
 });
 
 test("organiza uma tarefa e mantém o dado após recarregar", async ({ page }, testInfo) => {
-  await expect(page.getByRole("heading", { name: "A próxima descoberta é sua." })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Explorar Matemática", exact: true }),
+  ).toBeVisible();
   await expect(page.getByText("Dados salvos neste dispositivo")).toHaveCount(0);
   await expect(page.getByAltText(/rosto da helena/i)).toHaveCount(0);
   await expect(page.getByAltText("Olena, a mascote do OlenaStudy")).toHaveCount(0);

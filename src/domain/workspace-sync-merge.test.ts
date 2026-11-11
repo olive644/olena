@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createInitialWorkspace, type WorkspaceState } from "./workspace";
-import { mergeWorkspaceStates } from "./workspace-sync-merge";
+import { mergeAccountWorkspace, mergeWorkspaceStates } from "./workspace-sync-merge";
 
 function notebook(id: string, title: string): WorkspaceState["notebooks"][number] {
   return { id, title, subjectId: "subject-english", createdAt: "2026", pageIds: [] };
@@ -119,5 +119,79 @@ describe("mergeWorkspaceStates", () => {
     const { conflicts } = mergeWorkspaceStates(base, local, remote);
 
     expect(conflicts).toBe(0);
+  });
+});
+
+describe("registros de prática concluídos", () => {
+  const activity = (id: string): NonNullable<WorkspaceState["practiceActivities"]>[number] => ({
+    id,
+    islandId: "english",
+    islandName: "Inglês",
+    completedAt: "2026-11-07T10:00:00Z",
+    answers: 4,
+    correct: 4,
+  });
+
+  it("não apaga progresso concluído quando o outro aparelho envia uma cópia sem ele", () => {
+    const base = {
+      ...createInitialWorkspace(),
+      practiceActivities: [activity("a"), activity("b")],
+    };
+    const result = mergeWorkspaceStates(base, base, { ...base, practiceActivities: [] });
+    expect(result.workspace.practiceActivities?.map((item) => item.id)).toEqual(["a", "b"]);
+    expect(result.conflicts).toBe(0);
+  });
+
+  it("junta o que cada lado concluiu, sem repetir", () => {
+    const base = { ...createInitialWorkspace(), practiceActivities: [activity("a")] };
+    const local = { ...base, practiceActivities: [activity("a"), activity("b")] };
+    const remote = { ...base, practiceActivities: [activity("a"), activity("c")] };
+    const result = mergeWorkspaceStates(base, local, remote);
+    expect(result.workspace.practiceActivities?.map((item) => item.id).sort()).toEqual([
+      "a",
+      "b",
+      "c",
+    ]);
+  });
+});
+
+describe("mergeAccountWorkspace", () => {
+  const activity = (id: string): NonNullable<WorkspaceState["practiceActivities"]>[number] => ({
+    id,
+    islandId: "english",
+    islandName: "Inglês",
+    completedAt: "2026-11-07T10:00:00Z",
+    answers: 4,
+    correct: 4,
+  });
+
+  it("mantém no espaço da conta as atividades feitas neste aparelho e ainda não enviadas", () => {
+    const account = { ...createInitialWorkspace(), practiceActivities: [activity("a")] };
+    const local = {
+      ...createInitialWorkspace(),
+      practiceActivities: [activity("a"), activity("b")],
+    };
+    const merged = mergeAccountWorkspace(local, account);
+    expect(merged.practiceActivities?.map((item) => item.id)).toEqual(["a", "b"]);
+  });
+
+  it("traz as atividades da conta e mantém as sessões de foco locais", () => {
+    const session = {
+      id: "focus-local",
+      subjectId: "",
+      mode: "timer" as const,
+      durationMinutes: 3,
+      completedAt: "2026-11-07T09:00:00Z",
+    };
+    const account = { ...createInitialWorkspace(), practiceActivities: [activity("a")] };
+    const local = { ...createInitialWorkspace(), focusSessions: [session] };
+    const merged = mergeAccountWorkspace(local, account);
+    expect(merged.practiceActivities?.map((item) => item.id)).toEqual(["a"]);
+    expect(merged.focusSessions).toEqual([session]);
+  });
+
+  it("não cria a lista de prática quando nenhum lado tem atividades", () => {
+    const merged = mergeAccountWorkspace(createInitialWorkspace(), createInitialWorkspace());
+    expect(merged.practiceActivities).toBeUndefined();
   });
 });

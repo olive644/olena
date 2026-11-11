@@ -677,7 +677,9 @@ function isStudyPreferences(value: unknown): value is StudyPreferences {
     ) &&
     (value["processing"] === "sequencial" || value["processing"] === "global") &&
     (value["rhythm"] === "focado" || value["rhythm"] === "difuso") &&
-    ["nenhum", "python", "javascript", "python-javascript"].includes(String(value["programming"]))
+    ["nenhum", "python", "javascript", "python-javascript", "html-css"].includes(
+      String(value["programming"]),
+    )
   );
 }
 
@@ -738,6 +740,66 @@ function isWorkspaceV3(value: unknown): value is WorkspaceV3 {
   );
 }
 
+/** Valida um registro de prática isoladamente, para descartar só o que esta versão não entende. */
+export function isPracticeActivity(activity: unknown): boolean {
+  return (
+    isRecord(activity) &&
+    isString(activity["id"]) &&
+    isString(activity["islandId"]) &&
+    isString(activity["islandName"]) &&
+    (activity["languageAttempt"] === undefined ||
+      (activity["islandId"] === "languages" &&
+        validLanguageAttempt(activity["languageAttempt"]))) &&
+    (activity["englishFinalFailure"] === undefined ||
+      (activity["englishFinalFailure"] === true &&
+        Number(activity["answers"]) - Number(activity["correct"]) === 3 &&
+        Number(activity["answers"]) >= 3 &&
+        Number(activity["answers"]) <= 4 &&
+        activity["englishAttempt"] !== null &&
+        typeof activity["englishAttempt"] === "object" &&
+        (activity["englishAttempt"] as Record<string, unknown>)["curriculum"] === 4 &&
+        (activity["englishAttempt"] as Record<string, unknown>)["mode"] === "practice")) &&
+    (activity["englishAttempt"] === undefined ||
+      (activity["islandId"] === "english" &&
+        activity["languageAttempt"] === undefined &&
+        validLanguageAttempt(activity["englishAttempt"]) &&
+        activity["englishAttempt"].curriculum === 4 &&
+        activity["answers"] === activity["englishAttempt"].questions.length &&
+        activity["correct"] === activity["englishAttempt"].correctQuestions.length)) &&
+    (activity["englishA1FinalFailure"] === undefined ||
+      (activity["englishA1FinalFailure"] === true &&
+        Number(activity["answers"]) - Number(activity["correct"]) === 3 &&
+        Number(activity["answers"]) >= 3 &&
+        Number(activity["answers"]) <= 4 &&
+        activity["englishA1Attempt"] !== null &&
+        typeof activity["englishA1Attempt"] === "object" &&
+        (activity["englishA1Attempt"] as Record<string, unknown>)["curriculum"] === 5 &&
+        (activity["englishA1Attempt"] as Record<string, unknown>)["mode"] === "practice")) &&
+    (activity["englishA1Attempt"] === undefined ||
+      (activity["islandId"] === "english" &&
+        activity["languageAttempt"] === undefined &&
+        activity["englishAttempt"] === undefined &&
+        validLanguageAttempt(activity["englishA1Attempt"]) &&
+        activity["englishA1Attempt"].curriculum === 5 &&
+        activity["answers"] === activity["englishA1Attempt"].questions.length &&
+        activity["correct"] === activity["englishA1Attempt"].correctQuestions.length)) &&
+    (activity["moduleLevel"] === undefined ||
+      (Number.isInteger(activity["moduleLevel"]) &&
+        Number(activity["moduleLevel"]) >= 0 &&
+        Number(activity["moduleLevel"]) <
+          (activity["islandId"] === "english" ? ENGLISH_PART_COUNT : 6))) &&
+    isString(activity["completedAt"]) &&
+    Number.isFinite(new Date(activity["completedAt"]).getTime()) &&
+    typeof activity["answers"] === "number" &&
+    Number.isSafeInteger(activity["answers"]) &&
+    activity["answers"] > 0 &&
+    typeof activity["correct"] === "number" &&
+    Number.isSafeInteger(activity["correct"]) &&
+    activity["correct"] >= 0 &&
+    activity["correct"] <= activity["answers"]
+  );
+}
+
 export function isWorkspaceState(value: unknown): value is WorkspaceState {
   if (!isRecord(value) || value["version"] !== WORKSPACE_VERSION) return false;
   if (
@@ -756,64 +818,7 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
   return (
     (value["practiceActivities"] === undefined ||
       (Array.isArray(value["practiceActivities"]) &&
-        value["practiceActivities"].every(
-          (activity: unknown) =>
-            isRecord(activity) &&
-            isString(activity["id"]) &&
-            isString(activity["islandId"]) &&
-            isString(activity["islandName"]) &&
-            (activity["languageAttempt"] === undefined ||
-              (activity["islandId"] === "languages" &&
-                validLanguageAttempt(activity["languageAttempt"]))) &&
-            (activity["englishFinalFailure"] === undefined ||
-              (activity["englishFinalFailure"] === true &&
-                Number(activity["answers"]) - Number(activity["correct"]) === 3 &&
-                Number(activity["answers"]) >= 3 &&
-                Number(activity["answers"]) <= 4 &&
-                activity["englishAttempt"] !== null &&
-                typeof activity["englishAttempt"] === "object" &&
-                (activity["englishAttempt"] as Record<string, unknown>)["curriculum"] === 4 &&
-                (activity["englishAttempt"] as Record<string, unknown>)["mode"] === "practice")) &&
-            (activity["englishAttempt"] === undefined ||
-              (activity["islandId"] === "english" &&
-                activity["languageAttempt"] === undefined &&
-                validLanguageAttempt(activity["englishAttempt"]) &&
-                activity["englishAttempt"].curriculum === 4 &&
-                activity["answers"] === activity["englishAttempt"].questions.length &&
-                activity["correct"] === activity["englishAttempt"].correctQuestions.length)) &&
-            (activity["englishA1FinalFailure"] === undefined ||
-              (activity["englishA1FinalFailure"] === true &&
-                Number(activity["answers"]) - Number(activity["correct"]) === 3 &&
-                Number(activity["answers"]) >= 3 &&
-                Number(activity["answers"]) <= 4 &&
-                activity["englishA1Attempt"] !== null &&
-                typeof activity["englishA1Attempt"] === "object" &&
-                (activity["englishA1Attempt"] as Record<string, unknown>)["curriculum"] === 5 &&
-                (activity["englishA1Attempt"] as Record<string, unknown>)["mode"] ===
-                  "practice")) &&
-            (activity["englishA1Attempt"] === undefined ||
-              (activity["islandId"] === "english" &&
-                activity["languageAttempt"] === undefined &&
-                activity["englishAttempt"] === undefined &&
-                validLanguageAttempt(activity["englishA1Attempt"]) &&
-                activity["englishA1Attempt"].curriculum === 5 &&
-                activity["answers"] === activity["englishA1Attempt"].questions.length &&
-                activity["correct"] === activity["englishA1Attempt"].correctQuestions.length)) &&
-            (activity["moduleLevel"] === undefined ||
-              (Number.isInteger(activity["moduleLevel"]) &&
-                Number(activity["moduleLevel"]) >= 0 &&
-                Number(activity["moduleLevel"]) <
-                  (activity["islandId"] === "english" ? ENGLISH_PART_COUNT : 6))) &&
-            isString(activity["completedAt"]) &&
-            Number.isFinite(new Date(activity["completedAt"]).getTime()) &&
-            typeof activity["answers"] === "number" &&
-            Number.isSafeInteger(activity["answers"]) &&
-            activity["answers"] > 0 &&
-            typeof activity["correct"] === "number" &&
-            Number.isSafeInteger(activity["correct"]) &&
-            activity["correct"] >= 0 &&
-            activity["correct"] <= activity["answers"],
-        ))) &&
+        value["practiceActivities"].every(isPracticeActivity))) &&
     hasCoreCollections(value, isNote) &&
     Array.isArray(value["materials"]) &&
     value["materials"].every(isMaterial) &&
@@ -1038,6 +1043,14 @@ function keepUnreadableWorkspace(
   }
 }
 
+function withoutUnknownActivities(value: unknown): WorkspaceState | undefined {
+  if (!isRecord(value) || !Array.isArray(value["practiceActivities"])) return undefined;
+  const kept = value["practiceActivities"].filter(isPracticeActivity);
+  if (kept.length === value["practiceActivities"].length) return undefined;
+  const candidate = { ...value, practiceActivities: kept };
+  return isWorkspaceState(candidate) ? candidate : undefined;
+}
+
 export function loadWorkspace(
   storage: Pick<Storage, "getItem"> & Partial<Pick<Storage, "setItem">>,
 ): WorkspaceState {
@@ -1049,6 +1062,14 @@ export function loadWorkspace(
     const parsed: unknown = unpackWorkspace(JSON.parse(serialized));
     if (isWorkspaceState(parsed)) {
       const workspace = mergeRepeatedDefaultNotebooks(parsed);
+      return { ...workspace, notebooks: normalizeNotebookFavorites(workspace.notebooks) };
+    }
+    const recovered = withoutUnknownActivities(parsed);
+    if (recovered) {
+      // Um registro de prática de outra versão (parte ou questão que esta não conhece)
+      // não pode zerar o espaço inteiro: só ele fica de fora e a cópia original é guardada.
+      keepUnreadableWorkspace(storage, serialized);
+      const workspace = mergeRepeatedDefaultNotebooks(recovered);
       return { ...workspace, notebooks: normalizeNotebookFavorites(workspace.notebooks) };
     }
     if (isWorkspaceV6(parsed)) return migrateWorkspaceV6(parsed);

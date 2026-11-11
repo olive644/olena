@@ -19,6 +19,13 @@ const alice: SocialProfile = {
 };
 const bob: SocialProfile = { ...alice, username: "bob", name: "Bob", followsYou: true };
 const feed: SocialFeed = { self: alice, notifications: [], suggestions: [] };
+it("card de perfil sem feed mostra o aviso de limite uma só vez", async () => {
+  mocks.request.mockRejectedValue(new Error("Aguarde um pouco antes de tentar novamente."));
+  render(<SocialDirectory initialSharing nameFallback="Alice" onClose={vi.fn()} />);
+  await screen.findAllByText("Aguarde um pouco antes de tentar novamente.");
+  await waitFor(() => expect(screen.queryByLabelText("Carregando")).toBeNull());
+  expect(screen.getAllByText("Aguarde um pouco antes de tentar novamente.")).toHaveLength(1);
+});
 it("inspeção mostra nível, streak e redes, mas deixa atividades somente no sino", async () => {
   mocks.request.mockResolvedValue({
     ...feed,
@@ -66,12 +73,19 @@ it("inspeção mostra nível, streak e redes, mas deixa atividades somente no si
   expect(screen.getByRole("link", { name: "GitHub" }).getAttribute("href")).toBe(
     "https://github.com/bob",
   );
+  const streakGroup = document.querySelector<HTMLDetailsElement>(
+    ".social-profile-streaks details",
+  )!;
+  expect(streakGroup.open).toBe(false);
+  expect(streakGroup.querySelector("summary strong")?.textContent).toBe("2");
+  fireEvent.click(streakGroup.querySelector("summary")!);
+  expect(streakGroup.open).toBe(true);
   expect(
-    [...document.querySelectorAll(".social-profile-streaks strong")]
+    [...streakGroup.querySelectorAll(".profile-streak-group-row strong")]
       .map((node) => node.textContent)
       .sort(),
-  ).toEqual(["2", "4"]);
-  expect(document.querySelectorAll(".social-profile-streaks strong")).toHaveLength(2);
+  ).toEqual(["2 dias seguidos", "4 dias seguidos"]);
+  expect(streakGroup.querySelectorAll(".profile-streak-group-row")).toHaveLength(2);
   expect(
     document
       .querySelector(".social-profile-name")
@@ -332,4 +346,22 @@ it("does not show the unsupported contacts notice", async () => {
       "Este navegador não oferece seleção de contatos. Use a busca ou compartilhe seu perfil.",
     ),
   ).toBeNull();
+});
+it("lista de seguidores tem prioridade sobre o card de compartilhar", async () => {
+  mocks.request.mockImplementation(async (_action, query) =>
+    query?.includes("list=")
+      ? { ...feed, connections: { kind: "followers", owner: "alice", people: [bob] } }
+      : feed,
+  );
+  render(
+    <SocialDirectory
+      initialSharing
+      initialList="followers"
+      nameFallback="Alice"
+      onClose={vi.fn()}
+    />,
+  );
+  expect(await screen.findByRole("button", { name: "Visitar perfil de @bob" })).toBeTruthy();
+  expect(screen.queryByLabelText("QR code do perfil")).toBeNull();
+  expect(screen.queryByRole("heading", { name: "Compartilhar perfil" })).toBeNull();
 });

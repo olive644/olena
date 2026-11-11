@@ -2,6 +2,7 @@ import { uiText, useLanguage } from "./i18n/runtime";
 import { lazy, Suspense, useState, useEffect } from "react";
 import { useAppView } from "./hooks/use-app-view";
 import { MobileNavigation, Sidebar } from "./components/app-navigation";
+import { PullToRefresh } from "./components/pull-to-refresh";
 import { HelenaLoading } from "./components/helena-loading";
 import { MobileMenuContext } from "./components/mobile-menu-context";
 import { isGuestSession, requiresLogin } from "./domain/guest-session";
@@ -63,7 +64,12 @@ const ProfileView = lazy(() =>
 
 function hasCompletedOnboarding() {
   try {
-    return JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "null")?.completed === true;
+    const record = JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "null");
+    const owner = localStorage.getItem(ACCOUNT_OWNER_KEY);
+    return (
+      record?.completed === true &&
+      (!owner || !record.configurationOwner || record.configurationOwner === owner)
+    );
   } catch {
     return false;
   }
@@ -90,9 +96,14 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   const { workspace, storageFull, dispatch, history, restoreSnapshot } = useWorkspace();
   // Convidado só vale sem conta: quem entrou com Google nunca aparece como Guest.
   const guest = cloud.authenticated !== true && isGuestSession();
+  const previewCover =
+    import.meta.env.DEV && new URLSearchParams(window.location.search).has("preview-cover");
   // A identidade confirmada fica pronta antes da primeira visita ao Perfil.
   const { handle } = useProfileHandle(cloud.authenticated !== true);
+  const [profileName, setProfileName] = useState<string>();
   const [onboarding, setOnboarding] = useState(() => {
+    if (cloud.authenticated === true && hasCompletedOnboarding()) return false;
+    if (previewCover) return true;
     if (joinCode) return false;
     if (signedOut) return true;
     const entry = new URLSearchParams(window.location.search);
@@ -104,8 +115,15 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     }
   });
 
+  const returningAccount = cloud.ready && cloud.authenticated === true && hasCompletedOnboarding();
+
   useEffect(() => {
-    if (onboarding || !cloud.ready || (!guest && cloud.authenticated !== true)) return;
+    if (
+      (onboarding && !returningAccount) ||
+      !cloud.ready ||
+      (!guest && cloud.authenticated !== true)
+    )
+      return;
     try {
       const raw = localStorage.getItem("helena.onboarding.v1");
       const configuration = readPendingOnboardingConfiguration(
@@ -126,6 +144,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     }
   }, [
     onboarding,
+    returningAccount,
     cloud.ready,
     cloud.authenticated,
     guest,
@@ -140,21 +159,37 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
       </Suspense>
     );
 
-  if (onboarding)
+  if (onboarding && !returningAccount)
     return (
       <Suspense fallback={<HelenaLoading label={uiText(0)} />}>
         <OnboardingView
+          accountLoading={cloud.authenticated === true && !cloud.ready}
+          authenticated={cloud.authenticated === true && cloud.ready}
+          showCover={
+            (previewCover && cloud.authenticated !== true) ||
+            // A marca de convidado só dispensa a capa de quem já concluiu o onboarding (o convidado que
+            // toca em Entrar dentro do app). Quem a guarda de antes, sem ter concluído, vê a capa.
+            (cloud.authenticated !== true &&
+              (!isGuestSession() || !hasCompletedOnboarding()) &&
+              !new URLSearchParams(window.location.search).has("onboarding") &&
+              !new URLSearchParams(window.location.search).has("login"))
+          }
           loginOnly={
-            (signedOut && hasCompletedOnboarding()) ||
-            (cloud.authenticated !== true && isReturningVisitor())
+            !(
+              import.meta.env.DEV && new URLSearchParams(window.location.search).has("onboarding")
+            ) &&
+            ((signedOut && hasCompletedOnboarding()) ||
+              (cloud.authenticated !== true && isReturningVisitor()))
           }
           onFinish={(setup) => {
             if (setup) {
+              setProfileName(setup.displayName);
               if (setup.configuration)
                 dispatch({ type: "onboarding/configured", configuration: setup.configuration });
               else dispatch({ type: "study/preferences-updated", preferences: setup.preferences });
             }
-            setOnboarding(false);
+            if (setup || (cloud.authenticated === true && cloud.ready && hasCompletedOnboarding()))
+              setOnboarding(false);
           }}
         />
       </Suspense>
@@ -163,6 +198,9 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   return (
     <MobileMenuContext.Provider value={{ open: moreOpen, setOpen: setMoreOpen }}>
       <div className="app-shell">
+        {(view === "today" || view === "profile" || view === "notifications") && !moreOpen && (
+          <PullToRefresh />
+        )}
         {cloud.authenticated === true && (
           <Suspense fallback={null}>
             <AccountVerification verificationOnly />
@@ -193,6 +231,11 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
         {storageFull && (
           <p className="storage-full-banner" role="alert">
             {uiText(2)}
+          </p>
+        )}
+        {!storageFull && cloud.rejectedKeys && (
+          <p className="storage-full-banner" role="status">
+            {uiText(3713)}
           </p>
         )}
         <Sidebar view={view} onNavigate={setView} />
@@ -277,7 +320,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
             <ProfileView
               workspace={workspace}
               dispatch={dispatch}
-              cloud={cloud}
+              cloud={profileName ? { ...cloud, displayName: profileName } : cloud}
               guest={guest}
               onSignIn={() => setOnboarding(true)}
               history={history}

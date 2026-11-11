@@ -9,9 +9,15 @@ let cached: { uid: string; value: SocialFeed; at: number } | undefined;
 let flight: { uid: string; promise: Promise<SocialFeed> } | undefined;
 let revision = 0;
 const changes = new WeakSet<Event>();
+// Sino, perfil, publicador, privacidade e conquistas leem o mesmo feed, cada um com seu relógio de
+// 10 s. Com um cache de 2 s, relógios fora de fase faziam uma consulta cada (até 30 por minuto),
+// que é todo o limite da conta, e o compartilhar perfil recebia "Aguarde um pouco". O cache vale
+// menos que o intervalo, então a consulta é uma só por ciclo. Alterações zeram o cache.
+const FEED_SHARE_MS = 8000;
 function sharedFeed(uid: string) {
   if (flight?.uid === uid) return flight.promise;
-  if (cached?.uid === uid && Date.now() - cached.at < 2000) return Promise.resolve(cached.value);
+  if (cached?.uid === uid && Date.now() - cached.at < FEED_SHARE_MS)
+    return Promise.resolve(cached.value);
   const current = revision;
   const promise = requestSocial().then((value) => {
     if (current === revision) cached = { uid, value, at: Date.now() };

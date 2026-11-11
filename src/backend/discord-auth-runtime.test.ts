@@ -27,7 +27,7 @@ afterEach(() => {
   vi.resetModules();
 });
 
-async function setup() {
+async function setup(discordEmail?: { email: string; verified: boolean }) {
   vi.stubEnv("VITE_FIREBASE_PROJECT_ID", "project");
   vi.stubEnv("VITE_FIREBASE_API_KEY", "public-test-key");
   vi.stubEnv("FIREBASE_DATABASE_URL", "https://db.test");
@@ -42,6 +42,8 @@ async function setup() {
     {
       localId: string;
       displayName: string;
+      email?: string;
+      emailVerified?: boolean;
       disabled?: boolean;
       passwordHash?: string;
       providerUserInfo?: { providerId: string }[];
@@ -59,8 +61,14 @@ async function setup() {
     if (url === "https://discord.com/api/oauth2/token")
       return Response.json({ access_token: "discord-token", token_type: "Bearer" });
     if (url === "https://discord.com/api/v10/users/@me")
-      return Response.json({ id: "123456789012345678", username: "Learner" });
+      return Response.json({ id: "123456789012345678", username: "Learner", ...discordEmail });
     if (url.endsWith("/accounts:lookup") || url.includes("/accounts:lookup?")) {
+      if (body["email"])
+        return Response.json({
+          users: [...accounts.values()].filter(
+            (account) => account.email === (body["email"] as string[])[0],
+          ),
+        });
       const id = body["idToken"] ? "existing-owner" : (body["localId"] as string[])[0]!;
       return Response.json({ users: accounts.has(id) ? [accounts.get(id)] : [] });
     }
@@ -434,3 +442,57 @@ it("does not revoke sessions through a cross-origin request", async () => {
   expect(response.status).toBe(403);
   expect(s.revoked).toHaveLength(0);
 });
+
+it("associates a new verified Discord identity with the existing verified email UID", async () => {
+  const s = await setup({ email: "learner@example.test", verified: true });
+  s.accounts.set("existing-owner", {
+    localId: "existing-owner",
+    displayName: "Original",
+    email: "learner@example.test",
+    emailVerified: true,
+    passwordHash: "existing-password",
+  });
+  const result = await s.login();
+  expect(result.callback.status).toBe(303);
+  const binding = [...s.values.entries()].find(([url]) => url.includes("/privateAuthDiscord/"))?.[1]
+    .value;
+  expect(binding).toEqual({ uid: "existing-owner", ready: true });
+  expect([...s.accounts.keys()]).toEqual(["existing-owner"]);
+  expect(s.accounts.get("existing-owner")?.passwordHash).toBe("existing-password");
+  const methods = await s.handleDiscordAuth(methodRequest("methods"));
+  expect(await methods.json()).toMatchObject({ password: true, discord: { linked: true } });
+});
+it("requires proof of an existing unverified email account without reserving a duplicate", async () => {
+  const s = await setup({ email: "learner@example.test", verified: true });
+  s.accounts.set("manual-owner", {
+    localId: "manual-owner",
+    displayName: "Original",
+    email: "learner@example.test",
+    emailVerified: false,
+    passwordHash: "existing-password",
+  });
+  const result = await s.login();
+  expect(result.callback.headers.get("location")).toContain("authError=discord-link");
+  expect([...s.accounts.keys()]).toEqual(["manual-owner"]);
+  expect([...s.values.keys()].some((url) => url.includes("/privateAuthDiscord/"))).toBe(false);
+});
+
+for (const variant of ["unverified-provider", "disabled-account"] as const) {
+  it("does not auto-link Discord for " + variant, async () => {
+    const s = await setup({
+      email: "learner@example.test",
+      verified: variant !== "unverified-provider",
+    });
+    s.accounts.set("manual-owner", {
+      localId: "manual-owner",
+      displayName: "Original",
+      email: "learner@example.test",
+      emailVerified: true,
+      disabled: variant === "disabled-account",
+    });
+    const result = await s.login();
+    expect(result.callback.headers.get("location")).toContain("authError=discord-link");
+    expect([...s.accounts.keys()]).toEqual(["manual-owner"]);
+    expect([...s.values.keys()].some((url) => url.includes("/privateAuthDiscord/"))).toBe(false);
+  });
+}

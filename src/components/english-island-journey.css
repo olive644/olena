@@ -674,8 +674,12 @@ html[data-reduce-motion="true"] .english-journey * {
 .english-mentor {
   padding: 16px 0;
 }
+/* A explicação não tem personagem: o cartão ocupa a largura toda e não precisa do bico do balão. */
 .english-mentor .oliver-review__lesson {
-  grid-template-columns: minmax(150px, 260px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+}
+.english-mentor .oliver-review__speech::before {
+  display: none;
 }
 .english-mentor .oliver-review__speech {
   --surface: #fffdf8;
@@ -714,18 +718,6 @@ html[data-reduce-motion="true"] .english-journey * {
     flex-direction: column;
     gap: 0;
     margin: 0;
-  }
-  /* Olena à direita no celular: o texto fica mais centralizado e o balão aponta para ela. */
-  .english-mentor .oliver-review__character {
-    width: 140px;
-    align-self: flex-end;
-    z-index: 1;
-    margin: 0 8px -14px 0;
-  }
-  .english-mentor .oliver-review__speech::before {
-    left: auto;
-    right: 62px;
-    clip-path: polygon(0 100%, 100% 100%, 95% 0);
   }
   .english-mentor .oliver-review__speech {
     padding: 22px 18px;
@@ -1114,4 +1106,17 @@ html[data-reduce-motion="true"] .english-journey * {
 .english-written-answer input {
   width: 100%;
   min-width: 0;
+}
+
+.english-insane {
+  margin: 12px auto;
+}
+.english-insane b {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.english-insane .paper-digits {
+  height: 20px;
+  vertical-align: middle;
 }

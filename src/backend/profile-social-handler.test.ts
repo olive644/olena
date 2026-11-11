@@ -3,7 +3,89 @@ import { expect, it } from "vitest";
 import { createProfileSocialHandler, type SocialState } from "./profile-social-handler";
 import type { HandleRegistry } from "./profile-handle-handler";
 import type { SocialFeed } from "../domain/profile-social";
+import { studyActivitySummary } from "./study-activity-summary";
+import { groupedActivities, groupedNotices, meaningfulActivity } from "../domain/activity-feed";
+import { ALL_ACHIEVEMENTS } from "../domain/math-achievements";
+import { encodeAchievements, compactAchievementAction } from "../domain/achievement-wire";
 const key = (uid: string) => createHash("sha256").update(uid).digest("hex");
+it("conquistas de Inglês chegam ao sino e feed uma vez, respeitando leitura, privacidade e bloqueio", async () => {
+  const start = Date.parse("2026-10-17T12:00:00Z");
+  const app = setup();
+  await app.request("b", { action: "follow", username: "alice" });
+  await app.request("a", { action: "activity-privacy", enabled: true });
+  app.advance(5000);
+  await app.request("a", {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    achievements: ["english-part-0"],
+    achievementDates: { "english-part-0": new Date(start + 2000).toISOString() },
+  });
+  await app.request("a", { action: "publish-activities" });
+  const first = await app.feed("b", "rewards=1");
+  expect(first.activities?.filter((item) => item.ref === "english-part-0")).toHaveLength(1);
+  expect(
+    first.notifications.filter((item) => item.activity?.ref === "english-part-0"),
+  ).toHaveLength(1);
+  await app.request("b", { action: "read" });
+  await app.request("a", { action: "publish-activities" });
+  const repeated = await app.feed("b", "rewards=1");
+  expect(
+    repeated.notifications.filter((item) => item.activity?.ref === "english-part-0"),
+  ).toHaveLength(1);
+  expect(repeated.notifications.find((item) => item.activity?.ref === "english-part-0")?.read).toBe(
+    true,
+  );
+  await app.request("a", { action: "activity-privacy", enabled: false });
+  const hidden = await app.feed("b", "rewards=1");
+  expect(hidden.activities?.some((item) => item.ref === "english-part-0")).toBe(false);
+  expect(hidden.notifications.some((item) => item.activity?.ref === "english-part-0")).toBe(false);
+  await app.request("b", { action: "block", username: "alice" });
+  expect(
+    (await app.feed("b", "rewards=1")).notifications.some(
+      (item) => item.activity?.ref === "english-part-0",
+    ),
+  ).toBe(false);
+});
+it("preserva IDs, datas e três destaques de Inglês no pedido compacto e oculta após bloqueio", async () => {
+  const app = setup();
+  const ids = ALL_ACHIEVEMENTS.map(({ id }) => id);
+  const dates = Object.fromEntries(ids.map((id) => [id, "2026-11-01T12:00:00.123Z"]));
+  const legacy = {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    achievements: ids,
+    achievementDates: dates,
+  };
+  expect((await app.request("a", legacy)).status).toBe(413);
+  const action = {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    achievementWire: encodeAchievements(ids, dates),
+    achievementFavorites: ["english-part-0", "english-correct-1", "general-pomodoro-bronze"],
+  };
+  expect((await app.request("a", action)).status).toBe(200);
+  const profile = (await app.feed("b", "username=alice")).profile!;
+  expect(profile.achievements).toEqual(ids);
+  expect(profile.achievementDates).toEqual(dates);
+  expect(profile.achievementFavorites).toEqual(action.achievementFavorites);
+  expect((await app.request("a", { ...action, achievements: [] })).status).toBe(400);
+  expect(
+    (
+      await app.request("a", {
+        ...action,
+        achievementWire: { v: 1, at: 0, items: [["unknown", null]] },
+      })
+    ).status,
+  ).toBe(400);
+  await app.request("b", { action: "block", username: "alice" });
+  expect((await app.feed("b", "username=alice")).profile?.achievements).toBeUndefined();
+});
 it("publica até três destaques conquistados, permite limpar e oculta após bloqueio", async () => {
   const app = setup();
   const share = {
@@ -90,7 +172,7 @@ it("compartilha somente metadados públicos validados da própria conta", async 
     photoUrl: "/profile-avatars/alice.svg",
     details: {
       level: 7,
-      streaks: { islands: 4, timer: 0, pomodoro: 1 },
+      streaks: { islands: 4, timer: 0, pomodoro: 1, english: 3 },
       socialLinks: ["github.com/alice"],
     },
   };
@@ -104,6 +186,9 @@ it("compartilha somente metadados públicos validados da própria conta", async 
   expect((await app.feed("b")).self.details).toBeUndefined();
   for (const details of [
     { ...action.details, level: -1 },
+    { ...action.details, streaks: { ...action.details.streaks, english: -1 } },
+    { ...action.details, streaks: { ...action.details.streaks, english: 1.5 } },
+    { ...action.details, streaks: { ...action.details.streaks, english: 100001 } },
     { ...action.details, socialLinks: ["javascript:alert(1)"] },
     { ...action.details, streaks: { islands: -1, timer: 0, pomodoro: 0 } },
   ]) {
@@ -165,43 +250,46 @@ it("capa aposentada gravada em conta antiga volta como a capa padrão", async ()
   app.state().accounts[key("a")]!.display!.cover = "capa-antiga";
   expect((await app.feed("b", "username=alice")).profile?.cover).toBe("helena");
 });
-it("resumo acumulado preserva curtidas e não refaz aviso nem leitura", async () => {
-  const activity = {
-    id: "f".repeat(32),
-    kind: "practice" as const,
-    course: "foundations",
-    value: 10,
-    at: Date.parse("2026-10-17T12:00:01Z"),
-  };
-  const app = setup(async () => [activity]);
-  await app.request("a", { action: "activity-privacy", enabled: true });
-  await app.request("b", { action: "follow", username: "alice" });
-  app.advance(2000);
-  await app.request("a", { action: "publish-activities" });
-  await app.request("b", {
-    action: "like-activity",
-    username: "alice",
-    activityId: activity.id,
-    liked: true,
-  });
-  await app.request("b", { action: "read" });
-  const before = (await app.feed("b")).notifications.find((item) => item.kind === "activity")!;
-  activity.value = 20;
-  activity.at += 1000;
-  app.advance(2000);
-  await app.request("a", { action: "publish-activities" });
-  const feed = await app.feed("b");
-  expect(feed.activities).toHaveLength(1);
-  expect(feed.activities?.[0]).toMatchObject({ value: 20, course: "foundations", liked: true });
-  expect(feed.activities?.[0]?.likes).toHaveLength(1);
-  expect(feed.notifications.filter((item) => item.kind === "activity")).toEqual([
-    expect.objectContaining({
-      at: before.at,
-      read: true,
-      activity: expect.objectContaining({ value: 20 }),
-    }),
-  ]);
-});
+it.each(["foundations", "english"])(
+  "resumo acumulado de %s preserva curtidas e não refaz aviso nem leitura",
+  async (course) => {
+    const activity = {
+      id: "f".repeat(32),
+      kind: "practice" as const,
+      course,
+      value: 10,
+      at: Date.parse("2026-10-17T12:00:01Z"),
+    };
+    const app = setup(async () => [activity]);
+    await app.request("a", { action: "activity-privacy", enabled: true });
+    await app.request("b", { action: "follow", username: "alice" });
+    app.advance(2000);
+    await app.request("a", { action: "publish-activities" });
+    await app.request("b", {
+      action: "like-activity",
+      username: "alice",
+      activityId: activity.id,
+      liked: true,
+    });
+    await app.request("b", { action: "read" });
+    const before = (await app.feed("b")).notifications.find((item) => item.kind === "activity")!;
+    activity.value = 20;
+    activity.at += 1000;
+    app.advance(2000);
+    await app.request("a", { action: "publish-activities" });
+    const feed = await app.feed("b");
+    expect(feed.activities).toHaveLength(1);
+    expect(feed.activities?.[0]).toMatchObject({ value: 20, course, liked: true });
+    expect(feed.activities?.[0]?.likes).toHaveLength(1);
+    expect(feed.notifications.filter((item) => item.kind === "activity")).toEqual([
+      expect.objectContaining({
+        at: before.at,
+        read: true,
+        activity: expect.objectContaining({ value: 20 }),
+      }),
+    ]);
+  },
+);
 it("padrão ativo publica novas conquistas sem republicar histórico nem reativar opt-out", async () => {
   const activities = [
     {
@@ -705,4 +793,231 @@ it("publica somente IDs de decoração conhecidos e preserva o perfil visitado",
       })
     ).status,
   ).toBe(400);
+});
+
+it("publica a coleção ampliada com datas distintas em v2 dentro do limite da API", async () => {
+  const app = setup();
+  const ids = ALL_ACHIEVEMENTS.map(({ id }) => id);
+  const dates = Object.fromEntries(
+    ids.map((id, index) => [id, new Date(1793520000123 + index * 86400123).toISOString()]),
+  );
+  const action = compactAchievementAction({
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    achievements: ids,
+    achievementDates: dates,
+    achievementFavorites: ["english-part-0"],
+  });
+  expect("achievementWire" in action && action.achievementWire?.v).toBe(2);
+  expect((await app.request("a", action)).status).toBe(200);
+  expect((await app.feed("b", "username=alice")).profile).toMatchObject({
+    achievements: ids,
+    achievementDates: dates,
+  });
+});
+
+it("publica progressão e conquista inglesas no sino com consentimento, leitura e bloqueio compartilhados", async () => {
+  const start = Date.parse("2026-10-17T12:00:00Z");
+  const records = Array.from({ length: 100 }, (_, index) => ({
+    id: `english:arcade:r:${index}`,
+    islandId: "english",
+    completedAt: new Date(start + 1000 + index).toISOString(),
+    answers: 1,
+    correct: 1,
+    englishAttempt: {
+      curriculum: 4,
+      area: "english",
+      part: 0,
+      mode: "practice",
+      questions: [index],
+      correctQuestions: [index],
+    },
+  }));
+  const final = {
+    id: "english:arcade:final",
+    islandId: "english",
+    completedAt: new Date(start + 1100).toISOString(),
+    answers: 5,
+    correct: 5,
+    englishAttempt: {
+      curriculum: 4,
+      area: "english",
+      part: 0,
+      mode: "final",
+      questions: [0, 1, 2, 3, 4],
+      correctQuestions: [0, 1, 2, 3, 4],
+    },
+  };
+  const raw = JSON.stringify({ practiceActivities: [...records, final] });
+  const app = setup(async () => studyActivitySummary(raw, start + 2000));
+  await app.request("a", { action: "activity-privacy", enabled: true });
+  await app.request("b", { action: "follow", username: "alice" });
+  app.advance(2000);
+  await app.request("a", {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    achievements: ["english-part-0"],
+    achievementDates: { "english-part-0": final.completedAt },
+  });
+  await app.request("a", { action: "publish-activities" });
+  const first = await app.feed("b", "rewards=1");
+  expect(first.activities).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ kind: "practice", course: "english", value: 105 }),
+      expect.objectContaining({ kind: "module", course: "english", level: 0 }),
+      expect.objectContaining({ kind: "achievement", ref: "english-part-0" }),
+    ]),
+  );
+  expect(first.activities).toHaveLength(3);
+  await app.request("b", { action: "read" });
+  await app.request("a", { action: "publish-activities" });
+  const repeated = await app.feed("b", "rewards=1");
+  expect(repeated.activities).toHaveLength(3);
+  expect(repeated.notifications.filter((item) => item.kind === "activity")).toHaveLength(3);
+  expect(repeated.notifications.every((item) => item.read)).toBe(true);
+  await app.request("b", { action: "block", username: "alice" });
+  expect((await app.feed("b", "rewards=1")).activities).toEqual([]);
+  await app.request("b", { action: "unblock", username: "alice" });
+  await app.request("a", { action: "activity-privacy", enabled: false });
+  expect((await app.feed("b", "rewards=1")).activities).toEqual([]);
+});
+
+// Duas contas que se seguem, cada uma estuda depois de consentir e publica. Usa o servidor real, o
+// leitor real do espaço de estudos (studyActivitySummary) e o agrupamento real que desenha a aba
+// Atividades do sino. Não usa dados de produção nem rede.
+const english = (
+  id: string,
+  at: number,
+  part: number,
+  mode: "practice" | "final",
+  q: number[],
+) => ({
+  id,
+  islandId: "english",
+  completedAt: new Date(at).toISOString(),
+  answers: q.length,
+  correct: q.length,
+  englishAttempt: { curriculum: 4, area: "english", part, mode, questions: q, correctQuestions: q },
+});
+const math = (id: string, at: number) => ({
+  id,
+  islandId: "mathematics:foundations",
+  completedAt: new Date(at).toISOString(),
+  answers: 12,
+  correct: 10,
+});
+const bellOf = (feed: SocialFeed) => ({
+  atividades: groupedActivities(feed.activities ?? []),
+  grupos: groupedNotices(feed.notifications),
+});
+function twoAccounts() {
+  const start = Date.parse("2026-10-17T12:00:00Z");
+  const cloud: Record<string, unknown[]> = { a: [], b: [] };
+  let clock = start;
+  const owner = { current: "a" };
+  const app = setup(async () =>
+    studyActivitySummary(JSON.stringify({ practiceActivities: cloud[owner.current] }), clock),
+  );
+  const publish = async (uid: string) => {
+    owner.current = uid;
+    clock = Date.parse("2026-10-17T12:00:00Z") + (app.state() ? 0 : 0) + elapsed.ms;
+    return app.request(uid, { action: "publish-activities" });
+  };
+  const elapsed = { ms: 0 };
+  const advance = (ms: number) => {
+    elapsed.ms += ms;
+    app.advance(ms);
+  };
+  return { app, cloud, publish, advance, start, at: (ms: number) => start + ms };
+}
+
+it("duas contas que se seguem veem as atividades uma da outra, em Inglês e Matemática, no sino", async () => {
+  const { app, cloud, publish, advance, at } = twoAccounts();
+  await app.request("a", { action: "activity-privacy", enabled: true });
+  await app.request("b", { action: "activity-privacy", enabled: true });
+  await app.request("a", { action: "follow", username: "bob" });
+  await app.request("b", { action: "follow", username: "alice" });
+  advance(60_000);
+  // Alice estuda Inglês (110 respostas e a prova da parte 0) e Matemática; Bob só Matemática.
+  const practice = Array.from({ length: 100 }, (_, i) =>
+    english(`en:a:${i}`, at(61_000 + i), 0, "practice", [i]),
+  );
+  cloud["a"] = [
+    ...practice,
+    english("en:a:final", at(62_000), 0, "final", [0, 1, 2, 3, 4]),
+    math("m:a", at(63_000)),
+  ];
+  cloud["b"] = [math("m:b", at(64_000))];
+  advance(120_000);
+  expect((await publish("a")).status).toBe(200);
+  expect((await publish("b")).status).toBe(200);
+
+  const alice = await app.feed("a");
+  const bob = await app.feed("b");
+  const kinds = (feed: SocialFeed) =>
+    (feed.activities ?? []).map(
+      (item) => `${item.person.username}:${item.kind}:${item.course ?? ""}`,
+    );
+  // Cada um vê as próprias atividades e as do amigo.
+  expect(kinds(alice)).toEqual(
+    expect.arrayContaining([
+      "alice:practice:english",
+      "alice:module:english",
+      "alice:practice:foundations",
+      "bob:practice:foundations",
+    ]),
+  );
+  expect(kinds(bob)).toEqual(expect.arrayContaining(kinds(alice)));
+  // O que a aba desenha não fica vazio para nenhum dos dois.
+  expect(bellOf(alice).atividades.length).toBeGreaterThanOrEqual(4);
+  expect(bellOf(bob).atividades.length).toBeGreaterThanOrEqual(4);
+  // Cada um recebe avisos só do OUTRO (nunca de si mesmo).
+  const noticeOwners = (feed: SocialFeed) =>
+    feed.notifications.filter((n) => n.kind === "activity").map((n) => n.person.username);
+  expect(new Set(noticeOwners(bob))).toEqual(new Set(["alice"]));
+  expect(new Set(noticeOwners(alice))).toEqual(new Set(["bob"]));
+  // Os avisos de atividade alimentam o contador de não lidos do sino (não viram grupos na lista).
+  const unread = (feed: SocialFeed) =>
+    feed.notifications.filter(
+      (n) => n.kind === "activity" && !n.read && n.activity && meaningfulActivity(n.activity),
+    ).length;
+  expect(unread(bob)).toBeGreaterThanOrEqual(3);
+  expect(unread(alice)).toBeGreaterThanOrEqual(1);
+});
+
+it("sem atividades no espaço da nuvem a aba fica vazia para as duas contas, mesmo seguindo-se", async () => {
+  const { app, publish, advance } = twoAccounts();
+  await app.request("a", { action: "activity-privacy", enabled: true });
+  await app.request("b", { action: "activity-privacy", enabled: true });
+  await app.request("a", { action: "follow", username: "bob" });
+  await app.request("b", { action: "follow", username: "alice" });
+  advance(120_000);
+  expect((await publish("a")).status).toBe(200);
+  expect((await publish("b")).status).toBe(200);
+  for (const uid of ["a", "b"]) {
+    const feed = await app.feed(uid);
+    expect(feed.activities).toEqual([]);
+    expect(bellOf(feed).atividades).toEqual([]);
+    expect(feed.notifications.filter((notice) => notice.kind === "activity")).toEqual([]);
+    // O aviso de "começou a seguir" continua existindo: seguir não depende de atividades.
+    expect(bellOf(feed).grupos.length).toBeGreaterThan(0);
+  }
+});
+
+it("atividade feita ANTES de consentir não aparece; só a feita depois", async () => {
+  const { app, cloud, publish, advance, at } = twoAccounts();
+  cloud["a"] = [math("antes", at(-3_600_000))];
+  await app.request("a", { action: "activity-privacy", enabled: true });
+  await app.request("b", { action: "follow", username: "alice" });
+  advance(60_000);
+  cloud["a"] = [math("antes", at(-3_600_000)), math("depois", at(30_000))];
+  advance(60_000);
+  expect((await publish("a")).status).toBe(200);
+  const feed = await app.feed("b");
+  expect(feed.activities).toHaveLength(1);
+  expect(feed.activities?.[0]?.kind).toBe("practice");
 });

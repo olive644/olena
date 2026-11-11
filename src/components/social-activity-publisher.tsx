@@ -13,26 +13,28 @@ export function SocialActivityPublisher({
   const feed = useSocialFeed(authenticated);
   const last = useRef(0);
   const published = useRef("");
+  const rewardSignature = JSON.stringify([
+    feed?.self.achievements,
+    feed?.self.achievementDates,
+    feed?.self.cards,
+    feed?.self.cardDates,
+  ]);
+  const publication = `${feed?.self.username}:${signature}:${rewardSignature}`;
   useEffect(() => {
-    if (
-      !authenticated ||
-      !savedAt ||
-      !feed?.activitySharing ||
-      published.current === `${feed.self.username}:${signature}`
-    )
+    if (!authenticated || !savedAt || !feed?.activitySharing || published.current === publication)
       return;
     const timer = window.setTimeout(
       () => {
         last.current = Date.now();
         void requestSocial({ action: "publish-activities" })
           .then(() => {
-            published.current = `${feed.self.username}:${signature}`;
+            published.current = publication;
           })
           .catch(() => {});
       },
       Math.max(0, 60000 - (Date.now() - last.current)),
     );
     return () => window.clearTimeout(timer);
-  }, [authenticated, savedAt, signature, feed?.activitySharing, feed?.self.username]);
+  }, [authenticated, savedAt, publication, feed?.activitySharing]);
   return null;
 }

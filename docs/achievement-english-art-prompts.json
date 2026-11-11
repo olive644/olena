@@ -1,0 +1,53 @@
+{
+  "tool": "Built-in imagegen",
+  "references": [
+    "public/achievement-badges/math/correct-100.webp",
+    "public/languages/characters/olena-english-v2.webp"
+  ],
+  "prompt": "Square achievement badge in the approved Olena low-poly cut-paper style. Chunky cream stone frame, teal harbor details, purple and yellow accents, dark faceted underside, real transparent alpha. Blank ivory number plate centered at 21-79 percent width and 71-85 percent height. No letters, numbers, gradients or photorealism. Keep scene above plate. Character scenes preserve Olena black-purple facets, yellow eyes, one ear star, exactly two arms and two legs, original anatomy and scarf. Integrate character naturally, never paste an avatar.",
+  "subjects": {
+    "rounds": "Boat at a harbor dock",
+    "correct": "Book and dialogue tiles",
+    "days": "Harbor lighthouse",
+    "parts": "Bridge joining harbor platforms",
+    "perfect": "Golden laurel and checked book",
+    "variety": "Market of books and ideas",
+    "part-0": "Olena welcoming visitors at harbor gate and boat",
+    "part-1": "Olena with clock and tea at habits square",
+    "part-2": "Olena with postcards at memories bridge",
+    "part-3": "Olena with compass and chart at plans lookout",
+    "part-4": "Olena at ideas lectern",
+    "part-5": "Olena with lantern and dialogue tiles at doorway",
+    "part-6": "Olena with tickets at encounters market",
+    "part-7": "Olena reading among archive shelves"
+  },
+  "output": "public/achievement-badges/english/{subject}.webp",
+  "conversion": "RETIRED: use native >=512 px cells through english_art.py; current 627 px cells downsample to 512, thumbnails128",
+  "source": "Original PNGs retained in local Codex generated_images, outside repository",
+  "progression": {
+    "date": "2026-11-06",
+    "globalAtlas": {
+      "file": "exec-338859e8-5d44-4c84-bdaf-5a72822874a7.png",
+      "grid": "8 columns by 8 rows",
+      "rows": ["rounds", "correct", "days", "parts", "perfect", "variety", "part-0", "part-1"],
+      "prompt": "Distinct progressive cut-paper harbor badges, consistent cream stone and teal frame, blank lower number plaque. Add actual objects, buildings and gold details at each tier. No characters in intermediate tiers. Transparent alpha. Eight columns from simplest scene to complete scene."
+    },
+    "partAtlas": {
+      "file": "exec-28320953-5dbd-46f3-a234-4ca65eeff978.png",
+      "grid": "4 columns by 6 rows",
+      "rows": [
+        "part-2 memories bridge and postcards",
+        "part-3 lookout compass and map",
+        "part-4 ideas lectern and dialogue",
+        "part-5 meaning house and lantern",
+        "part-6 market tickets and suitcase",
+        "part-7 archive shelves and books"
+      ],
+      "prompt": "Four progressive compositions per row in approved cut-paper style, teal cream purple and yellow, blank plaque, no characters. Transparent alpha. Preserve each location motif and add objects and architecture by tier. Remove background without changing the grid."
+    },
+    "conversion": "scripts/achievement-art/extract-english-atlases.py converts equal cells to 512px WebP and 128px thumbnails, preserving alpha. Source cells are approximately 157px in the global atlas and 256px in the part atlas; exports do not imply native 512px detail.",
+    "maximum": "Existing approved part-{id}.webp with Olena is the final confirmation tier, never used by an intermediate milestone.",
+    "retired": true
+  },
+  "supersededBy": "achievement-english-art-sources.json"
+}

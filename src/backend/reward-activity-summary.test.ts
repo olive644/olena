@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { expect, it } from "vitest";
-import { achievementActivities, cardActivities } from "./reward-activity-summary";
+import { achievementActivities, cardActivities, rewardLedgerKeys } from "./reward-activity-summary";
 
 const now = Date.parse("2026-10-20T12:00:00Z");
 const at = (day: number) => Date.parse(`2026-10-${String(day).padStart(2, "0")}T10:00:00Z`);
@@ -169,4 +169,37 @@ it("conquistas só geram evento com data comprovada e ID conhecido", () => {
     achievementActivities({ "correct-1": true }, { "correct-1": "2099-01-01T00:00:00Z" }, now),
   ).toEqual([]);
   expect(achievementActivities(undefined, undefined, now)).toEqual([]);
+});
+it("usa a mesma identidade estável para conquistas de Inglês, sem inventar datas", () => {
+  const first = achievementActivities(
+    { "english-part-0": true, "english-correct-1": true },
+    { "english-part-0": "2026-10-10T10:00:00.123Z" },
+    now,
+  );
+  expect(first).toHaveLength(1);
+  expect(first[0]).toMatchObject({
+    kind: "achievement",
+    ref: "english-part-0",
+    value: 1,
+    at: Date.parse("2026-10-10T10:00:00.123Z"),
+  });
+  expect(
+    achievementActivities(
+      { "english-part-0": true },
+      { "english-part-0": "2026-10-10T10:00:00.123Z" },
+      now,
+    )[0]?.id,
+  ).toBe(first[0]?.id);
+});
+
+it("lê no máximo dois ledgers e reconhece todos os formatos de recibo inglês", () => {
+  for (const key of ["languageAttempt", "englishAttempt", "englishA1Attempt"]) {
+    expect(rewardLedgerKeys(JSON.stringify({ practiceActivities: [{ [key]: {} }] }))).toEqual([
+      "helena.mathPlaceRewards.v1",
+      "helena.englishRewards.v1",
+    ]);
+  }
+  for (const raw of [null, 42, "{}", JSON.stringify({ notes: ['"englishAttempt":'] })]) {
+    expect(rewardLedgerKeys(raw)).toEqual(["helena.mathPlaceRewards.v1"]);
+  }
 });

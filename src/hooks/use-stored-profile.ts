@@ -4,7 +4,7 @@ import { SYNCED_STORAGE_EVENT, SYNCED_STORAGE_APPLIED_EVENT } from "../data/sync
 import type { StoredProfile } from "../domain/profile-identity";
 import { profileCover } from "../domain/profile-covers";
 import { validAchievementFavorites } from "../domain/math-achievements";
-import { generalAchievementHistory } from "../domain/general-achievement-catalog";
+import { retainedAchievementHistory } from "../domain/achievement-history";
 import { activeArcanaId } from "../data/arcana-ids";
 export type { StoredProfile } from "../domain/profile-identity";
 export function readStoredProfile(): StoredProfile {
@@ -27,7 +27,7 @@ export function readStoredProfile(): StoredProfile {
     if (!validAchievementFavorites(profile.achievementFavorites))
       delete profile.achievementFavorites;
     if ("achievementHistory" in profile)
-      profile.achievementHistory = generalAchievementHistory(profile.achievementHistory);
+      profile.achievementHistory = retainedAchievementHistory(profile.achievementHistory);
     if ("frame" in profile) profile.frame = profileFrame(profile.frame);
     if ("background" in profile) profile.background = profileBackground(profile.background);
     if ("cover" in profile) profile.cover = profileCover(profile.cover);

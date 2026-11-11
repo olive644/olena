@@ -6,6 +6,7 @@ import {
   type WorkspaceKeyValueStore,
 } from "../data/indexed-workspace-store";
 import { workspaceReducer } from "../domain/workspace";
+import { mergeAccountWorkspace } from "../domain/workspace-sync-merge";
 import type { WorkspaceAction } from "../domain/workspace";
 import {
   WORKSPACE_HISTORY_KEY,
@@ -71,13 +72,7 @@ export function useWorkspace() {
         if (cancelled || serialized === undefined || revision.current !== readingRevision) return;
         const indexed = loadWorkspace({ getItem: () => serialized });
         const cached = loadWorkspace(window.localStorage);
-        const sessions = new Map(indexed.focusSessions.map((session) => [session.id, session]));
-        for (const session of cached.focusSessions)
-          if (!sessions.has(session.id)) sessions.set(session.id, session);
-        reduce({
-          type: "workspace/replaced",
-          workspace: { ...indexed, focusSessions: [...sessions.values()] },
-        });
+        reduce({ type: "workspace/replaced", workspace: mergeAccountWorkspace(cached, indexed) });
       })
       .catch(() => {
         // Espelho best-effort: uma falha aqui só significa que o app segue com o localStorage.

@@ -156,3 +156,89 @@ it("exportação PNG desenha o fundo e a moldura escolhidos junto ao header", as
   click.mockRestore();
   vi.unstubAllGlobals();
 });
+
+it("exportação PNG continua baixando quando um enfeite não carrega", async () => {
+  const drawn: string[] = [];
+  Object.defineProperty(document, "fonts", {
+    configurable: true,
+    value: { ready: Promise.resolve() },
+  });
+  // Fundo, moldura e o número do nível são imagens extras: se o aparelho não conseguir
+  // decodificá-las (ou o logo do QR não baixar), o cartão sai mesmo assim, sem elas.
+  class DecodedImage {
+    src = "";
+    naturalWidth = 1200;
+    naturalHeight = 320;
+    async decode() {
+      if (this.src.includes("/profile-cosmetics/") || this.src.startsWith("data:image/svg+xml"))
+        throw new DOMException("indisponível", "EncodingError");
+    }
+  }
+  vi.stubGlobal("Image", DecodedImage);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => {
+      throw new TypeError("Failed to fetch");
+    }),
+  );
+  vi.stubGlobal(
+    "URL",
+    Object.assign(URL, {
+      createObjectURL: vi.fn(() => "blob:profile-test"),
+      revokeObjectURL: vi.fn(),
+    }),
+  );
+  const context = {
+    fillRect: vi.fn(),
+    fillText: vi.fn(),
+    beginPath: vi.fn(),
+    moveTo: vi.fn(),
+    lineTo: vi.fn(),
+    closePath: vi.fn(),
+    fill: vi.fn(),
+    save: vi.fn(),
+    restore: vi.fn(),
+    clip: vi.fn(),
+    measureText: () => ({ width: 30 }),
+    drawImage: (image: DecodedImage) => drawn.push(image.src),
+  };
+  const canvas = vi
+    .spyOn(HTMLCanvasElement.prototype, "getContext")
+    .mockReturnValue(context as unknown as CanvasRenderingContext2D);
+  const blob = vi
+    .spyOn(HTMLCanvasElement.prototype, "toBlob")
+    .mockImplementation((callback) => callback(new Blob(["png"], { type: "image/png" })));
+  const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+  const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+  const person: SocialProfile = {
+    username: "enfeites",
+    name: "Enfeites",
+    photoUrl: "/profile-avatars/oliver.webp",
+    followers: 0,
+    following: 0,
+    followsYou: false,
+    followed: false,
+    shared: true,
+    cover: "mathematics",
+    details: {
+      level: 4,
+      streaks: { pomodoro: 0, timer: 0, islands: 0 },
+      socialLinks: [],
+      frame: "bi",
+      background: "trans",
+    },
+  };
+  const { unmount } = render(<ProfileShareCard person={person} />);
+  fireEvent.click(screen.getByRole("button", { name: "Salvar cartão" }));
+  await waitFor(() => expect(click).toHaveBeenCalledOnce());
+  expect(drawn).toContain("/profile-covers/mathematics.svg");
+  expect(drawn).not.toContain("/profile-cosmetics/bi.svg");
+  expect((await screen.findByRole("status")).textContent).toBe("Cartão salvo.");
+  expect(warn).toHaveBeenCalled();
+  unmount();
+  canvas.mockRestore();
+  blob.mockRestore();
+  click.mockRestore();
+  warn.mockRestore();
+  vi.unstubAllGlobals();
+});

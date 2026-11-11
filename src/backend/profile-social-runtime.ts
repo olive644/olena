@@ -9,7 +9,7 @@ import { checkRateLimit } from "./rate-limit.js";
 import { createFirebaseSocialWatcher } from "./firebase-social-events.js";
 import { createProfileSocialEvents } from "./profile-social-events.js";
 import { studyActivitySummary } from "./study-activity-summary.js";
-import { cardActivities } from "./reward-activity-summary.js";
+import { cardActivities, rewardLedgerKeys } from "./reward-activity-summary.js";
 import { resolveBrazilianZone } from "../data/agenda-time-zone.js";
 const config = {
   databaseUrl: process.env["FIREBASE_DATABASE_URL"] ?? "",
@@ -53,9 +53,7 @@ const handleFeed = createProfileSocialHandler({
     // cartas ficam de fora: os resumos de estudo continuam saindo.
     const cards = await (async () => {
       try {
-        const keys = ["helena.mathPlaceRewards.v1"];
-        if (typeof raw === "string" && raw.includes('"languageAttempt"'))
-          keys.push("helena.englishRewards.v1");
+        const keys = rewardLedgerKeys(raw);
         const ledgers = await Promise.all(
           keys.map(async (key) => {
             const wire = `k_${Buffer.from(key).toString("base64url")}`;

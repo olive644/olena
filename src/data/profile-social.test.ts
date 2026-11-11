@@ -82,6 +82,17 @@ it("aceita conclusão de módulo oficial e recusa metadados arbitrários", async
     course: "foundations",
     level: 0,
   });
+  activity.course = "english";
+  for (const level of [0, 6, 7]) {
+    activity.level = level;
+    expect((await requestSocial()).activities?.[0]).toMatchObject({ course: "english", level });
+  }
+  activity.level = 8;
+  await expect(requestSocial()).rejects.toThrow("Resposta inválida");
+  activity.course = "foundations";
+  activity.level = 6;
+  await expect(requestSocial()).rejects.toThrow("Resposta inválida");
+  activity.level = 0;
   activity.course = "private-note-title";
   await expect(requestSocial()).rejects.toThrow("Resposta inválida");
 });

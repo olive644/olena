@@ -81,6 +81,16 @@ export function ProfileShareCard({
     if (saving || (cards.length > 0 && catalog.length !== 78)) return;
     setSaving(true);
     setStatus("");
+    // Foto, capa e QR são o cartão. Fundo, moldura, número do nível, logo do QR, conquistas e
+    // cartas são enfeites: se um não carregar neste aparelho, o cartão sai sem ele em vez de
+    // falhar por inteiro.
+    const optional = async (what: string, step: () => Promise<void>) => {
+      try {
+        await step();
+      } catch (cause) {
+        console.warn(`Cartão: ${what} indisponível`, cause);
+      }
+    };
     try {
       await document.fonts.ready;
       const avatar = new Image();
@@ -99,12 +109,13 @@ export function ProfileShareCard({
       context.fillStyle = "#FFF9EF";
       context.fillRect(0, 0, 720, canvas.height);
       const backgroundId = profileBackground(person.details?.background);
-      if (!["paper", "night", "geometry"].includes(backgroundId)) {
-        const background = new Image();
-        background.src = `/profile-cosmetics/background-${backgroundId}.svg`;
-        await background.decode();
-        context.drawImage(background, 0, 220, 720, canvas.height - 220);
-      }
+      if (!["paper", "night", "geometry"].includes(backgroundId))
+        await optional("fundo", async () => {
+          const background = new Image();
+          background.src = `/profile-cosmetics/background-${backgroundId}.svg`;
+          await background.decode();
+          context.drawImage(background, 0, 220, 720, canvas.height - 220);
+        });
       const coverScale = Math.max(720 / cover.naturalWidth, 220 / cover.naturalHeight);
       const coverWidth = 720 / coverScale,
         coverHeight = 220 / coverScale;
@@ -125,12 +136,13 @@ export function ProfileShareCard({
       const frameId = profileFrame(person.details?.frame);
       if (frameId === "none") context.drawImage(avatar, 180, 120, 360, 360);
       else context.drawImage(avatar, 216, 156, 288, 288);
-      if (frameId !== "none") {
-        const frame = new Image();
-        frame.src = `/profile-cosmetics/${frameId}.svg`;
-        await frame.decode();
-        context.drawImage(frame, 181.44, 121.44, 357.12, 357.12);
-      }
+      if (frameId !== "none")
+        await optional("moldura", async () => {
+          const frame = new Image();
+          frame.src = `/profile-cosmetics/${frameId}.svg`;
+          await frame.decode();
+          context.drawImage(frame, 181.44, 121.44, 357.12, 357.12);
+        });
       // Selo de nível no canto da foto, igual ao do perfil: pentágono amarelo com sombra,
       // "NV" pequeno e os dígitos de papel.
       {
@@ -165,34 +177,36 @@ export function ProfileShareCard({
         context.textBaseline = "middle";
         context.fillText(uiText(464), start, top + height / 2);
         context.textBaseline = "alphabetic";
-        const layer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        layer.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-        layer.setAttribute("viewBox", `0 0 ${digits.length * 66} 98`);
-        layer.setAttribute(
-          "style",
-          "--digit-face:#292432;--digit-depth:#17131D;--digit-fold:#51465D;--digit-edge:#211B29",
-        );
-        digits.forEach((digit, index) => {
-          const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
-          use.setAttribute("href", `/paper-digits.svg#digit-${digit}`);
-          use.setAttribute("x", String(index * 66));
-          use.setAttribute("y", "0");
-          use.setAttribute("width", "66");
-          use.setAttribute("height", "98");
-          layer.append(use);
+        await optional("número do nível", async () => {
+          const layer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          layer.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+          layer.setAttribute("viewBox", `0 0 ${digits.length * 66} 98`);
+          layer.setAttribute(
+            "style",
+            "--digit-face:#292432;--digit-depth:#17131D;--digit-fold:#51465D;--digit-edge:#211B29",
+          );
+          digits.forEach((digit, index) => {
+            const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+            use.setAttribute("href", `/paper-digits.svg#digit-${digit}`);
+            use.setAttribute("x", String(index * 66));
+            use.setAttribute("y", "0");
+            use.setAttribute("width", "66");
+            use.setAttribute("height", "98");
+            layer.append(use);
+          });
+          const { inlineAchievementArt } = await import("../data/achievement-png");
+          await inlineAchievementArt(layer, () => false);
+          const digitImage = new Image();
+          digitImage.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(layer))}`;
+          await digitImage.decode();
+          context.drawImage(
+            digitImage,
+            start + nvWidth + 3 * scale,
+            top + (height - digitHeight) / 2,
+            digits.length * digitWidth,
+            digitHeight,
+          );
         });
-        const { inlineAchievementArt } = await import("../data/achievement-png");
-        await inlineAchievementArt(layer, () => false);
-        const digitImage = new Image();
-        digitImage.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(layer))}`;
-        await digitImage.decode();
-        context.drawImage(
-          digitImage,
-          start + nvWidth + 3 * scale,
-          top + (height - digitHeight) / 2,
-          digits.length * digitWidth,
-          digitHeight,
-        );
       }
       context.textAlign = "left";
       context.fillStyle = "#292432";
@@ -262,17 +276,18 @@ export function ProfileShareCard({
             );
       const svg = qrElement.current?.querySelector("svg")?.cloneNode(true) as
         SVGSVGElement | undefined;
-      if (svg) {
-        const logo = await (await fetch("/favicon-star.svg")).text();
-        svg
-          .querySelector("image")
-          ?.setAttribute("href", `data:image/svg+xml;charset=utf-8,${encodeURIComponent(logo)}`);
-        svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-        const code = new Image();
-        code.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(svg))}`;
-        await code.decode();
-        context.drawImage(code, 430, 660, 240, 240);
-      }
+      if (svg)
+        await optional("logo do QR", async () => {
+          const logo = await (await fetch("/favicon-star.svg")).text();
+          svg
+            .querySelector("image")
+            ?.setAttribute("href", `data:image/svg+xml;charset=utf-8,${encodeURIComponent(logo)}`);
+          svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+          const code = new Image();
+          code.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(svg))}`;
+          await code.decode();
+          context.drawImage(code, 430, 660, 240, 240);
+        });
       context.fillStyle = "#7C3AED";
       context.font = "800 24px Manrope, sans-serif";
       context.fillText(uiText(903), 40, 730);
@@ -287,37 +302,43 @@ export function ProfileShareCard({
             ?.closest(".social-share-card")
             ?.querySelectorAll(".social-share-highlights .math-achievement-art > svg") ?? []),
         ] as SVGSVGElement[];
-        const { inlineAchievementArt } = await import("../data/achievement-png");
-        for (const [index, art] of arts.entries()) {
-          const clone = art.cloneNode(true) as SVGSVGElement;
-          for (const image of clone.querySelectorAll("image"))
-            image.setAttribute("href", (image.getAttribute("href") ?? "").replace("/thumb/", "/"));
-          await inlineAchievementArt(clone, (path) =>
-            /^\/achievement-badges\/(math|general)\/[a-z0-9-]+\.webp$/.test(path),
-          );
-          clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-          const badge = new Image();
-          badge.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(clone))}`;
-          await badge.decode();
-          context.drawImage(badge, 40 + index * 98, 816, 88, 88);
-        }
+        for (const [index, art] of arts.entries())
+          await optional("conquista", async () => {
+            const { inlineAchievementArt } = await import("../data/achievement-png");
+            const clone = art.cloneNode(true) as SVGSVGElement;
+            for (const image of clone.querySelectorAll("image"))
+              image.setAttribute(
+                "href",
+                (image.getAttribute("href") ?? "").replace("/thumb/", "/"),
+              );
+            await inlineAchievementArt(clone, (path) =>
+              /^\/achievement-badges\/(math|general)\/[a-z0-9-]+\.webp$/.test(path),
+            );
+            clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+            const badge = new Image();
+            badge.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(clone))}`;
+            await badge.decode();
+            context.drawImage(badge, 40 + index * 98, 816, 88, 88);
+          });
       }
       if (cards.length) {
         const sources = qrElement.current
           ?.closest(".social-share-card")
           ?.querySelectorAll<HTMLElement>(".social-share-cards .arcana-paper");
-        if (sources?.length !== cards.length) throw new Error("Cards unavailable");
-        const { arcanaThumbnailPng } = await import("../data/arcana-png");
-        for (const [index, source] of [...sources].entries()) {
-          const image = await arcanaThumbnailPng(source);
-          const x = 40 + index * 108,
-            y = 930,
-            width = 90,
-            height = (width * 598) / 348;
-          context.fillStyle = "#6d28d9";
-          context.fillRect(x + 1, y + 4, width, height);
-          context.drawImage(image, x, y, width, height);
-        }
+        await optional("cartas", async () => {
+          if (sources?.length !== cards.length) throw new Error("Cards unavailable");
+          const { arcanaThumbnailPng } = await import("../data/arcana-png");
+          for (const [index, source] of [...sources].entries()) {
+            const image = await arcanaThumbnailPng(source);
+            const x = 40 + index * 108,
+              y = 930,
+              width = 90,
+              height = (width * 598) / 348;
+            context.fillStyle = "#6d28d9";
+            context.fillRect(x + 1, y + 4, width, height);
+            context.drawImage(image, x, y, width, height);
+          }
+        });
       }
       context.fillStyle = "#51465D";
       context.font = "700 18px Manrope, sans-serif";

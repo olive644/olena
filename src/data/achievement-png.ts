@@ -1,6 +1,7 @@
 import { uiLocale, uiText } from "../i18n/runtime";
 import type { Achievement } from "../domain/math-achievements";
 import {
+  achievementArtPath,
   ACHIEVEMENT_MATERIALS,
   ACHIEVEMENT_THEMES,
   achievementTheme,
@@ -66,12 +67,7 @@ export async function achievementPng(
 ): Promise<File> {
   await document.fonts?.ready;
   const svg = source.cloneNode(true) as SVGSVGElement;
-  await inlineAchievementArt(svg, (path) =>
-    [
-      `/achievement-badges/math/${achievement.id}.webp`,
-      `/achievement-badges/general/${achievement.id}.webp`,
-    ].includes(path),
-  );
+  await inlineAchievementArt(svg, (path) => path === achievementArtPath(achievement));
   const image = new Image();
   const url = URL.createObjectURL(
     new Blob([new XMLSerializer().serializeToString(svg)], { type: "image/svg+xml" }),

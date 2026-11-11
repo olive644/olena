@@ -129,7 +129,8 @@ export function SocialDirectory({
   const [feed, setFeed] = useState<SocialFeed>();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(true);
-  const [sharing, setSharing] = useState(initialSharing);
+  // Uma lista de seguidores ou seguindo tem prioridade: nunca abre o card no lugar dela.
+  const [sharing, setSharing] = useState(initialSharing && !initialList);
   const [status, setStatus] = useState("");
   const [list, setList] = useState<
     { kind: "followers" | "following"; owner: string } | undefined
@@ -636,7 +637,7 @@ export function SocialDirectory({
         </>
       )}
       {confirmationPanel}
-      {sharing && error && <p role="alert">{uiText(error)}</p>}
+      {sharing && feed && error && <p role="alert">{uiText(error)}</p>}
     </dialog>
   );
 }

@@ -1,3 +1,17 @@
+## Teco e personalização de Inglês, 09/11/2026
+
+Integração autorizada pela proprietária: Teco usa a imagem aprovada do guaxinim com boina, exportada em WebP 512x512 com alpha. Avatar livre, sem requisito de progresso. Cosméticos ingleses usam o ID english, com header panorâmico, moldura octogonal de abertura circular transparente e fundo opaco que cobre a superfície inteira. Paleta britânica azul, vermelho e branco, livros e conversa, sem raios. SVGs nativos implementam a composição aprovada e mantêm os mesmos caminhos e proporções de Matemática.
+
+A moldura Guardião das palavras requer concluir todas as oito partes da ilha de Inglês (english-parts-8). Header Horizonte das palavras e fundo Guardião das palavras requerem 100 acertos ingleses (english-correct-100). Não aceitar conquistas de Matemática como substituto. O cálculo usa atividades aceitas e o livro inglês sincronizado, preservando conquistas registradas no perfil. O seletor recebe o workspace atual e verifica novamente o livro e as conquistas ao salvar. Nada concede XP ou progresso pela decoração. Os catálogos compartilhados permitem os mesmos IDs no perfil, visita, prévia e PNG; não há nova chave Firebase ou mudança de regras.
+
+Preparação: sintaxe TS/TSX, diff sem espaços inválidos, fixture estrutural dos streaks e limiares isolados dos cosméticos passaram. Rasterização dos SVGs confirmou fundo totalmente opaco e abertura transparente; Teco conserva quatro cantos transparentes. Verificação completa, React e provas reais de claro/escuro em PC/celular serão conferidas no CI desta PR. Não interpretar esses checks isolados como execução do aplicativo. Detalhes em ENGLISH_PROFILE_COSMETICS.md.
+
+## Ofensivas agrupadas no perfil e sino, 09/11/2026
+
+ProfileStreakValues agrupa duas ou mais ofensivas ativas em details/summary nativo, inicialmente recolhido. O resumo usa os ícones originais sobrepostos e a quantidade de sequências, sem somar dias. Abrir revela nome e dias de cada sequência. Uma sequência conserva a inspeção anterior; zero não monta indicador. Mudança no conjunto ativo recria o grupo recolhido. Escape recolhe e devolve foco ao resumo. Sem mudança de progresso, sincronização ou contrato público.
+
+Verificação local: sintaxe TS/TSX pelo Babel disponível e git diff --check aprovados. Fixture estrutural com runtime JSX mínimo cobriu zero a quatro sequências, contadores independentes, artes, Escape e troca de identidade do grupo. Isso não substitui React/Vitest. npm run verify foi tentado e parou em eslint ausente; teste unitário parou em vitest ausente; test:e2e não iniciou por ausência do runner do projeto. Chromium instalado também falhou ao iniciar no isolamento, com Operation not permitted no crashpad. Claro/escuro, PC/celular, teclado/toque e integração real permanecem não verificados. Casos em profile-streaks.test.tsx e e2e/grouped-streaks.spec.ts foram adicionados para executar em ambiente completo. PR deve permanecer em rascunho até validar esses pontos.
+
 ## Porto das Vozes e Inglês introdutório, 02/11/2026
 
 Primeiro percurso inglês com seis partes e conteúdo original. Reutilizar eventos de prática, merge por ID, motor de baús/cartas e XP; separar o registro inglês de recompensas para preservar abas antigas de Matemática. Não representar o percurso como A1 completo ou tutor generativo. Apenas vozes inglesas locais, acionadas pelo aluno, com alternativa textual. Respostas de diálogo incluem intenção explícita para evitar alternativas genéricas igualmente plausíveis. Pesquisa, operação Firebase e limites em VOICES_PORT.md. Verify integral final aprovado: 389 arquivos e 2.524 testes; lint sem erros e 27 avisos existentes; tipos/API/idiomas/formatação/build/desempenho verdes. Aplicação 1693,3 KiB de 1704 e entrada 220,6 KiB. O teto total foi ajustado sob autorização vigente do proprietário para crescimento de funcionalidades, sem alterar o teto da entrada e sem dependências novas. Dez E2E Edge/Chromium de Inglês e Matemática passaram em PC/mobile claro/escuro, sem skips; a matriz inglesa usa 320 × 568. Logs externos voices-final-verify.log e voices-final-browser.log. Ainda não afirmar publicação de regras ou sincronização real.
@@ -98,7 +112,7 @@ ProfileStreakValues e ProfileNetworks são compartilhados com a inspeção de am
 
 Foco sem tempo fantasma: readFocusSession pausa snapshots sem heartbeat por mais de 120 s. FocusView detecta o mesmo intervalo antes de calcular tempo ou percorrer ciclos, preservando o último progresso. pagehide salva a sessão pausada; abas em segundo plano continuam contando com execução viva. Não apagar sessões concluídas antigas automaticamente. Widget do Espaço usa AnimatedPomodoroTomato com sound=false.
 
-Inspeção de amigos não renderiza atividades, que continuam no sino. useProfilePresentation publica somente nível, contadores de streak e links reconhecidos junto da apresentação da conta confirmada. O servidor valida, normaliza links e carimba updatedAt; visita não recebe workspace nem registros privados. Metadados de exibição não concedem XP ou plano. Streaks com resumo de mais de 24 h não são exibidos. ProfileLabels reserva DEV/GALAXIA/BETA TESTER ao @bizzok exato.
+Inspeção de amigos não renderiza atividades, que continuam no sino. useProfilePresentation publica somente nível, contadores de streak e links reconhecidos junto da apresentação da conta confirmada. O servidor valida, normaliza links e carimba updatedAt; visita não recebe workspace nem registros privados. Metadados de exibição não concedem XP ou plano. Streaks com resumo de mais de 24 h não são exibidos. ProfileLabels mantém somente BETA TESTER para o @bizzok exato.
 
 Pop-up corrigido: PomodoroControls só recolhe com collapsible=true no portal; no Foco fica aberto sem seta. loadRiveRuntime(owner=window) mantém cache WeakMap por janela: Rive do pop-up não escuta visibilitychange da origem. Timer instante também usa a janela dona. PaperDigits mantém seu SVG original; a chave por posição/caractere recria apenas o glifo alterado. Duplicar símbolos na janela foi descartado por distorcer seus recortes. Fundo vermelho-claro com tomatinhos só na miniatura, sem rolagem. API PiP não oferece transparência nativa; clique chama requestWindow real, sem simular permissões.
 
@@ -1885,3 +1899,59 @@ A pedido do proprietário, Enviar resposta foi removido. AudioWorklet alimenta P
 Camada pura src/domain/english-learning.ts reúne prontidão para novas confirmações e amostragem de cinco contextos distintos. english-skills.ts cobre todas as oito partes. english-adaptive.ts limita dificuldade antes de diversidade e intercala revisão de evidência antiga quando elegível. A1 mantém o seletor e a cobertura próprios. Estudo recolhível em english-study-guide.tsx e escrita opcional no componente existente, sem nova dependência, armazenamento ou serviço. english-answer.ts expande apenas contrações inequívocas. Não mudar formato do ledger nem reavaliar confirmações antigas. Provas e limites em VOICES_PORT.md; validação final será registrada no audit.
 
 2026-11-06, app Android: o site é empacotado como TWA (docs/ANDROID_PLAY_STORE.md). Arquivos: public/manifest.webmanifest, public/android/ (ícones), android/twa-manifest.json (pacote olenastudy.app, o do app já criado no Play Console), android/store/ (ícone da loja), scripts/android/render-android-icons.mjs e make-assetlinks.mjs. O assetlinks.json só entra com a impressão digital real da Play. Teste: src/android-twa.test.ts. Nada foi gerado nem publicado ainda.
+
+## Conquistas inglesas, 06/11/2026
+
+Reutilizar ALL_ACHIEVEMENTS e a coleção existente para os 74 objetivos ingleses, agrupados em 22 famílias. Derivação usa recibos aceitos de englishProgress, agrupados por rodada; preserva histórico sincronizado e datas comprovadas. Oito confirmações específicas usam Olena como nível máximo, após 25 e 50 atividades distintas por parte. Cada parte também oferece 20 e 100 acertos. Artes por nível são resolvidas por achievementArtPath, preservando IDs anteriores. profileStreaks inclui inglês aceito, expiração de 24h e fuso da conta; perfil e sino compartilham ProfileStreakValues. O perfil público valida e publica streaks.english opcional, aceitando metadados antigos. activity publisher acompanha metadados de recompensas após share para não perder o aviso no sino. Transporte achievementWire mantém v1 e usa v2 (token.offset em base 36) quando v1 também excede 4096 bytes, sem aumentar o limite nem mudar dados armazenados ou respostas. O leitor v2 deve permanecer no servidor durante rollback. Contrato e rollback em ACHIEVEMENT_DESIGN.md; prompts em achievement-english-art-prompts.json.
+
+## Feed de atividades de Inglês, 06/11/2026
+
+studyActivitySummary aceita recibos ingleses atuais e legados através de englishProgress, sem publicar conteúdo privado. Agrupa dez ou mais respostas por dia/fuso na modalidade english e publica confirmação aceita de cada uma das oito partes como module, com o ID estável module:english:parte. Preserva janela de 24 horas, doze resumos, cotas, consentimento, leitura, curtidas, bloqueio e retenção existentes de Matemática. profile-social.ts reconhece course english e níveis 0 a 7, conservando 0 a 5 para Matemática. SocialActivityCard usa os nomes oficiais das partes e distingue Inglês de Matemática. rewardLedgerKeys detecta languageAttempt, englishAttempt e englishA1Attempt, mantendo no máximo os dois ledgers já permitidos. Conquistas inglesas publicadas pelo perfil continuam no mesmo fluxo achievementActivities, com IDs conhecidos e datas comprovadas; v2 evita falha de tamanho no compartilhamento da coleção ampliada.
+
+### Artes inglesas com resolução nativa, 07/11/2026
+
+O pipeline scripts/achievement-art/english_art.py substitui a ampliação dos atlas antigos. Executar `python scripts/achievement-art/english_art.py --plan docs/achievement-english-art-sources.json` com os PNGs originais presentes nos caminhos do manifesto. Cada recorte precisa ter pelo menos 512 px; exportação atual reduz 627 para 512 e gera thumb de 256. O manifesto registra SHA256 de fontes e saídas. O comando também gera src/data/english-achievement-plates.ts para centrar PaperDigits nas placas reais. As URLs inglesas carregam revisão de cache em achievementArtPath.
+
+Regressões: `python -m unittest discover -s scripts/achievement-art -p 'test_*.py'` impede ampliação e sobrescrita parcial; english-achievement-art.test.ts verifica 74 imagens, dimensões, hashes e mapa de placas. Evidências de comparação em escala igual e oito poses estão em artifacts/english-art-quality-review.
+
+### Espaço do aluno: widget inglês, 06/11/2026 (Recife)
+
+MathPracticeHero passa a alternar manualmente entre Matemática e Inglês. TodayView fornece onEnglishPractice, usando o mesmo sinal olena:enter-english e a navegação learn já existentes para abrir diretamente o percurso. englishStreak e englishProgress fornecem somente recibos aceitos, no fuso da conta, com a mesma expiração de 24 horas; um recibo inglês inválido não adia o aviso. Não cria dados ou progresso paralelos.
+
+Arte inglesa escolhida pela responsável, sem os dois balões, em languages/olena-english-widget.webp; fonte e hashes em artifacts/english-student-widget/art-source.json. Seletores, teclado e toque testados em math-practice-hero.test.tsx; entrada direta coberta por app.test.tsx e e2e/english-student-widget.spec.ts. Capturas em artifacts/english-student-widget. Textos novos acrescentados aos catálogos pt-BR/en-US sem renumerar os anteriores.
+
+### Widgets: decoração e preparação da Olena, 07/11/2026 (Recife)
+
+MathPracticeHero prepara a imagem inglesa com Image/decode em idle e por intenção no seletor, respeitando saveData durante idle. A imagem visível tem fetchPriority high e não espera o efeito de entrada. Arte e Rive usam revisão v2.
+
+Oliver: generate.cjs publica somente as seis imagens do personagem; nós e trilhas dos sinais foram retirados. O corpo foi limpo do fragmento amarelo remanescente. Exportar o primeiro quadro com `node scripts/oliver-peek-rive/export.mjs http://127.0.0.1:4176 /tmp/oliver-widget-rest.png` após gerar o Rive, mantendo 900 × 600. slice.cjs e camadas de sinais ficam como histórico da decomposição inicial, não devem refazer a arte atual. Manifesto e capturas em artifacts/student-widget-cleanup.
+
+practice-hero-priority.ts deriva os dois resumos da regra compartilhada practiceStreak e de englishProgress aceito, no fuso da conta. Prioriza expiração em até uma hora, depois mais dias; datas futuras, recibos ingleses inválidos e ofensivas vencidas não ganham prioridade. MathPracticeHero mantém seleção manual separada da recomendação, inclusive quando chega histórico depois da primeira renderização.
+
+## Atualização por gesto e selos, 07/11/2026
+
+`PullToRefresh` acompanha toques no topo nas telas Espaço, Perfil e Notificações. A partir de 80 px de deslocamento amortecido, soltar recarrega o endereço atual. Puxada curta, cancelamento, multitouch, rolagem interna e gesto horizontal não recarregam. Campos, controles e diálogos ficam protegidos. O componente é desmontado nas telas de prática, sala, cronômetros e edição, preservando seus gestos. A contenção de overscroll é aplicada somente enquanto ele está montado. Não substitui indicadores que pertençam ao sistema operacional fora da página.
+
+A apresentação usa `HelenaLoading` com variante `refresh` e SVG original de livro/estrela em papel. O lápis existente foi extraído para um arquivo SVG com a mesma animação CSS, reduzindo JavaScript; movimento reduzido continua desativando a animação. SVGs são recursos do próprio app, sem biblioteca nova. A arte inglesa mantém 900x600, WebP de 49.232 bytes e revisão `v=3` tanto na preparação quanto na imagem exibida.
+
+`profileLabelNames` mantém somente BETA TESTER para o nome confirmado `bizzok`, removendo DEV e GALAXIA em todos os consumidores, incluindo os cartões públicos. As permissões dos outros nomes não mudam.
+
+## Ícone Android e onboarding, 10/11/2026
+
+O questionário usa palco central, uma pergunta visível por etapa e a mesma configuração da API. A arte Android de referência é android/store/play-store-icon-512.png. Rode node scripts/android/render-android-icons.mjs para gerar os ícones do manifesto. A troca no pacote instalado depende de gerar um novo APK/AAB assinado.
+
+## Entrada e feedback de autenticação, 10/11/2026
+
+Título da capa reutiliza PaperCardTitle e botão acompanha sua largura. Cadastro exige oito caracteres sem composição adicional local; Firebase continua autoritativo. Validação de email e senha no modal usa a notificação de papel compartilhada. OAuth externo mantém formulário acessível, cancelamento Google libera controles e pageshow restaura estado ao retornar do Discord. Sem alteração de configuração externa.
+
+Validação: 30 testes de autenticação passaram; capa e modal conferidos em Edge 1280 e 390 px, claro/escuro, sem overflow. OAuth real não verificado. Primeira tentativa integral bloqueada por erros react-hooks em app.tsx e onboarding-view.tsx; a correção posterior da transição removeu esses erros, sem declarar o gate integral aprovado.
+
+## Conta existente entre métodos, 10/11/2026
+
+Proprietário confirmou uma única conta no Firebase; Google substituiu método manual e onboarding piscou por cerca de um segundo durante sincronização. App decide retorno de forma síncrona quando conclusão já chegou e OnboardingView aguarda conta após autenticação. Nenhuma fusão ou remoção de usuário. Google com colisão exige autenticação original antes de linkWithCredential; OAuth fica em memória. Discord consulta e-mail retornado pelo provedor e só associa automaticamente se único e verificado nas duas pontas; demais casos entram pela conta original para vínculo explícito. Configurações leem os provedores reais e o vínculo privado. Ver AUTHENTICATION.md para limites do Firebase em senha de e-mail não verificado. Testes locais com serviços simulados, OAuth e contas reais não verificados.
+
+## Teto de JavaScript autorizado, 10/11/2026
+
+Proprietário pediu explicitamente subir o teto após a medição de 1761,1 KiB. Orçamento total e teto rígido passam de 1748 para 1764 KiB, com 2,9 KiB de margem na medição atual. Entrada, dependências, outros orçamentos, workflows e tempos permanecem iguais. Ampliação cobre a entrada visual e a associação/retorno de contas; não foi alegada redução de tamanho nem de custo.
+
+Validação final desta correção: 108 testes focados de entrada, associação Google/Discord, estados das configurações e política aprovados; um teste adicional do hook real recupera onboarding e progresso do mesmo UID ao voltar com Google. Quatro E2E de entrada em Edge PC/mobile claro/escuro passaram. TypeScript e build passaram; orçamento após autorização também passou (1761,1 de 1764 KiB, entrada 219,5 KiB). A tentativa integral anterior registrou treze falhas: doze expectativas antigas de onboarding/ícones/isolamento e uma redação técnica da política, esta última corrigida e revalidada no conjunto focado. Não foi alegado verify integral verde. OAuth/contas reais não exercitados, sem alterações externas e sem publicação/merge nesta revisão.

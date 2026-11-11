@@ -397,3 +397,23 @@ Cartas de arcano seguem exclusivamente [ARCANA_CARD_DESIGN.md](ARCANA_CARD_DESIG
 ## Foco informativo e realce global, 03/11/2026
 
 Realçar seleções controla somente o reforço opcional de aria-pressed/aria-selected/input marcado, aplicado pela preferência global data-highlight-selections. Foco de teclado em controles é obrigatório mesmo com a opção desligada. Títulos e marcos de leitura com tabindex=-1 recebem foco programático para anúncio e continuidade, mas nunca sublinhado, filtro ou sombra de botão. A exceção global em paper-controls.css exclui botões, links, campos, summary, papéis interativos e edição. Não adicionar CSS local forçando sublinhado em títulos informativos. Testar após navegação por teclado, não apenas clique, pois :focus-visible muda com a modalidade.
+
+## Widget de Inglês no Espaço do aluno, 06/11/2026 (Recife)
+
+O carrossel inicial reúne Matemática com Oliver e Inglês com Olena. Troca manual por dois seletores de 48 × 44 px, setas do teclado e gesto horizontal; não trocar automaticamente. Rolagem vertical permanece disponível. A seleção ativa é anunciada com aria-pressed e o texto do cartão com aria-live polite. Ambos usam a estrutura e os controles compartilhados.
+
+A responsável escolheu a Olena sobre um livro aberto e pediu remover os dois balões. Usar public/languages/olena-english-widget.webp, 900 × 600, transparente, preservando rosto, olhos, estrela, lenço e pose da imagem escolhida. Não substituir por outro redesenho nem recolocar balões na decoração do widget. Matemática conserva seu Oliver e Rive; a nova arte inglesa é estática e respeita redução de movimento.
+
+## Limpeza dos widgets e carregamento inglês, 07/11/2026 (Recife)
+
+Retirados os títulos introdutórios “Uma nova conversa começa aqui.” e “A próxima descoberta é sua.”. O Espaço preserva um h1 acessível visualmente oculto; títulos de ofensiva continuam como h2. O fundo inglês usa livro, lápis e letras em traços discretos, na mesma camada decorativa do widget matemático, sem balões.
+
+A estrela da Olena mantém a peça facetada e perde somente o halo amarelo externo. Oliver perde + e ÷ na imagem e no Rive; olhos, boca, mãos, olhar e reações continuam. Primeiro quadro exportado do Rive atualizado. URLs v=2 evitam cache das artes antigas.
+
+A arte inglesa é preparada e decodificada em baixa prioridade no tempo ocioso, com antecipação ao focar, apontar ou tocar o seletor. Economia de dados impede a preparação ociosa. A imagem selecionada tem prioridade alta e aparece sem animação de entrada. Não adicionar temporizador de troca automática.
+
+O foco inicial do carrossel prioriza ofensivas ativas com até 60 minutos restantes. Entre duas urgentes, vence a expiração mais próxima; empate usa mais dias. Sem urgência, vence a maior ofensiva, com Matemática como desempate. A escolha manual fica fixa até sair do Espaço; não adicionar rodízio por temporizador.
+
+### Transições do onboarding
+
+Cada avanço apresenta uma etapa própria, com foco no campo ou no título que passa a orientar a interação. Use a animação de entrada do onboarding e respeite a preferência por movimento reduzido. Nome e avatar ocupam etapas separadas. O campo de nome usa a superfície, a borda em papel e os raios dos campos de acesso.

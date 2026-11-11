@@ -381,7 +381,7 @@ html[data-theme="dark"] .student-space .check-button {
     padding: 24px 18px 184px;
     min-height: 0;
   }
-  .math-hero-copy h1 {
+  .math-hero-copy :is(h1, h2) {
     font-size: 23px;
     line-height: 1.18;
     margin: 4px 0 10px;

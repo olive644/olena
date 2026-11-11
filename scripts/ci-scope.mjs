@@ -17,10 +17,33 @@ import { execFileSync } from "node:child_process";
 import { appendFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
-const DOCS_ONLY = [/^docs\//, /\.md$/i, /^LICENSE/, /^\.gitignore$/, /^\.gitleaksignore$/];
+const DOCS_ONLY = [
+  /^docs\//,
+  /\.md$/i,
+  /^LICENSE/,
+  /^\.gitignore$/,
+  /^\.gitleaksignore$/,
+  // Arquivos de verificação servidos em /.well-known/ (security.txt, assetlinks.json): texto e
+  // JSON estáticos que o app não importa, testados por testes unitários (src/security-txt.test.ts,
+  // src/android-twa.test.ts). Só um nível, para não pegar subpastas com outro uso.
+  /^public\/\.well-known\/[^/]+\.(txt|json)$/,
+];
 
 const MATRIX = {
-  desktop: { project: "desktop", label: "desktop", browser: "chromium", workers: 2, shard: "1/1" },
+  desktop1: {
+    project: "desktop",
+    label: "desktop shard 1/2",
+    browser: "chromium",
+    workers: 2,
+    shard: "1/2",
+  },
+  desktop2: {
+    project: "desktop",
+    label: "desktop shard 2/2",
+    browser: "chromium",
+    workers: 2,
+    shard: "2/2",
+  },
   mobile1: {
     project: "mobile",
     label: "mobile shard 1/2",
@@ -66,12 +89,12 @@ export function decideScope({ event, changedFiles }) {
 }
 
 export function matrixFor(scope) {
+  // O desktop roda em duas partes, como o mobile: um job só passava de 20 minutos em runners
+  // lentos e estourava o limite. O total de minutos é quase o mesmo (uma instalação a mais).
   const include =
-    scope === "desktop"
-      ? [MATRIX.desktop]
-      : scope === "full"
-        ? [MATRIX.desktop, MATRIX.mobile1, MATRIX.mobile2]
-        : [MATRIX.desktop];
+    scope === "full"
+      ? [MATRIX.desktop1, MATRIX.desktop2, MATRIX.mobile1, MATRIX.mobile2]
+      : [MATRIX.desktop1, MATRIX.desktop2];
   return { include };
 }
 
@@ -82,7 +105,10 @@ export function evaluateGate({ job, scope, changesResult, e2eResult }) {
     return { ok: false, message: `Não foi possível decidir o escopo do e2e (${changesResult}).` };
   if (scope === "none")
     return e2eResult === "skipped"
-      ? { ok: true, message: "Só documentação mudou: e2e dispensado." }
+      ? {
+          ok: true,
+          message: "Só documentação ou arquivos de verificação estáticos mudaram: e2e dispensado.",
+        }
       : { ok: false, message: `Escopo "none" com e2e em estado "${e2eResult}".` };
   if (scope === "desktop")
     return e2eResult === "success"
@@ -136,7 +162,7 @@ function main(argv, env) {
     console.log(result.message);
     return result.ok ? 0 : 1;
   }
-  console.error("Uso: ci-scope.mjs scope | gate --job=e2e|mobile");
+  console.error("Uso: ci-scope.mjs scope | gate --job=e2e|desktop|mobile");
   return 2;
 }
 

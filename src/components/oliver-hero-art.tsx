@@ -3,7 +3,7 @@ import { loadRiveRuntime, type RiveInput, type RivePlayer } from "../data/rive-r
 import { uiText } from "../i18n/runtime";
 import { reducedMotion, watchReducedMotion } from "../data/reduced-motion";
 
-const RIVE_FILE = "/oliver-peeking-widget/oliver.riv?v=1";
+const RIVE_FILE = "/oliver-peeking-widget/oliver.riv?v=2";
 /** Espera o primeiro quadro estático pintar antes de baixar o runtime e o arquivo. */
 const ACTIVATION_DELAY = 900;
 /** Reações da máquina "Oliver": 1 pulo, 2 balanço, 3 coração. */
@@ -186,7 +186,7 @@ export function OliverHeroArt() {
   return (
     <span ref={stage} className="math-hero-peek" data-ready={ready ? "true" : "false"}>
       <img
-        src="/oliver-peeking-widget.webp"
+        src="/oliver-peeking-widget.webp?v=2"
         width="900"
         height="600"
         fetchPriority="high"

@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+}
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 24px;
+  color: var(--text);
+}
+.quality-comparison,
+.quality-poses {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+figure {
+  margin: 0;
+  min-width: 0;
+  text-align: center;
+}
+.quality-comparison .math-achievement-art,
+.quality-poses .math-achievement-art {
+  display: block;
+  width: 512px;
+  max-width: 100%;
+  margin: auto;
+}
+.quality-poses .math-achievement-art {
+  width: 360px;
+}
+figcaption {
+  padding: 12px 0 20px;
+}
+@media (max-width: 600px) {
+  main {
+    padding: 16px;
+  }
+  .quality-comparison,
+  .quality-poses {
+    grid-template-columns: 1fr;
+  }
+}

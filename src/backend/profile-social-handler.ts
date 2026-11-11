@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { decodeAchievements } from "../domain/achievement-wire.js";
 import { PROFILE_AVATARS, profileAvatarSource } from "../domain/profile-avatars.js";
 import { PROFILE_COVERS, profileCover } from "../domain/profile-covers.js";
 import type { SocialFeed, SocialProfile } from "../domain/profile-social.js";
@@ -127,6 +128,7 @@ export function createProfileSocialHandler(options: {
                       "details",
                       "achievements",
                       "achievementDates",
+                      "achievementWire",
                       "achievementFavorites",
                       "cards",
                       "cardDates",
@@ -137,6 +139,17 @@ export function createProfileSocialHandler(options: {
                     : ["action", "username"];
         if (Object.keys(body).some((field) => !fields.includes(field)))
           return reply(400, { error: "Campos não permitidos." });
+        if (body["achievementWire"] !== undefined) {
+          const decoded = decodeAchievements(body["achievementWire"]);
+          if (
+            !decoded ||
+            body["achievements"] !== undefined ||
+            body["achievementDates"] !== undefined
+          )
+            return reply(400, { error: "Conquistas inválidas." });
+          body["achievements"] = decoded.ids;
+          body["achievementDates"] = decoded.dates;
+        }
         if (
           ![
             "share",
@@ -621,6 +634,7 @@ export function createProfileSocialHandler(options: {
                   pomodoro: details.streaks.pomodoro,
                   timer: details.streaks.timer,
                   islands: details.streaks.islands,
+                  english: details.streaks.english ?? 0,
                 },
                 socialLinks: [
                   ...new Set(details.socialLinks.map((link) => recognizeSocialLink(link)!.url)),

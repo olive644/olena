@@ -37,8 +37,17 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
   return (
     <main className="main-content student-space" id="main-content">
       <PageHeader showUpdates />
+      <h1 className="visually-hidden">{uiText("Espaço do aluno")}</h1>
       <MathPracticeHero
         workspace={workspace}
+        onEnglishPractice={() => {
+          try {
+            sessionStorage.setItem("olena:enter-english", "1");
+          } catch {
+            /* O hub continua acessível sem armazenamento. */
+          }
+          onNavigate("learn");
+        }}
         onPractice={() => {
           try {
             sessionStorage.setItem("olena:enter-mathematics", "1");

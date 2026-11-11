@@ -21,3 +21,8 @@ fecdc123f530934f8f842f7b622a4b9aa1ee23a1:firebase-room.rules.json:generic-api-ke
 # Nome público de cache de navegação, helena.practiceIsland.v1, não credencial.
 # Constante atual ITEM; somente a ocorrência histórica introduzida na PR566.
 3e042b80aee3dfd3b00fba3fde8bfca120ef9c1d:src/data/practice-island-selection.ts:generic-api-key:2
+
+# Nome público de cache sincronizado nas regras Firebase, não credencial: a expressão compara
+# $key com a codificação base64 de helenastudy.workspace.v1. A inclusão de englishProgress
+# alterou a linha histórica da allowlist. Exceção limitada à ocorrência, sem ignorar o arquivo.
+8b539201f2786ac4b084ebb70f10f5fee2fe632a:firebase-room.rules.json:generic-api-key:44

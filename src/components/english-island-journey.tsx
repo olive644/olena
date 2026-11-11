@@ -19,16 +19,17 @@ import {
   arcadeElapsed,
 } from "../domain/arcade-clock";
 import { RoomPointsIcon, RoomClockIcon, RoomSecondsUnit } from "./room-paper-icons";
-import { useEffect, useEffectEvent, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useEffectEvent, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { PracticeActivity, WorkspaceState } from "../domain/workspace";
+import { useEnglishProgress } from "../hooks/use-english-progress";
 import {
-  englishProgress,
   englishAttemptOf,
   ENGLISH_TARGET,
   type LanguageAttempt,
 } from "../domain/language-progress";
+import { scrambledWordOrder } from "../domain/english-word-order";
 import {
   englishQuestion,
   englishReplyMeaning,
@@ -61,6 +62,7 @@ type Round = {
   correct: number[];
   at: number;
   lives: number;
+  streak: number;
   bank: number;
   elapsed: number;
   missed: { id: number; choice: string; timedOut: boolean }[];
@@ -97,10 +99,7 @@ export function EnglishIslandJourney({
   const [contentError, setContentError] = useState(false);
   const [loadRevision, setLoadRevision] = useState(0);
   const course = loaded?.area === area ? loaded : undefined;
-  const progress = useMemo(
-    () => englishProgress(workspace.practiceActivities, area),
-    [workspace.practiceActivities, area],
-  );
+  const progress = useEnglishProgress(workspace.practiceActivities, area);
   const part = initialPart;
   const [countdown, setCountdown] = useState(0);
   const [reviewIndex, setReviewIndex] = useState(0);
@@ -144,11 +143,12 @@ export function EnglishIslandJourney({
           reviewing ? round.missed[reviewIndex]!.id : round.ids[round.at]!,
         )
       : undefined;
-  const tokens =
-    question?.phrase
-      .split(" ")
-      .map((text, id) => ({ text, id }))
-      .reverse() ?? [];
+  const tokens = question
+    ? scrambledWordOrder(question.phrase).map((id) => ({
+        text: question.phrase.split(" ")[id]!,
+        id,
+      }))
+    : [];
   const timing = arcadeQuestionTiming(
     question?.phrase.length ?? 0,
     round?.mode === "final" ? 3 : Math.min(3, 1 + Math.floor((question?.level ?? 0) / 2)),
@@ -350,6 +350,7 @@ export function EnglishIslandJourney({
         correct: resumedFinal?.correct ?? [],
         at: resumedFinal?.at ?? 0,
         lives: ARCADE_LIVES,
+        streak: 0,
         bank: ARCADE_RESERVE,
         elapsed: 0,
         missed: resumedFinal?.missed ?? [],
@@ -511,6 +512,7 @@ export function EnglishIslandJourney({
           round.at + 1 >= bankSize);
     const updated = {
       ...round,
+      streak: correct ? round.streak + 1 : 0,
       correct: correctIds,
       lives,
       elapsed,
@@ -664,16 +666,7 @@ export function EnglishIslandJourney({
               aria-label={uiText("Revisão com a Olena")}
             >
               <section className="oliver-review__lesson">
-                <div className="oliver-review__character">
-                  <img
-                    src="/languages/characters/olena-english-v2.webp"
-                    alt={uiText("Olena")}
-                    width="330"
-                    height="330"
-                  />
-                </div>
                 <div className="oliver-review__speech" data-state="explain">
-                  <span className="oliver-review__speaker">{uiText("Olena")}</span>
                   <h1 tabIndex={-1}>{uiText("Vamos entender juntos?")}</h1>
                   <p className="oliver-review__reason">
                     {uiText("Sua resposta: {0}", [
@@ -811,6 +804,24 @@ export function EnglishIslandJourney({
                 </div>
               </div>
               <h1 tabIndex={-1}>{question.prompt}</h1>
+              {round.streak > 3 && (
+                <div className="math-insane english-insane" role="status" key={round.streak}>
+                  <img
+                    className="math-flame"
+                    src="/languages/english-streak-flame.svg"
+                    alt=""
+                    width="32"
+                    height="38"
+                  />
+                  <span>
+                    {uiText(615)}{" "}
+                    <b>
+                      <PaperDigits value={String(round.streak)} />
+                      {uiText(289)}
+                    </b>
+                  </span>
+                </div>
+              )}
               {question.kind === "gap" && (
                 <p className="english-reply-intent">
                   {uiText("A fala quer dizer: {0}", [question.meaning])}

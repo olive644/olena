@@ -86,6 +86,8 @@ function firebaseServer(initial: ServerNode | null = null) {
     node: initial,
     failWrites: false,
     failPatch: false,
+    /** Nomes de rede (k_...) que as regras da conta recusam, como o Firebase faz com 401. */
+    deniedKeys: [] as string[],
     calls: [] as { method: string; url: string; body: unknown }[],
     fetch: vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       const method = init?.method ?? "GET";
@@ -98,6 +100,19 @@ function firebaseServer(initial: ServerNode | null = null) {
       }
       if (server.failWrites || (server.failPatch && method === "PATCH"))
         return new Response("failure", { status: 503 });
+      // Regra recusando uma chave: o PUT e o PATCH são tudo ou nada, nada é gravado.
+      const written = Object.entries((body ?? {}) as Record<string, unknown>).flatMap(
+        ([path, value]) =>
+          path.startsWith("items/")
+            ? value === null
+              ? []
+              : [path.slice("items/".length)]
+            : path === "items" && value && typeof value === "object"
+              ? Object.keys(value)
+              : [],
+      );
+      if (written.some((key) => server.deniedKeys.includes(key)))
+        return Response.json({ error: "Permission denied" }, { status: 401 });
       if (method === "PUT") server.node = body as ServerNode;
       if (method === "PATCH") {
         const next: ServerNode = server.node
@@ -1062,7 +1077,7 @@ it("outra conta no mesmo aparelho não recebe os dados da anterior", async () =>
   expect(localStorage.getItem("helenastudy.workspace.history.v1")).toBeNull();
   expect(localStorage.getItem("helena.account.v1")).toBe("beto");
   expect(uploads.join("")).not.toContain("Ana");
-  expect(localStorage.getItem("helena.onboarding.v1")).toBe('{"completed":true}');
+  expect(localStorage.getItem("helena.onboarding.v1")).toBeNull();
 });
 
 it("combines notification reading from both devices during login", async () => {
@@ -1355,4 +1370,120 @@ it("o primeiro envio de uma conta sem dados continua sendo o estado inteiro (PUT
   expect(server.writes()[0]!.method).toBe("PUT");
   expect(server.items()["helenastudy.theme"]).toBe("dark");
   expect(server.node!.version).toBe(2);
+});
+
+it("uma chave recusada pelas regras da conta não derruba o salvamento do resto, e a pessoa é avisada", async () => {
+  signedInUser("denied-user");
+  const { server } = accountServer();
+  const rewards = "helena.englishRewards.v1";
+  server.deniedKeys = [wire(rewards)];
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  act(() => {
+    writeSyncedStorage(rewards, JSON.stringify({ stars: 3 }));
+    writeSyncedStorage("helena.soloProgress", "11");
+  });
+  await waitFor(() => expect(server.items()["helena.soloProgress"]).toBe("11"));
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  expect(server.items()[rewards]).toBeUndefined();
+  expect(server.items()["helenastudy.theme"]).toBe("light");
+  expect(result.current.rejectedKeys).toEqual([rewards]);
+  expect(result.current.lastSyncedAt).toBeGreaterThan(0);
+  // A chave recusada continua só no aparelho e não gera um laço de novas tentativas.
+  expect(localStorage.getItem(rewards)).toBe(JSON.stringify({ stars: 3 }));
+  const writes = server.writes().length;
+  await new Promise((resolve) => setTimeout(resolve, 5500));
+  expect(server.writes().length).toBe(writes);
+});
+
+it("se todas as chaves forem recusadas ou a sessão for inválida, continua sendo falha de envio", async () => {
+  signedInUser("denied-all-user");
+  const { server } = accountServer();
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  server.deniedKeys = [wire("helena.soloProgress")];
+  act(() => writeSyncedStorage("helena.soloProgress", "4"));
+  await waitFor(() => expect(result.current.status).toBe("offline"));
+  expect(result.current.rejectedKeys).toBeUndefined();
+});
+
+const LEDGER_KEY = "helena.englishProgress.v1";
+const ledgerOf = (solved: number[], confirmed = false) =>
+  JSON.stringify({
+    english: Array.from({ length: 8 }, (_, index) => ({
+      solved: index === 0 ? solved : [],
+      confirmed: index === 0 && confirmed,
+    })),
+  });
+const firstPartSolved = (raw: string | null | undefined) =>
+  (JSON.parse(raw ?? "{}") as { english?: { solved: number[] }[] }).english?.[0]?.solved;
+
+it("o livro de Inglês que só existe no aparelho não é apagado ao abrir e sobe para a conta", async () => {
+  signedInUser("ledger-local-user");
+  localStorage.setItem(LEDGER_KEY, ledgerOf([4, 7]));
+  const { server } = accountServer();
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  expect(firstPartSolved(localStorage.getItem(LEDGER_KEY))).toEqual([4, 7]);
+  await waitFor(() => expect(firstPartSolved(server.items()[LEDGER_KEY])).toEqual([4, 7]));
+});
+
+it("os livros de Inglês do aparelho e da conta viram a união, sem perder nenhum lado", async () => {
+  signedInUser("ledger-union-user");
+  localStorage.setItem(LEDGER_KEY, ledgerOf([2, 3]));
+  const server = firebaseServer({
+    updatedAt: 100,
+    version: 2,
+    items: encodeCloudItems({ "helenastudy.theme": "light", [LEDGER_KEY]: ledgerOf([1, 2], true) }),
+  });
+  vi.stubGlobal("fetch", server.fetch);
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  expect(firstPartSolved(localStorage.getItem(LEDGER_KEY))).toEqual([1, 2, 3]);
+  await waitFor(() => expect(firstPartSolved(server.items()[LEDGER_KEY])).toEqual([1, 2, 3]));
+  expect(
+    (JSON.parse(localStorage.getItem(LEDGER_KEY)!) as { english: { confirmed: boolean }[] })
+      .english[0]!.confirmed,
+  ).toBe(true);
+});
+
+it("restores onboarding and progress when Google returns to the original manual UID", async () => {
+  const user = {
+    uid: "manual-owner",
+    email: "learner@example.test",
+    getIdToken: vi.fn(async () => "token"),
+    getIdTokenResult: vi.fn(async () => ({ signInProvider: "google.com" })),
+    providerData: [{ providerId: "google.com" }],
+  };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onIdTokenChanged: () => () => {},
+      onAuthStateChanged: (_: unknown, listener: (value: typeof user) => void) => {
+        listener(user);
+        return () => {};
+      },
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  const completed = JSON.stringify({
+    completed: true,
+    configurationOwner: user.uid,
+    details: { name: "Original" },
+  });
+  const progress = JSON.stringify({ island: "english", score: 460 });
+  const server = firebaseServer({
+    version: 2,
+    updatedAt: 1,
+    items: encodeCloudItems({ "helena.onboarding.v1": completed, "helena.soloProgress": progress }),
+  });
+  vi.stubGlobal("fetch", server.fetch);
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.ready).toBe(true));
+  expect(localStorage.getItem("helena.account.v1")).toBe(user.uid);
+  expect(localStorage.getItem("helena.onboarding.v1")).toBe(completed);
+  expect(localStorage.getItem("helena.soloProgress")).toBe(progress);
+  expect(server.fullGets().every((call) => call.url.includes("/users/" + user.uid + "/"))).toBe(
+    true,
+  );
 });

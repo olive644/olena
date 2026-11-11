@@ -53,7 +53,8 @@ for (const theme of ["light", "dark"]) {
     expect(
       await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1),
     ).toBe(true);
-    await expect(page.getByRole("meter", { name: "Força da senha" })).toBeVisible();
+    await expect(page.getByRole("meter", { name: "Força da senha" })).toHaveCount(0);
+    await expect(password).toHaveAttribute("minlength", "8");
     await page.screenshot({
       path: test.info().outputPath("email-registration.png"),
       fullPage: true,

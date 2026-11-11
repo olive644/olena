@@ -75,7 +75,7 @@ describe("Discord OAuth", () => {
     const flow = await s.start();
     const response = await s.callback(flow.state, flow.cookie);
     expect(response.status).toBe(303);
-    expect(flow.authorize.searchParams.get("scope")).toBe("identify");
+    expect(flow.authorize.searchParams.get("scope")).toBe("identify email");
     expect(flow.authorize.searchParams.has("client_secret")).toBe(false);
     expect(flow.authorize.searchParams.get("code_challenge_method")).toBe("S256");
     const exchangeBody = new URLSearchParams(String(s.fetcher.mock.calls[0]?.[1]?.body));

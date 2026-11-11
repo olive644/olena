@@ -1,4 +1,4 @@
-import type { WorkspaceState } from "./workspace.js";
+import type { PracticeActivity, WorkspaceState } from "./workspace.js";
 import { normalizeNotebookFavorites } from "./notebook-shelves.js";
 import { validateCalendarEvent } from "./agenda-calendar";
 
@@ -107,6 +107,38 @@ function mergeValue<T>(base: T, local: T, remote: T): { value: T; conflict: bool
   return { value: localChanged ? local : remote, conflict: false };
 }
 
+// Atividades de prática concluídas (de onde vem todo o progresso de Inglês) só são acrescentadas,
+// nunca removidas: uma cópia mais antiga ou vazia de outro aparelho não pode apagar o que já foi
+// concluído. Para o mesmo id, vale a cópia de `preferred`.
+function unionPracticeActivities(
+  preferred: readonly PracticeActivity[] | undefined,
+  other: readonly PracticeActivity[] | undefined,
+): PracticeActivity[] | undefined {
+  if (!preferred && !other) return undefined;
+  const ids = new Set((preferred ?? []).map((item) => item.id));
+  return [...(preferred ?? []), ...(other ?? []).filter((item) => !ids.has(item.id))];
+}
+
+// Espaço que vem da conta ao abrir o app: vale a cópia da conta, mas o histórico concluído neste
+// aparelho (sessões de foco e atividades de prática) nunca some por ainda não ter sido enviado.
+export function mergeAccountWorkspace(
+  local: WorkspaceState,
+  account: WorkspaceState,
+): WorkspaceState {
+  const sessions = new Map(account.focusSessions.map((session) => [session.id, session] as const));
+  for (const session of local.focusSessions)
+    if (!sessions.has(session.id)) sessions.set(session.id, session);
+  const practiceActivities = unionPracticeActivities(
+    account.practiceActivities,
+    local.practiceActivities,
+  );
+  return {
+    ...account,
+    focusSessions: [...sessions.values()],
+    ...(practiceActivities ? { practiceActivities } : {}),
+  };
+}
+
 // Mescla o espaço de estudos inteiro por item (caderno, folha, tarefa, etc.), não como um
 // bloco único. Antes desta função, dois dispositivos editando coisas diferentes (por
 // exemplo, um caderno em cada) faziam um dos dois lados perder tudo que mudou: o merge por
@@ -151,15 +183,13 @@ export function mergeWorkspaceStates(
     notes: list(base.notes, local.notes, remote.notes),
     // Completed focus entries are immutable history, never a shorter-device snapshot deletion.
     focusSessions: list([], local.focusSessions, remote.focusSessions),
-    ...(base.practiceActivities || local.practiceActivities || remote.practiceActivities
-      ? {
-          practiceActivities: list(
-            base.practiceActivities ?? [],
-            local.practiceActivities ?? base.practiceActivities ?? [],
-            remote.practiceActivities ?? base.practiceActivities ?? [],
-          ),
-        }
-      : {}),
+    ...((): Pick<WorkspaceState, "practiceActivities"> => {
+      const practiceActivities = unionPracticeActivities(
+        local.practiceActivities,
+        unionPracticeActivities(remote.practiceActivities, base.practiceActivities),
+      );
+      return practiceActivities ? { practiceActivities } : {};
+    })(),
     materials: list(base.materials, local.materials, remote.materials),
     ...(base.libraryCollections || local.libraryCollections || remote.libraryCollections
       ? {

@@ -136,6 +136,13 @@ for (const theme of ["light", "dark"]) {
       const question = await setup(page, part, theme);
       await expect(page.locator(".english-speaking")).toHaveCount(0);
       await expect(page.getByRole("heading", { name: "Monte a fala em inglês." })).toBeVisible();
+      const words = question.phrase.split(" ");
+      const shown = await page.locator(".english-word-bank button").allInnerTexts();
+      expect([...shown].sort()).toEqual([...words].sort());
+      if (new Set(words).size === words.length && words.length >= 3) {
+        expect(shown).not.toEqual(words);
+        expect(shown).not.toEqual([...words].reverse());
+      }
       for (const word of question.phrase.split(" ")) {
         await page
           .locator('.english-word-bank button[aria-disabled="false"]')
@@ -159,6 +166,60 @@ for (const theme of ["light", "dark"]) {
       await expect(page.locator(".english-written-answer [role=status]")).toHaveText("Muito bem!");
       await page.clock.runFor(1000);
       await expect(page.locator(".math-score")).toHaveAttribute("aria-label", /20/);
+    });
+  }
+}
+
+for (const theme of ["light", "dark"]) {
+  for (const part of [0, 1, 2, 3, 4, 5, 6, 7]) {
+    test("English streak grows and resets in part " + part + " in " + theme, async ({ page }) => {
+      await setup(page, part, theme);
+      const lesson = page.locator(".english-lesson");
+      for (let index = 0; index < 4; index++) {
+        const id = Number(await lesson.getAttribute("data-question-id"));
+        const question = englishQuestion(course, part, id);
+        if (question.kind === "order") {
+          for (const word of question.phrase.split(" "))
+            await page
+              .locator('.english-word-bank button[aria-disabled="false"]')
+              .getByText(word, { exact: true })
+              .first()
+              .click();
+        } else {
+          await page
+            .locator(".english-options button")
+            .getByText(question.answer, { exact: true })
+            .click();
+        }
+        await expect(page.locator(".math-answer-reaction.is-correct")).toBeVisible();
+        if (index < 3) await expect(page.locator(".english-insane")).toHaveCount(0);
+        else {
+          await expect(page.locator(".english-insane")).toBeVisible();
+          await expect(page.locator(".english-insane img")).toHaveAttribute(
+            "src",
+            "/languages/english-streak-flame.svg",
+          );
+          await page.screenshot({ path: test.info().outputPath("english-streak.png") });
+        }
+        await page.clock.runFor(700);
+        await expect(lesson).not.toHaveAttribute("data-question-id", String(id));
+      }
+      const id = Number(await lesson.getAttribute("data-question-id"));
+      const question = englishQuestion(course, part, id);
+      if (question.kind === "order") {
+        await page.getByRole("button", { name: "Responder sem as palavras", exact: true }).click();
+        await page.getByRole("textbox", { name: "Escreva a fala em inglês" }).fill("wrong answer");
+        await page.getByRole("button", { name: "Conferir resposta", exact: true }).click();
+      } else {
+        const wrong = question.options.find((value) => value !== question.answer)!;
+        await page.locator(".english-options button").getByText(wrong, { exact: true }).click();
+      }
+      if (question.kind === "order")
+        await expect(page.locator(".english-written-answer [role=status]")).toHaveText(
+          "Vamos entender juntos?",
+        );
+      else await expect(page.locator(".math-answer-reaction.is-wrong")).toBeVisible();
+      await expect(page.locator(".english-insane")).toHaveCount(0);
     });
   }
 }

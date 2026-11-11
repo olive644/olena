@@ -277,6 +277,7 @@ export function ProfileShowcase({
                 <button
                   type="button"
                   onClick={() => {
+                    setSharingProfile(false);
                     setConnectionList("followers");
                     setFriends("");
                   }}
@@ -288,6 +289,7 @@ export function ProfileShowcase({
                 <button
                   type="button"
                   onClick={() => {
+                    setSharingProfile(false);
                     setConnectionList("following");
                     setFriends("");
                   }}
@@ -346,8 +348,12 @@ export function ProfileShowcase({
           onClose={() => setEditing(false)}
         />
       )}
-      {choosingAvatar && <ProfileAvatarDialog onClose={() => setChoosingAvatar(false)} />}
-      {choosingCover && <ProfileCoverDialog onClose={() => setChoosingCover(false)} />}
+      {choosingAvatar && (
+        <ProfileAvatarDialog onClose={() => setChoosingAvatar(false)} workspace={workspace} />
+      )}
+      {choosingCover && (
+        <ProfileCoverDialog onClose={() => setChoosingCover(false)} workspace={workspace} />
+      )}
       {friends !== undefined && (
         <Suspense fallback={<HelenaLoading label={uiText(923)} compact />}>
           <SocialDirectory
