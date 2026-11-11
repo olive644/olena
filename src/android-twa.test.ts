@@ -92,12 +92,18 @@ describe("manifesto web do app", () => {
 describe("configuração do app Android (TWA)", () => {
   it("usa um nome de pacote válido e o mesmo site, manifesto e cores do app web", () => {
     expect(twa["packageId"]).toMatch(/^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$/);
-    expect(twa["host"]).toBe("olenastudy.vercel.app");
-    expect(twa["webManifestUrl"]).toBe("https://olenastudy.vercel.app/manifest.webmanifest");
+    expect(twa["host"]).toBe("www.olenastudy.com.br");
+    expect(twa["webManifestUrl"]).toBe("https://www.olenastudy.com.br/manifest.webmanifest");
     expect(twa["startUrl"]).toBe(manifest.start_url);
     expect(twa["backgroundColor"]).toBe(manifest.background_color);
     expect(twa["themeColor"]).toBe(manifest.theme_color);
     expect(twa["enableNotifications"]).toBe(false);
+  });
+
+  it("aponta todos os endereços do pacote para o mesmo domínio oficial", () => {
+    const origin = `https://${String(twa["host"])}/`;
+    for (const key of ["iconUrl", "maskableIconUrl", "webManifestUrl", "fullScopeUrl"])
+      expect(String(twa[key]).startsWith(origin)).toBe(true);
   });
 
   it("não guarda a chave de assinatura no repositório", () => {
