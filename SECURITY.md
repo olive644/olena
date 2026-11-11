@@ -34,7 +34,7 @@ uma data juntos.
 
 ## Versões cobertas
 
-Só a versão em produção (o que está na branch `main`, publicado em `olenastudy.vercel.app`)
+Só a versão em produção (o que está na branch `main`, publicado em `www.olenastudy.com.br` (o endereço `olenastudy.vercel.app` continua no ar))
 recebe correções de segurança. Não há versões antigas mantidas.
 
 ## Escopo

@@ -38,7 +38,7 @@ describe("página da Política de Privacidade", () => {
       expect(match[1]!.startsWith("/")).toBe(true);
     for (const match of html.matchAll(/<link[^>]+href="([^"]*)"/g)) {
       const address = match[1]!;
-      if (!address.includes("olenastudy.vercel.app")) expect(address.startsWith("/")).toBe(true);
+      if (!address.includes("www.olenastudy.com.br")) expect(address.startsWith("/")).toBe(true);
     }
   });
 

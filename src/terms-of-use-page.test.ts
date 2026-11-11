@@ -13,7 +13,7 @@ describe("página dos Termos de Uso", () => {
   it("fica no caminho esperado e traz a mesma versão do código", () => {
     expect(TERMS_OF_USE_PATH).toBe("/termos-de-uso.html");
     expect(html).toContain(`data-terms-version="${TERMS_OF_USE_VERSION}"`);
-    expect(html).toContain(`href="https://olenastudy.vercel.app${TERMS_OF_USE_PATH}"`);
+    expect(html).toContain(`href="https://www.olenastudy.com.br${TERMS_OF_USE_PATH}"`);
   });
 
   it("não usa travessões, como as regras do repositório pedem", () => {
@@ -27,7 +27,7 @@ describe("página dos Termos de Uso", () => {
     expect(html).not.toMatch(/srcset=/i);
     for (const match of html.matchAll(/<link[^>]+href="([^"]*)"/g)) {
       const address = match[1]!;
-      if (!address.includes("olenastudy.vercel.app")) expect(address.startsWith("/")).toBe(true);
+      if (!address.includes("www.olenastudy.com.br")) expect(address.startsWith("/")).toBe(true);
     }
   });
 
@@ -89,7 +89,7 @@ describe("página dos Termos de Uso", () => {
     expect(html).toContain('href="/politica-de-privacidade.html"');
     expect(policy).toContain(`href="${TERMS_OF_USE_PATH}"`);
     expect(readFileSync("public/sitemap.xml", "utf8")).toContain(
-      `https://olenastudy.vercel.app${TERMS_OF_USE_PATH}`,
+      `https://www.olenastudy.com.br${TERMS_OF_USE_PATH}`,
     );
   });
 });
