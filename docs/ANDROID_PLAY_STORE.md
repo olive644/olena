@@ -31,6 +31,25 @@ Feito no repositório:
 Não foi feito: service worker (modo offline). A TWA não o exige, e um cache mal feito poderia servir
 estado antigo do aluno, o que o projeto proíbe. Se um dia houver modo offline, será uma mudança própria.
 
+## Mudança para o domínio olenastudy.com.br, 2026-11-11
+
+- `android/twa-manifest.json` passa a usar `www.olenastudy.com.br` (host, ícones, manifesto e escopo) e
+  `appVersion` 2 / `appVersionName` 1.0.1, porque a Play exige código de versão maior a cada envio.
+  O teste confere que todos os endereços do pacote ficam no mesmo domínio.
+- `public/.well-known/assetlinks.json` não muda: o mesmo arquivo é servido pelos dois domínios na mesma
+  publicação, e o pacote e as impressões digitais continuam os mesmos (a chave de assinatura do app não
+  depende do domínio). A associação é verificada por domínio, então só vale no novo depois da publicação
+  deste deploy. Conferir em
+  `https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https://www.olenastudy.com.br&relation=delegate_permission/common.handle_all_urls`.
+- Passos da proprietária, fora do repositório: gerar um novo .aab com este manifesto (PWABuilder ou
+  Bubblewrap, com a MESMA chave de envio), enviá-lo, atualizar na Play Console o site e a política de
+  privacidade para `https://www.olenastudy.com.br/politica-de-privacidade.html`, testar num aparelho
+  e só depois, quando o app novo estiver com a maioria dos aparelhos, redirecionar
+  `olenastudy.vercel.app` para o domínio novo na Vercel. Redirecionar antes faz o app antigo (host
+  antigo) abrir com a barra do navegador ou falhar na verificação.
+- Não verificado: nada disso foi testado em aparelho Android; a verificação do assetlinks no domínio
+  novo depende do deploy e deve ser conferida pelo endereço acima.
+
 ## Passos da proprietária (fora do repositório)
 
 1. **Nome do pacote: `olenastudy.app`.** É o do app que já existe no Play Console (conferido na lista de

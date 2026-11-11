@@ -4807,3 +4807,8 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - O servidor continua mandando: a resposta sobrescreve a foto assim que chega. O selo verificado (CREKS) nunca entra na foto e só aparece com a confirmação do servidor, como antes. Convidado não lê nem grava a foto.
 - Testes: `src/data/profile-snapshot.test.ts` (conta dona, formato inválido, junção de campos, apagamento ao sair), dois casos em `src/hooks/use-profile-handle.test.tsx` (abre com o último @ sem o selo e depois confirma; não usa o de outra conta nem para convidado) e dois em `src/components/profile-showcase.test.tsx` (contadores da última visita; não usa os de outra conta).
 - Não verificado: o ganho real em produção no celular da dona. Outras partes do Perfil que dependem da rede (jornada de conclusão e recomendações) não mudaram. Se ainda houver demora depois disso, o próximo passo é medir com a conta real a ordem dos pedidos na aba Rede.
+
+## App Android no domínio novo, 2026-11-11
+
+- `android/twa-manifest.json` aponta para `www.olenastudy.com.br` (host, ícones, manifesto, escopo) e sobe para `appVersion` 2 / 1.0.1. `src/android-twa.test.ts` atualizado e com um teste novo que exige o mesmo domínio em todos os endereços do pacote. O assetlinks não muda (mesmo pacote e mesmas impressões digitais, servido pelos dois domínios).
+- Fica para a dona, fora do repositório: gerar e enviar o novo .aab com a mesma chave de envio, atualizar o site e a política de privacidade na Play Console e só então redirecionar `olenastudy.vercel.app` na Vercel. Passos em `docs/ANDROID_PLAY_STORE.md`. Não verificado em aparelho Android.
