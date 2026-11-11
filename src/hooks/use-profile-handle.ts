@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { readProfileSnapshot, writeProfileSnapshot } from "../data/profile-snapshot";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import {
   PROFILE_HANDLE_CHANGED,
@@ -21,7 +22,10 @@ function loadHandle(uid: string) {
       !value.username && value.preferredUsername
         ? await requestProfileHandle("POST", value.preferredUsername)
         : value;
-    if (version === epoch) cached = { uid, value: resolved };
+    if (version === epoch) {
+      cached = { uid, value: resolved };
+      writeProfileSnapshot(uid, { username: resolved.username });
+    }
     return resolved;
   });
   flight = { uid, promise };
@@ -34,7 +38,11 @@ function loadHandle(uid: string) {
 }
 
 export function useProfileHandle(guest: boolean) {
-  const [state, setState] = useState<ProfileHandle>({ username: "", creks: false });
+  // Enquanto o servidor não confirma, mostra o último @ conhecido deste aparelho, sem o selo.
+  const [state, setState] = useState<ProfileHandle>(() => ({
+    username: guest ? "" : (readProfileSnapshot()?.username ?? ""),
+    creks: false,
+  }));
   const [revision, setRevision] = useState(0);
   useEffect(() => {
     const refresh = (event: Event) => {
@@ -69,7 +77,15 @@ export function useProfileHandle(guest: boolean) {
             cached = undefined;
             flight = undefined;
           }
-          setState(user && !user.isAnonymous && cached?.uid === user.uid ? cached.value : empty);
+          const known =
+            user && !user.isAnonymous ? readProfileSnapshot(user.uid)?.username : undefined;
+          setState(
+            user && !user.isAnonymous && cached?.uid === user.uid
+              ? cached.value
+              : known
+                ? { username: known, creks: false }
+                : empty,
+          );
           if (!user || user.isAnonymous) return;
           const version = epoch;
           void loadHandle(user.uid)
