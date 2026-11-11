@@ -1,12 +1,9 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-const riv = readFileSync(new URL("../public/olena-reading/olena.riv", import.meta.url));
+const riv = readFileSync("public/olena-reading/olena.riv");
 const layers = JSON.parse(
-  readFileSync(
-    new URL("../scripts/olena-reading-rive/layers/layers.json", import.meta.url),
-    "utf8",
-  ),
+  readFileSync("scripts/olena-reading-rive/layers/layers.json", "utf8"),
 ) as { order: string[]; layers: Record<string, { file: string; hidden?: boolean }> };
 
 describe("Olena lendo em Rive", () => {
