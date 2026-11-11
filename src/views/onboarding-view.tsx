@@ -1,8 +1,9 @@
 import { getFirebaseAccountServices } from "../data/firebase-account";
-import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
+import { uiText, useLanguage, localizeLabels, changeLanguage, uiLocale } from "../i18n/runtime";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { reducedMotion } from "../data/reduced-motion";
 import { OnboardingPaperIcon } from "../components/onboarding-paper-icon";
+import { FocusPaperArrow } from "../components/focus-paper-arrow";
 import { PaperArrow } from "../components/paper-arrow";
 import { PaperCardTitle } from "../components/paper-card-title";
 import { HelenaLoading } from "../components/helena-loading";
@@ -574,12 +575,94 @@ export default function OnboardingView({
           </div>
           <img
             className="olena-cover__art"
-            src="/android/icon-512.png"
-            width={512}
-            height={512}
+            src="/olena-cover-hires.webp"
+            width={1254}
+            height={1254}
             alt=""
           />
         </section>
+        <footer className="olena-cover__footer">
+          <div className="olena-cover__footer-stage">
+            <div className="olena-cover__footer-controls">
+              <details className="olena-cover__language">
+                <summary>
+                  <OnboardingPaperIcon name={uiLocale() === "pt-BR" ? "flag-br" : "flag-us"} />
+                  {uiLocale() === "pt-BR" ? "Português" : "English"}
+                  <FocusPaperArrow />
+                </summary>
+                <div className="olena-cover__language-options">
+                  {(["pt-BR", "en-US"] as const).map((locale) => (
+                    <button
+                      key={locale}
+                      type="button"
+                      aria-pressed={uiLocale() === locale}
+                      onClick={(event) => {
+                        const menu = event.currentTarget.closest("details");
+                        void changeLanguage(locale)
+                          .then(() => {
+                            if (menu) {
+                              menu.open = false;
+                              menu.querySelector("summary")?.focus();
+                            }
+                          })
+                          .catch(console.error);
+                      }}
+                    >
+                      <OnboardingPaperIcon name={locale === "pt-BR" ? "flag-br" : "flag-us"} />
+                      {locale === "pt-BR" ? "Português" : "English"}
+                    </button>
+                  ))}
+                </div>
+              </details>
+              <div className="olena-cover__social">
+                {(
+                  [
+                    ["Instagram", "https://www.instagram.com/olenastudy.app/", "profile-instagram"],
+                    [
+                      "LinkedIn",
+                      "https://www.linkedin.com/company/olenastudy/",
+                      "profile-linkedin",
+                    ],
+                    [
+                      "TikTok",
+                      "https://www.tiktok.com/@olenastudy.app?lang=pt-BR",
+                      "footer-tiktok",
+                    ],
+                    ["Discord", "https://discord.gg/VVba3Tbvq", "discord-access"],
+                  ] as const
+                ).map(([name, href, icon]) => (
+                  <a key={name} href={href} aria-label={name}>
+                    <img
+                      src={`/navigation-icons/paper/${icon}.svg`}
+                      width={name === "Discord" ? 32 : 36}
+                      height={name === "Discord" ? 32 : 36}
+                      alt=""
+                    />
+                  </a>
+                ))}
+              </div>
+            </div>
+            <PaperCardTitle value="OlenaStudy" />
+            <img
+              className="olena-cover__footer-mascot"
+              src="/olena-footer-front.webp"
+              width={1254}
+              height={1254}
+              alt=""
+              loading="lazy"
+            />
+          </div>
+          <small className="olena-cover__footer-rights">
+            <img src="/galeria-oli-icon.svg" alt="" width={24} height={24} />
+            <span>
+              © {new Date().getFullYear()} {uiText(1635)}
+            </span>
+          </small>
+          <nav className="olena-cover__footer-links">
+            <a href="/termos-de-uso.html">{uiText("Termos de Uso")}</a>
+            <a href="/politica-de-privacidade.html">{uiText(411)}</a>
+          </nav>
+        </footer>
         {coverLogin && (
           <dialog
             className="olena-cover__login"

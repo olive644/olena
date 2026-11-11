@@ -10,7 +10,7 @@ export function PaperCardTitle({ value }: { value: string }) {
             {[...word].map((letter, position) => {
               const [base, accent] = [...letter.normalize("NFD")];
               return (
-                <svg key={position} viewBox="0 -18 66 122" focusable="false">
+                <svg key={position} viewBox="0 -18 66 122" width="18" height="34" focusable="false">
                   <use
                     href={`/paper-monochrome-alphabet.svg#letter-${base}`}
                     width="66"
