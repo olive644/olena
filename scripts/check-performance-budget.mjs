@@ -474,6 +474,13 @@ const oliverFile = (
 console.log(`Oliver Rive opcional: ${(oliverFile / 1024).toFixed(1)} KiB .riv`);
 if (oliverFile > 512 * 1024) throw new Error("O oliver.riv excedeu 512 KiB.");
 
+// A Olena lendo (onboarding) também reaproveita o runtime e só baixa o .riv depois do primeiro
+// quadro estático. Medição: 373 KiB (24 peças, cinco esperas e a reação ao toque).
+const olenaReadingFile = (await stat(new URL("../dist/olena-reading/olena.riv", import.meta.url)))
+  .size;
+console.log(`Olena lendo Rive opcional: ${(olenaReadingFile / 1024).toFixed(1)} KiB .riv`);
+if (olenaReadingFile > 512 * 1024) throw new Error("O olena.riv excedeu 512 KiB.");
+
 // O tomate do Pomodoro (aba Foco) também reaproveita o runtime e só baixa o .riv depois do
 // primeiro quadro estático. Medição: 662 KiB (oito peças de mordida, minhoca animada e partículas).
 const tomatoFile = (await stat(new URL("../dist/pomodoro-tomato/tomato.riv", import.meta.url)))
