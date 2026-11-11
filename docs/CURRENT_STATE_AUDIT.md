@@ -4775,3 +4775,11 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - O console passa a registrar `[Olena] A nuvem recusou a chave: <nome>`, para a recusa deixar de ser um mistério. Nenhum texto novo na interface.
 - Testes: `src/data/account-progress.test.ts` e dois casos em `src/app-account-entry.test.tsx` (conta com progresso e sem marca não abre as perguntas e regrava a marca; conta nova com chaves zeradas abre). O primeiro falha sem a mudança em `app.tsx`.
 - Não verificado: o comportamento em produção com a conta real, o tamanho atual das chaves da conta e Safari/WebKit.
+
+## Nome da conta e origens do domínio próprio, 2026-11-11
+
+- O domínio `olenastudy.com.br` (e o `www.`) foi ligado ao projeto na Vercel em 10/11/2026, por volta das 21h. Para o navegador é uma origem nova, com armazenamento local vazio, e o servidor só aceitava pedidos de `https://olenastudy.vercel.app` (a variável `HELENA_ALLOWED_ORIGINS` não existe na produção). Resultado visto pela dona da conta: "Origem não autorizada" em amigos, perfil e conclusão do perfil, sem @, insígnias nem contagem de seguidores, e onboarding repetido até a nuvem ser aplicada.
+- `src/backend/allowed-origins.ts` passa a ser a lista padrão do servidor (Vercel, domínio e `www.`), usada por `helena-runtime` e `profile-handle-runtime` (que alimenta amigos, perfil, dispositivos e login do Discord). A variável continua substituindo a lista inteira. Os endereços do deploy (`VERCEL_URL`) seguem somados no perfil.
+- O passo do nome do onboarding gravava o texto digitado como nome da conta no Firebase sem checar nada, e trocou o nome de uma conta existente. Agora não troca quando a conta já tem nome e progresso; conta nova (sem progresso) continua gravando o nome escolhido.
+- Testes: `src/backend/allowed-origins.test.ts` e dois casos em `src/views/onboarding-view.test.tsx` (o do nome falha sem a mudança).
+- Não verificado: o comportamento em produção depois do deploy; Firebase Authentication, Domínios autorizados, e o redirecionamento do Google e do Discord para o domínio novo (conferência da dona).

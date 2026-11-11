@@ -19,6 +19,7 @@ import {
   ONBOARDING_OPTIONS,
   type OnboardingConfiguration,
 } from "../domain/onboarding-configuration";
+import { accountHasProgress } from "../data/account-progress";
 import { requestOnboardingConfiguration } from "../data/onboarding-client";
 import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
 import { PaperDigits } from "../components/paper-digits";
@@ -842,7 +843,10 @@ export default function OnboardingView({
                         const user = auth.currentUser;
                         if (!user || user.uid !== localStorage.getItem(ACCOUNT_OWNER_KEY))
                           throw new Error("auth/user-mismatch");
-                        await authApi.updateProfile(user, { displayName: introName.trim() });
+                        // Conta que já tem nome e progresso não tem o nome trocado por quem refaz o
+                        // onboarding (o nome digitado aqui valia como o nome da conta inteira).
+                        if (!(user.displayName && accountHasProgress(localStorage)))
+                          await authApi.updateProfile(user, { displayName: introName.trim() });
                         if (auth.currentUser?.uid !== user.uid)
                           throw new Error("auth/user-mismatch");
                         next();
