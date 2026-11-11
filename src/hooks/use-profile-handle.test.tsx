@@ -107,3 +107,39 @@ it("resposta atrasada após sair não vaza @ e evento de edição refaz leitura"
   act(() => mocks.listener?.({ uid: "b", isAnonymous: false }));
   await waitFor(() => expect(result.current.handle.username).toBe("novo"));
 });
+
+it("abre com o último @ conhecido, sem o selo, enquanto o servidor não confirma", async () => {
+  localStorage.setItem("helena.account.v1", "dona");
+  localStorage.setItem(
+    "helena.profileSnapshot.v1",
+    JSON.stringify({ uid: "dona", username: "ana", creks: true }),
+  );
+  let finish: ((value: { username: string; creks: boolean }) => void) | undefined;
+  mocks.request.mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  );
+  const { result } = renderHook(() => useProfileHandle(false));
+  expect(result.current.handle).toEqual({ username: "ana", creks: false });
+  await waitFor(() => expect(mocks.listeners.size).toBe(1));
+  act(() => mocks.listener?.({ uid: "dona", isAnonymous: false }));
+  expect(result.current.handle).toEqual({ username: "ana", creks: false });
+  await act(async () => finish?.({ username: "ana", creks: true }));
+  expect(result.current.handle).toEqual({ username: "ana", creks: true });
+  expect(JSON.parse(localStorage.getItem("helena.profileSnapshot.v1") ?? "{}")).toMatchObject({
+    uid: "dona",
+    username: "ana",
+  });
+});
+it("não mostra o @ guardado de outra conta nem para convidado", async () => {
+  localStorage.setItem("helena.account.v1", "outra");
+  localStorage.setItem(
+    "helena.profileSnapshot.v1",
+    JSON.stringify({ uid: "dona", username: "ana" }),
+  );
+  expect(renderHook(() => useProfileHandle(false)).result.current.handle.username).toBe("");
+  localStorage.setItem("helena.account.v1", "dona");
+  expect(renderHook(() => useProfileHandle(true)).result.current.handle.username).toBe("");
+});

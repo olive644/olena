@@ -13,8 +13,12 @@ vi.mock("../hooks/use-profile-completion", () => ({
   }),
 }));
 const serverHandle = vi.hoisted(() => ({ username: "oli", creks: false }));
+const feed = vi.hoisted(() => ({
+  value: { self: { followers: 0, following: 0 } } as
+    { self: { followers: number; following: number } } | undefined,
+}));
 vi.mock("../hooks/use-social-feed", () => ({
-  useSocialFeed: () => ({ self: { followers: 0, following: 0 } }),
+  useSocialFeed: () => feed.value,
 }));
 vi.mock("../hooks/use-profile-handle", () => ({
   useProfileHandle: (guest: boolean) => ({
@@ -37,6 +41,7 @@ vi.mock("./profile-social", () => ({
 }));
 
 afterEach(() => {
+  feed.value = { self: { followers: 0, following: 0 } };
   serverHandle.username = "oli";
   serverHandle.creks = false;
   recommendation.completion = undefined;
@@ -388,4 +393,35 @@ it("seguidores e seguindo abrem a lista, não o card, depois de abrir e fechar o
   const following = await screen.findByTestId("directory");
   expect(following.getAttribute("data-list")).toBe("following");
   expect(following.getAttribute("data-sharing")).toBe("false");
+});
+
+it("abre com os contadores da última visita enquanto o servidor não responde", () => {
+  localStorage.setItem("helena.account.v1", "dona");
+  localStorage.setItem(
+    "helena.profileSnapshot.v1",
+    JSON.stringify({ uid: "dona", followers: 12, following: 7 }),
+  );
+  feed.value = undefined;
+  render(
+    <ProfileShowcase nameFallback="Aluno" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(screen.getByRole("button", { name: /12\s*Seguidores/ })).toBeTruthy();
+  expect(screen.getByRole("button", { name: /7\s*Seguindo/ })).toBeTruthy();
+});
+it("não usa contadores guardados de outra conta nem inventa números sem foto", () => {
+  localStorage.setItem("helena.account.v1", "outra");
+  localStorage.setItem(
+    "helena.profileSnapshot.v1",
+    JSON.stringify({ uid: "dona", followers: 12, following: 7 }),
+  );
+  feed.value = undefined;
+  render(
+    <ProfileShowcase nameFallback="Aluno" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(screen.queryByRole("button", { name: /12\s*Seguidores/ })).toBeNull();
+  expect(screen.queryByRole("button", { name: /7\s*Seguindo/ })).toBeNull();
 });

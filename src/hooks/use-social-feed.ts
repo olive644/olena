@@ -3,6 +3,7 @@ import type { SocialFeed } from "../domain/profile-social";
 import { requestSocial, SOCIAL_CHANGED } from "../data/profile-social";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { subscribeSocialUpdates } from "../data/profile-social-events";
+import { writeProfileSnapshot } from "../data/profile-snapshot";
 
 // Só memória e UID confirmado: evita baixar o mesmo feed para sino e perfil.
 let cached: { uid: string; value: SocialFeed; at: number } | undefined;
@@ -20,7 +21,13 @@ function sharedFeed(uid: string) {
     return Promise.resolve(cached.value);
   const current = revision;
   const promise = requestSocial().then((value) => {
-    if (current === revision) cached = { uid, value, at: Date.now() };
+    if (current === revision) {
+      cached = { uid, value, at: Date.now() };
+      writeProfileSnapshot(uid, {
+        followers: value.self.followers,
+        following: value.self.following,
+      });
+    }
     return value;
   });
   flight = { uid, promise };

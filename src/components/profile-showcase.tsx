@@ -20,6 +20,7 @@ import { ProfileCoverDialog } from "./profile-cover-dialog";
 import { profileCover } from "../domain/profile-covers";
 import { FriendIcon } from "./profile-friend-icon";
 import { useSocialFeed } from "../hooks/use-social-feed";
+import { readProfileSnapshot } from "../data/profile-snapshot";
 import { HelenaLoading } from "./helena-loading";
 import "./profile-social.css";
 const SocialDirectory = lazy(() =>
@@ -79,6 +80,8 @@ export function ProfileShowcase({
     return username && /^[a-z0-9._]{1,30}$/.test(username) ? username : undefined;
   });
   const social = useSocialFeed(!guest);
+  // Números da última visita, só até o servidor responder: o Perfil não abre com buracos.
+  const [lastCounts] = useState(() => (guest ? undefined : readProfileSnapshot()));
   const friendButton = useRef<HTMLButtonElement>(null);
   const friendActions = useRef<HTMLDivElement>(null);
   const connections = useRef<HTMLDivElement>(null);
@@ -284,7 +287,10 @@ export function ProfileShowcase({
                   title={uiText(915)}
                 >
                   <ProfilePaperIcon name="followers" />
-                  <strong>{social?.self.followers ?? (guest ? 0 : null)}</strong> {uiText(916)}
+                  <strong>
+                    {social?.self.followers ?? lastCounts?.followers ?? (guest ? 0 : null)}
+                  </strong>{" "}
+                  {uiText(916)}
                 </button>
                 <button
                   type="button"
@@ -296,7 +302,10 @@ export function ProfileShowcase({
                   title={uiText(917)}
                 >
                   <ProfilePaperIcon name="following" />
-                  <strong>{social?.self.following ?? (guest ? 0 : null)}</strong> {uiText(918)}
+                  <strong>
+                    {social?.self.following ?? lastCounts?.following ?? (guest ? 0 : null)}
+                  </strong>{" "}
+                  {uiText(918)}
                 </button>
                 <div className="profile-cover__streaks" aria-label={uiText(919)}>
                   {workspace && <ProfileStreaks workspace={workspace} />}
