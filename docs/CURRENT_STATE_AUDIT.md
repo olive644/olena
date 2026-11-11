@@ -4767,6 +4767,15 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - Verificação no runtime oficial em Chromium: repouso igual à arte (diferença máxima de 1/255, e 30/255 sobre o fundo creme só em pixels soltos de borda), cada espera começa e termina no repouso, detectores sobre todos os quadros das cinco esperas (fresta estreita, buraco fechado, costura translúcida e pixel tocando a borda do quadro). Ficam diferenças de 1 a 2 px, só visíveis com zoom, em poses mais abertas das orelhas, da cauda e do fim da virada da folha. Detalhes em `scripts/olena-reading-rive/README.md`.
 - `performance:check` passa a medir `dist/olena-reading/olena.riv` (teto de 512 KiB). Não verificado: Safari/WebKit e mobile real, que ficam para o CI e para a ligação ao onboarding.
 
+## Domínio olenastudy.com.br, 2026-11-10
+
+- O domínio `olenastudy.com.br` foi registrado no Registro.br e ligado ao projeto na Vercel: `www.olenastudy.com.br` em Production e `olenastudy.com.br` redirecionando (308) para ele. O DNS usa os servidores do próprio Registro.br, com dois registros `A` (`216.198.79.1` e `64.29.17.1`) e um `CNAME` do `www` para o alvo indicado pela Vercel. Conferido pela API da Vercel (`misconfigured: false`) e pelo DNS público; a página abriu no navegador da dona.
+- Causa do risco: a API só aceita chamadas cujo cabeçalho `Origin` esteja em `allowedOrigins`, e `HELENA_ALLOWED_ORIGINS` não está definida na Vercel, então valia o padrão do código, que só tinha `https://olenastudy.vercel.app`. No domínio novo, as rotas de POST da API (professora Olena, nome de perfil, social, suporte, aparelhos da conta) recusariam as chamadas por origem.
+- Correção: `src/domain/site-origins.ts` guarda o endereço oficial e as origens padrão (`www`, sem `www` e Vercel) e é usado por `helena-runtime.ts`, `profile-handle-runtime.ts` (que alimenta os demais handlers) e pelo leitor de QR de convite (`room-qr-invite.ts`). Uma `HELENA_ALLOWED_ORIGINS` vazia passa a usar o padrão em vez de recusar todas as origens. O que a variável define, quando existe, continua valendo.
+- Testes: `src/domain/site-origins.test.ts` e casos novos em `src/domain/room-qr-invite.test.ts`.
+- Fora desta mudança, de propósito: canonical, sitemap, `robots.txt`, `llms.txt`, `security.txt` e metadados de `index.html` continuam em `olenastudy.vercel.app` (trocar é decisão de SEO e de redirecionamento, em PR própria); `android/twa-manifest.json` e o arquivo de associação de domínio do app da Play Store (exigem nova publicação do app); `AUTH_PUBLIC_ORIGIN` e as URLs de retorno de Discord e Google, que são configuração do servidor e dos painéis dos provedores, feitas pela dona.
+- Não verificado: login com Google e com Discord no domínio novo. `GOOGLE_REDIRECT_URI` e `AUTH_PUBLIC_ORIGIN` existem como variáveis protegidas na Vercel e seus valores não são legíveis daqui. O Firebase Auth precisa listar `www.olenastudy.com.br` e `olenastudy.com.br` em Authorized domains; confira entrando no domínio novo.
+
 ## Conta com progresso não volta ao onboarding, 2026-11-10
 
 - Relato: a conta principal voltou ao onboarding ao atualizar a página, em dois aparelhos. A nuvem (`users/<uid>/stateV2`) seguia com pontos de Matemática e de Inglês, acertos, conquistas e espaço de trabalho; só faltava `helena.onboarding.v1`, a marca de conclusão, e o nível apareceu como 1 até a nuvem ser aplicada. O aviso "Parte do seu progresso não pôde ser enviada" estava na tela.
@@ -4776,10 +4785,10 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - Testes: `src/data/account-progress.test.ts` e dois casos em `src/app-account-entry.test.tsx` (conta com progresso e sem marca não abre as perguntas e regrava a marca; conta nova com chaves zeradas abre). O primeiro falha sem a mudança em `app.tsx`.
 - Não verificado: o comportamento em produção com a conta real, o tamanho atual das chaves da conta e Safari/WebKit.
 
-## Nome da conta e origens do domínio próprio, 2026-11-11
+## O onboarding não troca o nome de conta existente, 2026-11-11
 
-- O domínio `olenastudy.com.br` (e o `www.`) foi ligado ao projeto na Vercel em 10/11/2026, por volta das 21h. Para o navegador é uma origem nova, com armazenamento local vazio, e o servidor só aceitava pedidos de `https://olenastudy.vercel.app` (a variável `HELENA_ALLOWED_ORIGINS` não existe na produção). Resultado visto pela dona da conta: "Origem não autorizada" em amigos, perfil e conclusão do perfil, sem @, insígnias nem contagem de seguidores, e onboarding repetido até a nuvem ser aplicada.
-- `src/backend/allowed-origins.ts` passa a ser a lista padrão do servidor (Vercel, domínio e `www.`), usada por `helena-runtime` e `profile-handle-runtime` (que alimenta amigos, perfil, dispositivos e login do Discord). A variável continua substituindo a lista inteira. Os endereços do deploy (`VERCEL_URL`) seguem somados no perfil.
-- O passo do nome do onboarding gravava o texto digitado como nome da conta no Firebase sem checar nada, e trocou o nome de uma conta existente. Agora não troca quando a conta já tem nome e progresso; conta nova (sem progresso) continua gravando o nome escolhido.
-- Testes: `src/backend/allowed-origins.test.ts` e dois casos em `src/views/onboarding-view.test.tsx` (o do nome falha sem a mudança).
-- Não verificado: o comportamento em produção depois do deploy; Firebase Authentication, Domínios autorizados, e o redirecionamento do Google e do Discord para o domínio novo (conferência da dona).
+- O passo do nome do onboarding gravava o texto digitado como nome da conta no Firebase (`updateProfile`) sem checar nada, e renomeou uma conta que já tinha nome e progresso. Agora não troca quando a conta já tem nome e progresso; conta nova (sem progresso) continua gravando o nome escolhido.
+- O sinal de progresso (`src/data/account-progress.ts`) usa só os pontos de Matemática e de Inglês, o que mantém o JavaScript da aplicação dentro do teto sem aumento.
+- As origens do domínio próprio ficaram na #618 (`src/domain/site-origins.ts`); esta mudança não mexe nelas.
+- Testes: dois casos em `src/views/onboarding-view.test.tsx` (o do nome falha sem a mudança).
+- Não verificado: o comportamento em produção depois do deploy.

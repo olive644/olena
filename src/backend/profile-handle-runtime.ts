@@ -1,9 +1,9 @@
+import { parseAllowedOrigins } from "../domain/site-origins.js";
 import { createFirebaseAccountIdentity } from "./firebase-account-identity.js";
 import {
   createFirebaseAccessTokenProvider,
   createFirebaseRealtimeStore,
 } from "./firebase-realtime-store.js";
-import { allowedOriginsFrom } from "./allowed-origins.js";
 import { createProfileHandleHandler, type HandleRegistry } from "./profile-handle-handler.js";
 import { checkRateLimit } from "./rate-limit.js";
 
@@ -19,7 +19,7 @@ const rateStore = createFirebaseRealtimeStore(config);
 const identity = createFirebaseAccountIdentity(process.env["VITE_FIREBASE_PROJECT_ID"] ?? "");
 const url = `${config.databaseUrl}/privateProfileHandles.json`;
 export const profileAllowedOrigins = [
-  ...allowedOriginsFrom(process.env["HELENA_ALLOWED_ORIGINS"]),
+  ...parseAllowedOrigins(process.env["HELENA_ALLOWED_ORIGINS"]),
   ...[process.env["VERCEL_URL"], process.env["VERCEL_BRANCH_URL"]]
     .filter(Boolean)
     .map((host) => `https://${host}`),
