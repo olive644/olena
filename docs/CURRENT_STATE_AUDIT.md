@@ -4792,3 +4792,10 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - As origens do domínio próprio ficaram na #618 (`src/domain/site-origins.ts`); esta mudança não mexe nelas.
 - Testes: dois casos em `src/views/onboarding-view.test.tsx` (o do nome falha sem a mudança).
 - Não verificado: o comportamento em produção depois do deploy.
+
+## Metadados públicos no domínio novo, 2026-11-11
+
+- Canonical, `og:url` e dados estruturados de `index.html`, `public/sitemap.xml`, `public/robots.txt`, `public/llms.txt`, `public/.well-known/security.txt`, os canonical da Política de Privacidade e dos Termos de Uso e `SECURITY.md` passam a apontar para `https://www.olenastudy.com.br`, o endereço oficial (`CANONICAL_SITE_ORIGIN`, `src/domain/site-origins.ts`). Testes de `security.txt`, Política e Termos atualizados.
+- Fica como está, de propósito: `android/twa-manifest.json` e o teste do app Android (o app da Play Store continua no endereço da Vercel até nova publicação), `scripts/olena-candidate-data.mjs` (chama a API, que aceita os dois endereços) e o valor padrão de `AUTH_PUBLIC_ORIGIN` (é variável da Vercel, ajustada pela dona junto com o portal do Discord).
+- Passo da dona, fora do repositório: redirecionar `olenastudy.vercel.app` para o domínio novo na Vercel. Enquanto os dois endereços servem o mesmo conteúdo, o canonical aponta para o novo, o que evita conteúdo duplicado, mas o redirecionamento deixa a troca completa. Não verificado: a indexação do Google no domínio novo.
+- O marcador `google-site-verification` de `index.html` continua o mesmo e agora também é servido no domínio novo. Não verificado: se o Search Console aceita esse mesmo token para a propriedade nova; se não aceitar, a verificação por registro TXT no Registro.br dispensa mudança de código.

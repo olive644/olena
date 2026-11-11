@@ -22,7 +22,7 @@ describe("security.txt (RFC 9116)", () => {
 
   it("aponta para a política de segurança e para o endereço canônico do site", () => {
     expect(fields.get("Policy")).toContain("SECURITY.md");
-    expect(fields.get("Canonical")).toBe("https://olenastudy.vercel.app/.well-known/security.txt");
+    expect(fields.get("Canonical")).toBe("https://www.olenastudy.com.br/.well-known/security.txt");
   });
 
   it("não expõe e-mail nem telefone pessoal", () => {
