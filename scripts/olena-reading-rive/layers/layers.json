@@ -1,0 +1,304 @@
+{
+  "source": "public/helena-onboarding-step-1-cutout.webp",
+  "width": 640,
+  "height": 640,
+  "order": [
+    "tail",
+    "tailTip",
+    "body",
+    "earL",
+    "earR",
+    "star",
+    "eyeL",
+    "pupilL",
+    "lidLowL",
+    "lidUpL",
+    "eyeRBack",
+    "eyeR",
+    "pupilR",
+    "lidLowR",
+    "lidUpR",
+    "book",
+    "page1",
+    "page2",
+    "page3",
+    "pawRShadow",
+    "footL",
+    "footR",
+    "pawL",
+    "pawR"
+  ],
+  "layers": {
+    "tail": {
+      "file": "tail.png",
+      "x0": 450,
+      "y0": 443,
+      "w": 166,
+      "h": 135,
+      "pivot": [
+        462,
+        510
+      ]
+    },
+    "tailTip": {
+      "file": "tailTip.png",
+      "x0": 505,
+      "y0": 364,
+      "w": 112,
+      "h": 114,
+      "pivot": [
+        560,
+        462
+      ]
+    },
+    "body": {
+      "file": "body.png",
+      "x0": 89,
+      "y0": 104,
+      "w": 462,
+      "h": 492,
+      "pivot": [
+        300,
+        592
+      ]
+    },
+    "earL": {
+      "file": "earL.png",
+      "x0": 113,
+      "y0": 15,
+      "w": 193,
+      "h": 168,
+      "pivot": [
+        205,
+        136
+      ]
+    },
+    "earR": {
+      "file": "earR.png",
+      "x0": 423,
+      "y0": 76,
+      "w": 135,
+      "h": 176,
+      "pivot": [
+        482,
+        178
+      ]
+    },
+    "star": {
+      "file": "star.png",
+      "x0": 453,
+      "y0": 117,
+      "w": 113,
+      "h": 120,
+      "pivot": [
+        507,
+        181
+      ]
+    },
+    "eyeL": {
+      "file": "eyeL.png",
+      "x0": 157,
+      "y0": 177,
+      "w": 125,
+      "h": 136,
+      "pivot": [
+        220,
+        246
+      ]
+    },
+    "pupilL": {
+      "file": "pupilL.png",
+      "x0": 201,
+      "y0": 203,
+      "w": 48,
+      "h": 93,
+      "pivot": [
+        224,
+        246
+      ]
+    },
+    "eyeRBack": {
+      "file": "eyeRBack.png",
+      "x0": 328,
+      "y0": 346,
+      "w": 91,
+      "h": 17,
+      "pivot": [
+        372,
+        291
+      ]
+    },
+    "eyeR": {
+      "file": "eyeR.png",
+      "x0": 303,
+      "y0": 225,
+      "w": 137,
+      "h": 128,
+      "pivot": [
+        372,
+        291
+      ]
+    },
+    "pupilR": {
+      "file": "pupilR.png",
+      "x0": 344,
+      "y0": 249,
+      "w": 47,
+      "h": 90,
+      "pivot": [
+        365,
+        291
+      ]
+    },
+    "book": {
+      "file": "book.png",
+      "x0": 88,
+      "y0": 311,
+      "w": 345,
+      "h": 234,
+      "pivot": [
+        262,
+        560
+      ]
+    },
+    "pawRShadow": {
+      "file": "pawRShadow.png",
+      "x0": 373,
+      "y0": 414,
+      "w": 51,
+      "h": 101,
+      "pivot": [
+        426,
+        463
+      ]
+    },
+    "footL": {
+      "file": "footL.png",
+      "x0": 93,
+      "y0": 478,
+      "w": 138,
+      "h": 123,
+      "pivot": [
+        160,
+        595
+      ]
+    },
+    "footR": {
+      "file": "footR.png",
+      "x0": 288,
+      "y0": 482,
+      "w": 184,
+      "h": 123,
+      "pivot": [
+        380,
+        595
+      ]
+    },
+    "pawL": {
+      "file": "pawL.png",
+      "x0": 64,
+      "y0": 377,
+      "w": 78,
+      "h": 102,
+      "pivot": [
+        102,
+        425
+      ]
+    },
+    "pawR": {
+      "file": "pawR.png",
+      "x0": 374,
+      "y0": 416,
+      "w": 106,
+      "h": 98,
+      "pivot": [
+        426,
+        463
+      ]
+    },
+    "lidUpL": {
+      "file": "lidUpL.png",
+      "x0": 155,
+      "y0": 175,
+      "w": 129,
+      "h": 140,
+      "pivot": [
+        219,
+        175
+      ],
+      "hidden": true
+    },
+    "lidLowL": {
+      "file": "lidLowL.png",
+      "x0": 155,
+      "y0": 175,
+      "w": 129,
+      "h": 140,
+      "pivot": [
+        219,
+        315
+      ],
+      "hidden": true
+    },
+    "lidUpR": {
+      "file": "lidUpR.png",
+      "x0": 301,
+      "y0": 223,
+      "w": 141,
+      "h": 132,
+      "pivot": [
+        371,
+        223
+      ],
+      "hidden": true
+    },
+    "lidLowR": {
+      "file": "lidLowR.png",
+      "x0": 301,
+      "y0": 223,
+      "w": 141,
+      "h": 132,
+      "pivot": [
+        371,
+        355
+      ],
+      "hidden": true
+    },
+    "page1": {
+      "file": "page1.png",
+      "x0": 240,
+      "y0": 359,
+      "w": 72,
+      "h": 40,
+      "pivot": [
+        240,
+        383
+      ],
+      "hidden": true
+    },
+    "page2": {
+      "file": "page2.png",
+      "x0": 302,
+      "y0": 359,
+      "w": 72,
+      "h": 40,
+      "pivot": [
+        302,
+        383
+      ],
+      "hidden": true
+    },
+    "page3": {
+      "file": "page3.png",
+      "x0": 364,
+      "y0": 359,
+      "w": 72,
+      "h": 40,
+      "pivot": [
+        364,
+        383
+      ],
+      "hidden": true
+    }
+  }
+}
