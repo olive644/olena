@@ -11,16 +11,16 @@ const PROGRESS_KEYS = [
 const COUNTERS = new Set(["points", "correct"]);
 const LISTS = new Set(["receipts", "solved"]);
 
-function hasProgressSign(value: unknown, depth = 0): boolean {
-  if (depth > 6 || value === null || typeof value !== "object") return false;
-  if (Array.isArray(value)) return value.some((item) => hasProgressSign(item, depth + 1));
-  for (const [key, child] of Object.entries(value)) {
-    if (COUNTERS.has(key) && typeof child === "number" && child > 0) return true;
-    if (LISTS.has(key) && Array.isArray(child) && child.length > 0) return true;
-    if (hasProgressSign(child, depth + 1)) return true;
-  }
-  return false;
-}
+// Object.entries também percorre arrays; um JSON fundo demais estoura a pilha e cai no try/catch.
+const hasProgressSign = (value: unknown): boolean =>
+  !!value &&
+  typeof value === "object" &&
+  Object.entries(value).some(
+    ([key, child]) =>
+      (COUNTERS.has(key) && typeof child === "number" && child > 0) ||
+      (LISTS.has(key) && Array.isArray(child) && child.length > 0) ||
+      hasProgressSign(child),
+  );
 
 /** Verdadeiro quando alguma chave de progresso guarda pontos, acertos ou itens concluídos. */
 export function accountHasProgress(storage: Pick<Storage, "getItem">): boolean {
