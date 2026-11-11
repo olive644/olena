@@ -8,6 +8,8 @@ describe("convite lido pela câmera", () => {
     "AB-CDE",
     `${origin}/sala?sala=ABCDE`,
     "https://olenastudy.vercel.app/sala?sala=ABCDE",
+    "https://www.olenastudy.com.br/sala?sala=ABCDE",
+    "https://olenastudy.com.br/sala?sala=ABCDE",
   ])("aceita código ou convite do Olena: %s", (value) => {
     expect(roomCodeFromQr(value, origin)).toBe("ABCDE");
   });
@@ -15,6 +17,7 @@ describe("convite lido pela câmera", () => {
     "https://phishing.example/?sala=ABCDE",
     "javascript:alert(1)",
     "https://olenastudy.vercel.app.evil.example/?sala=ABCDE",
+    "https://olenastudy.com.br.evil.example/?sala=ABCDE",
     "12345",
     "texto sem convite",
     `${origin}/sala?sala=invalid`,

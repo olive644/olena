@@ -1,3 +1,4 @@
+import { isOlenaSiteOrigin } from "./site-origins";
 import {
   isValidLocalRoomCode,
   normalizeLocalRoomCode,
@@ -8,7 +9,7 @@ export function roomCodeFromQr(value: string, origin: string): string | undefine
   if (isValidLocalRoomCode(value)) return normalizeLocalRoomCode(value);
   try {
     const url = new URL(value);
-    if (url.origin !== origin && url.origin !== "https://olenastudy.vercel.app") return undefined;
+    if (url.origin !== origin && !isOlenaSiteOrigin(url.origin)) return undefined;
     return readLocalRoomCodeFromUrl(url.href);
   } catch {
     return undefined;
