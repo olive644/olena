@@ -831,7 +831,13 @@ const POLY = {
     }
     manifest.order.splice(manifest.order.indexOf("book") + 1, 0, "page1", "page2", "page3");
   }
-  fs.writeFileSync(path.join(LAYERS, "layers.json"), JSON.stringify(manifest, null, 2) + "\n");
+  // O Prettier do repositório junta os pares de números numa linha; gravar já assim evita falha
+  // no format:check.
+  const manifestText = JSON.stringify(manifest, null, 2).replace(
+    /\[\s+(-?\d+),\s+(-?\d+)\s+\]/g,
+    "[$1, $2]",
+  );
+  fs.writeFileSync(path.join(LAYERS, "layers.json"), manifestText + "\n");
 
   // ---- recomposição em repouso contra a arte original, as duas sobre o fundo creme do app ----
   const { createCanvas, loadImage } = require("@napi-rs/canvas");
