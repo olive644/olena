@@ -21,21 +21,121 @@ const clamp01 = (v) => Math.max(0, Math.min(1, v));
 
 // Polígonos em px da arte. O lado de fora da silhueta é folgado; o lado de dentro segue arestas.
 const POLY = {
-  earL: [[60, 200], [88, 192], [130, 170], [170, 148], [215, 128], [255, 117], [300, 121], [330, 100], [330, 0], [60, 0]],
-  earR: [[400, 100], [428, 106], [452, 140], [478, 170], [505, 205], [528, 240], [545, 272], [640, 272], [640, 40], [400, 40]],
-  tail: [[452, 505], [463, 497], [478, 472], [495, 440], [505, 395], [640, 330], [640, 640], [474, 640], [470, 565], [469, 512]],
-  pawR: [[368, 428], [388, 419], [400, 414], [420, 416], [445, 421], [463, 433], [484, 468], [464, 500], [455, 513], [420, 514], [395, 502], [366, 482]],
-  footL: [[60, 560], [90, 500], [140, 476], [200, 466], [232, 500], [226, 540], [224, 585], [214, 640], [60, 640]],
-  footR: [[289, 522], [300, 500], [345, 474], [380, 486], [400, 503], [455, 515], [469, 512], [471, 565], [478, 640], [280, 640], [292, 585]],
+  earL: [
+    [60, 200],
+    [88, 192],
+    [130, 170],
+    [170, 148],
+    [215, 128],
+    [255, 117],
+    [300, 121],
+    [330, 100],
+    [330, 0],
+    [60, 0],
+  ],
+  earR: [
+    [400, 100],
+    [428, 106],
+    [452, 140],
+    [478, 170],
+    [505, 205],
+    [528, 240],
+    [545, 272],
+    [640, 272],
+    [640, 40],
+    [400, 40],
+  ],
+  tail: [
+    [452, 505],
+    [463, 497],
+    [478, 472],
+    [495, 440],
+    [505, 395],
+    [640, 330],
+    [640, 640],
+    [474, 640],
+    [470, 565],
+    [469, 512],
+  ],
+  pawR: [
+    [368, 428],
+    [388, 419],
+    [400, 414],
+    [420, 416],
+    [445, 421],
+    [463, 433],
+    [484, 468],
+    [464, 500],
+    [455, 513],
+    [420, 514],
+    [395, 502],
+    [366, 482],
+  ],
+  footL: [
+    [60, 560],
+    [90, 500],
+    [140, 476],
+    [200, 466],
+    [232, 500],
+    [226, 540],
+    [224, 585],
+    [214, 640],
+    [60, 640],
+  ],
+  footR: [
+    [289, 522],
+    [300, 500],
+    [345, 474],
+    [380, 486],
+    [400, 503],
+    [455, 515],
+    [469, 512],
+    [471, 565],
+    [478, 640],
+    [280, 640],
+    [292, 585],
+  ],
   // fundo escuro entre as páginas abertas: é sombra de dentro do livro
-  bookGap: [[205, 372], [266, 372], [244, 402], [230, 402]],
+  bookGap: [
+    [205, 372],
+    [266, 372],
+    [244, 402],
+    [230, 402],
+  ],
   // fora da borda direita da orelha direita (onde a ponta da estrela sai da silhueta)
-  earROutside: [[553, 60], [640, 60], [640, 300], [521, 262], [549, 205], [553, 140]],
+  earROutside: [
+    [553, 60],
+    [640, 60],
+    [640, 300],
+    [521, 262],
+    [549, 205],
+    [553, 140],
+  ],
   // parte de cima da cauda (a curva que sobe), cortada na aresta da dobra
-  tailTip: [[495, 330], [640, 330], [640, 470], [612, 470], [560, 462], [503, 453]],
+  tailTip: [
+    [495, 330],
+    [640, 330],
+    [640, 470],
+    [612, 470],
+    [560, 462],
+    [503, 453],
+  ],
   // onde o livro continua por baixo das patas (a borda do livro segue reta por trás delas)
-  bookUnderPawR: [[240, 330], [426, 342], [428, 420], [424, 520], [240, 545]],
-  bookUnderPawL: [[88, 318], [100, 380], [112, 430], [122, 478], [300, 478], [300, 318]],
+  bookUnderPawR: [
+    [240, 330],
+    [426, 342],
+    [428, 420],
+    [424, 520],
+    [240, 545],
+  ],
+  bookUnderPawL: [
+    [88, 318],
+    [100, 380],
+    [112, 430],
+    [122, 478],
+    [300, 478],
+    [300, 318],
+  ],
 };
 
 (async () => {
@@ -43,7 +143,8 @@ const POLY = {
   const original = Uint8ClampedArray.from(data);
   const N = w * h;
   fs.mkdirSync(LAYERS, { recursive: true });
-  for (const f of fs.readdirSync(LAYERS)) if (f.endsWith(".png")) fs.unlinkSync(path.join(LAYERS, f));
+  for (const f of fs.readdirSync(LAYERS))
+    if (f.endsWith(".png")) fs.unlinkSync(path.join(LAYERS, f));
 
   const opaque = new Uint8Array(N);
   const any = new Uint8Array(N);
@@ -63,7 +164,9 @@ const POLY = {
   const poly = (name) => T.and(opaque, T.polyMask(w, h, POLY[name]));
   const biggest = (mask) => {
     const c = T.components(mask, w, h);
-    return [...c.list].sort((a, b) => b.n - a.n).map((x) => ({ ...x, mask: T.maskOfLabel(c.lab, x.id) }));
+    return [...c.list]
+      .sort((a, b) => b.n - a.n)
+      .map((x) => ({ ...x, mask: T.maskOfLabel(c.lab, x.id) }));
   };
 
   // ---- amarelos: dois olhos e a estrela ----
@@ -163,7 +266,12 @@ const POLY = {
     for (let i = 0; i < N; i++) if (owner[i] === k) m[i] = 1;
     const ring = T.dilate(m, w, h, 3);
     for (let i = 0; i < N; i++)
-      if (ring[i] && owner[i] === 9 && T.hsv(data[i * 4], data[i * 4 + 1], data[i * 4 + 2])[2] < 0.62) owner[i] = k;
+      if (
+        ring[i] &&
+        owner[i] === 9 &&
+        T.hsv(data[i * 4], data[i * 4 + 1], data[i * 4 + 2])[2] < 0.62
+      )
+        owner[i] = k;
   }
   // lascas opacas do corpo soltas do resto (borda clara do livro, por exemplo) vão para o vizinho
   {
@@ -174,7 +282,8 @@ const POLY = {
       if (part.n > 400) continue;
       const votes = new Map();
       const ring = T.minus(T.dilate(part.mask, w, h, 2), part.mask);
-      for (let i = 0; i < N; i++) if (ring[i] && owner[i] > 1) votes.set(owner[i], (votes.get(owner[i]) ?? 0) + 1);
+      for (let i = 0; i < N; i++)
+        if (ring[i] && owner[i] > 1) votes.set(owner[i], (votes.get(owner[i]) ?? 0) + 1);
       const winner = [...votes].sort((a, b) => b[1] - a[1])[0];
       if (winner) for (let i = 0; i < N; i++) if (part.mask[i]) owner[i] = winner[0];
     }
@@ -187,7 +296,16 @@ const POLY = {
     for (const i of frontier) {
       const x = i % w;
       const y = (i / w) | 0;
-      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]]) {
+      for (const [dx, dy] of [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+        [1, 1],
+        [-1, 1],
+        [1, -1],
+        [-1, -1],
+      ]) {
         const nx = x + dx;
         const ny = y + dy;
         if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
@@ -211,7 +329,7 @@ const POLY = {
     let bestD = Infinity;
     for (let q = 0; q < N; q++) {
       if (!owner[q] || !opaque[q]) continue;
-      const d = (q % w - x) ** 2 + (((q / w) | 0) - y) ** 2;
+      const d = ((q % w) - x) ** 2 + (((q / w) | 0) - y) ** 2;
       if (d < bestD) {
         bestD = d;
         best = owner[q];
@@ -234,7 +352,12 @@ const POLY = {
     for (let i = 0; i < N; i++) if (owner[i] === k && opaque[i] && !nearBg[i]) m[i] = 1;
     const ring = T.dilate(m, w, h, 7);
     for (let i = 0; i < N; i++)
-      if (ring[i] && (!opaque[i] || nearBg[i]) && (owner[i] === 1 || owner[i] === 11 || owner[i] === 12 || owner[i] === 13)) owner[i] = k;
+      if (
+        ring[i] &&
+        (!opaque[i] || nearBg[i]) &&
+        (owner[i] === 1 || owner[i] === 11 || owner[i] === 12 || owner[i] === 13)
+      )
+        owner[i] = k;
   }
   const own = (k) => {
     const m = new Uint8Array(N);
@@ -331,16 +454,29 @@ const POLY = {
   // quando ela sobe, o que aparece embaixo é o braço saindo do corpo, sem degrau nem coluna solta
   const underPawRBody = T.minus(pawRAll, underPawRBook);
   const bodyHidden0 = T.or(
-    T.or(T.or(T.and(T.or(eyeMask[0], eyeMask[1]), opaque), T.and(near(rim, 4), opaque)), T.and(starFill, near(bodyCore, 60))),
-    T.and(T.or(T.or(T.or(opaqueOwn(2), opaqueOwn(3)), T.or(opaqueOwn(9), opaqueOwn(11))), opaqueOwn(10)), near(bodyCore, TAB)),
+    T.or(
+      T.or(T.and(T.or(eyeMask[0], eyeMask[1]), opaque), T.and(near(rim, 4), opaque)),
+      T.and(starFill, near(bodyCore, 60)),
+    ),
+    T.and(
+      T.or(
+        T.or(T.or(opaqueOwn(2), opaqueOwn(3)), T.or(opaqueOwn(9), opaqueOwn(11))),
+        opaqueOwn(10),
+      ),
+      near(bodyCore, TAB),
+    ),
   );
   // as patas se mexem bastante: o corpo continua inteiro por baixo da pata direita
   // e por baixo da borda dos pés (o corpo respira e inclina; os pés ficam parados)
-  const bodyHidden = T.or(T.or(bodyHidden0, underPawRBody), T.and(T.or(opaqueOwn(12), opaqueOwn(13)), near(bodyCore, TAB)));
+  const bodyHidden = T.or(
+    T.or(bodyHidden0, underPawRBody),
+    T.and(T.or(opaqueOwn(12), opaqueOwn(13)), near(bodyCore, TAB)),
+  );
   const layersOut = {};
   // amostra só do pelo escuro: o brilho das arestas e a borda clara da silhueta mancham a difusão
   const furDark = new Uint8Array(N);
-  for (let i = 0; i < N; i++) if (opaque[i] && T.hsv(data[i * 4], data[i * 4 + 1], data[i * 4 + 2])[2] < 0.33) furDark[i] = 1;
+  for (let i = 0; i < N; i++)
+    if (opaque[i] && T.hsv(data[i * 4], data[i * 4 + 1], data[i * 4 + 2])[2] < 0.33) furDark[i] = 1;
   layersOut.body = build(1, bodyHidden, T.and(T.erode(bodyCore, w, h, 2), furDark));
   layersOut.earL = build(2, new Uint8Array(N));
   layersOut.earR = build(3, T.and(starFill, near(opaqueOwn(3), 40)));
@@ -363,8 +499,10 @@ const POLY = {
         den += d * d;
       }
       let alpha = Math.max(0.05, den ? clamp01(num / den) : 1);
-      const colorAt = (al) => [0, 1, 2].map((c) => (data[i * 4 + c] - (1 - al) * Y[i * 4 + c]) / al);
-      while (alpha < 1 && colorAt(alpha).some((v) => v < 0 || v > 255)) alpha = Math.min(1, alpha + 0.01);
+      const colorAt = (al) =>
+        [0, 1, 2].map((c) => (data[i * 4 + c] - (1 - al) * Y[i * 4 + c]) / al);
+      while (alpha < 1 && colorAt(alpha).some((v) => v < 0 || v > 255))
+        alpha = Math.min(1, alpha + 0.01);
       const col = colorAt(alpha);
       for (let c = 0; c < 3; c++) data[i * 4 + c] = Math.round(Math.max(0, Math.min(255, col[c])));
       data[i * 4 + 3] = Math.round(alpha * 255);
@@ -374,7 +512,14 @@ const POLY = {
   // sem abrir fresta, e a piscada não puxa amarelo de baixo das páginas para o rosto (longe da
   // borda e das bordas do livro que não encostam no olho, senão o amarelo apareceria nelas)
   const outsideEye = T.minus(T.minus(T.minus(new Uint8Array(N).fill(1), own(9)), own(6)), own(8));
-  layersOut.eyeRBack = build(-1, T.minus(T.minus(T.and(opaqueOwn(9), near(opaqueOwn(6), TAB)), near(outsideEye, 3)), near(rim, 1)), T.and(opaqueOwn(6), yellow));
+  layersOut.eyeRBack = build(
+    -1,
+    T.minus(
+      T.minus(T.and(opaqueOwn(9), near(opaqueOwn(6), TAB)), near(outsideEye, 3)),
+      near(rim, 1),
+    ),
+    T.and(opaqueOwn(6), yellow),
+  );
   layersOut.pupilL = build(7, new Uint8Array(N));
   layersOut.pupilR = build(8, new Uint8Array(N));
   // livro: avança sob pés e patas; a pata esquerda e os pés ficam por cima no repouso
@@ -388,7 +533,10 @@ const POLY = {
   const bgNear = T.dilate(T.minus(new Uint8Array(N).fill(1), any), w, h, 3);
   function unmixEdge(front, back, backRGBA) {
     const fm = own(front);
-    const edge = T.and(T.and(T.and(fm, T.dilate(own(back), w, h, 2)), opaque), T.minus(new Uint8Array(N).fill(1), bgNear));
+    const edge = T.and(
+      T.and(T.and(fm, T.dilate(own(back), w, h, 2)), opaque),
+      T.minus(new Uint8Array(N).fill(1), bgNear),
+    );
     const fcore = T.minus(T.and(fm, opaque), T.dilate(own(back), w, h, 3));
     const F = T.inpaint(data, w, h, T.minus(fm, fcore), 20, fcore);
     let mixed = 0;
@@ -405,7 +553,11 @@ const POLY = {
       const alpha = clamp01(num / den);
       if (alpha > 0.97) continue;
       let res = 0;
-      for (let c = 0; c < 3; c++) res = Math.max(res, Math.abs(alpha * F[i * 4 + c] + (1 - alpha) * backRGBA[i * 4 + c] - data[i * 4 + c]));
+      for (let c = 0; c < 3; c++)
+        res = Math.max(
+          res,
+          Math.abs(alpha * F[i * 4 + c] + (1 - alpha) * backRGBA[i * 4 + c] - data[i * 4 + c]),
+        );
       if (res > 22) continue;
       for (let c = 0; c < 3; c++) data[i * 4 + c] = F[i * 4 + c];
       data[i * 4 + 3] = Math.round(alpha * 255);
@@ -414,7 +566,17 @@ const POLY = {
     return mixed;
   }
   console.log("borda livro/corpo separada:", unmixEdge(9, 1, layersOut.body.rgba), "px");
-  layersOut.book = build(9, T.or(T.or(T.or(underPawRBook, underPawLBook), opaqueOwn(16)), T.and(T.or(T.or(opaqueOwn(10), opaqueOwn(11)), T.or(opaqueOwn(12), opaqueOwn(13))), near(opaqueOwn(9), TAB))), T.and(T.erode(opaqueOwn(9), w, h, 3), purple));
+  layersOut.book = build(
+    9,
+    T.or(
+      T.or(T.or(underPawRBook, underPawLBook), opaqueOwn(16)),
+      T.and(
+        T.or(T.or(opaqueOwn(10), opaqueOwn(11)), T.or(opaqueOwn(12), opaqueOwn(13))),
+        near(opaqueOwn(9), TAB),
+      ),
+    ),
+    T.and(T.erode(opaqueOwn(9), w, h, 3), purple),
+  );
   let edgeMixed = 0;
   for (const k of [10, 11, 12, 13]) edgeMixed += unmixEdge(k, 9, layersOut.book.rgba);
   console.log("borda patas e pés/livro separada:", edgeMixed, "px");
@@ -423,9 +585,19 @@ const POLY = {
   layersOut.pawRShadow = build(16, new Uint8Array(N));
   layersOut.footL = build(12, new Uint8Array(N));
   // o pé fica por cima do livro: só preenche sob a pata onde não há livro por trás
-  layersOut.footR = build(13, T.minus(T.and(pawRAll, near(opaqueOwn(13), 24)), T.polyMask(w, h, POLY.bookUnderPawR)), T.and(opaqueOwn(13), furDark));
+  layersOut.footR = build(
+    13,
+    T.minus(T.and(pawRAll, near(opaqueOwn(13), 24)), T.polyMask(w, h, POLY.bookUnderPawR)),
+    T.and(opaqueOwn(13), furDark),
+  );
   // cauda: avança sob o corpo e o pé direito
-  layersOut.tail = build(14, T.or(T.and(T.or(bodyCore, opaqueOwn(13)), near(opaqueOwn(14), TAB)), T.and(opaqueOwn(15), near(opaqueOwn(14), TAB))));
+  layersOut.tail = build(
+    14,
+    T.or(
+      T.and(T.or(bodyCore, opaqueOwn(13)), near(opaqueOwn(14), TAB)),
+      T.and(opaqueOwn(15), near(opaqueOwn(14), TAB)),
+    ),
+  );
   // ponta da cauda: por cima da base, que tem a aba por baixo da junta
   layersOut.tailTip = build(15, new Uint8Array(N));
   // e leva por cima uma faixa de 10 px da base com a cor original: no repouso coincide com a base,
@@ -442,7 +614,13 @@ const POLY = {
   }
 
   // ---- exporta (de trás para a frente) ----
-  const manifest = { source: "public/helena-onboarding-step-1-cutout.webp", width: w, height: h, order: [], layers: {} };
+  const manifest = {
+    source: "public/helena-onboarding-step-1-cutout.webp",
+    width: w,
+    height: h,
+    order: [],
+    layers: {},
+  };
   const centroid = (mask) => {
     let sx = 0;
     let sy = 0;
@@ -474,14 +652,39 @@ const POLY = {
     tail: [462, 510],
     tailTip: [560, 462],
   };
-  const ORDER = ["tail", "tailTip", "body", "earL", "earR", "star", "eyeL", "pupilL", "eyeRBack", "eyeR", "pupilR", "book", "pawRShadow", "footL", "footR", "pawL", "pawR"];
+  const ORDER = [
+    "tail",
+    "tailTip",
+    "body",
+    "earL",
+    "earR",
+    "star",
+    "eyeL",
+    "pupilL",
+    "eyeRBack",
+    "eyeR",
+    "pupilR",
+    "book",
+    "pawRShadow",
+    "footL",
+    "footR",
+    "pawL",
+    "pawR",
+  ];
   for (const name of ORDER) {
     const L = layersOut[name];
     const cut = T.cutLayer(L.rgba, w, h, L.mask);
     if (!cut) throw new Error("camada vazia: " + name);
     const file = name + ".png";
     T.savePNG(path.join(LAYERS, file), cut.w, cut.h, cut.data);
-    manifest.layers[name] = { file, x0: cut.x0, y0: cut.y0, w: cut.w, h: cut.h, pivot: PIVOT[name] };
+    manifest.layers[name] = {
+      file,
+      x0: cut.x0,
+      y0: cut.y0,
+      w: cut.w,
+      h: cut.h,
+      pivot: PIVOT[name],
+    };
     manifest.order.push(name);
   }
   // ---- pálpebras: não estão na arte; feitas da mesma pelagem que fica atrás dos olhos ----
@@ -492,14 +695,23 @@ const POLY = {
   {
     const { createCanvas, loadImage } = require("@napi-rs/canvas");
     const fur = layersOut.body.rgba;
-    for (const [k, side] of [[0, "L"], [1, "R"]]) {
+    for (const [k, side] of [
+      [0, "L"],
+      [1, "R"],
+    ]) {
       const region = T.dilate(eyeMaskRaw[k], w, h, 2);
-      let x0 = w, y0 = h, x1 = -1, y1 = -1;
+      let x0 = w,
+        y0 = h,
+        x1 = -1,
+        y1 = -1;
       for (let i = 0; i < N; i++)
         if (region[i]) {
           const x = i % w;
           const y = (i / w) | 0;
-          x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y);
+          x0 = Math.min(x0, x);
+          x1 = Math.max(x1, x);
+          y0 = Math.min(y0, y);
+          y1 = Math.max(y1, y);
         }
       const cx = (x0 + x1) / 2;
       const hw = (x1 - x0) / 2;
@@ -535,7 +747,8 @@ const POLY = {
           for (let x = xa; x <= xb; x += 1) {
             const u = (x - xa) / (xb - xa);
             const half = 0.6 + 2.2 * Math.sin(Math.PI * u);
-            if (x === xa) lg.moveTo(x - x0, meet(x) - y0 - half); else lg.lineTo(x - x0, meet(x) - y0 - half);
+            if (x === xa) lg.moveTo(x - x0, meet(x) - y0 - half);
+            else lg.lineTo(x - x0, meet(x) - y0 - half);
           }
           for (let x = xb; x >= xa; x -= 1) {
             const u = (x - xa) / (xb - xa);
@@ -550,7 +763,15 @@ const POLY = {
         }
         const name = "lid" + part + side;
         T.savePNG(path.join(LAYERS, name + ".png"), lw, lh, g.getImageData(0, 0, lw, lh).data);
-        manifest.layers[name] = { file: name + ".png", x0, y0, w: lw, h: lh, pivot: [Math.round(cx), part === "Up" ? y0 : y1 + 1], hidden: true };
+        manifest.layers[name] = {
+          file: name + ".png",
+          x0,
+          y0,
+          w: lw,
+          h: lh,
+          pivot: [Math.round(cx), part === "Up" ? y0 : y1 + 1],
+          hidden: true,
+        };
       }
       const pupil = "pupil" + side;
       manifest.order.splice(manifest.order.indexOf(pupil) + 1, 0, "lidLow" + side, "lidUp" + side);
@@ -575,7 +796,13 @@ const POLY = {
       g.beginPath();
       g.moveTo(0, MID + 3);
       for (let x = 0; x <= SEG; x += 2) g.lineTo(x, top(x));
-      g.arc(SEG, MID - thick(x0 + SEG) / 2 + 1.5, thick(x0 + SEG) / 2 + 1.5, -Math.PI / 2, Math.PI / 2);
+      g.arc(
+        SEG,
+        MID - thick(x0 + SEG) / 2 + 1.5,
+        thick(x0 + SEG) / 2 + 1.5,
+        -Math.PI / 2,
+        Math.PI / 2,
+      );
       g.lineTo(0, MID + 3);
       g.closePath();
       g.fillStyle = "#f6e8d5";
@@ -592,7 +819,15 @@ const POLY = {
       g.fillRect(0, MID + 1, SEG, 2);
       const name = "page" + (k + 1);
       T.savePNG(path.join(LAYERS, name + ".png"), PW, PH, g.getImageData(0, 0, PW, PH).data);
-      manifest.layers[name] = { file: name + ".png", x0: 240 + x0, y0: 383 - MID, w: PW, h: PH, pivot: [240 + x0, 383], hidden: true };
+      manifest.layers[name] = {
+        file: name + ".png",
+        x0: 240 + x0,
+        y0: 383 - MID,
+        w: PW,
+        h: PH,
+        pivot: [240 + x0, 383],
+        hidden: true,
+      };
     }
     manifest.order.splice(manifest.order.indexOf("book") + 1, 0, "page1", "page2", "page3");
   }
@@ -614,15 +849,48 @@ const POLY = {
     const a0 = original[i * 4 + 3] / 255;
     const a1 = re[i * 4 + 3] / 255;
     const CREAM = [255, 249, 239];
-    const d = Math.max(...[0, 1, 2].map((c) => Math.abs(original[i * 4 + c] * a0 + CREAM[c] * (1 - a0) - (re[i * 4 + c] * a1 + CREAM[c] * (1 - a1)))));
+    const d = Math.max(
+      ...[0, 1, 2].map((c) =>
+        Math.abs(
+          original[i * 4 + c] * a0 +
+            CREAM[c] * (1 - a0) -
+            (re[i * 4 + c] * a1 + CREAM[c] * (1 - a1)),
+        ),
+      ),
+    );
     if (d > 20) bad++;
     maxd = Math.max(maxd, d);
   }
-  console.log("camadas:", manifest.order.length, "| diferença máxima sobre o creme:", maxd.toFixed(1), "| pixels > 20:", bad);
+  console.log(
+    "camadas:",
+    manifest.order.length,
+    "| diferença máxima sobre o creme:",
+    maxd.toFixed(1),
+    "| pixels > 20:",
+    bad,
+  );
   if (DEBUG) {
     T.savePNG(path.join(DEBUG, "recomposed.png"), w, h, re);
     // mapa de donos, para conferir os cortes
-    const pal = [[0, 0, 0], [60, 50, 70], [230, 80, 80], [80, 200, 230], [250, 220, 0], [255, 150, 0], [255, 120, 40], [20, 20, 20], [40, 40, 40], [150, 80, 255], [80, 230, 120], [230, 80, 200], [120, 120, 255], [255, 255, 255], [80, 160, 60], [40, 120, 40], [255, 0, 0]];
+    const pal = [
+      [0, 0, 0],
+      [60, 50, 70],
+      [230, 80, 80],
+      [80, 200, 230],
+      [250, 220, 0],
+      [255, 150, 0],
+      [255, 120, 40],
+      [20, 20, 20],
+      [40, 40, 40],
+      [150, 80, 255],
+      [80, 230, 120],
+      [230, 80, 200],
+      [120, 120, 255],
+      [255, 255, 255],
+      [80, 160, 60],
+      [40, 120, 40],
+      [255, 0, 0],
+    ];
     const map = new Uint8ClampedArray(N * 4);
     for (let i = 0; i < N; i++) {
       const col = pal[owner[i]];

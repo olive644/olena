@@ -9,7 +9,9 @@
 const fs = require("fs");
 const path = require("path");
 const LAYERS = path.join(__dirname, "layers");
-const OUTPUT = process.env["OLENA_OUT"] ?? path.join(__dirname, "..", "..", "public", "olena-reading", "olena.riv");
+const OUTPUT =
+  process.env["OLENA_OUT"] ??
+  path.join(__dirname, "..", "..", "public", "olena-reading", "olena.riv");
 const meta = JSON.parse(fs.readFileSync(path.join(LAYERS, "layers.json"), "utf8"));
 const layers = meta.layers;
 
@@ -49,17 +51,60 @@ const D = "d";
 const S = "s";
 const BY = "y";
 const K = {
-  name: 4, parentId: 5, width: 7, height: 8, x: 13, y: 14, rotation: 15, scaleX: 16, scaleY: 17,
-  opacity: 18, animName: 55, fps: 56, duration: 57, loop: 59, objectId: 51, propertyKey: 53,
-  frame: 67, interp: 68, value: 70, assetName: 203, assetId: 204, assetH: 207, assetW: 208,
-  imageAssetId: 206, bytesKey: 212, smName: 138, numValue: 140, animationId: 149, stateToId: 151,
-  flags: 152, tDuration: 158, exitTime: 160, inputId: 155, opValue: 156,
+  name: 4,
+  parentId: 5,
+  width: 7,
+  height: 8,
+  x: 13,
+  y: 14,
+  rotation: 15,
+  scaleX: 16,
+  scaleY: 17,
+  opacity: 18,
+  animName: 55,
+  fps: 56,
+  duration: 57,
+  loop: 59,
+  objectId: 51,
+  propertyKey: 53,
+  frame: 67,
+  interp: 68,
+  value: 70,
+  assetName: 203,
+  assetId: 204,
+  assetH: 207,
+  assetW: 208,
+  imageAssetId: 206,
+  bytesKey: 212,
+  smName: 138,
+  numValue: 140,
+  animationId: 149,
+  stateToId: 151,
+  flags: 152,
+  tDuration: 158,
+  exitTime: 160,
+  inputId: 155,
+  opValue: 156,
 };
 const T = {
-  Backboard: 23, Artboard: 1, Node: 2, ImageAsset: 105, FileAssetContents: 106, Image: 100,
-  LinearAnimation: 31, KeyedObject: 25, KeyedProperty: 26, KeyFrameDouble: 30, StateMachine: 53,
-  StateMachineNumber: 56, StateMachineLayer: 57, EntryState: 63, AnyState: 62, ExitState: 64,
-  AnimationState: 61, StateTransition: 65,
+  Backboard: 23,
+  Artboard: 1,
+  Node: 2,
+  ImageAsset: 105,
+  FileAssetContents: 106,
+  Image: 100,
+  LinearAnimation: 31,
+  KeyedObject: 25,
+  KeyedProperty: 26,
+  KeyFrameDouble: 30,
+  StateMachine: 53,
+  StateMachineNumber: 56,
+  StateMachineLayer: 57,
+  EntryState: 63,
+  AnyState: 62,
+  ExitState: 64,
+  AnimationState: 61,
+  StateTransition: 65,
 };
 const NUMBER_CONDITION = 70;
 const CONDITION_VALUE = 157;
@@ -69,8 +114,19 @@ const fileObjects = [[T.Backboard, []]];
 const ASSET_ORDER = meta.order;
 ASSET_ORDER.forEach((name, i) => {
   const L = layers[name];
-  fileObjects.push([T.ImageAsset, [[K.assetName, S, name], [K.assetId, U, i], [K.assetW, D, L.w], [K.assetH, D, L.h]]]);
-  fileObjects.push([T.FileAssetContents, [[K.bytesKey, BY, fs.readFileSync(path.join(LAYERS, L.file))]]]);
+  fileObjects.push([
+    T.ImageAsset,
+    [
+      [K.assetName, S, name],
+      [K.assetId, U, i],
+      [K.assetW, D, L.w],
+      [K.assetH, D, L.h],
+    ],
+  ]);
+  fileObjects.push([
+    T.FileAssetContents,
+    [[K.bytesKey, BY, fs.readFileSync(path.join(LAYERS, L.file))]],
+  ]);
 });
 
 const comps = [];
@@ -81,9 +137,18 @@ function comp(type, props) {
 // folga de PAD px em volta da arte: a cauda, as orelhas e a estrela saem um pouco do quadro da
 // imagem quando se mexem e seriam cortadas na borda. A arte fica em (PAD, PAD) dentro do quadro.
 const PAD = 40;
-comp(T.Artboard, [[K.name, S, "Olena"], [K.width, D, meta.width + 2 * PAD], [K.height, D, meta.height + 2 * PAD]]);
+comp(T.Artboard, [
+  [K.name, S, "Olena"],
+  [K.width, D, meta.width + 2 * PAD],
+  [K.height, D, meta.height + 2 * PAD],
+]);
 function node(parent, name, x = 0, y = 0) {
-  return comp(T.Node, [[K.name, S, name], [K.parentId, U, parent], [K.x, D, x], [K.y, D, y]]);
+  return comp(T.Node, [
+    [K.name, S, name],
+    [K.parentId, U, parent],
+    [K.x, D, x],
+    [K.y, D, y],
+  ]);
 }
 // p (posiciona, nunca é animado), r (reação ao clique) e a (ambiente). Os filhos entram no nó a.
 function rig(parent, name, pivot, parentPivot) {
@@ -161,7 +226,8 @@ const ease = (a, b, x) => {
 // oscilação periódica que vale zero em t = 0 (o repouso é a arte original)
 const osc = (t, period, phase = 0) => Math.sin(TAU * (t / period + phase)) - Math.sin(TAU * phase);
 // mola amortecida que começa em t0 com deslocamento amp
-const spring = (t, t0, amp, freq, decay) => (t < t0 ? 0 : amp * Math.exp(-decay * (t - t0)) * Math.cos(freq * (t - t0)));
+const spring = (t, t0, amp, freq, decay) =>
+  t < t0 ? 0 : amp * Math.exp(-decay * (t - t0)) * Math.cos(freq * (t - t0));
 // gesto rápido: vai a 1 em `up` segundos e volta com um sobressinal amortecido
 const flick = (t, t0, up = 0.08, freq = 26, decay = 9) => {
   if (t < t0) return 0;
@@ -196,9 +262,13 @@ const amb = (name, fns) => tr(ambient, R[name], "a", fns);
 // Leitura: a pupila percorre a linha da esquerda para a direita e volta rápido no começo da linha
 // seguinte; quatro linhas, a folha vira, mais duas linhas, e ela olha para quem está vendo.
 const LINES = [
-  [0.5, 1.7], [1.9, 3.1], [3.3, 4.5], [4.7, 5.9],
+  [0.5, 1.7],
+  [1.9, 3.1],
+  [3.3, 4.5],
+  [4.7, 5.9],
   // folha vira de 6,4 a 7,4
-  [7.8, 9.0], [9.2, 10.4],
+  [7.8, 9.0],
+  [9.2, 10.4],
 ];
 const PAGE = [6.4, 7.4];
 const LOOK_UP = [10.6, 11.8];
@@ -220,7 +290,10 @@ function gaze(t) {
       y = -0.5 + row * 0.35;
       if (t < a && k > 0) {
         const prevRow = k - 1 < 4 ? k - 1 : k - 5;
-        y = -0.5 + (k === 4 ? 3 : prevRow) * 0.35 + ((-0.5 + row * 0.35) - (-0.5 + (k === 4 ? 3 : prevRow) * 0.35)) * back;
+        y =
+          -0.5 +
+          (k === 4 ? 3 : prevRow) * 0.35 +
+          (-0.5 + row * 0.35 - (-0.5 + (k === 4 ? 3 : prevRow) * 0.35)) * back;
       }
     }
   }
@@ -249,7 +322,10 @@ function gaze(t) {
   }
   return [x * into, y * into];
 }
-for (const [name, dx, dy] of [["pupilaE", 6, 5], ["pupilaD", 6, 5]]) {
+for (const [name, dx, dy] of [
+  ["pupilaE", 6, 5],
+  ["pupilaD", 6, 5],
+]) {
   amb(name, { x: (t) => dx * gaze(t)[0], y: (t) => dy * gaze(t)[1] });
 }
 
@@ -269,14 +345,23 @@ lids(readingBlink, readingBlink);
 amb("corpo", {
   sy: (t) => 1 + 0.007 * osc(t, 4, 0.0),
   sx: (t) => 1 - 0.002 * osc(t, 4, 0.0),
-  rot: (t) => 0.006 * osc(t, 12) - 0.012 * bump(t, PAGE[0] - 0.1, 1.3) + 0.01 * bump(t, LOOK_UP[0], 1.3),
+  rot: (t) =>
+    0.006 * osc(t, 12) - 0.012 * bump(t, PAGE[0] - 0.1, 1.3) + 0.01 * bump(t, LOOK_UP[0], 1.3),
 });
 
 // orelhas: tremidinhas rápidas, cada uma no seu tempo; a direita leva a estrela junto
-amb("orelhaE", { rot: (t) => -0.004 * osc(t, 6, 0.1) - 0.05 * flick(t, 3.9) - 0.04 * flick(t, 9.6) });
-amb("orelhaD", { rot: (t) => 0.004 * osc(t, 6, 0.4) + 0.05 * flick(t, 1.2) + 0.06 * flick(t, 8.3) + 0.04 * flick(t, 8.6) });
+amb("orelhaE", {
+  rot: (t) => -0.004 * osc(t, 6, 0.1) - 0.05 * flick(t, 3.9) - 0.04 * flick(t, 9.6),
+});
+amb("orelhaD", {
+  rot: (t) =>
+    0.004 * osc(t, 6, 0.4) + 0.05 * flick(t, 1.2) + 0.06 * flick(t, 8.3) + 0.04 * flick(t, 8.6),
+});
 amb("estrela", {
-  rot: (t) => spring(t, 1.25, 0.12, 18, 5) + spring(t, 8.35, 0.16, 18, 5) + TAU * ease(LOOK_UP[0] + 0.1, LOOK_UP[0] + 1.0, t),
+  rot: (t) =>
+    spring(t, 1.25, 0.12, 18, 5) +
+    spring(t, 8.35, 0.16, 18, 5) +
+    TAU * ease(LOOK_UP[0] + 0.1, LOOK_UP[0] + 1.0, t),
   sx: (t) => 1 + 0.16 * bump(t, LOOK_UP[0] + 0.1, 0.9) + 0.06 * bump(t, 5.0, 0.6),
   sy: (t) => 1 + 0.16 * bump(t, LOOK_UP[0] + 0.1, 0.9) + 0.06 * bump(t, 5.0, 0.6),
 });
@@ -284,17 +369,22 @@ amb("estrela", {
 // cauda: balanço lento com uma chicotada na virada da folha
 amb("cauda", {
   // só gira para fora (sentido horário): para dentro ela entraria atrás da borda do corpo
-  rot: (t) => 0.09 * (1 - Math.cos((TAU * t) / 4)) + 0.1 * Math.max(0, flick(t, 6.5, 0.18, 12, 4.5)),
+  rot: (t) =>
+    0.09 * (1 - Math.cos((TAU * t) / 4)) + 0.1 * Math.max(0, flick(t, 6.5, 0.18, 12, 4.5)),
 });
 // a ponta vem atrasada em relação à base (onda que corre pela cauda) e chicoteia mais
 amb("caudaPonta", {
   // quase só para fora também: para dentro abriria uma cunha no lado de dentro da curva
-  rot: (t) => 0.1 * (1 - Math.cos((TAU * t) / 4 - 0.8)) - 0.1 * (1 - Math.cos(0.8)) + 0.2 * Math.max(0, flick(t, 6.62, 0.16, 12, 4)),
+  rot: (t) =>
+    0.1 * (1 - Math.cos((TAU * t) / 4 - 0.8)) -
+    0.1 * (1 - Math.cos(0.8)) +
+    0.2 * Math.max(0, flick(t, 6.62, 0.16, 12, 4)),
 });
 
 // livro: acompanha a respiração, dá um empurrãozinho para virar a folha e assenta
 amb("livro", {
-  y: (t) => -1.2 * osc(t, 4, 0.05) - 2.5 * bump(t, PAGE[0] - 0.15, 0.6) + 1.2 * bump(t, PAGE[1] - 0.1, 0.5),
+  y: (t) =>
+    -1.2 * osc(t, 4, 0.05) - 2.5 * bump(t, PAGE[0] - 0.15, 0.6) + 1.2 * bump(t, PAGE[1] - 0.1, 0.5),
   rot: (t) => 0.004 * osc(t, 6, 0.2) - 0.012 * bump(t, PAGE[0] - 0.15, 1.2),
 });
 // patas: apertam o livro de leve; a direita empurra a folha
@@ -340,7 +430,8 @@ amb("folha2", { rot: (t) => 0.22 * lag(t) });
 amb("folha3", { rot: (t) => 0.3 * lag(t) });
 // acende quando a ponta já saiu do bloco de páginas e apaga quando deita do outro lado
 // (some antes de deitar de todo: deitada, a espessura dela não coincide com o bloco da esquerda)
-const pageOp = (t) => smooth(PAGE[0] + 0.02, PAGE[0] + 0.14, t) * (1 - smooth(PAGE[1] - 0.06, PAGE[1], t));
+const pageOp = (t) =>
+  smooth(PAGE[0] + 0.02, PAGE[0] + 0.14, t) * (1 - smooth(PAGE[1] - 0.06, PAGE[1], t));
 for (const name of ["page1", "page2", "page3"]) ambient.push([PIC[name], P.op, pageOp]);
 // a sombra da pata direita na capa some quando a pata levanta e volta quando ela assenta
 ambient.push([PIC.pawRShadow, P.op, (t) => 1 - smooth(0, 0.3, reach(t) + push(t))]);
@@ -366,7 +457,12 @@ const tipIdle = (t) => 0.1 * (1 - Math.cos((TAU * t) / 4 - 0.8)) - 0.1 * (1 - Ma
 const blinkSet = (list) => (t) => Math.max(0, ...list.map((b) => blinkAt(t, b)));
 // pálpebras dos dois olhos: up e low vão de 0 (aberto) a 1 (fechado, as duas se encontram)
 function lids(up, low) {
-  for (const [n, img, fn] of [["palpebraE", "lidUpL", up], ["palpebraD", "lidUpR", up], ["palpebraBaixoE", "lidLowL", low], ["palpebraBaixoD", "lidLowR", low]]) {
+  for (const [n, img, fn] of [
+    ["palpebraE", "lidUpL", up],
+    ["palpebraD", "lidUpR", up],
+    ["palpebraBaixoE", "lidLowL", low],
+    ["palpebraBaixoD", "lidLowR", low],
+  ]) {
     amb(n, { sy: (t) => Math.max(0.001, fn(t)) });
     ambient.push([PIC[img], P.op, (t) => (fn(t) > 0.004 ? 1 : 0)]);
   }
@@ -381,7 +477,10 @@ function variation(name, seconds, o) {
   for (const n of ["pupilaE", "pupilaD"]) amb(n, { x: (t) => 6 * gx(t), y: (t) => 5 * gy(t) });
   for (const n of ["olhoE", "olhoD"])
     amb(n, { sy: (t) => f("eyeSy", one)(t), sx: (t) => f("eyeSx", one)(t) });
-  lids((t) => Math.max(blink(t), f("lidUp", zero)(t)), (t) => Math.max(blink(t), f("lidLow", zero)(t)));
+  lids(
+    (t) => Math.max(blink(t), f("lidUp", zero)(t)),
+    (t) => Math.max(blink(t), f("lidLow", zero)(t)),
+  );
   amb("corpo", {
     sy: (t) => (1 + 0.007 * osc(t, 4)) * f("bodySy", one)(t),
     sx: (t) => 1 - 0.002 * osc(t, 4),
@@ -389,26 +488,106 @@ function variation(name, seconds, o) {
   });
   amb("orelhaE", { rot: (t) => -0.004 * osc(t, 4, 0.1) + f("earL", zero)(t) });
   amb("orelhaD", { rot: (t) => 0.004 * osc(t, 4, 0.4) + f("earR", zero)(t) });
-  amb("estrela", { rot: (t) => f("starRot", zero)(t), sx: (t) => f("starS", one)(t), sy: (t) => f("starS", one)(t) });
+  amb("estrela", {
+    rot: (t) => f("starRot", zero)(t),
+    sx: (t) => f("starS", one)(t),
+    sy: (t) => f("starS", one)(t),
+  });
   amb("cauda", { rot: (t) => f("tail", tailIdle)(t) });
   amb("caudaPonta", { rot: (t) => f("tip", tipIdle)(t) });
-  amb("livro", { y: (t) => -1.2 * osc(t, 4, 0.05) + f("bookY", zero)(t), rot: (t) => 0.004 * osc(t, 4, 0.2) + f("bookRot", zero)(t) });
-  amb("pataE", { rot: (t) => 0.03 * osc(t, 4, 0.15) + f("pawLRot", zero)(t), x: (t) => f("pawLX", zero)(t), y: (t) => 1.2 * osc(t, 4, 0.3) + f("pawLY", zero)(t) });
-  amb("pataD", { rot: (t) => -0.03 * osc(t, 4, 0.6) + f("pawRRot", zero)(t), x: (t) => f("pawRX", zero)(t), y: (t) => 1 * osc(t, 4, 0.6) + f("pawRY", zero)(t) });
+  amb("livro", {
+    y: (t) => -1.2 * osc(t, 4, 0.05) + f("bookY", zero)(t),
+    rot: (t) => 0.004 * osc(t, 4, 0.2) + f("bookRot", zero)(t),
+  });
+  amb("pataE", {
+    rot: (t) => 0.03 * osc(t, 4, 0.15) + f("pawLRot", zero)(t),
+    x: (t) => f("pawLX", zero)(t),
+    y: (t) => 1.2 * osc(t, 4, 0.3) + f("pawLY", zero)(t),
+  });
+  amb("pataD", {
+    rot: (t) => -0.03 * osc(t, 4, 0.6) + f("pawRRot", zero)(t),
+    x: (t) => f("pawRX", zero)(t),
+    y: (t) => 1 * osc(t, 4, 0.6) + f("pawRY", zero)(t),
+  });
   ambient.push([PIC.pawRShadow, P.op, (t) => f("shadow", one)(t)]);
   VARS.push({ name, seconds, tracks: ambient });
 }
 
 // curiosa: olha para um lado, para o outro e para quem está vendo, com a cabeça e as orelhas junto
 variation("curiosa", 8, {
-  gx: curve([[0, 0], [0.3, 0], [0.8, -1], [2.2, -1], [2.8, 1], [4.3, 1], [4.9, 0], [7.4, 0]]),
-  gy: curve([[0, 0], [0.8, -0.2], [2.2, -0.2], [2.8, -0.3], [4.3, -0.3], [4.9, -0.75], [6.6, -0.75], [7.4, 0]]),
-  bodyRot: curve([[0, 0], [0.4, 0], [1.0, -0.022], [2.2, -0.022], [2.9, 0.022], [4.3, 0.022], [5.0, -0.026], [6.6, -0.026], [7.5, 0]]),
-  earL: (t) => curve([[0, 0], [0.4, 0], [0.9, -0.06], [2.2, -0.06], [2.9, 0.05], [4.3, 0.05], [5.0, -0.03], [6.6, -0.03], [7.4, 0]])(t) - 0.05 * flick(t, 5.2),
-  earR: (t) => curve([[0, 0], [0.4, 0], [0.9, -0.05], [2.2, -0.05], [2.9, 0.06], [4.3, 0.06], [5.0, 0.04], [6.6, 0.04], [7.4, 0]])(t) + 0.05 * flick(t, 5.3),
-  starRot: (t) => spring(t, 1.0, -0.1, 18, 5) + spring(t, 2.95, 0.14, 18, 5) + spring(t, 5.05, -0.08, 18, 5),
-  eyeSx: curve([[0, 1], [4.6, 1], [5.1, 1.06], [6.6, 1.06], [7.3, 1]]),
-  eyeSy: curve([[0, 1], [4.6, 1], [5.1, 1.06], [6.6, 1.06], [7.3, 1]]),
+  gx: curve([
+    [0, 0],
+    [0.3, 0],
+    [0.8, -1],
+    [2.2, -1],
+    [2.8, 1],
+    [4.3, 1],
+    [4.9, 0],
+    [7.4, 0],
+  ]),
+  gy: curve([
+    [0, 0],
+    [0.8, -0.2],
+    [2.2, -0.2],
+    [2.8, -0.3],
+    [4.3, -0.3],
+    [4.9, -0.75],
+    [6.6, -0.75],
+    [7.4, 0],
+  ]),
+  bodyRot: curve([
+    [0, 0],
+    [0.4, 0],
+    [1.0, -0.022],
+    [2.2, -0.022],
+    [2.9, 0.022],
+    [4.3, 0.022],
+    [5.0, -0.026],
+    [6.6, -0.026],
+    [7.5, 0],
+  ]),
+  earL: (t) =>
+    curve([
+      [0, 0],
+      [0.4, 0],
+      [0.9, -0.06],
+      [2.2, -0.06],
+      [2.9, 0.05],
+      [4.3, 0.05],
+      [5.0, -0.03],
+      [6.6, -0.03],
+      [7.4, 0],
+    ])(t) -
+    0.05 * flick(t, 5.2),
+  earR: (t) =>
+    curve([
+      [0, 0],
+      [0.4, 0],
+      [0.9, -0.05],
+      [2.2, -0.05],
+      [2.9, 0.06],
+      [4.3, 0.06],
+      [5.0, 0.04],
+      [6.6, 0.04],
+      [7.4, 0],
+    ])(t) +
+    0.05 * flick(t, 5.3),
+  starRot: (t) =>
+    spring(t, 1.0, -0.1, 18, 5) + spring(t, 2.95, 0.14, 18, 5) + spring(t, 5.05, -0.08, 18, 5),
+  eyeSx: curve([
+    [0, 1],
+    [4.6, 1],
+    [5.1, 1.06],
+    [6.6, 1.06],
+    [7.3, 1],
+  ]),
+  eyeSy: curve([
+    [0, 1],
+    [4.6, 1],
+    [5.1, 1.06],
+    [6.6, 1.06],
+    [7.3, 1],
+  ]),
   tail: (t) => tailIdle(t) + 0.1 * Math.max(0, flick(t, 3.0, 0.18, 12, 4.5)),
   tip: (t) => tipIdle(t) + 0.2 * Math.max(0, flick(t, 3.12, 0.16, 12, 4)),
   blinks: [2.45, 4.65, 6.9],
@@ -416,22 +595,120 @@ variation("curiosa", 8, {
 
 // cochilo: as pálpebras pesam, a cabeça e o livro caem devagar, ela fecha os olhos, acorda num
 // susto (orelhas em pé, olhos arregalados, estrela girando) e olha em volta antes de voltar a ler
-const sleepAmp = curve([[0, 1], [1, 1], [4, 0.3], [6.6, 0.3], [7.2, 1]]);
+const sleepAmp = curve([
+  [0, 1],
+  [1, 1],
+  [4, 0.3],
+  [6.6, 0.3],
+  [7.2, 1],
+]);
 variation("cochilo", 12, {
   // a pálpebra de cima pesa aos poucos, fecha de vez, e o susto abre os olhos arregalados
-  lidUp: curve([[0, 0], [0.6, 0], [2.6, 0.45], [3.2, 0.38], [4.6, 0.62], [5.2, 0.68], [5.5, 1], [6.6, 1], [6.68, 0]]),
-  lidLow: curve([[0, 0], [4.6, 0], [5.2, 0.15], [5.5, 1], [6.6, 1], [6.68, 0]]),
-  eyeSy: curve([[0, 1], [6.6, 1], [6.7, 1.15], [7.6, 1]]),
-  eyeSx: curve([[0, 1], [6.6, 1], [6.7, 1.08], [7.6, 1]]),
-  gx: curve([[0, 0], [6.7, 0], [7.2, -0.7], [7.8, 0.7], [8.5, 0]]),
-  gy: curve([[0, 0], [1, 0.3], [5.4, 0.9], [6.6, 0.9], [6.7, -0.6], [8.0, -0.6], [9.0, 0]]),
-  bodySy: curve([[0, 1], [1, 1], [5.4, 0.982], [6.6, 0.982], [6.72, 1.012], [7.2, 0.997], [7.6, 1]]),
-  bodyRot: curve([[0, 0], [1, 0], [5.4, 0.02], [6.6, 0.02], [6.75, -0.01], [7.6, 0]]),
-  earL: (t) => curve([[0, 0], [1, 0], [5.4, -0.06], [6.6, -0.06], [6.7, 0.02], [7.4, 0]])(t) + spring(t, 6.7, -0.04, 20, 6),
-  earR: (t) => curve([[0, 0], [1, 0], [5.4, 0.06], [6.6, 0.06], [6.7, -0.02], [7.4, 0]])(t) + spring(t, 6.7, 0.04, 20, 6),
-  bookY: curve([[0, 0], [1, 0], [5.4, 3.5], [6.6, 3.5], [6.72, -2], [7.4, 0]]),
-  bookRot: curve([[0, 0], [1, 0], [5.4, 0.015], [6.6, 0.015], [6.75, -0.006], [7.4, 0]]),
-  starRot: curve([[0, 0], [1, 0], [5.4, 0.3], [6.6, 0.3], [7.7, TAU]]),
+  lidUp: curve([
+    [0, 0],
+    [0.6, 0],
+    [2.6, 0.45],
+    [3.2, 0.38],
+    [4.6, 0.62],
+    [5.2, 0.68],
+    [5.5, 1],
+    [6.6, 1],
+    [6.68, 0],
+  ]),
+  lidLow: curve([
+    [0, 0],
+    [4.6, 0],
+    [5.2, 0.15],
+    [5.5, 1],
+    [6.6, 1],
+    [6.68, 0],
+  ]),
+  eyeSy: curve([
+    [0, 1],
+    [6.6, 1],
+    [6.7, 1.15],
+    [7.6, 1],
+  ]),
+  eyeSx: curve([
+    [0, 1],
+    [6.6, 1],
+    [6.7, 1.08],
+    [7.6, 1],
+  ]),
+  gx: curve([
+    [0, 0],
+    [6.7, 0],
+    [7.2, -0.7],
+    [7.8, 0.7],
+    [8.5, 0],
+  ]),
+  gy: curve([
+    [0, 0],
+    [1, 0.3],
+    [5.4, 0.9],
+    [6.6, 0.9],
+    [6.7, -0.6],
+    [8.0, -0.6],
+    [9.0, 0],
+  ]),
+  bodySy: curve([
+    [0, 1],
+    [1, 1],
+    [5.4, 0.982],
+    [6.6, 0.982],
+    [6.72, 1.012],
+    [7.2, 0.997],
+    [7.6, 1],
+  ]),
+  bodyRot: curve([
+    [0, 0],
+    [1, 0],
+    [5.4, 0.02],
+    [6.6, 0.02],
+    [6.75, -0.01],
+    [7.6, 0],
+  ]),
+  earL: (t) =>
+    curve([
+      [0, 0],
+      [1, 0],
+      [5.4, -0.06],
+      [6.6, -0.06],
+      [6.7, 0.02],
+      [7.4, 0],
+    ])(t) + spring(t, 6.7, -0.04, 20, 6),
+  earR: (t) =>
+    curve([
+      [0, 0],
+      [1, 0],
+      [5.4, 0.06],
+      [6.6, 0.06],
+      [6.7, -0.02],
+      [7.4, 0],
+    ])(t) + spring(t, 6.7, 0.04, 20, 6),
+  bookY: curve([
+    [0, 0],
+    [1, 0],
+    [5.4, 3.5],
+    [6.6, 3.5],
+    [6.72, -2],
+    [7.4, 0],
+  ]),
+  bookRot: curve([
+    [0, 0],
+    [1, 0],
+    [5.4, 0.015],
+    [6.6, 0.015],
+    [6.75, -0.006],
+    [7.4, 0],
+  ]),
+  starRot: curve([
+    [0, 0],
+    [1, 0],
+    [5.4, 0.3],
+    [6.6, 0.3],
+    [7.7, TAU],
+  ]),
   starS: (t) => 1 + 0.25 * bump(t, 6.7, 1.0),
   tail: (t) => tailIdle(t) * sleepAmp(t) + 0.12 * Math.max(0, flick(t, 6.7, 0.12, 14, 4.5)),
   tip: (t) => tipIdle(t) * sleepAmp(t) + 0.22 * Math.max(0, flick(t, 6.8, 0.12, 14, 4)),
@@ -445,8 +722,20 @@ const wagEnv = (t) => smooth(0.6, 1.0, t) * (1 - smooth(3.4, 3.9, t));
 const tapL = (t) => bump(t, 0.9, 0.3) + bump(t, 1.7, 0.3) + bump(t, 2.6, 0.3);
 const tapR = (t) => bump(t, 1.3, 0.3) + bump(t, 3.0, 0.3);
 variation("feliz", 8, {
-  eyeSy: curve([[0, 1], [0.5, 1], [0.8, 0.5], [3.8, 0.5], [4.2, 1]]),
-  gy: curve([[0, 0], [0.5, 0], [0.8, -0.5], [3.8, -0.5], [4.3, 0]]),
+  eyeSy: curve([
+    [0, 1],
+    [0.5, 1],
+    [0.8, 0.5],
+    [3.8, 0.5],
+    [4.2, 1],
+  ]),
+  gy: curve([
+    [0, 0],
+    [0.5, 0],
+    [0.8, -0.5],
+    [3.8, -0.5],
+    [4.3, 0],
+  ]),
   bodySy: (t) => 1 + 0.022 * hops(t),
   bodyRot: (t) => 0.015 * Math.sin((TAU * t) / 0.8) * wagEnv(t),
   bookY: (t) => -3 * hops(t),
@@ -467,15 +756,50 @@ variation("feliz", 8, {
 // estrela: repara na estrela da orelha, mexe a orelha, a estrela gira e brilha, ela aperta os
 // olhos contente
 variation("estrela", 8, {
-  gx: curve([[0, 0], [0.5, 0], [1.0, 0.9], [4.6, 0.9], [5.2, 0]]),
-  gy: curve([[0, 0], [0.5, 0], [1.0, -1], [4.6, -1], [5.2, 0]]),
-  bodyRot: curve([[0, 0], [0.6, 0], [1.2, 0.02], [4.6, 0.02], [5.3, 0]]),
+  gx: curve([
+    [0, 0],
+    [0.5, 0],
+    [1.0, 0.9],
+    [4.6, 0.9],
+    [5.2, 0],
+  ]),
+  gy: curve([
+    [0, 0],
+    [0.5, 0],
+    [1.0, -1],
+    [4.6, -1],
+    [5.2, 0],
+  ]),
+  bodyRot: curve([
+    [0, 0],
+    [0.6, 0],
+    [1.2, 0.02],
+    [4.6, 0.02],
+    [5.3, 0],
+  ]),
   earR: (t) => 0.07 * flick(t, 1.6) + 0.07 * flick(t, 2.1),
   earL: (t) => -0.06 * flick(t, 3.7),
-  starRot: (t) => spring(t, 1.65, 0.18, 18, 5) + spring(t, 2.15, 0.2, 18, 5) + TAU * ease(2.6, 3.6, t),
+  starRot: (t) =>
+    spring(t, 1.65, 0.18, 18, 5) + spring(t, 2.15, 0.2, 18, 5) + TAU * ease(2.6, 3.6, t),
   starS: (t) => 1 + 0.3 * bump(t, 2.6, 1.0) + 0.12 * bump(t, 3.7, 0.5),
-  eyeSx: curve([[0, 1], [2.4, 1], [2.8, 1.08], [3.8, 1.08], [4.3, 1]]),
-  eyeSy: curve([[0, 1], [2.4, 1], [2.8, 1.08], [3.8, 1.08], [4.3, 1], [5.6, 1], [6.0, 0.55], [6.8, 0.55], [7.2, 1]]),
+  eyeSx: curve([
+    [0, 1],
+    [2.4, 1],
+    [2.8, 1.08],
+    [3.8, 1.08],
+    [4.3, 1],
+  ]),
+  eyeSy: curve([
+    [0, 1],
+    [2.4, 1],
+    [2.8, 1.08],
+    [3.8, 1.08],
+    [4.3, 1],
+    [5.6, 1],
+    [6.0, 0.55],
+    [6.8, 0.55],
+    [7.2, 1],
+  ]),
 
   tail: (t) => tailIdle(t) + 0.1 * Math.max(0, flick(t, 3.7, 0.18, 12, 4.5)),
   tip: (t) => tipIdle(t) + 0.2 * Math.max(0, flick(t, 3.82, 0.16, 12, 4)),
@@ -495,7 +819,8 @@ for (const v of VARS) for (const [id, prop] of v.tracks) keyed.set(id + ":" + pr
 const VAR_ANIM = {};
 for (const v of VARS) {
   const have = new Set(v.tracks.map(([id, prop]) => id + ":" + prop));
-  for (const [key, [id, prop]] of keyed) if (!have.has(key)) v.tracks.push([id, prop, () => restOf(id, prop)]);
+  for (const [key, [id, prop]] of keyed)
+    if (!have.has(key)) v.tracks.push([id, prop, () => restOf(id, prop)]);
   VAR_ANIM[v.name] = anim(v.name, v.seconds, 30, 0, v.tracks);
 }
 // ordem automática: a leitura volta entre as outras esperas
@@ -513,8 +838,18 @@ const arc = (t, a, b, hgt) => {
 };
 rea("olena", {
   y: (t) => -arc(t, 0.18, 0.62, 18),
-  sy: (t) => (t < 0.18 ? 1 - 0.05 * smooth(0, 0.18, t) : t < 0.62 ? 0.95 + 0.08 * smooth(0.18, 0.28, t) - 0.03 * smooth(0.5, 0.62, t) : 1 + spring(t, 0.62, -0.04, 24, 8)),
-  sx: (t) => (t < 0.18 ? 1 + 0.025 * smooth(0, 0.18, t) : t < 0.62 ? 1.025 - 0.04 * smooth(0.18, 0.28, t) + 0.015 * smooth(0.5, 0.62, t) : 1 - spring(t, 0.62, -0.02, 24, 8)),
+  sy: (t) =>
+    t < 0.18
+      ? 1 - 0.05 * smooth(0, 0.18, t)
+      : t < 0.62
+        ? 0.95 + 0.08 * smooth(0.18, 0.28, t) - 0.03 * smooth(0.5, 0.62, t)
+        : 1 + spring(t, 0.62, -0.04, 24, 8),
+  sx: (t) =>
+    t < 0.18
+      ? 1 + 0.025 * smooth(0, 0.18, t)
+      : t < 0.62
+        ? 1.025 - 0.04 * smooth(0.18, 0.28, t) + 0.015 * smooth(0.5, 0.62, t)
+        : 1 - spring(t, 0.62, -0.02, 24, 8),
 });
 rea("orelhaE", { rot: (t) => -0.07 * flick(t, 0.2, 0.1, 20, 7) });
 rea("orelhaD", { rot: (t) => 0.07 * flick(t, 0.2, 0.1, 20, 7) });
@@ -524,7 +859,11 @@ for (const name of ["olhoE", "olhoD"]) {
     sy: (t) => 1 + 0.1 * bump(t, 0.15, 0.9),
   });
 }
-rea("estrela", { rot: (t) => TAU * ease(0.2, 1.0, t), sx: (t) => 1 + 0.25 * bump(t, 0.2, 0.8), sy: (t) => 1 + 0.25 * bump(t, 0.2, 0.8) });
+rea("estrela", {
+  rot: (t) => TAU * ease(0.2, 1.0, t),
+  sx: (t) => 1 + 0.25 * bump(t, 0.2, 0.8),
+  sy: (t) => 1 + 0.25 * bump(t, 0.2, 0.8),
+});
 rea("cauda", { rot: (t) => 0.1 * flick(t, 0.3, 0.12, 16, 5) });
 const A_ALEGRIA = anim("alegria", 1.3, 60, 0, reaction);
 const A_REPOUSO = anim("repouso", 0.5, 30, 1, [[R.olena.r, K.y, () => 0]]);
@@ -584,7 +923,12 @@ for (const [type, props] of fileObjects) writeObj(type, props);
 for (const c of comps) writeObj(c.type, c.props);
 let keyframes = 0;
 for (const a of animations) {
-  writeObj(T.LinearAnimation, [[K.animName, S, a.name], [K.fps, U, a.fps], [K.duration, U, a.frames], [K.loop, U, a.loop]]);
+  writeObj(T.LinearAnimation, [
+    [K.animName, S, a.name],
+    [K.fps, U, a.fps],
+    [K.duration, U, a.frames],
+    [K.loop, U, a.loop],
+  ]);
   const byObject = new Map();
   for (const t of a.tracks) {
     if (!byObject.has(t[0])) byObject.set(t[0], []);
@@ -597,9 +941,16 @@ for (const a of animations) {
       const values = [];
       for (let f = 0; f <= a.frames; f++) values.push(fn(f / a.fps));
       for (let f = 0; f < values.length; f++) {
-        const keep = f === 0 || f === values.length - 1 || Math.abs(values[f] - (values[f - 1] + values[f + 1]) / 2) > 1e-4;
+        const keep =
+          f === 0 ||
+          f === values.length - 1 ||
+          Math.abs(values[f] - (values[f - 1] + values[f + 1]) / 2) > 1e-4;
         if (!keep) continue;
-        writeObj(T.KeyFrameDouble, [[K.frame, U, f], [K.interp, U, 1], [K.value, D, values[f]]]);
+        writeObj(T.KeyFrameDouble, [
+          [K.frame, U, f],
+          [K.interp, U, 1],
+          [K.value, D, values[f]],
+        ]);
         keyframes++;
       }
     }
@@ -607,10 +958,26 @@ for (const a of animations) {
 }
 // máquina de estados "Olena": entrada clique (1 dispara a alegria; voltar a 0 depois)
 writeObj(T.StateMachine, [[K.animName, S, "Olena"]]);
-writeObj(T.StateMachineNumber, [[K.smName, S, "clique"], [K.numValue, D, 0]]);
-writeObj(T.StateMachineNumber, [[K.smName, S, "variacao"], [K.numValue, D, 0]]);
-const goEntry = (to) => writeObj(T.StateTransition, [[K.stateToId, U, to], [K.tDuration, U, 0]]);
-const goNow = (to) => writeObj(T.StateTransition, [[K.stateToId, U, to], [K.flags, U, 4 | 8], [K.exitTime, U, 100], [K.tDuration, U, 0]]);
+writeObj(T.StateMachineNumber, [
+  [K.smName, S, "clique"],
+  [K.numValue, D, 0],
+]);
+writeObj(T.StateMachineNumber, [
+  [K.smName, S, "variacao"],
+  [K.numValue, D, 0],
+]);
+const goEntry = (to) =>
+  writeObj(T.StateTransition, [
+    [K.stateToId, U, to],
+    [K.tDuration, U, 0],
+  ]);
+const goNow = (to) =>
+  writeObj(T.StateTransition, [
+    [K.stateToId, U, to],
+    [K.flags, U, 4 | 8],
+    [K.exitTime, U, 100],
+    [K.tDuration, U, 0],
+  ]);
 const animState = (id) => writeObj(T.AnimationState, [[K.animationId, U, id]]);
 // camada Base: estados 3 em diante = SEQUENCE; cada um passa ao seguinte quando termina, e a
 // entrada variacao (1 a 5) pula para a primeira ocorrência da espera pedida
@@ -625,8 +992,15 @@ SEQUENCE.forEach((name, i) => {
   JUMP.forEach((target, k) => {
     const to = 3 + SEQUENCE.indexOf(target);
     if (to === 3 + i) return;
-    writeObj(T.StateTransition, [[K.stateToId, U, to], [K.tDuration, U, 250]]);
-    writeObj(NUMBER_CONDITION, [[K.inputId, U, 1], [K.opValue, U, 0], [CONDITION_VALUE, D, k + 1]]);
+    writeObj(T.StateTransition, [
+      [K.stateToId, U, to],
+      [K.tDuration, U, 250],
+    ]);
+    writeObj(NUMBER_CONDITION, [
+      [K.inputId, U, 1],
+      [K.opValue, U, 0],
+      [CONDITION_VALUE, D, k + 1],
+    ]);
   });
 });
 // camada Reacao: 3 repouso, 4 alegria
@@ -636,12 +1010,29 @@ goEntry(3);
 writeObj(T.AnyState, []);
 writeObj(T.ExitState, []);
 animState(A_REPOUSO);
-writeObj(T.StateTransition, [[K.stateToId, U, 4], [K.tDuration, U, 0]]);
-writeObj(NUMBER_CONDITION, [[K.inputId, U, 0], [K.opValue, U, 0], [CONDITION_VALUE, D, 1]]);
+writeObj(T.StateTransition, [
+  [K.stateToId, U, 4],
+  [K.tDuration, U, 0],
+]);
+writeObj(NUMBER_CONDITION, [
+  [K.inputId, U, 0],
+  [K.opValue, U, 0],
+  [CONDITION_VALUE, D, 1],
+]);
 animState(A_ALEGRIA);
 goNow(3);
 
 const file = Buffer.from(out.b);
 fs.mkdirSync(path.dirname(OUTPUT), { recursive: true });
 fs.writeFileSync(OUTPUT, file);
-console.log(OUTPUT, file.length, "bytes;", comps.length, "componentes;", animations.length, "animações;", keyframes, "quadros-chave");
+console.log(
+  OUTPUT,
+  file.length,
+  "bytes;",
+  comps.length,
+  "componentes;",
+  animations.length,
+  "animações;",
+  keyframes,
+  "quadros-chave",
+);
