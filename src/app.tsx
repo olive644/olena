@@ -257,11 +257,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
           </p>
         )}
         {!storageFull && cloud.rejectedKeys && (
-          <p
-            className="storage-full-banner"
-            role="status"
-            data-rejected-keys={cloud.rejectedKeys.join(",")}
-          >
+          <p className="storage-full-banner" role="status">
             {uiText(3713)}
           </p>
         )}
