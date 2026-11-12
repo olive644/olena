@@ -15,6 +15,7 @@ test("borracha de fundo apaga a página importada e deixa a tinta e a pauta", as
     .click();
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });

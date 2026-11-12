@@ -21,6 +21,7 @@ test("quadro amplo, preferências e livro preservam páginas ao navegar e reabri
   }
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await expect(page.getByRole("button", { name: "Exportar PDF" })).toHaveCount(0);
   await expect(page.getByRole("tab", { name: /Anotações/ })).toHaveCount(0);
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();

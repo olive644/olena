@@ -1,14 +1,9 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import { saveStudentResume } from "../data/student-resume";
 import { NotebookPageBook } from "../components/notebook-page-book";
-import { PaperCheckIcon } from "../components/paper-check-icon";
-import { notebookShelves, SHELF_CAPACITY } from "../domain/notebook-shelves";
-import { PaperObjectIcon } from "../components/paper-object-icon";
-import { NotebookSearch } from "../components/notebook-search";
-import { NotebookFolder } from "../components/notebook-folder";
-import { TextNoteEditor, TextNotePreview } from "../components/text-note";
+import { PaperCardTitle } from "../components/paper-card-title";
+import { TextNoteEditor } from "../components/text-note";
 import { NoteFlashcardTools } from "../components/library-links";
-import { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 import { mergeNotebookPages, type NotebookCollabPage } from "../domain/notebook-collab";
 import {
@@ -18,13 +13,13 @@ import {
   useNotebook3d,
 } from "../components/notebook-3d/notebook-3d-support";
 import { NotebookPageIndex } from "../components/notebook-page-index";
-import { NotebookFolderMovePicker } from "../components/notebook-folder-move-picker";
 import { NotebookPageThumbnail } from "../components/notebook-page-thumbnail";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type Dispatch } from "react";
 import {
   NotebookJourney,
   canAnimateNotebook,
   notebookShelfCover,
+  notebookShelfPose,
   notebookPageSnapshot,
   type NotebookJourneyState,
 } from "../components/notebook-journey";
@@ -39,10 +34,10 @@ import {
 import { notebookPaperTabs } from "../components/notebook-paper-tools";
 import { NotebookCover as NotebookArtwork } from "../components/notebook-cover";
 import type { ImportedPage } from "../components/page-import";
-import type { SearchHit } from "../domain/notebook-search";
 import type { HandwritingDocument } from "../domain/handwriting";
 import { openPrintWindow } from "../data/print-window";
 import { brandedExportCanvas, loadPaperExportMascot } from "../data/paper-export-art";
+import "./notebook-shelf.css";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import {
   createWorkspaceId,
@@ -51,6 +46,8 @@ import {
   type WorkspaceAction,
   type WorkspaceState,
 } from "../domain/workspace";
+
+const NOTEBOOK_LIMIT = 5;
 
 const NoteCaptureTools = lazy(() => import("../components/note-capture-tools"));
 
@@ -95,37 +92,10 @@ export function NotesView({
   const createDialog = useRef<HTMLDialogElement>(null);
   const [createDialogVersion, setCreateDialogVersion] = useState(0);
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
-  const [openFolderIds, setOpenFolderIds] = useState<string[]>(() => {
-    const id = new URLSearchParams(window.location.search).get("pasta");
-    return id && workspace.notebooks.some((item) => item.id === id && item.kind === "collection")
-      ? [id]
-      : [];
-  });
-  const bookDrag = useNotebookShelfDrag(workspace.notebooks, (id, folderId) =>
-    dispatch({ type: "notebook/stored", id, folderId }),
-  );
-
-  const [draggedFolder, setDraggedFolder] = useState<string | null>(null);
-  const [dropTarget, setDropTarget] = useState<string | null>(null);
   const [moveMessage, setMoveMessage] = useState("");
-  const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
-  const drag = useRef<{ id: string; x: number; y: number; moved: boolean } | null>(null);
-  const skipClick = useRef<string | null>(null);
-  function moveFolder(id: string, target: string) {
-    dispatch({ type: "notebook/folder-moved", id, parentId: target });
-    setMoveMessage(
-      uiText(1975, [workspace.notebooks.find((item) => item.id === target)?.title ?? "caderno"]),
-    );
-    setDraggedFolder(null);
-    setDropTarget(null);
-  }
   const [newNotebookName, setNewNotebookName] = useState("");
-  const [createFolder, setCreateFolder] = useState(false);
-  const [createNote, setCreateNote] = useState(false);
-  const [folderShelf, setFolderShelf] = useState(0);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedNotebookIds, setSelectedNotebookIds] = useState<string[]>([]);
-  const [folderPickerOpen, setFolderPickerOpen] = useState(false);
   const [activeNotebookId, setActiveNotebookId] = useState<string | null>(
     initialNotebookId ??
       new URLSearchParams(window.location.search).get("caderno")?.slice(0, 160) ??
@@ -224,13 +194,8 @@ export function NotesView({
 
   const activeNotebook =
     workspace.notebooks.find((notebook) => notebook.id === activeNotebookId) ?? null;
-  const shelfItems = workspace.notebooks.filter(
-    (item) => !item.parentId && item.kind !== "collection",
-  );
-  const collections = workspace.notebooks.filter((item) => item.kind === "collection");
-  const shelves = notebookShelves(workspace.notebooks);
-  const shelfCount = shelves.length;
-  const folderLimit = collections.filter((item) => (item.shelf ?? 0) === folderShelf).length >= 3;
+  const shelfItems = workspace.notebooks.filter((item) => !item.kind);
+  const canCreateNotebook = shelfItems.length < NOTEBOOK_LIMIT;
   const folders = workspace.notebooks.filter(
     (item) => item.kind === "folder" && item.parentId === activeNotebookId,
   );
@@ -339,31 +304,15 @@ export function NotesView({
   ]);
 
   function createNotebook() {
-    if (createFolder && folderLimit) return;
+    if (!canCreateNotebook) return;
     const id = createWorkspaceId("notebook");
     dispatch({
       type: "notebook/added",
       id,
-      title:
-        newNotebookName.trim() ||
-        (createFolder ? uiText(1977) : createNote ? uiText(1044) : notebookTitle(workspace)),
-      ...(createFolder ? { kind: "collection" as const, shelf: folderShelf } : {}),
-      ...(createNote ? { kind: "note" as const } : {}),
+      title: newNotebookName.trim() || notebookTitle(workspace),
       subjectId: "",
       createdAt: new Date().toISOString(),
     });
-    if (createNote) {
-      dispatch({
-        type: "note/added",
-        id: createWorkspaceId("note"),
-        notebookId: id,
-        subjectId: "",
-        kind: "note",
-        updatedAt: new Date().toISOString(),
-      });
-    }
-    setActiveNotebookId(createFolder ? null : id);
-    if (!createFolder) setSharedNotebookId(id);
     setNotebookSection("pages");
     createDialog.current?.close();
     setNewNotebookName("");
@@ -371,15 +320,6 @@ export function NotesView({
   }
 
   function openNotebook(notebook: StudyNotebook) {
-    if (bookDrag.consumeClick(notebook.id)) return;
-    if (skipClick.current === notebook.id) {
-      skipClick.current = null;
-      return;
-    }
-    if (draggedFolder && notebook.kind !== "folder") {
-      moveFolder(draggedFolder, notebook.id);
-      return;
-    }
     if (selectionMode) {
       setSelectedNotebookIds((ids) =>
         ids.includes(notebook.id) ? ids.filter((id) => id !== notebook.id) : [...ids, notebook.id],
@@ -387,13 +327,16 @@ export function NotesView({
       return;
     }
     const cover = notebookShelfCover(notebook.id);
-    if (notebook.kind !== "note" && cover && canAnimateNotebook())
+    if (notebook.kind !== "note" && cover && canAnimateNotebook()) {
+      const pose = notebookShelfPose(cover);
       setJourney({
         notebook,
         returning: false,
-        from: cover.getBoundingClientRect(),
+        from: pose.rect,
+        shelfAngle: pose.angle,
         tabs: notebookPaperTabs(notebook, workspace.notes, workspace.subjects),
       });
+    }
     setActiveNotebookId(notebook.id);
     setSharedNotebookId(notebook.id);
     setActivePageId(null);
@@ -466,56 +409,11 @@ export function NotesView({
     setIndexOpen(false);
   }
 
-  function openSearchHit(hit: SearchHit) {
-    const target = workspace.notebooks.find((notebook) => notebook.id === hit.notebookId);
-    if (!target) return;
-    setJourney(null);
-    setActiveNotebookId(target.id);
-    setActivePageId(hit.pageId);
-    setNotebookSection(target.kind === "folder" ? "notes" : "pages");
-    setPreviewPageIndex(0);
-  }
-
   function removeSelectedNotebooks() {
     if (selectedNotebookIds.length === 0) return;
     dispatch({ type: "notebook/removed", ids: selectedNotebookIds });
     setSelectedNotebookIds([]);
     setSelectionMode(false);
-  }
-
-  // Alternativa por teclado a arrastar um caderno para dentro de uma pasta: move a seleção
-  // inteira de uma vez, respeitando o limite de três itens por pasta que o arrastar já respeita.
-  function moveSelectedNotebooksToFolder(folderId: string | null) {
-    const eligible = selectedNotebookIds.filter((id) => {
-      const item = workspace.notebooks.find((notebook) => notebook.id === id);
-      return item && (!item.kind || item.kind === "note");
-    });
-    if (eligible.length === 0) return;
-    setSelectedNotebookIds([]);
-    setSelectionMode(false);
-    if (!folderId) {
-      eligible.forEach((id) => dispatch({ type: "notebook/stored", id, folderId: null }));
-      setMoveMessage(eligible.length === 1 ? uiText(1341) : uiText(1978, [eligible.length]));
-      return;
-    }
-    const folder = workspace.notebooks.find((notebook) => notebook.id === folderId);
-    const already = workspace.notebooks.filter(
-      (item) => item.parentId === folderId && !eligible.includes(item.id),
-    ).length;
-    const capacity = Math.max(0, 3 - already);
-    const toMove = eligible.slice(0, capacity);
-    toMove.forEach((id) => dispatch({ type: "notebook/stored", id, folderId }));
-    if (toMove.length === 0) {
-      setMoveMessage(uiText(1979, [folder?.title ?? ""]));
-    } else if (toMove.length < eligible.length) {
-      setMoveMessage(uiText(1980, [toMove.length, eligible.length, folder?.title ?? "a pasta"]));
-    } else {
-      setMoveMessage(
-        toMove.length === 1
-          ? uiText(1981, [folder?.title ?? "a pasta"])
-          : uiText(1982, [toMove.length, folder?.title ?? "a pasta"]),
-      );
-    }
   }
 
   function createPageAtEnd() {
@@ -761,17 +659,8 @@ export function NotesView({
           )}
         </div>
       )}
-      {draggedFolder && dragPosition && (
-        <div
-          className="folder-drag-preview"
-          aria-hidden="true"
-          style={{ left: dragPosition.x + 12, top: dragPosition.y + 12 }}
-        >
-          {workspace.notebooks.find((item) => item.id === draggedFolder)?.title}
-        </div>
-      )}
       <p className="shelf-move-status" role="status">
-        {draggedFolder ? uiText(1984) : moveMessage}
+        {moveMessage}
       </p>
       <dialog
         key={createDialogVersion}
@@ -786,78 +675,20 @@ export function NotesView({
             createNotebook();
           }}
         >
-          <h2>{createFolder ? uiText(1985) : createNote ? uiText(1986) : uiText(1987)}</h2>
-          <div className="paper-choice-row" role="group" aria-label={uiText(1349)}>
-            <button
-              type="button"
-              aria-label={uiText(100)}
-              title={uiText(1350)}
-              aria-pressed={!createFolder && !createNote}
-              onClick={() => {
-                setCreateFolder(false);
-                setCreateNote(false);
-              }}
-            >
-              <PaperObjectIcon name="notebook" />
-              <span>{uiText(100)}</span>
-            </button>
-            <button
-              type="button"
-              aria-label={uiText(1351)}
-              title={uiText(1352)}
-              aria-pressed={createNote}
-              onClick={() => {
-                setCreateFolder(false);
-                setCreateNote(true);
-              }}
-            >
-              <PaperObjectIcon name="note" />
-              <span>{uiText(1351)}</span>
-            </button>
-            <button
-              type="button"
-              aria-label={uiText(1353)}
-              title={uiText(1354)}
-              aria-pressed={createFolder}
-              onClick={() => {
-                setCreateFolder(true);
-                setCreateNote(false);
-              }}
-            >
-              <PaperObjectIcon name="folder" />
-              <span>{uiText(1353)}</span>
-            </button>
-          </div>
-          {createNote && <p>{uiText(1355)}</p>}
-          {createFolder && (
-            <label>
-              {uiText(1356)}
-              <select
-                aria-label={uiText(1357)}
-                value={folderShelf}
-                onChange={(event) => setFolderShelf(Number(event.target.value))}
-              >
-                {Array.from({ length: shelfCount + 1 }, (_, index) => (
-                  <option key={index} value={index}>
-                    {index === shelfCount ? uiText(1988) : uiText(1989, [index + 1])}
-                  </option>
-                ))}
-              </select>
-              <small>{folderLimit ? uiText(1358) : uiText(1359)}</small>
-            </label>
-          )}
+          <h2>{uiText(1987)}</h2>
           <label>
             {uiText(713)}
             <input
               aria-label={uiText(713)}
               value={newNotebookName}
               maxLength={80}
-              placeholder={createFolder ? uiText(1977) : createNote ? uiText(1044) : uiText(1974)}
+              placeholder={uiText(1974)}
               onChange={(event) => setNewNotebookName(event.target.value)}
             />
           </label>
           <div className="notebook-detail-actions">
             <button
+              className="secondary-button"
               type="button"
               onClick={() => {
                 createDialog.current?.close();
@@ -866,8 +697,8 @@ export function NotesView({
             >
               {uiText(155)}
             </button>
-            <button className="primary-button" type="submit" disabled={createFolder && folderLimit}>
-              {createFolder ? uiText(1354) : createNote ? uiText(1352) : uiText(1350)}
+            <button className="primary-button" type="submit" disabled={!canCreateNotebook}>
+              {uiText(1350)}
             </button>
           </div>
         </form>
@@ -876,11 +707,8 @@ export function NotesView({
       {!activeNotebook ? (
         <>
           <header className="view-heading view-heading--with-action notebooks-heading">
-            <div>
-              <h1>{uiText(1360)}</h1>
-            </div>
             <div className="new-note-action">
-              {workspace.notebooks.length > 0 && (
+              {shelfItems.length > 0 && (
                 <button
                   className="secondary-button"
                   type="button"
@@ -892,36 +720,19 @@ export function NotesView({
                   {selectionMode ? uiText(1361) : uiText(359)}
                 </button>
               )}
-              <button
-                className="primary-button"
-                type="button"
-                onClick={() => createDialog.current?.showModal()}
-              >
-                <PaperActionIcon name="plus" /> <span>{uiText(1348)}</span>
-              </button>
               {selectionMode && (
                 <div className="notebook-selection-actions" role="group" aria-label={uiText(1362)}>
                   <button
                     type="button"
                     onClick={() =>
                       setSelectedNotebookIds(
-                        selectedNotebookIds.length === shelfItems.length + collections.length
+                        selectedNotebookIds.length === shelfItems.length
                           ? []
-                          : [...shelfItems, ...collections].map((notebook) => notebook.id),
+                          : shelfItems.map((notebook) => notebook.id),
                       )
                     }
                   >
-                    {selectedNotebookIds.length === shelfItems.length + collections.length
-                      ? uiText(1990)
-                      : uiText(199)}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={selectedNotebookIds.length === 0}
-                    onClick={() => setFolderPickerOpen(true)}
-                  >
-                    {uiText(689)}{" "}
-                    {selectedNotebookIds.length > 0 ? `(${selectedNotebookIds.length})` : ""}
+                    {selectedNotebookIds.length === shelfItems.length ? uiText(1990) : uiText(199)}
                   </button>
                   <button
                     type="button"
@@ -933,270 +744,71 @@ export function NotesView({
                   </button>
                 </div>
               )}
-              {folderPickerOpen && (
-                <NotebookFolderMovePicker
-                  count={selectedNotebookIds.length}
-                  folders={collections}
-                  onMove={moveSelectedNotebooksToFolder}
-                  onClose={() => setFolderPickerOpen(false)}
-                />
-              )}
             </div>
           </header>
 
-          {workspace.notebooks.length > 0 && (
-            <NotebookSearch workspace={workspace} onOpen={openSearchHit} />
-          )}
-
           <section className="notebooks-showcase" aria-label={uiText(1364)}>
-            <span className="sr-only" role="status">
-              {bookDrag.message}
-            </span>
-            {bookDrag.moving && (
-              <div
-                className="notebook-shelf-drag-ghost"
-                aria-hidden="true"
-                style={{ left: bookDrag.moving.x + 16, top: bookDrag.moving.y - 45 }}
-              >
-                {workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)?.kind ===
-                "note" ? (
-                  <TextNotePreview
-                    title={
-                      workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)?.title ??
-                      uiText(1351)
-                    }
-                  />
-                ) : (
-                  <NotebookArtwork
-                    subjectColor="#7c3aed"
-                    title={
-                      workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)?.title ??
-                      uiText(100)
-                    }
-                  />
-                )}
-              </div>
-            )}
-            {workspace.notebooks.length === 0 ? (
-              <div className="notebooks-empty">
-                <NotebookArtwork subjectColor="#7C3AED" />
-                <h2>{uiText(1365)}</h2>
-                <p>{uiText(1366)}</p>
-              </div>
-            ) : (
-              <div className="notebook-shelves">
-                {Array.from({ length: shelfCount }, (_, shelfIndex) => (
-                  <section
-                    className="notebook-shelf notebook-shelf--objects"
-                    key={shelfIndex}
-                    aria-label={uiText(1991, [shelfIndex + 1])}
-                  >
-                    <span className="notebook-shelf__label">
-                      {uiText(1367)} {String(shelfIndex + 1).padStart(2, "0")}
-                      <small>
-                        {shelves[shelfIndex]!.length}/{SHELF_CAPACITY} {uiText(1368)}
-                      </small>
-                    </span>
-                    <div className="notebook-grid">
-                      {shelves[shelfIndex]!.filter((folder) => folder.kind === "collection").map(
-                        (folder) => (
-                          <NotebookFolder
-                            key={folder.id}
-                            folder={folder}
-                            notebooks={workspace.notebooks}
-                            pages={workspace.notes}
-                            subjects={workspace.subjects}
-                            onOpen={openNotebook}
-                            open={openFolderIds.includes(folder.id)}
-                            selectionMode={selectionMode}
-                            selected={selectedNotebookIds.includes(folder.id)}
-                            onToggle={() =>
-                              selectionMode
-                                ? openNotebook(folder)
-                                : setOpenFolderIds((ids) =>
-                                    ids.includes(folder.id)
-                                      ? ids.filter((id) => id !== folder.id)
-                                      : [...ids, folder.id],
-                                  )
-                            }
-                            drag={bookDrag}
-                          />
-                        ),
-                      )}
-                      {shelves[shelfIndex]!.filter((item) => item.kind !== "collection").map(
-                        (notebook) => {
-                          const coverIndex =
-                            [...notebook.id].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 4;
-                          return (
-                            <button
-                              className={`notebook-card ${dropTarget === notebook.id ? "is-drop-target" : ""} ${draggedFolder === notebook.id ? "is-dragging-folder" : ""}`}
-                              data-notebook-drop={
-                                notebook.kind !== "folder" ? notebook.id : undefined
-                              }
-                              style={
-                                notebook.kind === "folder" ? { touchAction: "none" } : undefined
-                              }
-                              onKeyDown={(event) => {
-                                if (event.key === "Escape") {
-                                  setDraggedFolder(null);
-                                  setDropTarget(null);
-                                }
-                                if (
-                                  event.key === " " &&
-                                  notebook.kind === "folder" &&
-                                  !selectionMode
-                                ) {
-                                  event.preventDefault();
-                                  setDraggedFolder(notebook.id);
-                                }
-                              }}
-                              onPointerDown={(event) => {
-                                if (
-                                  notebook.kind !== "folder" ||
-                                  selectionMode ||
-                                  event.button !== 0
-                                )
-                                  return;
-                                drag.current = {
-                                  id: notebook.id,
-                                  x: event.clientX,
-                                  y: event.clientY,
-                                  moved: false,
-                                };
-                                event.currentTarget.setPointerCapture(event.pointerId);
-                              }}
-                              onPointerMove={(event) => {
-                                const current = drag.current;
-                                if (!current) return;
-                                if (
-                                  Math.hypot(event.clientX - current.x, event.clientY - current.y) <
-                                    8 &&
-                                  !current.moved
-                                )
-                                  return;
-                                current.moved = true;
-                                setDragPosition({ x: event.clientX, y: event.clientY });
-                                setDraggedFolder(current.id);
-                                const target = document
-                                  .elementFromPoint(event.clientX, event.clientY)
-                                  ?.closest<HTMLElement>("[data-notebook-drop]");
-                                setDropTarget(target?.dataset["notebookDrop"] ?? null);
-                                const shelf = document
-                                  .elementFromPoint(event.clientX, event.clientY)
-                                  ?.closest(".notebook-shelf");
-                                if (shelf) {
-                                  const bounds = shelf.getBoundingClientRect();
-                                  if (event.clientX > bounds.right - 45) shelf.scrollLeft += 24;
-                                  if (event.clientX < bounds.left + 45) shelf.scrollLeft -= 24;
-                                }
-                              }}
-                              onPointerUp={(event) => {
-                                const current = drag.current;
-                                drag.current = null;
-                                setDragPosition(null);
-                                if (!current?.moved) return;
-                                skipClick.current = current.id;
-                                const target = document
-                                  .elementFromPoint(event.clientX, event.clientY)
-                                  ?.closest<HTMLElement>("[data-notebook-drop]")?.dataset[
-                                  "notebookDrop"
-                                ];
-                                if (target) moveFolder(current.id, target);
-                                else {
-                                  setDraggedFolder(null);
-                                  setDropTarget(null);
-                                }
-                              }}
-                              onPointerCancel={() => {
-                                drag.current = null;
-                                setDraggedFolder(null);
-                                setDropTarget(null);
-                              }}
-                              {...((!notebook.kind || notebook.kind === "note") && !selectionMode
-                                ? bookDrag.handlers(notebook.id)
-                                : {})}
-                              type="button"
-                              onClick={() => openNotebook(notebook)}
-                              aria-label={uiText(1813, [notebook.title])}
-                              aria-pressed={
-                                selectionMode
-                                  ? selectedNotebookIds.includes(notebook.id)
-                                  : undefined
-                              }
-                              key={notebook.id}
-                            >
-                              {selectionMode && (
-                                <span
-                                  className={`notebook-card__check ${selectedNotebookIds.includes(notebook.id) ? "is-selected" : ""}`}
-                                  aria-hidden="true"
-                                >
-                                  {selectedNotebookIds.includes(notebook.id) ? (
-                                    <PaperCheckIcon />
-                                  ) : null}
-                                </span>
-                              )}
-                              {notebook.kind === "note" ? (
-                                <TextNotePreview
-                                  title={notebook.title}
-                                  content={
-                                    workspace.notes.find((note) => note.id === notebook.pageIds[0])
-                                      ?.content ?? ""
-                                  }
-                                />
-                              ) : notebook.kind === "folder" ? (
-                                <span className="annotation-folder" aria-hidden="true">
-                                  <span className="annotation-folder__back" />
-                                  {[0, 1, 2].map((index) => (
-                                    <span
-                                      key={index}
-                                      className={`annotation-folder__paper annotation-folder__paper--${index}`}
-                                    />
-                                  ))}
-                                  <span className="annotation-folder__front">
-                                    <strong>{notebook.title}</strong>
-                                    <small>{uiText(1369)}</small>
-                                  </span>
-                                </span>
-                              ) : (
-                                <NotebookArtwork
-                                  participants={
-                                    notebook.id === collaborationNotebookId
-                                      ? (collaboration.state.room?.participants ?? [])
-                                      : []
-                                  }
-                                  subjectColor={
-                                    ["#7C3AED", "#22665F", "#A44050", "#315A83"][coverIndex] ??
-                                    "#7C3AED"
-                                  }
-                                  title={notebook.title}
-                                  tabs={notebookPaperTabs(
-                                    notebook,
-                                    notebook.pageIds.flatMap(
-                                      (id) => workspace.notes.find((note) => note.id === id) ?? [],
-                                    ),
-                                    workspace.subjects,
-                                  )}
-                                />
-                              )}
-                              <span className="notebook-card__copy">
-                                <strong>{notebook.title}</strong>
-                                <small>
-                                  {notebook.kind === "note" ? uiText(1992) : ""}
-                                  {notebook.pageIds.length}{" "}
-                                  {notebook.kind === "folder" ? uiText(2592) : uiText(1817)}
-                                  {notebook.pageIds.length === 1 ? "" : "s"}
-                                </small>
-                              </span>
-                            </button>
-                          );
-                        },
-                      )}
-                      <div className="notebook-shelf__rail" aria-hidden="true" />
-                    </div>
-                  </section>
+            <div className="notebook-shelves">
+              <section className="notebook-display-shelf" aria-label={uiText(1991, [1])}>
+                {["left", "right"].map((side) => (
+                  <span key={side} className={`notebook-shelf-vines is-${side}`} aria-hidden="true">
+                    {Array.from({ length: 16 }, (_, index) => (
+                      <i key={index} style={{ top: index * 12 }} />
+                    ))}
+                  </span>
                 ))}
-              </div>
-            )}
+                <div className="notebook-display-shelf__books">
+                  {shelfItems.map((notebook) => {
+                    return (
+                      <button
+                        className="notebook-card notebook-spine"
+                        data-notebook-drop={notebook.id}
+                        type="button"
+                        onClick={() => openNotebook(notebook)}
+                        aria-label={uiText(1813, [notebook.title])}
+                        aria-pressed={
+                          selectionMode ? selectedNotebookIds.includes(notebook.id) : undefined
+                        }
+                        key={notebook.id}
+                      >
+                        <span className="notebook-spine__inspection" aria-hidden="true">
+                          <span className="notebook-spine__body book-cover__spine">
+                            <i />
+                            <i />
+                            <i />
+                          </span>
+                          <span className="notebook-spine__front">
+                            <strong>{notebook.title}</strong>
+                            <NotebookArtwork subjectColor="#7C3AED" title={notebook.title} />
+                          </span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                  {canCreateNotebook && (
+                    <button
+                      className="notebook-display-shelf__create"
+                      aria-label={uiText(1348)}
+                      type="button"
+                      onClick={() => createDialog.current?.showModal()}
+                    >
+                      <span aria-hidden="true">+</span>
+                    </button>
+                  )}
+                  <img
+                    className="notebook-shelf-cat"
+                    src="/olena-shelf-sleeping.webp"
+                    alt=""
+                    draggable={false}
+                  />
+                </div>
+              </section>
+              {!canCreateNotebook && (
+                <p className="notebook-shelf-pro">
+                  <PaperCardTitle value="EM BREVE OLENA PRO" />
+                </p>
+              )}
+            </div>
           </section>
         </>
       ) : activeNotebook.kind === "note" ? (
@@ -1232,8 +844,7 @@ export function NotesView({
             >
               <img src="/paper-arrow.svg" alt="" />
             </button>
-            {/* O nome do caderno está na capa; o título fica só para leitores de tela. */}
-            <h1 className="visually-hidden">{activeNotebook.title}</h1>
+            <h1>{activeNotebook.title}</h1>
           </div>
           <p>
             {notebookPages.length} {notebookPages.length === 1 ? uiText(1993) : uiText(1994)}

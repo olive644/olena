@@ -9,6 +9,7 @@ test("índice de folhas: ver miniaturas, reordenar e ir a uma folha", async ({ p
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByLabel("Nome", { exact: true }).fill("Caderno de teste");
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await expect(dialog).toBeVisible();

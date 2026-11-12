@@ -13,6 +13,7 @@ test("a barra de baixo tem só ícones, a seta de voltar fica à esquerda e a na
   if (info.project.name === "mobile") await expect(page.locator(".mobile-nav")).toBeVisible();
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   const preview = page.getByRole("region", { name: "Preview do caderno" });
   if (info.project.name === "mobile") {
     for (const height of [640, 844]) {

@@ -15,6 +15,7 @@ test("seleção: laço, copiar, colar, duplicar, girar e selecionar tudo", async
     .click();
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
@@ -88,6 +89,7 @@ test("alças da caixa: arrastar o canto redimensiona e a alça de cima gira", as
     .click();
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
@@ -181,6 +183,7 @@ test("segurar a caneta parada no fim de um traço acerta a reta e o círculo", a
     .click();
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
@@ -235,6 +238,7 @@ test("com algo selecionado as setas empurram, e não existe botão de mover a fo
     .click();
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });

@@ -23,6 +23,7 @@ async function openNewNotebook(page: Page, mobile: boolean, enabled = true) {
   }
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
 }
 
 /** O "+" mora na bandeja de ferramentas: abre a bandeja (se estiver fechada) e cria a folha. */

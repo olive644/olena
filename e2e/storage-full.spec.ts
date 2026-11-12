@@ -34,6 +34,7 @@ test("com o armazenamento cheio mas o IndexedDB disponível, o app salva de verd
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByLabel("Nome", { exact: true }).fill("Com cota cheia");
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await expect(page.getByRole("heading", { name: "Com cota cheia" })).toBeVisible();
   await expect(page.getByRole("alert").filter({ hasText: "sem espaço" })).toHaveCount(0);
   // A gravação no IndexedDB é assíncrona: espera ela realmente terminar antes de recarregar,
@@ -82,6 +83,7 @@ test("sem localStorage nem IndexedDB disponíveis, o app segue de pé e avisa", 
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByLabel("Nome", { exact: true }).fill("Sem onde salvar");
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await expect(page.getByRole("alert").filter({ hasText: "sem espaço" })).toBeVisible();
   // O caderno continua na tela: o app não ficou em branco.
   await expect(page.getByRole("heading", { name: "Sem onde salvar" })).toBeVisible();
