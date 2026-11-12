@@ -6,4 +6,4 @@ Artes novas produzidas com imagegen integrado e referências dos personagens ofi
 
 Cada arte possui tamanho completo 900x1350 e miniatura 360x540. A galeria usa miniaturas, inspeção carrega o arquivo completo. O diretório ink contém a direção vigente; variants anatomy-v2 e detail-v2 corrigem problemas encontrados no lote. major-06-v4 é a versão aprovada de Alice e Leo; major-20-v3 é a proposta reconstruída de Soso. O catálogo, e não o nome-base, decide a versão exibida.
 
-Arquivos multicoloridos e corrected/*.svg pertencem a tentativas rejeitadas, preservadas como histórico de trabalho. Não usá-los como referência para novas cartas. Sem nova dependência ou serviço no runtime do app.
+Rascunhos antigos (versões multicoloridas, `corrected/*.svg`, variantes `-v2` e `-v3` e cartas fora do catálogo) foram removidos em 12/11/2026 por não serem usados no app nem na galeria. Continuam no histórico do Git (consulte os commits anteriores a essa data). Não usá-los como referência para novas cartas. Sem nova dependência ou serviço no runtime do app.
