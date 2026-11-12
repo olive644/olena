@@ -84,11 +84,6 @@
 .math-tool-gold {
   fill: #facc15;
 }
-.math-tool-ticks {
-  fill: none;
-  stroke: #193b7c;
-  stroke-width: 2;
-}
 .practice-trail-heading {
   position: sticky;
   z-index: 5;

@@ -43,11 +43,6 @@
   order: -1;
   flex-shrink: 0;
 }
-.system-update-list {
-  overflow: auto;
-  min-height: 0;
-  overscroll-behavior: contain;
-}
 .social-notice-person {
   display: flex;
   gap: 10px;

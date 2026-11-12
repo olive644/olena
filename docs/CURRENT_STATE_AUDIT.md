@@ -4837,6 +4837,14 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - O CSS que só esses componentes usavam fica para a PR seguinte de limpeza de CSS.
 - Verificação: tsc, lint (0 erros), formatação, `api:check`, `i18n:check`, build, `performance:check` e a suíte de testes (2742 passam; os 8 de `listening-audio.test.ts` falham também na `main` neste ambiente local, por `Blob.stream`).
 
+## Limpeza de CSS sem uso, 2026-11-12
+
+- Removidas 562 regras e 710 seletores (cerca de 3.700 linhas em 20 arquivos CSS, mais o arquivo `student-favorites-shelf.css`, que ninguém importava) cujo seletor exige uma classe que não aparece em nenhum `.ts`, `.tsx`, `.html`, JSON de dados, teste ou e2e, nem em prefixo montado com `${}` ou `"prefixo-" +`. Foram 179 classes distintas, concentradas em `styles.css`, `oliver-card.css`, `local-room-flat.css`, `paper-buttons.css`, `onboarding.css`, `solo-journey.css` e `google-login.css`, a maior parte vinda dos componentes removidos na limpeza de código.
+- Seletores com a classe dentro de `:not()`, `:is()`, `:where()` ou `:has()` não foram tratados como mortos (a classe não é exigida por eles). Regras de `@keyframes`, variáveis CSS e arquivos de fonte não foram tocados. O CSS minificado de produção caiu de 776 KB para 722 KB.
+- Prova visual: build antes e depois, 50 capturas (PC e celular, tema claro e escuro, 12 rotas mais a capa; modo convidado, relógio fixo e movimento reduzido). 49 saíram idênticas pixel a pixel; a de Cadernos no PC escuro difere em 4 pixels (diferença máxima de cor 8 em 255) na borda de um ícone, e duas capturas da mesma versão já diferem entre si nesse ponto, então não vem do CSS.
+- Limites: a conferência visual cobre as telas de entrada e as rotas principais no modo convidado. Estados que exigem conta, janelas abertas, foco de teclado e passagem do mouse não foram capturados; o e2e do CI cobre o comportamento, mas não compara pixels. A remoção parte de que a classe nunca aparece no código; nomes montados de forma que a busca não enxerga poderiam escapar.
+- Verificação: lint (0 erros), formatação, build, `performance:check` e a suíte de testes (2742 passam; os 8 de `listening-audio.test.ts` falham também na `main` neste ambiente local, por `Blob.stream`).
+
 ## Erick Gabriel e Leo Bizzocchi fora da equipe, 2026-11-12
 
 - **O que mudou.** Os nomes de Erick Gabriel e Leo Bizzocchi saíram da lista da equipe da Galeria.Oli nos termos de uso e na política de privacidade (agora só José Oliver). O teste da política passou a exigir José Oliver e a garantir que os dois nomes não voltem.

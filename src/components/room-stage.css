@@ -825,18 +825,6 @@
   object-fit: cover;
   flex: 0 0 44px;
 }
-.room-results-heading {
-  text-align: center;
-  padding: 1rem 0;
-}
-.room-results-heading h3 {
-  margin: 0;
-  font-size: clamp(24px, 3vw, 36px);
-}
-.room-results-heading p {
-  color: var(--muted);
-  font-size: 0.85rem;
-}
 .local-room-finished {
   gap: 1rem;
 }

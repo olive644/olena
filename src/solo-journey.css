@@ -24,44 +24,6 @@
     transform: none;
   }
 }
-.solo-traveler {
-  position: absolute;
-  width: 28%;
-  top: 33%;
-  left: 50%;
-  pointer-events: none;
-  transform: translateX(-50%);
-  z-index: 3;
-}
-.solo-traveler__jump {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  pointer-events: auto;
-  transform-origin: center bottom;
-}
-.solo-traveler__jump img {
-  display: block;
-  width: 100%;
-}
-.solo-traveler__jump.is-jumping {
-  animation: helena-world-hop 550ms ease-in-out;
-}
-.solo-traveler__jump.is-backward {
-  --hop-turn: -12deg;
-}
-.solo-traveler__jump.is-backward img {
-  transform: scaleX(-1);
-}
-.solo-world-map {
-  min-height: 0;
-  padding: 16px 48px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
 .solo-world-card {
   position: static;
   width: auto;
@@ -76,9 +38,6 @@
 }
 .solo-world-card .primary-button {
   justify-self: center;
-}
-.solo-world-map__arrow {
-  top: 40%;
 }
 @keyframes helena-world-hop {
   0%,
@@ -122,15 +81,6 @@
   border-radius: 0;
   box-shadow: none;
 }
-.solo-level-path--world-1 {
-  background-color: #aee084;
-}
-.solo-level-path--world-2 {
-  background-color: #d9e7bc;
-}
-.solo-level-path--world-3 {
-  background-color: #30264a;
-}
 .solo-level-scenery {
   position: absolute;
   inset: 0;
@@ -155,46 +105,6 @@
   height: 100%;
   margin: auto;
   transition: transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.solo-level-track .solo-level-path__route {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  max-width: none;
-  height: 100%;
-  transform: none;
-  z-index: 1;
-}
-.solo-level-path__road-shadow,
-.solo-level-path__road,
-.solo-level-path__trail {
-  fill: none;
-  stroke-linecap: round;
-}
-.solo-level-path__road-shadow {
-  stroke: #6f5b3d66;
-  stroke-width: 58px;
-}
-.solo-level-path__road {
-  stroke: #fff4d4;
-  stroke-width: 48px;
-}
-.solo-level-path--world-3 .solo-level-path__road {
-  stroke: #f4e9c8;
-}
-.solo-level-path__trail {
-  position: static;
-  inset: auto;
-  width: auto;
-  height: auto;
-  border: 0;
-  border-radius: 0;
-  transform: none;
-  stroke: #fffdf2;
-  stroke-width: 9px;
-  stroke-linecap: round;
-  stroke-dasharray: 12 25;
-  filter: drop-shadow(0 2px 0 #6d583d66);
 }
 .solo-path-level {
   position: absolute;
@@ -305,45 +215,7 @@
 html:lang(en-US) .solo-world-enter.is-switching-world::after {
   content: "Loading world…";
 }
-.solo-path-mascot {
-  position: absolute;
-  width: 115px;
-  height: 115px;
-  max-width: none;
-  left: 50%;
-  bottom: calc(100% - 38px);
-  transform: translateX(-50%);
-  z-index: 3;
-  pointer-events: none;
-}
 @media (min-width: 900px) {
-  body.solo-world-open {
-    overflow: hidden;
-  }
-  body.solo-world-open .sidebar,
-  body.solo-world-open .page-header,
-  body.solo-world-open .view-heading,
-  body.solo-world-open .learn-grid > :not(.study-panel),
-  body.solo-world-open .goals-panel {
-    display: none;
-  }
-  body.solo-world-open .app-shell > .sidebar ~ .main-content {
-    width: 100vw;
-    max-width: none;
-    min-height: 100dvh;
-    margin: 0;
-    padding: 0;
-  }
-  body.solo-world-open .learn-grid,
-  body.solo-world-open .module-panel.study-panel {
-    display: block;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    box-shadow: none;
-  }
   .solo-world-enter {
     position: absolute;
     z-index: 50;
@@ -357,30 +229,6 @@ html:lang(en-US) .solo-world-enter.is-switching-world::after {
     width: 100vw;
     height: 100dvh;
   }
-  .solo-world-enter .solo-journey__heading {
-    position: absolute;
-    z-index: 4;
-    top: 1.5rem;
-    left: clamp(1.5rem, 4vw, 4rem);
-    width: min(360px, calc(100vw - 3rem));
-    padding: 0.85rem 1rem;
-    border: 1px solid #fff9e5a6;
-    border-radius: 18px;
-    background: #241d31d9;
-    box-shadow: 0 10px 26px #17151c40;
-  }
-  .solo-world-enter .solo-journey__heading h2,
-  .solo-world-enter .solo-journey__heading p,
-  .solo-world-enter .solo-journey__heading .link-button {
-    color: #fff9e5;
-  }
-  .solo-world-enter .solo-journey__heading .section-label {
-    color: #facc15;
-  }
-  .solo-world-enter .solo-journey__progress {
-    margin-top: 0.8rem;
-    background: #fff9e5;
-  }
   .solo-level-path {
     width: 100vw;
     max-width: none;
@@ -390,13 +238,6 @@ html:lang(en-US) .solo-world-enter.is-switching-world::after {
   }
 }
 @media (max-width: 719px) {
-  .solo-world-map {
-    overflow: hidden;
-    padding: 0;
-  }
-  .solo-world-map__arrow {
-    top: 30%;
-  }
   .solo-world-card {
     margin: 20px 4px 8px;
   }
@@ -407,34 +248,14 @@ html:lang(en-US) .solo-world-enter.is-switching-world::after {
   .solo-path-level {
     width: 100px;
   }
-  .solo-level-path__route {
-    width: 100%;
-  }
-  .solo-world-enter .solo-journey__heading {
-    padding-top: 3.5rem;
-  }
-  .solo-world-enter .solo-journey__heading .link-button {
-    position: fixed;
-    z-index: 8;
-    top: 0.75rem;
-    left: 0.75rem;
-    padding: 0.65rem 0.8rem;
-    border-radius: 999px;
-    background: #241d31e8;
-    color: #fff9e5;
-    box-shadow: 0 5px 16px #17151c35;
-  }
   .solo-level-track {
     transition-duration: 360ms;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .solo-traveler,
-  .solo-island,
   .solo-path-level__badge {
     transition: none;
   }
-  .solo-traveler__jump.is-jumping,
   .solo-island-art,
   .solo-world-enter .solo-level-path {
     animation: none;

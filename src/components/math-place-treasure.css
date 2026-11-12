@@ -177,16 +177,6 @@
   cursor: pointer;
   font-weight: 800;
 }
-.math-chest-lid {
-  transform-origin: 14px 41px;
-  transition: transform 0.65s;
-}
-.math-common-chest.is-open .math-chest-lid {
-  transform: rotate(-35deg) translateY(-7px);
-}
-.math-chest-glow {
-  animation: math-chest-shine 0.8s both;
-}
 .is-opening .math-common-chest {
   filter: drop-shadow(0 0 12px #facc15);
 }
@@ -274,8 +264,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .math-chest-slot,
-  .math-chest-lid,
-  .math-chest-glow,
   .math-earned-chest,
   .math-chest-label svg {
     animation: none !important;
