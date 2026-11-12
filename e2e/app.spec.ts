@@ -28,7 +28,7 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
       await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
       const menu = page.getByRole("dialog", { name: "Mais ferramentas" });
       const secondary = menu.locator(".navigation-icon__variant:visible");
-      await expect(secondary).toHaveCount(3);
+      await expect(secondary).toHaveCount(2);
       await expect(menu.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
       for (const icon of await secondary.all()) {
         await expect(icon).toHaveAttribute("src", /\/navigation-icons\/paper\/.*\.svg$/);
@@ -166,7 +166,7 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
   const navigation = page.getByRole("navigation", { name: "Navegação principal" });
   const sidebar = page.locator(".sidebar");
 
-  await expect(navigation.getByRole("button")).toHaveCount(8);
+  await expect(navigation.getByRole("button")).toHaveCount(7);
   await expect(navigation.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
   await expect(navigation.getByRole("button", { name: "Modo Sala", exact: true })).toHaveCount(0);
   await expect(navigation.getByRole("button", { name: "Espaço do aluno" })).toHaveAttribute(
@@ -322,7 +322,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   await expect(toolsDialog).toBeVisible();
   await page.waitForTimeout(350);
   const toolItems = toolsDialog.locator(".more-item");
-  await expect(toolItems).toHaveCount(3);
+  await expect(toolItems).toHaveCount(2);
   await expect(toolsDialog.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
 
   for (const item of await toolItems.all()) {
