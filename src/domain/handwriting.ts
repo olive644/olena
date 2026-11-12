@@ -58,7 +58,7 @@ export type HandwritingImage = {
   rotation?: number;
 };
 
-export type HandwritingChecklistItem = {
+type HandwritingChecklistItem = {
   id: string;
   text: string;
   done: boolean;

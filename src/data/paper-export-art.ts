@@ -25,7 +25,7 @@ function polygon(context: CanvasRenderingContext2D, points: number[][], color: s
 }
 
 /** Arte autoral de papel: selo da Olena e estrela, não uma certificação. */
-export function drawPaperExportSeal(
+function drawPaperExportSeal(
   context: CanvasRenderingContext2D,
   x: number,
   y: number,

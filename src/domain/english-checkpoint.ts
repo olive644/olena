@@ -1,7 +1,7 @@
 import { ENGLISH_PART_COUNT } from "./english-part-order.js";
 import { A1_BANK } from "./english-a1.js";
 import { englishBankSize } from "./english-difficulty.js";
-export type EnglishMiss = { id: number; choice: string; timedOut: boolean };
+type EnglishMiss = { id: number; choice: string; timedOut: boolean };
 export type EnglishCheckpoint = {
   owner: string | null;
   part: number;

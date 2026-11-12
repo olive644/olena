@@ -1,7 +1,6 @@
 import { localizeResource } from "../i18n/runtime.js";
 
-export const CONTROL_LEVELS = ["total-controlled", "semi-controlled"] as const;
-export type ControlLevel = (typeof CONTROL_LEVELS)[number];
+export type ControlLevel = "total-controlled" | "semi-controlled";
 
 export const CONTROL_LEVEL_LABELS: Record<ControlLevel, string> = {
   "total-controlled": "Total Controlled",

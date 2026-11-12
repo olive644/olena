@@ -1,7 +1,6 @@
 import { PRACTICE_ISLANDS } from "../data/practice-islands.js";
 
 export const OLENA_API_VERSION = 1;
-export const OLENA_API_ENDPOINT = "/api/olena";
 export type OlenaIslandId = (typeof PRACTICE_ISLANDS)[number]["id"] | "languages";
 
 export type OlenaMethodology = {
@@ -24,8 +23,6 @@ export function olenaIslands() {
     trail: island.id === "english" ? ("available" as const) : ("preview" as const),
   }));
 }
-
-export type OlenaIsland = ReturnType<typeof olenaIslands>[number];
 
 export function isOlenaIslandId(value: unknown): value is OlenaIslandId {
   return value === "languages" || PRACTICE_ISLANDS.some((island) => island.id === value);
@@ -51,7 +48,6 @@ export function olenaCatalog() {
   } as const;
 }
 
-export type OlenaCatalog = ReturnType<typeof olenaCatalog>;
 export type OlenaErrorCode =
   "invalid_request" | "unsupported_version" | "not_found" | "method_not_allowed";
 export type OlenaApiError = {

@@ -6,7 +6,7 @@ import { isEnglishArea, type EnglishArea } from "../domain/english-areas";
 import { validA1Content, type A1Content } from "./english-a1-content";
 import { A1_BANK } from "../domain/english-a1";
 export type EnglishText = { "pt-BR": string; "en-US": string };
-export type EnglishScene = [string, string, string, string, string];
+type EnglishScene = [string, string, string, string, string];
 export type EnglishGuide = {
   title: EnglishText;
   text: EnglishText;

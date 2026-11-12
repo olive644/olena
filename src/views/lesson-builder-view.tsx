@@ -128,7 +128,7 @@ function DraftPreview({ draft }: { draft: LessonDraft | null }) {
   );
 }
 
-export function LessonBuilderView({ onBack }: { onBack: () => void }) {
+function LessonBuilderView({ onBack }: { onBack: () => void }) {
   useLanguage();
 
   const [input, setInput] = useState<LessonInput>(INITIAL_INPUT);

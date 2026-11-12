@@ -10,7 +10,7 @@ export type SupportRelayEvent = {
   at: number;
 };
 
-export interface SupportRelayTransport {
+interface SupportRelayTransport {
   deliver(event: SupportRelayEvent): Promise<{ externalMessageId: string }>;
 }
 

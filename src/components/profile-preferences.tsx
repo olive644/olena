@@ -6,10 +6,8 @@ import { useStoredProfile } from "../hooks/use-stored-profile";
 import { readSyncedStorage } from "../data/synced-storage";
 import { agendaTimeZone } from "../data/agenda-time-zone";
 import { useNotebookPreferences } from "../data/notebook-preferences";
-import { zonedDateTime } from "../domain/agenda-calendar";
 import { NotebookPreferenceFields } from "./notebook-settings";
 import { NavigationIcon } from "./navigation-icon";
-import { PaperDigits } from "./paper-digits";
 import { downloadExportBlob } from "../data/paper-export-art";
 import { createStudyDataExport } from "../data/study-data-export";
 import { profileAvatarSource } from "../domain/profile-avatars";
@@ -217,44 +215,6 @@ export function ProfileNotifications() {
         {uiText(890)}
       </button>
       {error && <p role="alert">{uiText(error)}</p>}
-    </section>
-  );
-}
-
-export function ProfileProgress({ workspace }: { workspace: WorkspaceState }) {
-  useLanguage();
-
-  const zone = agendaTimeZone();
-  const focus = workspace.focusSessions.reduce((sum, session) => sum + session.durationMinutes, 0);
-  const practices = workspace.practiceActivities ?? [];
-  const correct =
-    practices.reduce((sum, activity) => sum + activity.correct, 0) +
-    workspace.quizAttempts.reduce((sum, attempt) => sum + attempt.correct, 0);
-  const activeDays = new Set(
-    [...workspace.focusSessions, ...practices, ...workspace.quizAttempts].map(
-      (item) => zonedDateTime(Date.parse(item.completedAt), zone).date,
-    ),
-  ).size;
-  return (
-    <section className="profile-card profile-card--wide" aria-labelledby="profile-progress-title">
-      <h2 id="profile-progress-title" className="section-label">
-        {uiText(891)}
-      </h2>
-      <dl className="profile-progress-metrics">
-        {[
-          [focus, uiText(1907)],
-          [correct, uiText(1908)],
-          [activeDays, uiText(892)],
-          [workspace.tasks.filter((task) => task.completed).length, uiText(893)],
-        ].map(([value, label]) => (
-          <div key={label}>
-            <dt>{label}</dt>
-            <dd>
-              <PaperDigits value={String(value)} />
-            </dd>
-          </div>
-        ))}
-      </dl>
     </section>
   );
 }

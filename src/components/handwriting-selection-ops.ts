@@ -156,7 +156,7 @@ export function rotateItems(
 // Um traço entra no laço quando a maior parte dele está dentro. Antes valia só o centro da caixa,
 // então um traço comprido que cruzava o laço só na ponta era pego, e uma letra curva cujo centro
 // caía fora do desenho era perdida.
-export const LASSO_MIN_INSIDE = 0.5;
+const LASSO_MIN_INSIDE = 0.5;
 
 export function lassoContainsStroke(polygon: readonly HandwritingPoint[], stroke: Stroke): boolean {
   if (polygon.length < 3 || stroke.points.length === 0) return false;
@@ -230,7 +230,7 @@ export type HandleKind = "nw" | "ne" | "se" | "sw" | "rotate";
 export type Box = { x: number; y: number; width: number; height: number };
 
 // Distância da alça de girar acima da caixa.
-export const ROTATE_HANDLE_GAP = 46;
+const ROTATE_HANDLE_GAP = 46;
 // Folga entre a caixa dos itens e a caixa da seleção desenhada.
 export const SELECTION_PAD = 12;
 

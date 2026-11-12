@@ -5,10 +5,10 @@ import {
   writeSyncedStorage,
 } from "../data/synced-storage";
 
-export type Theme = "light" | "dark";
+type Theme = "light" | "dark";
 export type ThemePreference = Theme | "system";
 
-export const THEME_STORAGE_KEY = "helenastudy.theme";
+const THEME_STORAGE_KEY = "helenastudy.theme";
 
 function systemPrefersDark(): boolean {
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;

@@ -228,9 +228,9 @@ const SHIFT_SIDE = SHIFT_RANGE * 2 + 1;
  * Para cada deslocamento inteiro, diz se a peça encostaria na ilha. É calculada uma vez por peça:
  * checar o trajeto depois vira só consulta, o que mantém a análise rápida.
  */
-export type InvasionTable = Uint8Array;
+type InvasionTable = Uint8Array;
 
-export function buildInvasionTable(
+function buildInvasionTable(
   pixels: Int32Array,
   solidMain: Uint8Array,
   size: number,
@@ -264,7 +264,7 @@ function invades(table: InvasionTable, ox: number, oy: number): boolean {
 }
 
 /** Quantos instantes do ciclo (com posições de sub-pixel e vários envelopes) a peça invade a ilha. */
-export function countInvasions(
+function countInvasions(
   piece: FloatingPiece,
   table: InvasionTable,
   samples = TRAJECTORY_SAMPLES,

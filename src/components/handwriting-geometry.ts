@@ -29,8 +29,8 @@ export function stickyHeight(sticky: HandwritingSticky): number {
 
 // Tabela dentro de um post-it (kind "table"): linhas e colunas por vez, sempre com pelo
 // menos uma de cada, e um teto (8 linhas, 6 colunas) para a folha não crescer sem limite.
-export const TABLE_MAX_ROWS = 8;
-export const TABLE_MAX_COLUMNS = 6;
+const TABLE_MAX_ROWS = 8;
+const TABLE_MAX_COLUMNS = 6;
 
 export function tableAddRow(cells: readonly (readonly string[])[]): string[][] {
   if (cells.length >= TABLE_MAX_ROWS) return cells.map((row) => [...row]);

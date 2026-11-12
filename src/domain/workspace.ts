@@ -149,7 +149,7 @@ export type StudyMaterial = {
   annotations?: { id: string; page: number; quote: string; note: string }[];
 };
 
-export type LibraryCollection = { id: string; title: string; motif: "moon" | "sun" | "book" };
+type LibraryCollection = { id: string; title: string; motif: "moon" | "sun" | "book" };
 
 export type FlashcardRating = "again" | "hard" | "easy";
 
@@ -190,7 +190,7 @@ export type QuizAttempt = {
   completedAt: string;
 };
 
-export type BingoCell = {
+type BingoCell = {
   id: string;
   label: string;
   completed: boolean;
@@ -203,13 +203,13 @@ export type BingoBoard = {
   createdAt: string;
 };
 
-export type HomeworkItem = {
+type HomeworkItem = {
   id: string;
   title: string;
   completed: boolean;
 };
 
-export type HomeworkList = {
+type HomeworkList = {
   id: string;
   subjectId: string;
   title: string;
@@ -1353,12 +1353,6 @@ export function hasBingo(board: BingoBoard): boolean {
 export function minutesFocusedOn(state: WorkspaceState, dateKey: string): number {
   return state.focusSessions
     .filter((session) => toDateKey(new Date(session.completedAt)) === dateKey)
-    .reduce((total, session) => total + session.durationMinutes, 0);
-}
-
-export function minutesFocusedForSubject(state: WorkspaceState, subjectId: string): number {
-  return state.focusSessions
-    .filter((session) => session.subjectId === subjectId)
     .reduce((total, session) => total + session.durationMinutes, 0);
 }
 
