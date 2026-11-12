@@ -3,7 +3,7 @@ import type { KvStore } from "./kv-store.js";
 import { clientAddress } from "./client-address.js";
 import { checkRateLimit } from "./rate-limit.js";
 
-export type DiscordIdentity = { id: string; name: string; email?: string; verified?: boolean };
+type DiscordIdentity = { id: string; name: string; email?: string; verified?: boolean };
 type AuthRecord = { binding: string; uid?: string; linked?: boolean; verifier?: string };
 type Dependencies = {
   clientId: string;

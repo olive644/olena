@@ -8,7 +8,7 @@ export type IslandAnalyzer = (
 ) => Promise<IslandModel>;
 
 /** Analisa na própria thread, depois de ceder o turno ao navegador. Só entra se não houver worker. */
-export const analyzeOnMainThread: IslandAnalyzer = (rgba, size, rig) =>
+const analyzeOnMainThread: IslandAnalyzer = (rgba, size, rig) =>
   new Promise((resolve) => {
     window.setTimeout(() => resolve(analyzeIsland(rgba, size, rig)), 0);
   });

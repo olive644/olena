@@ -14,7 +14,7 @@ export const ARCANA_IDS: ArcanaId[] = ["major", "wands", "cups", "swords", "pent
 export function isArcanaId(value: unknown): value is ArcanaId {
   return typeof value === "string" && ARCANA_IDS.includes(value as ArcanaId);
 }
-export const LEGACY_CARDS = [
+const LEGACY_CARDS = [
   "first-star",
   "silent-bell",
   "chalk-map",

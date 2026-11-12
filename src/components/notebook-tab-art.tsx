@@ -22,7 +22,7 @@ export function tabStyle(tab: NotebookTab, pageIndex: number, side: TabSide): CS
 }
 
 /** Desenho da aba, sem interação: o mesmo da camada fixa, usado na folha que está virando. */
-export function NotebookTabFace({
+function NotebookTabFace({
   tab,
   pageIndex,
   side,

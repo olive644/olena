@@ -8,7 +8,7 @@ import { requestSocial, visitSocialProfile } from "../data/profile-social";
 import type { SocialActivity, SocialActivitySummary, SocialNotice } from "../domain/profile-social";
 import { MATH_COURSES } from "../data/math-courses";
 
-export function activityLabel(activity: SocialActivitySummary) {
+function activityLabel(activity: SocialActivitySummary) {
   const course = MATH_COURSES.find((item) => item.id === activity.course);
   if (activity.course === "english" && activity.kind === "module")
     return uiText("Concluiu {0} na ilha de Inglês.", [

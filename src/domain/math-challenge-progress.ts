@@ -1,4 +1,4 @@
-import { MATH_COURSES, isMathCourse, type MathCourseId } from "../data/math-courses.js";
+import { isMathCourse, type MathCourseId } from "../data/math-courses.js";
 import {
   countSolved,
   QUESTION_MASK,
@@ -208,13 +208,4 @@ export function parseChallengeProgress(
   } catch {
     return {};
   }
-}
-export function unlockedChallengeCourse(
-  course: MathCourseId,
-  progress: Partial<Record<MathCourseId, ChallengeProgress>>,
-) {
-  return MATH_COURSES.slice(
-    0,
-    MATH_COURSES.findIndex((item) => item.id === course),
-  ).every((item) => progress[item.id] && challengeCompletion(progress[item.id]!).percent === 100);
 }

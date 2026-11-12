@@ -4,7 +4,7 @@ import { ARCANA_IDS, activeArcanaId } from "../data/arcana-ids.js";
 const KNOWN = new Set<string>(ARCANA_IDS);
 export const isPublicCardId = (value: unknown): value is string =>
   typeof value === "string" && KNOWN.has(value);
-export function validCardIds(value: unknown): value is string[] {
+function validCardIds(value: unknown): value is string[] {
   return (
     Array.isArray(value) &&
     value.length <= KNOWN.size &&

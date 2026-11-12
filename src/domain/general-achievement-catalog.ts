@@ -1,6 +1,6 @@
 import type { MathAchievement } from "./math-achievements";
 
-export const ACHIEVEMENT_TIERS = ["bronze", "silver", "gold", "emerald"] as const;
+const ACHIEVEMENT_TIERS = ["bronze", "silver", "gold", "emerald"] as const;
 export type AchievementTier = (typeof ACHIEVEMENT_TIERS)[number];
 export type GeneralMetric =
   | "streak"

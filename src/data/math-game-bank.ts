@@ -11,7 +11,7 @@ export type MathBankQuestion = MathChallenge & {
   format: number;
   source: string;
 };
-export const THOMPSON_SOURCE =
+const THOMPSON_SOURCE =
   "Calculus Made Easy, Silvanus P. Thompson, edição de 1914, exercícios I, p. 24; gabarito p. 252. https://www.gutenberg.org/files/33283/33283-h/33283-h.htm";
 const FORMATS: Record<MathCourseId, readonly Formats[]> = {
   foundations: [

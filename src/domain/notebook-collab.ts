@@ -10,7 +10,7 @@ import {
 export const MAX_NOTEBOOK_COLLAB_PARTICIPANTS = 4;
 export const NOTEBOOK_COLLAB_TTL_SECONDS = 60 * 60 * 8;
 export const NOTEBOOK_COLLAB_PRESENCE_GRACE_MS = 45_000;
-export const NOTEBOOK_COLLAB_ACTION_LIMIT = 12;
+const NOTEBOOK_COLLAB_ACTION_LIMIT = 12;
 
 export type NotebookCollabParticipant = {
   id: string;
@@ -27,7 +27,7 @@ export function sanitizeNotebookCollabAvatar(value: unknown): string | undefined
   return /^\/profile-avatars\/[a-z0-9-]+\.(?:svg|webp)$/.test(value) ? value : undefined;
 }
 
-export type NotebookCollabAction = {
+type NotebookCollabAction = {
   id: string;
   participantId: string;
   displayName: string;
@@ -105,8 +105,7 @@ export function isNotebookCollabPages(value: unknown): value is NotebookCollabPa
 // Posição do cursor de quem está escrevendo, em unidades da folha. Vale por poucos segundos: quem
 // lê ignora entradas antigas, então nada precisa ser apagado.
 export type NotebookCollabCursor = { x: number; y: number; at: number; pageId?: string };
-export const NOTEBOOK_COLLAB_CURSOR_MAX = 4000;
-export const NOTEBOOK_COLLAB_CURSOR_TTL_MS = 5_000;
+const NOTEBOOK_COLLAB_CURSOR_MAX = 4000;
 
 export function sanitizeNotebookCollabCursor(
   body: Record<string, unknown>,
