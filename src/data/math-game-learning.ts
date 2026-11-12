@@ -24,8 +24,6 @@ import {
   validMasteryProgress,
   type MasteryProgress,
 } from "../domain/math-mastery-progress";
-export { requestMathGame } from "../domain/math-game";
-export type { MathGameResult } from "../domain/math-game";
 
 export function readMathGame(): Partial<Record<MathCourseId, MasteryProgress>> {
   const previous = parseChallengeProgress(localStorage.getItem(CHALLENGE_KEY));

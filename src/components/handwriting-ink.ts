@@ -8,7 +8,7 @@ import type { Stroke } from "./handwriting-types";
 // nada disso e é o mesmo desenho ao vivo e depois de salvo.
 
 type Vec = { x: number; y: number };
-export type InkDisc = { x: number; y: number; r: number };
+type InkDisc = { x: number; y: number; r: number };
 export type StrokeOutline = { left: Vec[]; right: Vec[]; discs: InkDisc[] };
 type InkStroke = Pick<Stroke, "tool" | "brush" | "width">;
 

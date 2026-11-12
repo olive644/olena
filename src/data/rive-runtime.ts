@@ -32,8 +32,8 @@ export type RiveRuntime = {
   RuntimeLoader: { setWasmUrl(url: string): void };
 };
 
-export const RIVE_SCRIPT = "/helena-assistant/rive.js?v=2.43.0";
-export const RIVE_WASM = "/helena-assistant/rive.wasm?v=2.43.0";
+const RIVE_SCRIPT = "/helena-assistant/rive.js?v=2.43.0";
+const RIVE_WASM = "/helena-assistant/rive.wasm?v=2.43.0";
 
 const loading = new WeakMap<Window, Promise<RiveRuntime>>();
 

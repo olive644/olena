@@ -1,7 +1,7 @@
 import type { StudyNotebook } from "./workspace";
 
 export const SHELF_CAPACITY = 4;
-export const SHELF_FOLDER_CAPACITY = 3;
+const SHELF_FOLDER_CAPACITY = 3;
 
 export const isNotebookFolder = (item: StudyNotebook) =>
   item.kind === "collection" || item.kind === "folder";

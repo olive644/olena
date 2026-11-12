@@ -1,4 +1,4 @@
-export const MAX_POMODORO_MINUTES = 5999;
+const MAX_POMODORO_MINUTES = 5999;
 export function isPomodoroDuration(value: unknown): value is number {
   return (
     typeof value === "number" &&

@@ -139,33 +139,6 @@ function NavigationButton({
   );
 }
 
-export function ThemeToggle({ showLabel }: { showLabel?: boolean }) {
-  useLanguage();
-
-  const { theme, toggleTheme } = useTheme();
-  const label = theme === "dark" ? uiText(1611) : uiText(1612);
-  return (
-    <button
-      className="theme-toggle"
-      type="button"
-      data-theme={theme}
-      onClick={toggleTheme}
-      aria-label={uiText(1613, [label])}
-    >
-      <span className="theme-toggle__track" aria-hidden="true">
-        <span className="theme-toggle__celestial theme-toggle__moon">
-          <NavigationIcon name="theme-dark" />
-        </span>
-        <span className="theme-toggle__celestial theme-toggle__sun">
-          <NavigationIcon name="theme-light" />
-        </span>
-        <span className="theme-toggle__thumb" />
-      </span>
-      {showLabel && <span>{label}</span>}
-    </button>
-  );
-}
-
 export function Sidebar({ view, onNavigate }: NavigationProps) {
   useLanguage();
 

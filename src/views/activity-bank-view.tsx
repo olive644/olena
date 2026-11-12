@@ -76,7 +76,7 @@ function ActivityCard({ activity }: { activity: ActivityDefinition }) {
   );
 }
 
-export function ActivityBankView({ onBack }: { onBack: () => void }) {
+function ActivityBankView({ onBack }: { onBack: () => void }) {
   useLanguage();
 
   const [filter, setFilter] = useState<FilterValue>("all");

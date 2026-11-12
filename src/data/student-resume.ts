@@ -1,6 +1,6 @@
 import { writeSyncedStorage } from "./synced-storage";
 import { ACCOUNT_PROFILE_KEY, profileRecord } from "../domain/profile-progress";
-export const STUDENT_RESUME_KEY = ACCOUNT_PROFILE_KEY;
+const STUDENT_RESUME_KEY = ACCOUNT_PROFILE_KEY;
 type Resume = {
   notebook?: { id: string; page?: string; at: number };
   focus?: { mode: "timer" | "pomodoro"; at: number };

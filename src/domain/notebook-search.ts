@@ -20,7 +20,7 @@ export type SearchHit = {
 };
 
 export const MIN_QUERY_LENGTH = 2;
-export const MAX_HITS = 40;
+const MAX_HITS = 40;
 const CONTEXT = 32;
 
 // Sem acento e sem diferença de maiúsculas, mantendo o tamanho: cada letra vira uma letra.

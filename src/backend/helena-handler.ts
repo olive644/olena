@@ -17,7 +17,7 @@ export type HelenaProvider = {
   stream?(request: HelenaRequest, signal: AbortSignal): AsyncIterable<string>;
 };
 
-export type HelenaRateLimiter = {
+type HelenaRateLimiter = {
   consume(clientId: string, request: Request): Promise<boolean>;
 };
 

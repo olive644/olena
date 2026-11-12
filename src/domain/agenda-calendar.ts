@@ -18,7 +18,7 @@ export function validDate(value: string): boolean {
     new Date(`${value}T00:00:00Z`).toISOString().slice(0, 10) === value
   );
 }
-export function dayDistance(start: string, end: string): number {
+function dayDistance(start: string, end: string): number {
   return (Date.parse(`${end}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) / DAY;
 }
 export function addDays(date: string, days: number): string {

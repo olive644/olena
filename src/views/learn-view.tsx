@@ -457,7 +457,7 @@ function BingoSession({ workspace, dispatch, subjectId }: LearnViewProps & { sub
   );
 }
 
-export function LearnView({ workspace, dispatch }: LearnViewProps) {
+function LearnView({ workspace, dispatch }: LearnViewProps) {
   useLanguage();
 
   const defaultSubject = workspace.subjects[0];

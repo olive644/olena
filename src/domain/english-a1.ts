@@ -1,6 +1,6 @@
 import { ENGLISH_SCENE_LEVELS } from "./english-difficulty.js";
 export const A1_BANK = 240;
-export const A1_NEW_START = 120;
+const A1_NEW_START = 120;
 export const A1_UNIT_TARGET = 12;
 const legacyUnits = [
   0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 2, 0, 0, 0, 1, 1, 1, 0, 1, 0, 2, 4, 4, 1, 1, 1, 5, 5, 5,

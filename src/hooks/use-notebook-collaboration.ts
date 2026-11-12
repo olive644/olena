@@ -14,7 +14,7 @@ import {
 import type { HandwritingDocument } from "../domain/handwriting";
 import { mergeHandwriting } from "../domain/merge-handwriting";
 
-export type NotebookCollaborationStatus =
+type NotebookCollaborationStatus =
   "idle" | "connecting" | "online" | "reconnecting" | "offline" | "error";
 
 export type NotebookCollaborationState = {

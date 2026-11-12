@@ -9,15 +9,7 @@ import {
 } from "./math-challenge-progress.js";
 
 export const MASTERY_KEY = "helena.mathGame.v5";
-export const ERROR_KINDS = [
-  "regrouping",
-  "inverse",
-  "sign",
-  "scale",
-  "rule",
-  "order",
-  "time",
-] as const;
+const ERROR_KINDS = ["regrouping", "inverse", "sign", "scale", "rule", "order", "time"] as const;
 export type ErrorKind = (typeof ERROR_KINDS)[number];
 export type FinalRound = { level: number; slots: number[]; answered: number; correct: number };
 export type Recovery = {
