@@ -19,6 +19,7 @@ for (const theme of ["light", "dark"]) {
       .click();
     await page.getByRole("button", { name: "Crie", exact: true }).click();
     await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+    await page.locator(".notebook-spine").first().click();
     await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
     await openHandwritingA4(page);
     await activateHandwritingPen(page);

@@ -25,6 +25,7 @@ test("colaboração exige conta e mostra apenas convite por link", async ({
   }
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const host = page.getByRole("dialog", { name: "Escrever à mão" });
@@ -121,6 +122,7 @@ test("salva automaticamente e compartilha uma cópia somente para leitura", asyn
   }
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const editor = page.getByRole("dialog", { name: "Escrever à mão" });
@@ -223,6 +225,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByLabel("Nome", { exact: true }).fill("Meu universo");
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await expect(page.getByRole("heading", { name: "Meu universo" })).toBeVisible();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
@@ -623,6 +626,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   }
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   let dialog = page.getByRole("dialog", { name: "Escrever à mão" });
@@ -753,6 +757,7 @@ test("a escrita na janela acompanha a caneta e aparece ao vivo na folha", async 
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByLabel("Nome", { exact: true }).fill("Janela de escrita");
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });

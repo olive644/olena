@@ -11,6 +11,7 @@ test("formas aparecem na área visível e borracha alterna pelos ícones", async
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.screenshot({ path: info.outputPath("criar.png") });
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
   await editor.getByRole("button", { name: "Inserir sem desenhar", exact: true }).click();
@@ -108,25 +109,12 @@ test("vitrines limitam todos os objetos e exibem marcadores na frente da pratele
     localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace));
   }, state);
   await page.goto("/cadernos");
-  const shelves = page.locator(".notebook-shelf");
-  await expect(shelves).toHaveCount(2);
-  await expect(
-    shelves.first().locator(".notebook-grid > :is(.notebook-card, .paper-folder)"),
-  ).toHaveCount(4);
-  const cover = page
-    .getByRole("button", { name: "Abrir Objeto 3", exact: true })
-    .locator(".book-cover");
-  await cover.scrollIntoViewIfNeeded();
-  await expect(cover.locator(".book-cover__mark.is-bookmark")).toBeVisible();
-  expect(
-    Number(await cover.evaluate((element) => getComputedStyle(element).zIndex)),
-  ).toBeGreaterThan(
-    Number(
-      await shelves
-        .first()
-        .locator(".notebook-shelf__rail")
-        .evaluate((element) => getComputedStyle(element).zIndex),
-    ),
+  const shelf = page.locator(".notebook-display-shelf");
+  await expect(shelf).toHaveCount(1);
+  await expect(shelf.locator(".notebook-spine")).toHaveCount(
+    state.notebooks.filter((notebook) => !notebook.kind).length,
   );
+  const cover = page.getByRole("button", { name: "Abrir Objeto 3", exact: true });
+  await expect(cover.locator(".book-cover__mark.is-bookmark")).toHaveCount(1);
   await page.screenshot({ path: info.outputPath("vitrines.png"), fullPage: true });
 });

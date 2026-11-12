@@ -13,6 +13,7 @@ test("a barra de baixo tem só ícones, a seta de voltar fica à esquerda e a na
   if (info.project.name === "mobile") await expect(page.locator(".mobile-nav")).toBeVisible();
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   const preview = page.getByRole("region", { name: "Preview do caderno" });
   if (info.project.name === "mobile") {
     for (const height of [640, 844]) {
@@ -30,7 +31,7 @@ test("a barra de baixo tem só ícones, a seta de voltar fica à esquerda e a na
     .boundingBox();
   const area = await preview.boundingBox();
   expect(back!.x).toBeLessThan(area!.x + area!.width * 0.25);
-  await expect(preview.locator(".notebook-preview-heading h1")).toHaveClass(/visually-hidden/);
+  await expect(preview.locator(".notebook-preview-heading h1")).toBeVisible();
   // Ferramentas só com ícone, na barra de baixo; o nome fica no aria-label.
   await expect(button.locator("span:not(.paper-tab-icon)")).toBeHidden();
   const dock = await preview.locator(".notebook-2d-dock").boundingBox();

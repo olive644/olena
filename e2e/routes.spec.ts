@@ -13,7 +13,7 @@ test("recarregar uma aba mantém a aba, e voltar retorna à anterior", async ({ 
   await expect(page).toHaveURL(/\/cadernos$/);
   await page.reload();
   await expect(page).toHaveURL(/\/cadernos$/);
-  await expect(page.getByRole("heading", { name: /Cadernos/ }).first()).toBeVisible();
+  await expect(page.locator(".notebook-display-shelf")).toBeVisible();
   await page.goBack();
   await expect(page).toHaveURL(/\/$/);
 });

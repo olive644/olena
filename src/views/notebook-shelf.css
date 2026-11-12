@@ -1,0 +1,364 @@
+.notebooks-main .notebooks-showcase {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.notebook-display-shelf {
+  --shelf-book-height: clamp(218px, 32vh, 300px);
+  --shelf-cover-width: calc(var(--shelf-book-height) * 0.75);
+  --shelf-turn-duration: 420ms;
+  --shelf-turn-easing: cubic-bezier(0.45, 0, 0.25, 1);
+  position: relative;
+  display: grid;
+  align-content: end;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 220px;
+  width: min(100%, 860px);
+  margin-inline: auto;
+  padding: 0 clamp(14px, 3vw, 34px);
+  border-radius: 7px 22px 6px 6px;
+  background:
+    linear-gradient(128deg, #a47352 0 7%, transparent 7%),
+    linear-gradient(100deg, #81563f 0 14%, #654237 14% 82%, #4e302c 82%);
+  box-shadow: 0 7px #35242b;
+}
+
+.notebook-display-shelf::before,
+.notebook-display-shelf::after {
+  content: "";
+  height: 18px;
+  margin-inline: calc(-1 * clamp(14px, 3vw, 34px));
+  background:
+    linear-gradient(150deg, #c89863 0 13%, transparent 13%),
+    linear-gradient(172deg, #a97951 0 52%, #86573f 52% 78%, #593631 78%);
+}
+
+.notebook-display-shelf::before {
+  grid-row: 1;
+  border-radius: 7px 22px 0 0;
+}
+
+.notebook-display-shelf::after {
+  grid-row: 3;
+  border-radius: 0 0 6px 6px;
+}
+
+.notebook-display-shelf__books {
+  grid-row: 2;
+  display: flex;
+  align-items: end;
+  justify-content: safe center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 60px 8px 0;
+  background:
+    linear-gradient(135deg, rgb(0 0 0 / 22%) 0 9%, transparent 9%),
+    color-mix(in srgb, var(--surface) 86%, #654237);
+  box-shadow: inset 0 6px 0 rgb(0 0 0 / 20%);
+  gap: clamp(2px, 1vw, 8px);
+}
+
+:root body .notebook-display-shelf__create {
+  align-self: center;
+  display: grid;
+  place-items: center;
+  flex: 0 0 48px;
+  min-height: 48px;
+  margin-inline-start: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.notebook-display-shelf__create svg {
+  width: 32px;
+  height: 32px;
+}
+
+:root[data-theme="dark"] .notebooks-main .notebook-create-dialog,
+:root[data-theme="dark"] .notebooks-main .notebook-create-dialog label {
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .notebooks-main .notebook-create-dialog {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+:root[data-theme="dark"] .notebooks-main .notebook-create-dialog input,
+:root[data-theme="dark"] .notebooks-main .notebook-create-dialog .secondary-button {
+  background-color: var(--soft);
+  color: var(--text);
+  border-color: var(--line);
+  box-shadow: 0 3px var(--line);
+}
+
+:root[data-theme="dark"] .notebooks-main .notebook-create-dialog .secondary-button {
+  background-image:
+    linear-gradient(135deg, var(--line) 0 10%, transparent 10%),
+    linear-gradient(315deg, var(--line) 0 12%, transparent 12%);
+}
+
+.notebook-display-shelf .notebook-spine {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  transform: none;
+  width: 44px;
+  min-width: 44px;
+  height: var(--shelf-book-height);
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  align-items: end;
+}
+
+.notebook-display-shelf .notebook-spine__body,
+.notebook-journey .notebook-journey-spine {
+  position: absolute;
+  inset: 0 auto auto 0;
+  transform: translateX(-50%) rotateY(-90deg);
+  backface-visibility: hidden;
+  display: block;
+  width: 40px;
+  height: var(--shelf-book-height);
+  border: 1px solid #51465d;
+  border-right: 4px solid #51259b;
+  border-bottom: 0;
+  border-radius: 5px 5px 0 0;
+  background: linear-gradient(135deg, #51465d 10px, transparent 10px), #292432;
+  box-shadow: inset -3px 0 #7c3aed;
+}
+
+@property --shelf-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@property --shelf-spine-scale {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+.notebook-journey-book {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: scaleX(max(0, cos(var(--shelf-angle))));
+}
+
+.notebook-journey .notebook-journey-spine {
+  left: calc(50% - 50% * max(0, cos(var(--shelf-angle))));
+  z-index: 6;
+  height: 100%;
+  transform: translateX(-50%) scaleX(calc(abs(sin(var(--shelf-angle))) * var(--shelf-spine-scale)));
+}
+
+.notebook-spine__body i {
+  right: 0;
+  left: 0;
+}
+
+.notebook-display-shelf .notebook-spine[aria-pressed="true"] {
+  outline: 2px solid #facc15;
+}
+
+.notebook-display-shelf .notebook-spine {
+  position: relative;
+  overflow: visible;
+}
+
+.notebook-spine__inspection {
+  position: absolute;
+  inset: auto auto 0 50%;
+  width: var(--shelf-cover-width);
+  height: var(--shelf-book-height);
+  pointer-events: none;
+  transform-style: preserve-3d;
+  transform: translateX(-50%) rotateY(90deg);
+}
+
+.notebook-spine__front {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(20px);
+  backface-visibility: hidden;
+}
+
+.notebook-spine__inspection strong {
+  position: absolute;
+  inset: auto 0 calc(100% + 6px);
+  text-align: center;
+  opacity: 0;
+  color: var(--text);
+  background: var(--surface);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notebook-spine__inspection .book-cover {
+  width: 100%;
+  height: var(--shelf-book-height);
+  aspect-ratio: auto;
+}
+
+@media (hover: hover) {
+  .notebook-display-shelf .notebook-spine:not([aria-pressed]):hover {
+    width: calc(var(--shelf-cover-width) + 16px);
+    z-index: 10;
+    transform: none;
+  }
+
+  .notebook-spine:not([aria-pressed]):hover .notebook-spine__inspection {
+    transform: translate(-50%, -12px) rotateY(0deg);
+  }
+
+  .notebook-spine:not([aria-pressed]):hover .notebook-spine__inspection strong {
+    opacity: 1;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"]) body .notebook-display-shelf button.notebook-spine {
+    transition:
+      width var(--shelf-turn-duration) var(--shelf-turn-easing),
+      z-index 0s linear var(--shelf-turn-duration);
+  }
+
+  html:not([data-reduce-motion="true"]) body .notebook-display-shelf button.notebook-spine:hover {
+    transition-delay: 0s;
+  }
+
+  html:not([data-reduce-motion="true"]) .notebook-spine__inspection {
+    transition: transform var(--shelf-turn-duration) var(--shelf-turn-easing);
+  }
+
+  html:not([data-reduce-motion="true"]) .notebook-spine__inspection strong {
+    transition: opacity 180ms ease;
+  }
+}
+
+.notebook-shelf-cat {
+  width: clamp(100px, 16vw, 164px);
+  flex: none;
+  align-self: end;
+  pointer-events: none;
+}
+
+:root body .notebook-display-shelf__create span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: #fff2ca;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(140deg, #c89863 18%, #86573f 18% 76%, #593631 76%);
+  clip-path: polygon(16% 0, 86% 0, 100% 18%, 100% 82%, 82% 100%, 0 100%, 0 18%);
+}
+
+.notebook-shelf-vines {
+  position: absolute;
+  top: 3px;
+  left: clamp(8px, 4vw, 44px);
+  width: 55px;
+  height: 208px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.notebook-shelf-vines::before {
+  content: "";
+  position: absolute;
+  inset: 0 18px 8px 12px;
+  border-inline-start: 3px solid #4d713e;
+  border-radius: 45%;
+  rotate: -4deg;
+}
+
+.notebook-shelf-vines i {
+  position: absolute;
+  left: 0;
+  width: 27px;
+  height: 27px;
+  background: linear-gradient(133deg, #79964d 35%, #4d713e 35% 68%, #304b36 68%);
+  clip-path: polygon(
+    50% 19%,
+    32% 4%,
+    15% 5%,
+    3% 19%,
+    3% 40%,
+    15% 60%,
+    50% 100%,
+    85% 60%,
+    97% 40%,
+    97% 19%,
+    85% 5%,
+    68% 4%
+  );
+  rotate: -18deg;
+}
+
+.notebook-shelf-vines i:nth-child(2n) {
+  left: 18px;
+  rotate: -32deg;
+}
+
+.notebook-shelf-vines.is-right {
+  left: auto;
+  right: clamp(8px, 4vw, 44px);
+  transform: scaleX(-1);
+}
+
+.notebook-shelf-vines i:nth-child(3n) {
+  left: 4px;
+  rotate: 26deg;
+}
+
+.notebook-shelf-pro {
+  --digit-face: #a97951;
+  --digit-depth: #593631;
+  margin: 0;
+  text-align: center;
+  font-size: clamp(1.2rem, 4vw, 2rem);
+}
+
+.notebook-shelf-pro .paper-card-title {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25em;
+}
+
+.notebook-shelf-pro .paper-card-word {
+  display: inline-flex;
+}
+
+.notebook-shelf-pro svg {
+  width: 0.54em;
+  height: 1em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"]) body .notebook-display-shelf button.notebook-spine {
+    animation: notebook-shelf-in 360ms ease-out;
+  }
+}
+
+@keyframes notebook-shelf-in {
+  from {
+    width: 0;
+    min-width: 0;
+    opacity: 0;
+  }
+}

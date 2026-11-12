@@ -22,6 +22,7 @@ test("caderno usa uma única prévia para criar, abrir, folhear e remover", asyn
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByLabel("Nome", { exact: true }).fill("Meu universo");
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
 
   const preview = page.getByRole("region", { name: "Preview do caderno" });
   await expect(preview).toBeVisible();
@@ -29,12 +30,9 @@ test("caderno usa uma única prévia para criar, abrir, folhear e remover", asyn
   await expect(page.getByRole("tab", { name: /Anotações/ })).toHaveCount(0);
   if (testInfo.project.name === "mobile") {
     await preview.getByRole("button", { name: "Meus Cadernos" }).click();
-    const card = page.locator(".notebook-card").filter({ hasText: "Meu universo" });
-    const copy = await card.locator(".notebook-card__copy strong").boundingBox();
-    const rail = await page.locator(".notebook-shelf__rail").boundingBox();
-    expect(copy).not.toBeNull();
-    expect(rail).not.toBeNull();
-    expect(copy!.y).toBeGreaterThanOrEqual(rail!.y + rail!.height);
+    const card = page.getByRole("button", { name: "Abrir Meu universo", exact: true });
+    await expect(card.locator(".notebook-spine__body")).toBeVisible();
+    await expect(card.locator(".notebook-spine__inspection strong")).toHaveCSS("opacity", "0");
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
       await page.evaluate(() => window.innerWidth),
     );

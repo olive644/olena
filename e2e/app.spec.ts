@@ -387,6 +387,7 @@ test("abre escrita à mão, retoma a folha e completa um bingo", async ({ page }
   await navigateToTool(page, testInfo.project.name, "Cadernos", "Cadernos");
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
 
   await page

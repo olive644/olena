@@ -30,7 +30,7 @@
   outline-offset: 4px;
 }
 :is(.app-shell, .local-room-fullscreen)
-  button:not(.mobile-more-backdrop):not(.theme-toggle):not(.solo-helena) {
+  button:not(.mobile-more-backdrop):not(.theme-toggle):not(.solo-helena):not(.notebook-spine) {
   border-radius: 5px 13px 6px 11px;
   transition:
     box-shadow 160ms ease,

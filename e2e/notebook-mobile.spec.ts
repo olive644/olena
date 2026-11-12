@@ -14,6 +14,7 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
     .click();
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   const preview = page.getByRole("region", { name: "Preview do caderno" });
   const book = await preview.locator(".notebook-paper-spread").boundingBox();
   expect(book!.x).toBeGreaterThanOrEqual(0);
@@ -78,6 +79,7 @@ test("navegação escura e gavetas do caderno mantêm contraste e ações separa
   await menu.getByRole("button", { name: "Cadernos", exact: true }).click();
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha" }).click();
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
   await editor.getByRole("button", { name: "Tipo de papel" }).click();

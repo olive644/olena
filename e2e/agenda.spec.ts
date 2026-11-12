@@ -293,6 +293,7 @@ test("editor close button uses the single colored close icon without a plate", a
   await page.goto("/cadernos");
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
   await editor.getByRole("button", { name: "Configurações do editor" }).click();

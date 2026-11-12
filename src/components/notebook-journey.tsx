@@ -12,6 +12,7 @@ export type NotebookJourneyState = {
   tabs: NotebookTab[];
   from: { x: number; y: number; width: number; height: number };
   returning: boolean;
+  shelfAngle?: number;
   closed?: boolean;
   destination?: "shelf" | "cover" | "spread";
   /** "back" é a contracapa: o espelho da capa, presa à lombada pelo lado direito. */
@@ -20,9 +21,29 @@ export type NotebookJourneyState = {
 };
 
 export function notebookShelfCover(id: string) {
-  return Array.from(document.querySelectorAll<HTMLElement>("[data-notebook-drop]"))
-    .find((element) => element.dataset["notebookDrop"] === id)
-    ?.querySelector<HTMLElement>(".book-cover");
+  const book = Array.from(document.querySelectorAll<HTMLElement>("[data-notebook-drop]")).find(
+    (element) => element.dataset["notebookDrop"] === id,
+  );
+  if (book?.matches(".notebook-spine")) return book;
+  return book?.querySelector<HTMLElement>(".book-cover");
+}
+
+export function notebookShelfPose(element: HTMLElement, resting = false) {
+  const inspection = element.querySelector<HTMLElement>(".notebook-spine__inspection");
+  const rect = element.getBoundingClientRect();
+  if (!inspection) return { rect, angle: 0 };
+  const matrix = new DOMMatrixReadOnly(getComputedStyle(inspection).transform);
+  const width = inspection.offsetWidth;
+  const height = inspection.offsetHeight;
+  return {
+    rect: {
+      x: rect.x + (rect.width - width) / 2,
+      y: rect.bottom - height + (resting ? 0 : matrix.m42),
+      width,
+      height,
+    },
+    angle: resting ? 90 : Math.atan2(matrix.m31, matrix.m11) * (180 / Math.PI),
+  };
 }
 
 export function canAnimateNotebook() {
@@ -73,14 +94,18 @@ export function NotebookJourney({
         ? journey.destination === "cover"
           ? document.querySelector<HTMLElement>(".notebook-concept-cover .book-cover")
           : notebookShelfCover(journey.notebook.id)
-        : document.querySelector<HTMLElement>(".notebook-spread-shell");
+        : document.querySelector<HTMLElement>(
+            journey.destination === "cover"
+              ? ".notebook-concept-cover .book-cover"
+              : ".notebook-spread-shell",
+          );
     if (!element || !target || !canAnimateNotebook()) {
       onDone();
       return;
     }
-    const snapshot = journey.pages
-      ? (journey.pages.cloneNode(true) as HTMLElement)
-      : notebookPageSnapshot();
+    const snapshot = closed
+      ? undefined
+      : ((journey.pages?.cloneNode(true) as HTMLElement | undefined) ?? notebookPageSnapshot());
     if (snapshot && paper.current) {
       snapshot.style.transformOrigin = "top left";
       const fit = `scale(${(journey.from.width * 2) / parseFloat(snapshot.style.width)}, ${journey.from.height / parseFloat(snapshot.style.height)})`;
@@ -103,12 +128,22 @@ export function NotebookJourney({
     const previousVisibility = target.style.visibility;
     target.style.visibility = "hidden";
     const frame = requestAnimationFrame(() => {
-      if (journey.returning && journey.destination !== "cover")
+      if (journey.returning && journey.destination !== "cover") {
+        // A prateleira acabou de montar. Meça o encaixe com as lombadas na largura final.
+        target.parentElement?.getAnimations({ subtree: true }).forEach((animation) => {
+          if (animation instanceof CSSAnimation && animation.animationName === "notebook-shelf-in")
+            animation.finish();
+        });
         target.scrollIntoView({ block: "nearest", behavior: "instant" });
-      const rect = target.getBoundingClientRect();
+      }
+      const shelf =
+        journey.returning && journey.destination !== "cover"
+          ? notebookShelfPose(target, true)
+          : undefined;
+      const rect = shelf?.rect ?? target.getBoundingClientRect();
       const destination = scene3d
         ? notebook3dCoverRect(scene3d)
-        : journey.returning
+        : journey.returning || journey.destination === "cover"
           ? rect
           : {
               x: back ? rect.x : rect.x + rect.width / 2,
@@ -118,10 +153,16 @@ export function NotebookJourney({
             };
       const { from } = journey;
       const transport = `translate(${destination.x - from.x}px, ${destination.y - from.y}px) scale(${destination.width / from.width}, ${destination.height / from.height})`;
-      const duration = NOTEBOOK_TURN_MS + 480;
-      const openingStart = 420 / duration;
-      const openingEnd = (420 + NOTEBOOK_TURN_MS) / duration;
-      const closingEnd = NOTEBOOK_TURN_MS / duration;
+      const shelfRotationMs = 520;
+      const shelfSlideMs = 580;
+      const flight = shelf?.angle ? shelfRotationMs + shelfSlideMs : 360;
+      const coverTurn = shelf?.angle ? 640 : NOTEBOOK_TURN_MS;
+      const duration = closed ? flight : coverTurn + flight;
+      const openingStart = flight / duration;
+      const openingEnd = 0.998;
+      const closingEnd = coverTurn / duration;
+      const shelfTurnEnd = (duration - flight + shelfRotationMs) / duration;
+      const settle = "cubic-bezier(.35,0,.2,1)";
       const timing: KeyframeAnimationOptions = { duration, fill: "both" };
       const animate = (node: Element | null, frames: Keyframe[]) => {
         if (node) {
@@ -133,22 +174,43 @@ export function NotebookJourney({
           animations.push(node.animate(frames, timing));
         }
       };
+      const glide = "cubic-bezier(.4,0,.2,1)";
+      const still = "translate(0px, 0px) scale(1, 1)";
+      const shelfAngle = shelf?.angle ?? 0;
+      const restingAngle = journey.shelfAngle ?? 0;
+      const hasShelfTurn = shelfAngle !== 0;
       animate(
         element,
         journey.returning
           ? [
-              { transform: "none" },
+              { transform: still, "--shelf-angle": "0deg" },
               {
-                transform: "none",
-                offset: closed ? 0 : 0.65,
-                easing: "cubic-bezier(.45,0,.2,1)",
+                transform: still,
+                "--shelf-angle": "0deg",
+                offset: closed ? 0 : closingEnd,
+                easing: glide,
               },
-              { transform: transport },
+              ...(hasShelfTurn
+                ? [
+                    {
+                      transform: still,
+                      "--shelf-angle": shelfAngle + "deg",
+                      "--shelf-spine-scale": "1",
+                      offset: shelfTurnEnd,
+                      easing: settle,
+                    },
+                  ]
+                : []),
+              {
+                transform: transport,
+                "--shelf-angle": shelfAngle + "deg",
+                "--shelf-spine-scale": String(from.width / destination.width),
+              },
             ]
           : [
-              { transform: "none", easing: "cubic-bezier(.2,.7,.2,1)" },
-              { transform: transport, offset: 0.38 },
-              { transform: transport },
+              { transform: still, "--shelf-angle": restingAngle + "deg", easing: glide },
+              { transform: transport, "--shelf-angle": "0deg", offset: openingStart },
+              ...(closed ? [] : [{ transform: transport, "--shelf-angle": "0deg" }]),
             ],
       );
       // O ângulo é uma propriedade registrada: brilho, sombra e elevação saem dele no CSS.
@@ -180,14 +242,14 @@ export function NotebookJourney({
         journey.returning
           ? [
               { transform: "rotateY(-180deg)" },
-              { transform: "rotateY(-180deg)", offset: 0.48 },
-              { transform: "rotateY(0deg)", offset: 0.66 },
+              { transform: "rotateY(-180deg)", offset: closingEnd * 0.8 },
+              { transform: "rotateY(0deg)", offset: closingEnd },
               { transform: "rotateY(0deg)" },
             ]
           : [
               { transform: "rotateY(0deg)" },
-              { transform: "rotateY(0deg)", offset: 0.4 },
-              { transform: "rotateY(-180deg)", offset: 0.57 },
+              { transform: "rotateY(0deg)", offset: openingStart },
+              { transform: "rotateY(-180deg)", offset: openingStart + 0.17 },
               { transform: "rotateY(-180deg)" },
             ],
       );
@@ -246,26 +308,36 @@ export function NotebookJourney({
         height: journey.from.height,
       }}
     >
-      <div className="notebook-journey-pages" ref={paper} />
-      <i className="notebook-journey-cast" />
-      <div className="notebook-journey-leaf">
-        {journey.side === "back" ? (
-          <NotebookBackCover subjectColor="#7C3AED" />
-        ) : (
-          <NotebookCover
-            subjectColor="#7C3AED"
-            title={journey.notebook.title}
-            tabs={journey.tabs}
-            clasp={false}
-          />
-        )}
-        <i className="notebook-journey-shade is-front" />
-        <div className="notebook-journey-lining" ref={lining} />
-        <i className="notebook-journey-shade is-lining" />
+      {(journey.shelfAngle !== undefined ||
+        (journey.returning && journey.destination !== "cover")) && (
+        <div className="notebook-spine__body book-cover__spine notebook-journey-spine">
+          <i />
+          <i />
+          <i />
+        </div>
+      )}
+      <div className="notebook-journey-book">
+        <div className="notebook-journey-pages" ref={paper} />
+        <i className="notebook-journey-cast" />
+        <div className="notebook-journey-leaf">
+          {journey.side === "back" ? (
+            <NotebookBackCover subjectColor="#7C3AED" />
+          ) : (
+            <NotebookCover
+              subjectColor="#7C3AED"
+              title={journey.notebook.title}
+              tabs={journey.tabs}
+              clasp={false}
+            />
+          )}
+          <i className="notebook-journey-shade is-front" />
+          <div className="notebook-journey-lining" ref={lining} />
+          <i className="notebook-journey-shade is-lining" />
+        </div>
+        <span className="book-cover__clasp notebook-journey-clasp">
+          <i />
+        </span>
       </div>
-      <span className="book-cover__clasp notebook-journey-clasp">
-        <i />
-      </span>
     </div>,
     document.body,
   );

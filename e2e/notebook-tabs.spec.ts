@@ -23,6 +23,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   }
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
   const preview = page.getByRole("region", { name: "Preview do caderno" });
   await expect(preview.getByText("MEU UNIVERSO PARTICULAR")).toHaveCount(0);
   await expect(preview.getByText("Escolha uma folha para continuar suas ideias.")).toHaveCount(0);

@@ -23,6 +23,7 @@ async function openNewNotebook(page: Page, mobile: boolean, enabled = true) {
   }
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.locator(".notebook-spine").first().click();
 }
 
 /** O "+" mora na bandeja de ferramentas: abre a bandeja (se estiver fechada) e cria a folha. */
@@ -72,9 +73,7 @@ test("caderno em 3D abre a capa, cria folhas e volta da folha 2D", async ({ page
   const area = await scene.boundingBox();
   expect(back!.x).toBeLessThan(area!.x + area!.width * 0.25);
   // O nome do caderno já está na capa: o título da tela fica só para leitores de tela.
-  await expect(page.getByRole("heading", { level: 1, name: "Meu caderno" })).toHaveClass(
-    /visually-hidden/,
-  );
+  await expect(page.getByRole("heading", { level: 1, name: "Meu caderno" })).toBeVisible();
 
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
   for (let created = 0; created < 3; created++) {

@@ -46,6 +46,7 @@ const NotebookSpread3d = lazy(() =>
 );
 
 type Props = {
+  initiallyShowCover?: boolean;
   initialPageId?: string | undefined;
   participants?: {
     id: string;
@@ -102,6 +103,7 @@ function PageImage({
 }
 
 export function NotebookSpread({
+  initiallyShowCover = false,
   initialPageId,
   participants,
   notebook,
@@ -133,7 +135,7 @@ export function NotebookSpread({
   const [spreadIndex, setSpreadIndex] = useState(() =>
     Math.max(0, Math.floor(pages.findIndex((page) => page.id === initialPageId) / 2)),
   );
-  const [showCover, setShowCover] = useState(false);
+  const [showCover, setShowCover] = useState(initiallyShowCover);
   const [coverJourney, setCoverJourney] = useState<NotebookJourneyState | null>(null);
   const finishCoverJourney = useCallback(() => setCoverJourney(null), []);
   function changeCover(next: boolean) {
