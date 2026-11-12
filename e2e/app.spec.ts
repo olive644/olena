@@ -168,7 +168,7 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
 
   await expect(navigation.getByRole("button")).toHaveCount(8);
   await expect(navigation.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
-  await expect(navigation.getByRole("button", { name: "Modo Sala", exact: true })).toBeVisible();
+  await expect(navigation.getByRole("button", { name: "Modo Sala", exact: true })).toHaveCount(0);
   await expect(navigation.getByRole("button", { name: "Espaço do aluno" })).toHaveAttribute(
     "aria-current",
     "page",
@@ -348,26 +348,6 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
     expect(overflow).toBe(false);
   }
-});
-
-test("mantém o retorno do Modo Sala livre no celular", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile", "Contrato visual do Modo Sala móvel.");
-  await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-  await page
-    .getByRole("dialog", { name: "Mais ferramentas" })
-    .getByRole("button", { name: "Modo Sala", exact: true })
-    .click();
-
-  const preparation = page.locator(".local-room-preparation");
-  await expect(page.getByRole("dialog", { name: "Modo Sala" })).toHaveCount(0);
-  await expect(page.getByRole("navigation", { name: "Navegação móvel" })).toBeVisible();
-  await expect(preparation.getByRole("button", { name: "Voltar", exact: true })).toHaveCount(0);
-  await expect(preparation.locator(".local-room-session__header")).toHaveCount(0);
-  await page
-    .getByRole("navigation", { name: "Navegação móvel" })
-    .getByRole("button", { name: "Espaço", exact: true })
-    .click();
-  await expect(preparation).toHaveCount(0);
 });
 
 test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, testInfo) => {

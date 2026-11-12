@@ -5,13 +5,13 @@ const config = JSON.parse(readFileSync("vercel.json", "utf8")) as {
   rewrites: { source: string; destination: string }[];
 };
 
-describe("rota publicada do Modo Sala", () => {
-  it("serve o aplicativo ao abrir ou recarregar /sala diretamente", () => {
-    expect(config.rewrites).toContainEqual({ source: "/sala", destination: "/index.html" });
+describe("rotas desativadas do Modo Sala", () => {
+  it("não encaminha /sala ao aplicativo", () => {
+    expect(config.rewrites).not.toContainEqual({ source: "/sala", destination: "/index.html" });
   });
 
-  it("preserva a rota do projetor sem capturar APIs ou arquivos de áudio", () => {
-    expect(config.rewrites).toContainEqual({
+  it("não encaminha o projetor ao aplicativo nem captura outras rotas", () => {
+    expect(config.rewrites).not.toContainEqual({
       source: "/sala/:code/projetor",
       destination: "/index.html",
     });

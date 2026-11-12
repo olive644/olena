@@ -169,10 +169,7 @@ export function LibraryView({
     <main className="main-content library-hub" id="main-content">
       <PageHeader />
       <header className="library-heading">
-        <div>
-          <span className="section-label">{uiText("Seu acervo")}</span>
-          <h1>{uiText("Biblioteca")}</h1>
-        </div>
+        <h1>{uiText("Biblioteca")}</h1>
         <button className="primary-button" onClick={() => startCreate("material")}>
           <PaperEditorIcon name="add" />
           {uiText("Adicionar material")}

@@ -74,7 +74,7 @@ test("does not overlay onboarding", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Conversar com Olena" })).toHaveCount(0);
 });
 
-test("does not overlay the classroom projector", async ({ page }) => {
+test("does not overlay a retired classroom link", async ({ page }) => {
   await page.goto("/sala/ABCDE/projetor");
   await expect(page.getByRole("button", { name: "Conversar com Olena" })).toHaveCount(0);
 });

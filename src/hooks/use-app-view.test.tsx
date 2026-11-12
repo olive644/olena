@@ -18,10 +18,10 @@ describe("aba ativa no endereço", () => {
     });
     expect(result.current[0]).toBeNull();
   });
-  it("preserva o endereço do projetor quando o convite válido pediu Sala", () => {
+  it("trata o endereço antigo do projetor como desconhecido", () => {
     window.history.replaceState(null, "", "/sala/ABCDE/projetor");
-    const { result } = renderHook(() => useAppView("room"));
-    expect(result.current[0]).toBe("room");
+    const { result } = renderHook(() => useAppView("today"));
+    expect(result.current[0]).toBeNull();
   });
   it("abre na aba do endereço, então recarregar não volta ao início", () => {
     window.history.replaceState(null, "", "/cadernos");

@@ -1,5 +1,6 @@
-.library-hub {
-  max-width: 1400px;
+.main-content.library-hub {
+  max-width: none;
+  min-width: 0;
 }
 .library-hub,
 .library-dialog {
@@ -35,8 +36,11 @@
   justify-content: space-between;
   gap: 16px;
 }
+.library-heading {
+  margin-bottom: 24px;
+}
 .library-heading h1 {
-  margin: 4px 0 24px;
+  margin: 0;
 }
 .library-hub h2 {
   font-size: 1.15rem;

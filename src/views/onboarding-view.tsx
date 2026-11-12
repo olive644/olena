@@ -551,7 +551,7 @@ export default function OnboardingView({
       <main className="onboarding olena-cover" id="main-content">
         <header className="onboarding__header">
           <span className="onboarding__brand">
-            <img src="/android/icon-512.png" alt="" width={40} height={40} />
+            <img src="/olena-favicon-180.png" alt="" width={40} height={40} />
             <PaperCardTitle value="OlenaStudy" />
           </span>
         </header>

@@ -5,8 +5,6 @@ import { clientAddress } from "../src/backend/client-address.js";
 import { createSharedSpeechProvider } from "../src/backend/shared-speech-provider.js";
 import { createSpeechGenerationQuota } from "../src/backend/speech-quota.js";
 import { createSpeechHandler } from "../src/backend/speech-handler.js";
-import { createRoomAudioAuthorizer } from "../src/backend/room-audio-authorizer.js";
-import { createRoomGuard } from "../src/backend/room-guard.js";
 import { createVercelHandler } from "../src/backend/vercel-adapter.js";
 
 const rateLimitStore = createFirebaseRealtimeStore({
@@ -18,14 +16,6 @@ const rateLimitStore = createFirebaseRealtimeStore({
 });
 
 const handler = createSpeechHandler({
-  authorizeRoom: createRoomAudioAuthorizer(rateLimitStore),
-  guardRoomRequest: createRoomGuard(
-    rateLimitStore,
-    "776947909599",
-    process.env["FIREBASE_APP_ID"] ?? "",
-    process.env["FIREBASE_APPCHECK_ENFORCE"] === "true",
-    (event) => console.info(JSON.stringify({ event: "room_protection", ...event })),
-  ),
   observe: (event) => console.info(JSON.stringify({ event: "speech_request", ...event })),
   identifyClient(request) {
     return clientAddress(request) ?? "anonymous";

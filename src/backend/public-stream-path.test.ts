@@ -1,6 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { createRoom, localRoomStorageKey, type PublicLocalRoomState } from "../domain/local-room";
-import { createLocalRoomHandler } from "./local-room-handler";
 import { createNotebookCollabHandler } from "./notebook-collab-handler";
 import { createMemoryRoomStore } from "./room-transaction";
 import {
@@ -12,101 +10,6 @@ import {
 import type { PublicNotebookCollabState } from "../domain/notebook-collab";
 
 const SECRET = /^[a-f0-9]{32}$/;
-
-function roomHarness() {
-  const published: { id: string; state: PublicLocalRoomState }[] = [];
-  const store = createMemoryRoomStore(() => 1_000);
-  let counter = 0;
-  const handler = createLocalRoomHandler({
-    store,
-    now: () => 1_000,
-    randomId: () => `id-${counter++}`,
-    publish: async (id, state) => void published.push({ id, state }),
-    streamUrl: (id) => `https://rtdb.example/rooms/${id}.json`,
-  });
-  const post = (action: string, body: object) =>
-    handler(
-      new Request(`https://helena.example/api/local-room?action=${action}`, {
-        method: "POST",
-        body: JSON.stringify(body),
-      }),
-    );
-  return { published, store, post };
-}
-
-describe("caminho público secreto das salas", () => {
-  it("publica cada sala nova num identificador próprio, que não é o código", async () => {
-    const { published, post } = roomHarness();
-    const a = (await (await post("create", { settings: {} })).json()) as {
-      code: string;
-      streamUrl: string;
-    };
-    const b = (await (await post("create", { settings: {} })).json()) as {
-      code: string;
-      streamUrl: string;
-    };
-    const idA = /rooms\/(.+)\.json/.exec(a.streamUrl)?.[1] ?? "";
-    const idB = /rooms\/(.+)\.json/.exec(b.streamUrl)?.[1] ?? "";
-    expect(idA).toMatch(SECRET);
-    expect(idB).toMatch(SECRET);
-    expect(idA).not.toBe(idB);
-    expect(a.streamUrl).not.toContain(a.code);
-    expect(published.every((item) => item.id !== item.state.code)).toBe(true);
-  });
-
-  it("não deixa o identificador secreto dentro do estado público nem das respostas de estado", async () => {
-    const { published, post } = roomHarness();
-    const created = (await (await post("create", { settings: {} })).json()) as {
-      code: string;
-      streamUrl: string;
-      state: object;
-    };
-    const publicId = /rooms\/(.+)\.json/.exec(created.streamUrl)?.[1] ?? "";
-    expect(JSON.stringify(created.state)).not.toContain(publicId);
-    expect(created.state).not.toHaveProperty("publicId");
-    for (const item of published) expect(JSON.stringify(item.state)).not.toContain(publicId);
-  });
-
-  it("entrar, retomar e repetir a criação devolvem sempre o mesmo caminho", async () => {
-    const { post } = roomHarness();
-    const requestId = "11111111-1111-4111-8111-111111111111";
-    const created = (await (await post("create", { settings: {}, requestId })).json()) as {
-      code: string;
-      hostToken: string;
-      streamUrl: string;
-    };
-    const again = (await (await post("create", { settings: {}, requestId })).json()) as {
-      streamUrl: string;
-    };
-    const joined = (await (
-      await post("join", { code: created.code, displayName: "Ana" })
-    ).json()) as { streamUrl: string; participantToken: string };
-    const resumed = (await (
-      await post("resume", { code: created.code, role: "host", credential: created.hostToken })
-    ).json()) as { streamUrl: string };
-    expect(again.streamUrl).toBe(created.streamUrl);
-    expect(joined.streamUrl).toBe(created.streamUrl);
-    expect(resumed.streamUrl).toBe(created.streamUrl);
-  });
-
-  it("uma sala criada antes da mudança, sem identificador, continua publicada pelo código", async () => {
-    const { published, store, post } = roomHarness();
-    const legacy = createRoom(
-      { difficulty: "mixed", questionCount: 5, roundSeconds: 15 },
-      {
-        code: "ABCDE",
-        hostToken: "host-token",
-        now: 1_000,
-      },
-    );
-    await store.set(localRoomStorageKey("ABCDE"), JSON.stringify(legacy), 3600);
-    const joined = (await (await post("join", { code: "ABCDE", displayName: "Ana" })).json()) as {
-      streamUrl: string;
-    };
-    expect(joined.streamUrl).toBe("https://rtdb.example/rooms/ABCDE.json");
-    expect(published.at(-1)?.id).toBe("ABCDE");
-  });
-});
 
 describe("caminho público secreto dos cadernos compartilhados", () => {
   function notebookHarness() {
@@ -152,19 +55,14 @@ describe("caminho público secreto dos cadernos compartilhados", () => {
     expect(joined.streamUrl).toBe(created.streamUrl);
   });
 
-  it("dois cadernos e uma sala nunca dividem o mesmo caminho", async () => {
+  it("cadernos nunca dividem o mesmo caminho", async () => {
     const notebooks = notebookHarness();
-    const rooms = roomHarness();
     const ids = new Set<string>();
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
       const notebook = (await (
         await notebooks.post("create", { notebookId: `n${i}`, displayName: "Alice" })
       ).json()) as { streamUrl: string };
-      const room = (await (await rooms.post("create", { settings: {} })).json()) as {
-        streamUrl: string;
-      };
       ids.add(notebook.streamUrl);
-      ids.add(room.streamUrl);
     }
     expect(ids.size).toBe(10);
   });

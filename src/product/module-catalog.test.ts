@@ -41,10 +41,7 @@ describe("catálogo de módulos", () => {
       status: "available",
       entryView: "notes",
     });
-    expect(PRODUCT_MODULES.find((module) => module.id === "room")).toMatchObject({
-      status: "available",
-      entryView: "room",
-    });
+    expect(PRODUCT_MODULES.map((module) => module.id)).not.toContain("room");
     expect(PRODUCT_MODULES.find((module) => module.id === "ocr")?.status).toBe("planned");
   });
 });

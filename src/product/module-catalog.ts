@@ -166,15 +166,6 @@ export const PRODUCT_MODULES = localizeResource([
     status: "available",
     entryView: "learn",
   },
-  {
-    id: "room",
-    name: "Modo Sala",
-    get purpose() {
-      return uiText(2272);
-    },
-    status: "available",
-    entryView: "room",
-  },
 ] as const satisfies readonly ProductModule[]);
 
 export type StudentSpaceTool = {
