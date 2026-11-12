@@ -11,9 +11,9 @@ export function rewardsStorageKey(course: RewardCourseId) {
   return isEnglishRewardCourse(course) ? ENGLISH_REWARDS_KEY : MATH_PLACE_REWARDS_KEY;
 }
 export const COMMON_CHEST_POINTS = 100;
-export const COMMON_CHEST_WAIT = 10_000;
-export const MAX_MATH_CHESTS = 3;
-export const ARCANE_CHEST_CHANCE = 0.05;
+const COMMON_CHEST_WAIT = 10_000;
+const MAX_MATH_CHESTS = 3;
+const ARCANE_CHEST_CHANCE = 0.05;
 export type MathChest = {
   id: string;
   unlockAt: number | null;

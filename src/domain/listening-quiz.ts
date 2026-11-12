@@ -1,6 +1,6 @@
 import type { Flashcard } from "./workspace.js";
 
-export type PedagogicalDifficulty = "easy" | "medium" | "hard";
+type PedagogicalDifficulty = "easy" | "medium" | "hard";
 
 export type ListeningCard = Pick<Flashcard, "id" | "front" | "back"> & {
   acceptedAnswers?: readonly string[];
@@ -17,7 +17,7 @@ export const STARTER_DECK: readonly ListeningCard[] = [
   { id: "starter-hello", front: "hello", back: "olá", difficulty: "easy" },
 ];
 
-export type ManualListeningLine = {
+type ManualListeningLine = {
   lineNumber: number;
   raw: string;
   card?: ListeningCard;
@@ -107,7 +107,7 @@ export function buildListeningDeck(flashcards: readonly Flashcard[]): ListeningC
   return [...personal, ...starter];
 }
 
-export function shuffleListeningDeck(
+function shuffleListeningDeck(
   cards: readonly ListeningCard[],
   random: () => number = Math.random,
 ): ListeningCard[] {

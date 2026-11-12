@@ -70,7 +70,7 @@ export function leafOfPage(index: number): { leaf: number; front: boolean } {
 export function sheetThickness(leaves: number) {
   return clamp(0.7 / Math.max(1, leaves - 2), 0.012, BOOK.sheetThickness);
 }
-export function thickness(leaf: number, leaves: number) {
+function thickness(leaf: number, leaves: number) {
   return leaf === 0 || leaf === leaves - 1 ? BOOK.boardThickness : sheetThickness(leaves);
 }
 

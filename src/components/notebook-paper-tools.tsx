@@ -69,7 +69,7 @@ export function notebookPaperTabs(
 
 export { PaperMoonMark } from "./paper-moon-mark";
 
-export function PaperTabIcon({ kind }: { kind: NotebookTab["kind"] }) {
+function PaperTabIcon({ kind }: { kind: NotebookTab["kind"] }) {
   useLanguage();
 
   if (kind === "bookmark") return <PaperMoonMark className="paper-tab-icon" compact />;
@@ -107,7 +107,7 @@ type Props = {
   children: ReactNode | ((scene: PaperToolsScene) => ReactNode);
 };
 
-export type PaperToolsScene = {
+type PaperToolsScene = {
   tool: NotebookTab["kind"] | null;
   editing: boolean;
   selectedId: string | null;

@@ -2,10 +2,6 @@ import { localizeResource, uiText } from "../i18n/runtime.js";
 import type { PRACTICE_ISLANDS } from "./practice-islands";
 
 export type PracticeIsland = (typeof PRACTICE_ISLANDS)[number];
-export type SubjectIslandId = Exclude<
-  PracticeIsland["id"],
-  "english" | "spanish" | "japanese" | "chinese"
->;
 export type TrailIslandId = PracticeIsland["id"];
 
 export const BASIC_MATH_CHAPTERS = localizeResource([

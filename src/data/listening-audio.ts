@@ -1,7 +1,7 @@
 import { uiText } from "../i18n/runtime.js";
 import { roomAppCheckToken } from "./room-app-check";
 
-export type NaturalVoiceStatus = "idle" | "generating" | "playing" | "ready" | "error";
+type NaturalVoiceStatus = "idle" | "generating" | "playing" | "ready" | "error";
 
 export type NaturalVoiceState = {
   status: NaturalVoiceStatus;

@@ -7,7 +7,7 @@ export type VercelRequest = IncomingMessage & { body?: unknown };
 // acumulado inteiro na memória da função antes de qualquer validação do handler.
 export const MAX_REQUEST_BODY_BYTES = 4_718_592;
 
-export class RequestBodyTooLargeError extends Error {}
+class RequestBodyTooLargeError extends Error {}
 
 async function readBody(request: VercelRequest): Promise<string | undefined> {
   if (request.body !== undefined) {

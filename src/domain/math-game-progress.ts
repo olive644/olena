@@ -1,7 +1,7 @@
 import { MATH_COURSES, type MathCourseId, type MathProgress } from "../data/math-courses.js";
 
 export const MATH_GAME_KEY = "helena.mathGame.v3";
-export const QUESTIONS_PER_STAGE = 24;
+const QUESTIONS_PER_STAGE = 24;
 export const STAGE_TARGET = 20;
 export const QUESTION_MASK = (1 << QUESTIONS_PER_STAGE) - 1;
 export type MathGameProgress = MathProgress & {

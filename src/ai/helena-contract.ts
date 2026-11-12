@@ -1,13 +1,13 @@
 export const HELENA_API_VERSION = 1 as const;
-export const HELENA_MAX_PROMPT_LENGTH = 2_000;
+const HELENA_MAX_PROMPT_LENGTH = 2_000;
 export const HELENA_MAX_SOURCE_COUNT = 12;
-export const HELENA_MAX_SOURCE_LENGTH = 8_000;
-export const HELENA_MAX_TOTAL_SOURCE_LENGTH = 30_000;
+const HELENA_MAX_SOURCE_LENGTH = 8_000;
+const HELENA_MAX_TOTAL_SOURCE_LENGTH = 30_000;
 
 export type HelenaCapability = "tutor" | "explain" | "summarize" | "study-plan";
-export type HelenaSourceKind = "note" | "material" | "flashcard" | "task" | "goal";
+type HelenaSourceKind = "note" | "material" | "flashcard" | "task" | "goal";
 
-export type HelenaSelectedSource = {
+type HelenaSelectedSource = {
   id: string;
   kind: HelenaSourceKind;
   title: string;
@@ -37,24 +37,10 @@ export type HelenaResponse = {
 export type HelenaErrorCode =
   "invalid_request" | "consent_required" | "rate_limited" | "provider_unavailable";
 
-export type HelenaErrorResponse = {
-  version: typeof HELENA_API_VERSION;
-  error: {
-    code: HelenaErrorCode;
-    message: string;
-  };
-};
-
 export type ParseResult<T> = { ok: true; value: T } | { ok: false; message: string };
 
 const capabilities: readonly HelenaCapability[] = ["tutor", "explain", "summarize", "study-plan"];
 const sourceKinds: readonly HelenaSourceKind[] = ["note", "material", "flashcard", "task", "goal"];
-const errorCodes: readonly HelenaErrorCode[] = [
-  "invalid_request",
-  "consent_required",
-  "rate_limited",
-  "provider_unavailable",
-];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -185,31 +171,6 @@ export function parseHelenaResponse(value: unknown): ParseResult<HelenaResponse>
       answer: value["answer"],
       suggestions: [...value["suggestions"]],
       generatedAt: value["generatedAt"],
-    },
-  };
-}
-
-export function parseHelenaError(value: unknown): ParseResult<HelenaErrorResponse> {
-  if (
-    !isRecord(value) ||
-    !hasOnlyKeys(value, ["version", "error"]) ||
-    value["version"] !== HELENA_API_VERSION ||
-    !isRecord(value["error"]) ||
-    !hasOnlyKeys(value["error"], ["code", "message"]) ||
-    typeof value["error"]["code"] !== "string" ||
-    !errorCodes.includes(value["error"]["code"] as HelenaErrorCode) ||
-    !isBoundedString(value["error"]["message"], 300)
-  ) {
-    return { ok: false, message: "Erro do serviço inválido." };
-  }
-  return {
-    ok: true,
-    value: {
-      version: HELENA_API_VERSION,
-      error: {
-        code: value["error"]["code"] as HelenaErrorCode,
-        message: value["error"]["message"],
-      },
     },
   };
 }

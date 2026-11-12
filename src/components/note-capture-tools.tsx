@@ -200,7 +200,7 @@ function Scanner({
   );
 }
 
-export function NoteCaptureTools({
+function NoteCaptureTools({
   sharedCollaboration,
   sharedDocument,
   sharedAuthor,

@@ -12,9 +12,9 @@ import {
   type BingoMode,
 } from "./number-bingo.js";
 
-export type LocalRoomPhase = "lobby" | "playing" | "results" | "finished";
+type LocalRoomPhase = "lobby" | "playing" | "results" | "finished";
 export type BingoReviewDecision = "reject" | "continue" | "restart" | "finish";
-export type BingoClaim = { id: string; participantId: string; claimedAt: number };
+type BingoClaim = { id: string; participantId: string; claimedAt: number };
 export const ROOM_TEAMS = ["Roxo", "Amarelo"] as const;
 export type RoomTeam = (typeof ROOM_TEAMS)[number];
 export const ROOM_TEAM_LABELS: Record<RoomTeam, string> = {
@@ -23,9 +23,9 @@ export const ROOM_TEAM_LABELS: Record<RoomTeam, string> = {
 };
 export type RoomXpReward = { id: string; place: number; xp: number; completedAt: number };
 
-export type LocalRoomDifficulty = "mixed" | "easy" | "medium" | "hard";
+type LocalRoomDifficulty = "mixed" | "easy" | "medium" | "hard";
 
-export type LocalRoomRoundSeconds = 5 | 10 | 15 | 30 | 45 | 60;
+type LocalRoomRoundSeconds = 5 | 10 | 15 | 30 | 45 | 60;
 
 export type LocalRoomSettings = {
   difficulty: LocalRoomDifficulty;
@@ -85,7 +85,7 @@ export function sanitizeRoomAvatar(value: unknown): string | undefined {
   return undefined;
 }
 
-export type LocalRoomQuestion = { id: string; front: string };
+type LocalRoomQuestion = { id: string; front: string };
 
 export type LocalRoomAnswerFeedback = {
   correct: boolean;
@@ -143,7 +143,7 @@ export type LocalRoomState = {
   recordingIds?: string[];
 };
 
-export const ROOM_REMOVED_MEMORY = 30;
+const ROOM_REMOVED_MEMORY = 30;
 
 export type PublicLocalRoomState = {
   code: string;
@@ -178,7 +178,6 @@ export type PublicLocalRoomState = {
 
 import { LOCAL_ROOM_JOIN_PARAM } from "./room-code.js";
 export {
-  LOCAL_ROOM_JOIN_PARAM,
   normalizeLocalRoomCode,
   isValidLocalRoomCode,
   readLocalRoomCodeFromUrl,
@@ -222,7 +221,7 @@ export function formatRoomEstimatedDuration(
 // Acertos premiam rapidez. Qualquer erro de escuta desconta cinco pontos,
 // mantendo o saldo mínimo em zero e sem aplicar penalidade ao Bingo.
 export const MAX_CORRECT_ANSWER_POINTS = 100;
-export const MIN_CORRECT_ANSWER_POINTS = 20;
+const MIN_CORRECT_ANSWER_POINTS = 20;
 export const WRONG_ANSWER_PENALTY_POINTS = 5;
 
 export function roomAnswerPoints(seconds: number, elapsedMs: number): number {
@@ -233,10 +232,7 @@ export function roomAnswerPoints(seconds: number, elapsedMs: number): number {
   );
 }
 
-export function roomPlacement(
-  participants: readonly LocalRoomParticipant[],
-  score: number,
-): number {
+function roomPlacement(participants: readonly LocalRoomParticipant[], score: number): number {
   return 1 + participants.filter((p) => p.score > score).length;
 }
 
@@ -244,7 +240,7 @@ export function roomPlacementXp(place: number): number {
   return [100, 75, 50][place - 1] ?? Math.max(10, 40 - (place - 4) * 5);
 }
 
-export const BINGO_MARK_POINTS = 2;
+const BINGO_MARK_POINTS = 2;
 export const BINGO_OBJECTIVE_POINTS: Record<BingoMode, number> = {
   corners: 30,
   line: 40,
@@ -745,7 +741,7 @@ export function repeatRoom(
 }
 
 // O índice de pergunta continua compatível com salas abertas antes da contagem explícita.
-export function numberBingoDrawnIds(state: LocalRoomState): string[] {
+function numberBingoDrawnIds(state: LocalRoomState): string[] {
   return state.deck
     .slice(0, state.bingoDrawCount ?? state.questionIndex + 1)
     .map((item) => item.id);

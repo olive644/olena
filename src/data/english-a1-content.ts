@@ -1,5 +1,5 @@
 import type { EnglishText, EnglishGuide } from "./english-journey";
-export type A1Task = {
+type A1Task = {
   id: number;
   unit: number;
   level: number;

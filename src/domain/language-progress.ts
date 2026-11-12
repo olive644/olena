@@ -19,7 +19,7 @@ export type LanguageAttempt = {
   questions: number[];
   correctQuestions: number[];
 };
-export const ENGLISH_PARTS = ENGLISH_PART_COUNT;
+const ENGLISH_PARTS = ENGLISH_PART_COUNT;
 export const ENGLISH_TARGET = 100;
 
 export function validLanguageAttempt(value: unknown): value is LanguageAttempt {

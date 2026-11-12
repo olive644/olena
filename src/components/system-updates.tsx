@@ -27,7 +27,7 @@ import { groupedActivities, groupedNotices, meaningfulActivity } from "../domain
 import "./system-updates.css";
 import { useAppRelease, releaseLabel } from "../data/app-release";
 
-export const OPEN_NOTIFICATIONS = "olena:open-notifications";
+const OPEN_NOTIFICATIONS = "olena:open-notifications";
 function storedReadUpdates() {
   try {
     return parseReadUpdates(localStorage.getItem(SYSTEM_UPDATES_READ_KEY));

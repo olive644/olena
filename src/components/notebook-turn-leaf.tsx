@@ -4,7 +4,7 @@ import { NotebookRidingTab } from "./notebook-tab-art";
 import { useNotebookPagePreview } from "./notebook-page-thumbnail";
 
 /** A folha é cortada em fatias que se curvam umas sobre as outras: o papel dobra ao virar. */
-export const TURN_SLICES = 8;
+const TURN_SLICES = 8;
 
 export type RidingTab = { tab: NotebookTab; pageIndex: number };
 

@@ -7,7 +7,7 @@ export type HandleIdentity = {
   anonymous: boolean;
 };
 export type HandleRegistry = Record<string, { username: string }>;
-export type HandleSnapshot = { value: HandleRegistry; version: string };
+type HandleSnapshot = { value: HandleRegistry; version: string };
 export type HandleStore = {
   read(): Promise<HandleSnapshot>;
   // Lê só o @ de uma conta, sem baixar o registro inteiro. A consulta do próprio @ (GET) é a mais
