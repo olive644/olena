@@ -15,7 +15,7 @@ export type StoredProfile = {
   achievementHistory?: Record<string, string>;
 };
 
-export const SOCIAL_NETWORKS = ["instagram", "facebook", "linkedin", "github", "tiktok"] as const;
+const SOCIAL_NETWORKS = ["instagram", "facebook", "linkedin", "github", "tiktok"] as const;
 export type SocialNetwork = (typeof SOCIAL_NETWORKS)[number];
 export const SOCIAL_LABELS: Record<SocialNetwork, string> = {
   instagram: "Instagram",

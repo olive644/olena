@@ -2,7 +2,7 @@ import { localizeResource, uiText } from "../i18n/runtime.js";
 import type { AppView } from "../components/app-navigation";
 import type { NavigationIconName } from "../components/navigation-icon";
 
-export type ProductModuleStatus = "available" | "foundation" | "planned";
+type ProductModuleStatus = "available" | "foundation" | "planned";
 
 export type ProductModule = {
   id: string;

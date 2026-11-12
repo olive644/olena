@@ -9,7 +9,7 @@ import { ENGLISH_PART_COUNT } from "./english-part-order.js";
 export const ENGLISH_PROGRESS_KEY = "helena.englishProgress.v1";
 const MAX_QUESTION_ID = 1000;
 
-export type EnglishLedgerPart = { solved: number[]; confirmed: boolean };
+type EnglishLedgerPart = { solved: number[]; confirmed: boolean };
 export type EnglishLedger = Partial<Record<EnglishArea, EnglishLedgerPart[]>>;
 
 const emptyPart = (): EnglishLedgerPart => ({ solved: [], confirmed: false });

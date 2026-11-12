@@ -464,7 +464,7 @@ export function renderPage(
   }
 }
 
-export function drawCoordinateSystem(
+function drawCoordinateSystem(
   context: CanvasRenderingContext2D,
   system: HandwritingCoordinateSystem,
 ) {

@@ -741,7 +741,7 @@ function isWorkspaceV3(value: unknown): value is WorkspaceV3 {
 }
 
 /** Valida um registro de prática isoladamente, para descartar só o que esta versão não entende. */
-export function isPracticeActivity(activity: unknown): boolean {
+function isPracticeActivity(activity: unknown): boolean {
   return (
     isRecord(activity) &&
     isString(activity["id"]) &&

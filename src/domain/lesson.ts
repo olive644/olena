@@ -1,5 +1,5 @@
 export const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
-export type CefrLevel = (typeof CEFR_LEVELS)[number];
+type CefrLevel = (typeof CEFR_LEVELS)[number];
 
 export const METHODOLOGIES = ["inductive", "deductive", "discovery", "rule-first"] as const;
 export type Methodology = (typeof METHODOLOGIES)[number];
@@ -22,7 +22,7 @@ export type LessonInput = {
   homeworkLinksText: string;
 };
 
-export type LessonSectionKind =
+type LessonSectionKind =
   "warm-up" | "presentation" | "practice" | "extra-activity" | "production" | "homework";
 
 export type LessonSection = {

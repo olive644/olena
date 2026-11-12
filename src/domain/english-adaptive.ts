@@ -3,7 +3,7 @@ import { englishContext, englishSkill } from "./english-skills.js";
 import { englishBankSize, englishDifficulty } from "./english-difficulty.js";
 import { A1_BANK, A1_UNIT_TARGET, a1Unit, a1Difficulty } from "./english-a1.js";
 
-export type EnglishEvidence = { id: number; correct: boolean };
+type EnglishEvidence = { id: number; correct: boolean };
 export type EnglishSelection = {
   curriculum?: 4 | 5;
   part?: number;

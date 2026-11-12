@@ -23,7 +23,7 @@ export function mathChallenge(
 }
 
 /** Conteúdo matemático calculado, não texto de IA. Resultados exatos e distratores distintos. */
-export function mathQuestion(
+function mathQuestion(
   course: MathCourseId,
   progress: MathProgress,
   random = Math.random,

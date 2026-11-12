@@ -52,7 +52,7 @@ export function voiceQualityScore(
   return score;
 }
 
-export function rankEnglishVoices(voices: readonly SpeechSynthesisVoice[]): SpeechSynthesisVoice[] {
+function rankEnglishVoices(voices: readonly SpeechSynthesisVoice[]): SpeechSynthesisVoice[] {
   return voices
     .filter(isEnglishVoice)
     .slice()

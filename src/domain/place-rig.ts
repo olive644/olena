@@ -20,7 +20,7 @@ const EXPOSURE_ENVELOPES = [1, 0.6, 0.3] as const;
 
 export type ColorClass = "gold" | "blue" | "green" | "cream" | "water" | "notwater" | "any";
 
-export type PartSeed = { x: number; y: number; color: ColorClass };
+type PartSeed = { x: number; y: number; color: ColorClass };
 
 /** Onda de um eixo: `amp` em pixels da arte (ou radianos, ou fração de escala). */
 export type Wave = {
@@ -45,7 +45,7 @@ export type PartMotion = {
   pivot?: "center" | "base" | "top" | readonly [number, number];
 };
 
-export type PartFill = "auto" | "solid" | "air";
+type PartFill = "auto" | "solid" | "air";
 
 export type PartSpec = {
   id: string;
@@ -63,7 +63,7 @@ export type PartSpec = {
   margin?: number;
 };
 
-export type WaterSpec = {
+type WaterSpec = {
   seeds: readonly PartSeed[];
   box?: readonly [number, number, number, number];
   polygon?: readonly (readonly [number, number])[];

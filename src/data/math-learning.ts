@@ -9,7 +9,7 @@ import { mathChallenge, assessMath, type MathChallenge } from "../domain/adaptiv
 import { writeSyncedStorage } from "./synced-storage";
 export const MATH_LEARNING_KEY = "helena.mathLearning.v2";
 export const LEGACY_MATH_LEARNING_KEY = "helena.mathLearning.v1";
-export function readMathLearning(): Partial<Record<MathCourseId, MathProgress>> {
+function readMathLearning(): Partial<Record<MathCourseId, MathProgress>> {
   try {
     const modern = localStorage.getItem(MATH_LEARNING_KEY);
     const data: unknown = JSON.parse(
