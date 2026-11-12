@@ -4813,6 +4813,14 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - `android/twa-manifest.json` aponta para `www.olenastudy.com.br` (host, ícones, manifesto, escopo) e sobe para `appVersion` 2 / 1.0.1. `src/android-twa.test.ts` atualizado e com um teste novo que exige o mesmo domínio em todos os endereços do pacote. O assetlinks não muda (mesmo pacote e mesmas impressões digitais, servido pelos dois domínios).
 - Fica para a dona, fora do repositório: gerar e enviar o novo .aab com a mesma chave de envio, atualizar o site e a política de privacidade na Play Console e só então redirecionar `olenastudy.vercel.app` na Vercel. Passos em `docs/ANDROID_PLAY_STORE.md`. Não verificado em aparelho Android.
 
+## Provas de revisão antigas fora do repositório, 2026-11-12
+
+- Removidos do Git 368 arquivos de `artifacts/` (cerca de 66 MB de capturas, páginas HTML e vídeos de revisão visual de 29/10 a 07/11) e `design-previews/numeros-papel.html`, que nenhum código, teste ou script lia. Continuam no histórico do Git.
+- Mantido: `artifacts/math-oliver-review/oliver-tutor-v1.png`, a arte-fonte que `scripts/oliver-review-rive/` lê para gerar o Rive do Oliver.
+- Os e2e `math-mistake-review` e `math-heart-timeout` continuam gravando capturas em `artifacts/math-review-polish/` e `artifacts/math-heart-timeout/` ao rodar; essas duas pastas entram no `.gitignore` para não sujarem o Git.
+- Documentos antigos (`CURRENT_STATE_AUDIT.md`, `SECOND_BRAIN.md`, `ARCANA_CARD_DESIGN.md`) ainda citam caminhos de `artifacts/` como prova de revisões passadas; os arquivos estão no histórico do Git.
+- Não verificado: se alguém usa essas capturas fora do repositório (por exemplo, links salvos).
+
 ## Limpeza de imagens sem uso em `public/`, 2026-11-12
 
 - Removidos 168 arquivos (cerca de 35 MB de 84 MB) sem nenhuma referência no código, nos testes, no CSS, nos scripts, nem nas páginas públicas: `solo-world-1..3` e `solo-interior-1..3` (PNG, WebP e `-desktop`) e `helena-solo-worlds.webp`; `helena-portrait.png`, `room-crew-header.png`, `helena-holding-qr.png` e `helena-room-invite.png` (o app usa a versão WebP); `practice-trails/` menos `-fast-desktop`, `-fast-mobile` e `basic-math-markers.svg`; as imagens da raiz de `math-islands/` (o app usa `places/` e os SVGs); panoramas e `profile-*` de `room-art/`; as medalhas genéricas antigas de inglês; `languages/characters/olena-english-v2.webp`; e os rascunhos do Arcano sem citação (`corrected/`, `-v2`, `-v3`, detalhes e variantes fora do catálogo).
