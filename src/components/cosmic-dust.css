@@ -123,63 +123,15 @@
   padding: 10px;
   padding-top: 24px;
 }
-.oliver-card-front .oliver-card-rarity {
-  background: var(--card-rarity-light, #a6e6bd);
-  color: #292432;
-  top: 0;
-  left: 8px;
-  padding: 3px 10px;
-  letter-spacing: 0.12em;
-  font-size: 9px;
-  clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
-}
-.oliver-card-edition {
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  color: #292432;
-  font-size: 8px;
-  letter-spacing: 0.12em;
-  font-weight: 800;
-}
 .cosmic-reveal .oliver-cards-remaining .paper-digits {
   --digit-face: #292432;
   --digit-depth: #17131d;
   --digit-fold: #51465d;
   --digit-edge: #211b29;
 }
-.oliver-card-front .oliver-card-art {
-  border: 0;
-  border-radius: 3px 12px 3px 3px;
-  box-shadow: 0 3px var(--card-rarity, #59420a);
-}
-.oliver-card-stats div {
-  background: #ede4d2;
-  border-bottom: 3px solid var(--card-rarity, #2d8a67);
-  border-radius: 3px 10px 3px 3px;
-  padding: 5px 3px;
-  gap: 2px;
-}
-.oliver-card-stats div > svg {
-  padding: 3px;
-  width: 28px;
-  height: 28px;
-  background: var(--stat-color, #facc15);
-  border-radius: 4px 8px 3px 3px;
-  filter: drop-shadow(0 2px 0 #cbbb9b);
-}
-.oliver-card-stats div:nth-child(2) {
-  --stat-color: #ffb0bf;
-}
-.oliver-card-stats div:nth-child(3) {
-  --stat-color: #83d9cd;
-}
 .oliver-card-front h2 {
   border-top: 1px dashed #cbbb9b;
   padding-top: 7px;
-}
-.oliver-card-front .oliver-card-lore {
-  line-height: 1.45;
 }
 :is(.oliver-booster-backdrop, .oliver-collection-backdrop) .oliver-booster-close {
   border: 0;

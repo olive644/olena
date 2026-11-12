@@ -311,32 +311,6 @@
   height: 32px;
   flex: 0 0 32px;
 }
-.math-journey-up,
-.math-journey-down {
-  border: 1px solid #d5c8b0;
-  border-radius: 6px 16px 4px 6px;
-  background: #fff9ef;
-  box-shadow: 0 5px #d5c8b0;
-  position: absolute;
-  left: calc(50% + min(280px, 36vw));
-  z-index: 6;
-}
-.math-journey-up {
-  top: 29%;
-}
-.math-journey-down {
-  top: 51%;
-}
-.math-journey-up img {
-  width: 30px;
-  height: 30px;
-  transform: rotate(-90deg);
-}
-.math-journey-down img {
-  width: 30px;
-  height: 30px;
-  transform: rotate(90deg);
-}
 .math-journey.is-enter .is-current {
   transform: translate(-50%, -35%) scale(3);
   opacity: 0;
@@ -389,17 +363,6 @@
   }
   .math-journey-label {
     top: calc(86px + var(--math-scene-size) + 116px);
-  }
-  .math-journey-up,
-  .math-journey-down {
-    left: auto;
-    right: 12px;
-  }
-  .math-journey-up {
-    top: 26%;
-  }
-  .math-journey-down {
-    top: 57%;
   }
   .math-world-back {
     font-size: 12px;

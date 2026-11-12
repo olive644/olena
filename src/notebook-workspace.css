@@ -513,9 +513,7 @@
   .handwriting-commandbar .handwriting-tool-group button span,
   .handwriting-commandbar .handwriting-history button span,
   .notebook-file-tools > button > span,
-  .handwriting-ink-options legend,
-  .handwriting-ink-options .handwriting-assist,
-  .handwriting-ink-options .handwriting-pen-only {
+  .handwriting-ink-options legend {
     display: none;
   }
   .handwriting-ink-options {

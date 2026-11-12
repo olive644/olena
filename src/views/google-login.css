@@ -16,51 +16,6 @@
   align-items: center;
   gap: 60px;
 }
-.login-page__scene {
-  position: relative;
-  text-align: center;
-}
-.login-page__scene img {
-  display: block;
-  width: min(100%, 460px);
-  height: auto;
-  margin: 0 auto;
-}
-.login-page__note {
-  display: inline-block;
-  background: white;
-  padding: 17px 27px;
-  border-radius: 20px 20px 5px 20px;
-  transform: rotate(-4deg);
-  box-shadow: 3px 5px 0 #e7dfd2;
-  font-weight: 800;
-  font-size: 19px;
-}
-.login-page__scene p {
-  margin: 32px 0 0;
-  font-size: 18px;
-  line-height: 1.7;
-  color: #51465d;
-}
-.login-page__scene strong {
-  color: #51259b;
-}
-.login-page__star {
-  position: absolute;
-  color: #facc15;
-  font-size: 62px;
-  text-shadow: 3px 3px #dea719;
-}
-.login-page__star--one {
-  top: 25%;
-  left: 2%;
-  transform: rotate(-12deg);
-}
-.login-page__star--two {
-  bottom: 25%;
-  right: 2%;
-  font-size: 36px;
-}
 .login-page__card {
   margin-top: 160px;
   position: relative;
@@ -127,43 +82,6 @@
   color: #726579;
   margin-top: 20px;
 }
-.login-page__guest {
-  display: grid;
-  gap: 10px;
-  margin-top: 18px;
-  text-align: center;
-}
-.login-page__guest button {
-  min-height: 44px;
-  padding: 6px 12px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: #51259b;
-  font: inherit;
-  font-weight: 800;
-  box-shadow: none;
-  text-decoration: underline;
-  text-underline-offset: 5px;
-  text-decoration-color: #d7cbb7;
-  cursor: pointer;
-}
-.login-page__guest button:hover:not(:disabled) {
-  text-decoration-color: currentColor;
-}
-.login-page__guest button:focus-visible {
-  outline: 3px solid #7c3aed;
-  outline-offset: 3px;
-}
-.login-page__guest button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-.login-page__guest p {
-  font-size: 12px;
-  line-height: 1.5;
-  color: #726579;
-}
 .login-page__divider {
   border-top: 1px dashed #ddd2c3;
   margin: 26px 0 18px;
@@ -202,23 +120,6 @@
     gap: 22px;
     padding: 26px 0;
     max-width: 430px;
-  }
-  .login-page__scene img {
-    width: 240px;
-  }
-  .login-page__note {
-    font-size: 15px;
-    padding: 11px 20px;
-  }
-  .login-page__scene p {
-    display: none;
-  }
-  .login-page__star--one {
-    left: 12%;
-    font-size: 40px;
-  }
-  .login-page__star--two {
-    right: 12%;
   }
   .login-page__card {
     padding: 28px;
@@ -327,15 +228,6 @@
     margin: 6px 0;
     font-size: 11px;
   }
-  .login-page__guest {
-    margin-top: 4px;
-    gap: 0;
-  }
-  .login-page__guest p {
-    margin: 2px 0 0;
-    font-size: 11px;
-    line-height: 1.4;
-  }
   .login-page__divider {
     margin: 10px 0 0;
   }
@@ -380,9 +272,6 @@
   }
   .login-page__local {
     margin: 2px 0;
-  }
-  .login-page__guest p {
-    margin-top: 0;
   }
   .login-page__divider {
     margin-top: 8px;
@@ -461,7 +350,6 @@
 .login-page__card:has(.email-auth[data-open="true"]) > .login-page__providers,
 .login-page__card:has(.email-auth[data-open="true"]) > .login-page__social,
 .login-page__card:has(.email-auth[data-open="true"]) > .login-page__actions,
-.login-page__card:has(.email-auth[data-open="true"]) > .login-page__guest,
 .login-page__card:has(.email-auth[data-open="true"]) > .login-page__local {
   display: none;
 }
@@ -510,9 +398,5 @@
   }
   .login-page__card > .login-page__local {
     display: none;
-  }
-  .login-page__card .login-page__guest p {
-    font-size: 10px;
-    line-height: 1.2;
   }
 }

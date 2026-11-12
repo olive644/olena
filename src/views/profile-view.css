@@ -1211,14 +1211,6 @@ html[data-theme="dark"] .profile-settings-nav .profile-icon-dark-surface {
   height: 22px;
   accent-color: var(--violet);
 }
-.profile-settings-grid .account-sync-settings dl {
-  grid-template-columns: 1fr;
-  margin: 0;
-}
-.profile-settings-grid .account-sync-settings__actions {
-  margin-top: auto;
-  flex-wrap: wrap;
-}
 .profile-progress-metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

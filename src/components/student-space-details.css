@@ -323,15 +323,6 @@ html[data-theme="dark"] .student-space .check-button {
   background: var(--soft);
   border-radius: 4px 10px;
 }
-.startup-error {
-  max-width: 520px;
-  margin: 15vh auto;
-  padding: 24px;
-  background: var(--surface);
-  color: var(--text);
-  border-radius: 10px 24px;
-  border-bottom: 6px solid var(--line);
-}
 @media (max-width: 760px) {
   .student-space .student-space-shortcuts {
     gap: 10px;
