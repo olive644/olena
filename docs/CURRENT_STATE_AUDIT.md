@@ -4821,6 +4821,13 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - Documentos antigos (`CURRENT_STATE_AUDIT.md`, `SECOND_BRAIN.md`, `ARCANA_CARD_DESIGN.md`) ainda citam caminhos de `artifacts/` como prova de revisões passadas; os arquivos estão no histórico do Git.
 - Não verificado: se alguém usa essas capturas fora do repositório (por exemplo, links salvos).
 
+## Limpeza de imagens sem uso em `public/`, 2026-11-12
+
+- Removidos 168 arquivos (cerca de 35 MB de 84 MB) sem nenhuma referência no código, nos testes, no CSS, nos scripts, nem nas páginas públicas: `solo-world-1..3` e `solo-interior-1..3` (PNG, WebP e `-desktop`) e `helena-solo-worlds.webp`; `helena-portrait.png`, `room-crew-header.png`, `helena-holding-qr.png` e `helena-room-invite.png` (o app usa a versão WebP); `practice-trails/` menos `-fast-desktop`, `-fast-mobile` e `basic-math-markers.svg`; as imagens da raiz de `math-islands/` (o app usa `places/` e os SVGs); panoramas e `profile-*` de `room-art/`; as medalhas genéricas antigas de inglês; `languages/characters/olena-english-v2.webp`; e os rascunhos do Arcano sem citação (`corrected/`, `-v2`, `-v3`, detalhes e variantes fora do catálogo).
+- Como a conferência foi feita: nomes montados no código (medalhas, Arcano, salas, ilhas) foram checados pelos catálogos reais, não só por busca de texto. Mantidos de propósito: `arcana/tarot-api.json` (lido por `tarot-ptbr.test.ts`), as 11 cartas citadas pela galeria de preview, os passos 2 a 5 do onboarding (usados em materiais de divulgação) e os ícones de marca. Os 100 MP3 de `audio/kokoro/`, os dados do INEP e as 374 medalhas em uso não foram tocados.
+- Os arquivos continuam no histórico do Git. O repositório (`.git`, 267 MB) não encolhe; novos clones e o deploy da Vercel ficam mais leves. Não verificado: uso fora do repositório (redes sociais, Play Store, bot do Discord).
+- Verificação: lint, formatação, build, `performance:check` e a suíte de testes (2742 passam; os 8 de `listening-audio.test.ts` falham também na `main` neste ambiente local, por `Blob.stream`).
+
 ## Limpeza de código sem uso em `src/`, 2026-11-12
 
 - Removidos 9 arquivos que nenhum outro arquivo, teste ou script importava: `appearance-picker.tsx`, `listening-bank-file.tsx`, `math-chest-art.tsx`, `student-favorites-shelf.tsx`, `student-notebook-preview.tsx`, `workspace-search.tsx`, `homework-section.tsx`, `use-mobile-layout.ts` e `voices-language-catalog.ts`. O e2e já esperava a ausência de `.student-favorites` e `.student-notebook-preview`. `docs/VOICES_DESIGN.md` cita o catálogo de vozes por idioma como ideia; o arquivo removido nunca foi ligado ao app.
