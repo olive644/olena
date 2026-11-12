@@ -6,7 +6,6 @@ import { PullToRefresh } from "./components/pull-to-refresh";
 import { HelenaLoading } from "./components/helena-loading";
 import { MobileMenuContext } from "./components/mobile-menu-context";
 import { isGuestSession, requiresLogin } from "./domain/guest-session";
-import { readLocalRoomCodeFromUrl, readLocalRoomProjectorCodeFromUrl } from "./domain/room-code";
 import { useWorkspace } from "./hooks/use-workspace";
 import { useCloudSync, type CloudSyncState } from "./hooks/use-cloud-sync";
 import { TodayView } from "./views/today-view";
@@ -46,7 +45,6 @@ const AgendaReminders = lazy(() =>
 const HelenaChat = lazy(() =>
   import("./components/helena-chat").then((module) => ({ default: module.HelenaChat })),
 );
-const RoomView = lazy(() => import("./views/room-view"));
 const OnboardingView = lazy(() => import("./views/onboarding-view"));
 const NotFoundView = lazy(() => import("./views/not-found-view"));
 const LibraryView = lazy(() => import("./views/library-view"));
@@ -91,11 +89,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     () => new URLSearchParams(window.location.search).get("material")?.slice(0, 160) ?? "",
   );
   const [focusMaterialId, setFocusMaterialId] = useState("");
-  const [projectorCode] = useState(() => readLocalRoomProjectorCodeFromUrl(window.location.href));
-  const [joinCode] = useState(
-    () => projectorCode ?? readLocalRoomCodeFromUrl(window.location.href),
-  );
-  const [view, setView] = useAppView(joinCode ? "room" : "today");
+  const [view, setView] = useAppView("today");
   useEffect(() => {
     const open = () => setView("notifications");
     window.addEventListener("olena:open-notifications", open);
@@ -112,7 +106,6 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   const [onboarding, setOnboarding] = useState(() => {
     if (cloud.authenticated === true && hasReturningAccountData()) return false;
     if (previewCover) return true;
-    if (joinCode) return false;
     if (signedOut) return true;
     const entry = new URLSearchParams(window.location.search);
     if (entry.has("onboarding") || entry.has("login")) return true;
@@ -308,18 +301,6 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
           )}
           {view === "lesson-builder" && <LessonBuilderView onBack={() => setView("today")} />}
           {view === "learn" && <LearnView workspace={workspace} dispatch={dispatch} />}
-          {view === "room" && (
-            <RoomView
-              joinCode={joinCode}
-              projectorMode={Boolean(projectorCode)}
-              accountName={cloud.displayName}
-              guest={guest}
-              accountLoading={cloud.enabled && cloud.authenticated === undefined && !cloud.ready}
-              requireAccount={cloud.enabled}
-              onExit={() => setView("today")}
-              onSignIn={() => setOnboarding(true)}
-            />
-          )}
           {view === "library" && (
             <LibraryView
               workspace={workspace}
@@ -352,14 +333,12 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
           )}
         </Suspense>
         <MobileNavigation view={view} onNavigate={setView} />
-        {!projectorCode && (
-          <Suspense fallback={null}>
-            <HelenaChat currentView={view} materials={workspace.materials} />
-            {(!cloud.enabled || cloud.authenticated === true || guest) && (
-              <PrivacyNotice authenticated={cloud.authenticated === true && !guest} />
-            )}
-          </Suspense>
-        )}
+        <Suspense fallback={null}>
+          <HelenaChat currentView={view} materials={workspace.materials} />
+          {(!cloud.enabled || cloud.authenticated === true || guest) && (
+            <PrivacyNotice authenticated={cloud.authenticated === true && !guest} />
+          )}
+        </Suspense>
       </div>
     </MobileMenuContext.Provider>
   );

@@ -4849,3 +4849,9 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 
 - **O que mudou.** Os nomes de Erick Gabriel e Leo Bizzocchi saíram da lista da equipe da Galeria.Oli nos termos de uso e na política de privacidade (agora só José Oliver). O teste da política passou a exigir José Oliver e a garantir que os dois nomes não voltem.
 - **O que não mudou.** A versão da política (2026-11-05) não subiu, então ninguém precisa aceitar de novo. Se a saída deve contar como alteração da política, a versão sobe em uma mudança própria, decisão da proprietária. Os personagens Leo e Erick do Arcana e dos avatares são arte do app, não equipe, e ficaram como estão. Os registros históricos deste arquivo mantêm os nomes de quando eram verdade.
+
+## Contagem de ferramentas nos e2e depois do Modo Sala, 2026-11-12
+
+- **O que falhava.** Com o Modo Sala fora da navegação (PR 625), três testes de `e2e/app.spec.ts` ainda esperavam o número antigo de itens: 8 botões na navegação lateral do desktop (agora 7) e 3 itens em "Mais ferramentas" no celular, em dois testes (agora 2).
+- **Correção.** Os três números foram atualizados para refletir a navegação sem o Modo Sala. Nenhum código do app mudou nesta correção.
+- **Prova.** Os três testes passam localmente no desktop e no celular (4 passam, 2 pulados por serem de outro projeto). A suíte completa roda no CI.

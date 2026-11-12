@@ -28,7 +28,7 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
       await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
       const menu = page.getByRole("dialog", { name: "Mais ferramentas" });
       const secondary = menu.locator(".navigation-icon__variant:visible");
-      await expect(secondary).toHaveCount(3);
+      await expect(secondary).toHaveCount(2);
       await expect(menu.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
       for (const icon of await secondary.all()) {
         await expect(icon).toHaveAttribute("src", /\/navigation-icons\/paper\/.*\.svg$/);
@@ -166,9 +166,9 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
   const navigation = page.getByRole("navigation", { name: "Navegação principal" });
   const sidebar = page.locator(".sidebar");
 
-  await expect(navigation.getByRole("button")).toHaveCount(8);
+  await expect(navigation.getByRole("button")).toHaveCount(7);
   await expect(navigation.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
-  await expect(navigation.getByRole("button", { name: "Modo Sala", exact: true })).toBeVisible();
+  await expect(navigation.getByRole("button", { name: "Modo Sala", exact: true })).toHaveCount(0);
   await expect(navigation.getByRole("button", { name: "Espaço do aluno" })).toHaveAttribute(
     "aria-current",
     "page",
@@ -322,7 +322,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   await expect(toolsDialog).toBeVisible();
   await page.waitForTimeout(350);
   const toolItems = toolsDialog.locator(".more-item");
-  await expect(toolItems).toHaveCount(3);
+  await expect(toolItems).toHaveCount(2);
   await expect(toolsDialog.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
 
   for (const item of await toolItems.all()) {
@@ -348,26 +348,6 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
     expect(overflow).toBe(false);
   }
-});
-
-test("mantém o retorno do Modo Sala livre no celular", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile", "Contrato visual do Modo Sala móvel.");
-  await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-  await page
-    .getByRole("dialog", { name: "Mais ferramentas" })
-    .getByRole("button", { name: "Modo Sala", exact: true })
-    .click();
-
-  const preparation = page.locator(".local-room-preparation");
-  await expect(page.getByRole("dialog", { name: "Modo Sala" })).toHaveCount(0);
-  await expect(page.getByRole("navigation", { name: "Navegação móvel" })).toBeVisible();
-  await expect(preparation.getByRole("button", { name: "Voltar", exact: true })).toHaveCount(0);
-  await expect(preparation.locator(".local-room-session__header")).toHaveCount(0);
-  await page
-    .getByRole("navigation", { name: "Navegação móvel" })
-    .getByRole("button", { name: "Espaço", exact: true })
-    .click();
-  await expect(preparation).toHaveCount(0);
 });
 
 test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, testInfo) => {

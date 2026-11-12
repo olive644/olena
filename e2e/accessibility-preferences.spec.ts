@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("Perfil salva acessibilidade geral, aplica à sala e restaura após recarregar", async ({
+test("Perfil salva acessibilidade geral, aplica à Biblioteca e restaura após recarregar", async ({
   page,
 }, testInfo) => {
   await page.addInitScript(() => {
@@ -16,7 +16,7 @@ test("Perfil salva acessibilidade geral, aplica à sala e restaura após recarre
   await expect(page.locator("html")).toHaveAttribute("data-highlight-selections", "true");
   await settings.screenshot({ path: testInfo.outputPath("perfil-acessibilidade.png") });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.goto("/sala");
+  await page.goto("/biblioteca");
   await expect(page.locator("html")).toHaveAttribute("data-reduce-motion", "true");
   await page.goto("/perfil");
   await page.reload();
