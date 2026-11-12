@@ -779,7 +779,15 @@ export function NotesView({
                           </span>
                           <span className="notebook-spine__front">
                             <strong>{notebook.title}</strong>
-                            <NotebookArtwork subjectColor="#7C3AED" title={notebook.title} />
+                            <NotebookArtwork
+                              subjectColor="#7C3AED"
+                              title={notebook.title}
+                              tabs={notebookPaperTabs(
+                                notebook,
+                                workspace.notes,
+                                workspace.subjects,
+                              )}
+                            />
                           </span>
                         </span>
                       </button>

@@ -159,6 +159,6 @@ for (const theme of ["light", "dark"]) {
       true,
     );
     await page.goto("/cadernos");
-    await expect(page.getByText("Ciências", { exact: true }).first()).toBeVisible();
+    await expect(page.getByRole("button", { name: "Abrir Ciências", exact: true })).toBeVisible();
   });
 }

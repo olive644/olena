@@ -238,6 +238,7 @@ describe("App", () => {
     fireEvent.click(await screen.findByRole("button", { name: "Crie" }, { timeout: 5000 }));
     expect(screen.queryByRole("button", { name: /Anotações/ })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Criar caderno" }));
+    fireEvent.click(screen.getByRole("button", { name: /^Abrir Meu caderno/i }));
     expect(screen.getByRole("button", { name: "Criar primeira folha" })).toBeTruthy();
   }, 15000);
 
@@ -246,6 +247,7 @@ describe("App", () => {
     navigate("Cadernos");
     fireEvent.click(await screen.findByRole("button", { name: "Crie" }, { timeout: 5000 }));
     fireEvent.click(screen.getByRole("button", { name: "Criar caderno" }));
+    fireEvent.click(screen.getByRole("button", { name: /^Abrir Meu caderno/i }));
     fireEvent.click(screen.getByRole("button", { name: "Criar primeira folha" }));
 
     // O estúdio é um chunk lazy separado do caderno, inclusive em execução fria.

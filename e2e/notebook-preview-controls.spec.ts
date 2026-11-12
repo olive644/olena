@@ -31,7 +31,7 @@ test("a barra de baixo tem só ícones, a seta de voltar fica à esquerda e a na
     .boundingBox();
   const area = await preview.boundingBox();
   expect(back!.x).toBeLessThan(area!.x + area!.width * 0.25);
-  await expect(preview.locator(".notebook-preview-heading h1")).toHaveClass(/visually-hidden/);
+  await expect(preview.locator(".notebook-preview-heading h1")).toBeVisible();
   // Ferramentas só com ícone, na barra de baixo; o nome fica no aria-label.
   await expect(button.locator("span:not(.paper-tab-icon)")).toBeHidden();
   const dock = await preview.locator(".notebook-2d-dock").boundingBox();
