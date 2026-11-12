@@ -4828,3 +4828,8 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - Mantido de propósito: `src/views/helena-chat-preview-page.tsx` parece órfão, mas é carregado por `preview-helena-chat.html` e testado no CI. Os textos de interface dos componentes removidos continuam em `public/locales/*.json` porque o catálogo usa índices fixos (`ui-catalog-budget-baseline.json`); limpar esses textos exige remanejar IDs e fica fora desta mudança.
 - O CSS que só esses componentes usavam fica para a PR seguinte de limpeza de CSS.
 - Verificação: tsc, lint (0 erros), formatação, `api:check`, `i18n:check`, build, `performance:check` e a suíte de testes (2742 passam; os 8 de `listening-audio.test.ts` falham também na `main` neste ambiente local, por `Blob.stream`).
+
+## Erick Gabriel e Leo Bizzocchi fora da equipe, 2026-11-12
+
+- **O que mudou.** Os nomes de Erick Gabriel e Leo Bizzocchi saíram da lista da equipe da Galeria.Oli nos termos de uso e na política de privacidade (agora só José Oliver). O teste da política passou a exigir José Oliver e a garantir que os dois nomes não voltem.
+- **O que não mudou.** A versão da política (2026-11-05) não subiu, então ninguém precisa aceitar de novo. Se a saída deve contar como alteração da política, a versão sobe em uma mudança própria, decisão da proprietária. Os personagens Leo e Erick do Arcana e dos avatares são arte do app, não equipe, e ficaram como estão. Os registros históricos deste arquivo mantêm os nomes de quando eram verdade.
