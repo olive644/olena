@@ -37,3 +37,7 @@ public/speech-runtime/
 android/build/
 android/app/
 android/.gradle/
+
+# Capturas que os e2e gravam em tempo de execução (não são versionadas)
+artifacts/math-review-polish/
+artifacts/math-heart-timeout/
