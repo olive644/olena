@@ -347,19 +347,6 @@ export function ProfileView({
                   onChange={(event) => changeAccessibility({ haptics: event.target.checked })}
                 />
               </label>
-              <label>
-                <span>
-                  <strong>{uiText(3172)}</strong>
-                  <small>{uiText(3173)}</small>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={accessibility.notebook3dOptIn}
-                  onChange={(event) =>
-                    changeAccessibility({ notebook3dOptIn: event.target.checked })
-                  }
-                />
-              </label>
             </section>
             <section
               hidden={section !== "study"}

@@ -31,7 +31,7 @@ test("a barra de baixo tem só ícones, a seta de voltar fica à esquerda e a na
     .boundingBox();
   const area = await preview.boundingBox();
   expect(back!.x).toBeLessThan(area!.x + area!.width * 0.25);
-  await expect(preview.locator(".notebook-preview-heading h1")).toBeVisible();
+  await expect(preview.locator(".notebook-preview-heading h1")).toHaveCount(0);
   // Ferramentas só com ícone, na barra de baixo; o nome fica no aria-label.
   await expect(button.locator("span:not(.paper-tab-icon)")).toBeHidden();
   const dock = await preview.locator(".notebook-2d-dock").boundingBox();
@@ -40,11 +40,8 @@ test("a barra de baixo tem só ícones, a seta de voltar fica à esquerda e a na
   await page.screenshot({ path: info.outputPath("preview-barra-de-baixo.png") });
   await preview.getByRole("button", { name: "‹ Capa", exact: true }).click();
   await expect(preview.getByRole("button", { name: "Criar nova folha" })).toHaveCount(0);
-  const leaves = preview.getByRole("button", { name: "Ver folhas", exact: true });
-  await expect(leaves.locator("svg")).toBeVisible();
-  await expect(leaves).toBeEnabled();
-  await leaves.click();
-  await preview.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Ver folhas", exact: true })).toHaveCount(0);
+  await expect(page.locator(".notebook-shelves")).toBeVisible();
   if (info.project.name === "mobile") await expect(page.locator(".mobile-nav")).toBeVisible();
 });
 

@@ -57,6 +57,17 @@ test("divisória e marcador têm volume e a divisória continua levando à folha
       .first()
       .evaluate((node, name) => getComputedStyle(node).getPropertyValue(name), property);
   expect(await style(".notebook-attached-tab.is-divider", "transform")).toContain("matrix3d");
+  // O clique na lombada deixa o ponteiro sobre o marcador no layout móvel.
+  // Estabelecer o estado sem hover antes de medir a animação de repouso.
+  await page.mouse.move(0, 0);
+  await expect
+    .poll(() =>
+      page
+        .locator(".notebook-attached-tab.is-bookmark")
+        .first()
+        .evaluate((node) => node.matches(":hover")),
+    )
+    .toBe(false);
   // O marcador fica parado e balança uma vez só ao ser apontado ou focado.
   expect(await style(".notebook-attached-tab.is-bookmark", "animation-name")).toBe("none");
   await page.locator(".notebook-attached-tab.is-bookmark").first().hover();
@@ -64,7 +75,7 @@ test("divisória e marcador têm volume e a divisória continua levando à folha
     "notebook-bookmark-sway",
   );
   await divider.click();
-  await expect(page.getByText("Folhas 3 e 4 de 6")).toBeVisible();
+  await expect(page.getByText("Folhas 3 e 4 de 6")).toHaveText("Folhas 3 e 4 de 6");
 });
 
 test("com movimento reduzido o marcador fica parado", async ({ page }) => {
@@ -98,7 +109,7 @@ test("o X de remover folha é o colorido sem placa e as setas de virar são as r
   await expect(next.locator("svg.focus-paper-arrow")).toBeVisible();
   await expect(next).toHaveText("");
   await next.click();
-  await expect(page.getByText("Folhas 3 e 4 de 6")).toBeVisible();
+  await expect(page.getByText("Folhas 3 e 4 de 6")).toHaveText("Folhas 3 e 4 de 6");
   // No celular o caderno (com as abas) e a barra de baixo ficam centralizados na tela.
   if (info.project.name === "mobile") {
     const width = page.viewportSize()!.width;

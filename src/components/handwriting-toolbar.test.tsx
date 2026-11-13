@@ -224,9 +224,9 @@ describe("ações da seleção", () => {
     expect(props.onChangeTextSize).toHaveBeenCalledWith(-2);
   });
 
-  it("esconde o assistente de fórmula sem coordenadas nem traços selecionados", () => {
+  it("permite digitar uma fórmula sem selecionar coordenadas ou traços", () => {
     render(<HandwritingSelectionActions {...selectionProps()} />);
-    expect(screen.queryByLabelText("Fórmula matemática")).toBeNull();
+    expect(screen.getByLabelText("Fórmula matemática")).toBeTruthy();
   });
 
   it("no assistente, edita a fórmula, usa a leitura e insere só com texto", () => {

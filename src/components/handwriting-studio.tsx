@@ -239,6 +239,8 @@ export function HandwritingStudio({
     inkPrediction,
     penHoverPreview,
     penOnly,
+    penBarrelErases,
+    penTailErases,
     textAutoCorrect,
     coordinateMeasurements,
     equalCoordinateAxes,
@@ -1284,7 +1286,14 @@ export function HandwritingStudio({
       penDetectedRef.current = true;
       changePreference("penOnly", true);
     }
-    const rawTool: HandwritingTool = isPenEraserTip ? "eraser" : isPenBarrelButton ? "hand" : tool;
+    const rawTool: HandwritingTool =
+      isPenEraserTip && penTailErases
+        ? "eraser"
+        : isPenBarrelButton
+          ? penBarrelErases
+            ? "eraser"
+            : "hand"
+          : tool;
     // Borracha de fundo: em vez de apagar tinta, desenha um traço de cobertura que fura o fundo
     // importado ao ser solto. Daí em diante o gesto é o de um traço comum.
     const coverErase = rawTool === "eraser" && eraserBackground && backgroundAvailable;
@@ -1822,7 +1831,7 @@ export function HandwritingStudio({
     if (!formula) return;
     const coordinateSystem = coordinateSystems.find((system) => selectedIds.includes(system.id));
     const bounds = selectionBounds() ?? (coordinateSystem && coordinateBounds(coordinateSystem));
-    if (!bounds) return;
+    const origin = bounds ?? { x: 112, y: 80, height: 0 };
     remember();
     setStickies((current) => [
       ...current,
@@ -1830,10 +1839,10 @@ export function HandwritingStudio({
         id: strokeId(),
         kind: "text",
         formula: true,
-        x: Math.max(24, Math.min(PAGE_WIDTH - 460, bounds.x)),
-        y: Math.max(24, Math.min(PAGE_HEIGHT - 140, bounds.y + bounds.height + 18)),
+        x: Math.max(24, Math.min(PAGE_WIDTH - 460, origin.x)),
+        y: Math.max(24, Math.min(PAGE_HEIGHT - 260, origin.y + origin.height + 18)),
         width: 460,
-        height: 140,
+        height: 260,
         color: "yellow",
         ink: "#292432",
         text: formula.slice(0, 240),

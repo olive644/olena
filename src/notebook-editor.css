@@ -688,3 +688,24 @@
   box-shadow: 0 4px #d5ccba;
   pointer-events: none;
 }
+
+.notebook-formula-preview {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  min-height: 32px;
+  padding: 4px 18px;
+  color: #292432;
+  pointer-events: none;
+}
+.notebook-formula-preview svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+:root .handwriting-studio .handwriting-sticky--formula textarea {
+  height: 32px;
+  min-height: 32px;
+  flex: 0 0 32px;
+}

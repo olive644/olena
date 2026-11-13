@@ -1,11 +1,10 @@
+import { cosmeticAchievements } from "../domain/cosmetic-achievements";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { readStoredProfile, useStoredProfile } from "../hooks/use-stored-profile";
 import { useEnglishProgress } from "../hooks/use-english-progress";
 import { englishProgress } from "../domain/language-progress";
 import { ENGLISH_PROGRESS_KEY, parseEnglishLedger } from "../domain/english-progress-ledger";
-import { englishCosmeticGoals } from "../domain/english-cosmetics";
-import type { StoredProfile } from "../domain/profile-identity";
 import type { WorkspaceState } from "../domain/workspace";
 import { profileAvatarSource } from "../domain/profile-avatars";
 import { PROFILE_COVERS, profileCover } from "../domain/profile-covers";
@@ -16,8 +15,6 @@ import {
   profileBackground,
   cosmeticUnlocked,
 } from "../domain/profile-cosmetics";
-import { mathAchievements } from "../domain/math-achievements";
-import { readMathGame } from "../data/math-game-learning";
 import { writeSyncedStorage } from "../data/synced-storage";
 import { ProfileChoices } from "./app-navigation";
 import { PaperCloseIcon } from "./paper-close-icon";
@@ -32,18 +29,6 @@ const tabs = [
   ["cover", "Headers"],
   ["background", "Fundo do perfil"],
 ] as const;
-function cosmeticAchievements(
-  english: ReturnType<typeof englishProgress>,
-  history: StoredProfile["achievementHistory"],
-) {
-  return new Set([
-    ...mathAchievements(readMathGame())
-      .filter((item) => item.earned)
-      .map((item) => item.id),
-    ...Object.keys(history ?? {}),
-    ...englishCosmeticGoals(english),
-  ]);
-}
 export function ProfileAvatarDialog({
   onClose,
   initialCategory = "avatar",

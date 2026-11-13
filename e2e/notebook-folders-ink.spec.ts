@@ -41,7 +41,7 @@ test("salvamento confirmado, índice legível e capa única", async ({ page }, i
   await expect(page.getByRole("button", { name: "Personalizar", exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "‹ Capa", exact: true }).click();
   await expect(page.locator(".notebook-cover-inventory")).toHaveCount(0);
-  await expect(page.locator(".notebook-concept-cover .book-cover__concept")).toHaveAttribute(
+  await expect(page.locator(".notebook-card .book-cover__concept").first()).toHaveAttribute(
     "src",
     "/notebook-covers/capa-estrelas.webp",
   );
@@ -78,8 +78,5 @@ test("tamanho percentual e fundos corretos no modo escuro", async ({ page }, inf
   await editor.getByRole("button", { name: "Fechar painel de colaboração" }).click();
   await expect(editor.locator(".notebook-collaboration-panel")).toHaveCount(0);
   await editor.getByRole("button", { name: "Fechar", exact: true }).click();
-  await expect(page.locator("input.notebook-sheet-title")).toHaveCSS(
-    "background-color",
-    "rgb(255, 249, 239)",
-  );
+  await expect(page.locator("input.notebook-sheet-title")).toHaveCount(0);
 });

@@ -1,18 +1,23 @@
+import { NotebookClasp } from "./notebook-clasp";
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { CSSProperties } from "react";
 import type { NotebookTab } from "../domain/workspace";
 
 import { PaperMoonMark } from "./notebook-paper-tools";
-import { NOTEBOOK_COVER_ART } from "./notebook-cover-art";
+import type { NotebookCoverStyle } from "../domain/notebook-covers";
+import { notebookCoverTheme } from "../domain/notebook-covers";
+import { notebookCoverArt } from "./notebook-cover-art";
 
 export function NotebookCover({
   subjectColor,
+  coverStyle,
   title = uiText(1803),
   tabs = [],
   clasp = true,
   participants = [],
 }: {
   subjectColor: string;
+  coverStyle?: NotebookCoverStyle | undefined;
   title?: string;
   tabs?: NotebookTab[];
   clasp?: boolean;
@@ -28,6 +33,7 @@ export function NotebookCover({
   return (
     <span
       className="book-cover"
+      data-cover-theme={notebookCoverTheme(coverStyle)}
       style={{ "--notebook-accent": subjectColor } as CSSProperties}
       aria-hidden="true"
     >
@@ -36,7 +42,7 @@ export function NotebookCover({
       <span className="book-cover__face">
         <img
           className="book-cover__concept"
-          src={NOTEBOOK_COVER_ART}
+          src={notebookCoverArt(coverStyle)}
           alt=""
           draggable={false}
           loading="lazy"
@@ -48,9 +54,10 @@ export function NotebookCover({
         </span>
       </span>
       {clasp && (
-        <span className="book-cover__clasp">
-          <i />
-        </span>
+        <>
+          <span className="book-cover__clasp-anchor" aria-hidden="true" />
+          <NotebookClasp />
+        </>
       )}
       <span className="book-cover__spine">
         <i />

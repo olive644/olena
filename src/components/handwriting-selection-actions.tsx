@@ -191,7 +191,7 @@ export function HandwritingSelectionActions({
           </button>
         </>
       )}
-      {tool === "select" && (hasSelectedCoordinateSystem || selectedStrokeCount > 0) && (
+      {tool === "select" && (
         <div className="handwriting-formula-assist">
           <span>{uiText(222)}</span>
           <input

@@ -14,6 +14,9 @@ export function tabStyle(tab: NotebookTab, pageIndex: number, side: TabSide): CS
   const hinge = pageIndex % 2 ? 0.07 + tab.position * 0.36 : 0.43 - tab.position * 0.36;
   return {
     "--tab-color": tab.color,
+    "--bookmark-color": tab.color,
+    "--bookmark-light": `color-mix(in srgb, ${tab.color}, #fff9ef 48%)`,
+    "--bookmark-shade": `color-mix(in srgb, ${tab.color}, #292432 32%)`,
     "--tab-text": ["#FACC15", "#5887C9"].includes(tab.color.toUpperCase()) ? "#17151C" : "#FFF9EF",
     "--tab-position": tab.position,
     "--tab-side": side === "left" ? 0 : 1,
@@ -22,23 +25,25 @@ export function tabStyle(tab: NotebookTab, pageIndex: number, side: TabSide): CS
 }
 
 /** Desenho da aba, sem interação: o mesmo da camada fixa, usado na folha que está virando. */
-function NotebookTabFace({
+export function NotebookTabFace({
   tab,
   pageIndex,
   side,
   back = false,
+  riding = false,
   left,
 }: {
   tab: NotebookTab;
   pageIndex: number;
   side: TabSide;
   back?: boolean;
+  riding?: boolean;
   /** Posição horizontal já resolvida (marcador na folha que vira); sem ela vale a regra da camada fixa. */
   left?: string;
 }) {
   return (
     <span
-      className={`notebook-attached-tab notebook-ride-tab is-${tab.kind} is-${side}${back ? " is-back" : ""}`}
+      className={`notebook-attached-tab${riding ? " notebook-ride-tab" : ""} is-${tab.kind} is-${side}${back ? " is-back" : ""}`}
       style={{ ...tabStyle(tab, pageIndex, side), ...(left ? { left } : {}) }}
     >
       {tab.kind === "divider" ? (
@@ -67,8 +72,15 @@ export function NotebookRidingTab({
 }) {
   return (
     <span className="notebook-ride" aria-hidden="true">
-      <NotebookTabFace tab={tab} pageIndex={pageIndex} side={side} {...(left ? { left } : {})} />
       <NotebookTabFace
+        riding
+        tab={tab}
+        pageIndex={pageIndex}
+        side={side}
+        {...(left ? { left } : {})}
+      />
+      <NotebookTabFace
+        riding
         tab={tab}
         pageIndex={pageIndex}
         side={side === "left" ? "right" : "left"}

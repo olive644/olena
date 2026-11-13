@@ -45,11 +45,11 @@ test("Voltar preserva resposta e foco de teclado original", async ({ page }) => 
     await expect(choice).toBeFocused({ timeout: 500 });
   }).toPass();
   await expect(choice).toHaveCSS("outline-style", "none");
-  await expect(choice).toHaveCSS("text-decoration-line", "underline");
+  await expect(choice).toHaveCSS("text-decoration-line", "none");
   expect(await choice.evaluate((el) => getComputedStyle(el).textDecorationColor)).not.toBe(
     "rgb(250, 204, 21)",
   );
-  await expect(choice).toHaveCSS("filter", "none");
+  await expect(choice).toHaveCSS("filter", "brightness(1.2)");
   await page.keyboard.press("Enter");
   await expect(choice).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "Avançar", exact: true }).click();

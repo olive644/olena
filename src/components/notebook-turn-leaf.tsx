@@ -1,3 +1,4 @@
+import { PaperDigits } from "./paper-digits";
 import type { CSSProperties, ReactNode } from "react";
 import type { NotebookTab, StudyNote } from "../domain/workspace";
 import { NotebookRidingTab } from "./notebook-tab-art";
@@ -42,8 +43,7 @@ function FaceContent({
       ) : (
         <div className="notebook-empty-paper">{page?.content && <p>{page.content}</p>}</div>
       )}
-      <strong>{page?.title ?? ""}</strong>
-      <span>{number ?? ""}</span>
+      {number !== undefined && <PaperDigits value={String(number)} />}
     </>
   );
 }

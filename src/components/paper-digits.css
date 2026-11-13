@@ -35,3 +35,10 @@
   --digit-fold: #fff;
   --digit-edge: #d8ccb8;
 }
+.paper-digits__slash {
+  width: 0.32em;
+  height: 0.8em;
+  margin-inline: 0.07em;
+  background: linear-gradient(110deg, var(--digit-face) 0 65%, var(--digit-fold) 65%);
+  clip-path: polygon(65% 0, 100% 0, 35% 100%, 0 100%);
+}

@@ -30,6 +30,29 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   const card = page.locator(".notebook-card").filter({ hasText: "Meu atlas de ideias" });
   await card.click();
   await expect(page.locator(".notebook-journey")).toBeVisible();
+  const openingPhases = await page.locator(".notebook-journey-clasp").evaluate((node) => {
+    const effect = node.getAnimations()[0]?.effect as KeyframeEffect;
+    const frames = effect.getKeyframes();
+    const duration = Number(effect.getTiming().duration);
+    const start = frames[1]!.computedOffset;
+    const end = frames[2]!.computedOffset;
+    const carrier = node.closest(".notebook-journey")!;
+    const cover = carrier
+      .getAnimations()
+      .find((animation) =>
+        (animation.effect as KeyframeEffect)
+          .getKeyframes()
+          .some((frame) => "--cover-angle" in frame),
+      )!.effect as KeyframeEffect;
+    return {
+      claspMs: (end - start) * duration,
+      claspEnd: end,
+      coverStart: cover.getKeyframes()[1]!.computedOffset,
+    };
+  });
+  expect(openingPhases.claspMs).toBeCloseTo(420, 0);
+  expect(openingPhases.claspEnd).toBeLessThanOrEqual(openingPhases.coverStart);
+
   await page.locator(".notebook-journey").evaluate(() =>
     document.getAnimations().forEach((animation) => {
       animation.pause();
@@ -37,6 +60,12 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
     }),
   );
   await page.screenshot({ path: testInfo.outputPath("abertura.png") });
+  await expect(page.locator(".notebook-journey-book > .notebook-journey-clasp")).toHaveCount(1);
+  await expect(page.locator(".notebook-journey-clasp")).toHaveCSS("transform-style", "preserve-3d");
+  await expect(page.locator(".notebook-journey-clasp i")).toHaveCSS(
+    "backface-visibility",
+    "hidden",
+  );
   const clasp = await page.locator(".notebook-journey-clasp").boundingBox();
   const carrier = await page.locator(".notebook-journey").boundingBox();
   expect(clasp!.x).toBeGreaterThan(carrier!.x + carrier!.width * 0.9);
@@ -58,30 +87,24 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   ]);
   await page.getByRole("button", { name: "‹ Capa" }).click();
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
-  const cover = page.getByRole("button", { name: /Abrir caderno .* folheando a capa/ });
-  await expect(cover).toBeVisible();
-  await cover.click();
+  await expect(card).toBeVisible();
+  await expect(page.getByRole("button", { name: "Ver folhas", exact: true })).toHaveCount(0);
+  await card.click();
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
   const leftSheet = (await page.locator(".notebook-sheet").first().boundingBox())!;
   await page.mouse.move(leftSheet.x + 36, leftSheet.y + leftSheet.height / 2);
   await page.mouse.down();
   await page.mouse.move(leftSheet.x + 118, leftSheet.y + leftSheet.height / 2, { steps: 5 });
   await page.mouse.up();
-  await expect(cover).toBeVisible();
-  await expect(cover).toBeEnabled();
-  const closed = (await cover.boundingBox())!;
-  await page.mouse.move(closed.x + closed.width * 0.8, closed.y + closed.height / 2);
-  await page.mouse.down();
-  await page.mouse.move(closed.x + closed.width * 0.25, closed.y + closed.height / 2, { steps: 5 });
-  await page.mouse.up();
+  await expect(page.locator(".notebook-journey")).toHaveCount(0);
+  await expect(card).toBeVisible();
+  await card.click();
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
   await expect(toolbar).toBeVisible();
   const title = page.getByRole("textbox", { name: "Título da folha 1", exact: true });
-  await title.fill("Mapa das estrelas");
-  await title.press("Enter");
-  await expect(title).toHaveValue("Mapa das estrelas");
+  await expect(title).toHaveCount(0);
   await expect(page.getByRole("dialog", { name: "Escrever à mão" })).toHaveCount(0);
-  await page.getByRole("button", { name: "Abrir preview de Mapa das estrelas, folha 1" }).click();
+  await page.getByRole("button", { name: "Abrir preview de Nova folha, folha 1" }).click();
   await expect(page.locator(".notebook-page-journey")).toBeVisible();
   await expect
     .poll(() =>
@@ -101,28 +124,34 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   await expect(editor).toBeVisible();
   await expect(editor.locator(".handwriting-canvas")).toBeVisible();
   await editor.getByRole("button", { name: "Fechar", exact: true }).click();
-  await expect(title).toBeVisible();
+  await expect(title).toHaveCount(0);
   await page.getByRole("button", { name: "Criar nova folha", exact: true }).click();
   await expect(page.locator(".notebook-page-journey")).toBeVisible();
   await expect(page.locator(".notebook-page-journey")).toHaveCount(0);
   await expect(editor).toBeVisible();
   await editor.getByRole("button", { name: "Fechar", exact: true }).click();
-  await expect(title).toBeVisible();
+  await expect(title).toHaveCount(0);
   await page.getByRole("button", { name: "Colocar marcador" }).click();
-  await page.locator('.notebook-sheet[data-page-id="one"]').click();
   await page.getByRole("button", { name: "Sol", exact: true }).click();
   await page.getByRole("button", { name: "Pronto", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Marcador", exact: true })).toHaveCount(0);
+  await page.locator('.notebook-sheet[data-page-id="one"]').click();
   await expect(page.locator('.notebook-attached-tab svg[data-motif="sun"]')).toHaveCount(1);
   await page.getByRole("button", { name: "Colocar marcador" }).click();
+  await page.getByRole("button", { name: "Pronto", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Marcador", exact: true })).toHaveCount(0);
   // Perto da lombada, para os dois marcadores não caírem no mesmo ponto da pilha da esquerda.
   await page.locator('.notebook-sheet[data-page-id="two"]').click({ position: { x: 40, y: 120 } });
-  await page.getByRole("button", { name: "Pronto", exact: true }).click();
   await expect(page.locator('.notebook-attached-tab svg[data-motif="moon"]')).toHaveCount(1);
   await page.getByRole("button", { name: "Colocar divisória" }).click();
+  await page
+    .getByRole("dialog", { name: "Divisória", exact: true })
+    .getByRole("button", { name: "Pronto", exact: true })
+    .click();
+  await expect(page.getByRole("dialog", { name: "Divisória", exact: true })).toHaveCount(0);
   const book = page.locator(".notebook-paper-spread");
   const rect = (await book.boundingBox())!;
   await page.mouse.click(rect.x + rect.width - 6, rect.y + rect.height * 0.32);
-  await page.getByRole("button", { name: "Pronto", exact: true }).click();
   await page.screenshot({ path: testInfo.outputPath("caderno-celeste.png") });
   await page.getByRole("button", { name: "Próxima ›" }).click();
   await expect(book).toHaveAttribute("aria-busy", "false");
@@ -151,13 +180,6 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   await page.getByRole("button", { name: "‹ Capa", exact: true }).click();
   await expect(page.locator(".notebook-journey")).toBeVisible();
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
-  await expect(page.locator(".notebook-concept-cover .book-cover")).toBeVisible();
-  await page.getByRole("button", { name: "Ver folhas", exact: true }).click();
-  await expect(page.locator(".notebook-journey")).toBeVisible();
-  await expect(page.locator(".notebook-journey")).toHaveCount(0);
-  await page.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
-  await expect(page.locator(".notebook-journey")).toBeVisible();
-  await expect(page.locator(".notebook-journey")).toHaveCount(0);
   await expect(card).toBeFocused();
   await expect(card.locator('[data-motif="sun"]')).toHaveCount(1);
   await page.screenshot({ path: testInfo.outputPath("capa-celeste.png") });
@@ -165,7 +187,7 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   await page.emulateMedia({ reducedMotion: "reduce" });
   await card.click();
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
-  await expect(title).toHaveValue("Mapa das estrelas");
+  await expect(title).toHaveCount(0);
   await expect(page.locator('.notebook-attached-tab svg[data-motif="sun"]')).toHaveCount(1);
   if (testInfo.project.name === "mobile") {
     await page.setViewportSize({ width: 320, height: 740 });

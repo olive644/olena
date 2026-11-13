@@ -152,7 +152,10 @@ test("fórmula branca e comandos compactos em ambos os temas", async ({ page }, 
       "background-color",
       "rgb(255, 255, 255)",
     );
-    await page.getByRole("textbox", { name: "Fórmula matemática" }).fill("x² + y² = 1");
+    await editor
+      .locator(".handwriting-formula-assist")
+      .getByRole("textbox", { name: "Fórmula matemática" })
+      .fill("x² + y² = 1");
     await page.getByRole("button", { name: "Inserir fórmula", exact: true }).click();
     await expect(editor.locator(".handwriting-sticky--formula")).toHaveCount(
       theme === "dark" ? 2 : 3,

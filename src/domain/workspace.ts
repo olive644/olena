@@ -95,7 +95,7 @@ export type NotebookTab = {
 
 export type StudyNotebook = {
   homeFavorite?: boolean;
-  coverStyle?: "helena-estrelas" | "oliver-estrelas";
+  coverStyle?: import("./notebook-covers").NotebookCoverStyle;
   paperTabs?: NotebookTab[];
   subjectIds?: string[];
   dividerPosition?: "side" | "bottom";
@@ -218,6 +218,7 @@ type HomeworkList = {
 };
 
 export type WorkspaceState = {
+  notebookShelfName?: string;
   libraryCollections?: LibraryCollection[];
   version: typeof WORKSPACE_VERSION;
   subjects: Subject[];
@@ -283,6 +284,7 @@ export type WorkspaceAction =
     }
   | { type: "material/removed"; id: string }
   | { type: "notebook/favorite-toggled"; id: string }
+  | { type: "notebook/shelf-named"; name: string }
   | { type: "practice/recorded"; activity: PracticeActivity }
   | { type: "workspace/replaced"; workspace: WorkspaceState }
   | { type: "subject/added"; id?: string; name: string; color: string }
@@ -478,6 +480,8 @@ function addDays(dateKey: string, days: number): string {
 
 export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): WorkspaceState {
   switch (action.type) {
+    case "notebook/shelf-named":
+      return { ...state, notebookShelfName: action.name.trim().slice(0, 40) };
     case "workspace/replaced":
       return {
         ...action.workspace,

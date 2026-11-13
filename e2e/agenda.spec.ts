@@ -130,7 +130,8 @@ test("day panel matches its column, keeps a plain date and only text selectable"
     const action = day.getByRole("button", { name: "Criar tarefa", exact: true });
     await expect(action).toHaveCSS("user-select", "none");
     await action.focus();
-    await expect(action).toHaveCSS("text-decoration-line", "underline");
+    await expect(action).toHaveCSS("text-decoration-line", "none");
+    await expect(action).toHaveCSS("filter", "brightness(1.2)");
     await expect(action.locator("svg")).toHaveCSS("user-select", "none");
     const copy = day.locator("h2");
     expect(await copy.evaluate((element) => getComputedStyle(element).userSelect)).not.toBe("none");
@@ -666,7 +667,8 @@ test("calendar stays visible and its icon opens the month selector", async ({ pa
     await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
   await toggle.focus();
   await expect(toggle).toHaveCSS("outline-style", "none");
-  await expect(toggle).toHaveCSS("text-decoration-line", "underline");
+  await expect(toggle).toHaveCSS("text-decoration-line", "none");
+  await expect(toggle).toHaveCSS("filter", "brightness(1.2)");
   await page.keyboard.press("Enter");
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
   const picker = page.getByRole("dialog", { name: "Escolher mês e ano" });

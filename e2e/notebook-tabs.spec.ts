@@ -45,7 +45,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
     .getByRole("button", { name: "Fechar", exact: true })
     .click();
   await expect(preview.getByRole("button", { name: /Abrir preview de / })).toHaveCount(2);
-  await expect(preview.getByText("Folhas 1 e 2 de 2")).toBeVisible();
+  await expect(preview.getByText("Folhas 1 e 2 de 2")).toHaveText("Folhas 1 e 2 de 2");
   await preview.getByRole("button", { name: "Criar nova folha" }).click();
   await page
     .getByRole("dialog", { name: "Escrever à mão" })
@@ -107,7 +107,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
     await page.screenshot({ path: testInfo.outputPath("folha-em-movimento.png") });
     await page.mouse.up();
   }
-  await expect(preview.getByText("Folhas 3 de 3")).toBeVisible();
+  await expect(preview.getByText("Folhas 3 de 3")).toHaveText("Folhas 3 de 3");
   await expect(page.getByRole("dialog", { name: "Escrever à mão" })).toHaveCount(0);
   await preview.getByRole("button", { name: "‹ Anterior" }).click();
   await expect(book).toHaveAttribute("aria-busy", "false");
@@ -144,10 +144,21 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
       await page.mouse.up();
     }
   }
-  await dragPiece(preview.getByRole("button", { name: "Colocar divisória" }), 0.99, 0.35);
+  await preview.getByRole("button", { name: "Colocar divisória" }).click();
   await preview.getByLabel("Nome da marcação").fill("Matemática");
   await preview.getByRole("button", { name: "Verde", exact: true }).click();
   await preview.getByRole("button", { name: "Pronto", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Divisória", exact: true })).toHaveCount(0);
+  const place = (x: number, y: number) =>
+    book.evaluate(
+      (node, point) => {
+        const r = node.getBoundingClientRect();
+        return { x: r.x + r.width * point.x, y: r.y + r.height * point.y };
+      },
+      { x, y },
+    );
+  const firstPosition = await place(0.99, 0.35);
+  await page.mouse.click(firstPosition.x, firstPosition.y);
   const divider = preview.getByRole("button", {
     name: "Divisória Matemática, folha 2",
     exact: true,
@@ -157,8 +168,13 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   await dragPiece(divider, 0.99, 0.7);
   await preview.getByRole("button", { name: "Pronto", exact: true }).click();
   expect((await divider.boundingBox())!.y - (await book.boundingBox())!.y).toBeGreaterThan(beforeY);
-  await dragPiece(preview.getByRole("button", { name: "Colocar marcador" }), 0.28, 0.6);
+  await preview.getByRole("button", { name: "Colocar marcador" }).click();
   await preview.getByRole("button", { name: "Pronto", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Marcador", exact: true })).toHaveCount(0);
+  {
+    const position = await place(0.28, 0.6);
+    await page.mouse.click(position.x, position.y);
+  }
   const marker = preview.getByRole("button", { name: "Marcador Marcador, folha 1", exact: true });
   await expect(marker).toBeVisible();
   await expect(marker.locator(".notebook-attached-tab__moon")).toHaveCount(1);
@@ -166,8 +182,13 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   const markerBox = (await marker.boundingBox())!;
   const currentBox = (await book.boundingBox())!;
   expect(markerBox.y + markerBox.height).toBeGreaterThan(currentBox.y + currentBox.height);
-  await dragPiece(preview.getByRole("button", { name: "Colocar marcador" }), 0.73, 0.7);
+  await preview.getByRole("button", { name: "Colocar marcador" }).click();
   await preview.getByRole("button", { name: "Pronto", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Marcador", exact: true })).toHaveCount(0);
+  {
+    const position = await place(0.73, 0.7);
+    await page.mouse.click(position.x, position.y);
+  }
   const markerOnSecondPage = preview.getByRole("button", {
     name: "Marcador Marcador, folha 2",
     exact: true,
@@ -178,20 +199,20 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   await expect(preview.getByRole("button", { name: /Abrir preview de .*folha 2/ })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("abas-do-caderno.png") });
   await preview.getByRole("button", { name: "Próxima ›" }).click();
-  await expect(preview.getByText("Folhas 3 de 3")).toBeVisible();
+  await expect(preview.getByText("Folhas 3 de 3")).toHaveText("Folhas 3 de 3");
   await expect(divider).toBeVisible();
   await expect(marker).toBeVisible();
   await expect(markerOnSecondPage).toBeVisible();
   await expect.poll(() => isTabExposed(marker)).toBe(false);
   await page.screenshot({ path: testInfo.outputPath("marcadores-sob-as-folhas.png") });
   await divider.click();
-  await expect(preview.getByText("Folhas 1 e 2 de 3")).toBeVisible();
+  await expect(preview.getByText("Folhas 1 e 2 de 3")).toHaveText("Folhas 1 e 2 de 3");
   await expect(preview.getByLabel("Nome da marcação")).toHaveCount(0);
   const secondMarkerBox = (await markerOnSecondPage.boundingBox())!;
   await markerOnSecondPage.click({
     position: { x: secondMarkerBox.width / 2, y: secondMarkerBox.height - 8 },
   });
-  await expect(preview.getByText("Folhas 1 e 2 de 3")).toBeVisible();
+  await expect(preview.getByText("Folhas 1 e 2 de 3")).toHaveText("Folhas 1 e 2 de 3");
   await preview.getByRole("button", { name: "Editar marcas", exact: true }).click();
   const activeTool = preview.getByRole("button", { name: "Concluir edição", exact: true });
   await expect(activeTool).toHaveCSS("background-color", "rgb(116, 51, 224)");
@@ -262,12 +283,9 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
       await expect
         .poll(() => page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight))
         .toBeLessThanOrEqual(1);
-      const cover = await preview.locator(".notebook-concept-cover .book-cover").boundingBox();
-      await expect(page.locator(".mobile-nav")).toBeHidden();
-      await expect(preview.getByRole("button", { name: "Criar nova folha" })).toHaveCount(0);
-      expect(cover).not.toBeNull();
-      expect(cover!.y + cover!.height).toBeLessThan(size.height);
-      await preview.getByRole("button", { name: "Ver folhas" }).click();
+      await expect(page.locator(".mobile-nav")).toBeVisible();
+      await expect(page.locator(".notebook-card").first()).toBeInViewport();
+      await page.locator(".notebook-spine").first().click();
       const spread = await book.boundingBox();
       expect(spread!.width).toBeLessThan(size.width);
       const create = await preview.getByRole("button", { name: "Criar nova folha" }).boundingBox();
@@ -276,13 +294,13 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
       await expect(page.locator(".notebook-journey")).toHaveCount(0);
     }
   }
-  await preview.getByRole("button", { name: "Ver folhas" }).click();
+  await page.locator(".notebook-spine").first().click();
   await preview.getByRole("button", { name: "Remover folha 2", exact: true }).click();
   await expect(preview.locator(".notebook-crumple")).toBeVisible();
   await page.waitForTimeout(500);
   await page.screenshot({ path: testInfo.outputPath("papel-amassando.png") });
   await expect(preview.locator(".notebook-crumple")).toHaveCount(0);
-  await expect(preview.getByText("Folhas 1 e 2 de 2")).toBeVisible();
+  await expect(preview.getByText("Folhas 1 e 2 de 2")).toHaveText("Folhas 1 e 2 de 2");
   await expect(preview.getByRole("button", { name: "Divisória Matemática, folha 2" })).toHaveCount(
     0,
   );
@@ -290,13 +308,14 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   await page.emulateMedia({ reducedMotion: "reduce" });
   await preview.getByRole("button", { name: "Remover folha 2", exact: true }).click();
   await expect(preview.locator(".notebook-crumple")).toHaveCount(0);
-  await expect(preview.getByText("Folhas 1 de 1")).toBeVisible();
+  await expect(preview.getByText("Folhas 1 de 1")).toHaveText("Folhas 1 de 1");
   await preview.getByRole("button", { name: "Colocar divisória" }).focus();
-  await page.keyboard.press("Enter");
-  await preview.getByRole("button", { name: /Abrir preview de .*folha 1/ }).focus();
   await page.keyboard.press("Enter");
   await expect(preview.getByLabel("Nome da marcação")).toBeVisible();
   await preview.getByRole("button", { name: "Pronto", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Divisória", exact: true })).toHaveCount(0);
+  await preview.getByRole("button", { name: /Abrir preview de .*folha 1/ }).focus();
+  await page.keyboard.press("Enter");
   const keyboardDivider = preview.getByRole("button", {
     name: "Divisória Divisória, folha 1",
     exact: true,

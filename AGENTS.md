@@ -62,3 +62,7 @@ Leia `docs/CI_MINUTOS.md` e `docs/OPERACAO_E_CUSTOS.md` antes de mexer em `.gith
 ## Foco informativo e realce global, 03/11/2026
 
 Realçar seleções controla somente o reforço opcional de aria-pressed/aria-selected/input marcado, aplicado pela preferência global data-highlight-selections. Foco de teclado em controles é obrigatório mesmo com a opção desligada. Títulos e marcos de leitura com tabindex=-1 recebem foco programático para anúncio e continuidade, mas nunca sublinhado, filtro ou sombra de botão. A exceção global em paper-controls.css exclui botões, links, campos, summary, papéis interativos e edição. Não adicionar CSS local forçando sublinhado em títulos informativos. Testar após navegação por teclado, não apenas clique, pois :focus-visible muda com a modalidade.
+
+## Realce amarelo configurável, ajuste solicitado em 12/11/2026
+
+O proprietário pediu que o amarelo de foco também respeite Realçar seleções. Quando desligado, não forçar sublinhado, sombra ou borda amarela em controles focados. Preservar foco perceptível de teclado com realce neutro, sem outline. Quando ligado, preservar o realce amarelo compartilhado. Marcos de leitura continuam sem decoração. LibraryDialog anuncia o título ao abrir, sem focar automaticamente o X. Essa orientação atualiza a regra anterior que mantinha amarelo de teclado mesmo com a opção desligada.

@@ -47,7 +47,7 @@ test("caderno usa uma única prévia para criar, abrir, folhear e remover", asyn
   if (await editor.getByRole("button", { name: "Fechar e manter rascunho" }).isVisible())
     await editor.getByRole("button", { name: "Fechar e manter rascunho" }).click();
   await expect(preview).toBeVisible();
-  await expect(preview.getByText("2 folhas guardadas")).toBeVisible();
+  await expect(preview.getByText("2 folhas guardadas")).toHaveCount(0);
   await expect(preview.getByRole("button", { name: "Criar nova folha" })).toBeVisible();
 
   const book = preview.getByLabel("Prévia folheável do caderno");
@@ -59,10 +59,11 @@ test("caderno usa uma única prévia para criar, abrir, folhear e remover", asyn
     steps: 8,
   });
   await page.mouse.up();
-  await expect(preview.getByText("Folhas 1 e 2 de 2")).toBeVisible();
+  await expect(preview.getByText("Folhas 1 e 2 de 2")).toHaveText("Folhas 1 e 2 de 2");
 
   await preview.getByRole("button", { name: "Remover folha 2", exact: true }).click();
-  await expect(preview.getByText("1 folha guardada")).toBeVisible();
+  await expect(preview.getByText("1 folha guardada")).toHaveCount(0);
+  await expect(preview.getByText("Folhas 1 de 1", { exact: true })).toHaveText("Folhas 1 de 1");
   await preview.getByRole("button", { name: /Abrir preview de Nova folha/ }).click();
   editor = page.getByRole("dialog", { name: "Escrever à mão" });
   await expect(editor).toBeVisible();

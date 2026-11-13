@@ -4856,6 +4856,77 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - **Correção.** Os três números foram atualizados para refletir a navegação sem o Modo Sala. Nenhum código do app mudou nesta correção.
 - **Prova.** Os três testes passam localmente no desktop e no celular (4 passam, 2 pulados por serem de outro projeto). A suíte completa roda no CI.
 
+## Folhas importadas, fórmulas e botões da caneta, 12/11/2026
+
+Entrada de PDF permanece em Upload dentro da folha, sem alteração no + da prateleira. Importar todas também aceita arquivos de uma página. Fechar ou trocar a importação invalida a geração em andamento, sem inserir páginas de uma operação cancelada.
+
+Fórmulas podem ser criadas sem selecionar tinta. O texto-fonte permanece no documento existente e é editável, movível e redimensionável. Preview SVG e exportação Canvas compartilham a geometria de frações empilhadas, raízes, expoentes, índices e símbolos comuns. É um subconjunto de LaTeX com limite de 240 caracteres, não um compilador TeX completo. Sem dependência ou serviço novo. Fórmulas antigas continuam usando o mesmo campo formula/text.
+
+Preferências existentes ganharam borracha pelo botão lateral e pela ponta traseira. Padrões preservam o comportamento anterior: lateral move a folha, ponta traseira apaga. A gravação usa o armazenamento sincronizado já existente; não foi criado perfil por modelo físico de caneta.
+
+Provas: 56 testes focados passaram. Edge PC/mobile claro/escuro passou em quatro casos de fórmula, com capturas inspecionadas e aumento da área de preview após detectar legibilidade insuficiente. PDF: sete casos passaram e um skip desktop-only já existente foi preservado; cobre upload, anotação, salvar, recarregar e baixar PDF. Verificação integral e teste adicional de persistência da fórmula em andamento. Não verificados: caneta física, contas/nuvem reais, impressão física, renderização integral de LaTeX. Áudio vinculado, plugins, personalização da barra e extensão nativa de monitor não estão implementados nesta etapa.
+
+## Edição da prateleira de cadernos, 12/11/2026
+
+Sino oculto apenas na aba Cadernos. Lápis central acima da estante somente quando há cadernos. Edição apresenta ferramentas centrais de madeira: salvar (apagado enquanto não há mudanças), nome e lixeira; a seta amarela à esquerda descarta o rascunho. Mudanças de nome e remoções ficam pendentes até salvar. O nome é um campo opcional validado no workspace, com limite de 40 caracteres e merge compatível com estados antigos. Não há novo banco, serviço ou regra externa.
+
+Placa de madeira construída e instalada por animação de martelo, respeitando movimento reduzido. Novo caderno, nome, inspeção e confirmações usam o mesmo material. Inspeção reutiliza NotebookCover, sem reconstituir a capa, e mostra páginas e data curta com PaperDigits. Remover abre uma confirmação própria; excluir a prateleira explica a exclusão dos cadernos e páginas. Cancelar preserva tudo, e nada é excluído antes de salvar.
+
+Correção compartilhada: LibraryDialog anuncia seu título com foco programático em marco não interativo, em vez de destacar automaticamente o X. Realce opcional de seleção continua condicionado à configuração global. Foco visível por teclado continua obrigatório. PaperDigits passou a renderizar barras de datas como recortes, preservando a leitura acessível do valor completo.
+
+Validação desta etapa: 40 testes focados passaram; seis E2E Edge PC/mobile claro/escuro passaram, incluindo centralização, animação da placa, confirmação/cancelamento de remoção, rollback do rascunho, persistência após recarregar, exclusão confirmada, contagem e data curta. Capturas conferidas manualmente, incluindo inspeção e Novo caderno nos dois temas. Nenhuma conta real ou sincronização entre dispositivos foi exercitada. A verificação integral anterior ao editor passou com 2649 testes; a rodada do editor é registrada separadamente, sem reaproveitar aquele resultado como se fosse do novo estado. PR continua sem publicação por orientação do proprietário.
+
+Ajustes finais solicitados: ferramentas agrupadas ao centro com ícones recortados próprios, Novo caderno e inspeção na madeira, páginas/data curta com PaperDigits e confirmação antes de retirar cada caderno. O fundo interno aprovado é o mesmo do antigo tema escuro, fixado em ambos os temas com a mistura #201d26/#654237 e o mesmo detalhe facetado. Foram descartadas as versões claras de madeira do fundo.
+
+A pedido explícito do proprietário, o realce amarelo de foco também passa a obedecer Realçar seleções globalmente. Desligado usa brilho neutro perceptível por teclado, sem amarelo, inclusive em campos e X; ligado mantém o amarelo. O teste global foi atualizado para verificar os dois estados e preservar a ausência de decoração em títulos de leitura. Essa alteração substitui a orientação anterior de foco sempre amarelo, sem remover foco visível nem introduzir outlines.
+
+Rodada final de realce/fundo: 10 E2E Edge aprovados sem skips, PC/mobile claro/escuro, com a opção de realce ligada e desligada, foco de leitura sem decoração, foco de teclado neutro quando desligado, edição e confirmação de cadernos. Capturas finais conferidas nos dois temas, com o mesmo fundo interno escuro. Catálogos e TypeScript passaram; não equivale a CI remoto ou nova verificação integral do editor.
+
+## 13/11/2026, capas conquistadas e retirada do renderizador experimental
+
+Pedido vigente: duas capas originais inspiradas nas ilhas, sem personagens e sem colar imagens das ilhas. Inglês usa arquitetura do cais, lanternas, arco e água de papel; Matemática usa sólidos geométricos, régua e construção em azul, creme e amarelo. Artes raster originais produzidas pela ferramenta integrada image_gen; fontes em scripts/notebook-cover-art/sources. Lombadas recortadas da própria encadernação, versões WebP geradas pelo script. Padrão e IDs legados preservados. Seleção em categoria Capas no modal de inspeção, bloqueada conforme os mesmos 100 acertos dos headers do perfil, com rascunho/cancelar/salvar da prateleira. coverStyle faz parte do workspace e do merge atual; páginas não foram migradas ou recoloridas.
+
+O proprietário também pediu remover tudo do caderno 3D. Retirados a opção experimental, prefetch, renderizador WebGL, cenas, modelos, testes exclusivos do recurso retirado, sons exclusivos e dependências Three/@types/three. O desenho da capa original foi preservado e movido para notebook-cover-paint.ts fora da pasta removida. NotebookPaperTools continua com as ferramentas 2D; foram retiradas apenas as interfaces de resolução da cena. Preferências antigas não reativam o renderizador; as demais preferências continuam. Orçamento normal de JS intacto: a exceção do chunk removido foi substituída por uma asserção que rejeita seu reaparecimento, sem aumentar tetos ou mudar workflows.
+
+Provas locais em andamento nesta revisão. Resultados antigos com cena 3D não validam o novo estado. CI remoto será acompanhado pelo Claude, conforme pedido, após publicação da PR. Sem alteração de painel, Firebase, OAuth ou dados de contas reais.
+
+## 13/11/2026, fechamento direto e lacre integrado
+
+A capa fechada deixa de ser uma parada intermediária no fluxo da prateleira. Fechar pela seta Capa, pelo arraste da primeira folha ou pelo fim do caderno chama o retorno existente à posição original da prateleira. Removidos o título ao lado da seta, o total de folhas guardadas e os controles superiores Ver folhas. O índice da barra inferior continua disponível.
+
+O lacre permanece preso à borda direita. O recorte visual fica em sua própria face, enquanto o suporte preserva a transformação espacial dos filhos. O medalhão amarelo é filho do lacre, acompanha seu giro e não aparece através do verso aberto. Não há animação independente do medalhão. PC e celular, temas claro e escuro, são cobertos nos testes de capas; o teste celeste cobre abertura, fechamento, arraste e retorno com foco restaurado.
+`nValidação desta revisão: 18 E2E Edge passaram, sem skips, incluindo capas nos dois temas e nas duas larguras, abertura, fechamento por arraste/setas e movimento reduzido. TypeScript sem emissão e git diff --check passaram. A rodada anterior dos controles, pastas e abas também passou nesses contratos ajustados. Captura final conferida: lacre à direita e medalhão oculto no verso. Nenhuma publicação ou CI remoto realizado nesta revisão.
+
+## 13/11/2026, Todas as cores e fases do lacre
+
+A capa LGBT Todas as cores é livre para todas as contas, sem conquista. Usa seis faixas da bandeira em papel facetado, costura creme, cantoneiras amarelas e a encadernação original. Fonte nativa paintPrideArt em notebook-cover-paint.ts, exportada pelo mesmo gerador para capa, verso e lombada WebP. O ID pride é validado e sincronizado no coverStyle existente, sem mudar páginas ou requisitos das capas de disciplinas.
+
+O lacre permanece à direita com o medalhão preso à própria peça. Seu giro dura 420 ms com a curva de suavização do caderno. Na abertura, destrava após o transporte e antes de virar a capa. No fechamento, a capa encosta primeiro, depois o lacre trava e só então o caderno vira de lado e desliza para a prateleira. Movimento reduzido continua sem viagem animada.
+Validação local desta etapa: dois testes de domínio, 16 E2E Edge de capas e navegação, mais dois E2E instrumentados do tempo e sequência do lacre passaram. PC/mobile e claro/escuro cobertos nas capas, incluindo seleção livre, salvamento, recarga e caderno aberto LGBT. Captura de capa conferida. TypeScript e diff-check verdes. Sem CI remoto nesta etapa.
+
+## 13/11/2026, inspeção das ferramentas e marcações
+
+As cinco ferramentas da barra inferior mostram a legenda de papel por hover ou foco visível, usando as cores e transição do rail desktop sem deslocar os botões. O nome acessível continua em aria-label. Lua e Sol usam o botão creme original e confere explícito.
+
+Divisória e marcador agora abrem o modal original antes da colocação. A peça real é usada na prévia, em dimensões contidas, sem os transformadores exclusivos de folheamento. Cor e motivo atualizam o rascunho da prévia; confirmar fecha com animação e só então permite posicionar na folha. X/Escape cancelam a configuração nova. Campos, paleta e confere usam os elementos existentes do editor. O nome da divisória permanece horizontal.
+
+Retirados os títulos sobre as folhas e o contador visível entre setas, preservados os dados e os rótulos de leitura de tela. PaperDigits renderiza os números com 11 px, como os antigos. Folheamento em 680 ms com dobra reduzida e sem balanço forçado de pouso das marcações.
+
+O teste de encaixe reproduziu diferença de 2,88 px entre lacre animado e parado. A geometria final agora é medida no elemento real. O giro foi invertido para sair da capa, em vez de atravessá-la, com medalhão e aresta no componente NotebookClasp compartilhado. A aresta preserva a espessura na passagem de perfil.
+
+Prova local: quatro E2E Edge passaram, PC/mobile e claro/escuro, incluindo tolerância de encaixe de 2 px, modal contido no viewport, dimensões das duas prévias, texto reto, troca de cor/motivo antes da colocação, fechamento animado, duas marcações na folha em movimento e retorno à prateleira. Capturas dos dois modais e do fechamento conferidas. TypeScript passou. CI completo não executado nesta etapa.
+Ajuste final das dicas: comparação automatizada contra o span real da navegação desktop em navigation-refinements.css, verificando fundo, dobra, raio e sombra nos temas claro e escuro. Removidos títulos nativos das cinco ferramentas para não sobrepor balões do navegador. Quatro E2E Edge passaram, incluindo hover/foco e movimento reduzido. ESLint focado sem erros, com seis avisos existentes de fast refresh. Não representa CI integral.
+
+### Encadernação e marcações contínuas, 13/11/2026
+
+Lacre: ponte lateral presa à contracapa cobre a faixa de folhas na altura da correia, inclusive no transporte animado. Marcações retiradas da capa giratória e das cópias de folha, com camada própria do miolo fora do recorte de abertura. Divisórias e marcadores permanecem presentes durante abertura e fechamento, com deslocamento ligado à virada e entrega ao estado final. Dados preservados.
+
+Provas: oito E2E Edge PC/mobile claro/escuro passaram em notebook-binding-final-browser.log, incluindo quatro fluxos existentes de ferramentas, folheamento e lacre. Após ajustar a profundidade da ponte para ficar à frente do corte das folhas, quatro casos de conexão passaram novamente em notebook-binding-depth-browser.log. PNGs inspecionados nos instantes 20%, 65%, 99% de abertura e durante fechamento. TypeScript e diff check aprovados; lint focado sem erros, quatro avisos existentes de Fast Refresh. Testes com dados fictícios em contexto isolado, sem alterar dados do preview do proprietário. Verify integral e CI não executados nesta rodada.
+
+### Publicação solicitada antes do CI, 13/11/2026
+
+O proprietário pediu publicar imediatamente e deixar o CI com Claude. Verificação integral iniciada em notebook-release-verify.log: lint sem erros, 26 avisos, formatação/API/idiomas aprovados. Durante os testes foi identificado um contrato antigo que ainda exigia editar títulos diretamente no preview, removido por solicitação do proprietário. O teste foi atualizado para exigir ausência desse campo, preservação dos nomes/dados e abertura do editor pelo nome acessível. E2E antigos de marcações agora confirmam o modal antes de colocar a peça, conforme o fluxo aprovado. Esses ajustes finais ainda precisam da verificação integral e da regressão completa. Não declarar CI aprovado, nem mesclar automaticamente. Oito E2E recentes de detalhes/conexões e quatro repetições da conexão final aprovados; TypeScript e diff check anteriores aprovados.
+
 ## Favicon que o Google aceita, 2026-11-13
 
 - **Problema.** Na busca do Google o endereço novo aparecia com um globo no lugar do ícone, e o endereço antigo (`olenastudy.vercel.app`) ainda aparecia como resultado separado.
@@ -4863,3 +4934,21 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - **Mudança.** `index.html` passa a declarar ícones de 48 e 192 px e `/favicon.ico` (16, 32 e 48 px), gerados a partir de `public/olena-favicon.png`. O de 32 px e o de 180 px (Apple) ficam. O PNG de 1254 px sai do `<head>`, mas o arquivo continua em `public/` porque outros fluxos o usam. Teste em `src/favicon-google.test.ts`.
 - **Limite.** O Google reprocessa o ícone por conta própria, de dias a semanas. Não há como forçar. Pedir nova indexação da página inicial no Search Console ajuda.
 - **Endereço antigo.** `olenastudy.vercel.app` redireciona 308 para o `www`, e o Google troca o resultado ao recrawlear. Para acelerar, a dona pode usar "Remoções" no Search Console se ainda tiver a propriedade verificada. Ação fora do repositório.
+
+## CI da PR 631 corrigido, 2026-11-13
+
+- **O que falhava.** Um teste de unidade e 13 e2e (desktop e celular) ficaram vermelhos. Não havia falha de produto nova; havia contratos antigos nos testes e uma perda de acessibilidade.
+- **Linha de base de SVG.** Os marcadores passaram a usar variáveis de cor do tema (`--bookmark-color` e afins) com a cor original como valor padrão. `src/test/fixtures/paper-svg-budget-baseline.json` trocou só os `fill` dos 8 símbolos de `paper-bookmark`. O visual padrão não muda.
+- **Foco por teclado.** A pedido da proprietária, sem "Realçar seleções" o foco usa brilho neutro (`filter: brightness(1.2)`), sem sublinhado nem amarelo. Quatro testes (agenda, calendário, onboarding e página 404) ainda esperavam sublinhado e agora esperam o brilho neutro. O foco continua visível; só mudou a forma.
+- **Título do caderno aberto.** O cabeçalho do caderno aberto perdeu o `<h1>` com o nome. Sem ele, leitores de tela e os testes não achavam o nome do caderno. Voltou como `h1` visualmente oculto (`visually-hidden`): nada muda na tela, o nome continua anunciado.
+- **Campo de título da folha.** O campo `input.notebook-sheet-title` do preview foi removido a pedido da proprietária; o teste de fundos do modo escuro passou a exigir a ausência dele.
+- **Fórmula.** Havia dois campos com o nome "Fórmula matemática" (o do assistente e o do post-it). O teste agora fala com o do assistente.
+- **Teste instável.** `notebook-shelf-edit` recarregava a página antes de o IndexedDB terminar de gravar e falhava de vez em quando. Agora espera a gravação (mesmo padrão de `storage-full`). 16 de 16 repetições passaram.
+- **Limite.** Rodei localmente os testes que falharam no CI; a suíte e2e completa roda no CI. Os 8 testes de `listening-audio` falham só neste ambiente (`Blob.stream`), igual na `main`.
+
+### Segunda rodada de correções do CI da PR 631, 2026-11-13
+
+- **Título oculto fora do cabeçalho.** Testes da própria PR exigem que `.notebook-preview-heading` não tenha `h1`. O `h1` com o nome do caderno (visualmente oculto) saiu de dentro dele e ficou como primeiro filho da seção `notebook-entry-preview`. A tela não muda e o nome continua anunciado.
+- **Toque engolido (correção de produto).** Depois de arrastar uma divisória ou marcador com toque, o primeiro toque numa ferramenta ("Colocar divisória" ou "Colocar marcador") não fazia nada: o sinalizador `suppressClick` ficava ligado, porque num arrasto por toque o navegador não gera o clique que o consumiria. `start()` em `notebook-paper-tools.tsx` agora limpa o sinalizador a cada pressionar. O e2e `notebook-tabs` no celular falhava sem a correção e passa com ela.
+- **Teste instável.** `notebook-covers` recarregava a página antes de o IndexedDB terminar de gravar a capa nova e falhava de vez em quando. Agora espera a gravação.
+- **Não verificado.** `onboarding-configuration` (celular, tema escuro) falhou uma vez no CI esperando a ilha de Inglês e viu a de Matemática. Não reproduz localmente (passa em repetição) e o teste não mudou nesta PR. Provável instabilidade de tempo sob carga do CI. Se repetir, investigar o carrossel.

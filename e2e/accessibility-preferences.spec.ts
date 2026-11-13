@@ -61,11 +61,22 @@ for (const theme of ["light", "dark"]) {
       );
       await page.keyboard.press("Tab");
       await expect(page.locator("#selection-probe")).toBeFocused();
-      await expect(page.locator("#selection-probe")).toHaveCSS("text-decoration-line", "underline");
+      await expect(page.locator("#selection-probe")).toHaveCSS(
+        "text-decoration-line",
+        enabled ? "underline" : "none",
+      );
+      await expect(page.locator("#selection-probe")).toHaveCSS(
+        "filter",
+        enabled ? /drop-shadow/ : "brightness(1.2)",
+      );
       await page.locator("#interactive-probe").focus();
       await expect(page.locator("#interactive-probe")).toHaveCSS(
         "text-decoration-line",
-        "underline",
+        enabled ? "underline" : "none",
+      );
+      await expect(page.locator("#interactive-probe")).toHaveCSS(
+        "filter",
+        enabled ? /drop-shadow/ : "brightness(1.2)",
       );
     }
   });
