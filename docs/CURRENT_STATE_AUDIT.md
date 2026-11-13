@@ -4945,3 +4945,10 @@ O proprietário pediu publicar imediatamente e deixar o CI com Claude. Verifica�
 - **Fórmula.** Havia dois campos com o nome "Fórmula matemática" (o do assistente e o do post-it). O teste agora fala com o do assistente.
 - **Teste instável.** `notebook-shelf-edit` recarregava a página antes de o IndexedDB terminar de gravar e falhava de vez em quando. Agora espera a gravação (mesmo padrão de `storage-full`). 16 de 16 repetições passaram.
 - **Limite.** Rodei localmente os testes que falharam no CI; a suíte e2e completa roda no CI. Os 8 testes de `listening-audio` falham só neste ambiente (`Blob.stream`), igual na `main`.
+
+### Segunda rodada de correções do CI da PR 631, 2026-11-13
+
+- **Título oculto fora do cabeçalho.** Testes da própria PR exigem que `.notebook-preview-heading` não tenha `h1`. O `h1` com o nome do caderno (visualmente oculto) saiu de dentro dele e ficou como primeiro filho da seção `notebook-entry-preview`. A tela não muda e o nome continua anunciado.
+- **Toque engolido (correção de produto).** Depois de arrastar uma divisória ou marcador com toque, o primeiro toque numa ferramenta ("Colocar divisória" ou "Colocar marcador") não fazia nada: o sinalizador `suppressClick` ficava ligado, porque num arrasto por toque o navegador não gera o clique que o consumiria. `start()` em `notebook-paper-tools.tsx` agora limpa o sinalizador a cada pressionar. O e2e `notebook-tabs` no celular falhava sem a correção e passa com ela.
+- **Teste instável.** `notebook-covers` recarregava a página antes de o IndexedDB terminar de gravar a capa nova e falhava de vez em quando. Agora espera a gravação.
+- **Não verificado.** `onboarding-configuration` (celular, tema escuro) falhou uma vez no CI esperando a ilha de Inglês e viu a de Matemática. Não reproduz localmente (passa em repetição) e o teste não mudou nesta PR. Provável instabilidade de tempo sob carga do CI. Se repetir, investigar o carrossel.

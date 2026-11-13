@@ -1,5 +1,25 @@
 import { upgradeMasteryProgress } from "../src/domain/math-mastery-progress";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+// A gravação no IndexedDB é assíncrona: recarregar antes dela terminar faz a página ler o
+// estado antigo e a verificação falha de vez em quando. Espera a capa nova aparecer gravada.
+function savedWorkspace(page: Page) {
+  return page.evaluate(
+    () =>
+      new Promise<string | undefined>((resolve) => {
+        const request = indexedDB.open("helenastudy", 1);
+        request.onerror = () => resolve(undefined);
+        request.onsuccess = () => {
+          const read = request.result
+            .transaction("workspace", "readonly")
+            .objectStore("workspace")
+            .get("current");
+          read.onsuccess = () => resolve(read.result as string | undefined);
+          read.onerror = () => resolve(undefined);
+        };
+      }),
+  );
+}
 
 for (const theme of ["light", "dark"]) {
   for (const unlocked of [false, true]) {
@@ -127,6 +147,7 @@ for (const theme of ["light", "dark"]) {
       await english.click();
       await dialog.getByRole("button", { name: "Fechar", exact: true }).click();
       await page.getByRole("button", { name: "Salvar prateleira", exact: true }).click();
+      await expect.poll(() => savedWorkspace(page)).toContain('"coverStyle":"english"');
       await page.reload();
       await expect(page.locator(".notebook-spine").first()).toHaveAttribute(
         "data-cover-theme",

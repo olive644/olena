@@ -688,6 +688,8 @@ export function NotesView({
         />
       ) : !activePage && activeNotebook.kind !== "folder" ? (
         <section className="notebook-entry-preview" aria-label={uiText(1370)}>
+          {/* Nome do caderno para leitores de tela: fica fora do cabeçalho visual do preview. */}
+          <h1 className="visually-hidden">{activeNotebook.title}</h1>
           <div className="notebook-preview-heading is-left">
             <button
               type="button"
@@ -699,7 +701,6 @@ export function NotesView({
             >
               <img src="/paper-arrow.svg" alt="" />
             </button>
-            <h1 className="visually-hidden">{activeNotebook.title}</h1>
           </div>
           {indexOpen && (
             <NotebookPageIndex

@@ -228,6 +228,9 @@ export function NotebookPaperTools({
     );
   }
   function start(event: PointerEvent<HTMLButtonElement>, kind: NotebookTab["kind"], id?: string) {
+    // Num arrasto por toque o navegador não gera o clique que consumiria este sinalizador.
+    // Sem limpá-lo aqui, o próximo toque numa ferramenta seria engolido.
+    suppressClick.current = false;
     if (event.button !== 0 || disabled || !id) return;
     event.stopPropagation();
     gesture.current = {
