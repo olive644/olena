@@ -4926,3 +4926,11 @@ Provas: oito E2E Edge PC/mobile claro/escuro passaram em notebook-binding-final-
 ### Publicação solicitada antes do CI, 13/11/2026
 
 O proprietário pediu publicar imediatamente e deixar o CI com Claude. Verificação integral iniciada em notebook-release-verify.log: lint sem erros, 26 avisos, formatação/API/idiomas aprovados. Durante os testes foi identificado um contrato antigo que ainda exigia editar títulos diretamente no preview, removido por solicitação do proprietário. O teste foi atualizado para exigir ausência desse campo, preservação dos nomes/dados e abertura do editor pelo nome acessível. E2E antigos de marcações agora confirmam o modal antes de colocar a peça, conforme o fluxo aprovado. Esses ajustes finais ainda precisam da verificação integral e da regressão completa. Não declarar CI aprovado, nem mesclar automaticamente. Oito E2E recentes de detalhes/conexões e quatro repetições da conexão final aprovados; TypeScript e diff check anteriores aprovados.
+
+## Favicon que o Google aceita, 2026-11-13
+
+- **Problema.** Na busca do Google o endereço novo aparecia com um globo no lugar do ícone, e o endereço antigo (`olenastudy.vercel.app`) ainda aparecia como resultado separado.
+- **Causa provável do ícone (não verificada pelo Google).** A página declarava só um PNG de 32 px (o Google pede lado múltiplo de 48 px) e um de 1254 px, e não existia `/favicon.ico` (respondia 404). O arquivo do ícone novo já estava no ar.
+- **Mudança.** `index.html` passa a declarar ícones de 48 e 192 px e `/favicon.ico` (16, 32 e 48 px), gerados a partir de `public/olena-favicon.png`. O de 32 px e o de 180 px (Apple) ficam. O PNG de 1254 px sai do `<head>`, mas o arquivo continua em `public/` porque outros fluxos o usam. Teste em `src/favicon-google.test.ts`.
+- **Limite.** O Google reprocessa o ícone por conta própria, de dias a semanas. Não há como forçar. Pedir nova indexação da página inicial no Search Console ajuda.
+- **Endereço antigo.** `olenastudy.vercel.app` redireciona 308 para o `www`, e o Google troca o resultado ao recrawlear. Para acelerar, a dona pode usar "Remoções" no Search Console se ainda tiver a propriedade verificada. Ação fora do repositório.
