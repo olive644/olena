@@ -362,3 +362,535 @@
     opacity: 0;
   }
 }
+
+/* Ferramentas e placa pertencem à mesma madeira da estante. */
+.shelf-editor-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 860px);
+  margin: 0 auto 16px;
+  min-height: 48px;
+}
+:root body .shelf-wood-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 10px 14px;
+  color: #fff3d4;
+  border: 1px solid #593631;
+  border-radius: 5px 13px 4px 5px;
+  background:
+    linear-gradient(135deg, #c89863 0 14%, transparent 14%),
+    linear-gradient(168deg, #86573f 0 55%, #654237 55% 85%, #593631 85%);
+  box-shadow: 0 4px #4e302c;
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+:root body .shelf-wood-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+:root body .shelf-wood-button:not(:disabled):active {
+  transform: translateY(3px);
+}
+.shelf-wood-button svg {
+  width: 28px;
+  height: 28px;
+}
+.shelf-trash {
+  margin-inline-start: auto;
+}
+:root body .shelf-back {
+  padding: 8px;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.shelf-back img {
+  width: 32px;
+  height: 32px;
+}
+.shelf-wood-sign {
+  position: absolute;
+  right: 10%;
+  bottom: 105px;
+  z-index: 1;
+  width: clamp(105px, 22vw, 190px);
+  padding: 20px 13px 14px;
+  border-radius: 5px 13px 6px 3px;
+  background:
+    linear-gradient(145deg, #c89863 0 12%, transparent 12%),
+    linear-gradient(174deg, #86573f 0 62%, #654237 62%);
+  color: #fff3d4;
+  box-shadow: 3px 5px #4e302c;
+  text-align: center;
+  overflow-wrap: anywhere;
+  font-weight: 700;
+  rotate: -3deg;
+  pointer-events: none;
+}
+.shelf-nail {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 7px;
+  height: 7px;
+  background: #d9cead;
+  clip-path: polygon(20% 0, 80% 0, 100% 50%, 75% 100%, 0 75%, 0 20%);
+  box-shadow: 1px 2px #51465d;
+}
+.shelf-hammer {
+  display: none;
+  position: absolute;
+  left: 53%;
+  top: -16px;
+  width: 13px;
+  height: 65px;
+  background: #593631;
+  transform-origin: 50% 100%;
+  rotate: -35deg;
+}
+.shelf-hammer::before {
+  content: "";
+  position: absolute;
+  left: -18px;
+  top: -3px;
+  width: 48px;
+  height: 22px;
+  background: linear-gradient(145deg, #d9cead 35%, #8b8293 35% 75%, #51465d 75%);
+  clip-path: polygon(10% 0, 100% 0, 100% 80%, 85% 100%, 0 100%, 0 20%);
+}
+:root body .shelf-wood-dialog,
+:root[data-theme] body .notebooks-main .shelf-wood-dialog {
+  color: #fff3d4;
+  border: 2px solid #c89863;
+  background:
+    linear-gradient(140deg, #a97951 0 7%, transparent 7%),
+    linear-gradient(173deg, #86573f 0 55%, #654237 55%);
+  box-shadow: 0 8px #35242b;
+}
+.shelf-wood-dialog form label {
+  display: grid;
+  gap: 10px;
+}
+:root body .shelf-wood-dialog input,
+:root[data-theme] body .notebooks-main .shelf-wood-dialog input {
+  width: 100%;
+  min-height: 48px;
+  background: #fff9ef;
+  color: #292432;
+  border: 1px solid #c89863;
+  border-radius: 5px 12px 5px 5px;
+  padding: 12px;
+  box-shadow: 0 4px #593631;
+}
+.shelf-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+:root body .shelf-wood-dialog .secondary-button,
+:root[data-theme] body .notebooks-main .shelf-wood-dialog .secondary-button {
+  color: #292432;
+  background:
+    linear-gradient(135deg, #e7dcc7 0 12%, transparent 12%),
+    linear-gradient(315deg, #e7dcc7 0 12%, transparent 12%), #fff9ef;
+  border: 1px solid #cfc2ab;
+  box-shadow: 0 4px #cfc2ab;
+}
+.shelf-book-dialog {
+  max-width: 480px;
+}
+.shelf-book-preview {
+  width: min(70%, 240px);
+  margin: 0 auto 20px;
+}
+.shelf-book-dialog dl {
+  display: flex;
+  justify-content: space-around;
+  gap: 16px;
+}
+.shelf-book-dialog dd {
+  margin: 6px 0 16px;
+  font-weight: 700;
+}
+.shelf-book-dialog > p {
+  font-size: 0.85rem;
+}
+.is-editing-shelf .notebook-spine__inspection {
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"]) .shelf-wood-sign.is-installing {
+    animation: shelf-sign-install 1700ms cubic-bezier(0.22, 0.7, 0.26, 1) both;
+  }
+  html:not([data-reduce-motion="true"]) .shelf-wood-sign.is-installing .shelf-hammer {
+    display: block;
+    animation: shelf-hammer-work 1700ms ease-in-out both;
+  }
+  html:not([data-reduce-motion="true"]) .shelf-book-preview {
+    animation: shelf-inspect-book 440ms cubic-bezier(0.2, 0.8, 0.25, 1) both;
+  }
+  html:not([data-reduce-motion="true"]) .shelf-wood-dialog {
+    animation: shelf-board-open 300ms ease-out both;
+  }
+}
+@keyframes shelf-sign-install {
+  0% {
+    transform: translate(-120px, 80px) scale(0.75);
+    opacity: 0;
+    rotate: 8deg;
+  }
+  25% {
+    transform: translate(-120px, 0) scale(1.05);
+    opacity: 1;
+    rotate: 0deg;
+  }
+  55% {
+    transform: translate(0, 0);
+    rotate: -6deg;
+  }
+  68%,
+  85% {
+    transform: translateY(2px);
+    rotate: -2deg;
+  }
+  100% {
+    transform: translate(0, 0);
+    rotate: -3deg;
+  }
+}
+@keyframes shelf-hammer-work {
+  0%,
+  25% {
+    opacity: 1;
+    rotate: -45deg;
+  }
+  38%,
+  66%,
+  84% {
+    rotate: 18deg;
+  }
+  48%,
+  76%,
+  90% {
+    rotate: -38deg;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes shelf-inspect-book {
+  from {
+    opacity: 0;
+    transform: perspective(600px) translateY(20px) rotateY(-65deg);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(600px) translateY(0) rotateY(0);
+  }
+}
+@keyframes shelf-board-open {
+  from {
+    opacity: 0;
+    transform: translateY(14px) rotate(-2deg) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 600px) {
+  .shelf-editor-tools {
+    gap: 6px;
+  }
+  .shelf-name-tool span {
+    font-size: 0.8rem;
+  }
+  :root body .shelf-wood-button {
+    padding: 8px;
+  }
+  .shelf-wood-sign {
+    right: 8%;
+    bottom: 104px;
+    font-size: 0.85rem;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"]) .shelf-wood-dialog.is-closing,
+  html:not([data-reduce-motion="true"]) .shelf-book-dialog.is-closing {
+    animation: shelf-board-close 220ms ease-in both;
+  }
+}
+@keyframes shelf-board-close {
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+}
+@media (max-width: 600px) {
+  .shelf-wood-sign {
+    top: 28px;
+    bottom: auto;
+    right: 22%;
+    width: min(140px, 45%);
+    padding: 14px 10px 10px;
+    font-size: 0.75rem;
+    line-height: 1.25;
+  }
+}
+.shelf-editor-tools {
+  position: relative;
+  justify-content: center;
+}
+.shelf-editor-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.shelf-editor-tools .shelf-back {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.shelf-editor-cluster .shelf-trash {
+  margin-inline-start: 0;
+}
+.shelf-book-dialog .paper-digits {
+  font-size: 1.45rem;
+}
+.shelf-book-dialog dd {
+  min-height: 36px;
+}
+:root body .shelf-wood-dialog .paper-digits {
+  --digit-face: #fff2ce;
+  --digit-depth: #593631;
+  --digit-fold: #ffdf92;
+  --digit-edge: #a97951;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"]) .shelf-editor-cluster {
+    animation: shelf-tools-reveal 280ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  }
+}
+@keyframes shelf-tools-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 600px) {
+  .shelf-name-tool span {
+    display: none;
+  }
+  .shelf-editor-cluster {
+    gap: 8px;
+  }
+  .shelf-wood-sign {
+    top: 20px;
+  }
+  .notebook-display-shelf:has(.shelf-wood-sign) .notebook-display-shelf__books {
+    padding-top: 90px;
+  }
+}
+.notebook-display-shelf__books {
+  background:
+    linear-gradient(135deg, rgb(0 0 0 / 22%) 0 9%, transparent 9%),
+    color-mix(in srgb, #201d26 86%, #654237);
+}
+
+/* Disciplina acompanha a mesma encadernação, inclusive lombada e retorno animado. */
+[data-cover-theme="mathematics"] {
+  --cover-board: #123d50;
+  --cover-band: #279caf;
+  --cover-stitch: #ffcf16;
+}
+[data-cover-theme="english"] {
+  --cover-board: #193747;
+  --cover-band: #317f88;
+  --cover-stitch: #ffcf16;
+}
+[data-cover-theme="mathematics"] .book-cover__spine,
+[data-cover-theme="english"] .book-cover__spine,
+[data-cover-theme="pride"] .book-cover__spine {
+  background: linear-gradient(135deg, var(--cover-band) 10px, transparent 10px), var(--cover-board);
+  border-color: var(--cover-band);
+  box-shadow: inset -3px 0 var(--cover-stitch);
+}
+[data-cover-theme="mathematics"] .book-cover__spine i,
+[data-cover-theme="english"] .book-cover__spine i,
+[data-cover-theme="pride"] .book-cover__spine i {
+  background: var(--cover-band);
+  border-color: var(--cover-stitch);
+}
+[data-cover-theme="mathematics"] .book-cover__backboard,
+[data-cover-theme="english"] .book-cover__backboard,
+[data-cover-theme="pride"] .book-cover__backboard,
+[data-cover-theme="mathematics"] .book-cover__face,
+[data-cover-theme="english"] .book-cover__face,
+[data-cover-theme="pride"] .book-cover__face {
+  background-color: var(--cover-board);
+}
+.shelf-cover-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.shelf-cover-tabs [aria-selected="true"] {
+  background-color: #c59965;
+  color: #241c20;
+}
+.shelf-cover-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-block: 18px;
+}
+.shelf-cover-choice {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px 8px;
+  border: 1px solid #bb926a;
+  border-radius: 7px 20px 7px 7px;
+  background: #654237;
+  color: #fff4d6;
+  box-shadow: 0 5px #48312e;
+}
+.shelf-cover-choice .book-cover {
+  width: 80px;
+  height: 110px;
+}
+.shelf-cover-choice .paper-check-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: #ffcf16;
+}
+.shelf-cover-choice[aria-disabled="true"] .book-cover {
+  filter: saturate(0.35) brightness(0.75);
+}
+.shelf-cover-choice small {
+  line-height: 1.4;
+}
+.shelf-cover-choice strong {
+  font-size: 0.85rem;
+}
+.shelf-wood-dialog:has(.shelf-cover-options) {
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+@media (max-width: 480px) {
+  .shelf-cover-options {
+    gap: 8px;
+  }
+  .shelf-cover-choice .book-cover {
+    width: 64px;
+    height: 88px;
+  }
+  .shelf-cover-choice strong {
+    font-size: 0.75rem;
+  }
+  .shelf-cover-choice small {
+    font-size: 0.7rem;
+  }
+}
+.shelf-book-preview {
+  display: flex;
+  justify-content: center;
+}
+
+/* A lombada é recortada da própria encadernação da capa, sem repetir outra arte. */
+[data-cover-theme="mathematics"] {
+  --cover-board: #163d85;
+  --cover-band: #2457b3;
+  --cover-spine-art: url("/notebook-covers/lombada-mathematics.webp");
+}
+[data-cover-theme="english"] {
+  --cover-board: #155768;
+  --cover-band: #258f9e;
+  --cover-spine-art: url("/notebook-covers/lombada-english.webp");
+}
+[data-cover-theme="mathematics"] .book-cover__spine,
+[data-cover-theme="english"] .book-cover__spine,
+[data-cover-theme="pride"] .book-cover__spine {
+  background:
+    var(--cover-spine-art) center / 100% 100% no-repeat,
+    var(--cover-board);
+}
+[data-cover-theme="mathematics"] .book-cover__spine i,
+[data-cover-theme="english"] .book-cover__spine i,
+[data-cover-theme="pride"] .book-cover__spine i,
+[data-cover-theme="mathematics"] .book-cover__spine::after,
+[data-cover-theme="english"] .book-cover__spine::after,
+[data-cover-theme="pride"] .book-cover__spine::after {
+  opacity: 0;
+}
+[data-cover-theme="mathematics"] .book-cover__corner,
+[data-cover-theme="english"] .book-cover__corner,
+[data-cover-theme="pride"] .book-cover__corner {
+  background: #ffcf16;
+  box-shadow: inset -4px 4px #ffe88d;
+}
+[data-cover-theme="mathematics"] .book-cover__clasp::after,
+[data-cover-theme="english"] .book-cover__clasp::after,
+[data-cover-theme="pride"] .book-cover__clasp::after {
+  background: var(--cover-board);
+  border-color: #ffcf16;
+  box-shadow:
+    inset 0 -4px #183840,
+    inset 0 4px var(--cover-band);
+}
+[data-cover-theme="mathematics"] .notebook-journey-lining,
+[data-cover-theme="english"] .notebook-journey-lining,
+[data-cover-theme="pride"] .notebook-journey-lining {
+  background: #e4efec;
+}
+[data-cover-theme="mathematics"] .notebook-paper-spread::after,
+[data-cover-theme="english"] .notebook-paper-spread::after,
+[data-cover-theme="pride"] .notebook-paper-spread::after {
+  background: var(--cover-board);
+}
+[data-cover-theme="mathematics"] .notebook-paper-spread::before,
+[data-cover-theme="english"] .notebook-paper-spread::before,
+[data-cover-theme="pride"] .notebook-paper-spread::before {
+  border-color: #ffcf16;
+}
+[data-cover-theme="mathematics"] .notebook-paper-spread,
+[data-cover-theme="english"] .notebook-paper-spread,
+[data-cover-theme="pride"] .notebook-paper-spread {
+  box-shadow:
+    0 5px var(--cover-band),
+    2px 8px #fff9ef,
+    3px 10px #d5ccba,
+    4px 12px #fff9ef,
+    4px 15px var(--cover-board);
+}
+
+[data-cover-theme="pride"] {
+  --cover-board: #34233f;
+  --cover-band: #8053b8;
+  --cover-stitch: #ffcf16;
+  --cover-spine-art: url("/notebook-covers/lombada-pride.webp");
+}

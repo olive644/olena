@@ -1,3 +1,4 @@
+import { NotebookFormulaPreview } from "./notebook-formula-preview";
 import { PaperCloseGlyph } from "./paper-close-icon";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { reviewPortugueseText } from "../domain/text-review";
@@ -343,12 +344,15 @@ export function HandwritingStickyNote({
         </div>
       ) : (
         <textarea
-          aria-label={sticky.kind === "text" ? uiText(1694) : uiText(1695)}
+          aria-label={
+            sticky.formula ? uiText(223) : sticky.kind === "text" ? uiText(1694) : uiText(1695)
+          }
+          spellCheck={!sticky.formula}
           value={sticky.text}
           maxLength={240}
           onFocus={() => onRemember()}
           onBlur={() => {
-            if (!textAutoCorrect) return;
+            if (sticky.formula || !textAutoCorrect) return;
             const corrected = reviewPortugueseText(sticky.text);
             if (corrected !== sticky.text) onUpdate({ text: corrected });
           }}
@@ -356,6 +360,7 @@ export function HandwritingStickyNote({
           placeholder={uiText(291)}
         />
       )}
+      {sticky.formula && <NotebookFormulaPreview source={sticky.text} />}
       <button
         type="button"
         className="handwriting-sticky__resize"

@@ -166,6 +166,17 @@ export function mergeWorkspaceStates(
     return merged.value;
   }
   const workspace: WorkspaceState = {
+    ...(base.notebookShelfName !== undefined ||
+    local.notebookShelfName !== undefined ||
+    remote.notebookShelfName !== undefined
+      ? {
+          notebookShelfName: value(
+            base.notebookShelfName ?? "",
+            local.notebookShelfName ?? base.notebookShelfName ?? "",
+            remote.notebookShelfName ?? base.notebookShelfName ?? "",
+          ),
+        }
+      : {}),
     version: local.version,
     subjects: list(base.subjects, local.subjects, remote.subjects),
     tasks: (() => {

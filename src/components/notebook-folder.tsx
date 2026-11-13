@@ -63,6 +63,7 @@ export function NotebookFolder({
                 />
               ) : (
                 <NotebookCover
+                  coverStyle={book.coverStyle}
                   subjectColor="#7c3aed"
                   title={book.title}
                   tabs={notebookPaperTabs(

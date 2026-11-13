@@ -1955,3 +1955,49 @@ Proprietário confirmou uma única conta no Firebase; Google substituiu método 
 Proprietário pediu explicitamente subir o teto após a medição de 1761,1 KiB. Orçamento total e teto rígido passam de 1748 para 1764 KiB, com 2,9 KiB de margem na medição atual. Entrada, dependências, outros orçamentos, workflows e tempos permanecem iguais. Ampliação cobre a entrada visual e a associação/retorno de contas; não foi alegada redução de tamanho nem de custo.
 
 Validação final desta correção: 108 testes focados de entrada, associação Google/Discord, estados das configurações e política aprovados; um teste adicional do hook real recupera onboarding e progresso do mesmo UID ao voltar com Google. Quatro E2E de entrada em Edge PC/mobile claro/escuro passaram. TypeScript e build passaram; orçamento após autorização também passou (1761,1 de 1764 KiB, entrada 219,5 KiB). A tentativa integral anterior registrou treze falhas: doze expectativas antigas de onboarding/ícones/isolamento e uma redação técnica da política, esta última corrigida e revalidada no conjunto focado. Não foi alegado verify integral verde. OAuth/contas reais não exercitados, sem alterações externas e sem publicação/merge nesta revisão.
+
+## PDF e fórmulas na folha, 12/11/2026
+
+PDF entra pelo Upload da folha. Importar todas aceita uma ou várias páginas e descarta resultado tardio ao cancelar. Não mover esse fluxo para o + da estante.
+
+Fórmulas usam notebook-formula-format.ts: parser limitado a 240 caracteres, layout compartilhado por notebook-formula-preview.tsx e handwriting-canvas.ts. Fonte permanece em sticky.text com formula=true. Suporta frações, raízes, expoentes, índices e símbolos comuns, sem compilador TeX externo. Testes: notebook-formula-format.test.ts e e2e/notebook-formula.spec.ts.
+
+Botões físicos da caneta usam penBarrelErases/penTailErases em notebook-preferences.ts, defaults false/true. Preferências sincronizadas existentes, sem cadastro de dispositivo novo. Testar hardware antes de afirmar compatibilidade física.
+
+## Editor da estante, 12/11/2026
+
+NotebookShelf concentra a estante e seu rascunho de edição. Nome/remoções só entram no reducer ao salvar; seta cancela. Remoções individuais e da prateleira exigem confirmação, avisando sobre páginas. Campo opcional notebookShelfName, máximo 40, preservado pelo merge e pelos leitores legados. Não salvar o nome em preferência global solta, ele pertence à conta/workspace.
+
+LibraryDialog foca o título ao abrir; não simular foco de teclado no X em aberturas por clique. Manter a indicação de teclado e o realce opcional de seleção como comportamentos distintos. Ferramentas e modais da estante compartilham madeira, ícones recortados coloridos e movimento reduzido. Datas da inspeção usam DD/MM/AAAA em português (ordem local em inglês) com PaperDigits, incluindo separadores.
+
+Atualização de realce global, 12/11/2026: amarelo de foco agora depende de data-highlight-selections=true, por instrução explícita do proprietário. Desligado mantém foco de teclado com brilho neutro e campos sem sombra amarela. Não reintroduzir amarelo incondicional. Fundo da estante fixo na composição escura aprovada para ambos os temas; não misturar com --surface, que clareava o fundo no tema claro.
+
+2026-11-13, estado vigente dos cadernos: o renderizador experimental 3D foi retirado por pedido do proprietário. As notas históricas de outubro sobre NotebookScene e notebook3dOptIn não descrevem mais código ativo. Permanecem o caderno 2D, as animações de capa/folhas e retorno à mesma posição da prateleira. NotebookPaperTools não tem modo de cena. A capa original foi preservada em src/components/notebook-cover-paint.ts; Three.js e sons exclusivos foram removidos. Preferências antigas são ignoradas sem perder som/movimento/realce/vibração.
+
+Capas conquistadas: NotebookShelf mantém rascunhos por ID, confirma no Salvar prateleira e descarta pela seta. notebook-covers.ts descreve três opções (original gratuita, Matemática e Inglês por 100 acertos). cosmetic-achievements.ts compartilha o cálculo já usado pelo perfil. notebookCoverArt resolve capas/versos; data-cover-theme coordena lombada, contracapa, fundo da encadernação aberta e jornada animada. Fontes raster sem personagens em scripts/notebook-cover-art/sources; gerar WebP com node scripts/notebook-cover-art/generate.mjs. Mais detalhes em docs/NOTEBOOK_COVER.md. Publicar após validação local; deixar CI e merge para o Claude, conforme instrução atual.
+
+## 13/11/2026, fechamento direto e lacre integrado
+
+A capa fechada deixa de ser uma parada intermediária no fluxo da prateleira. Fechar pela seta Capa, pelo arraste da primeira folha ou pelo fim do caderno chama o retorno existente à posição original da prateleira. Removidos o título ao lado da seta, o total de folhas guardadas e os controles superiores Ver folhas. O índice da barra inferior continua disponível.
+
+O lacre permanece preso à borda direita. O recorte visual fica em sua própria face, enquanto o suporte preserva a transformação espacial dos filhos. O medalhão amarelo é filho do lacre, acompanha seu giro e não aparece através do verso aberto. Não há animação independente do medalhão. PC e celular, temas claro e escuro, são cobertos nos testes de capas; o teste celeste cobre abertura, fechamento, arraste e retorno com foco restaurado.
+
+## 13/11/2026, Todas as cores e fases do lacre
+
+A capa LGBT Todas as cores é livre para todas as contas, sem conquista. Usa seis faixas da bandeira em papel facetado, costura creme, cantoneiras amarelas e a encadernação original. Fonte nativa paintPrideArt em notebook-cover-paint.ts, exportada pelo mesmo gerador para capa, verso e lombada WebP. O ID pride é validado e sincronizado no coverStyle existente, sem mudar páginas ou requisitos das capas de disciplinas.
+
+O lacre permanece à direita com o medalhão preso à própria peça. Seu giro dura 420 ms com a curva de suavização do caderno. Na abertura, destrava após o transporte e antes de virar a capa. No fechamento, a capa encosta primeiro, depois o lacre trava e só então o caderno vira de lado e desliza para a prateleira. Movimento reduzido continua sem viagem animada.
+
+## 13/11/2026, inspeção das ferramentas e marcações
+
+As cinco ferramentas da barra inferior mostram a legenda de papel por hover ou foco visível, usando as cores e transição do rail desktop sem deslocar os botões. O nome acessível continua em aria-label. Lua e Sol usam o botão creme original e confere explícito.
+
+Divisória e marcador agora abrem o modal original antes da colocação. A peça real é usada na prévia, em dimensões contidas, sem os transformadores exclusivos de folheamento. Cor e motivo atualizam o rascunho da prévia; confirmar fecha com animação e só então permite posicionar na folha. X/Escape cancelam a configuração nova. Campos, paleta e confere usam os elementos existentes do editor. O nome da divisória permanece horizontal.
+
+Retirados os títulos sobre as folhas e o contador visível entre setas, preservados os dados e os rótulos de leitura de tela. PaperDigits renderiza os números com 11 px, como os antigos. Folheamento em 680 ms com dobra reduzida e sem balanço forçado de pouso das marcações.
+
+O teste de encaixe reproduziu diferença de 2,88 px entre lacre animado e parado. A geometria final agora é medida no elemento real. O giro foi invertido para sair da capa, em vez de atravessá-la, com medalhão e aresta no componente NotebookClasp compartilhado. A aresta preserva a espessura na passagem de perfil.
+
+Prova local: quatro E2E Edge passaram, PC/mobile e claro/escuro, incluindo tolerância de encaixe de 2 px, modal contido no viewport, dimensões das duas prévias, texto reto, troca de cor/motivo antes da colocação, fechamento animado, duas marcações na folha em movimento e retorno à prateleira. Capturas dos dois modais e do fechamento conferidas. TypeScript passou. CI completo não executado nesta etapa.
+
+Encadernação, 13/11/2026: NotebookJourney mantém marcações em notebook-journey-marks, separadas do recorte do papel e da capa giratória. Não recolocar tabs na capa da viagem, pois duplica e faz aparecer no fim. book-cover__clasp-anchor cobre a espessura até a contracapa, com profundidade acima da folha frontal. Regressão: e2e/notebook-binding-continuity.spec.ts, quatro combinações PC/mobile claro/escuro.

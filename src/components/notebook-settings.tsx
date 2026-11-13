@@ -21,6 +21,8 @@ export function NotebookPreferenceFields({
         ["shapeSnap", uiText(1845), uiText(722)],
         ["inkPrediction", uiText(1846), uiText(723)],
         ["penHoverPreview", uiText(724), uiText(1847)],
+        ["penBarrelErases", uiText(3765), uiText(3766)],
+        ["penTailErases", uiText(3767), uiText(3768)],
         ["penOnly", uiText(725), uiText(726)],
         ["writingWindowAutoFollow", uiText(727), "A janela acompanha a escrita automaticamente."],
       ],

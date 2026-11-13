@@ -1,16 +1,11 @@
+import { isMotionReduced } from "../data/accessibility-preferences";
+import { LibraryDialog } from "./library-dialog";
+import { PaperCheckIcon } from "./paper-check-icon";
 import { createPortal } from "react-dom";
 import { tabSide } from "./notebook-tab-stack";
-import { tabStyle } from "./notebook-tab-art";
+import { NotebookTabFace, tabStyle } from "./notebook-tab-art";
 import { uiText, useLanguage } from "../i18n/runtime";
-import {
-  useRef,
-  useState,
-  type CSSProperties,
-  type Dispatch,
-  type PointerEvent,
-  type ReactNode,
-  type RefObject,
-} from "react";
+import { useRef, useState, type Dispatch, type PointerEvent, type ReactNode } from "react";
 import {
   createWorkspaceId,
   type NotebookTab,
@@ -21,7 +16,6 @@ import {
 } from "../domain/workspace";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { PaperMoonMark } from "./paper-moon-mark";
-import type { PlacementResult } from "./notebook-3d/notebook-3d-model";
 
 const colors = ["#7C3AED", "#287D69", "#AC365E", "#FACC15", "#5887C9"];
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
@@ -91,7 +85,7 @@ type Props = {
   coverControl: ReactNode;
   backControl?: ReactNode;
   indexControl?: ReactNode;
-  /** Último botão da caixa de ferramentas (no caderno 3D, o de nova folha). */
+  /** Última ferramenta da barra 2D, por exemplo criar folha. */
   endControl?: ReactNode;
   /** Par de folhas aberto (0 é o primeiro): define de que lado da pilha cada aba sai. */
   spread?: number;
@@ -101,30 +95,8 @@ type Props = {
   landedTabIds?: ReadonlySet<string>;
   /** Elemento onde a caixa de ferramentas aparece (por exemplo a barra de baixo do caderno 2D). */
   toolbarHost?: HTMLElement | null;
-  /** No caderno 3D, a cena desenha as marcas e resolve onde cada toque cai. */
-  scene?: boolean;
-  resolverRef?: RefObject<PlacementResolver | null>;
-  children: ReactNode | ((scene: PaperToolsScene) => ReactNode);
+  children: ReactNode;
 };
-
-type PaperToolsScene = {
-  tool: NotebookTab["kind"] | null;
-  editing: boolean;
-  selectedId: string | null;
-  /** A caixa de ferramentas pronta, para o caderno 3D encaixar onde quiser. */
-  toolbar: ReactNode;
-  /** Instrução da ferramenta ativa, ou da ação padrão quando não há nenhuma. */
-  hint: string;
-  /** Sai de qualquer ferramenta ativa (marcar, editar). */
-  cancel: () => void;
-  placeResolved: (kind: NotebookTab["kind"], result: PlacementResult, id?: string) => void;
-  activateTab: (id: string) => void;
-};
-export type PlacementResolver = (
-  kind: NotebookTab["kind"],
-  x: number,
-  y: number,
-) => PlacementResult | null;
 
 export function NotebookPaperTools({
   notebook,
@@ -142,13 +114,12 @@ export function NotebookPaperTools({
   spread,
   hiddenTabIds,
   landedTabIds,
-  scene = false,
-  resolverRef,
   children,
 }: Props) {
   useLanguage();
 
   const mount = useRef<HTMLDivElement>(null);
+  const inspectorClosing = useRef(false);
   const gesture = useRef<{
     kind: NotebookTab["kind"];
     id?: string;
@@ -158,6 +129,8 @@ export function NotebookPaperTools({
   } | null>(null);
   const suppressClick = useRef(false);
   const [tool, setTool] = useState<NotebookTab["kind"] | null>(null);
+  const [newTab, setNewTab] = useState<NotebookTab | null>(null);
+  const [preparedTab, setPreparedTab] = useState<NotebookTab | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [ghost, setGhost] = useState<{ kind: NotebookTab["kind"]; x: number; y: number } | null>(
@@ -165,46 +138,45 @@ export function NotebookPaperTools({
   );
   const [message, setMessage] = useState("");
   const tabs = notebookPaperTabs(notebook, pages, subjects);
-  const selected = tabs.find((tab) => tab.id === selectedId);
+  const selected = newTab ?? tabs.find((tab) => tab.id === selectedId);
 
+  function closeInspector(after?: () => void) {
+    if (inspectorClosing.current) return;
+    const dialog =
+      mount.current?.parentElement?.querySelector<HTMLDialogElement>(".notebook-tab-dialog");
+    const finish = () => {
+      inspectorClosing.current = false;
+      setNewTab(null);
+      setSelectedId(null);
+      after?.();
+    };
+    if (!dialog || isMotionReduced()) {
+      finish();
+      return;
+    }
+    inspectorClosing.current = true;
+    void dialog
+      .animate(
+        [
+          { opacity: 1, transform: "translateY(0) scale(1)" },
+          { opacity: 0, transform: "translateY(12px) scale(.96)" },
+        ],
+        { duration: 180, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" },
+      )
+      .finished.then(finish)
+      .catch(finish);
+  }
   function save(next: NotebookTab[]) {
     dispatch({ type: "notebook/organized", id: notebook.id, changes: { paperTabs: next } });
   }
   function update(tab: NotebookTab, changes: Partial<NotebookTab>) {
+    if (newTab) {
+      setNewTab({ ...newTab, ...changes });
+      return;
+    }
     save(tabs.map((item) => (item.id === tab.id ? { ...item, ...changes } : item)));
   }
-  function placeResolved(kind: NotebookTab["kind"], result: PlacementResult, id?: string) {
-    if (disabled) return;
-    if (!result.ok) {
-      setMessage(
-        result.reason === "divider-edge"
-          ? uiText(704)
-          : result.reason === "bookmark-sheet"
-            ? uiText(1829)
-            : uiText(1830),
-      );
-      return;
-    }
-    const page = pages[result.page];
-    if (!page) {
-      setMessage(uiText(1830));
-      return;
-    }
-    commit(kind, page, result.position, id);
-  }
-  function activateTab(id: string) {
-    const tab = tabs.find((item) => item.id === id);
-    if (!tab) return;
-    setTool(null);
-    if (editing) setSelectedId(tab.id);
-    else {
-      setSelectedId(null);
-      onJump(tab.pageId);
-    }
-  }
   function place(kind: NotebookTab["kind"], x: number, y: number, id?: string) {
-    const resolved = resolverRef?.current?.(kind, x, y);
-    if (resolved) return placeResolved(kind, resolved, id);
     const rect = mount.current?.getBoundingClientRect();
     if (!rect || !visible.length || disabled) return;
     const inside =
@@ -234,18 +206,29 @@ export function NotebookPaperTools({
           kind,
           pageId: page.id,
           position,
-          label: kind === "divider" ? uiText(705) : uiText(1831),
-          color: kind === "divider" ? colors[0]! : colors[3]!,
+          label:
+            preparedTab?.kind === kind
+              ? preparedTab.label
+              : kind === "divider"
+                ? uiText(705)
+                : uiText(1831),
+          color:
+            preparedTab?.kind === kind
+              ? preparedTab.color
+              : kind === "divider"
+                ? colors[0]!
+                : colors[3]!,
+          ...(kind === "bookmark" ? { motif: preparedTab?.motif ?? "moon" } : {}),
         };
     save(previous ? tabs.map((tab) => (tab.id === id ? next : tab)) : [...tabs, next]);
-    setSelectedId(next.id);
+    setSelectedId(previous ? next.id : null);
     setTool(null);
     setMessage(
       `${kind === "divider" ? uiText(705) : uiText(1831)} na folha ${pages.indexOf(page) + 1}.`,
     );
   }
   function start(event: PointerEvent<HTMLButtonElement>, kind: NotebookTab["kind"], id?: string) {
-    if (event.button !== 0 || disabled) return;
+    if (event.button !== 0 || disabled || !id) return;
     event.stopPropagation();
     gesture.current = {
       kind,
@@ -296,11 +279,7 @@ export function NotebookPaperTools({
           ? uiText(710)
           : uiText(711);
   const toolbox = (
-    <div
-      className={`notebook-paper-toolbox${scene ? " is-scene" : ""}`}
-      role="toolbar"
-      aria-label={uiText(706)}
-    >
+    <div className="notebook-paper-toolbox" role="toolbar" aria-label={uiText(706)}>
       {backControl}
       {coverControl}
       {(["divider", "bookmark"] as const).map((kind) => (
@@ -311,12 +290,25 @@ export function NotebookPaperTools({
           disabled={!pages.length || disabled}
           aria-pressed={tool === kind}
           aria-label={kind === "divider" ? uiText(707) : uiText(1832)}
-          title={uiText(708)}
           onPointerDown={(event) => start(event, kind)}
           {...pointerHandlers}
           onClick={() =>
             click(() => {
-              setTool(tool === kind ? null : kind);
+              setNewTab({
+                id: "tab-draft",
+                kind,
+                pageId: "",
+                position: 0.5,
+                label: kind === "divider" ? uiText(705) : uiText(1831),
+                color:
+                  preparedTab?.kind === kind
+                    ? preparedTab.color
+                    : kind === "divider"
+                      ? colors[0]!
+                      : colors[3]!,
+                ...(kind === "bookmark" ? { motif: "moon" as const } : {}),
+              });
+              setTool(null);
               setSelectedId(null);
             })
           }
@@ -331,7 +323,6 @@ export function NotebookPaperTools({
           className="notebook-paper-tool"
           aria-pressed={editing}
           aria-label={editing ? uiText(709) : uiText(1833)}
-          title={editing ? uiText(709) : uiText(1833)}
           disabled={(!tabs.length && !editing) || disabled}
           onClick={() => {
             setEditing(!editing);
@@ -360,9 +351,21 @@ export function NotebookPaperTools({
         }
       }}
     >
-      {!scene && (toolbarHost ? createPortal(toolbox, toolbarHost) : toolbox)}
+      {toolbarHost ? createPortal(toolbox, toolbarHost) : toolbox}
       {selected && (
-        <div className="notebook-tab-inspector" role="group" aria-label={uiText(712)}>
+        <LibraryDialog
+          title={selected.kind === "divider" ? uiText(705) : uiText(1831)}
+          className="notebook-tab-dialog"
+          onClose={() => closeInspector()}
+        >
+          <div
+            className={`notebook-tab-preview is-${selected.kind}${selected.label.length > 16 ? " has-long-label" : ""}`}
+            style={tabStyle(selected, 1, "right")}
+          >
+            <div className="notebook-tab-preview-art">
+              <NotebookTabFace tab={selected} pageIndex={1} side="right" />
+            </div>
+          </div>
           <label>
             {uiText(713)}
             <input
@@ -372,7 +375,8 @@ export function NotebookPaperTools({
               onChange={(event) => update(selected, { label: event.target.value })}
             />
           </label>
-          <div className="notebook-tab-colors" role="group" aria-label={uiText(715)}>
+          <fieldset className="ink-palette notebook-tab-palette">
+            <legend>{uiText(715)}</legend>
             {colors.map((color, index) => (
               <button
                 type="button"
@@ -381,54 +385,74 @@ export function NotebookPaperTools({
                   [uiText(1568), uiText(1571), uiText(1570), uiText(1569), uiText(1572)][index]
                 }
                 aria-pressed={selected.color === color}
-                style={{ "--tab-color": color } as CSSProperties}
+                className="ink-swatch"
+                style={{ backgroundColor: color }}
                 onClick={() => update(selected, { color })}
               >
-                <span />
+                <span>{selected.color === color ? <PaperCheckIcon /> : null}</span>
               </button>
             ))}
-          </div>
+          </fieldset>
           {selected.kind === "bookmark" && (
             <div className="notebook-marker-motifs" role="group" aria-label={uiText(716)}>
               {(["moon", "sun"] as const).map((motif) => (
                 <button
                   type="button"
                   key={motif}
-                  className="notebook-paper-tool"
+                  className="secondary-button notebook-motif-button"
                   aria-pressed={(selected.motif ?? "moon") === motif}
                   onClick={() => update(selected, { motif })}
                 >
                   <PaperMoonMark compact motif={motif} className="paper-tab-icon" />
-                  {motif === "moon" ? uiText(1836) : uiText(1837)}
+                  <span>{motif === "moon" ? uiText(1836) : uiText(1837)}</span>
+                  {(selected.motif ?? "moon") === motif && (
+                    <span className="notebook-motif-check" aria-hidden="true">
+                      <PaperCheckIcon size={15} />
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
           )}
           <div className="notebook-tab-edit-actions">
+            {!newTab && (
+              <button
+                className="secondary-button"
+                type="button"
+                onClick={() => {
+                  save(tabs.filter((tab) => tab.id !== selected.id));
+                  setSelectedId(null);
+                }}
+              >
+                {uiText(717)}
+              </button>
+            )}
             <button
+              className="primary-button"
               type="button"
               onClick={() => {
-                save(tabs.filter((tab) => tab.id !== selected.id));
-                setSelectedId(null);
+                const configured = newTab;
+                closeInspector(() => {
+                  if (configured) {
+                    setPreparedTab(configured);
+                    setTool(configured.kind);
+                  }
+                });
               }}
             >
-              {uiText(717)}
-            </button>
-            <button type="button" onClick={() => setSelectedId(null)}>
               {uiText(718)}
             </button>
           </div>
-        </div>
+        </LibraryDialog>
       )}
       <div
-        className={`notebook-spread-shell ${tool || ghost ? "is-placing" : ""} ${scene ? "is-scene" : ""}`}
+        className={`notebook-spread-shell ${tool || ghost ? "is-placing" : ""} `}
         ref={mount}
         onPointerDownCapture={(event) => {
-          if (tool && !scene) event.stopPropagation();
+          if (tool) event.stopPropagation();
         }}
         onClickCapture={(event) => {
-          if (scene || !tool || (event.target as HTMLElement).closest(".notebook-attached-tab"))
-            return;
+          if (!tool || (event.target as HTMLElement).closest(".notebook-attached-tab")) return;
           event.preventDefault();
           event.stopPropagation();
           const rect =
@@ -445,29 +469,11 @@ export function NotebookPaperTools({
             );
         }}
       >
-        {typeof children === "function"
-          ? children({
-              tool,
-              editing,
-              selectedId,
-              toolbar: toolbox,
-              hint: toolHint,
-              cancel: () => {
-                setTool(null);
-                setSelectedId(null);
-                setEditing(false);
-              },
-              placeResolved,
-              activateTab,
-            })
-          : children}
-        {!scene && (tool || ghost) && (
+        {children}
+        {(tool || ghost) && (
           <div className={`notebook-drop-guide is-${tool ?? ghost?.kind}`} aria-hidden="true" />
         )}
-        <nav
-          className={`notebook-attached-tabs ${scene ? "is-scene" : ""}`}
-          aria-label={uiText(719)}
-        >
+        <nav className="notebook-attached-tabs" aria-label={uiText(719)}>
           {tabs.map((tab) => {
             if (hiddenTabIds?.has(tab.id)) return null;
             const pageIndex = pages.findIndex((page) => page.id === tab.pageId);

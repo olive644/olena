@@ -61,13 +61,11 @@ it("oferece acessibilidade geral no Perfil e salva a escolha", () => {
     highlightSelections: true,
     soundEffects: true,
     haptics: true,
-    notebook3dOptIn: false,
   });
   expect(document.documentElement.dataset["reduceMotion"]).toBe("true");
   fireEvent.click(screen.getByRole("checkbox", { name: /^Vibrações/ }));
   expect(JSON.parse(localStorage.getItem(ACCESSIBILITY_KEY)!).haptics).toBe(false);
-  fireEvent.click(screen.getByRole("checkbox", { name: /^Caderno em 3D/ }));
-  expect(JSON.parse(localStorage.getItem(ACCESSIBILITY_KEY)!).notebook3dOptIn).toBe(true);
+  expect(screen.queryByRole("checkbox", { name: /^Caderno em 3D/ })).toBeNull();
   dispose();
   localStorage.removeItem(ACCESSIBILITY_KEY);
   initializeAccessibility()();

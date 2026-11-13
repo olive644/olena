@@ -808,3 +808,38 @@
   text-decoration: none !important;
   filter: none !important;
 }
+/* Realce amarelo é opcional; o foco por teclado permanece perceptível sem ele. */
+:root:not([data-highlight-selections="true"])
+  body
+  :is(
+    button,
+    a[href],
+    input,
+    textarea,
+    select,
+    summary,
+    [role="button"],
+    [role="checkbox"],
+    [role="radio"],
+    [role="switch"],
+    [role="tab"],
+    [role="option"],
+    [role="menuitem"],
+    [role="combobox"],
+    [role="slider"],
+    [role="spinbutton"],
+    [contenteditable="true"]
+  ):focus-visible {
+  text-decoration: none !important;
+  filter: brightness(1.2) !important;
+}
+:root:not([data-highlight-selections="true"]) body :is(input, textarea, select):focus {
+  border-bottom-color: var(--line-strong, var(--line, #cfc2ab)) !important;
+  box-shadow: 0 3px 0 var(--line-strong, var(--line, #cfc2ab)) !important;
+}
+:root:not([data-highlight-selections="true"]) body button:has(> .agenda-close-icon):focus-visible,
+:root:not([data-highlight-selections="true"])
+  body
+  button:has(> img[src="/navigation-icons/paper/close.svg"]):focus-visible {
+  border-bottom-color: transparent !important;
+}

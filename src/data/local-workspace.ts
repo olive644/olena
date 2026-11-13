@@ -466,7 +466,10 @@ function isNotebook(value: unknown): boolean {
     (value["homeFavorite"] === undefined || typeof value["homeFavorite"] === "boolean") &&
     (value["coverStyle"] === undefined ||
       value["coverStyle"] === "helena-estrelas" ||
-      value["coverStyle"] === "oliver-estrelas") &&
+      value["coverStyle"] === "oliver-estrelas" ||
+      value["coverStyle"] === "mathematics" ||
+      value["coverStyle"] === "english" ||
+      value["coverStyle"] === "pride") &&
     (value["shelf"] === undefined ||
       (Number.isInteger(value["shelf"]) && Number(value["shelf"]) >= 0)) &&
     (value["parentId"] === undefined || isString(value["parentId"])) &&
@@ -801,6 +804,12 @@ function isPracticeActivity(activity: unknown): boolean {
 }
 
 export function isWorkspaceState(value: unknown): value is WorkspaceState {
+  if (
+    isRecord(value) &&
+    value["notebookShelfName"] !== undefined &&
+    (!isString(value["notebookShelfName"]) || value["notebookShelfName"].length > 40)
+  )
+    return false;
   if (!isRecord(value) || value["version"] !== WORKSPACE_VERSION) return false;
   if (
     value["libraryCollections"] !== undefined &&

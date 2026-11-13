@@ -1,3 +1,4 @@
+import { drawNotebookFormula } from "./notebook-formula-format";
 import {
   DEFAULT_HANDWRITING_LAYER_ORDER,
   DEFAULT_HANDWRITING_LAYER_VISIBILITY,
@@ -381,7 +382,7 @@ export function renderPage(
       if (sticky.kind !== "text" || sticky.formula) {
         context.fillStyle = "#bfb7a7";
         context.fillRect(sticky.x + 8, sticky.y + 9, width, height);
-        context.fillStyle = stickyColor(sticky.color);
+        context.fillStyle = sticky.formula ? "#fff" : stickyColor(sticky.color);
         context.fillRect(sticky.x, sticky.y, width, height);
       }
       context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? "#17151c") : "#17151c";
@@ -432,6 +433,18 @@ export function renderPage(
           context.fillStyle = item.done ? "#6b6570" : "#17151c";
           context.fillText(item.text.trim().slice(0, 32) || "Item", sticky.x + 42, rowY + 1);
         });
+        context.restore();
+        continue;
+      }
+      if (sticky.formula) {
+        drawNotebookFormula(
+          context,
+          sticky.text,
+          sticky.x + 18,
+          sticky.y + 28,
+          width - 36,
+          height - 46,
+        );
         context.restore();
         continue;
       }

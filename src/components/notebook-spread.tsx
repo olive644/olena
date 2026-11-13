@@ -1,14 +1,8 @@
+import { NotebookClasp } from "./notebook-clasp";
+import { PaperDigits } from "./paper-digits";
+import { notebookCoverTheme } from "../domain/notebook-covers";
 import { uiText, useLanguage } from "../i18n/runtime";
-import {
-  lazy,
-  Suspense,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type Dispatch,
-} from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type Dispatch } from "react";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import {
   NotebookJourney,
@@ -33,17 +27,8 @@ import { FocusPaperArrow } from "./focus-paper-arrow";
 import { NotebookPageThumbnail } from "./notebook-page-thumbnail";
 import { NotebookToolIcon } from "./notebook-tool-icon";
 import { NOTEBOOK_TURN_MS, NOTEBOOK_TURN_EASING } from "./notebook-motion";
-import { prefetchNotebook3d, useNotebook3d } from "./notebook-3d/notebook-3d-support";
-import { HelenaLoading } from "./helena-loading";
 import "./notebook-spread.css";
 import "./notebook-binding-finish.css";
-
-// A cena 3D e tudo que só ela usa ficam fora do pacote principal do caderno.
-const NotebookSpread3d = lazy(() =>
-  import("./notebook-3d/notebook-3d-book").then((module) => ({
-    default: module.NotebookSpread3d,
-  })),
-);
 
 type Props = {
   initiallyShowCover?: boolean;
@@ -66,10 +51,6 @@ type Props = {
   transitioning?: boolean;
   readOnly?: boolean;
   compactPreview?: boolean;
-  /** Folha de onde a pessoa acabou de sair, para o caderno voltar nela. */
-  returningFromPageId?: string | undefined;
-  /** Pedido do índice: folhear até a folha e entrar nela. */
-  jump?: { pageId: string; nonce: number } | undefined;
 };
 type Turn = {
   from: number;
@@ -81,13 +62,7 @@ type Turn = {
 };
 const reducedMotion = isMotionReduced;
 
-function PageImage({
-  page,
-  hideTitle = false,
-}: {
-  page?: StudyNote | undefined;
-  hideTitle?: boolean;
-}) {
+function PageImage({ page }: { page?: StudyNote | undefined }) {
   useLanguage();
 
   return (
@@ -97,7 +72,6 @@ function PageImage({
       ) : (
         <div className="notebook-empty-paper">{page?.content && <p>{page.content}</p>}</div>
       )}
-      {!hideTitle && <strong>{page?.title ?? ""}</strong>}
     </>
   );
 }
@@ -114,23 +88,16 @@ export function NotebookSpread({
   onCreate,
   onRemove,
   onIndex,
+  onBack,
   transitioning = false,
   readOnly = false,
   compactPreview = false,
-  returningFromPageId,
-  jump,
 }: Props) {
   useLanguage();
-  const prefers3d = useNotebook3d();
-  const [unavailable3d, setUnavailable3d] = useState(false);
-  const use3d = prefers3d && !unavailable3d && !compactPreview && !readOnly;
   const [showBack, setShowBack] = useState(false);
   // Barra de baixo do caderno 2D: ferramentas só com ícone, junto do "+" de nova folha.
   const [dockHost, setDockHost] = useState<HTMLElement | null>(null);
   const hasDock = !compactPreview && !readOnly;
-  useEffect(() => {
-    if (use3d) prefetchNotebook3d(true);
-  }, [use3d]);
 
   const [spreadIndex, setSpreadIndex] = useState(() =>
     Math.max(0, Math.floor(pages.findIndex((page) => page.id === initialPageId) / 2)),
@@ -140,6 +107,10 @@ export function NotebookSpread({
   const finishCoverJourney = useCallback(() => setCoverJourney(null), []);
   function changeCover(next: boolean) {
     if ((readOnly && !compactPreview) || busy || next === showCover) return;
+    if (next && onBack) {
+      onBack();
+      return;
+    }
     suppressClick.current = false;
     const source = document.querySelector<HTMLElement>(
       next ? ".notebook-spread-shell" : ".notebook-concept-cover .book-cover",
@@ -160,6 +131,10 @@ export function NotebookSpread({
   }
   function changeBack(next: boolean) {
     if (readOnly || compactPreview || busy || next === showBack) return;
+    if (next && onBack) {
+      onBack();
+      return;
+    }
     suppressClick.current = false;
     const source = document.querySelector<HTMLElement>(
       next ? ".notebook-spread-shell" : ".notebook-concept-cover .book-cover",
@@ -251,36 +226,11 @@ export function NotebookSpread({
   useEffect(() => {
     ridingRef.current = ridingIds;
   });
-  if (use3d)
-    return (
-      <Suspense fallback={<HelenaLoading label={uiText(3176)} compact />}>
-        <NotebookSpread3d
-          notebook={notebook}
-          pages={pages}
-          subjects={subjects}
-          dispatch={dispatch}
-          transitioning={Boolean(transitioning)}
-          returningFromPageId={returningFromPageId}
-          jump={jump}
-          visible={visible}
-          current={current}
-          lastSpread={lastSpread}
-          showCover={showCover}
-          showBack={showBack}
-          setShowCover={setShowCover}
-          setShowBack={setShowBack}
-          setSpreadIndex={setSpreadIndex}
-          onOpen={onOpen}
-          onCreate={onCreate}
-          onIndex={onIndex}
-          onUnavailable={() => setUnavailable3d(true)}
-        />
-      </Suspense>
-    );
   const back = turning ? pages[turning.to * 2 + (turning.direction > 0 ? 0 : 1)] : undefined;
   return (
     <div
       className={`notebook-spread-workspace ${readOnly ? "is-readonly-preview" : ""}`}
+      data-cover-theme={notebookCoverTheme(notebook.coverStyle)}
       style={
         {
           "--turn-duration": `${NOTEBOOK_TURN_MS}ms`,
@@ -289,34 +239,6 @@ export function NotebookSpread({
       }
     >
       {coverJourney && <NotebookJourney journey={coverJourney} onDone={finishCoverJourney} />}
-      {showCover && (
-        <div className="notebook-spread-options notebook-paper-toolbox">
-          <button
-            type="button"
-            className="notebook-paper-tool"
-            aria-label={uiText(737)}
-            disabled={busy}
-            onClick={() => changeCover(false)}
-          >
-            <NotebookToolIcon name="index" />
-            <span>{uiText(737)}</span>
-          </button>
-        </div>
-      )}
-      {showBack && !use3d && (
-        <div className="notebook-spread-options notebook-paper-toolbox">
-          <button
-            type="button"
-            className="notebook-paper-tool"
-            aria-label={uiText(737)}
-            disabled={busy}
-            onClick={() => changeBack(false)}
-          >
-            <NotebookToolIcon name="index" />
-            <span>{uiText(737)}</span>
-          </button>
-        </div>
-      )}
       {showBack ? (
         <div className="notebook-cover-customizer">
           <button
@@ -326,7 +248,7 @@ export function NotebookSpread({
             aria-label={uiText(3170)}
             onClick={() => changeBack(false)}
           >
-            <NotebookBackCover subjectColor="#7C3AED" />
+            <NotebookBackCover coverStyle={notebook.coverStyle} subjectColor="#7C3AED" />
           </button>
         </div>
       ) : showCover ? (
@@ -374,6 +296,7 @@ export function NotebookSpread({
             }}
           >
             <NotebookCover
+              coverStyle={notebook.coverStyle}
               {...(participants ? { participants } : {})}
               subjectColor="#7C3AED"
               title={notebook.title}
@@ -415,7 +338,6 @@ export function NotebookSpread({
                   disabled={busy}
                   onClick={() => onCreate(notebook.subjectId)}
                   aria-label={uiText(745)}
-                  title={uiText(745)}
                 >
                   <PaperActionIcon name="plus" />
                 </button>
@@ -429,7 +351,6 @@ export function NotebookSpread({
                   disabled={busy}
                   onClick={onIndex}
                   aria-label={uiText(701)}
-                  title={uiText(701)}
                 >
                   <NotebookToolIcon name="index" />
                   <span>{uiText(701)}</span>
@@ -548,9 +469,7 @@ export function NotebookSpread({
                 <i />
                 <i />
               </div>
-              <span className="book-cover__clasp notebook-open-clasp" aria-hidden="true">
-                <i />
-              </span>
+              <NotebookClasp className="notebook-open-clasp" />
               <div className="notebook-spread-pair">
                 {basePages.map((page, side) => (
                   <article
@@ -566,32 +485,6 @@ export function NotebookSpread({
                     )}
                     {page ? (
                       <>
-                        <input
-                          key={page.id + page.title}
-                          className="notebook-sheet-title"
-                          aria-label={uiText(1854, [pages.indexOf(page) + 1])}
-                          defaultValue={page.title}
-                          maxLength={120}
-                          readOnly={readOnly}
-                          disabled={busy}
-                          onBlur={(event) => {
-                            const title = event.currentTarget.value.trim() || page.title;
-                            event.currentTarget.value = title;
-                            if (title !== page.title)
-                              dispatch({
-                                type: "note/updated",
-                                id: page.id,
-                                title,
-                                content: page.content,
-                                updatedAt: new Date().toISOString(),
-                              });
-                          }}
-                          onKeyDown={(event) => {
-                            if (event.key === "Escape") event.currentTarget.value = page.title;
-                            if (event.key === "Enter" || event.key === "Escape")
-                              event.currentTarget.blur();
-                          }}
-                        />
                         <button
                           className="notebook-sheet-open"
                           type="button"
@@ -599,10 +492,10 @@ export function NotebookSpread({
                           onClick={() => onOpen(page.id)}
                           aria-label={uiText(1855, [page.title, pages.indexOf(page) + 1])}
                         >
-                          <PageImage page={page} hideTitle />
+                          <PageImage page={page} />
                         </button>
                         <footer>
-                          <span>{pages.indexOf(page) + 1}</span>
+                          <PaperDigits value={String(pages.indexOf(page) + 1)} />
                           {!readOnly && (
                             <button
                               className="notebook-sheet-remove"
@@ -678,7 +571,7 @@ export function NotebookSpread({
                 <FocusPaperArrow />
               </button>
             )}
-            <span aria-live="polite">
+            <span className="visually-hidden" aria-live="polite">
               {pages.length
                 ? uiText(1859, [
                     current * 2 + 1,

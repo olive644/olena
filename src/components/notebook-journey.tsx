@@ -1,8 +1,9 @@
-import { notebook3dCoverRect } from "./notebook-3d/notebook-3d-support";
+import { NotebookClasp } from "./notebook-clasp";
 import { useLayoutEffect, useRef } from "react";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import { createPortal } from "react-dom";
 import type { NotebookTab, StudyNotebook } from "../domain/workspace";
+import { notebookCoverTheme } from "../domain/notebook-covers";
 import { NotebookCover } from "./notebook-cover";
 import { NotebookBackCover } from "./notebook-back-cover";
 import { NOTEBOOK_TURN_MS, NOTEBOOK_TURN_EASING } from "./notebook-motion";
@@ -79,26 +80,20 @@ export function NotebookJourney({
   const carrier = useRef<HTMLDivElement>(null);
   const paper = useRef<HTMLDivElement>(null);
   const lining = useRef<HTMLDivElement>(null);
+  const marks = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     const element = carrier.current;
-    // No caderno 3D a capa só viaja fechada; quem abre é a própria cena.
-    const scene3d = journey.returning
-      ? null
-      : document.querySelector<HTMLElement>("[data-notebook-3d] .notebook-3d");
-    const closed = Boolean(journey.closed || scene3d);
+    const closed = Boolean(journey.closed);
     const back = journey.side === "back";
-    if (element && scene3d) element.dataset["closed"] = "true";
-    const target = scene3d
-      ? scene3d
-      : journey.returning
-        ? journey.destination === "cover"
-          ? document.querySelector<HTMLElement>(".notebook-concept-cover .book-cover")
-          : notebookShelfCover(journey.notebook.id)
-        : document.querySelector<HTMLElement>(
-            journey.destination === "cover"
-              ? ".notebook-concept-cover .book-cover"
-              : ".notebook-spread-shell",
-          );
+    const target = journey.returning
+      ? journey.destination === "cover"
+        ? document.querySelector<HTMLElement>(".notebook-concept-cover .book-cover")
+        : notebookShelfCover(journey.notebook.id)
+      : document.querySelector<HTMLElement>(
+          journey.destination === "cover"
+            ? ".notebook-concept-cover .book-cover"
+            : ".notebook-spread-shell",
+        );
     if (!element || !target || !canAnimateNotebook()) {
       onDone();
       return;
@@ -113,6 +108,8 @@ export function NotebookJourney({
       snapshot.setAttribute("inert", "");
       snapshot.setAttribute("aria-hidden", "true");
       snapshot.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
+      marks.current?.replaceChildren(snapshot.cloneNode(true));
+      snapshot.querySelectorAll(".notebook-attached-tabs").forEach((node) => node.remove());
       paper.current.replaceChildren(snapshot);
       // O verso leva a primeira folha na mesma escala do miolo. Ao completar
       // a volta, ela coincide com a folha fixa, como no folheamento das demais.
@@ -141,9 +138,8 @@ export function NotebookJourney({
           ? notebookShelfPose(target, true)
           : undefined;
       const rect = shelf?.rect ?? target.getBoundingClientRect();
-      const destination = scene3d
-        ? notebook3dCoverRect(scene3d)
-        : journey.returning || journey.destination === "cover"
+      const destination =
+        journey.returning || journey.destination === "cover"
           ? rect
           : {
               x: back ? rect.x : rect.x + rect.width / 2,
@@ -157,10 +153,13 @@ export function NotebookJourney({
       const shelfSlideMs = 580;
       const flight = shelf?.angle ? shelfRotationMs + shelfSlideMs : 360;
       const coverTurn = shelf?.angle ? 640 : NOTEBOOK_TURN_MS;
-      const duration = closed ? flight : coverTurn + flight;
-      const openingStart = flight / duration;
+      const claspMs = 420;
+      const duration = closed ? flight : coverTurn + flight + claspMs;
+      const openingStart = (flight + claspMs) / duration;
+      const claspOpeningStart = flight / duration;
+      const coverClosingEnd = coverTurn / duration;
       const openingEnd = 0.998;
-      const closingEnd = coverTurn / duration;
+      const closingEnd = (coverTurn + claspMs) / duration;
       const shelfTurnEnd = (duration - flight + shelfRotationMs) / duration;
       const settle = "cubic-bezier(.35,0,.2,1)";
       const timing: KeyframeAnimationOptions = { duration, fill: "both" };
@@ -175,6 +174,27 @@ export function NotebookJourney({
         }
       };
       const glide = "cubic-bezier(.4,0,.2,1)";
+      // As marcações acompanham o miolo, fora do recorte que esconde as folhas.
+      marks.current
+        ?.querySelectorAll<HTMLElement>(`.notebook-attached-tab.is-${back ? "right" : "left"}`)
+        .forEach((mark) => {
+          const folded = `${(parseFloat(snapshot?.style.width ?? "0") / 2) * (back ? -1 : 1)}px`;
+          animate(
+            mark,
+            journey.returning
+              ? [
+                  { translate: "0px" },
+                  { translate: folded, offset: coverClosingEnd },
+                  { translate: folded },
+                ]
+              : [
+                  { translate: folded },
+                  { translate: folded, offset: openingStart },
+                  { translate: "0px", offset: openingEnd },
+                  { translate: "0px" },
+                ],
+          );
+        });
       const still = "translate(0px, 0px) scale(1, 1)";
       const shelfAngle = shelf?.angle ?? 0;
       const restingAngle = journey.shelfAngle ?? 0;
@@ -221,7 +241,7 @@ export function NotebookJourney({
             journey.returning
               ? [
                   { "--cover-angle": open, easing: NOTEBOOK_TURN_EASING },
-                  { "--cover-angle": "0deg", offset: closingEnd },
+                  { "--cover-angle": "0deg", offset: coverClosingEnd },
                   { "--cover-angle": "0deg" },
                 ]
               : [
@@ -237,20 +257,50 @@ export function NotebookJourney({
             timing,
           ),
         );
+      const clasp = element.querySelector<HTMLElement>(".notebook-journey-clasp");
+      const openClasp = (journey.returning ? paper.current : target)?.querySelector<HTMLElement>(
+        ".notebook-open-clasp",
+      );
+      const claspBounds = openClasp?.getBoundingClientRect();
+      const claspScale = journey.returning ? 1 : destination.width / from.width;
+      const claspRight = journey.returning
+        ? from.x + from.width
+        : destination.x + destination.width;
+      const openGeometry = claspBounds
+        ? {
+            width: claspBounds.width / claspScale + "px",
+            right: (claspRight - claspBounds.x) / claspScale + "px",
+          }
+        : { width: "29%", right: "-1px" };
+      const closedGeometry = { width: "29%", right: "-1px" };
       animate(
-        element.querySelector(".notebook-journey-clasp"),
+        clasp,
         journey.returning
           ? [
-              { transform: "rotateY(-180deg)" },
-              { transform: "rotateY(-180deg)", offset: closingEnd * 0.8 },
-              { transform: "rotateY(0deg)", offset: closingEnd },
-              { transform: "rotateY(0deg)" },
+              { transform: "translateZ(3px) rotateY(180deg)", ...openGeometry },
+              {
+                transform: "translateZ(3px) rotateY(180deg)",
+                offset: coverClosingEnd,
+                ...openGeometry,
+                easing: NOTEBOOK_TURN_EASING,
+              },
+              { transform: "translateZ(3px) rotateY(0deg)", offset: closingEnd, ...closedGeometry },
+              { transform: "translateZ(3px) rotateY(0deg)", ...closedGeometry },
             ]
           : [
-              { transform: "rotateY(0deg)" },
-              { transform: "rotateY(0deg)", offset: openingStart },
-              { transform: "rotateY(-180deg)", offset: openingStart + 0.17 },
-              { transform: "rotateY(-180deg)" },
+              { transform: "translateZ(3px) rotateY(0deg)", ...closedGeometry },
+              {
+                transform: "translateZ(3px) rotateY(0deg)",
+                offset: claspOpeningStart,
+                ...closedGeometry,
+                easing: NOTEBOOK_TURN_EASING,
+              },
+              {
+                transform: "translateZ(3px) rotateY(180deg)",
+                offset: openingStart,
+                ...openGeometry,
+              },
+              { transform: "translateZ(3px) rotateY(180deg)", ...openGeometry },
             ],
       );
       const held = back ? "inset(-80px 50% -80px -100px)" : "inset(-80px -100px -80px 50%)";
@@ -296,6 +346,7 @@ export function NotebookJourney({
   return createPortal(
     <div
       className="notebook-journey"
+      data-cover-theme={notebookCoverTheme(journey.notebook.coverStyle)}
       data-returning={journey.returning}
       data-closed={journey.closed ?? false}
       data-side={journey.side ?? "front"}
@@ -318,15 +369,17 @@ export function NotebookJourney({
       )}
       <div className="notebook-journey-book">
         <div className="notebook-journey-pages" ref={paper} />
+        <div className="notebook-journey-marks" ref={marks} />
+        <span className="book-cover__clasp-anchor" />
         <i className="notebook-journey-cast" />
         <div className="notebook-journey-leaf">
           {journey.side === "back" ? (
-            <NotebookBackCover subjectColor="#7C3AED" />
+            <NotebookBackCover coverStyle={journey.notebook.coverStyle} subjectColor="#7C3AED" />
           ) : (
             <NotebookCover
+              coverStyle={journey.notebook.coverStyle}
               subjectColor="#7C3AED"
               title={journey.notebook.title}
-              tabs={journey.tabs}
               clasp={false}
             />
           )}
@@ -334,9 +387,7 @@ export function NotebookJourney({
           <div className="notebook-journey-lining" ref={lining} />
           <i className="notebook-journey-shade is-lining" />
         </div>
-        <span className="book-cover__clasp notebook-journey-clasp">
-          <i />
-        </span>
+        <NotebookClasp className="notebook-journey-clasp" />
       </div>
     </div>,
     document.body,

@@ -1,17 +1,11 @@
+import { NotebookShelf } from "../components/notebook-shelf";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { saveStudentResume } from "../data/student-resume";
 import { NotebookPageBook } from "../components/notebook-page-book";
-import { PaperCardTitle } from "../components/paper-card-title";
 import { TextNoteEditor } from "../components/text-note";
 import { NoteFlashcardTools } from "../components/library-links";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 import { mergeNotebookPages, type NotebookCollabPage } from "../domain/notebook-collab";
-import {
-  closeNotebook3d,
-  notebook3dCoverRect,
-  prefetchNotebook3d,
-  useNotebook3d,
-} from "../components/notebook-3d/notebook-3d-support";
 import { NotebookPageIndex } from "../components/notebook-page-index";
 import { NotebookPageThumbnail } from "../components/notebook-page-thumbnail";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type Dispatch } from "react";
@@ -32,7 +26,6 @@ import {
   type NotebookPageJourneyState,
 } from "../components/notebook-page-journey";
 import { notebookPaperTabs } from "../components/notebook-paper-tools";
-import { NotebookCover as NotebookArtwork } from "../components/notebook-cover";
 import type { ImportedPage } from "../components/page-import";
 import type { HandwritingDocument } from "../domain/handwriting";
 import { openPrintWindow } from "../data/print-window";
@@ -94,8 +87,6 @@ export function NotesView({
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
   const [moveMessage, setMoveMessage] = useState("");
   const [newNotebookName, setNewNotebookName] = useState("");
-  const [selectionMode, setSelectionMode] = useState(false);
-  const [selectedNotebookIds, setSelectedNotebookIds] = useState<string[]>([]);
   const [activeNotebookId, setActiveNotebookId] = useState<string | null>(
     initialNotebookId ??
       new URLSearchParams(window.location.search).get("caderno")?.slice(0, 160) ??
@@ -116,16 +107,6 @@ export function NotesView({
       : null;
   });
   const [indexOpen, setIndexOpen] = useState(false);
-  const notebook3d = useNotebook3d();
-  const onShelf = !activeNotebookId;
-  useEffect(() => {
-    if (!notebook3d || !onShelf) return;
-    const timer = window.setTimeout(() => prefetchNotebook3d(), 1500);
-    return () => window.clearTimeout(timer);
-  }, [notebook3d, onShelf]);
-  // Ao sair de uma folha, o caderno reabre nela (o 3D faz a folha voltar para o lugar).
-  const [returnedPageId, setReturnedPageId] = useState<string>();
-  const [pageJump, setPageJump] = useState<{ pageId: string; nonce: number }>();
   const resumeNotebookId = workspace.notebooks.find(
     (book) =>
       book.id === activeNotebookId &&
@@ -320,12 +301,6 @@ export function NotesView({
   }
 
   function openNotebook(notebook: StudyNotebook) {
-    if (selectionMode) {
-      setSelectedNotebookIds((ids) =>
-        ids.includes(notebook.id) ? ids.filter((id) => id !== notebook.id) : [...ids, notebook.id],
-      );
-      return;
-    }
     const cover = notebookShelfCover(notebook.id);
     if (notebook.kind !== "note" && cover && canAnimateNotebook()) {
       const pose = notebookShelfPose(cover);
@@ -340,8 +315,6 @@ export function NotesView({
     setActiveNotebookId(notebook.id);
     setSharedNotebookId(notebook.id);
     setActivePageId(null);
-    setReturnedPageId(undefined);
-    setPageJump(undefined);
     setNotebookSection(notebook.kind === "folder" ? "notes" : "pages");
     setPreviewPageIndex(0);
   }
@@ -373,24 +346,6 @@ export function NotesView({
 
   function returnToShelf() {
     if (journey) return;
-    const scene3d = document.querySelector<HTMLElement>("[data-notebook-3d] .notebook-3d");
-    if (activeNotebook && scene3d && canAnimateNotebook()) {
-      const notebook = activeNotebook;
-      const tabs = notebookPaperTabs(notebook, notebookPages, workspace.subjects);
-      setIndexOpen(false);
-      // O caderno 3D folheia até a capa e fecha; a capa fechada é que viaja até a estante.
-      void closeNotebook3d().then((rect) => {
-        setJourney({
-          notebook,
-          returning: true,
-          closed: true,
-          tabs,
-          from: rect ?? notebook3dCoverRect(scene3d),
-        });
-        setActiveNotebookId(null);
-      });
-      return;
-    }
     const spread = document.querySelector<HTMLElement>(".notebook-paper-spread");
     const cover = document.querySelector<HTMLElement>(".notebook-concept-cover .book-cover");
     const rect = (spread ?? cover)?.getBoundingClientRect();
@@ -407,13 +362,6 @@ export function NotesView({
       });
     setActiveNotebookId(null);
     setIndexOpen(false);
-  }
-
-  function removeSelectedNotebooks() {
-    if (selectedNotebookIds.length === 0) return;
-    dispatch({ type: "notebook/removed", ids: selectedNotebookIds });
-    setSelectedNotebookIds([]);
-    setSelectionMode(false);
   }
 
   function createPageAtEnd() {
@@ -630,7 +578,7 @@ export function NotesView({
     >
       {journey && <NotebookJourney journey={journey} onDone={finishJourney} />}
       {pageJourney && <NotebookPageJourney journey={pageJourney} onDone={finishPageJourney} />}
-      <PageHeader />
+      <PageHeader showUpdates={false} />
       {(() => {
         const note = workspace.notes.find(
           (item) =>
@@ -665,7 +613,7 @@ export function NotesView({
       <dialog
         key={createDialogVersion}
         ref={createDialog}
-        className="notebook-create-dialog"
+        className="notebook-create-dialog shelf-wood-dialog"
         aria-label={uiText(1348)}
       >
         <form
@@ -675,7 +623,7 @@ export function NotesView({
             createNotebook();
           }}
         >
-          <h2>{uiText(1987)}</h2>
+          <h2 tabIndex={-1}>{uiText(1987)}</h2>
           <label>
             {uiText(713)}
             <input
@@ -697,7 +645,7 @@ export function NotesView({
             >
               {uiText(155)}
             </button>
-            <button className="primary-button" type="submit" disabled={!canCreateNotebook}>
+            <button className="shelf-wood-button" type="submit" disabled={!canCreateNotebook}>
               {uiText(1350)}
             </button>
           </div>
@@ -706,118 +654,17 @@ export function NotesView({
 
       {!activeNotebook ? (
         <>
-          <header className="view-heading view-heading--with-action notebooks-heading">
-            <div className="new-note-action">
-              {shelfItems.length > 0 && (
-                <button
-                  className="secondary-button"
-                  type="button"
-                  onClick={() => {
-                    setSelectionMode((enabled) => !enabled);
-                    setSelectedNotebookIds([]);
-                  }}
-                >
-                  {selectionMode ? uiText(1361) : uiText(359)}
-                </button>
-              )}
-              {selectionMode && (
-                <div className="notebook-selection-actions" role="group" aria-label={uiText(1362)}>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setSelectedNotebookIds(
-                        selectedNotebookIds.length === shelfItems.length
-                          ? []
-                          : shelfItems.map((notebook) => notebook.id),
-                      )
-                    }
-                  >
-                    {selectedNotebookIds.length === shelfItems.length ? uiText(1990) : uiText(199)}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={selectedNotebookIds.length === 0}
-                    onClick={removeSelectedNotebooks}
-                  >
-                    {uiText(1363)}{" "}
-                    {selectedNotebookIds.length > 0 ? `(${selectedNotebookIds.length})` : ""}
-                  </button>
-                </div>
-              )}
-            </div>
-          </header>
-
-          <section className="notebooks-showcase" aria-label={uiText(1364)}>
-            <div className="notebook-shelves">
-              <section className="notebook-display-shelf" aria-label={uiText(1991, [1])}>
-                {["left", "right"].map((side) => (
-                  <span key={side} className={`notebook-shelf-vines is-${side}`} aria-hidden="true">
-                    {Array.from({ length: 16 }, (_, index) => (
-                      <i key={index} style={{ top: index * 12 }} />
-                    ))}
-                  </span>
-                ))}
-                <div className="notebook-display-shelf__books">
-                  {shelfItems.map((notebook) => {
-                    return (
-                      <button
-                        className="notebook-card notebook-spine"
-                        data-notebook-drop={notebook.id}
-                        type="button"
-                        onClick={() => openNotebook(notebook)}
-                        aria-label={uiText(1813, [notebook.title])}
-                        aria-pressed={
-                          selectionMode ? selectedNotebookIds.includes(notebook.id) : undefined
-                        }
-                        key={notebook.id}
-                      >
-                        <span className="notebook-spine__inspection" aria-hidden="true">
-                          <span className="notebook-spine__body book-cover__spine">
-                            <i />
-                            <i />
-                            <i />
-                          </span>
-                          <span className="notebook-spine__front">
-                            <strong>{notebook.title}</strong>
-                            <NotebookArtwork
-                              subjectColor="#7C3AED"
-                              title={notebook.title}
-                              tabs={notebookPaperTabs(
-                                notebook,
-                                workspace.notes,
-                                workspace.subjects,
-                              )}
-                            />
-                          </span>
-                        </span>
-                      </button>
-                    );
-                  })}
-                  {canCreateNotebook && (
-                    <button
-                      className="notebook-display-shelf__create"
-                      aria-label={uiText(1348)}
-                      type="button"
-                      onClick={() => createDialog.current?.showModal()}
-                    >
-                      <span aria-hidden="true">+</span>
-                    </button>
-                  )}
-                  <img
-                    className="notebook-shelf-cat"
-                    src="/olena-shelf-sleeping.webp"
-                    alt=""
-                    draggable={false}
-                  />
-                </div>
-              </section>
-              {!canCreateNotebook && (
-                <p className="notebook-shelf-pro">
-                  <PaperCardTitle value="EM BREVE OLENA PRO" />
-                </p>
-              )}
-            </div>
-          </section>
+          <NotebookShelf
+            workspace={workspace}
+            dispatch={dispatch}
+            onOpen={openNotebook}
+            onCreate={() => {
+              createDialog.current?.showModal();
+              createDialog.current
+                ?.querySelector<HTMLHeadingElement>("h2")
+                ?.focus({ preventScroll: true });
+            }}
+          />
         </>
       ) : activeNotebook.kind === "note" ? (
         <TextNoteEditor
@@ -852,20 +699,13 @@ export function NotesView({
             >
               <img src="/paper-arrow.svg" alt="" />
             </button>
-            <h1>{activeNotebook.title}</h1>
           </div>
-          <p>
-            {notebookPages.length} {notebookPages.length === 1 ? uiText(1993) : uiText(1994)}
-          </p>
           {indexOpen && (
             <NotebookPageIndex
               pages={notebookPages}
               currentPageId=""
               onSelect={(pageId) => {
-                // No 3D o caderno folheia até a folha; na vitrine 2D a folha abre direto, como antes.
-                if (!notebook3d) return setActivePageId(pageId);
-                setIndexOpen(false);
-                setPageJump((current) => ({ pageId, nonce: (current?.nonce ?? 0) + 1 }));
+                setActivePageId(pageId);
               }}
               onMove={movePage}
               onReorder={reorderPage}
@@ -882,14 +722,8 @@ export function NotesView({
             subjects={workspace.subjects}
             dispatch={dispatch}
             onOpen={(pageId) => {
-              setPageJump(undefined);
-              setReturnedPageId(undefined);
               openPreviewPage(pageId);
             }}
-            // Só o caderno 3D reabre na dupla da folha de onde a pessoa saiu; a vitrine 2D segue como era.
-            initialPageId={notebook3d ? returnedPageId : undefined}
-            returningFromPageId={returnedPageId}
-            jump={pageJump}
             transitioning={Boolean(journey)}
             onCreate={(subjectId) => addPage(true, subjectId)}
             onRemove={removePage}
@@ -904,7 +738,6 @@ export function NotesView({
               className="back-button"
               type="button"
               onClick={() => {
-                setReturnedPageId(activePage.id);
                 setActivePageId(null);
               }}
             >
@@ -953,7 +786,6 @@ export function NotesView({
                   onClosePage={() => {
                     finishPageJourney();
                     setEditingAssetId(null);
-                    setReturnedPageId(activePage.id);
                     setActivePageId(null);
                   }}
                 />

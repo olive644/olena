@@ -180,7 +180,8 @@ export function PageImport({
   }
 
   async function importAllPages() {
-    if (!pdf || !onImportMany || pdf.numPages < 2) return;
+    if (!pdf || !onImportMany) return;
+    const id = generation.current;
     setBusy(true);
     setImportingAll(true);
     setError("");
@@ -188,6 +189,7 @@ export function PageImport({
       const pages: ImportedPage[] = [];
       for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
         const pdfPage = await pdf.getPage(pageNumber);
+        if (id !== generation.current) return;
         const size = pdfPage.getViewport({ scale: 1 });
         const viewport = pdfPage.getViewport({
           scale: Math.min(1200 / size.width, 1600 / size.height),
@@ -196,6 +198,7 @@ export function PageImport({
         canvas.width = Math.ceil(viewport.width);
         canvas.height = Math.ceil(viewport.height);
         await pdfPage.render({ canvas, viewport }).promise;
+        if (id !== generation.current) return;
         const image = prepareImportedPage(canvas, canvas.width, canvas.height, 100, true);
         pages.push({
           image,
@@ -207,12 +210,15 @@ export function PageImport({
           },
         });
       }
-      onImportMany(pages);
+      if (id === generation.current) onImportMany(pages);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : uiText(799));
+      if (id === generation.current)
+        setError(caught instanceof Error ? caught.message : uiText(799));
     } finally {
-      setBusy(false);
-      setImportingAll(false);
+      if (id === generation.current) {
+        setBusy(false);
+        setImportingAll(false);
+      }
     }
   }
 
@@ -304,7 +310,7 @@ export function PageImport({
         >
           {uiText(809)}
         </button>
-        {pdf && pdf.numPages > 1 && onImportMany && (
+        {pdf && onImportMany && (
           <button type="button" disabled={busy} onClick={() => void importAllPages()}>
             {uiText(810)}
             {pdf.numPages})

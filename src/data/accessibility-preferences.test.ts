@@ -5,7 +5,6 @@ import {
   isMotionReduced,
   updateAccessibility,
   areHapticsEnabled,
-  isNotebook3dPreferred,
 } from "./accessibility-preferences";
 let dispose: () => void;
 it("restaura vibração desligada e migra preferências antigas sem perder campos", () => {
@@ -59,15 +58,19 @@ it("acompanha a configuração alterada em outra aba", () => {
   expect(document.documentElement.dataset["highlightSelections"]).toBe("true");
 });
 
-it("mantém o caderno em 2D por padrão e lembra quando a pessoa liga o 3D", () => {
-  expect(isNotebook3dPreferred()).toBe(false);
-  // Quem guardou preferências antes do 3D virar opção não volta a ser levada para o 3D.
-  localStorage.setItem(ACCESSIBILITY_KEY, JSON.stringify({ soundEffects: true, notebook3d: true }));
+it("ignora preferências antigas do renderizador removido sem apagar as outras", () => {
+  localStorage.setItem(
+    ACCESSIBILITY_KEY,
+    JSON.stringify({ notebook3dOptIn: true, soundEffects: false, reduceMotion: true }),
+  );
   dispose();
   dispose = initializeAccessibility();
-  expect(isNotebook3dPreferred()).toBe(false);
-  updateAccessibility({ notebook3dOptIn: true });
-  dispose();
-  dispose = initializeAccessibility();
-  expect(isNotebook3dPreferred()).toBe(true);
+  expect(document.documentElement.dataset["reduceMotion"]).toBe("true");
+  updateAccessibility({ haptics: false });
+  expect(JSON.parse(localStorage.getItem(ACCESSIBILITY_KEY)!)).toEqual({
+    reduceMotion: true,
+    highlightSelections: false,
+    soundEffects: false,
+    haptics: false,
+  });
 });

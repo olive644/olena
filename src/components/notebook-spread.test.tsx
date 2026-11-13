@@ -89,7 +89,7 @@ it("conserva a capa Oliver ao salvar e recarregar o caderno", () => {
   ).toBeUndefined();
 });
 
-it("edita o título no preview sem abrir editor e permite cancelar", () => {
+it("oculta títulos das folhas sem perder nomes e abertura do editor", () => {
   const state = fixture();
   const notebook = state.notebooks[0]!;
   const pages = notebook.pageIds.map((id) => state.notes.find((page) => page.id === id)!);
@@ -106,23 +106,16 @@ it("edita o título no preview sem abrir editor e permite cancelar", () => {
       onRemove={vi.fn()}
     />,
   );
-  const title = screen.getByRole("textbox", { name: "Título da folha 1" });
-  fireEvent.change(title, { target: { value: "  Constelações  " } });
-  fireEvent.blur(title);
-  expect(dispatch).toHaveBeenCalledWith(
-    expect.objectContaining({
-      type: "note/updated",
-      id: "one",
-      title: "Constelações",
-      content: pages[0]!.content,
+  expect(screen.queryByRole("textbox", { name: "Título da folha 1" })).toBeNull();
+  const original = structuredClone(pages);
+  fireEvent.click(
+    screen.getByRole("button", {
+      name: new RegExp("Abrir preview de " + pages[0]!.title + ", folha 1"),
     }),
   );
-  expect(onOpen).not.toHaveBeenCalled();
-  dispatch.mockClear();
-  fireEvent.change(title, { target: { value: "Descartar" } });
-  fireEvent.keyDown(title, { key: "Escape" });
-  fireEvent.blur(title);
+  expect(onOpen).toHaveBeenCalledWith("one");
   expect(dispatch).not.toHaveBeenCalled();
+  expect(pages).toEqual(original);
 });
 
 it("oferece Sol e preserva o modelo do marcador ao recarregar", () => {

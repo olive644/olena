@@ -1,11 +1,18 @@
 // Arte da capa e da contracapa do caderno em papel recortado, sem personagens.
-// O módulo não importa nada: a cena 3D desenha com ele e o script
-// scripts/notebook-cover-art/generate.mjs gera a mesma capa em WebP para a estante e a vitrine 2D.
+// Fonte editável da capa original e das contracapas. O script gera as texturas da vitrine 2D.
 
 /** Medidas de referência do desenho; quem chama escala para o tamanho do canvas. */
 export const COVER_UNITS = { width: 1200, height: 1624 } as const;
 /** Raio dos cantos de fora da capa, em unidades do desenho. */
 export const COVER_CORNER = 46;
+
+export type CoverTheme = "stars" | "mathematics" | "english";
+const palette = (theme: CoverTheme) =>
+  theme === "mathematics"
+    ? ["#2457b3", "#163d85", "#102859"]
+    : theme === "english"
+      ? ["#317f88", "#225c6d", "#193747"]
+      : ["#6a35cc", "#5126ad", "#33186f"];
 
 type Paint = CanvasRenderingContext2D;
 
@@ -70,13 +77,13 @@ function boardPath(x: Paint, spineOnLeft: boolean) {
 }
 
 /** Couro roxo com grão fino, a mesma base da vitrine 2D. */
-function leather(x: Paint, seed: number) {
+function leather(x: Paint, seed: number, theme: CoverTheme = "stars") {
   const { width, height } = COVER_UNITS;
   const random = seeded(seed);
   const gradient = x.createLinearGradient(0, 0, width, height);
-  gradient.addColorStop(0, "#6a35cc");
-  gradient.addColorStop(0.5, "#5126ad");
-  gradient.addColorStop(1, "#33186f");
+  gradient.addColorStop(0, palette(theme)[0]!);
+  gradient.addColorStop(0.5, palette(theme)[1]!);
+  gradient.addColorStop(1, palette(theme)[2]!);
   x.fillStyle = gradient;
   x.fillRect(0, 0, width, height);
   for (let index = 0; index < 16000; index++) {
@@ -223,9 +230,9 @@ function constellation(x: Paint, points: [number, number, number][]) {
 
 /**
  * Capa: céu noturno de papel com lua, constelação e colinas. A faixa de baixo fica livre para a
- * etiqueta do título (texto vivo na vitrine 2D e no 3D).
+ * etiqueta do título (texto vivo na vitrine 2D).
  */
-export function paintCoverArt(x: Paint, transparentCorners = true) {
+export function paintCoverArt(x: Paint, transparentCorners = true, theme: CoverTheme = "stars") {
   const { width, height } = COVER_UNITS;
   x.save();
   if (transparentCorners) {
@@ -233,7 +240,7 @@ export function paintCoverArt(x: Paint, transparentCorners = true) {
     boardPath(x, true);
     x.clip();
   }
-  const random = leather(x, 11);
+  const random = leather(x, 11, theme);
   const spine = x.createLinearGradient(0, 0, 110, 0);
   spine.addColorStop(0, "rgba(12,4,30,0.6)");
   spine.addColorStop(1, "rgba(12,4,30,0)");
@@ -295,13 +302,13 @@ export function paintCoverArt(x: Paint, transparentCorners = true) {
 }
 
 /** Contracapa: medalhão com a lua e espaço para o nome de quem é dono do caderno. */
-export function paintBackArt(x: Paint) {
+export function paintBackArt(x: Paint, theme: CoverTheme = "stars") {
   const { width, height } = COVER_UNITS;
   x.save();
   x.clearRect(0, 0, width, height);
   boardPath(x, false);
   x.clip();
-  const random = leather(x, 21);
+  const random = leather(x, 21, theme);
   const spine = x.createLinearGradient(width, 0, width - 110, 0);
   spine.addColorStop(0, "rgba(12,4,30,0.6)");
   spine.addColorStop(1, "rgba(12,4,30,0)");
@@ -346,7 +353,13 @@ export function paintBackArt(x: Paint) {
     );
     x.fill();
   }
-  paperMoon(x, cx - 20, cy - 10, 120);
+  if (theme === "stars") paperMoon(x, cx - 20, cy - 10, 120);
+  else {
+    x.fillStyle = "#ffcf16";
+    x.font = '800 180px "Manrope", sans-serif';
+    x.textAlign = "center";
+    x.fillText(theme === "english" ? "HI!" : "+", cx, cy + 55);
+  }
   paperHills(x, cx - radius, cx + radius, cy + radius * 0.95, random);
   x.restore();
   paperStar(x, cx - radius * 0.92, cy - radius * 0.78, 42, 0.3);
@@ -354,4 +367,59 @@ export function paintBackArt(x: Paint) {
   cornerGuard(x, 0, 0, true, false);
   cornerGuard(x, 0, height, true, true);
   x.restore();
+}
+
+/** Bandeira LGBT em seis faixas de papel, com a mesma encadernação original. */
+export function paintPrideArt(x: Paint, back = false) {
+  if (back) paintBackArt(x);
+  else paintCoverArt(x, false);
+  const colors = ["#e44958", "#ed9144", "#ffcf16", "#43996a", "#397fc2", "#8053b8"];
+  const left = back ? 122 : 176;
+  const top = 122;
+  const width = 902;
+  const height = COVER_UNITS.height * 0.6;
+  x.save();
+  x.beginPath();
+  x.roundRect(left, top, width, height, 22);
+  x.clip();
+  colors.forEach((color, index) => {
+    const y = top + (index * height) / 6;
+    const h = height / 6;
+    x.fillStyle = color;
+    x.fillRect(left, y, width, h + 1);
+    x.fillStyle = "rgba(255,255,255,0.18)";
+    x.beginPath();
+    x.moveTo(left, y);
+    x.lineTo(left + width * 0.72, y);
+    x.lineTo(left + width * 0.3, y + h * 0.66);
+    x.closePath();
+    x.fill();
+    x.fillStyle = "rgba(30,14,48,0.16)";
+    x.beginPath();
+    x.moveTo(left + width, y);
+    x.lineTo(left + width, y + h);
+    x.lineTo(left + width * 0.48, y + h);
+    x.closePath();
+    x.fill();
+    x.fillStyle = "rgba(25,15,40,0.14)";
+    x.fillRect(left, y + h - 6, width, 6);
+  });
+  x.restore();
+  x.strokeStyle = "#fff1c1";
+  x.lineWidth = 10;
+  x.beginPath();
+  x.roundRect(left, top, width, height, 22);
+  x.stroke();
+  paperStar(x, left + 58, top + 56, 40, 0.3);
+  paperStar(x, left + width - 62, top + height - 60, 30, -0.2);
+  // As faixas continuam na lombada, alinhadas com a capa, sem outra arte desconectada.
+  colors.forEach((color, index) => {
+    const y = (index * COVER_UNITS.height) / 6;
+    x.fillStyle = color;
+    x.fillRect(0, y, 80, COVER_UNITS.height / 6 + 1);
+    x.fillStyle = "rgba(25,15,40,0.25)";
+    x.fillRect(0, y, 18, COVER_UNITS.height / 6 + 1);
+    x.fillStyle = "rgba(255,255,255,0.22)";
+    x.fillRect(68, y, 8, COVER_UNITS.height / 6 + 1);
+  });
 }

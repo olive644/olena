@@ -12,7 +12,9 @@ export function PaperDigits({ value }: { value: string }) {
     <span className="paper-digits">
       <span className="visually-hidden">{value}</span>
       {[...value].map((character, index) =>
-        character === ":" ? (
+        character === "/" ? (
+          <span key={index} className="paper-digits__slash" aria-hidden="true" />
+        ) : character === ":" ? (
           <span key={index} className="paper-digits__colon" aria-hidden="true" />
         ) : (
           <svg key={index + character} viewBox="0 0 66 98" aria-hidden="true">

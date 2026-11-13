@@ -8,6 +8,8 @@ export const DEFAULT_NOTEBOOK_PREFERENCES = {
   inkPrediction: true,
   penHoverPreview: true,
   penOnly: false,
+  penBarrelErases: false,
+  penTailErases: true,
   textAutoCorrect: true,
   coordinateMeasurements: true,
   equalCoordinateAxes: true,

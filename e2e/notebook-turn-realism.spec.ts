@@ -89,30 +89,26 @@ test("divisória e marcador ficam na pilha da folha deles e viajam com ela ao vi
   await expect(page.locator(".notebook-attached-tab.is-bookmark")).toHaveCount(1);
 });
 
-test("a contracapa abre depois da última folha e volta a ela", async ({ page }) => {
+test("fechar depois da última folha retorna à prateleira e preserva páginas", async ({ page }) => {
   test.slow();
   await openNotebook(page, 4);
   await next(page).click();
   await settled(page);
-  // Na última folha a seta de avançar passa a abrir a contracapa.
-  const toBack = page.getByRole("button", { name: "Contracapa ›", exact: true });
-  await expect(toBack).toBeEnabled();
-  await toBack.click();
+  await page.getByRole("button", { name: "Contracapa ›", exact: true }).click();
   await expect(page.locator(".notebook-journey")).toBeVisible();
-  await expect(page.locator(".notebook-journey")).toHaveCount(0, { timeout: 10_000 });
-  const back = page.getByRole("button", { name: "‹ Última folha", exact: true });
-  await expect(back).toBeVisible();
-  await expect(page.locator(".notebook-concept-cover.is-back")).toBeVisible();
-  await expect(page.getByText("ESTE CADERNO PERTENCE A")).toBeVisible();
-  await back.click();
-  await expect(page.locator(".notebook-journey")).toHaveCount(0, { timeout: 10_000 });
-  await expect(page.locator(".notebook-paper-spread")).toBeVisible();
-  await expect(page.getByText("Folhas 3 e 4 de 4")).toBeVisible();
-  // Teclado: seta para a direita na última folha também abre a contracapa.
+  await expect(page.locator(".notebook-journey")).toHaveCount(0);
+  await expect(page.locator(".notebook-shelves")).toBeVisible();
+  await expect(page.locator(".notebook-concept-cover")).toHaveCount(0);
+  await page.getByRole("button", { name: "Abrir Folheio", exact: true }).click();
+  await expect(page.locator(".notebook-journey")).toHaveCount(0);
+  await settled(page);
+  await next(page).click();
+  await settled(page);
+  await expect(page.getByText("Folhas 3 e 4 de 4")).toHaveText("Folhas 3 e 4 de 4");
   await page.locator(".notebook-paper-spread").focus();
   await page.keyboard.press("ArrowRight");
-  await expect(page.locator(".notebook-journey")).toHaveCount(0, { timeout: 10_000 });
-  await expect(page.locator(".notebook-concept-cover.is-back")).toBeVisible();
+  await expect(page.locator(".notebook-journey")).toHaveCount(0);
+  await expect(page.locator(".notebook-shelves")).toBeVisible();
 });
 
 test("com movimento reduzido a contracapa abre sem animação", async ({ page }) => {
@@ -120,5 +116,5 @@ test("com movimento reduzido a contracapa abre sem animação", async ({ page })
   await openNotebook(page, 2);
   await page.getByRole("button", { name: "Contracapa ›", exact: true }).click();
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
-  await expect(page.locator(".notebook-concept-cover.is-back")).toBeVisible();
+  await expect(page.locator(".notebook-shelves")).toBeVisible();
 });
