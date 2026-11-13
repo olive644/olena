@@ -30,7 +30,8 @@ for (const theme of ["light", "dark"]) {
     expect(box!.height).toBeGreaterThanOrEqual(44);
     await home.focus();
     await expect(home).toHaveCSS("outline-style", "none");
-    await expect(home).toHaveCSS("text-decoration-line", "underline");
+    await expect(home).toHaveCSS("text-decoration-line", "none");
+    await expect(home).toHaveCSS("filter", "brightness(1.2)");
     await page.screenshot({ path: test.info().outputPath(`404-${theme}.png`), fullPage: true });
     await home.click();
     await expect(page).toHaveURL("/");

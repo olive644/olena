@@ -78,8 +78,5 @@ test("tamanho percentual e fundos corretos no modo escuro", async ({ page }, inf
   await editor.getByRole("button", { name: "Fechar painel de colaboração" }).click();
   await expect(editor.locator(".notebook-collaboration-panel")).toHaveCount(0);
   await editor.getByRole("button", { name: "Fechar", exact: true }).click();
-  await expect(page.locator("input.notebook-sheet-title")).toHaveCSS(
-    "background-color",
-    "rgb(255, 249, 239)",
-  );
+  await expect(page.locator("input.notebook-sheet-title")).toHaveCount(0);
 });

@@ -4934,3 +4934,14 @@ O proprietário pediu publicar imediatamente e deixar o CI com Claude. Verifica�
 - **Mudança.** `index.html` passa a declarar ícones de 48 e 192 px e `/favicon.ico` (16, 32 e 48 px), gerados a partir de `public/olena-favicon.png`. O de 32 px e o de 180 px (Apple) ficam. O PNG de 1254 px sai do `<head>`, mas o arquivo continua em `public/` porque outros fluxos o usam. Teste em `src/favicon-google.test.ts`.
 - **Limite.** O Google reprocessa o ícone por conta própria, de dias a semanas. Não há como forçar. Pedir nova indexação da página inicial no Search Console ajuda.
 - **Endereço antigo.** `olenastudy.vercel.app` redireciona 308 para o `www`, e o Google troca o resultado ao recrawlear. Para acelerar, a dona pode usar "Remoções" no Search Console se ainda tiver a propriedade verificada. Ação fora do repositório.
+
+## CI da PR 631 corrigido, 2026-11-13
+
+- **O que falhava.** Um teste de unidade e 13 e2e (desktop e celular) ficaram vermelhos. Não havia falha de produto nova; havia contratos antigos nos testes e uma perda de acessibilidade.
+- **Linha de base de SVG.** Os marcadores passaram a usar variáveis de cor do tema (`--bookmark-color` e afins) com a cor original como valor padrão. `src/test/fixtures/paper-svg-budget-baseline.json` trocou só os `fill` dos 8 símbolos de `paper-bookmark`. O visual padrão não muda.
+- **Foco por teclado.** A pedido da proprietária, sem "Realçar seleções" o foco usa brilho neutro (`filter: brightness(1.2)`), sem sublinhado nem amarelo. Quatro testes (agenda, calendário, onboarding e página 404) ainda esperavam sublinhado e agora esperam o brilho neutro. O foco continua visível; só mudou a forma.
+- **Título do caderno aberto.** O cabeçalho do caderno aberto perdeu o `<h1>` com o nome. Sem ele, leitores de tela e os testes não achavam o nome do caderno. Voltou como `h1` visualmente oculto (`visually-hidden`): nada muda na tela, o nome continua anunciado.
+- **Campo de título da folha.** O campo `input.notebook-sheet-title` do preview foi removido a pedido da proprietária; o teste de fundos do modo escuro passou a exigir a ausência dele.
+- **Fórmula.** Havia dois campos com o nome "Fórmula matemática" (o do assistente e o do post-it). O teste agora fala com o do assistente.
+- **Teste instável.** `notebook-shelf-edit` recarregava a página antes de o IndexedDB terminar de gravar e falhava de vez em quando. Agora espera a gravação (mesmo padrão de `storage-full`). 16 de 16 repetições passaram.
+- **Limite.** Rodei localmente os testes que falharam no CI; a suíte e2e completa roda no CI. Os 8 testes de `listening-audio` falham só neste ambiente (`Blob.stream`), igual na `main`.

@@ -699,6 +699,7 @@ export function NotesView({
             >
               <img src="/paper-arrow.svg" alt="" />
             </button>
+            <h1 className="visually-hidden">{activeNotebook.title}</h1>
           </div>
           {indexOpen && (
             <NotebookPageIndex

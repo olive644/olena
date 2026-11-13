@@ -1,4 +1,24 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+// A gravação no IndexedDB é assíncrona: recarregar antes dela terminar faz a página ler o
+// estado antigo e a verificação falha de vez em quando. Espera a gravação aparecer de verdade.
+function savedWorkspace(page: Page) {
+  return page.evaluate(
+    () =>
+      new Promise<string | undefined>((resolve) => {
+        const request = indexedDB.open("helenastudy", 1);
+        request.onerror = () => resolve(undefined);
+        request.onsuccess = () => {
+          const read = request.result
+            .transaction("workspace", "readonly")
+            .objectStore("workspace")
+            .get("current");
+          read.onsuccess = () => resolve(read.result as string | undefined);
+          read.onerror = () => resolve(undefined);
+        };
+      }),
+  );
+}
 
 for (const theme of ["light", "dark"]) {
   test(`edita placa e inspeciona caderno na prateleira ${theme}`, async ({ page }, info) => {
@@ -88,6 +108,7 @@ for (const theme of ["light", "dark"]) {
       .fill("Meu canto de estudos");
     await nameDialog.getByRole("button", { name: "Salvar", exact: true }).click();
     await save.click();
+    await expect.poll(() => savedWorkspace(page)).toContain("Meu canto de estudos");
     await page.reload();
     await expect(page.locator(".shelf-wood-sign")).toHaveText("Meu canto de estudos");
     await page.getByRole("button", { name: "Editar prateleira", exact: true }).click();
@@ -98,6 +119,7 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("button", { name: "Apagar prateleira", exact: true }).click();
     await deletion.getByRole("button", { name: "Confirmar exclusão", exact: true }).click();
     await save.click();
+    await expect.poll(() => savedWorkspace(page)).not.toContain("Ideias de teste");
     await page.reload();
     await expect(page.locator(".notebook-spine")).toHaveCount(0);
     await expect(page.locator(".shelf-wood-sign")).toHaveCount(0);
