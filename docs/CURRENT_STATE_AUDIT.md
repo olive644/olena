@@ -4855,3 +4855,11 @@ Limite: uma conta autenticada com onboarding incompleto continua indo direto às
 - **O que falhava.** Com o Modo Sala fora da navegação (PR 625), três testes de `e2e/app.spec.ts` ainda esperavam o número antigo de itens: 8 botões na navegação lateral do desktop (agora 7) e 3 itens em "Mais ferramentas" no celular, em dois testes (agora 2).
 - **Correção.** Os três números foram atualizados para refletir a navegação sem o Modo Sala. Nenhum código do app mudou nesta correção.
 - **Prova.** Os três testes passam localmente no desktop e no celular (4 passam, 2 pulados por serem de outro projeto). A suíte completa roda no CI.
+
+## Favicon que o Google aceita, 2026-11-13
+
+- **Problema.** Na busca do Google o endereço novo aparecia com um globo no lugar do ícone, e o endereço antigo (`olenastudy.vercel.app`) ainda aparecia como resultado separado.
+- **Causa provável do ícone (não verificada pelo Google).** A página declarava só um PNG de 32 px (o Google pede lado múltiplo de 48 px) e um de 1254 px, e não existia `/favicon.ico` (respondia 404). O arquivo do ícone novo já estava no ar.
+- **Mudança.** `index.html` passa a declarar ícones de 48 e 192 px e `/favicon.ico` (16, 32 e 48 px), gerados a partir de `public/olena-favicon.png`. O de 32 px e o de 180 px (Apple) ficam. O PNG de 1254 px sai do `<head>`, mas o arquivo continua em `public/` porque outros fluxos o usam. Teste em `src/favicon-google.test.ts`.
+- **Limite.** O Google reprocessa o ícone por conta própria, de dias a semanas. Não há como forçar. Pedir nova indexação da página inicial no Search Console ajuda.
+- **Endereço antigo.** `olenastudy.vercel.app` redireciona 308 para o `www`, e o Google troca o resultado ao recrawlear. Para acelerar, a dona pode usar "Remoções" no Search Console se ainda tiver a propriedade verificada. Ação fora do repositório.
