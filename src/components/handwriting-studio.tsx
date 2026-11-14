@@ -4279,25 +4279,25 @@ export function HandwritingStudio({
             />
             <canvas
               ref={coordinateCanvasRef}
-              className="handwriting-live-layer"
+              className="handwriting-scene-layer"
               style={{ zIndex: layerDepth("coordinates") }}
               aria-hidden="true"
             />
             <canvas
               ref={textCanvasRef}
-              className="handwriting-live-layer"
+              className="handwriting-scene-layer"
               style={{ zIndex: layerDepth("text") }}
               aria-hidden="true"
             />
             <canvas
               ref={inkCanvasRef}
-              className="handwriting-live-layer"
+              className="handwriting-scene-layer"
               style={{ zIndex: layerDepth("strokes") }}
               aria-hidden="true"
             />
             <canvas
               ref={selectionCanvasRef}
-              className="handwriting-live-layer"
+              className="handwriting-scene-layer"
               style={{ zIndex: completeLayerOrder.length + 1 }}
               aria-hidden="true"
             />

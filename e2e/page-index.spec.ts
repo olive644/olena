@@ -17,7 +17,7 @@ test("índice de folhas: ver miniaturas, reordenar e ir a uma folha", async ({ p
   // Sem segunda folha não há índice; criar a próxima folha o habilita.
   await expect(page.getByRole("button", { name: "Abrir índice de folhas" })).toHaveCount(0);
   await page.getByRole("button", { name: "Criar próxima folha" }).click();
-  await expect(page.getByText("Folha 2 de 2")).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "Folha anterior" })).toBeEnabled();
 
   await page.getByRole("button", { name: "Abrir índice de folhas" }).click();
   const index = page.getByRole("dialog", { name: "Índice de folhas" });
@@ -37,5 +37,5 @@ test("índice de folhas: ver miniaturas, reordenar e ir a uma folha", async ({ p
   // Ir para a outra folha fecha o índice e troca a folha.
   await index.getByRole("button", { name: /^Folha 2:/ }).click();
   await expect(index).toHaveCount(0);
-  await expect(page.getByText("Folha 2 de 2")).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "Folha anterior" })).toBeEnabled();
 });
