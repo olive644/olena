@@ -126,8 +126,6 @@ describe("janela de escrita ampliada", () => {
     return {
       canvasRef: createRef<HTMLCanvasElement>(),
       status: "Coluna 2, linha 3",
-      autoFollow: true,
-      onAutoFollowChange: vi.fn(),
       onStart: vi.fn(),
       onMove: vi.fn(),
       onFinish: vi.fn(),
@@ -149,13 +147,9 @@ describe("janela de escrita ampliada", () => {
     expect(props.onNextLine).toHaveBeenCalledTimes(1);
   });
 
-  it("informa a mudança de acompanhar escrita", () => {
-    const props = windowProps();
-    render(<HandwritingWritingWindow {...props} />);
-    const checkbox = screen.getByRole("checkbox", { name: "Acompanhar escrita" });
-    expect((checkbox as HTMLInputElement).checked).toBe(true);
-    fireEvent.click(checkbox);
-    expect(props.onAutoFollowChange).toHaveBeenCalledWith(false);
+  it("mantém o acompanhamento sem oferecer um controle para desativá-lo", () => {
+    render(<HandwritingWritingWindow {...windowProps()} />);
+    expect(screen.queryByRole("checkbox", { name: "Acompanhar escrita" })).toBeNull();
   });
 
   it("entrega o canvas ao pai e repassa os gestos de ponteiro", () => {
