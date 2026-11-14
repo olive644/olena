@@ -26,3 +26,5 @@ fecdc123f530934f8f842f7b622a4b9aa1ee23a1:firebase-room.rules.json:generic-api-ke
 # $key com a codificação base64 de helenastudy.workspace.v1. A inclusão de englishProgress
 # alterou a linha histórica da allowlist. Exceção limitada à ocorrência, sem ignorar o arquivo.
 8b539201f2786ac4b084ebb70f10f5fee2fe632a:firebase-room.rules.json:generic-api-key:44
+# Base64url storage key for notebook shortcuts, not a credential.
+dfcc734d2796fdc4e2412626bb7dd63342712070:firebase-room.rules.json:generic-api-key:44
