@@ -317,14 +317,22 @@ export function HandwritingStudio({
     changePreference("coordinateMeasurements", value);
   const setEqualCoordinateAxes = (value: boolean) => changePreference("equalCoordinateAxes", value);
   const [fileAction, setFileAction] = useState<"import" | "export" | null>(null);
-  type Upload = { id: string; file: File; name?: string; preview?: { image: string; width: number; height: number }; error?: string };
+  type Upload = {
+    id: string;
+    file: File;
+    name?: string;
+    preview?: { image: string; width: number; height: number };
+    error?: string;
+  };
   const [uploads, setUploads] = useState<Upload[]>([]);
   const decodedUploads = useRef(new Map<string, HTMLImageElement>());
   const uploadQueue = useRef(Promise.resolve());
   const uploadCount = useRef(0);
   const [uploadMenu, setUploadMenu] = useState<string>();
   const [uploadMenuAnchor, setUploadMenuAnchor] = useState<DOMRect>();
-  const [uploadView, setUploadView] = useState<"actions" | "rename" | "details" | "remove">("actions");
+  const [uploadView, setUploadView] = useState<"actions" | "rename" | "details" | "remove">(
+    "actions",
+  );
   const [uploadOpen, setUploadOpen] = useState(false);
   const [dropPoint, setDropPoint] = useState<HandwritingPoint>();
   const [incomingFile, setIncomingFile] = useState<File>();
@@ -332,9 +340,12 @@ export function HandwritingStudio({
     const items: Upload[] = files.slice(0, 20 - uploadCount.current).map((file) => {
       const pdf = file.name.toLowerCase().endsWith(".pdf");
       const limit = pdf ? 20 : 10;
-      const error = !pdf && !["image/png", "image/jpeg", "image/webp"].includes(file.type)
-        ? uiText(1879)
-        : !file.size || file.size > limit * 1024 * 1024 ? "Limite por arquivo: " + limit + " MB." : "";
+      const error =
+        !pdf && !["image/png", "image/jpeg", "image/webp"].includes(file.type)
+          ? uiText(1879)
+          : !file.size || file.size > limit * 1024 * 1024
+            ? "Limite por arquivo: " + limit + " MB."
+            : "";
       return { id: strokeId(), file, ...(error ? { error } : {}) };
     });
     uploadCount.current += items.length;
@@ -358,7 +369,7 @@ export function HandwritingStudio({
           result = { error: caught instanceof Error ? caught.message : uiText(798) };
         }
         setUploads((current) =>
-          current.map((entry) => entry.id === item.id ? { ...entry, ...result } : entry),
+          current.map((entry) => (entry.id === item.id ? { ...entry, ...result } : entry)),
         );
       });
     }
@@ -476,13 +487,25 @@ export function HandwritingStudio({
       };
       image.src = source;
     }
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [importedImages, decodedImages]);
   const renderableImportedImages = useMemo(
-    () => importedImages.flatMap((entry) => {
-      const image = decodedUploads.current.get(entry.dataUrl) ?? decodedImages.get(entry.dataUrl);
-      return image ? [{ id: entry.id, image, frame: entry, ...(entry.rotation === undefined ? {} : { rotation: entry.rotation }) }] : [];
-    }),
+    () =>
+      importedImages.flatMap((entry) => {
+        const image = decodedUploads.current.get(entry.dataUrl) ?? decodedImages.get(entry.dataUrl);
+        return image
+          ? [
+              {
+                id: entry.id,
+                image,
+                frame: entry,
+                ...(entry.rotation === undefined ? {} : { rotation: entry.rotation }),
+              },
+            ]
+          : [];
+      }),
     [importedImages, decodedImages],
   );
   const importedImagesReady = renderableImportedImages.length === importedImages.length;
@@ -660,7 +683,9 @@ export function HandwritingStudio({
     setPaper(next);
   }
   const [paperColor, setPaperColor] = useState<HandwritingPaperColor>(legacyPaperColor);
-  const [brushSettings, setBrushSettings] = useState<Record<string, { color: string; width: number }>>({});
+  const [brushSettings, setBrushSettings] = useState<
+    Record<string, { color: string; width: number }>
+  >({});
   const brushKey = tool === "pen" ? `pen:${brush}` : tool;
   const defaultInk = paperColor === "night" ? "#fff9ef" : "#17151c";
   const settings = brushSettings[brushKey] ?? {
@@ -2285,7 +2310,8 @@ export function HandwritingStudio({
       height: shapeHeight,
     };
     const id = strokeId();
-    const ink = tool === "highlighter" ? (brushSettings[`pen:${brush}`]?.color ?? defaultInk) : color;
+    const ink =
+      tool === "highlighter" ? (brushSettings[`pen:${brush}`]?.color ?? defaultInk) : color;
     const points = canonicalShape(kind, box);
     setStrokes((current) => [
       ...current,
@@ -2660,7 +2686,13 @@ export function HandwritingStudio({
   const [pageTurn, setPageTurn] = useState<"forward" | "backward" | null>(null);
   const [navigationPreview, setNavigationPreview] = useState("");
   useEffect(() => {
-    if (!onSelectPage || !pageNavigationOpen || !importedImagesReady || (background && !backgroundImage)) return;
+    if (
+      !onSelectPage ||
+      !pageNavigationOpen ||
+      !importedImagesReady ||
+      (background && !backgroundImage)
+    )
+      return;
     const timer = window.setTimeout(() => {
       if (drawingRef.current) return;
       const thumbnail = document.createElement("canvas");
@@ -2669,7 +2701,15 @@ export function HandwritingStudio({
       setNavigationPreview(thumbnail.toDataURL("image/png"));
     }, 150);
     return () => window.clearTimeout(timer);
-  }, [onSelectPage, pageNavigationOpen, importedImagesReady, background, backgroundImage, pageScene, gestureRevision]);
+  }, [
+    onSelectPage,
+    pageNavigationOpen,
+    importedImagesReady,
+    background,
+    backgroundImage,
+    pageScene,
+    gestureRevision,
+  ]);
 
   function pageImage(): string {
     if (background && !backgroundImage) throw new Error(uiText(302));
@@ -2794,7 +2834,9 @@ export function HandwritingStudio({
         return false;
       }
     };
-    return () => { flushOnClose.current = null; };
+    return () => {
+      flushOnClose.current = null;
+    };
   });
 
   function switchPage(navigate: () => void) {
@@ -3413,104 +3455,173 @@ export function HandwritingStudio({
                   }}
                 />
               </label>
-              <small className="notebook-upload-limits">
-                Imagem até 10 MB e 16 MP · PDF até 20 MB e 50 páginas
-              </small>
+              <small className="notebook-upload-limits">{uiText(3860)}</small>
               <div className="notebook-upload-grid">
                 {uploads.map((item) => (
                   <div className="notebook-upload-entry" key={item.id}>
-                  <button
-                    key={item.id}
-                    type="button"
-                    className="notebook-upload-card"
-                    draggable={Boolean(item.preview)}
-                    disabled={!item.preview}
-                    aria-busy={!item.preview && !item.error}
-                    onDragStart={(event) => {
-                      event.dataTransfer.setData("application/x-olena-upload", item.id);
-                      event.dataTransfer.effectAllowed = "copy";
-                    }}
-                    onClick={() => insertUpload(item)}
-                  >
-                    <span className="notebook-upload-thumbnail">
-                      {item.preview ? <img src={item.preview.image} alt="" draggable={false} /> :
-                        <PaperEditorIcon name="page" />}
-                    </span>
-                    <span className="notebook-upload-name" title={item.name ?? item.file.name}>{item.name ?? item.file.name}</span>
-                    {item.error && <small>{item.error}</small>}
-                  </button>
-                  <button
-                    type="button"
-                    className="notebook-upload-more"
-                    data-no-tooltip
-                    aria-label={"Opções de " + (item.name ?? item.file.name)}
-                    aria-expanded={uploadMenu === item.id}
-                    onClick={(event) => {
-                      setUploadMenuAnchor(event.currentTarget.getBoundingClientRect());
-                      setUploadMenu(uploadMenu === item.id ? undefined : item.id);
-                      setUploadView("actions");
-                    }}
-                  >
-                    <PaperEditorIcon name="more" />
-                  </button>
-                  {uploadMenu === item.id && uploadMenuAnchor && createPortal(
-                    <div className="notebook-upload-actions" role="group" aria-label="Opções do arquivo"
-                      style={{
-                        left: Math.max(8, Math.min(uploadMenuAnchor.right - 240, window.innerWidth - 248)),
-                        ...(window.innerHeight - uploadMenuAnchor.bottom > 300
-                          ? { top: uploadMenuAnchor.bottom + 6 }
-                          : { bottom: window.innerHeight - uploadMenuAnchor.top + 6 }),
+                    <button
+                      key={item.id}
+                      type="button"
+                      className="notebook-upload-card"
+                      draggable={Boolean(item.preview)}
+                      disabled={!item.preview}
+                      aria-busy={!item.preview && !item.error}
+                      onDragStart={(event) => {
+                        event.dataTransfer.setData("application/x-olena-upload", item.id);
+                        event.dataTransfer.effectAllowed = "copy";
                       }}
-                      onKeyDown={(event) => {
-                        if (event.key === "Escape") {
-                          event.stopPropagation();
-                          setUploadMenu(undefined);
-                        }
-                      }}>
-                      <strong>{item.name ?? item.file.name}</strong>
-                      {uploadView === "actions" && (
-                        <>
-                          <button type="button" onClick={() => setUploadView("rename")}><PaperEditorIcon name="uploadRename" />Renomear</button>
-                          <button type="button" disabled={!item.preview} onClick={() => {
-                            const url = URL.createObjectURL(item.file);
-                            window.open(url, "_blank", "noopener,noreferrer");
-                            window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
-                          }}><PaperEditorIcon name="uploadOpen" />Abrir em nova aba</button>
-                          <button type="button" onClick={() => setUploadView("details")}><PaperEditorIcon name="uploadDetails" />Detalhes</button>
-                          <button type="button" disabled={!item.preview} onClick={() => insertUpload(item)}><PaperEditorIcon name="uploadInsert" />Colocar na folha</button>
-                          <button type="button" onClick={() => setUploadView("remove")}><ShelfToolIcon name="trash" />Remover do upload</button>
-                        </>
+                      onClick={() => insertUpload(item)}
+                    >
+                      <span className="notebook-upload-thumbnail">
+                        {item.preview ? (
+                          <img src={item.preview.image} alt="" draggable={false} />
+                        ) : (
+                          <PaperEditorIcon name="page" />
+                        )}
+                      </span>
+                      <span className="notebook-upload-name" title={item.name ?? item.file.name}>
+                        {item.name ?? item.file.name}
+                      </span>
+                      {item.error && <small>{item.error}</small>}
+                    </button>
+                    <button
+                      type="button"
+                      className="notebook-upload-more"
+                      data-no-tooltip
+                      aria-label={"Opções de " + (item.name ?? item.file.name)}
+                      aria-expanded={uploadMenu === item.id}
+                      onClick={(event) => {
+                        setUploadMenuAnchor(event.currentTarget.getBoundingClientRect());
+                        setUploadMenu(uploadMenu === item.id ? undefined : item.id);
+                        setUploadView("actions");
+                      }}
+                    >
+                      <PaperEditorIcon name="more" />
+                    </button>
+                    {uploadMenu === item.id &&
+                      uploadMenuAnchor &&
+                      createPortal(
+                        <div
+                          className="notebook-upload-actions"
+                          role="group"
+                          aria-label={uiText(3861)}
+                          style={{
+                            left: Math.max(
+                              8,
+                              Math.min(uploadMenuAnchor.right - 240, window.innerWidth - 248),
+                            ),
+                            ...(window.innerHeight - uploadMenuAnchor.bottom > 300
+                              ? { top: uploadMenuAnchor.bottom + 6 }
+                              : { bottom: window.innerHeight - uploadMenuAnchor.top + 6 }),
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === "Escape") {
+                              event.stopPropagation();
+                              setUploadMenu(undefined);
+                            }
+                          }}
+                        >
+                          <strong>{item.name ?? item.file.name}</strong>
+                          {uploadView === "actions" && (
+                            <>
+                              <button type="button" onClick={() => setUploadView("rename")}>
+                                <PaperEditorIcon name="uploadRename" />
+                                {uiText(3862)}
+                              </button>
+                              <button
+                                type="button"
+                                disabled={!item.preview}
+                                onClick={() => {
+                                  const url = URL.createObjectURL(item.file);
+                                  window.open(url, "_blank", "noopener,noreferrer");
+                                  window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+                                }}
+                              >
+                                <PaperEditorIcon name="uploadOpen" />
+                                {uiText(3863)}
+                              </button>
+                              <button type="button" onClick={() => setUploadView("details")}>
+                                <PaperEditorIcon name="uploadDetails" />
+                                {uiText(3864)}
+                              </button>
+                              <button
+                                type="button"
+                                disabled={!item.preview}
+                                onClick={() => insertUpload(item)}
+                              >
+                                <PaperEditorIcon name="uploadInsert" />
+                                {uiText(3865)}
+                              </button>
+                              <button type="button" onClick={() => setUploadView("remove")}>
+                                <ShelfToolIcon name="trash" />
+                                {uiText(3866)}
+                              </button>
+                            </>
+                          )}
+                          {uploadView === "rename" && (
+                            <form
+                              onSubmit={(event) => {
+                                event.preventDefault();
+                                const name = String(
+                                  new FormData(event.currentTarget).get("name") ?? "",
+                                ).trim();
+                                if (!name) return;
+                                setUploads((current) =>
+                                  current.map((entry) =>
+                                    entry.id === item.id ? { ...entry, name } : entry,
+                                  ),
+                                );
+                                setUploadView("actions");
+                              }}
+                            >
+                              <input
+                                aria-label={uiText(3867)}
+                                name="name"
+                                defaultValue={item.name ?? item.file.name}
+                                maxLength={160}
+                                required
+                              />
+                              <button type="submit">
+                                <PaperEditorIcon name="save" />
+                                {uiText(3868)}
+                              </button>
+                            </form>
+                          )}
+                          {uploadView === "details" && (
+                            <small>
+                              {item.file.type || "Arquivo"} ·{" "}
+                              {new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 }).format(
+                                item.file.size / 1024,
+                              )}{" "}
+                              {uiText(3869)}
+                            </small>
+                          )}
+                          {uploadView === "remove" && (
+                            <>
+                              <small>{uiText(3870)}</small>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setUploads((current) =>
+                                    current.filter((entry) => entry.id !== item.id),
+                                  );
+                                  uploadCount.current--;
+                                  setUploadMenu(undefined);
+                                }}
+                              >
+                                <ShelfToolIcon name="trash" />
+                                {uiText(3871)}
+                              </button>
+                            </>
+                          )}
+                          {uploadView !== "actions" && (
+                            <button type="button" onClick={() => setUploadView("actions")}>
+                              {uiText(374)}
+                            </button>
+                          )}
+                        </div>,
+                        document.body,
                       )}
-                      {uploadView === "rename" && (
-                        <form onSubmit={(event) => {
-                          event.preventDefault();
-                          const name = String(new FormData(event.currentTarget).get("name") ?? "").trim();
-                          if (!name) return;
-                          setUploads((current) => current.map((entry) =>
-                            entry.id === item.id ? { ...entry, name } : entry,
-                          ));
-                          setUploadView("actions");
-                        }}>
-                          <input aria-label="Nome do arquivo" name="name" defaultValue={item.name ?? item.file.name} maxLength={160} required />
-                          <button type="submit"><PaperEditorIcon name="save" />Salvar nome</button>
-                        </form>
-                      )}
-                      {uploadView === "details" && (
-                        <small>{item.file.type || "Arquivo"} · {new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 }).format(item.file.size / 1024)} KB</small>
-                      )}
-                      {uploadView === "remove" && (
-                        <>
-                          <small>Remover este arquivo da lista de uploads?</small>
-                          <button type="button" onClick={() => {
-                            setUploads((current) => current.filter((entry) => entry.id !== item.id));
-                            uploadCount.current--;
-                            setUploadMenu(undefined);
-                          }}><ShelfToolIcon name="trash" />Confirmar remoção</button>
-                        </>
-                      )}
-                      {uploadView !== "actions" && <button type="button" onClick={() => setUploadView("actions")}>Voltar</button>}
-                    </div>, document.body,
-                  )}
                   </div>
                 ))}
               </div>

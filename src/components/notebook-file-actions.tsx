@@ -321,9 +321,9 @@ export function NotebookFileActions({
                       value={format}
                       onChange={(event) => setFormat(event.target.value === "png" ? "png" : "pdf")}
                     >
-                      <option value="pdf">PDF</option>
+                      <option value="pdf">{uiText(3872)}</option>
                       <option value="png" disabled={scope === "all" || scope === "custom"}>
-                        PNG
+                        {uiText(3873)}
                       </option>
                     </select>
                     <FocusPaperArrow />

@@ -101,8 +101,9 @@ it("Ctrl+Z desfaz e Ctrl+Shift+Z refaz", () => {
 
 it("restaura a cor e a largura ao alternar entre caneta e marca-texto", () => {
   renderStudio();
-  const tool = (name: string) => screen.getByRole("button", { name, exact: true });
-  const width = () => screen.getByRole("slider", { name: "Espessura do pincel" }) as HTMLInputElement;
+  const tool = (name: string) => screen.getByRole("button", { name });
+  const width = () =>
+    screen.getByRole("slider", { name: "Espessura do pincel" }) as HTMLInputElement;
   fireEvent.click(tool("Caneta"));
   fireEvent.click(tool("Caneta"));
   fireEvent.click(tool("Tinta Roxo"));
