@@ -31,7 +31,6 @@ describe("grupo de instrumentos", () => {
   it.each([
     ["Régua", "ruler"],
     ["Sistema de coordenadas", "coordinates"],
-    ["Espaço vertical", "space"],
     ["Curva", "curve"],
     ["Caneta", "pen"],
     ["Marca-texto", "highlighter"],
@@ -142,6 +141,67 @@ function selectionProps(
 }
 
 describe("ações da seleção", () => {
+  it("não repete ações de objetos quando há barra flutuante", () => {
+    render(
+      <HandwritingSelectionActions
+        {...selectionProps({
+          floatingActions: true,
+          selectedIds: ["image"],
+          selectedCoordinateIds: ["axis"],
+          hasBackground: true,
+          hasSelectedImages: true,
+          canAlign: true,
+        })}
+      />,
+    );
+    expect(screen.queryByRole("button", { name: "Copiar" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Duplicar" })).toBeNull();
+    expect(document.querySelectorAll(".handwriting-selection-actions > button")).toHaveLength(0);
+  });
+  it("edita a tabela selecionada preservando células e uma entrada de histórico", () => {
+    const onChange = vi.fn();
+    const onRemember = vi.fn();
+    render(
+      <HandwritingSelectionActions
+        {...selectionProps({
+          tableProperties: {
+            cells: [["Conteúdo"]],
+            onChange,
+            onRemember,
+          },
+        })}
+      />,
+    );
+    const group = document.querySelector(".handwriting-selection-table")!;
+    const buttons = group.querySelectorAll("button");
+    expect(buttons[1]!.disabled).toBe(true);
+    expect(buttons[3]!.disabled).toBe(true);
+    fireEvent.click(buttons[0]!);
+    expect(onRemember).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith([["Conteúdo"], [""]]);
+  });
+
+  it("oferece tinta e tamanho pequeno para texto selecionado", () => {
+    const onColorChange = vi.fn();
+    render(
+      <HandwritingSelectionActions
+        {...selectionProps({
+          hasPageText: true,
+          pageTextSize: 6,
+          minimumTextSize: 4,
+          textProperties: { ink: "#123456", onColorChange },
+        })}
+      />,
+    );
+    expect(
+      (screen.getByRole("button", { name: "Diminuir texto" }) as HTMLButtonElement).disabled,
+    ).toBe(false);
+    fireEvent.change(document.querySelector(".handwriting-selection-text input")!, {
+      target: { value: "#654321" },
+    });
+    expect(onColorChange).toHaveBeenCalledWith("#654321");
+  });
+
   it("permite trocar entre retângulo e laço livre na ferramenta de seleção", () => {
     const props = selectionProps();
     render(<HandwritingSelectionActions {...props} />);
@@ -169,7 +229,7 @@ describe("ações da seleção", () => {
     expect(screen.getByText("2 itens selecionados")).toBeTruthy();
   });
 
-  it("alinha só quando há traços, e aumenta, diminui e apaga a seleção", () => {
+  it("alinha só quando há traços e apaga a seleção sem controles duplicados", () => {
     const props = selectionProps({ selectedIds: ["a"] });
     const { rerender } = render(<HandwritingSelectionActions {...props} />);
     expect((screen.getByRole("button", { name: "Alinhar" }) as HTMLButtonElement).disabled).toBe(
@@ -177,12 +237,8 @@ describe("ações da seleção", () => {
     );
     rerender(<HandwritingSelectionActions {...props} canAlign />);
     fireEvent.click(screen.getByRole("button", { name: "Alinhar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Aumentar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Diminuir" }));
     fireEvent.click(screen.getByRole("button", { name: "Apagar seleção" }));
     expect(props.onAlign).toHaveBeenCalledTimes(1);
-    expect(props.onScale).toHaveBeenNthCalledWith(1, 1.12);
-    expect(props.onScale).toHaveBeenNthCalledWith(2, 0.88);
     expect(props.onDelete).toHaveBeenCalledTimes(1);
   });
 
@@ -194,29 +250,25 @@ describe("ações da seleção", () => {
     expect(props.onDelete).toHaveBeenCalledTimes(1);
   });
 
-  it("remove a imagem de fundo e gira imagens importadas", () => {
+  it("remove imagens sem repetir controles de rotação", () => {
     const props = selectionProps({ hasBackground: true, hasSelectedImages: true });
     render(<HandwritingSelectionActions {...props} />);
     fireEvent.click(screen.getByRole("button", { name: "Remover imagem" }));
     fireEvent.click(screen.getByRole("button", { name: "Remover imagem(ns)" }));
-    fireEvent.click(screen.getByRole("button", { name: "Girar −15°" }));
-    fireEvent.click(screen.getByRole("button", { name: "Girar +15°" }));
     expect(props.onRemoveBackground).toHaveBeenCalledTimes(1);
     expect(props.onRemoveSelectedImages).toHaveBeenCalledTimes(1);
-    expect(props.onRotate).toHaveBeenNthCalledWith(1, -1);
-    expect(props.onRotate).toHaveBeenNthCalledWith(2, 1);
   });
 
   it("muda o tamanho do texto da folha e bloqueia nos limites", () => {
     const props = selectionProps({ hasPageText: true, pageTextSize: 16 });
     const { rerender } = render(<HandwritingSelectionActions {...props} />);
-    expect(screen.getByText("Texto: 16px")).toBeTruthy();
+    expect(screen.getByRole("status", { name: "Texto:" }).textContent).toContain("16");
     expect(
       (screen.getByRole("button", { name: "Diminuir texto" }) as HTMLButtonElement).disabled,
     ).toBe(true);
     fireEvent.click(screen.getByRole("button", { name: "Aumentar texto" }));
     expect(props.onChangeTextSize).toHaveBeenCalledWith(2);
-    rerender(<HandwritingSelectionActions {...props} pageTextSize={72} />);
+    rerender(<HandwritingSelectionActions {...props} pageTextSize={144} />);
     expect(
       (screen.getByRole("button", { name: "Aumentar texto" }) as HTMLButtonElement).disabled,
     ).toBe(true);
@@ -310,7 +362,9 @@ describe("opções de tinta", () => {
 
   it("identifica espessura personalizada sem marcar um preset incorreto", () => {
     render(<HandwritingInkOptions {...inkProps({ width: 6.2 })} />);
-    expect(screen.getByText(/\(personalizada\)/)).toBeTruthy();
+    expect(
+      screen.getByRole("slider", { name: "Espessura do pincel" }).getAttribute("aria-valuetext"),
+    ).toMatch(/\(personalizada\)/);
     for (const label of ["Fino", "Regular", "Forte"])
       expect(
         screen.getByRole("button", { name: `Traço ${label}` }).getAttribute("aria-pressed"),

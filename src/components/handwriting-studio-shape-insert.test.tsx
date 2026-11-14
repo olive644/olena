@@ -26,7 +26,9 @@ describe("inserir formas pelo teclado, sem desenhar", () => {
       // O menu fecha sozinho depois de escolher, e a ação de seleção aparece (a forma já entra selecionada).
       expect(screen.queryByRole("dialog", { name: "Inserir sem desenhar" })).toBeNull();
       expect(screen.getByText("1 item selecionado")).toBeTruthy();
-      expect(screen.getByRole("button", { name: /Mover$/ })).toBeTruthy();
+      expect(
+        screen.getByRole("button", { name: "Selecionar traços" }).getAttribute("aria-pressed"),
+      ).toBe("true");
     },
   );
 

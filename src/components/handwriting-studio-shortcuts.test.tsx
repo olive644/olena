@@ -69,7 +69,7 @@ it("Espaço segurado troca temporariamente para mover e volta ao soltar", () => 
 it("não intercepta atalhos de uma letra quando o foco está em um campo de texto", () => {
   renderStudio();
   fireEvent.click(screen.getByRole("button", { name: "Texto na página inteira" }));
-  const textarea = screen.getByLabelText("Texto da página inteira");
+  const textarea = screen.getByLabelText("Texto na folha");
   textarea.focus();
 
   fireEvent.keyDown(textarea, { key: "e", code: "KeyE" });
@@ -97,4 +97,28 @@ it("Ctrl+Z desfaz e Ctrl+Shift+Z refaz", () => {
   expect((screen.getByRole("button", { name: "Refazer" }) as HTMLButtonElement).disabled).toBe(
     true,
   );
+});
+
+it("restaura a cor e a largura ao alternar entre caneta e marca-texto", () => {
+  renderStudio();
+  const tool = (name: string) => screen.getByRole("button", { name });
+  const width = () =>
+    screen.getByRole("slider", { name: "Espessura do pincel" }) as HTMLInputElement;
+  fireEvent.click(tool("Caneta"));
+  fireEvent.click(tool("Caneta"));
+  fireEvent.click(tool("Tinta Roxo"));
+  fireEvent.change(width(), { target: { value: "31" } });
+  fireEvent.click(tool("Marca-texto"));
+  fireEvent.click(tool("Marca-texto"));
+  expect(tool("Tinta Roxo").getAttribute("aria-pressed")).toBe("false");
+  fireEvent.click(tool("Tinta Roxo"));
+  fireEvent.change(width(), { target: { value: "76" } });
+  fireEvent.click(tool("Caneta"));
+  fireEvent.click(tool("Caneta"));
+  expect(width().value).toBe("31");
+  expect(tool("Tinta Roxo").getAttribute("aria-pressed")).toBe("true");
+  fireEvent.click(tool("Marca-texto"));
+  fireEvent.click(tool("Marca-texto"));
+  expect(width().value).toBe("76");
+  expect(tool("Tinta Roxo").getAttribute("aria-pressed")).toBe("true");
 });

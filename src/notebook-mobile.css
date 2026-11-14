@@ -215,6 +215,9 @@
   :root
     .handwriting-studio[data-mobile-drawer="tool"]:is(
       [data-tool="pen"],
+      [data-tool="ruler"],
+      [data-tool="coordinates"],
+      [data-tool="curve"],
       [data-tool="eraser"],
       [data-tool="highlighter"]
     )
@@ -349,4 +352,369 @@
     overflow: auto;
     z-index: 20;
   }
+}
+
+@media (max-width: 680px) {
+  .notebook-mobile-dock .capture-header-actions {
+    position: static;
+    display: flex;
+    gap: 4px;
+    min-width: 0;
+  }
+  .notebook-mobile-dock .capture-header-actions button {
+    min-width: 44px;
+    padding: 4px;
+  }
+  .notebook-mobile-dock {
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 680px) {
+  :root dialog.notebook-pages-dialog {
+    inset: auto 0 0;
+    width: 100%;
+    max-width: none;
+    max-height: 80dvh;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+    border-radius: 8px 20px 0 0;
+    overscroll-behavior: contain;
+  }
+  :root .handwriting-studio .editor-file-panel {
+    max-height: 60dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+.notebook-pages-dialog fieldset {
+  display: grid;
+  gap: 4px;
+  border: 1px solid currentColor;
+  border-radius: 5px 12px 5px 8px;
+}
+.notebook-pages-dialog select {
+  color: #fff9ef;
+  background: #292432;
+}
+:root dialog.notebook-export-options {
+  color: var(--text);
+  background: linear-gradient(135deg, var(--soft) 0 24px, transparent 24px), var(--surface);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 6px var(--line-strong);
+}
+.notebook-export-options header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.notebook-export-options header h3 {
+  margin: 0;
+}
+.notebook-export-options header .sheet-close {
+  margin: 0;
+  min-width: 44px;
+  min-height: 44px;
+}
+.notebook-export-options fieldset {
+  margin: 14px 0;
+  border-color: var(--line);
+  padding: 8px 12px;
+}
+.notebook-export-options fieldset label:has(input:checked) {
+  font-weight: 800;
+}
+.notebook-export-format {
+  display: inline-flex;
+  position: relative;
+}
+.notebook-export-format select {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 5px 12px 6px 9px;
+  min-height: 44px;
+  padding: 0 36px 0 12px;
+  color: var(--text);
+  background: var(--soft);
+  box-shadow: 0 3px var(--line);
+}
+.notebook-export-format .focus-paper-arrow {
+  position: absolute;
+  inset: 14px 10px auto auto;
+  width: 16px;
+  height: 16px;
+  rotate: -90deg;
+  pointer-events: none;
+}
+.notebook-page-index li.is-picked .notebook-page-index__open {
+  border-color: #7433e0;
+  box-shadow: 0 3px #7433e0;
+}
+.notebook-index-confirm {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+:root body .notebook-page-index--picker .notebook-page-index__open {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.45rem;
+  color: var(--text);
+  background: var(--soft);
+  box-shadow: 0 3px var(--line);
+  text-align: left;
+}
+:root body .notebook-page-index--picker li.is-current .notebook-page-index__open {
+  border-color: #7433e0;
+  box-shadow: 0 3px #7433e0;
+}
+.notebook-page-index--picker .notebook-page-index__thumb {
+  position: relative;
+}
+.notebook-page-index--picker .notebook-page-index__label .notebook-index-check {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px 7px 4px 6px;
+  background: var(--surface);
+}
+.notebook-page-index--picker .is-picked .notebook-index-check {
+  background: #facc15 url("/room-icons/check.svg") center / 16px no-repeat;
+  border-color: #b99100;
+  box-shadow: 0 2px #a98200;
+}
+:root body .notebook-file-tools .notebook-file-popover {
+  display: grid;
+  gap: 2px;
+  padding: 5px;
+  background: linear-gradient(135deg, var(--soft) 0 12px, transparent 12px), var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px var(--line);
+}
+:root body .notebook-file-popover > button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 10px;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  text-align: left;
+  font: inherit;
+  font-size: 13px;
+}
+:root body .notebook-file-popover > button:hover {
+  background: var(--soft);
+}
+.notebook-file-popover > button > svg {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+}
+:root body .notebook-file-popover [data-paper-editor-icon="download"] {
+  color: #9763ee;
+  --editor-icon-facet: #cbb1f4;
+}
+:root body .notebook-file-popover [data-paper-editor-icon="print"] {
+  color: #16856a;
+  --editor-icon-facet: #65c9a8;
+}
+:root body .notebook-file-popover [data-paper-editor-icon="copyLink"] {
+  color: #3775ba;
+  --editor-icon-facet: #8cc4ea;
+}
+.notebook-upload-popover {
+  max-height: min(55dvh, 420px);
+  overflow: auto;
+  width: min(280px, calc(100vw - 24px));
+}
+.notebook-upload-popover > button {
+  overflow-wrap: anywhere;
+}
+.notebook-upload-picker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border-radius: 5px 13px 6px 11px;
+  color: var(--text);
+  background: var(--soft);
+  cursor: pointer;
+}
+.notebook-upload-picker > svg {
+  width: 24px;
+  height: 24px;
+}
+.notebook-upload-picker > input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.notebook-upload-picker:focus-within {
+  box-shadow: 0 3px #facc15;
+}
+:root .handwriting-studio > .editor-file-panel {
+  inset: 76px 12px auto auto;
+  width: min(355px, calc(100% - 24px));
+  max-height: min(70dvh, 560px);
+  overflow: auto;
+}
+.notebook-upload-limits {
+  font-size: 0.7rem;
+  color: var(--text);
+}
+.notebook-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.notebook-file-popover .notebook-upload-card {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  align-content: start;
+  padding: 6px;
+  background: var(--soft);
+}
+.notebook-upload-thumbnail {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  height: 76px;
+  background: var(--surface, #fbf6eb);
+  border-radius: 3px 9px 3px 6px;
+}
+.notebook-upload-thumbnail img {
+  width: 100%;
+  height: 76px;
+  object-fit: contain;
+}
+.notebook-upload-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.72rem;
+}
+.notebook-upload-card small {
+  font-size: 0.68rem;
+  overflow-wrap: anywhere;
+}
+.notebook-upload-card[aria-busy="true"] .notebook-upload-thumbnail::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4px;
+  background: #7936ed;
+  animation: notebook-upload-loading 850ms ease-in-out infinite alternate;
+  transform-origin: left;
+}
+@keyframes notebook-upload-loading {
+  from {
+    transform: scaleX(0.18);
+  }
+  to {
+    transform: scaleX(0.92);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .notebook-upload-card[aria-busy="true"] .notebook-upload-thumbnail::after {
+    animation: none;
+    transform: scaleX(0.5);
+  }
+}
+.notebook-upload-entry {
+  position: relative;
+  min-width: 0;
+}
+.notebook-upload-entry > .notebook-upload-card {
+  width: 100%;
+}
+.notebook-file-popover .notebook-upload-more {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  min-height: 32px;
+  padding: 4px;
+  background: var(--soft);
+  border-radius: 4px 10px 5px 8px;
+}
+.notebook-upload-more .paper-editor-icon,
+.notebook-upload-actions .paper-editor-icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+.notebook-upload-actions {
+  display: grid;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 8px;
+}
+.notebook-upload-actions strong {
+  overflow-wrap: anywhere;
+  padding: 4px 8px;
+}
+.notebook-upload-actions button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  min-height: 40px;
+  padding: 6px 8px;
+}
+.notebook-upload-actions form {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+.notebook-upload-actions input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px;
+}
+
+:root body .notebook-file-tools .notebook-upload-more,
+:root body .notebook-file-tools .notebook-upload-more:hover,
+:root body .notebook-file-tools .notebook-upload-more[aria-expanded="true"] {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.notebook-upload-actions {
+  position: fixed;
+  z-index: 10000;
+  width: min(240px, calc(100vw - 16px));
+  max-height: min(290px, 75dvh);
+  overflow: auto;
+  margin: 0;
+}
+.notebook-upload-actions button {
+  background:
+    linear-gradient(135deg, var(--line) 0 8px, transparent 8px),
+    linear-gradient(315deg, var(--line) 0 9px, transparent 9px), var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 5px 13px 6px 11px;
+  box-shadow: 0 2px var(--line);
+  margin-bottom: 2px;
+}
+.notebook-upload-actions button:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+.notebook-upload-actions .shelf-tool-icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
 }

@@ -7,7 +7,11 @@ export type FormulaNode =
   | { kind: "script"; body: FormulaNode; raised: boolean };
 
 export function parseNotebookFormula(source: string): FormulaNode {
-  const input = source.slice(0, 240);
+  const input = source
+    .slice(0, 240)
+    .replace(/\(([^()]+)\)\s*\/\s*\(([^()]+)\)/g, "\\frac{$1}{$2}")
+    .replace(/√\(([^()]+)\)/g, "\\sqrt{$1}")
+    .replace(/√([\p{L}\p{N}])/gu, "\\sqrt{$1}");
   let position = 0;
   function group(depth: number): FormulaNode {
     if (input[position] !== "{") return { kind: "text", text: input[position++] ?? "" };
@@ -39,6 +43,9 @@ export function parseNotebookFormula(source: string): FormulaNode {
           children.push({ kind: "root", body: group(depth) });
         } else {
           const symbols: Record<string, string> = {
+            pm: "±",
+            Delta: "Δ",
+            delta: "δ",
             times: "×",
             cdot: "·",
             pi: "π",

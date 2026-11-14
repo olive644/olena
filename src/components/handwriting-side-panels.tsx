@@ -1,3 +1,4 @@
+import { PaperArrow } from "./paper-arrow";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { formatCoordinateNumber, type CoordinateStats } from "../domain/coordinate-math";
 import type {
@@ -17,7 +18,7 @@ type HandwritingBrushPanelProps = {
 };
 
 export function HandwritingBrushPanel({ brush, color, onBrushChange }: HandwritingBrushPanelProps) {
-  useLanguage();
+  const language = useLanguage();
 
   return (
     <aside className="handwriting-brush-panel" aria-label={uiText(233)}>
@@ -31,6 +32,9 @@ export function HandwritingBrushPanel({ brush, color, onBrushChange }: Handwriti
           ["fine", uiText(1667), 2],
           ["ink", uiText(1668), 7],
           ["soft", uiText(1669), 14],
+          ["calligraphy", language === "en-US" ? "Calligraphy pen" : "Caneta de caligrafia", 9],
+          ["ballpoint", language === "en-US" ? "Ballpoint pen" : "Caneta esferográfica", 3],
+          ["pencil", language === "en-US" ? "Pencil" : "Lápis", 4],
         ] as const
       ).map(([value, title, size]) => (
         <button
@@ -48,7 +52,7 @@ export function HandwritingBrushPanel({ brush, color, onBrushChange }: Handwriti
               stroke={color}
               strokeWidth={size}
               strokeLinecap="round"
-              opacity={value === "soft" ? 0.3 : 1}
+              opacity={value === "soft" ? 0.3 : value === "pencil" ? 0.65 : 1}
             />
           </svg>
         </button>
@@ -147,7 +151,7 @@ export function HandwritingCoordinatePanel({
       <header>
         <div>
           <small>{uiText(249)}</small>
-          <h3>{uiText(250)}</h3>
+          <h3 className="visually-hidden">{uiText(250)}</h3>
         </div>
       </header>
       {([1, 2, 5, 10] as const).map((step) => (
@@ -268,7 +272,7 @@ export function HandwritingLayerPanel({
                   disabled={index === 0}
                   onClick={() => onMoveLayer(layer, -1)}
                 >
-                  ↑
+                  <PaperArrow />
                 </button>
                 <button
                   type="button"
@@ -276,7 +280,7 @@ export function HandwritingLayerPanel({
                   disabled={index === visibleLayerOrder.length - 1}
                   onClick={() => onMoveLayer(layer, 1)}
                 >
-                  ↓
+                  <PaperArrow />
                 </button>
               </span>
             </span>

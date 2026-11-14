@@ -44,6 +44,7 @@ export function usePinchZoom({ viewportRef, zoom, zoomTo, onPinchStart }: PinchI
 
   // Devolve true quando o movimento fez parte da pinça (e já foi aplicado).
   function move(event: TouchLike): boolean {
+    if (!touches.current.has(event.pointerId)) return false;
     touches.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
     const current = pinch.current;
     if (!current || touches.current.size < 2) return false;

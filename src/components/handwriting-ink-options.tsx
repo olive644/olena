@@ -1,7 +1,8 @@
+import type { CSSProperties } from "react";
 import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import type { HandwritingTool, Stroke } from "./handwriting-types";
 import { PaperCheckIcon } from "./paper-check-icon";
-import { PaperObjectIcon } from "./paper-object-icon";
+import { HandwritingToolTips } from "./handwriting-tool-tips";
 
 type HandwritingInkOptionsProps = {
   tool: HandwritingTool;
@@ -47,58 +48,78 @@ export function HandwritingInkOptions({
   dash,
   onDashChange,
 }: HandwritingInkOptionsProps) {
-  useLanguage();
+  const language = useLanguage();
 
+  const thickness =
+    new Intl.NumberFormat(language, { maximumFractionDigits: 2 }).format((width * 210) / 1200) +
+    " mm";
   const percentage = Math.max(0, Math.min(100, Math.round(((width - 0.5) / 39.5) * 100)));
   return (
     <div className="handwriting-ink-options">
       {tool === "eraser" && onEraserWholeStrokeChange && (
-        <fieldset className="eraser-mode paper-choice-row">
-          <legend>{uiText(174)}</legend>
+        <HandwritingToolTips
+          className="eraser-mode paper-choice-row"
+          role="group"
+          label={uiText(174)}
+        >
           <button
             type="button"
             aria-label={uiText(175)}
-            title={uiText(175)}
+
             aria-pressed={!eraserWholeStroke && !eraserBackground}
             onClick={() => {
               onEraserBackgroundChange?.(false);
               onEraserWholeStrokeChange(false);
             }}
           >
-            <PaperObjectIcon name="eraseArea" />
-            <span>{uiText(176)}</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 21h5m4 0h4" stroke="#218b73" stroke-width="2" />
+              <path d="m6 13 10-10 7 7-10 10Z" fill="#218b73" />
+              <path d="m6 13 4-4 7 7-4 4Z" fill="#80d8bb" />
+              <path d="m16 3 7 7-2 2-7-7Z" fill="#80d8bb" />
+            </svg>
           </button>
           <button
             type="button"
             aria-label={uiText(177)}
-            title={uiText(177)}
+
             aria-pressed={eraserWholeStroke && !eraserBackground}
             onClick={() => {
               onEraserBackgroundChange?.(false);
               onEraserWholeStrokeChange(true);
             }}
           >
-            <PaperObjectIcon name="eraseStroke" />
-            <span>{uiText(178)}</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m2 18 4 3 4-3 4 3 5-4" fill="none" stroke="#c33466" stroke-width="2" />
+              <path d="m6 13 10-10 7 7-10 10Z" fill="#c33466" />
+              <path d="m6 13 4-4 7 7-4 4Z" fill="#ffa2ba" />
+              <path d="m16 3 7 7-2 2-7-7Z" fill="#ffa2ba" />
+            </svg>
           </button>
           {onEraserBackgroundChange && (
             <button
               type="button"
               aria-label={uiText(179)}
-              title={backgroundAvailable ? uiText(180) : uiText(181)}
+              aria-description={uiText(backgroundAvailable ? 180 : 181)}
+
               aria-pressed={eraserBackground && backgroundAvailable}
               disabled={!backgroundAvailable}
               onClick={() => onEraserBackgroundChange(true)}
             >
-              <PaperObjectIcon name="eraseBackground" />
-              <span>{uiText(182)}</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2 3h13v17H2Z" fill="#d9e7ff" />
+                <path d="M4 7h8M4 11h5" stroke="#365dba" />
+                <path d="m6 13 10-10 7 7-10 10Z" fill="#365dba" />
+                <path d="m6 13 4-4 7 7-4 4Z" fill="#94b7ff" />
+                <path d="m16 3 7 7-2 2-7-7Z" fill="#94b7ff" />
+              </svg>
             </button>
           )}
-        </fieldset>
+        </HandwritingToolTips>
       )}
       {tool !== "eraser" && (
         <fieldset className="ink-palette">
-          <legend>{uiText(183)}</legend>
+          <legend className="visually-hidden">{uiText(183)}</legend>
           {[
             ["#17151c", uiText(1573)],
             ["#7c3aed", uiText(1568)],
@@ -134,8 +155,8 @@ export function HandwritingInkOptions({
       )}
       {tool === "highlighter" && onHighlighterOpacityChange && (
         <fieldset className="highlighter-opacity">
-          <legend>{uiText(186)}</legend>
-          <label className="ink-size-control">
+          <legend className="visually-hidden">{uiText(186)}</legend>
+          <label className="ink-size-control local-room-step-slider">
             <span>
               {uiText(187)} {Math.round(highlighterOpacity * 100)}%
             </span>
@@ -146,6 +167,11 @@ export function HandwritingInkOptions({
               step="1"
               aria-label={uiText(186)}
               aria-valuetext={`${Math.round(highlighterOpacity * 100)}%`}
+              style={
+                {
+                  "--room-slider-progress": ((highlighterOpacity * 100 - 10) / 60) * 100 + "%",
+                } as CSSProperties
+              }
               value={Math.round(highlighterOpacity * 100)}
               onChange={(event) => onHighlighterOpacityChange(Number(event.target.value) / 100)}
             />
@@ -154,7 +180,7 @@ export function HandwritingInkOptions({
       )}
       {tool === "pen" && onDashChange && (
         <fieldset className="stroke-palette dash-palette">
-          <legend>{uiText(188)}</legend>
+          <legend className="visually-hidden">{uiText(188)}</legend>
           {DASH_CHOICES.map(([value, label, description, pattern]) => (
             <button
               type="button"
@@ -182,19 +208,17 @@ export function HandwritingInkOptions({
         </fieldset>
       )}
       <fieldset className="stroke-palette">
-        <legend>{tool === "eraser" ? uiText(189) : uiText(190)}</legend>
-        <label className="ink-size-control">
-          <span>
-            {tool === "eraser" ? uiText(1643) : uiText(1644)}: {percentage}%
-            {![3, 5, 8].includes(width) && uiText(2288)}
-          </span>
+        <legend className="visually-hidden">{tool === "eraser" ? uiText(189) : uiText(190)}</legend>
+        <label className="ink-size-control local-room-step-slider">
+          <span aria-hidden="true">{thickness}</span>
           <input
             type="range"
             min="0"
             max="100"
             step="1"
             aria-label={tool === "eraser" ? uiText(1643) : uiText(1645)}
-            aria-valuetext={`${percentage}%`}
+            aria-valuetext={`${thickness}${[3, 5, 8].includes(width) ? "" : uiText(2288)}`}
+            style={{ "--room-slider-progress": percentage + "%" } as CSSProperties}
             value={percentage}
             onChange={(event) => onWidthChange(0.5 + Number(event.target.value) * 0.395)}
           />

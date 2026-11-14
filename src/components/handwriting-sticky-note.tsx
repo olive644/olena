@@ -1,19 +1,12 @@
+import { HandwritingTableControls } from "./handwriting-table-controls";
 import { NotebookFormulaPreview } from "./notebook-formula-preview";
 import { PaperCloseGlyph } from "./paper-close-icon";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { reviewPortugueseText } from "../domain/text-review";
 import { PaperCheckIcon } from "./paper-check-icon";
 import type { HandwritingSticky } from "../domain/handwriting";
-import type { PointerEvent as ReactPointerEvent } from "react";
-import {
-  stickyHeight,
-  stickyWidth,
-  tableAddColumn,
-  tableAddRow,
-  tableRemoveColumn,
-  tableRemoveRow,
-  tableSetCell,
-} from "./handwriting-geometry";
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
+import { stickyHeight, stickyWidth, tableSetCell } from "./handwriting-geometry";
 import { PAGE_HEIGHT as DEFAULT_HEIGHT, PAGE_WIDTH as DEFAULT_WIDTH } from "./handwriting-types";
 import { PaperEditorIcon } from "./paper-editor-icon";
 
@@ -26,6 +19,9 @@ type HandwritingStickyNoteProps = {
   isSelected: boolean;
   ignorePointer: boolean;
   menuOpen: boolean;
+  editingText?: boolean;
+  selectionManaged?: boolean;
+  onEditText?: () => void;
   colorMenuOpen: boolean;
   textAutoCorrect: boolean;
   onRemember: () => void;
@@ -38,10 +34,8 @@ type HandwritingStickyNoteProps = {
   onResizeEnd: () => void;
   onToggleMenu: () => void;
   onToggleColorMenu: () => void;
-  onMoveMode: () => void;
   onToggleChecklist: () => void;
   onChangeColor: (color: StickyColor) => void;
-  onLayer: (direction: "front" | "back") => void;
   onRemove: () => void;
   onUpdateChecklistItem: (itemId: string, change: { text?: string; done?: boolean }) => void;
   onRemoveChecklistItem: (itemId: string) => void;
@@ -55,6 +49,9 @@ export function HandwritingStickyNote({
   isSelected,
   ignorePointer,
   menuOpen,
+  editingText,
+  selectionManaged = false,
+  onEditText,
   colorMenuOpen,
   textAutoCorrect,
   onRemember,
@@ -67,10 +64,8 @@ export function HandwritingStickyNote({
   onResizeEnd,
   onToggleMenu,
   onToggleColorMenu,
-  onMoveMode,
   onToggleChecklist,
   onChangeColor,
-  onLayer,
   onRemove,
   onUpdateChecklistItem,
   onRemoveChecklistItem,
@@ -82,28 +77,53 @@ export function HandwritingStickyNote({
     <div
       className={`handwriting-sticky handwriting-sticky--${sticky.kind === "text" ? "text" : sticky.kind === "table" ? "table" : sticky.color}${sticky.formula ? " handwriting-sticky--formula" : ""}${isSelected ? " is-selected" : ""}`}
       style={{
-        pointerEvents: ignorePointer ? "none" : undefined,
+        pointerEvents: ignorePointer ? "none" : "auto",
         left: `${(sticky.x / PAGE_WIDTH) * 100}%`,
         top: `${(sticky.y / PAGE_HEIGHT) * 100}%`,
         width: `${(stickyWidth(sticky) / PAGE_WIDTH) * 100}%`,
         height: `${(stickyHeight(sticky) / PAGE_HEIGHT) * 100}%`,
+        ...(sticky.kind === "table"
+          ? ({
+              "--table-unit": `calc(var(--handwriting-page-width, 1200px) / ${PAGE_WIDTH})`,
+            } as CSSProperties)
+          : {}),
         ...(sticky.kind === "text" ? { color: sticky.ink ?? "#17151c" } : {}),
       }}
+      data-sticky-id={sticky.id}
+      data-selection-managed={selectionManaged || undefined}
       key={sticky.id}
     >
-      <div className="handwriting-sticky__bar">
+      <div
+        className="handwriting-sticky__bar"
+        onPointerDown={(event) => {
+          if (
+            selectionManaged ||
+            !(event.target instanceof Element) ||
+            event.target.closest("button")
+          )
+            return;
+          onDragStart(event, sticky);
+        }}
+        onPointerMove={(event) => onDragMove(event, sticky)}
+        onPointerUp={onDragEnd}
+        onPointerCancel={onDragEnd}
+        onLostPointerCapture={onDragEnd}
+      >
         <span
           className="handwriting-sticky__drag-hint"
-          role="button"
-          tabIndex={0}
+          role={selectionManaged ? undefined : "button"}
+          tabIndex={selectionManaged ? undefined : 0}
           aria-label={
-            sticky.kind === "text"
-              ? uiText(1685)
-              : sticky.kind === "table"
-                ? uiText(1686)
-                : uiText(1687)
+            selectionManaged
+              ? undefined
+              : sticky.kind === "text"
+                ? uiText(1685)
+                : sticky.kind === "table"
+                  ? uiText(1686)
+                  : uiText(1687)
           }
           onKeyDown={(event) => {
+            if (selectionManaged) return;
             const movement: Record<string, [number, number]> = {
               ArrowLeft: [-10, 0],
               ArrowRight: [10, 0],
@@ -119,14 +139,6 @@ export function HandwritingStickyNote({
               y: Math.max(0, Math.min(PAGE_HEIGHT - stickyHeight(sticky), sticky.y + delta[1])),
             });
           }}
-          onPointerDown={(event) => onDragStart(event, sticky)}
-          onPointerMove={(event) => onDragMove(event, sticky)}
-          onPointerUp={() => {
-            onDragEnd();
-          }}
-          onPointerCancel={() => {
-            onDragEnd();
-          }}
         >
           {sticky.formula
             ? uiText(267)
@@ -138,28 +150,35 @@ export function HandwritingStickyNote({
                   ? uiText(1688)
                   : uiText(1689)}
         </span>
-        <button
-          type="button"
-          className="handwriting-sticky__menu-trigger"
-          aria-label={uiText(268)}
-          aria-haspopup="menu"
-          aria-expanded={menuOpen}
-          onPointerDown={(event) => event.stopPropagation()}
-          onClick={onToggleMenu}
-        >
-          <PaperEditorIcon name="more" />
-        </button>
+        {!selectionManaged && (
+          <button
+            type="button"
+            className="handwriting-sticky__menu-trigger"
+            aria-label={uiText(268)}
+            aria-haspopup="menu"
+            aria-expanded={menuOpen}
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={onToggleMenu}
+          >
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <path
+                fill="#7433e0"
+                d="m2 10 2-2 3 3-2 3-3-1Zm8 0 2-2 3 3-2 3-3-1Zm8 0 2-2 3 3-2 3-3-1Z"
+              />
+            </svg>
+          </button>
+        )}
       </div>
-      {menuOpen && (
+      {!selectionManaged && (
         <div
           className="handwriting-sticky__menu"
+          data-open={menuOpen}
+          inert={!menuOpen}
+          aria-hidden={!menuOpen}
           role="menu"
           aria-label={uiText(268)}
           onPointerDown={(event) => event.stopPropagation()}
         >
-          <button type="button" onClick={() => onMoveMode()}>
-            <PaperEditorIcon name="hand" /> {uiText(202)}
-          </button>
           {sticky.kind === undefined && (
             <button
               type="button"
@@ -197,16 +216,6 @@ export function HandwritingStickyNote({
               )}
             </div>
           )}
-          {sticky.kind !== "text" && (
-            <>
-              <button type="button" onClick={() => onLayer("front")}>
-                <PaperEditorIcon name="bringFront" /> {uiText(272)}
-              </button>
-              <button type="button" onClick={() => onLayer("back")}>
-                <PaperEditorIcon name="sendBack" /> {uiText(273)}
-              </button>
-            </>
-          )}
           <button type="button" className="handwriting-sticky__menu-danger" onClick={onRemove}>
             <PaperCloseGlyph /> {uiText(44)}
           </button>
@@ -214,82 +223,58 @@ export function HandwritingStickyNote({
       )}
       {sticky.kind === "table" ? (
         <div className="handwriting-sticky__table">
-          <table>
-            <tbody>
-              {(sticky.cells ?? [[""]]).map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {row.map((cell, columnIndex) => (
-                    <td key={columnIndex}>
-                      <textarea
-                        aria-label={uiText(1692, [rowIndex + 1, columnIndex + 1])}
-                        value={cell}
-                        maxLength={200}
-                        onFocus={() => onRemember()}
-                        onChange={(event) =>
-                          onUpdate({
-                            cells: tableSetCell(
-                              sticky.cells ?? [[""]],
-                              rowIndex,
-                              columnIndex,
-                              event.target.value,
-                            ),
-                          })
-                        }
-                      />
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="handwriting-sticky__table-controls" role="group" aria-label={uiText(274)}>
-            <button
-              type="button"
-              aria-label={uiText(275)}
-              onPointerDown={(event) => event.stopPropagation()}
-              onClick={() => {
-                onRemember();
-                onUpdate({ cells: tableAddRow(sticky.cells ?? [[""]]) });
-              }}
-            >
-              {uiText(276)}
-            </button>
-            <button
-              type="button"
-              aria-label={uiText(277)}
-              disabled={(sticky.cells ?? [[""]]).length <= 1}
-              onPointerDown={(event) => event.stopPropagation()}
-              onClick={() => {
-                onRemember();
-                onUpdate({ cells: tableRemoveRow(sticky.cells ?? [[""]]) });
-              }}
-            >
-              {uiText(278)}
-            </button>
-            <button
-              type="button"
-              aria-label={uiText(279)}
-              onPointerDown={(event) => event.stopPropagation()}
-              onClick={() => {
-                onRemember();
-                onUpdate({ cells: tableAddColumn(sticky.cells ?? [[""]]) });
-              }}
-            >
-              {uiText(280)}
-            </button>
-            <button
-              type="button"
-              aria-label={uiText(281)}
-              disabled={(sticky.cells?.[0]?.length ?? 1) <= 1}
-              onPointerDown={(event) => event.stopPropagation()}
-              onClick={() => {
-                onRemember();
-                onUpdate({ cells: tableRemoveColumn(sticky.cells ?? [[""]]) });
-              }}
-            >
-              {uiText(282)}
-            </button>
+          <div className="handwriting-sticky__table-grid">
+            <table>
+              <tbody
+                style={
+                  selectionManaged
+                    ? { gridTemplateRows: `repeat(${sticky.cells?.length ?? 1}, minmax(0, 1fr))` }
+                    : undefined
+                }
+              >
+                {(sticky.cells ?? [[""]]).map((row, rowIndex) => (
+                  <tr
+                    key={rowIndex}
+                    style={
+                      selectionManaged
+                        ? { gridTemplateColumns: `repeat(${row.length}, minmax(0, 1fr))` }
+                        : undefined
+                    }
+                  >
+                    {row.map((cell, columnIndex) => (
+                      <td key={columnIndex}>
+                        <textarea
+                          aria-label={uiText(1692, [rowIndex + 1, columnIndex + 1])}
+                          value={cell}
+                          maxLength={200}
+                          onFocus={() => {
+                            if (!onEditText || editingText) onRemember();
+                          }}
+                          onChange={(event) =>
+                            onUpdate({
+                              cells: tableSetCell(
+                                sticky.cells ?? [[""]],
+                                rowIndex,
+                                columnIndex,
+                                event.target.value,
+                              ),
+                            })
+                          }
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+          {!selectionManaged && (
+            <HandwritingTableControls
+              cells={sticky.cells ?? [[""]]}
+              onRemember={onRemember}
+              onChange={(cells) => onUpdate({ cells })}
+            />
+          )}
         </div>
       ) : sticky.checklist?.length ? (
         <div className="handwriting-sticky__checklist">
@@ -314,7 +299,7 @@ export function HandwritingStickyNote({
                   onUpdateChecklistItem(item.id, { done: !item.done });
                 }}
               >
-                {item.done ? <PaperCheckIcon /> : null}
+                {item.done ? <PaperCheckIcon size={15} /> : null}
               </button>
               <input
                 aria-label={uiText(286)}
@@ -329,7 +314,7 @@ export function HandwritingStickyNote({
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={() => onRemoveChecklistItem(item.id)}
               >
-                {uiText(289)}
+                <PaperCloseGlyph size={15} />
               </button>
             </div>
           ))}
@@ -347,12 +332,24 @@ export function HandwritingStickyNote({
           aria-label={
             sticky.formula ? uiText(223) : sticky.kind === "text" ? uiText(1694) : uiText(1695)
           }
+          style={{
+            fontSize:
+              "calc(var(--handwriting-page-width, 1200px) * " +
+              (sticky.textSize ?? 25) +
+              " / " +
+              PAGE_WIDTH +
+              ")",
+            lineHeight: 1.3,
+            color: sticky.ink,
+          }}
+          readOnly={Boolean(onEditText) && !editingText}
+          onClick={onEditText}
           spellCheck={!sticky.formula}
           value={sticky.text}
           maxLength={240}
           onFocus={() => onRemember()}
           onBlur={() => {
-            if (sticky.formula || !textAutoCorrect) return;
+            if ((onEditText && !editingText) || sticky.formula || !textAutoCorrect) return;
             const corrected = reviewPortugueseText(sticky.text);
             if (corrected !== sticky.text) onUpdate({ text: corrected });
           }}
@@ -361,22 +358,24 @@ export function HandwritingStickyNote({
         />
       )}
       {sticky.formula && <NotebookFormulaPreview source={sticky.text} />}
-      <button
-        type="button"
-        className="handwriting-sticky__resize"
-        aria-label={uiText(292)}
-        title={uiText(293)}
-        onPointerDown={(event) => onResizeStart(event, sticky)}
-        onPointerMove={(event) => onResizeMove(event, sticky)}
-        onPointerUp={() => {
-          onResizeEnd();
-        }}
-        onPointerCancel={() => {
-          onResizeEnd();
-        }}
-      >
-        <PaperEditorIcon name="resize" />
-      </button>
+      {!selectionManaged && (
+        <button
+          type="button"
+          className="handwriting-sticky__resize"
+          aria-label={uiText(292)}
+          title={uiText(293)}
+          onPointerDown={(event) => onResizeStart(event, sticky)}
+          onPointerMove={(event) => onResizeMove(event, sticky)}
+          onPointerUp={() => {
+            onResizeEnd();
+          }}
+          onPointerCancel={() => {
+            onResizeEnd();
+          }}
+        >
+          <PaperEditorIcon name="resize" />
+        </button>
+      )}
     </div>
   );
 }

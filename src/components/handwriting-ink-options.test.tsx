@@ -11,7 +11,7 @@ for (const tool of ["pen", "highlighter", "eraser"] as const) {
     expect(slider.getAttribute("min")).toBe("0");
     expect(slider.getAttribute("max")).toBe("100");
     expect(slider.getAttribute("step")).toBe("1");
-    expect(slider.getAttribute("aria-valuetext")).toBe("0%");
+    expect(slider.getAttribute("aria-valuetext")).toBe("0,09 mm (personalizada)");
     fireEvent.change(slider, { target: { value: "100" } });
     expect(onWidthChange).toHaveBeenLastCalledWith(40);
     view.rerender(<HandwritingInkOptions {...props} width={40} />);
@@ -154,7 +154,7 @@ describe("borracha: modo de fundo", () => {
     );
     const button = screen.getByRole("button", { name: "Apagar só o fundo importado" });
     expect(button.hasAttribute("disabled")).toBe(true);
-    expect(button.getAttribute("title")).toContain("importada");
+    expect(button.getAttribute("aria-description")).toContain("importada");
     expect(button.getAttribute("aria-pressed")).toBe("false");
   });
 

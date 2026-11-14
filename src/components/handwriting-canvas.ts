@@ -7,6 +7,7 @@ import {
 import type {
   HandwritingCoordinateSystem,
   HandwritingImage,
+  HandwritingLayerKey,
   HandwritingPaperColor,
   HandwritingPoint,
   HandwritingSticky,
@@ -64,8 +65,9 @@ export function sizePageCanvas(
 export function pageContext(canvas: HTMLCanvasElement): CanvasRenderingContext2D | null {
   const context = canvas.getContext("2d");
   if (!context) return null;
-  const scale = canvas.width / Number(canvas.dataset["pageWidth"] || PAGE_WIDTH);
-  context.setTransform(scale, 0, 0, scale, 0, 0);
+  const scaleX = canvas.width / Number(canvas.dataset["pageWidth"] || PAGE_WIDTH);
+  const scaleY = canvas.height / Number(canvas.dataset["pageHeight"] || PAGE_HEIGHT);
+  context.setTransform(scaleX, 0, 0, scaleY, 0, 0);
   return context;
 }
 
@@ -125,7 +127,7 @@ export function drawPaper(
     paperColor === "night" ? "#51465d" : paperColor === "aged" ? "#d4bd91" : "#dcd8ee";
   context.fillStyle =
     paperColor === "night" ? "#6d5f78" : paperColor === "aged" ? "#d4bd91" : "#d5d0e8";
-  context.lineWidth = 1.4;
+  context.lineWidth = 2;
   const gap = 48;
   if (paper === "ruled" || paper === "grid") {
     for (let y = 112; y < pageHeight; y += gap) {
@@ -144,20 +146,21 @@ export function drawPaper(
     }
   }
   if (paper === "dots" || paper === "board") {
+    context.beginPath();
     for (let y = 72; y < pageHeight; y += gap) {
       for (let x = 72; x < pageWidth; x += gap) {
-        context.beginPath();
+        context.moveTo(x + 2.1, y);
         context.arc(x, y, 2.1, 0, Math.PI * 2);
-        context.fill();
       }
     }
+    context.fill();
   }
   if (paper !== "blank" && paper !== "board" && paperColor !== "night") {
     context.strokeStyle = paperColor === "aged" ? "#c78f78" : "#e9b9b1";
     context.lineWidth = 2;
     context.beginPath();
     context.moveTo(104, 0);
-    context.lineTo(104, PAGE_HEIGHT);
+    context.lineTo(104, pageHeight);
     context.stroke();
   }
   context.restore();
@@ -217,7 +220,13 @@ export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
   context.strokeStyle = stroke.color;
   context.fillStyle = stroke.color;
   context.globalAlpha =
-    stroke.tool === "highlighter" ? (stroke.opacity ?? 0.3) : stroke.brush === "soft" ? 0.3 : 1;
+    stroke.tool === "highlighter"
+      ? (stroke.opacity ?? 0.3)
+      : stroke.brush === "soft"
+        ? 0.3
+        : stroke.brush === "pencil"
+          ? 0.65
+          : 1;
   context.lineCap = "round";
   context.lineJoin = "round";
   // Traço da borracha de fundo: aqui é só a prévia (uma faixa roxa clara sobre a área que vai
@@ -286,61 +295,74 @@ export function renderPage(
     frame: Pick<HandwritingImage, "x" | "y" | "width" | "height">;
     rotation?: number;
   }[] = [],
-  pageTextFrame = { x: 112, y: 80, width: 980, height: 1440 },
+  pageTextFrame: { x: number; y: number; width: number; height: number; ink?: string } = {
+    x: 112,
+    y: 80,
+    width: 980,
+    height: 1440,
+  },
+  onlyLayer?: HandwritingLayerKey | "paper",
+  transparentPaper = false,
 ) {
   const context = pageContext(canvas);
   if (!context) return;
-  drawPaper(context, paper, paperColor);
-  const drawBackdrop = (target: CanvasRenderingContext2D) => {
-    if (layerVisibility.background && background)
-      target.drawImage(
-        background,
-        backgroundFrame.x,
-        backgroundFrame.y,
-        backgroundFrame.width,
-        backgroundFrame.height,
-      );
-    if (layerVisibility.background) {
-      for (const imported of importedImages) {
-        target.save();
-        const centerX = imported.frame.x + imported.frame.width / 2;
-        const centerY = imported.frame.y + imported.frame.height / 2;
-        target.translate(centerX, centerY);
-        target.rotate(((imported.rotation ?? 0) * Math.PI) / 180);
+  if (onlyLayer) {
+    clearPageCanvas(canvas);
+    pageContext(canvas);
+  }
+  if (!onlyLayer || onlyLayer === "paper") {
+    if (!transparentPaper) drawPaper(context, paper, paperColor);
+    const drawBackdrop = (target: CanvasRenderingContext2D) => {
+      if (layerVisibility.background && background)
         target.drawImage(
-          imported.image,
-          -imported.frame.width / 2,
-          -imported.frame.height / 2,
-          imported.frame.width,
-          imported.frame.height,
+          background,
+          backgroundFrame.x,
+          backgroundFrame.y,
+          backgroundFrame.width,
+          backgroundFrame.height,
         );
-        target.restore();
+      if (layerVisibility.background) {
+        for (const imported of importedImages) {
+          target.save();
+          const centerX = imported.frame.x + imported.frame.width / 2;
+          const centerY = imported.frame.y + imported.frame.height / 2;
+          target.translate(centerX, centerY);
+          target.rotate(((imported.rotation ?? 0) * Math.PI) / 180);
+          target.drawImage(
+            imported.image,
+            -imported.frame.width / 2,
+            -imported.frame.height / 2,
+            imported.frame.width,
+            imported.frame.height,
+          );
+          target.restore();
+        }
       }
+    };
+    // Borracha de fundo: o fundo (página e imagens) é desenhado à parte, furado pelos traços de
+    // `cover` e só então posto sobre o papel, que aparece pelos furos (a pauta e o quadriculado
+    // continuam, ao contrário de uma tinta branca por cima).
+    const covers = strokes.filter((stroke) => stroke.cover);
+    const scratch =
+      layerVisibility.background && covers.length > 0 && (background || importedImages.length > 0)
+        ? document.createElement("canvas")
+        : null;
+    const scratchContext = scratch?.getContext("2d") ?? null;
+    if (scratch && scratchContext) {
+      scratch.width = canvas.width;
+      scratch.height = canvas.height;
+      const scale = canvas.width / Number(canvas.dataset["pageWidth"] || PAGE_WIDTH);
+      scratchContext.setTransform(scale, 0, 0, scale, 0, 0);
+      drawBackdrop(scratchContext);
+      scratchContext.globalCompositeOperation = "destination-out";
+      for (const stroke of covers) drawCoverMask(scratchContext, stroke);
+      context.save();
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.drawImage(scratch, 0, 0);
+      context.restore();
+    } else {
+      drawBackdrop(context);
     }
-  };
-  // Borracha de fundo: o fundo (página e imagens) é desenhado à parte, furado pelos traços de
-  // `cover` e só então posto sobre o papel, que aparece pelos furos (a pauta e o quadriculado
-  // continuam, ao contrário de uma tinta branca por cima).
-  const covers = strokes.filter((stroke) => stroke.cover);
-  const scratch =
-    layerVisibility.background && covers.length > 0 && (background || importedImages.length > 0)
-      ? document.createElement("canvas")
-      : null;
-  const scratchContext = scratch?.getContext("2d") ?? null;
-  if (scratch && scratchContext) {
-    scratch.width = canvas.width;
-    scratch.height = canvas.height;
-    const scale = canvas.width / Number(canvas.dataset["pageWidth"] || PAGE_WIDTH);
-    scratchContext.setTransform(scale, 0, 0, scale, 0, 0);
-    drawBackdrop(scratchContext);
-    scratchContext.globalCompositeOperation = "destination-out";
-    for (const stroke of covers) drawCoverMask(scratchContext, stroke);
-    context.save();
-    context.setTransform(1, 0, 0, 1, 0, 0);
-    context.drawImage(scratch, 0, 0);
-    context.restore();
-  } else {
-    drawBackdrop(context);
   }
   const drawStrokesLayer = () => {
     if (!layerVisibility.strokes) return;
@@ -362,7 +384,7 @@ export function renderPage(
   const drawTextLayer = () => {
     if (!layerVisibility.text || !pageText) return;
     context.save();
-    context.fillStyle = paperColor === "night" ? "#fff9ef" : "#17151c";
+    context.fillStyle = pageTextFrame.ink ?? (paperColor === "night" ? "#fff9ef" : "#17151c");
     context.font = `${pageTextSize}px monospace`;
     context.textBaseline = "top";
     pageTextLines(pageText, pageTextSize, pageTextFrame.width)
@@ -375,7 +397,7 @@ export function renderPage(
   const drawStickiesLayer = () => {
     if (!layerVisibility.stickies) return;
     for (const sticky of stickies) {
-      if (editing && sticky.kind === "text") continue;
+      if (editing && (sticky.kind === "text" || sticky.kind === "table")) continue;
       context.save();
       const width = stickyWidth(sticky);
       const height = stickyHeight(sticky);
@@ -456,6 +478,8 @@ export function renderPage(
         },
         width - 36,
         height - 46,
+        sticky.textSize ?? 25,
+        sticky.textSize === undefined,
       );
       context.font = `${sticky.formula ? "600" : "bold"} ${fontSize}px ${sticky.formula ? "monospace" : "sans-serif"}`;
       context.textBaseline = "top";
@@ -469,7 +493,7 @@ export function renderPage(
     ...layerOrder,
     ...DEFAULT_HANDWRITING_LAYER_ORDER.filter((key) => !layerOrder.includes(key)),
   ];
-  for (const layer of completeLayerOrder) {
+  for (const layer of onlyLayer ? [onlyLayer] : completeLayerOrder) {
     if (layer === "coordinates") drawCoordinatesLayer();
     if (layer === "text") drawTextLayer();
     if (layer === "strokes") drawStrokesLayer();
@@ -490,7 +514,7 @@ function drawCoordinateSystem(
   context.save();
   context.strokeStyle = system.color;
   context.fillStyle = system.color;
-  context.lineWidth = 3;
+  context.lineWidth = system.lineWidth ?? 3;
   context.lineCap = "round";
   context.font = "18px monospace";
   context.textAlign = "center";

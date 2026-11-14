@@ -3125,7 +3125,9 @@ body.local-room-active {
   opacity: 0.4;
   cursor: not-allowed;
 }
-.handwriting-tool-group button span,
+.handwriting-tool-group button span {
+  display: none;
+}
 .handwriting-history button span {
   display: inline-block;
   max-width: 0;
@@ -3136,7 +3138,6 @@ body.local-room-active {
     max-width 320ms ease,
     opacity 240ms ease;
 }
-.handwriting-tool-group button:is([aria-pressed="true"], :hover, :focus-visible) span,
 .handwriting-history button:is([aria-pressed="true"], :hover, :focus-visible) span {
   max-width: 150px;
   opacity: 1;
@@ -3157,7 +3158,7 @@ body.local-room-active {
 }
 .handwriting-tool-group button[aria-pressed="true"] > svg {
   animation: editor-tool-pick 420ms ease-out;
-  transform: translateY(-2px);
+  transform: none;
 }
 @keyframes editor-tool-pick {
   0% {
@@ -3167,7 +3168,7 @@ body.local-room-active {
     transform: translateY(-5px) rotate(5deg) scale(1.12);
   }
   100% {
-    transform: translateY(-2px) rotate(0deg) scale(1);
+    transform: none;
   }
 }
 .handwriting-tool-group button {
@@ -4712,13 +4713,20 @@ body.local-room-active {
   position: absolute;
   z-index: 1;
   display: flex;
-  min-width: 72px;
-  min-height: 68px;
+  min-width: 0;
+  min-height: 0;
   flex-direction: column;
   padding: 3px;
   border: 1px solid rgb(38 33 26 / 20%);
   border-radius: 4px 10px 5px 7px;
   box-shadow: 3px 5px 0 rgb(38 33 26 / 19%);
+}
+
+.handwriting-sticky:is(
+  .handwriting-sticky--yellow,
+  .handwriting-sticky--blue,
+  .handwriting-sticky--lilac
+) {
   transform: rotate(-1deg);
 }
 
@@ -4808,6 +4816,10 @@ body.local-room-active {
 
 .handwriting-sticky__menu-trigger {
   display: grid;
+  box-sizing: border-box;
+  padding: 0;
+  min-width: 0;
+  min-height: 0;
   width: 24px;
   height: 24px;
   flex: 0 0 auto;
@@ -4818,7 +4830,7 @@ body.local-room-active {
   cursor: pointer;
 }
 
-.handwriting-sticky__menu-trigger .paper-editor-icon {
+.handwriting-sticky__menu-trigger > svg {
   width: 18px;
   height: 18px;
   flex: 0 0 18px;
@@ -4951,64 +4963,70 @@ body.local-room-active {
   scrollbar-width: thin;
 }
 
+.handwriting-sticky--table {
+  background: #fcf7ec;
+  border-color: #d8cbb2;
+  box-shadow: 3px 5px 0 #d8cbb2;
+  transform: none;
+}
+
 .handwriting-sticky__table {
   display: flex;
   min-height: 0;
   flex: 1;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   padding: 3px 4px 6px;
 }
-.handwriting-sticky__table table {
+
+.handwriting-sticky__table-grid {
   flex: 1;
   min-height: 0;
+  overflow: auto;
+  border: 1px solid #d8cbb2;
+  border-radius: 4px 10px 4px 7px;
+  background: #fffdf7;
+  scrollbar-width: thin;
+}
+
+.handwriting-sticky__table table {
   width: 100%;
+  height: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  overflow: auto;
-  display: block;
 }
-.handwriting-sticky__table tbody,
-.handwriting-sticky__table tr {
-  display: table;
-  table-layout: fixed;
-  width: 100%;
-}
+
 .handwriting-sticky__table td {
-  border: 1px solid #17151c55;
+  border: 1px solid #d8cbb2;
   padding: 0;
 }
+
 .handwriting-sticky__table td textarea {
+  display: block;
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
   min-height: 28px;
-  padding: 3px 5px;
-  resize: none;
-  border: 0;
-  outline-offset: -2px;
-  color: #17151c;
-  background: transparent;
-  font-family: inherit;
+  padding: 4px 6px;
   font-size: clamp(9px, 1vw, 13px);
-  line-height: 1.2;
+  font-weight: 400;
 }
+
+.handwriting-sticky__table td textarea:focus-visible {
+  outline: 2px solid #7433e0;
+}
+
 .handwriting-sticky__table-controls {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+  padding-inline-end: 26px;
 }
-.handwriting-sticky__table-controls button {
-  min-height: 26px;
+
+.handwriting-sticky__table-controls .secondary-button {
+  min-height: 28px;
   padding: 2px 8px;
-  border: 1px solid #17151c55;
-  border-radius: 4px 10px 4px 8px;
-  background: #fffdf7cc;
-  color: #17151c;
   font-size: 11px;
-  font-weight: 700;
-}
-.handwriting-sticky__table-controls button:disabled {
-  opacity: 0.4;
 }
 
 .handwriting-sticky__checklist > input,
@@ -5050,8 +5068,8 @@ body.local-room-active {
 }
 
 .handwriting-sticky__checklist-item button.is-done {
-  border-color: #7433e0;
-  background: #7433e0;
+  border-color: #51465d;
+  background: #282330;
 }
 
 .handwriting-sticky__checklist-item button:last-child {
@@ -7376,7 +7394,7 @@ html[data-reduce-motion="true"]
 }
 
 .handwriting-sticky--formula {
-  min-width: 210px;
+  min-width: 0;
   border-color: #7433e0;
   border-radius: 5px 14px 6px 10px;
   background: color-mix(in srgb, var(--surface) 88%, #a779ef 12%);
@@ -10493,6 +10511,7 @@ select {
 }
 
 /* Camada de tinta ao vivo: fica por cima da folha e nunca recebe o ponteiro. */
+.handwriting-scene-layer,
 .handwriting-live-layer {
   position: absolute;
   inset: 0;

@@ -1,6 +1,7 @@
+import { PAPER_LETTER_PATHS } from "./paper-letter-paths";
+
 const INK = "#292432",
-  CREAM = "#fff9ef",
-  PURPLE = "#7c3aed";
+  CREAM = "#fff9ef";
 let mascotPromise: Promise<HTMLImageElement> | null = null;
 export function loadPaperExportMascot(): Promise<HTMLImageElement> {
   if (!mascotPromise)
@@ -24,46 +25,27 @@ function polygon(context: CanvasRenderingContext2D, points: number[][], color: s
   context.fill();
 }
 
-/** Arte autoral de papel: selo da Olena e estrela, não uma certificação. */
-function drawPaperExportSeal(
+/** Usa os mesmos recortes aprovados do título da marca no aplicativo. */
+function drawExportWordmark(
   context: CanvasRenderingContext2D,
   x: number,
   y: number,
-  size: number,
-  mascot: CanvasImageSource,
+  height: number,
 ) {
   context.save();
   context.translate(x, y);
-  context.scale(size / 100, size / 100);
-  polygon(
-    context,
-    [
-      [50, 0],
-      [85, 15],
-      [100, 50],
-      [85, 85],
-      [50, 100],
-      [15, 85],
-      [0, 50],
-      [15, 15],
-    ],
-    PURPLE,
-  );
-  polygon(
-    context,
-    [
-      [50, 8],
-      [79, 21],
-      [92, 50],
-      [79, 79],
-      [50, 92],
-      [21, 79],
-      [8, 50],
-      [21, 21],
-    ],
-    CREAM,
-  );
-  context.drawImage(mascot, 15, 15, 70, 70);
+  context.scale(height / 98, height / 98);
+  for (const letter of "OLENASTUDY") {
+    const path = new Path2D(PAPER_LETTER_PATHS[letter]);
+    context.save();
+    context.translate(3, 5);
+    context.fillStyle = "#17131d";
+    context.fill(path, "evenodd");
+    context.restore();
+    context.fillStyle = INK;
+    context.fill(path, "evenodd");
+    context.translate(66, 0);
+  }
   context.restore();
 }
 
@@ -103,33 +85,17 @@ export function brandedExportCanvas(
   );
   context.drawImage(source, margin, header);
   const fontSize = Math.max(18, Math.round(header * 0.36));
-  context.font = `800 ${fontSize}px Manrope, sans-serif`;
-  context.fillStyle = INK;
-  context.fillText("Olena", margin, header * 0.64);
-  context.fillStyle = PURPLE;
-  context.fillText("Study", margin + context.measureText("Olena").width, header * 0.64);
+  const mascotSize = header * 0.64;
+  context.drawImage(mascot, margin, (header - mascotSize) / 2, mascotSize, mascotSize);
+  drawExportWordmark(context, margin + mascotSize + fontSize * 0.4, header * 0.25, header * 0.5);
   context.font = `700 ${Math.max(10, fontSize * 0.48)}px Manrope, sans-serif`;
   context.textAlign = "right";
   context.fillStyle = INK;
   context.fillText(label, canvas.width - margin, header * 0.64);
   context.textAlign = "left";
-  const baseline = canvas.height - footer * 0.36;
-  context.save();
-  context.globalAlpha = 0.18;
-  context.font = `800 ${Math.max(22, footer * 0.42)}px Manrope, sans-serif`;
-  context.fillStyle = PURPLE;
-  context.fillText("OLENA STUDY", margin, baseline);
-  context.restore();
   context.font = `700 ${Math.max(9, footer * 0.14)}px Manrope, sans-serif`;
   context.fillStyle = INK;
   context.fillText("FEITO PARA APRENDER", margin, canvas.height - footer * 0.15);
-  drawPaperExportSeal(
-    context,
-    canvas.width - margin - footer * 0.8,
-    canvas.height - footer * 0.92,
-    footer * 0.76,
-    mascot,
-  );
   return canvas;
 }
 

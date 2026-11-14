@@ -6,7 +6,6 @@ import { PaperCloseIcon } from "./paper-close-icon";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
-import { encodeHandwritingDraft } from "../data/handwriting-draft";
 import { confirmNotebookSave } from "../data/notebook-save-confirmation";
 import type { HandwritingDocument } from "../domain/handwriting";
 import type { NoteAsset, StudyNote } from "../domain/workspace";
@@ -227,10 +226,10 @@ function NoteCaptureTools({
     initialJoinCode || autoOpen ? "drawing" : null,
   );
   const dialogRef = useRef<HTMLElement>(null);
-  const [handwritingDirty, setHandwritingDirty] = useState(false);
-  const [confirmClose, setConfirmClose] = useState(false);
-  const [draftWriteFailed, setDraftWriteFailed] = useState(false);
-  const [closingSavedDraft, setClosingSavedDraft] = useState(false);
+  const flushOnClose = useRef<(() => boolean) | null>(null);
+  const [closing, setClosing] = useState(false);
+  const closeTimer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(closeTimer.current), []);
   const latestDraftRef = useRef<HandwritingDocument | null>(null);
   const [restoredAssetId] = useState(() => {
     const assets = notebookPages.find((page) => page.id === draftPageKey)?.assets ?? [];
@@ -252,7 +251,6 @@ function NoteCaptureTools({
     notebookPages
       .find((page) => page.id === draftPageKey)
       ?.assets.find((asset) => asset.id === restoredAssetId)?.handwriting;
-  const savedDocumentRef = useRef("");
   const saveDocument = (dataUrl: string, handwriting: HandwritingDocument) => {
     const candidateId = editingAsset?.id ?? savedAssetIdRef.current;
     const id =
@@ -274,7 +272,6 @@ function NoteCaptureTools({
         }
       }
     }
-    savedDocumentRef.current = JSON.stringify(handwriting);
   };
   const [collaborationPanelOpen, setCollaborationPanelOpen] = useState(Boolean(initialJoinCode));
   const [collaborationAvatar, setCollaborationAvatar] = useState(() => {
@@ -362,40 +359,30 @@ function NoteCaptureTools({
 
   const close = useCallback(
     (force = false) => {
-      if (!force && currentMode === "drawing" && handwritingDirty) {
-        setClosingSavedDraft(savedDocumentRef.current === JSON.stringify(latestDraftRef.current));
-        try {
-          if (latestDraftRef.current) {
-            localStorage.setItem(
-              `helenastudy.handwriting.draft.${editingAsset?.id ?? `new-${draftPageKey}`}`,
-              encodeHandwritingDraft(latestDraftRef.current, initialHandwriting),
-            );
-          }
-          setDraftWriteFailed(false);
-        } catch {
-          setDraftWriteFailed(true);
+      if (closeTimer.current !== undefined) return;
+      if (!force && currentMode === "drawing" && flushOnClose.current?.() === false) return;
+      const finish = () => {
+        closeTimer.current = undefined;
+        if (document.fullscreenElement === dialogRef.current && document.fullscreenElement) {
+          void document.exitFullscreen().catch(() => {});
         }
-        setConfirmClose(true);
-        return;
+        if (editingAsset) onCloseEditing?.();
+        setMode(null);
+        onClosePage?.();
+        setClosing(false);
+      };
+      if (
+        currentMode !== "drawing" ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+        document.documentElement.dataset["reduceMotion"] === "true"
+      ) {
+        finish();
+      } else {
+        setClosing(true);
+        closeTimer.current = window.setTimeout(finish, 300);
       }
-      setConfirmClose(false);
-      if (document.fullscreenElement === dialogRef.current && document.fullscreenElement) {
-        void document.exitFullscreen().catch(() => {});
-      }
-      setHandwritingDirty(false);
-      if (editingAsset) onCloseEditing?.();
-      setMode(null);
-      onClosePage?.();
     },
-    [
-      currentMode,
-      handwritingDirty,
-      editingAsset,
-      draftPageKey,
-      onCloseEditing,
-      onClosePage,
-      initialHandwriting,
-    ],
+    [currentMode, editingAsset, onCloseEditing, onClosePage],
   );
 
   useEffect(() => {
@@ -404,8 +391,7 @@ function NoteCaptureTools({
     document.body.style.overflow = "hidden";
     function closeOnEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        if (confirmClose) setConfirmClose(false);
-        else close();
+        if (!event.defaultPrevented) close();
       }
     }
     document.addEventListener("keydown", closeOnEscape);
@@ -413,7 +399,71 @@ function NoteCaptureTools({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", closeOnEscape);
     };
-  }, [currentMode, confirmClose, close]);
+  }, [currentMode, close]);
+
+  const captureActions = (
+    <div className="capture-header-actions">
+      {currentMode === "drawing" && (
+        <div className="notebook-team" role="group" aria-label={uiText(653)}>
+          {(collaboration.state.room?.participants.length
+            ? collaboration.state.room.participants.filter(
+                (participant) =>
+                  participant.online &&
+                  (!participant.pageId || participant.pageId === draftPageKey),
+              )
+            : cloud?.authenticated
+              ? [
+                  {
+                    id: "current-account",
+                    displayName: cloud.displayName || cloud.email || uiText(2067),
+                    avatarUrl: collaborationAvatar,
+                    online: true,
+                  },
+                ]
+              : []
+          )
+            .slice(0, 4)
+            .map((participant, index) => (
+              <span
+                key={participant.id}
+                className={`notebook-team__avatar notebook-team__avatar--${index % 3}${participant.online ? " is-online" : ""}`}
+                title={`${participant.displayName}${participant.online ? uiText(1801) : uiText(1737)}`}
+                aria-label={participant.displayName}
+              >
+                {participant.avatarUrl ? (
+                  <img src={participant.avatarUrl} alt="" />
+                ) : (
+                  participant.displayName
+                    .trim()
+                    .split(/\s+/)
+                    .map((part) => part[0])
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase()
+                )}
+              </span>
+            ))}
+          <button
+            type="button"
+            className="notebook-team__add"
+            aria-label={collaboration.state.code ? uiText(1802) : uiText(654)}
+            aria-expanded={collaborationPanelOpen}
+            onClick={() => setCollaborationPanelOpen((open) => !open)}
+          >
+            <PaperEditorIcon name="add" />
+          </button>
+        </div>
+      )}
+      <button
+        className="sheet-close"
+        type="button"
+        aria-label={uiText(230)}
+        onClick={() => close()}
+      >
+        <PaperCloseIcon />
+      </button>
+    </div>
+  );
 
   return (
     <>
@@ -425,7 +475,6 @@ function NoteCaptureTools({
           className="secondary-button"
           type="button"
           onClick={() => {
-            savedDocumentRef.current = "";
             setMode("drawing");
           }}
         >
@@ -435,7 +484,7 @@ function NoteCaptureTools({
 
       {currentMode &&
         createPortal(
-          <div className="capture-layer">
+          <div className="capture-layer" data-sheet-closing={closing}>
             <button
               className="capture-backdrop"
               type="button"
@@ -444,6 +493,7 @@ function NoteCaptureTools({
             />
             <section
               ref={dialogRef}
+              inert={closing}
               className={
                 currentMode === "drawing"
                   ? "capture-dialog capture-dialog--handwriting capture-dialog--expanded"
@@ -453,10 +503,13 @@ function NoteCaptureTools({
               aria-modal="true"
               aria-labelledby="capture-title"
             >
-              <header>
+              <header hidden={currentMode === "drawing"}>
                 <div>
-                  <span>{uiText(652)}</span>
-                  <h2 id="capture-title">
+                  {currentMode !== "drawing" && <span>{uiText(652)}</span>}
+                  <h2
+                    id="capture-title"
+                    className={currentMode === "drawing" ? "visually-hidden" : undefined}
+                  >
                     {currentMode === "scan"
                       ? uiText(1800)
                       : editingAsset
@@ -464,63 +517,7 @@ function NoteCaptureTools({
                         : uiText(650)}
                   </h2>
                 </div>
-                <div className="capture-header-actions">
-                  {currentMode === "drawing" && (
-                    <div className="notebook-team" role="group" aria-label={uiText(653)}>
-                      {(collaboration.state.room?.participants.length
-                        ? collaboration.state.room.participants
-                        : cloud?.authenticated
-                          ? [
-                              {
-                                id: "current-account",
-                                displayName: cloud.displayName || cloud.email || uiText(2067),
-                                avatarUrl: collaborationAvatar,
-                                online: true,
-                              },
-                            ]
-                          : []
-                      )
-                        .slice(0, 4)
-                        .map((participant, index) => (
-                          <span
-                            key={participant.id}
-                            className={`notebook-team__avatar notebook-team__avatar--${index % 3}${participant.online ? " is-online" : ""}`}
-                            title={`${participant.displayName}${participant.online ? uiText(1801) : uiText(1737)}`}
-                            aria-label={participant.displayName}
-                          >
-                            {participant.avatarUrl ? (
-                              <img src={participant.avatarUrl} alt="" />
-                            ) : (
-                              participant.displayName
-                                .trim()
-                                .split(/\s+/)
-                                .map((part) => part[0])
-                                .slice(0, 2)
-                                .join("")
-                                .toUpperCase()
-                            )}
-                          </span>
-                        ))}
-                      <button
-                        type="button"
-                        className="notebook-team__add"
-                        aria-label={collaboration.state.code ? uiText(1802) : uiText(654)}
-                        aria-expanded={collaborationPanelOpen}
-                        onClick={() => setCollaborationPanelOpen((open) => !open)}
-                      >
-                        <PaperEditorIcon name="add" />
-                      </button>
-                    </div>
-                  )}
-                  <button
-                    className="sheet-close"
-                    type="button"
-                    aria-label={uiText(230)}
-                    onClick={() => close()}
-                  >
-                    <PaperCloseIcon />
-                  </button>
-                </div>
+                {currentMode !== "drawing" && captureActions}
               </header>
               {currentMode === "drawing" && collaborationPanelOpen && (
                 <section className="notebook-collaboration-panel" aria-label={uiText(654)}>
@@ -565,7 +562,7 @@ function NoteCaptureTools({
                     <>
                       <div className="notebook-collaboration-code">
                         <label>
-                          {uiText(660)}
+                          {uiText(3856)}
                           <input
                             readOnly
                             value={collaborationInviteUrl()}
@@ -620,6 +617,7 @@ function NoteCaptureTools({
                 </div>
               ) : (
                 <HandwritingStudio
+                  captureActions={captureActions}
                   {...(cloud ? { cloud } : {})}
                   notebookPages={notebookPages}
                   currentPageId={draftPageKey}
@@ -633,7 +631,7 @@ function NoteCaptureTools({
                   onConfirmSave={(document) => confirmNotebookSave(draftPageKey, document)}
                   onAutosave={saveDocument}
                   onClose={() => close(true)}
-                  onDirtyChange={setHandwritingDirty}
+                  flushOnClose={flushOnClose}
                   onDraftChange={(document) => {
                     latestDraftRef.current = document;
                     collaboration.publish(document, "editou o caderno");
@@ -653,31 +651,6 @@ function NoteCaptureTools({
                   }}
                   draftKey={editingAsset?.id ?? `new-${draftPageKey}`}
                 />
-              )}
-              {confirmClose && (
-                <div
-                  className="handwriting-close-confirm"
-                  role="alertdialog"
-                  aria-label={uiText(664)}
-                >
-                  <p>
-                    {draftWriteFailed
-                      ? uiText(665)
-                      : closingSavedDraft
-                        ? uiText(666)
-                        : cloud?.authenticated
-                          ? uiText(667)
-                          : uiText(668)}
-                  </p>
-                  <div>
-                    <button type="button" onClick={() => setConfirmClose(false)}>
-                      {uiText(669)}
-                    </button>
-                    <button type="button" onClick={() => close(true)}>
-                      {draftWriteFailed ? uiText(670) : uiText(671)}
-                    </button>
-                  </div>
-                </div>
               )}
             </section>
           </div>,

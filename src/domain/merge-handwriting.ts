@@ -10,7 +10,24 @@ function mergeItems<T extends { id: string }>(
   const result = new Map(remote.map((item) => [item.id, item]));
   for (const id of before.keys()) if (!ours.has(id)) result.delete(id);
   for (const item of local) {
-    if (JSON.stringify(item) !== JSON.stringify(before.get(item.id))) result.set(item.id, item);
+    const previous = before.get(item.id);
+    if (JSON.stringify(item) === JSON.stringify(previous)) continue;
+    const latest = result.get(item.id);
+    if (!previous) {
+      result.set(item.id, item);
+      continue;
+    }
+    if (!latest) continue;
+    const changes = Object.fromEntries(
+      Object.entries(item).filter(
+        ([key, value]) => JSON.stringify(value) !== JSON.stringify(previous[key as keyof T]),
+      ),
+    );
+    const merged = { ...latest, ...changes };
+    for (const key of Object.keys(previous) as (keyof T)[]) {
+      if (!Object.hasOwn(item, key)) delete merged[key];
+    }
+    result.set(item.id, merged);
   }
   return [...result.values()];
 }

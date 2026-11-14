@@ -16,7 +16,7 @@ export type HandwritingPaper =
   "ruled" | "grid" | "dots" | "blank" | "board" | "weekly" | "calendar" | "cornell" | "staff";
 export type HandwritingPaperColor = "light" | "aged" | "night";
 export type HandwritingStroke = {
-  brush?: "fine" | "ink" | "soft";
+  brush?: "fine" | "ink" | "soft" | "calligraphy" | "ballpoint" | "pencil";
   // Sem o campo, a linha é contínua (traços antigos abrem iguais).
   dash?: "dashed" | "dotted";
   // Traço da borracha de fundo: não deixa tinta, apaga o fundo importado (página ou imagem) por
@@ -34,6 +34,7 @@ export type HandwritingStroke = {
 export type HandwritingSticky = {
   kind?: "text" | "table";
   ink?: string;
+  textSize?: number;
   id: string;
   x: number;
   y: number;
@@ -70,6 +71,7 @@ export type HandwritingCoordinateSystem = {
   end: HandwritingPoint;
   step: 1 | 2 | 5 | 10;
   measurements?: boolean;
+  lineWidth?: number;
   color: string;
 };
 
@@ -104,7 +106,7 @@ export type HandwritingDocument = {
   background?: string | undefined;
   pageText?: string;
   pageTextSize?: number;
-  pageTextFrame?: { x: number; y: number; width: number; height: number };
+  pageTextFrame?: { x: number; y: number; width: number; height: number; ink?: string };
   images?: HandwritingImage[];
   coordinateSystems?: HandwritingCoordinateSystem[];
   layers?: {

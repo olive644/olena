@@ -2,9 +2,14 @@ export function PaperEditorIcon({
   name,
 }: {
   name:
+    | "uploadRename"
+    | "uploadOpen"
+    | "uploadDetails"
+    | "uploadInsert"
     | "settings"
     | "add"
     | "copyLink"
+    | "cut"
     | "team"
     | "exit"
     | "share"
@@ -14,9 +19,13 @@ export function PaperEditorIcon({
     | "highlighter"
     | "eraser"
     | "hand"
+    | "selectionRectangle"
+    | "selectionLasso"
+    | "selectionPaste"
     | "select"
     | "text"
     | "sticky"
+    | "writingWindow"
     | "zoomIn"
     | "zoomOut"
     | "reset"
@@ -43,7 +52,13 @@ export function PaperEditorIcon({
       aria-hidden="true"
       data-paper-editor-icon={name}
     >
-      <use href={`/navigation-icons/paper/paper-editor-icon.svg#${name}`} />
+      <use
+        href={
+          name === "cut"
+            ? "/navigation-icons/paper/notebook-cut.svg#art"
+            : `/navigation-icons/paper/paper-editor-icon.svg#${name}`
+        }
+      />
     </svg>
   );
 }

@@ -1,6 +1,8 @@
+import type { AlignmentGuide } from "./handwriting-selection-layout";
 import type {
   HandwritingCoordinateSystem,
   HandwritingImage,
+  HandwritingLayerKey,
   HandwritingLayerVisibility,
   HandwritingPoint,
   HandwritingSticky,
@@ -32,8 +34,9 @@ export type SelectionScene = {
   images: readonly HandwritingImage[];
   pageText: string;
   pageTextSize: number;
-  pageTextFrame: { x: number; y: number; width: number; height: number };
+  pageTextFrame: { x: number; y: number; width: number; height: number; ink?: string };
   layers: HandwritingLayerVisibility;
+  layerOrder?: readonly HandwritingLayerKey[];
 };
 
 export type Picked = { ids: string[]; coordinateIds: string[] };
@@ -47,7 +50,9 @@ function collect(
   strokeMatches: (stroke: Stroke) => boolean,
   boxMatches: (box: SelectionBox) => boolean,
 ): Picked {
-  const strokes = scene.strokes.filter(strokeMatches).map((stroke) => stroke.id);
+  const strokes = scene.layers.strokes
+    ? scene.strokes.filter(strokeMatches).map((stroke) => stroke.id)
+    : [];
   const coordinateIds = scene.layers.coordinates
     ? scene.coordinateSystems
         .filter((system) => boxMatches(coordinateBounds(system)))
@@ -67,7 +72,17 @@ function collect(
         .filter((image) => boxMatches(importedImageBounds(image)))
         .map((image) => image.id)
     : [];
-  return { ids: [...strokes, ...coordinateIds, ...stickies, ...text, ...images], coordinateIds };
+  const byLayer = { coordinates: coordinateIds, text, strokes, stickies };
+  const order = [
+    ...new Set([
+      ...(scene.layerOrder ?? []),
+      "coordinates",
+      "text",
+      "strokes",
+      "stickies",
+    ] as const),
+  ];
+  return { ids: [...images, ...order.flatMap((layer) => byLayer[layer])], coordinateIds };
 }
 
 // Laço: um traço entra quando a maior parte dele está dentro; os demais itens, quando o centro está.
@@ -86,6 +101,44 @@ export function pickInBox(scene: SelectionScene, area: SelectionBox): Picked {
     (stroke) => overlaps(strokeBounds(stroke), area),
     (box) => overlaps(box, area),
   );
+}
+
+// O corpo do objeto usa sua caixa inteira; tinta só é atingida perto do traço.
+export function pickAt(scene: SelectionScene, point: HandwritingPoint, radius = 3): Picked {
+  return collect(
+    scene,
+    (stroke) => strokeTouches(stroke, point, radius),
+    (box) =>
+      point.x >= box.x &&
+      point.x <= box.x + box.width &&
+      point.y >= box.y &&
+      point.y <= box.y + box.height,
+  );
+}
+
+// Calculado uma vez ao começar o arrasto, sem procurar cada id na folha inteira.
+export function alignmentTargets(
+  scene: SelectionScene,
+  selectedIds: readonly string[],
+): SelectionBox[] {
+  const selected = new Set(selectedIds);
+  return [
+    ...(scene.layers.strokes
+      ? scene.strokes.filter((item) => !selected.has(item.id)).map(strokeBounds)
+      : []),
+    ...(scene.layers.stickies
+      ? scene.stickies.filter((item) => !selected.has(item.id)).map(stickyBounds)
+      : []),
+    ...(scene.layers.coordinates
+      ? scene.coordinateSystems.filter((item) => !selected.has(item.id)).map(coordinateBounds)
+      : []),
+    ...(scene.layers.background
+      ? scene.images.filter((item) => !selected.has(item.id)).map(importedImageBounds)
+      : []),
+    ...(scene.layers.text && scene.pageText && !selected.has(PAGE_TEXT_SELECTION_ID)
+      ? [pageTextBounds(scene.pageText, scene.pageTextSize, scene.pageTextFrame)]
+      : []),
+  ];
 }
 
 // O ponto está sobre algum item já selecionado (com folga de `radius` unidades da folha)?
@@ -134,8 +187,11 @@ export function selectionFrame(
 ): SelectionBox | null {
   const selected = new Set(selectedIds);
   return unionBounds([
+    ...(scene.layers.text && scene.pageText && selected.has(PAGE_TEXT_SELECTION_ID)
+      ? [pageTextBounds(scene.pageText, scene.pageTextSize, scene.pageTextFrame)]
+      : []),
     ...scene.strokes
-      .filter((stroke) => selected.has(stroke.id))
+      .filter((stroke) => scene.layers.strokes && selected.has(stroke.id))
       .map(includeInk ? strokeInkBounds : strokeBounds),
     ...(scene.layers.coordinates
       ? scene.coordinateSystems.filter((system) => selected.has(system.id)).map(coordinateBounds)
@@ -155,7 +211,7 @@ function clamp(value: number, max: number): number {
 
 export type PageSize = { width: number; height: number };
 
-export type TextFrame = { x: number; y: number; width: number; height: number };
+export type TextFrame = { x: number; y: number; width: number; height: number; ink?: string };
 
 // A moldura do texto da folha acompanha o arrasto e não sai da folha.
 export function moveTextFrame(frame: TextFrame, dx: number, dy: number, page: PageSize): TextFrame {
@@ -253,6 +309,10 @@ export function drawSelectionOverlay(
   selectedIds: readonly string[],
   selectionBox: SelectionBox | null,
   selectionPath: readonly HandwritingPoint[] | null,
+  transforming = false,
+  guides: readonly AlignmentGuide[] = [],
+  rotationSide: "top" | "left" | "right" = "top",
+  handleScale = 1,
 ): void {
   const selected = new Set(selectedIds);
   context.save();
@@ -279,8 +339,8 @@ export function drawSelectionOverlay(
   }
 
   const frame = selectionFrame(scene, selectedIds);
-  if (frame && !selectionBox && !selectionPath) {
-    const handles = selectionHandles(frame);
+  if (frame && !transforming && !selectionBox && !selectionPath) {
+    const handles = selectionHandles(frame, rotationSide);
     context.save();
     context.setLineDash([10, 8]);
     context.strokeRect(
@@ -292,17 +352,48 @@ export function drawSelectionOverlay(
     context.setLineDash([]);
     context.beginPath();
     context.moveTo(handles.rotate.x, handles.rotate.y);
-    context.lineTo(handles.rotate.x, frame.y - SELECTION_PAD);
+    if (rotationSide === "top") context.lineTo(handles.rotate.x, frame.y - SELECTION_PAD);
+    else
+      context.lineTo(
+        rotationSide === "right" ? frame.x + frame.width + SELECTION_PAD : frame.x - SELECTION_PAD,
+        handles.rotate.y,
+      );
     context.stroke();
-    context.fillStyle = "#ffffff";
-    for (const kind of ["nw", "ne", "se", "sw", "rotate"] as const) {
+    context.fillStyle = "#fff9ef";
+    for (const kind of ["nw", "ne", "se", "sw", "n", "e", "s", "w", "rotate"] as const) {
       const handle = handles[kind];
       context.beginPath();
-      context.arc(handle.x, handle.y, kind === "rotate" ? 13 : 11, 0, Math.PI * 2);
+      context.save();
+      context.translate(handle.x, handle.y);
+      context.scale(handleScale, handleScale);
+      context.translate(-handle.x, -handle.y);
+      if (kind === "rotate") context.arc(handle.x, handle.y, 12, 0, Math.PI * 2);
+      else {
+        const { x, y } = handle;
+        context.moveTo(x - 11, y - 5);
+        context.lineTo(x - 5, y - 11);
+        context.lineTo(x + 11, y - 11);
+        context.lineTo(x + 11, y + 5);
+        context.lineTo(x + 5, y + 11);
+        context.lineTo(x - 11, y + 11);
+        context.closePath();
+      }
       context.fill();
       context.stroke();
+      context.restore();
     }
     context.restore();
+  }
+  for (const guide of guides) {
+    context.beginPath();
+    if (guide.axis === "x") {
+      context.moveTo(guide.value, guide.start);
+      context.lineTo(guide.value, guide.end);
+    } else {
+      context.moveTo(guide.start, guide.value);
+      context.lineTo(guide.end, guide.value);
+    }
+    context.stroke();
   }
   if (selectionBox) {
     context.fillStyle = SELECTION_FILL;

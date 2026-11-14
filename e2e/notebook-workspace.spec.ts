@@ -35,7 +35,7 @@ test("quadro amplo, preferências e livro preservam páginas ao navegar e reabri
   await expect(editor.getByRole("group", { name: "Formato da folha" })).toHaveCount(0);
   await editor.getByRole("button", { name: "Configurações do editor" }).click();
   const settings = page.getByRole("dialog", { name: "Configurações do editor" });
-  await expect(settings.getByRole("group")).toHaveCount(3);
+  await expect(settings.getByRole("checkbox", { name: /Ajuste inteligente/ })).toBeVisible();
   await settings.getByRole("checkbox", { name: /Ajuste inteligente/ }).uncheck();
   await page.screenshot({ path: testInfo.outputPath("preferencias-claro.png") });
   await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));

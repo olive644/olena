@@ -845,6 +845,7 @@ export function useNotebookCollaboration({
       void request<{ state: PublicNotebookCollabState }>("heartbeat", {
         code: session.code,
         credential: session.credential,
+        pageId,
         avatarUrl: (() => {
           try {
             return (
@@ -883,7 +884,7 @@ export function useNotebookCollaboration({
       if (heartbeatRef.current) clearInterval(heartbeatRef.current);
       heartbeatRef.current = undefined;
     };
-  }, [state.status, state.code, applyRoom, publish]);
+  }, [state.status, state.code, applyRoom, publish, pageId]);
 
   const selfId = state.participantId;
   const cursors: RemoteCursor[] = useMemo(() => {

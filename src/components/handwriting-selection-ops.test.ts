@@ -202,3 +202,32 @@ describe("alças da caixa de seleção", () => {
     expect(dragRotation(center, { x: 100, y: 0 }, { x: 100, y: 20 }, true)).toBe(15);
   });
 });
+
+it("ajusta a largura do post-it e preserva a proporção da imagem pela lateral", () => {
+  const result = scaleItems(items(), new Set(["n1", "i1"]), 2, { x: 50, y: 60 }, undefined, 1);
+  expect(result.images[0]).toMatchObject({ x: 50, y: 60, width: 400, height: 200 });
+  expect(result.stickies[0]).toMatchObject({ y: 300, width: 320, height: 120 });
+  const bounds = { x: 10, y: 20, width: 100, height: 80 };
+  expect(oppositeCorner(bounds, "w")).toEqual({ x: 110, y: 60 });
+  expect(oppositeCorner(bounds, "n")).toEqual({ x: 60, y: 100 });
+});
+
+it("reconhece a alça de rotação lateral quando o topo está fora da área visível", () => {
+  const bounds = { x: 100, y: 50, width: 200, height: 100 };
+  const handle = selectionHandles(bounds, "right").rotate;
+  expect(handle.x).toBeGreaterThan(300);
+  expect(handle.y).toBe(100);
+  expect(hitSelectionHandle(handle, bounds, 12, "right")).toBe("rotate");
+});
+
+it("preserva a proporção da imagem pela alça vertical e no limite da folha", () => {
+  const image = scaleItems(
+    items(),
+    new Set(["i1"]),
+    1,
+    { x: 0, y: 0 },
+    { width: 300, height: 300 },
+    4,
+  ).images[0]!;
+  expect(image).toMatchObject({ width: 300, height: 150 });
+});

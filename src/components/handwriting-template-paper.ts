@@ -22,19 +22,22 @@ export function drawCornellPaper(
 ) {
   const { ink, line, soft } = paperTones(color);
   context.save();
-  context.scale(width / 1200, height / 1600);
+  const scale = Math.min(width / 1200, height / 1600);
+  const right = width / scale - 64;
+  const bottom = height / scale - 64;
+  context.scale(scale, scale);
   // Cabeçalho: título e data, iguais em toda folha Cornell.
   context.fillStyle = soft;
-  context.fillRect(64, 60, 1072, 96);
+  context.fillRect(64, 60, right - 64, 96);
   context.fillStyle = ink;
   context.font = "bold 32px Manrope, sans-serif";
   context.fillText("Cornell", 88, 118);
   context.font = "20px Manrope, sans-serif";
   context.fillText(uiText("Tópico: ____________________    Data: ____________________"), 380, 118);
 
-  const cuesRight = 64 + 300;
+  const cuesRight = 64 + (right - 64) * 0.28;
   const notesTop = 196;
-  const summaryTop = 1360;
+  const summaryTop = bottom - 176;
   const contentBottom = summaryTop - 24;
 
   // Linha vertical entre pistas e anotações, e horizontal antes do resumo.
@@ -44,23 +47,23 @@ export function drawCornellPaper(
   context.moveTo(cuesRight, notesTop);
   context.lineTo(cuesRight, contentBottom);
   context.moveTo(64, summaryTop);
-  context.lineTo(1136, summaryTop);
+  context.lineTo(right, summaryTop);
   context.stroke();
 
-  // Pautas finas dentro das três áreas, no mesmo espaçamento do papel pautado comum.
-  context.lineWidth = 1.4;
-  for (let y = notesTop + 44; y < contentBottom; y += 44) {
+  // Pautas finas dentro das três áreas, com o espaçamento do papel pautado comum.
+  context.lineWidth = 2;
+  for (let y = notesTop + 48; y < contentBottom; y += 48) {
     context.beginPath();
     context.moveTo(64, y);
     context.lineTo(cuesRight - 16, y);
     context.moveTo(cuesRight + 16, y);
-    context.lineTo(1136, y);
+    context.lineTo(right, y);
     context.stroke();
   }
-  for (let y = summaryTop + 40; y < 1536; y += 40) {
+  for (let y = summaryTop + 40; y < bottom; y += 40) {
     context.beginPath();
     context.moveTo(64, y);
-    context.lineTo(1136, y);
+    context.lineTo(right, y);
     context.stroke();
   }
 

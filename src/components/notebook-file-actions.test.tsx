@@ -46,12 +46,15 @@ it("salva explicitamente e oferece download seletivo somente para múltiplas fol
 it("baixa somente as folhas escolhidas e usa a versão atual do editor", async () => {
   setup([page, { ...page, id: "two", title: "Outra folha" }]);
   fireEvent.click(screen.getByRole("button", { name: "Compartilhar" }));
-  fireEvent.click(screen.getByRole("button", { name: "Selecionar folhas para download" }));
+  fireEvent.click(screen.getByRole("button", { name: "Exportar" }));
   const dialog = screen.getByRole("dialog", { name: "Selecionar folhas para download" });
-  expect(within(dialog).getAllByRole("checkbox")).toHaveLength(2);
-  fireEvent.click(within(dialog).getByRole("button", { name: "Baixar PDF selecionado" }));
+  fireEvent.click(within(dialog).getByRole("radio", { name: "Escolher folhas" }));
+  const index = screen.getByRole("dialog", { name: "Índice de folhas" });
+  expect(within(index).getAllByRole("button", { pressed: true })).toHaveLength(1);
+  fireEvent.click(within(index).getByRole("button", { name: "Confirmar" }));
+  fireEvent.click(within(dialog).getByRole("button", { name: "Baixar" }));
   await waitFor(() =>
-    expect(downloadNotebookPdf).toHaveBeenCalledWith(["data:image/png;base64,AA=="]),
+    expect(downloadNotebookPdf).toHaveBeenCalledWith(["data:image/png;base64,AA=="], true),
   );
 });
 it("envia uma cópia somente após confirmação e mostra o link de leitura", async () => {

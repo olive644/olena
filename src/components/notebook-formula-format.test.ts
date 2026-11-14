@@ -22,6 +22,18 @@ describe("fórmulas na folha", () => {
     expect(Number.isFinite(layout.width + layout.height)).toBe(true);
     expect(() => parseNotebookFormula("\\sqrt{".repeat(1000))).not.toThrow();
   });
+  it.each([
+    ["x = (-b ± √Δ)/(2a)", "±", 2],
+    ["√(x^2 + y^2)", "x", 1],
+    ["a_{12} + b^{3}", "3", 0],
+    [String.raw`x = \frac{-b \pm \sqrt{\Delta}}{2a}`, "Δ", 2],
+  ])("formata %s", (source, symbol, bars) => {
+    const layout = layoutNotebookFormula(parseNotebookFormula(source));
+    expect(layout.items.filter((item) => item.kind === "line")).toHaveLength(bars);
+    expect(layout.items.some((item) => item.kind === "text" && item.text === symbol)).toBe(true);
+    expect(Number.isFinite(layout.width + layout.height)).toBe(true);
+  });
+
   it("exporta a mesma fração com barra e textos em posições distintas", () => {
     const fillText = vi.fn(),
       fillRect = vi.fn();

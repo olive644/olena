@@ -7,6 +7,7 @@ import { readSyncedStorage } from "../data/synced-storage";
 import { agendaTimeZone } from "../data/agenda-time-zone";
 import { useNotebookPreferences } from "../data/notebook-preferences";
 import { NotebookPreferenceFields } from "./notebook-settings";
+import { PaperCardTitle } from "./paper-card-title";
 import { NavigationIcon } from "./navigation-icon";
 import { downloadExportBlob } from "../data/paper-export-art";
 import { createStudyDataExport } from "../data/study-data-export";
@@ -118,7 +119,9 @@ export function ProfileNotebookPreferences() {
   return (
     <section className="profile-card profile-card--wide" aria-labelledby="profile-notebooks-title">
       <span className="section-label">{uiText(652)}</span>
-      <h2 id="profile-notebooks-title">{uiText(874)}</h2>
+      <h2 id="profile-notebooks-title">
+        <PaperCardTitle value={uiText(874)} />
+      </h2>
       <div className="profile-notebook-fields">
         <NotebookPreferenceFields preferences={preferences} onChange={changePreference} />
       </div>

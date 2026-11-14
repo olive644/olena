@@ -18,6 +18,7 @@ type NotebookPageIndexProps = {
   favoritePageIds?: readonly string[];
   onToggleFavorite?: (id: string) => void;
   onClose: () => void;
+  selection?: { ids: readonly string[]; onConfirm: (ids: string[]) => void };
 };
 
 // Distância mínima (em pixels) para um toque ou clique virar arrastar em vez de abrir a folha.
@@ -35,9 +36,11 @@ export function NotebookPageIndex({
   favoritePageIds,
   onToggleFavorite,
   onClose,
+  selection,
 }: NotebookPageIndexProps) {
   useLanguage();
 
+  const [chosen, setChosen] = useState(() => [...(selection?.ids ?? [])]);
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const element = dialog.current;
@@ -137,7 +140,9 @@ export function NotebookPageIndex({
   return (
     <dialog
       ref={dialog}
-      className="notebook-page-index"
+      className={
+        selection ? "notebook-page-index notebook-page-index--picker" : "notebook-page-index"
+      }
       aria-label={uiText(701)}
       onCancel={(event) => {
         event.preventDefault();
@@ -183,6 +188,7 @@ export function NotebookPageIndex({
           const thumbnail = page.assets[0];
           const favorited = favorites.includes(page.id);
           const classes = [
+            chosen.includes(page.id) ? "is-picked" : null,
             current ? "is-current" : null,
             draggingId === page.id ? "is-dragging" : null,
             dragEnabled && dropIndex === index && draggingId && draggingId !== page.id
@@ -219,6 +225,7 @@ export function NotebookPageIndex({
               <button
                 type="button"
                 className="notebook-page-index__open"
+                aria-pressed={selection ? chosen.includes(page.id) : undefined}
                 aria-current={current ? "page" : undefined}
                 aria-label={uiText(1826, [index + 1, page.title || uiText(2046)])}
                 onPointerDown={(event) => pointerDown(event, page.id, index)}
@@ -228,6 +235,14 @@ export function NotebookPageIndex({
                 onClick={() => {
                   if (suppressClickRef.current) {
                     suppressClickRef.current = false;
+                    return;
+                  }
+                  if (selection) {
+                    setChosen((ids) =>
+                      ids.includes(page.id)
+                        ? ids.filter((id) => id !== page.id)
+                        : [...ids, page.id],
+                    );
                     return;
                   }
                   onSelect(page.id);
@@ -243,6 +258,7 @@ export function NotebookPageIndex({
                 </span>
                 <span className="notebook-page-index__label">
                   <strong>{index + 1}</strong>
+                  {selection && <span className="notebook-index-check" aria-hidden="true" />}
                   <span>{page.title || uiText(2046)}</span>
                 </span>
               </button>
@@ -276,6 +292,18 @@ export function NotebookPageIndex({
           );
         })}
       </ol>
+      {selection && (
+        <footer className="notebook-index-confirm">
+          <button
+            type="button"
+            className="primary-button"
+            disabled={!chosen.length}
+            onClick={() => selection.onConfirm(chosen)}
+          >
+            {uiText(453)}
+          </button>
+        </footer>
+      )}
     </dialog>
   );
 }

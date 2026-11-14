@@ -228,12 +228,15 @@ export function isHandwritingDocument(value: unknown): boolean {
     (typeof value["pageTextSize"] !== "number" ||
       !Number.isFinite(value["pageTextSize"]) ||
       value["pageTextSize"] < 16 ||
-      value["pageTextSize"] > 72)
+      value["pageTextSize"] > 144)
   )
     return false;
   if (
     value["pageTextFrame"] !== undefined &&
     (!isRecord(value["pageTextFrame"]) ||
+      (value["pageTextFrame"]["ink"] !== undefined &&
+        (typeof value["pageTextFrame"]["ink"] !== "string" ||
+          !/^#[0-9a-f]{6}$/i.test(value["pageTextFrame"]["ink"]))) ||
       !isFiniteNumber(value["pageTextFrame"]["x"]) ||
       !isFiniteNumber(value["pageTextFrame"]["y"]) ||
       !isFiniteNumber(value["pageTextFrame"]["width"]) ||
@@ -257,6 +260,10 @@ export function isHandwritingDocument(value: unknown): boolean {
           isRecord(system) &&
           isString(system["id"]) &&
           [1, 2, 5, 10].includes(Number(system["step"])) &&
+          (system["lineWidth"] === undefined ||
+            (isFiniteNumber(system["lineWidth"]) &&
+              system["lineWidth"] > 0 &&
+              system["lineWidth"] <= 100)) &&
           isString(system["color"]) &&
           /^#[0-9a-f]{6}$/i.test(system["color"]) &&
           [system["origin"], system["end"]].every(
@@ -323,6 +330,10 @@ export function isHandwritingDocument(value: unknown): boolean {
                   row.length <= 6 &&
                   row.every((cell: unknown) => isString(cell) && cell.length <= 200),
               ))) &&
+          (sticky["textSize"] === undefined ||
+            (isFiniteNumber(sticky["textSize"]) &&
+              sticky["textSize"] >= 4 &&
+              sticky["textSize"] <= 144)) &&
           (sticky["ink"] === undefined ||
             (typeof sticky["ink"] === "string" && /^#[0-9a-f]{6}$/i.test(sticky["ink"]))) &&
           isString(sticky["id"]) &&
@@ -335,11 +346,11 @@ export function isHandwritingDocument(value: unknown): boolean {
           (sticky["width"] === undefined ||
             (isFiniteNumber(sticky["width"]) &&
               sticky["width"] >= 160 &&
-              sticky["width"] <= 520)) &&
+              sticky["width"] <= pageWidth)) &&
           (sticky["height"] === undefined ||
             (isFiniteNumber(sticky["height"]) &&
               sticky["height"] >= 120 &&
-              sticky["height"] <= 420)) &&
+              sticky["height"] <= pageHeight)) &&
           ["yellow", "blue", "lilac"].includes(String(sticky["color"])) &&
           isString(sticky["text"]) &&
           sticky["text"].length <= 240 &&
@@ -385,7 +396,9 @@ export function isHandwritingDocument(value: unknown): boolean {
       isString(stroke["id"]) &&
       (stroke["tool"] === "pen" || stroke["tool"] === "highlighter") &&
       (stroke["brush"] === undefined ||
-        ["fine", "ink", "soft"].includes(String(stroke["brush"]))) &&
+        ["fine", "ink", "soft", "calligraphy", "ballpoint", "pencil"].includes(
+          String(stroke["brush"]),
+        )) &&
       (stroke["dash"] === undefined ||
         stroke["dash"] === "dashed" ||
         stroke["dash"] === "dotted") &&

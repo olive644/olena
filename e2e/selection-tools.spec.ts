@@ -52,23 +52,24 @@ test("seleção: laço, copiar, colar, duplicar, girar e selecionar tudo", async
   const actions = dialog.getByLabel("Itens selecionados");
   await expect(actions.getByText("1 item selecionado")).toBeVisible();
 
+  const floating = dialog.locator(".handwriting-selection-float");
   // Duplicar seleciona a cópia; selecionar tudo mostra os dois traços.
-  await actions.getByRole("button", { name: "Duplicar" }).click();
+  await floating.getByRole("button", { name: "Duplicar" }).click();
   await expect(actions.getByText("1 item selecionado")).toBeVisible();
   await actions.getByRole("button", { name: "Selecionar tudo" }).click();
   await expect(actions.getByText("2 itens selecionados")).toBeVisible();
 
-  // Girar não perde itens; copiar e colar acrescentam uma cópia de tudo.
-  await actions.getByRole("button", { name: "Girar +15°" }).click();
-  await expect(actions.getByText("2 itens selecionados")).toBeVisible();
-  await actions.getByRole("button", { name: "Copiar" }).click();
-  await actions.getByRole("button", { name: "Colar" }).click();
+  // A rotação pelas alças é exercitada no teste seguinte.
+  await floating.getByRole("button", { name: "Copiar" }).click();
+  await floating.locator("summary").click();
+  await floating.getByRole("button", { name: "Colar", exact: true }).click();
   await expect(actions.getByText("2 itens selecionados")).toBeVisible();
   await actions.getByRole("button", { name: "Selecionar tudo" }).click();
   await expect(actions.getByText("4 itens selecionados")).toBeVisible();
 
   // Recortar remove; desfazer devolve.
-  await actions.getByRole("button", { name: "Recortar" }).click();
+  await floating.locator("summary").click();
+  await floating.getByRole("button", { name: "Recortar" }).click();
   await expect(actions.getByText(/itens? selecionados?/)).toHaveCount(0);
   await dialog.getByRole("button", { name: "Desfazer", exact: true }).click();
   await actions.getByRole("button", { name: "Selecionar tudo" }).click();
@@ -256,7 +257,7 @@ test("com algo selecionado as setas empurram, e não existe botão de mover a fo
   await page.mouse.up();
 
   const leftEdge = () =>
-    sheet.evaluate((element) => {
+    dialog.locator(".handwriting-committed-ink").evaluate((element) => {
       const canvas = element as HTMLCanvasElement;
       const { data } = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height);
       let minX = canvas.width;

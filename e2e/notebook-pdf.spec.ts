@@ -38,8 +38,10 @@ test("exportar PDF permanece disponível dentro da folha", async ({ page }, test
     height: (element as HTMLCanvasElement).height,
   }));
   await dialog.getByRole("button", { name: "Compartilhar", exact: true }).click();
+  await dialog.getByRole("button", { name: "Exportar", exact: true }).click();
+  await page.getByLabel("Formato").selectOption("png");
   const pngDownload = page.waitForEvent("download");
-  await dialog.getByRole("button", { name: "PNG", exact: true }).click();
+  await dialog.getByRole("button", { name: "Baixar", exact: true }).click();
   const png = await pngDownload;
   await png.saveAs(testInfo.outputPath("notebook-export.png"));
   expect(png.suggestedFilename()).toBe("folha-do-caderno.png");
@@ -49,8 +51,9 @@ test("exportar PDF permanece disponível dentro da folha", async ({ page }, test
   }));
   expect(unchangedSize).toEqual(originalSize);
   await dialog.getByRole("button", { name: "Compartilhar", exact: true }).click();
+  await dialog.getByRole("button", { name: "Exportar", exact: true }).click();
   const download = page.waitForEvent("download");
-  await dialog.getByRole("button", { name: "Baixar PDF", exact: true }).click();
+  await dialog.getByRole("button", { name: "Baixar", exact: true }).click();
   const pdf = await download;
   expect(pdf.suggestedFilename()).toBe("folha-do-caderno.pdf");
   await pdf.saveAs(testInfo.outputPath("notebook-export.pdf"));
@@ -90,6 +93,7 @@ test("Upload importa PDF de uma página como folha do caderno", async ({ page },
     mimeType: "application/pdf",
     buffer: Buffer.from(pdf),
   });
+  await editor.getByRole("button", { name: "folha.pdf", exact: true }).click();
   await editor.getByRole("button", { name: "Importar todas (1)", exact: true }).click();
   await expect(editor.getByLabel("Arquivo para importar")).toHaveCount(0);
   await expect

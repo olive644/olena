@@ -7,6 +7,11 @@ export async function activateHandwritingPen(page: Page) {
   const options = editor.getByRole("button", { name: "Opções", exact: true });
   if ((await options.isVisible()) && (await options.getAttribute("aria-expanded")) !== "true")
     await options.click();
+  if (!(await editor.getByRole("button", { name: "Tinta Roxo", exact: true }).isVisible())) {
+    await pen.click();
+    if (!(await editor.getByRole("button", { name: "Tinta Roxo", exact: true }).isVisible()))
+      await pen.click();
+  }
 }
 
 // Os testes de ferramentas conservam a geometria A4. O quadro padrão tem uma

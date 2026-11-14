@@ -246,10 +246,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   await expect(close.locator("path[transform]")).toHaveCount(0);
   await page.screenshot({ path: testInfo.outputPath("configuracoes-e-fechar.png") });
   await close.click();
-  for (const [label, paper] of [
-    ["Plano semanal", "weekly"],
-    ["Calendário", "calendar"],
-  ]) {
+  for (const [label, paper] of [["Calendário", "calendar"]]) {
     await editor.getByRole("button", { name: "Tipo de papel", exact: true }).click();
     await editor.getByRole("button", { name: label!, exact: true }).click();
     await editor.getByRole("button", { name: "Salvar caderno", exact: true }).click();

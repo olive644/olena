@@ -1,0 +1,322 @@
+.notebook-preference-fields {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+.notebook-shortcut-section {
+  grid-column: 1 / -1;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 5px 18px 6px 12px;
+  background: linear-gradient(135deg, var(--soft) 0 15px, transparent 15px), var(--surface);
+  box-shadow: 0 4px var(--line);
+}
+.notebook-shortcut-section summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--text);
+  font-size: 14px;
+}
+.notebook-shortcut-section summary::-webkit-details-marker {
+  display: none;
+}
+.notebook-shortcut-section summary > .paper-editor-icon {
+  flex: 0 0 25px;
+  width: 25px;
+  height: 25px;
+  color: #7433e0;
+  --editor-icon-facet: #cbb1f4;
+}
+.notebook-shortcut-section summary .focus-paper-arrow {
+  margin-left: auto;
+  width: 18px;
+  height: 18px;
+  transform: rotate(-90deg);
+  transition: transform 180ms ease;
+}
+.notebook-shortcut-section[open] summary .focus-paper-arrow {
+  transform: rotate(90deg);
+}
+.notebook-shortcut-section > p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.notebook-shortcut-list {
+  margin: 10px 0 0;
+}
+.notebook-shortcut-list > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.notebook-shortcut-list dd {
+  margin: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.notebook-shortcut-list kbd {
+  display: inline-block;
+  padding: 5px 8px;
+  background: var(--soft);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 3px 8px 3px 6px;
+  box-shadow: 0 2px var(--line);
+  font: inherit;
+  font-weight: 800;
+}
+.notebook-shortcut-binding {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 5px 8px;
+  color: var(--text);
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 5px 13px 6px 11px;
+  box-shadow: 0 3px var(--line);
+  cursor: pointer;
+}
+.notebook-shortcut-binding kbd {
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  background: transparent;
+}
+.notebook-shortcut-binding > .paper-editor-icon {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+}
+.notebook-shortcut-binding[aria-pressed="true"] {
+  background: #7433e0;
+  border-color: #7433e0;
+  box-shadow: 0 3px #51259b;
+}
+.notebook-shortcut-binding[aria-pressed="true"] kbd {
+  color: #fff9ef;
+}
+.notebook-shortcut-list select {
+  appearance: none;
+  min-height: 44px;
+  width: 100%;
+  max-width: 100%;
+  padding: 8px 36px 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 5px 13px 6px 11px;
+  color: var(--text);
+  background: var(--soft);
+  box-shadow: 0 3px var(--line);
+  font: inherit;
+}
+.notebook-pen-select {
+  position: relative;
+  display: block;
+}
+.notebook-pen-select > .focus-paper-arrow {
+  position: absolute;
+  right: 10px;
+  top: calc(50% - 9px);
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  transform: rotate(-90deg);
+}
+.notebook-shortcut-reset,
+.notebook-shortcut-message {
+  grid-column: 1 / -1;
+}
+.notebook-shortcut-conflict {
+  display: block;
+  margin-top: 7px;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.notebook-shortcut-reset > button.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 14px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 5px 13px 6px 11px;
+  box-shadow: 0 4px var(--line);
+  font-weight: 800;
+}
+.notebook-shortcut-reset .paper-editor-icon {
+  width: 22px;
+  height: 22px;
+  color: #7433e0;
+  --editor-icon-facet: #cbb1f4;
+}
+.notebook-shortcut-message {
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.notebook-shortcut-list--pen > div {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+}
+.notebook-shortcut-list--pen dd {
+  text-align: left;
+  color: var(--muted);
+}
+:root[data-theme="dark"] .notebook-shortcut-section summary > .paper-editor-icon {
+  color: #cbb1f4;
+}
+@media (prefers-reduced-motion: reduce) {
+  .notebook-shortcut-section summary .focus-paper-arrow {
+    transition: none;
+  }
+}
+html[data-reduce-motion="true"] .notebook-shortcut-section summary .focus-paper-arrow {
+  transition: none;
+}
+:root .notebook-preference-fields > .notebook-preference-section {
+  grid-row: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 12px 18px;
+  border: 1px solid var(--line);
+  border-radius: 5px 18px 6px 12px;
+  background: linear-gradient(135deg, var(--soft) 0 15px, transparent 15px), var(--surface);
+  box-shadow: 0 4px var(--line);
+}
+.notebook-preference-section legend {
+  padding: 0 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+}
+.notebook-preference-section legend .paper-editor-icon {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  margin-right: 8px;
+  vertical-align: middle;
+  color: #7433e0;
+  --editor-icon-facet: #cbb1f4;
+}
+:root .notebook-preference-fields .notebook-preference-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 64px;
+  padding: 12px 0;
+}
+.notebook-preference-row + .notebook-preference-row {
+  border-top: 1px solid var(--line);
+}
+.notebook-preference-row > span {
+  min-width: 0;
+}
+.notebook-preference-row strong {
+  display: block;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.notebook-preference-row small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.notebook-preference-row input {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+:root dialog.notebook-settings {
+  box-sizing: border-box;
+  width: min(640px, calc(100vw - 32px));
+  max-height: min(860px, calc(100dvh - 40px));
+  margin: auto;
+  padding: 24px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  color: var(--text);
+  background: linear-gradient(135deg, var(--soft) 0 26px, transparent 26px), var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px 24px 8px 16px;
+  box-shadow: 0 7px var(--line-strong);
+  scrollbar-width: thin;
+}
+.notebook-settings::backdrop {
+  background: #17151c88;
+}
+.notebook-settings > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.notebook-settings h2 {
+  margin: 8px 0 0;
+}
+.notebook-settings h2 .paper-card-title svg {
+  width: 15px;
+  height: 28px;
+}
+.notebook-settings > header small {
+  color: #7433e0;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+}
+.notebook-settings .sheet-close {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+}
+.notebook-settings__hint {
+  margin: 16px 0 22px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+:root .profile-notebook-fields {
+  display: block;
+}
+@media (min-width: 900px) {
+  .profile-notebook-fields > .notebook-preference-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+@media (max-width: 480px) {
+  :root dialog.notebook-settings {
+    padding: 18px;
+    width: calc(100vw - 20px);
+  }
+  :root .notebook-preference-fields > .notebook-preference-section {
+    padding: 8px 12px;
+  }
+}
+:root[data-theme="dark"] .notebook-preference-section legend .paper-editor-icon {
+  color: #cbb1f4;
+  --editor-icon-facet: #a779ef;
+}
+:root[data-theme="dark"] .notebook-settings > header small {
+  color: #cbb1f4;
+}

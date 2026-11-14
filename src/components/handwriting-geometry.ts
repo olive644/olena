@@ -7,8 +7,6 @@ import type {
   HandwritingSticky,
 } from "../domain/handwriting";
 import {
-  STICKY_MAX_HEIGHT,
-  STICKY_MAX_WIDTH,
   STICKY_MIN_HEIGHT,
   STICKY_MIN_WIDTH,
   type SelectionBox,
@@ -20,11 +18,11 @@ export function stickyColor(color: HandwritingSticky["color"]): string {
 }
 
 export function stickyWidth(sticky: HandwritingSticky): number {
-  return Math.max(STICKY_MIN_WIDTH, Math.min(STICKY_MAX_WIDTH, sticky.width ?? 260));
+  return Math.max(STICKY_MIN_WIDTH, sticky.width ?? 260);
 }
 
 export function stickyHeight(sticky: HandwritingSticky): number {
-  return Math.max(STICKY_MIN_HEIGHT, Math.min(STICKY_MAX_HEIGHT, sticky.height ?? 220));
+  return Math.max(STICKY_MIN_HEIGHT, sticky.height ?? 220);
 }
 
 // Tabela dentro de um post-it (kind "table"): linhas e colunas por vez, sempre com pelo

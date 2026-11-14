@@ -1,3 +1,6 @@
+import { HandwritingTableControls } from "./handwriting-table-controls";
+import { PaperDigits } from "./paper-digits";
+import { HandwritingToolTips } from "./handwriting-tool-tips";
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { HandwritingTool, SelectionMode } from "./handwriting-types";
 import { PaperEditorIcon } from "./paper-editor-icon";
@@ -21,6 +24,20 @@ type HandwritingSelectionActionsProps = {
   onCut: () => void;
   onPaste: () => void;
   onDuplicate: () => void;
+  strokeProperties?:
+    | {
+        color: string;
+        width: number;
+        onChange: (change: { color?: string; width?: number }) => void;
+      }
+    | undefined;
+  tableProperties?:
+    | { cells: string[][]; onChange: (cells: string[][]) => void; onRemember: () => void }
+    | undefined;
+  textProperties?: { ink: string; onColorChange: (ink: string) => void } | undefined;
+  minimumTextSize?: number;
+  floatingActions?: boolean;
+  allSelected?: boolean;
   onSelectAll: () => void;
   onMove: () => void;
   canPaste: boolean;
@@ -46,19 +63,22 @@ export function HandwritingSelectionActions({
   selectedCoordinateIds,
   canAlign,
   onAlign,
-  onScale,
   onDelete,
   hasBackground,
   onRemoveBackground,
   hasSelectedImages,
   onRemoveSelectedImages,
-  onRotate,
   onCopy,
   onCut,
   onPaste,
   onDuplicate,
   onSelectAll,
-  onMove,
+  strokeProperties,
+  tableProperties,
+  textProperties,
+  minimumTextSize = 16,
+  floatingActions = false,
+  allSelected = false,
   canPaste,
   hasPageText,
   pageTextSize,
@@ -79,71 +99,102 @@ export function HandwritingSelectionActions({
     <div className="handwriting-selection-actions" aria-label={uiText(195)}>
       {tool === "select" && (
         <>
-          <span>{uiText(196)}</span>
-          <button
-            type="button"
-            aria-pressed={selectionMode === "rectangle"}
-            onClick={() => onSelectionModeChange("rectangle")}
+          <HandwritingToolTips
+            className="handwriting-selection-modes"
+            role="group"
+            label={uiText(196)}
           >
-            {uiText(197)}
-          </button>
-          <button
-            type="button"
-            aria-pressed={selectionMode === "lasso"}
-            onClick={() => onSelectionModeChange("lasso")}
-          >
-            {uiText(198)}
-          </button>
-          <button type="button" onClick={onSelectAll}>
-            {uiText(199)}
-          </button>
-          <button type="button" disabled={!canPaste} onClick={onPaste}>
-            {uiText(200)}
-          </button>
+            <button
+              type="button"
+              aria-label={uiText(197)}
+              aria-pressed={selectionMode === "rectangle"}
+              onClick={() => onSelectionModeChange("rectangle")}
+            >
+              <PaperEditorIcon name="selectionRectangle" />
+            </button>
+            <button
+              type="button"
+              aria-label={uiText(198)}
+              aria-pressed={selectionMode === "lasso"}
+              onClick={() => onSelectionModeChange("lasso")}
+            >
+              <PaperEditorIcon name="selectionLasso" />
+            </button>
+            <button
+              type="button"
+              aria-label={uiText(199)}
+              aria-pressed={allSelected}
+              onClick={onSelectAll}
+            >
+              <PaperEditorIcon name="expand" />
+            </button>
+            {!floatingActions && (
+              <button type="button" aria-label={uiText(200)} disabled={!canPaste} onClick={onPaste}>
+                <PaperEditorIcon name="selectionPaste" />
+              </button>
+            )}
+          </HandwritingToolTips>
         </>
+      )}
+      {strokeProperties && (
+        <div className="handwriting-selection-properties">
+          <input
+            type="color"
+            aria-label={uiText(3794)}
+            value={strokeProperties.color}
+            onChange={(event) => strokeProperties.onChange({ color: event.currentTarget.value })}
+          />
+          <input
+            type="number"
+            aria-label={uiText(3793)}
+            min={1}
+            max={100}
+            key={strokeProperties.width}
+            defaultValue={strokeProperties.width}
+            onBlur={(event) => {
+              const width = event.currentTarget.valueAsNumber;
+              if (width >= 1 && width <= 100 && width !== strokeProperties.width)
+                strokeProperties.onChange({ width });
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") event.currentTarget.blur();
+            }}
+          />
+        </div>
       )}
       {selectedIds.length > 0 && (
         <>
           <span role="status" aria-live="polite">
             {selectedIds.length} {selectedIds.length === 1 ? uiText(1661) : uiText(1662)}
           </span>
-          <button type="button" onClick={onCopy}>
-            {uiText(201)}
-          </button>
-          <button type="button" aria-pressed={tool === "hand"} onClick={onMove}>
-            <PaperEditorIcon name="hand" /> {uiText(202)}
-          </button>
-          <button type="button" onClick={onCut}>
-            {uiText(203)}
-          </button>
-          <button type="button" onClick={onDuplicate}>
-            {uiText(204)}
-          </button>
-          <button type="button" disabled={!canAlign} onClick={onAlign}>
-            {uiText(205)}
-          </button>
-          {!hasSelectedImages && (
-            <>
-              <button type="button" onClick={() => onRotate(-1)}>
-                {uiText(206)}
-              </button>
-              <button type="button" onClick={() => onRotate(1)}>
-                {uiText(207)}
-              </button>
-            </>
+          {!floatingActions && (
+            <button type="button" onClick={onCopy}>
+              {uiText(201)}
+            </button>
           )}
-          <button type="button" onClick={() => onScale(1.12)}>
-            {uiText(208)}
-          </button>
-          <button type="button" onClick={() => onScale(0.88)}>
-            {uiText(209)}
-          </button>
-          <button type="button" onClick={onDelete}>
-            {uiText(210)}
-          </button>
+          {!floatingActions && (
+            <button type="button" onClick={onCut}>
+              {uiText(203)}
+            </button>
+          )}
+          {!floatingActions && (
+            <button type="button" onClick={onDuplicate}>
+              {uiText(204)}
+            </button>
+          )}
+          {!floatingActions && (
+            <button type="button" disabled={!canAlign} onClick={onAlign}>
+              {uiText(205)}
+            </button>
+          )}
+          {!floatingActions && (
+            <button type="button" onClick={onDelete}>
+              {uiText(210)}
+            </button>
+          )}
         </>
       )}
-      {selectedCoordinateIds.length > 0 && (
+      {!floatingActions && selectedCoordinateIds.length > 0 && (
         <>
           <span role="status" aria-live="polite">
             {selectedCoordinateIds.length} {uiText(211)}
@@ -155,7 +206,7 @@ export function HandwritingSelectionActions({
           </button>
         </>
       )}
-      {tool === "select" && hasBackground && (
+      {!floatingActions && tool === "select" && hasBackground && (
         <>
           <span>{uiText(214)}</span>
           <button type="button" onClick={onRemoveBackground}>
@@ -163,37 +214,69 @@ export function HandwritingSelectionActions({
           </button>
         </>
       )}
-      {tool === "select" && hasSelectedImages && (
+      {!floatingActions && tool === "select" && hasSelectedImages && (
         <>
           <span>{uiText(216)}</span>
           <button type="button" onClick={onRemoveSelectedImages}>
             {uiText(217)}
           </button>
-          <button type="button" onClick={() => onRotate(-1)}>
-            {uiText(206)}
-          </button>
-          <button type="button" onClick={() => onRotate(1)}>
-            {uiText(207)}
-          </button>
         </>
       )}
+      {tool === "select" && tableProperties && (
+        <HandwritingTableControls {...tableProperties} className="handwriting-selection-table" />
+      )}
       {tool === "select" && hasPageText && (
-        <>
-          <span>
-            {uiText(218)} {pageTextSize}
-            {uiText(219)}
-          </span>
-          <button type="button" disabled={pageTextSize <= 16} onClick={() => onChangeTextSize(-2)}>
-            {uiText(220)}
+        <HandwritingToolTips
+          className="handwriting-selection-text"
+          role="group"
+          label={uiText(360)}
+        >
+          {textProperties && (
+            <input
+              type="color"
+              aria-label={uiText(183)}
+              value={textProperties.ink}
+              onChange={(event) => textProperties.onColorChange(event.target.value)}
+            />
+          )}
+          <button
+            type="button"
+            className="secondary-button"
+            aria-label={uiText(220)}
+            disabled={pageTextSize <= minimumTextSize}
+            onClick={() => onChangeTextSize(-2)}
+          >
+            <svg viewBox="0 0 48 48" width="24" height="24" aria-hidden="true">
+              <g transform="scale(.75)">
+                <use href="/navigation-icons/paper/paper-editor-icon.svg#text" />
+              </g>
+              <path d="M31 32h14v5H31Z" fill="#C33466" />
+              <path d="M31 32h14v2H31Z" fill="#FFA2BA" />
+            </svg>
           </button>
-          <button type="button" disabled={pageTextSize >= 72} onClick={() => onChangeTextSize(2)}>
-            {uiText(221)}
+          <output aria-label={uiText(218)}>
+            <PaperDigits value={String(Math.round(pageTextSize))} />
+            <b>{uiText(219)}</b>
+          </output>
+          <button
+            type="button"
+            className="secondary-button"
+            aria-label={uiText(221)}
+            disabled={pageTextSize >= 144}
+            onClick={() => onChangeTextSize(2)}
+          >
+            <svg viewBox="0 0 48 48" width="24" height="24" aria-hidden="true">
+              <g transform="scale(.75)">
+                <use href="/navigation-icons/paper/paper-editor-icon.svg#text" />
+              </g>
+              <path d="M36 27h5v5h5v5h-5v5h-5v-5h-5v-5h5Z" fill="#218570" />
+              <path d="M36 27h2v15h-2Z" fill="#72C6A6" />
+            </svg>
           </button>
-        </>
+        </HandwritingToolTips>
       )}
       {tool === "select" && (
         <div className="handwriting-formula-assist">
-          <span>{uiText(222)}</span>
           <input
             aria-label={uiText(223)}
             value={formulaDraft}
@@ -211,9 +294,16 @@ export function HandwritingSelectionActions({
               {ocrBusy ? uiText(1663, [ocrProgress]) : uiText(1664)}
             </button>
           )}
-          <button type="button" disabled={!formulaDraft.trim()} onClick={onInsertFormula}>
-            {uiText(226)}
-          </button>
+          <HandwritingToolTips className="handwriting-formula-insert" label={uiText(226)}>
+            <button
+              type="button"
+              aria-label={uiText(226)}
+              disabled={!formulaDraft.trim()}
+              onClick={onInsertFormula}
+            >
+              <PaperEditorIcon name="add" />
+            </button>
+          </HandwritingToolTips>
         </div>
       )}
     </div>

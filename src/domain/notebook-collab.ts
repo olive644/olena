@@ -18,6 +18,7 @@ export type NotebookCollabParticipant = {
   accountId?: string;
   avatarUrl?: string | undefined;
   online: boolean;
+  pageId?: string;
   lastSeenAt: number;
   token?: string;
 };
@@ -201,6 +202,7 @@ export function touchNotebookCollabParticipant(
   now: number,
   online = true,
   profile?: { displayName: string; avatarUrl?: string | undefined },
+  pageId?: string,
 ): NotebookCollabState {
   return {
     ...state,
@@ -210,6 +212,7 @@ export function touchNotebookCollabParticipant(
             ...item,
             lastSeenAt: now,
             online,
+            ...(pageId ? { pageId } : {}),
             ...(profile ? { displayName: profile.displayName, avatarUrl: profile.avatarUrl } : {}),
           }
         : item,

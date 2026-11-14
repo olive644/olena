@@ -177,16 +177,22 @@ export function useSelectionActions(input: SelectionActionsInput) {
     addPasted(copy, PASTE_OFFSET);
   }
 
-  function selectAll() {
-    setTool("select");
-    setSelectedIds([
-      ...strokes.map((stroke) => stroke.id),
+  function selectableIds() {
+    return [
+      ...(layerVisibility.strokes ? strokes.map((stroke) => stroke.id) : []),
       ...(layerVisibility.coordinates ? coordinateSystems.map((system) => system.id) : []),
       ...(layerVisibility.stickies ? stickies.map((sticky) => sticky.id) : []),
       ...(layerVisibility.text && pageText ? [PAGE_TEXT_SELECTION_ID] : []),
       ...(layerVisibility.background ? images.map((image) => image.id) : []),
-    ]);
-    setSelectedCoordinateIds(coordinateSystems.map((system) => system.id));
+    ];
+  }
+
+  function selectAll() {
+    setTool("select");
+    setSelectedIds(selectableIds());
+    setSelectedCoordinateIds(
+      layerVisibility.coordinates ? coordinateSystems.map((system) => system.id) : [],
+    );
   }
 
   function rotateSelection(direction: -1 | 1) {
@@ -260,6 +266,10 @@ export function useSelectionActions(input: SelectionActionsInput) {
     pasteSelection,
     duplicateSelection,
     selectAll,
+    allSelected:
+      selectedIds.length > 0 &&
+      selectableIds().every((id) => selectedIds.includes(id)) &&
+      selectableIds().length > 0,
     rotateSelection,
     alignSelection,
     nudgeSelection,

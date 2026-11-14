@@ -39,11 +39,65 @@ function prepareImportedPage(
   throw new Error(uiText(793));
 }
 
+export async function prepareUploadImage(file: File) {
+  if (file.name.toLowerCase().endsWith(".pdf")) {
+    const [reader, worker] = await Promise.all([
+      import("pdfjs-dist"),
+      import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
+    ]);
+    reader.GlobalWorkerOptions.workerSrc = worker.default;
+    const task = reader.getDocument({ data: await file.arrayBuffer(), maxImageSize: 16_000_000 });
+    task.onPassword = () => {
+      void task.destroy();
+    };
+    try {
+      const pdf = await task.promise;
+      if (pdf.numPages > 50) throw new Error("PDF de até 50 páginas.");
+      const page = await pdf.getPage(1);
+      const original = page.getViewport({ scale: 1 });
+      const viewport = page.getViewport({ scale: 128 / Math.max(original.width, original.height) });
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      await page.render({ canvas, viewport }).promise;
+      return {
+        image: canvas.toDataURL("image/jpeg", 0.8),
+        width: canvas.width,
+        height: canvas.height,
+      };
+    } finally {
+      await task.destroy();
+    }
+  }
+  const bitmap = await createImageBitmap(file);
+  try {
+    if (bitmap.width * bitmap.height > 16_000_000) throw new Error("Imagem de até 16 megapixels.");
+    const scale = Math.min(1, 640 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error(uiText(792));
+    context.fillStyle = "#fff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    return {
+      image: canvas.toDataURL("image/jpeg", 0.8),
+      width: canvas.width,
+      height: canvas.height,
+    };
+  } finally {
+    bitmap.close();
+  }
+}
+
 export function PageImport({
+  initialFile,
   onImport,
   onImportMany,
   onClose,
 }: {
+  initialFile?: File | undefined;
   onImport: (image: string, frame: HandwritingDocument["backgroundFrame"]) => void;
   onImportMany?: (pages: ImportedPage[]) => void;
   onClose: () => void;
@@ -60,6 +114,15 @@ export function PageImport({
   const generation = useRef(0);
   const taskRef = useRef<{ destroy: () => Promise<void> } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const receivedFile = useRef<File | undefined>(undefined);
+  useEffect(() => {
+    if (!initialFile || receivedFile.current === initialFile) return;
+    const timer = setTimeout(() => {
+      receivedFile.current = initialFile;
+      void open(initialFile);
+    }, 0);
+    return () => clearTimeout(timer);
+  });
   useEffect(() => {
     fileRef.current?.focus();
   }, []);
@@ -228,6 +291,15 @@ export function PageImport({
   return (
     <section
       className="editor-file-panel"
+      onDragOver={(event) => {
+        if (event.dataTransfer.types.includes("Files")) event.preventDefault();
+      }}
+      onDrop={(event) => {
+        const file = event.dataTransfer.files[0];
+        if (!file) return;
+        event.preventDefault();
+        if (!importingAll) void open(file);
+      }}
       aria-label={uiText(800)}
       onKeyDown={(event) => {
         if (event.key === "Escape") {
