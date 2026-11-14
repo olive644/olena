@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { expect, it, vi } from "vitest";
 import { NotebookPageBook } from "./notebook-page-book";
 import type { StudyNote } from "../domain/workspace";
@@ -11,7 +11,7 @@ const pages: StudyNote[] = ["first", "second"].map((id) => ({
   updatedAt: "2026-11-14",
   assets: [],
 }));
-it("mantém a seta à direita na última folha e cria a próxima", () => {
+it("mostra o ícone de adicionar na página vazia e cria somente ao clicar", () => {
   const onCreate = vi.fn();
   render(
     <NotebookPageBook
@@ -23,7 +23,7 @@ it("mantém a seta à direita na última folha e cria a próxima", () => {
   );
   const next = screen.getByRole("button", { name: "Criar próxima folha" });
   expect(next.querySelector("use")?.getAttribute("href")).toBe(
-    "/navigation-icons/paper/paper-editor-icon.svg#redo",
+    "/navigation-icons/paper/paper-editor-icon.svg#add",
   );
   fireEvent.click(next);
   expect(onCreate).toHaveBeenCalledOnce();
@@ -37,6 +37,15 @@ it("usa a mesma seta para avançar a uma folha existente", () => {
   expect(next.querySelector("use")?.getAttribute("href")).toBe(
     "/navigation-icons/paper/paper-editor-icon.svg#redo",
   );
-  fireEvent.click(next);
+  vi.useFakeTimers();
+  try {
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    fireEvent.click(next);
+    expect(onSelect).not.toHaveBeenCalled();
+    act(() => vi.advanceTimersByTime(620));
+  } finally {
+    vi.unstubAllGlobals();
+    vi.useRealTimers();
+  }
   expect(onSelect).toHaveBeenCalledWith("second");
 });
