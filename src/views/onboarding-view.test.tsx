@@ -11,7 +11,10 @@ import {
   secondaryOnboarding,
 } from "../test/onboarding-steps";
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
-vi.mock("../data/reduced-motion", () => ({ reducedMotion: () => true }));
+vi.mock("../data/reduced-motion", () => ({
+  reducedMotion: () => true,
+  watchReducedMotion: () => () => undefined,
+}));
 vi.mock("../data/onboarding-client", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../data/onboarding-client")>()),
   requestOnboardingConfiguration: vi.fn(async (answers: OnboardingAnswers) =>
@@ -225,7 +228,7 @@ it("prepares and saves all choices, then enters without final sign-up or guest b
 });
 it("uses the approved cutout at the same size for the conversation", () => {
   const { container } = renderOnboarding();
-  expect(container.querySelector(".onboarding__helena")?.getAttribute("src")).toMatch(
+  expect(container.querySelector(".onboarding__helena > img")?.getAttribute("src")).toMatch(
     /-cutout\.webp$/,
   );
 });

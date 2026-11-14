@@ -8,7 +8,10 @@ import { getFirebaseAccountServices } from "../data/firebase-account";
 import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
 import { chooseOnboarding, secondaryOnboarding, welcomeOnboarding } from "../test/onboarding-steps";
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
-vi.mock("../data/reduced-motion", () => ({ reducedMotion: () => true }));
+vi.mock("../data/reduced-motion", () => ({
+  reducedMotion: () => true,
+  watchReducedMotion: () => () => undefined,
+}));
 vi.mock("../data/onboarding-client", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../data/onboarding-client")>()),
   requestOnboardingConfiguration: vi.fn(async (answers: OnboardingAnswers) =>

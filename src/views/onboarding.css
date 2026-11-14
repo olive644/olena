@@ -71,6 +71,34 @@
   transform-origin: 50% 90%;
   animation: onboarding-pose-in 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
 }
+/* A Olena é um contêiner com a imagem estática e, por cima, o canvas do Rive. O quadro do Rive
+   (720 x 720) é 12,5% maior que a arte (640 x 640): 6,25% de folga para cada lado. */
+.onboarding__helena {
+  position: relative;
+}
+.onboarding__helena-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.onboarding__helena > canvas {
+  position: absolute;
+  width: 112.5%;
+  height: 112.5%;
+  left: -6.25%;
+  top: -6.25%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms linear;
+}
+.onboarding__helena[data-ready="true"] > canvas {
+  opacity: 1;
+}
+.onboarding__helena[data-ready="true"] > .onboarding__helena-art {
+  opacity: 0;
+  transition: opacity 0ms linear 200ms;
+}
 .onboarding__helena.is-talking {
   animation:
     onboarding-pose-in 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.25) both,
