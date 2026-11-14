@@ -323,7 +323,7 @@ export function NotebookFileActions({
                     >
                       <option value="pdf">{uiText(3872)}</option>
                       <option value="png" disabled={scope === "all" || scope === "custom"}>
-                        {uiText(3873)}
+                        {uiText(679)}
                       </option>
                     </select>
                     <FocusPaperArrow />
