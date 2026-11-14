@@ -184,7 +184,7 @@ export function HandwritingToolGroup({
         aria-pressed={writingWindowOpen}
         onClick={() => onToggleWritingWindow()}
       >
-        <PaperEditorIcon name="zoomIn" /> <span>{uiText(369)}</span>
+        <PaperEditorIcon name="writingWindow" /> <span>{uiText(369)}</span>
       </button>
     </HandwritingToolTips>
   );

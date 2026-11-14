@@ -25,6 +25,7 @@ export function PaperEditorIcon({
     | "select"
     | "text"
     | "sticky"
+    | "writingWindow"
     | "zoomIn"
     | "zoomOut"
     | "reset"

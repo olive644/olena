@@ -830,11 +830,13 @@
   width: 26px;
   height: 26px;
 }
-:is(.handwriting-history, .notebook-page-book) [data-paper-editor-icon="undo"] {
+:is(.handwriting-history, .notebook-page-book, .handwriting-writing-window__actions)
+  [data-paper-editor-icon="undo"] {
   color: #19765f;
   --editor-icon-facet: #55b99b;
 }
-:is(.handwriting-history, .notebook-page-book) [data-paper-editor-icon="redo"] {
+:is(.handwriting-history, .notebook-page-book, .handwriting-writing-window__actions)
+  [data-paper-editor-icon="redo"] {
   color: #265ba2;
   --editor-icon-facet: #6ba9ea;
 }

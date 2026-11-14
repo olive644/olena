@@ -291,6 +291,7 @@ export function HandwritingStudio({
   // Traços de colegas em revelação: são escritos na camada ao vivo, ao longo do
   // próprio caminho, e só entram na folha quando terminam.
   const revealsRef = useRef<RevealingStroke[]>([]);
+  const writingToolRef = useRef<"pen" | "highlighter" | "eraser">("pen");
   const writingPointerRef = useRef<number | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const middleMousePan = useMiddleMousePan();
@@ -311,7 +312,6 @@ export function HandwritingStudio({
     textAutoCorrect,
     coordinateMeasurements,
     equalCoordinateAxes,
-    writingWindowAutoFollow,
   } = preferences;
   const setCoordinateMeasurements = (value: boolean) =>
     changePreference("coordinateMeasurements", value);
@@ -650,10 +650,6 @@ export function HandwritingStudio({
         ? "tool"
         : null,
     );
-    // A janela de escrita fica sobre a folha e captura os ponteiros. Fechá-la
-    // ao trocar de ferramenta garante que régua, borracha e seleção recebam
-    // os próximos gestos imediatamente.
-    setWritingWindowOpen(false);
     setStickyMenuId(null);
     setStickyColorMenuId(null);
     // Segurar Espaço troca para a mão (rolar a folha) e volta: a curva em andamento continua.
@@ -731,8 +727,6 @@ export function HandwritingStudio({
   const [writingWindowOpen, setWritingWindowOpen] = useState(false);
   const [writingWindowX, setWritingWindowX] = useState(100);
   const [writingWindowY, setWritingWindowY] = useState(110);
-  const setWritingWindowAutoFollow = (value: boolean) =>
-    changePreference("writingWindowAutoFollow", value);
   const [writingWindowStatus, setWritingWindowStatus] = useState(uiText(1696));
   const [draftStatus, setDraftStatus] = useState(recovered ? uiText(1697) : "");
   const [saveConfirmation, setSaveConfirmation] = useState(0);
@@ -1242,8 +1236,6 @@ export function HandwritingStudio({
         target.height,
       );
     }
-    context.fillStyle = "#7433e055";
-    context.fillRect(target.width - 14, 0, 2, target.height);
   }, [
     PAGE_WIDTH,
     paper,
@@ -1564,8 +1556,6 @@ export function HandwritingStudio({
     context.translate(-writingWindowX, -writingWindowY);
     drawStroke(context, stroke);
     context.restore();
-    context.fillStyle = "#7433e055";
-    context.fillRect(target.width - 14, 0, 2, target.height);
   }
 
   function start(event: ReactPointerEvent<HTMLCanvasElement>) {
@@ -2552,18 +2542,39 @@ export function HandwritingStudio({
   }
 
   function startWritingWindow(event: ReactPointerEvent<HTMLCanvasElement>) {
-    if (event.button !== 0 || writingPointerRef.current !== null) return;
+    if ((event.button !== 0 && event.pointerType !== "pen") || writingPointerRef.current !== null)
+      return;
+    if (tool !== "pen" && tool !== "highlighter" && tool !== "eraser") return;
+    const shortcut =
+      event.pointerType === "pen"
+        ? event.button === 5
+          ? shortcutSettings.penTail
+          : event.button === 2
+            ? shortcutSettings.penSide
+            : "selected"
+        : "selected";
+    if (shortcut !== "selected" && shortcut !== "eraser") return;
+    const writingTool = shortcut === "eraser" ? "eraser" : tool;
+    writingToolRef.current = writingTool;
     writingPointerRef.current = event.pointerId;
     event.currentTarget.setPointerCapture(event.pointerId);
     remember();
+    const point = writingPoint(event.nativeEvent);
+    if (writingTool === "eraser") {
+      eraserChangedRef.current = false;
+      eraserPointRef.current = null;
+      eraseAt([point]);
+      return;
+    }
     const nextStroke: Stroke = {
       id: strokeId(),
-      tool: "pen",
-      brush,
-      ...(dash ? { dash } : {}),
+      tool: writingTool,
+      ...(writingTool === "pen"
+        ? { brush, ...(dash ? { dash } : {}) }
+        : { opacity: highlighterOpacity }),
       color,
-      width,
-      points: [writingPoint(event.nativeEvent)],
+      width: writingTool === "highlighter" ? Math.min(100, width * 2.5) : width,
+      points: [point],
     };
     liveStrokeRef.current = nextStroke;
     // Na janela ampliada a tinta tem que ficar sob a caneta enquanto se escreve.
@@ -2576,6 +2587,11 @@ export function HandwritingStudio({
 
   function moveWritingWindow(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (writingPointerRef.current !== event.pointerId) return;
+    if (writingToolRef.current === "eraser") {
+      const bounds = event.currentTarget.getBoundingClientRect();
+      eraseAt(pointerSamples(event.nativeEvent).map((sample) => writingPoint(sample, bounds)));
+      return;
+    }
     const liveStroke = liveStrokeRef.current;
     if (!liveStroke) return;
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -2607,6 +2623,12 @@ export function HandwritingStudio({
     if (writingPointerRef.current !== event.pointerId) return;
     if (event.type === "pointerup") moveWritingWindow(event);
     writingPointerRef.current = null;
+    if (writingToolRef.current === "eraser") {
+      flushErase();
+      eraserPointRef.current = null;
+      if (!eraserChangedRef.current) setUndoStack((history) => history.slice(0, -1));
+      return;
+    }
     const liveStroke = liveStrokeRef.current;
     liveStrokeRef.current = null;
     if (liveStroke) {
@@ -2616,8 +2638,7 @@ export function HandwritingStudio({
     }
     const bounds = event.currentTarget.getBoundingClientRect();
     const relativeX = (event.clientX - bounds.left) / bounds.width;
-    const relativeY = (event.clientY - bounds.top) / bounds.height;
-    if (writingWindowAutoFollow && (relativeX > 0.82 || relativeY > 0.84)) advanceWritingWindow();
+    if (event.type === "pointerup" && relativeX >= 0.82) advanceWritingWindow();
   }
 
   function goBackWritingWindow() {
@@ -3287,7 +3308,6 @@ export function HandwritingStudio({
           }}
           onToggleText={() => {
             setMobileDrawer(null);
-            setWritingWindowOpen(false);
             if (textMode) setTextMode(false);
             else addSticky("text");
           }}
@@ -3663,8 +3683,6 @@ export function HandwritingStudio({
         <HandwritingWritingWindow
           canvasRef={writingCanvasRef}
           status={writingWindowStatus}
-          autoFollow={writingWindowAutoFollow}
-          onAutoFollowChange={setWritingWindowAutoFollow}
           onStart={startWritingWindow}
           onMove={moveWritingWindow}
           onFinish={finishWritingWindow}

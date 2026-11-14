@@ -13,4 +13,11 @@
   <symbol id="uploadInsert" viewBox="0 0 48 48">
     <path fill="#145748" d="M6 20h22v-9l16 13-16 15v-9H6Z"/><path fill="#52c59a" d="M6 20h22v-9l16 13H6Z"/><path fill="#b7edd5" d="M6 20h22l-5 4H6Z"/>
   </symbol>
+  <symbol id="writingWindow" viewBox="0 0 48 48">
+    <path fill="#17695d" d="M5 10h31l7 7v23H5Z"/>
+    <path fill="#a9ecd6" d="M8 13h25l6 6v17H8Z"/>
+    <path fill="#f8ffef" d="M11 20h25v13H11Z"/>
+    <path fill="#219983" d="M5 10h31l7 7H5Z"/>
+    <path fill="#e5a43d" d="m14 29 13-11 4 5-13 11-6 1Z"/>
+  </symbol>
 </svg>
