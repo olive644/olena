@@ -27,7 +27,7 @@ test("formas aparecem na área visível e borracha alterna pelos ícones", async
   // Há pixels de tinta na parte da folha que está dentro do viewport, sem rolar até o centro do quadro.
   await expect
     .poll(() =>
-      editor.locator(".handwriting-canvas").evaluate((element) => {
+      editor.locator(".handwriting-committed-ink").evaluate((element) => {
         const canvas = element as HTMLCanvasElement;
         const bounds = canvas.getBoundingClientRect();
         const viewport = canvas.closest(".handwriting-viewport")!.getBoundingClientRect();
@@ -50,11 +50,12 @@ test("formas aparecem na área visível e borracha alterna pelos ícones", async
         const { data } = canvas.getContext("2d")!.getImageData(x, y, width, height);
         let ink = 0;
         for (let i = 0; i < data.length; i += 4)
-          if (data[i]! < 80 && data[i + 1]! < 80 && data[i + 2]! < 100) ink++;
+          if (data[i + 3]! > 200 && data[i]! < 80 && data[i + 1]! < 80 && data[i + 2]! < 100) ink++;
         return ink;
       }),
     )
     .toBeGreaterThan(100);
+  await editor.getByRole("button", { name: "Borracha", exact: true }).click();
   await editor.getByRole("button", { name: "Borracha", exact: true }).click();
   const whole = editor.getByRole("button", { name: "Apagar o traço inteiro", exact: true });
   await whole.click();

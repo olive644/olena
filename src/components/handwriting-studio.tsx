@@ -4309,7 +4309,7 @@ export function HandwritingStudio({
             />
             <canvas
               ref={inkCanvasRef}
-              className="handwriting-scene-layer"
+              className="handwriting-scene-layer handwriting-committed-ink"
               style={{ zIndex: layerDepth("strokes") }}
               aria-hidden="true"
             />

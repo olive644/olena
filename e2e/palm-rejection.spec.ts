@@ -77,6 +77,8 @@ test("a palma apoiada com a caneta escrevendo não cancela o traço", async ({
   await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
   await penAt(startX + 210, startY, "mouseReleased");
 
-  await expect.poll(() => inkPixels(sheet)).toBeGreaterThan(200);
+  await expect
+    .poll(() => inkPixels(dialog.locator(".handwriting-committed-ink")))
+    .toBeGreaterThan(200);
   await expect(dialog.getByRole("button", { name: "Desfazer", exact: true })).toBeEnabled();
 });
