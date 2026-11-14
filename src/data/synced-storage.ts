@@ -17,6 +17,7 @@ export const SYNCED_STORAGE_KEYS = [
   "helena-study:word-frequency:v1",
   "noteoli.pomodoro-streak.v1",
   "helena.notebookPreferences.v1",
+  "helena.notebookShortcuts.v1",
   "helena.systemUpdates.read.v1",
   "olena.focus-session.v1",
   "helena.agendaTimeZone.v1",

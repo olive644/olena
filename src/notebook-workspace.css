@@ -17,17 +17,9 @@
   width: 46px;
   height: 46px;
   padding: 8px;
-  border: 1px solid var(--line-strong);
-  border-radius: 6px 14px 7px 11px;
-  background: var(--soft);
-  box-shadow: 0 3px var(--line);
 }
 .notebook-page-book > button:disabled {
   opacity: 0.35;
-}
-.notebook-page-book > button:is(:hover, :focus-visible):not(:disabled) {
-  outline: 2px solid var(--violet);
-  outline-offset: 3px;
 }
 .page-book {
   display: flex;
@@ -192,8 +184,9 @@
   height: 44px;
 }
 :root .capture-dialog--handwriting .notebook-file-tools [data-paper-editor-icon="settings"] {
-  color: #7c3aed;
-  --editor-icon-facet: #a779ef;
+  color: #292432;
+  --editor-icon-cutout: #fff9ef;
+  --editor-icon-facet: #66616b;
 }
 @media (prefers-reduced-motion: reduce) {
   .notebook-settings input,
@@ -273,8 +266,8 @@
 .handwriting-sticky__resize .paper-editor-icon {
   width: 20px;
   height: 20px;
-  color: #7c3aed;
-  --editor-icon-facet: #a779ef;
+  color: #19765f;
+  --editor-icon-facet: #65c9a8;
 }
 .paper-preview--board {
   width: 42px;
@@ -285,6 +278,7 @@
 }
 .handwriting-viewport--board {
   padding: 0;
+  scrollbar-gutter: stable;
 }
 .handwriting-viewport--board .handwriting-page-shell {
   box-shadow: none;
@@ -427,16 +421,9 @@
   --editor-icon-cutout: #a44050;
   --editor-icon-facet: #fff;
 }
-.notebook-page-book .book-remove {
-  color: #a44050;
-  border-color: #d9c9ab;
-  background: #fffaf0;
-}
-.notebook-page-book .book-remove .paper-editor-icon {
+.notebook-page-book .book-remove .shelf-tool-icon {
   width: 24px;
   height: 24px;
-  --editor-icon-facet: #f3a6b3;
-  --editor-icon-cutout: #fffaf0;
 }
 .notebook-page-book .page-book {
   cursor: var(--paper-cursor-grab, grab);
@@ -1029,4 +1016,94 @@
 .notebook-page-index__move button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+.page-book__left { overflow: hidden; }
+.page-book__left:has(img) { padding: 2px; }
+.page-book__left img,
+.page-book__turn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.page-book__turn {
+  inset: 4px 4px 4px auto;
+  transform-origin: left center;
+  animation: notebook-leaf-turn-forward 620ms cubic-bezier(0.25, 0.65, 0.3, 1) both;
+}
+.page-book__turn[data-backwards="true"] {
+  inset: 4px auto 4px 4px;
+  transform-origin: right center;
+  animation-name: notebook-leaf-turn-backward;
+}
+@keyframes notebook-leaf-turn-forward {
+  from { transform: rotateY(0); }
+  85% { opacity: 1; }
+  to { transform: rotateY(-180deg); opacity: 0; }
+}
+@keyframes notebook-leaf-turn-backward {
+  from { transform: rotateY(0); }
+  85% { opacity: 1; }
+  to { transform: rotateY(180deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"]) .capture-dialog--handwriting {
+    transform-origin: center 65%;
+    animation: notebook-sheet-enter 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  html:not([data-reduce-motion="true"]) .capture-dialog--handwriting :is(.handwriting-commandbar, .handwriting-page-navigation, .handwriting-sheet-actions, .handwriting-paper-picker) {
+    animation: notebook-sheet-tools 290ms ease-out 180ms both;
+  }
+  html:not([data-reduce-motion="true"]) [data-sheet-closing="true"] .capture-dialog--handwriting {
+    animation: notebook-sheet-exit 300ms ease-in both;
+  }
+  html:not([data-reduce-motion="true"]) [data-sheet-closing="true"] .capture-dialog--handwriting :is(.handwriting-commandbar, .handwriting-page-navigation, .handwriting-sheet-actions, .handwriting-paper-picker) {
+    animation: notebook-sheet-tools 140ms ease-in reverse both;
+  }
+}
+@keyframes notebook-sheet-enter {
+  from { opacity: 0; transform: perspective(1200px) translateY(30px) scale(0.88) rotateX(-9deg); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes notebook-sheet-exit {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: perspective(1200px) translateY(32px) scale(0.88) rotateX(-9deg); }
+}
+@keyframes notebook-sheet-tools {
+  from { opacity: 0; translate: 0 10px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-book__turn { animation: none; opacity: 0; }
+}
+html[data-reduce-motion="true"] .page-book__turn { animation: none; opacity: 0; }
+
+.handwriting-page-shell[data-page-turn] {
+  --page-turn-angle: -85deg;
+  transform-origin: left center;
+  animation: notebook-editor-leaf-turn 620ms cubic-bezier(0.45, 0, 0.4, 1) both;
+}
+.handwriting-page-shell[data-page-turn="backward"] {
+  --page-turn-angle: 85deg;
+  transform-origin: right center;
+}
+@keyframes notebook-editor-leaf-turn {
+  from { transform: perspective(1800px) rotateY(0deg); }
+  to { transform: perspective(1800px) rotateY(var(--page-turn-angle)); opacity: 0; }
+}
+
+.notebook-page-book .page-book__create {
+  display: grid;
+  place-items: center;
+  align-self: center;
+  width: 44px;
+  height: 44px;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+.page-book__create .paper-editor-icon {
+  width: 30px;
+  height: 30px;
 }

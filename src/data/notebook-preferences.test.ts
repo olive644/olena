@@ -13,6 +13,17 @@ afterEach(() => {
   localStorage.clear();
 });
 describe("preferências do caderno", () => {
+  it("mantém instâncias do perfil e do editor consistentes", () => {
+    const editor = renderHook(useNotebookPreferences);
+    const profile = renderHook(useNotebookPreferences);
+    act(() => editor.result.current.changePreference("selectionSnap", false));
+    expect(profile.result.current.preferences.selectionSnap).toBe(false);
+    act(() => profile.result.current.changePreference("selectionGuides", false));
+    expect(editor.result.current.preferences).toMatchObject({
+      selectionSnap: false,
+      selectionGuides: false,
+    });
+  });
   it("valida os dados e preserva padrões para campos ausentes", () => {
     localStorage.setItem(NOTEBOOK_PREFERENCES_KEY, '{"penOnly":true,"stabilization":"false"}');
     expect(readNotebookPreferences()).toEqual({ ...DEFAULT_NOTEBOOK_PREFERENCES, penOnly: true });

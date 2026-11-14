@@ -15,13 +15,26 @@ describe("configurações do editor", () => {
     };
     render(<NotebookSettings preferences={DEFAULT_NOTEBOOK_PREFERENCES} onChange={onChange} />);
     fireEvent.click(screen.getByRole("button", { name: "Configurações do editor" }));
-    expect(screen.getAllByRole("group")).toHaveLength(3);
+    expect(screen.getAllByRole("group")).toHaveLength(7);
     const switches = screen.getAllByRole("checkbox");
-    expect(switches).toHaveLength(11);
+    expect(switches).toHaveLength(10);
     switches.forEach((input) => fireEvent.click(input));
     for (const [key, value] of Object.entries(DEFAULT_NOTEBOOK_PREFERENCES)) {
+      if (["writingWindowAutoFollow", "penBarrelErases", "penTailErases"].includes(key)) continue;
       expect(onChange).toHaveBeenCalledWith(key, !value);
     }
+    expect(screen.queryByRole("checkbox", { name: /Avanço da janela/ })).toBeNull();
+    fireEvent.click(screen.getByText("Atalhos de teclado"));
+    expect(screen.getByText("Ctrl + Alt + C")).toBeTruthy();
+    expect(screen.getByText("T", { selector: "kbd" })).toBeTruthy();
+    fireEvent.click(screen.getByText("Atalhos de caneta e mesa"));
+    expect(screen.getByRole("combobox", { name: "Botão lateral" })).toBeTruthy();
+    const binding = screen.getByRole("button", { name: "Editar atalho: Caneta" });
+    fireEvent.click(binding);
+    fireEvent.keyDown(binding, { key: "q", code: "KeyQ" });
+    expect(binding.textContent).toContain("Q");
+    fireEvent.click(screen.getByRole("button", { name: "Restaurar atalhos padrão" }));
+    expect(binding.textContent).toContain("P");
     fireEvent.click(screen.getByRole("button", { name: "Fechar configurações" }));
     expect(screen.queryByRole("dialog")).toBeNull();
   });

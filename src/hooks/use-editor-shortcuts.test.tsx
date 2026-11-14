@@ -1,5 +1,7 @@
-import { renderHook } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { act, renderHook } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { NOTEBOOK_SHORTCUTS_KEY, useNotebookShortcuts } from "../data/notebook-shortcuts";
+afterEach(() => localStorage.removeItem(NOTEBOOK_SHORTCUTS_KEY));
 import { useEditorShortcuts, type EditorShortcutState } from "./use-editor-shortcuts";
 
 function setup(overrides: Partial<EditorShortcutState> = {}) {
@@ -38,7 +40,7 @@ function setup(overrides: Partial<EditorShortcutState> = {}) {
     ({ current }) => useEditorShortcuts(current, { current: canvas }, { current: viewport }),
     { initialProps: { current: state } },
   );
-  return { state, viewport, view };
+  return { state, viewport, view, canvas };
 }
 
 function press(key: string, init: KeyboardEventInit = {}, target: EventTarget = window) {
@@ -48,6 +50,76 @@ function press(key: string, init: KeyboardEventInit = {}, target: EventTarget = 
 }
 
 describe("atalhos do editor", () => {
+  it("usa combinações editadas e deixa de executar as antigas", () => {
+    const settings = renderHook(useNotebookShortcuts);
+    act(() => settings.result.current.changeBinding("tool-pen", "q"));
+    act(() => settings.result.current.changeBinding("left", "j"));
+    const { state } = setup({ hasSelection: true });
+    press("p");
+    expect(state.setTool).not.toHaveBeenCalled();
+    press("q");
+    expect(state.setTool).toHaveBeenCalledWith("pen");
+    expect(press("ArrowLeft").defaultPrevented).toBe(false);
+    press("j");
+    expect(state.nudge).toHaveBeenCalledWith(-1, 0);
+    act(() => settings.result.current.changeBinding("undo", "alt+z"));
+    press("z", { ctrlKey: true });
+    expect(state.undo).not.toHaveBeenCalled();
+    press("z", { altKey: true });
+    expect(state.undo).toHaveBeenCalledOnce();
+  });
+  it("libera a mão temporária pela tecla personalizada ou ao perder foco", () => {
+    const settings = renderHook(useNotebookShortcuts);
+    act(() => settings.result.current.changeBinding("panHold", "q"));
+    const { state } = setup();
+    press(" ", { code: "Space" });
+    expect(state.setTool).not.toHaveBeenCalled();
+    press("q", { code: "KeyQ" });
+    expect(state.setTool).toHaveBeenLastCalledWith("hand");
+    window.dispatchEvent(new KeyboardEvent("keyup", { key: "q", code: "KeyQ" }));
+    expect(state.setTool).toHaveBeenLastCalledWith("pen");
+    press("q", { code: "KeyQ" });
+    window.dispatchEvent(new Event("blur"));
+    expect(state.setTool).toHaveBeenLastCalledWith("pen");
+  });
+  it("permite remapear Tab sem prender o foco dos controles", () => {
+    const settings = renderHook(useNotebookShortcuts);
+    act(() => settings.result.current.changeBinding("nextItem", "j"));
+    const cycleSelection = vi.fn();
+    const { canvas } = setup({ tool: "select", cycleSelection });
+    document.body.append(canvas);
+    expect(press("Tab", {}, canvas).defaultPrevented).toBe(false);
+    press("j", {}, canvas);
+    expect(cycleSelection).toHaveBeenCalledWith(1);
+    press("Tab", { shiftKey: true }, canvas);
+    expect(cycleSelection).toHaveBeenCalledWith(-1);
+    const button = document.createElement("button");
+    document.body.append(button);
+    expect(press("j", {}, button).defaultPrevented).toBe(false);
+    expect(cycleSelection).toHaveBeenCalledTimes(2);
+    button.remove();
+    canvas.remove();
+  });
+  it("abre as ferramentas adicionais e insere texto, post-it e tabela", () => {
+    const insert = vi.fn();
+    const { state } = setup({ insert });
+    for (const key of ["m", "r", "c", "a"]) press(key);
+    expect((state.setTool as ReturnType<typeof vi.fn>).mock.calls.map((call) => call[0])).toEqual([
+      "highlighter",
+      "ruler",
+      "curve",
+      "coordinates",
+    ]);
+    for (const key of ["t", "n", "g"]) press(key);
+    expect(insert.mock.calls.map((call) => call[0])).toEqual(["text", "sticky", "table"]);
+    press("t", { repeat: true });
+    expect(insert).toHaveBeenCalledTimes(3);
+    const input = document.createElement("textarea");
+    document.body.append(input);
+    press("n", {}, input);
+    expect(insert).toHaveBeenCalledTimes(3);
+    input.remove();
+  });
   it("Ctrl+Z desfaz, Ctrl+Shift+Z e Ctrl+Y refazem, e o navegador não age junto", () => {
     const { state } = setup();
     expect(press("z", { ctrlKey: true }).defaultPrevented).toBe(true);

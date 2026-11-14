@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { SYNCED_STORAGE_APPLIED_EVENT, writeSyncedStorage } from "./synced-storage";
+import {
+  SYNCED_STORAGE_EVENT,
+  SYNCED_STORAGE_APPLIED_EVENT,
+  writeSyncedStorage,
+} from "./synced-storage";
 
 export const NOTEBOOK_PREFERENCES_KEY = "helena.notebookPreferences.v1";
 export const DEFAULT_NOTEBOOK_PREFERENCES = {
@@ -14,6 +18,8 @@ export const DEFAULT_NOTEBOOK_PREFERENCES = {
   coordinateMeasurements: true,
   equalCoordinateAxes: true,
   writingWindowAutoFollow: true,
+  selectionSnap: true,
+  selectionGuides: true,
 };
 export type NotebookPreferences = typeof DEFAULT_NOTEBOOK_PREFERENCES;
 
@@ -40,7 +46,11 @@ export function useNotebookPreferences() {
   useEffect(() => {
     const apply = () => setPreferences(readNotebookPreferences());
     window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, apply);
-    return () => window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, apply);
+    window.addEventListener(SYNCED_STORAGE_EVENT, apply);
+    return () => {
+      window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, apply);
+      window.removeEventListener(SYNCED_STORAGE_EVENT, apply);
+    };
   }, []);
   function changePreference(key: keyof NotebookPreferences, value: boolean) {
     const next = { ...preferences, [key]: value };

@@ -1,3 +1,13 @@
+import { createPortal } from "react-dom";
+import { ShelfToolIcon } from "./shelf-tool-icon";
+import { useNotebookShortcuts } from "../data/notebook-shortcuts";
+import { pickAt } from "./handwriting-selection-scene";
+import { PAGE_TEXT_SELECTION_ID } from "./handwriting-types";
+import { HandwritingSelectionToolbar } from "./handwriting-selection-toolbar";
+import { pickInBox } from "./handwriting-selection-scene";
+import { HandwritingToolTips } from "./handwriting-tool-tips";
+import { PaperDigits } from "./paper-digits";
+import { FocusPaperArrow } from "./focus-paper-arrow";
 import { uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import { useMiddleMousePan } from "../hooks/use-middle-mouse-pan";
 import { useNotebookPreferences } from "../data/notebook-preferences";
@@ -12,6 +22,7 @@ import {
   lazy,
   Suspense,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -19,7 +30,6 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { isHandwritingDocument } from "../data/local-workspace";
-import { fitHandwriting } from "../domain/resize-handwriting";
 import { mergeHandwriting } from "../domain/merge-handwriting";
 import { encodeHandwritingDraft } from "../data/handwriting-draft";
 import { openPrintWindow } from "../data/print-window";
@@ -87,7 +97,7 @@ import {
 } from "./handwriting-multi-stroke";
 import { MAX_CONTROL_POINTS, dedupeControls, splinePoints } from "./handwriting-spline";
 import { clampSpaceShift, itemsBelowLine } from "./handwriting-vertical-space";
-import {} from "./handwriting-selection-ops";
+import { hitSelectionHandle } from "./handwriting-selection-ops";
 import { eraseInkArea, eraseWholeStrokes } from "./handwriting-eraser";
 import { pointerSamples } from "./handwriting-pointer";
 import {
@@ -109,9 +119,7 @@ import {
 import { HandwritingToolGroup } from "./handwriting-tool-group";
 import {
   STICKY_MIN_WIDTH,
-  STICKY_MAX_WIDTH,
   STICKY_MIN_HEIGHT,
-  STICKY_MAX_HEIGHT,
   BASE_DISPLAY_WIDTH,
   WRITING_WINDOW_WIDTH,
   WRITING_WINDOW_HEIGHT,
@@ -150,6 +158,7 @@ const PageImport = lazy(() =>
 );
 
 type HandwritingStudioProps = {
+  captureActions?: import("react").ReactNode;
   cloud?: CloudSyncState;
   notebookPages?: StudyNote[];
   currentPageId?: string;
@@ -159,6 +168,7 @@ type HandwritingStudioProps = {
   onMovePage?: (id: string, direction: -1 | 1) => void;
   onAutosave?: (dataUrl: string, document: HandwritingDocument) => void;
   onClose: () => void;
+  flushOnClose?: { current: (() => boolean) | null };
   onSave: (dataUrl: string, document: HandwritingDocument) => void;
   onConfirmSave?: (document: HandwritingDocument) => Promise<void>;
   initialDocument?: HandwritingDocument;
@@ -178,6 +188,7 @@ type HandwritingStudioProps = {
 const SHAPE_HOLD_MS = 600;
 
 export function HandwritingStudio({
+  captureActions,
   notebookPages = [],
   currentPageId,
   onSelectPage,
@@ -186,6 +197,7 @@ export function HandwritingStudio({
   onMovePage,
   onAutosave,
   onClose,
+  flushOnClose,
   onSave,
   onConfirmSave,
   initialDocument,
@@ -211,12 +223,68 @@ export function HandwritingStudio({
         ? "aged"
         : (startingDocument?.paperColor ?? "light");
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const objectClickRef = useRef<{ id: string; x: number; y: number } | null>(null);
+
+  function editObject(id: string, x?: number, y?: number) {
+    setEditingTextId(id === PAGE_TEXT_SELECTION_ID ? null : id);
+    setTextMode(true);
+    requestAnimationFrame(() => {
+      const root = canvasRef.current?.parentElement;
+      const at = x !== undefined && y !== undefined ? document.elementFromPoint?.(x, y) : null;
+      const input =
+        at instanceof HTMLTextAreaElement || at instanceof HTMLInputElement
+          ? at
+          : id === PAGE_TEXT_SELECTION_ID
+            ? root?.querySelector(".handwriting-full-page-text")
+            : root?.querySelector(
+                '[data-sticky-id="' +
+                  CSS.escape(id) +
+                  '"] textarea, [data-sticky-id="' +
+                  CSS.escape(id) +
+                  '"] input',
+              );
+      if (input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement) input.focus();
+    });
+  }
+  const paperTransition = useRef<Animation | null>(null);
+
+  function animatePaperChange() {
+    paperTransition.current?.cancel();
+    const source = canvasRef.current;
+    const sheet = source?.closest(".handwriting-page-shell");
+    if (!source || !sheet || isMotionReduced() || !sheet.animate) return;
+    const previous = document.createElement("canvas");
+    previous.width = Math.min(source.width, 1600);
+    previous.height = Math.round((source.height * previous.width) / source.width);
+    const context = previous.getContext("2d");
+    if (!context) return;
+    context.drawImage(source, 0, 0, previous.width, previous.height);
+    previous.className = "handwriting-paper-transition";
+    previous.setAttribute("aria-hidden", "true");
+    sheet.append(previous);
+    const animation = previous.animate(
+      [
+        { clipPath: "inset(0 0 0 0)", opacity: 1 },
+        { clipPath: "inset(0 0 0 100%)", opacity: 0 },
+      ],
+      { duration: 420, easing: "ease-in-out" },
+    );
+    paperTransition.current = animation;
+    void animation.finished.then(
+      () => previous.remove(),
+      () => previous.remove(),
+    );
+  }
   const liveStrokeRef = useRef<Stroke | null>(null);
   const liveStabilizerRef = useRef<LiveStabilizer | null>(null);
   const writingCanvasRef = useRef<HTMLCanvasElement>(null);
   // Camada de tinta ao vivo: o traço em andamento é redesenhado por inteiro a cada
   // quadro aqui, e só vai para a folha ao soltar a caneta. Assim o que se vê
   // enquanto se escreve é exatamente o traço final, sem o salto ao terminar.
+  const coordinateCanvasRef = useRef<HTMLCanvasElement>(null);
+  const textCanvasRef = useRef<HTMLCanvasElement>(null);
+  const inkCanvasRef = useRef<HTMLCanvasElement>(null);
+  const selectionCanvasRef = useRef<HTMLCanvasElement>(null);
   const liveCanvasRef = useRef<HTMLCanvasElement>(null);
   const liveFrameRef = useRef<number | null>(null);
   const paintLiveRef = useRef<() => void>(() => undefined);
@@ -233,14 +301,13 @@ export function HandwritingStudio({
   const [rulerKind, setRulerKind] = useState<RulerKind>("straight");
   const [coordinateStep, setCoordinateStep] = useState<1 | 2 | 5 | 10>(1);
   const { preferences, changePreference, preferenceError } = useNotebookPreferences();
+  const { settings: shortcutSettings } = useNotebookShortcuts();
   const {
     stabilization,
     shapeSnap,
     inkPrediction,
     penHoverPreview,
     penOnly,
-    penBarrelErases,
-    penTailErases,
     textAutoCorrect,
     coordinateMeasurements,
     equalCoordinateAxes,
@@ -250,7 +317,115 @@ export function HandwritingStudio({
     changePreference("coordinateMeasurements", value);
   const setEqualCoordinateAxes = (value: boolean) => changePreference("equalCoordinateAxes", value);
   const [fileAction, setFileAction] = useState<"import" | "export" | null>(null);
+  type Upload = { id: string; file: File; name?: string; preview?: { image: string; width: number; height: number }; error?: string };
+  const [uploads, setUploads] = useState<Upload[]>([]);
+  const decodedUploads = useRef(new Map<string, HTMLImageElement>());
+  const uploadQueue = useRef(Promise.resolve());
+  const uploadCount = useRef(0);
+  const [uploadMenu, setUploadMenu] = useState<string>();
+  const [uploadMenuAnchor, setUploadMenuAnchor] = useState<DOMRect>();
+  const [uploadView, setUploadView] = useState<"actions" | "rename" | "details" | "remove">("actions");
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [dropPoint, setDropPoint] = useState<HandwritingPoint>();
+  const [incomingFile, setIncomingFile] = useState<File>();
+  function addUploads(files: File[]) {
+    const items: Upload[] = files.slice(0, 20 - uploadCount.current).map((file) => {
+      const pdf = file.name.toLowerCase().endsWith(".pdf");
+      const limit = pdf ? 20 : 10;
+      const error = !pdf && !["image/png", "image/jpeg", "image/webp"].includes(file.type)
+        ? uiText(1879)
+        : !file.size || file.size > limit * 1024 * 1024 ? "Limite por arquivo: " + limit + " MB." : "";
+      return { id: strokeId(), file, ...(error ? { error } : {}) };
+    });
+    uploadCount.current += items.length;
+    setError(items.length < files.length ? "Limite de 20 arquivos por sessão." : "");
+    setUploads((current) => [...current, ...items]);
+    for (const item of items) {
+      if (item.error) continue;
+      uploadQueue.current = uploadQueue.current.then(async () => {
+        let result: Pick<Upload, "preview" | "error">;
+        try {
+          const { prepareUploadImage } = await import("./page-import");
+          const preview = await prepareUploadImage(item.file);
+          if (!item.file.name.toLowerCase().endsWith(".pdf")) {
+            const image = new Image();
+            image.src = preview.image;
+            await image.decode();
+            decodedUploads.current.set(preview.image, image);
+          }
+          result = { preview };
+        } catch (caught) {
+          result = { error: caught instanceof Error ? caught.message : uiText(798) };
+        }
+        setUploads((current) =>
+          current.map((entry) => entry.id === item.id ? { ...entry, ...result } : entry),
+        );
+      });
+    }
+  }
+
+  function placeUpload(image: string, width: number, height: number, point?: HandwritingPoint) {
+    const canvas = canvasRef.current;
+    const viewport = viewportRef.current?.getBoundingClientRect();
+    const bounds = canvas?.getBoundingClientRect();
+    const center =
+      point ??
+      (canvas && viewport && bounds
+        ? canvasPoint(canvas, {
+            clientX:
+              (Math.max(bounds.left, viewport.left) + Math.min(bounds.right, viewport.right)) / 2,
+            clientY:
+              (Math.max(bounds.top, viewport.top) + Math.min(bounds.bottom, viewport.bottom)) / 2,
+            pressure: 0.5,
+          })
+        : { x: PAGE_WIDTH / 2, y: PAGE_HEIGHT / 2 });
+    if (importedImages.length >= 20) {
+      setError(uiText(1709));
+      return;
+    }
+    const scale = Math.min(1, PAGE_WIDTH / width, PAGE_HEIGHT / height);
+    width *= scale;
+    height *= scale;
+    const id = strokeId();
+    remember();
+    setImportedImages((current) =>
+      current.length >= 20
+        ? current
+        : [
+            ...current,
+            {
+              id,
+              dataUrl: image,
+              width,
+              height,
+              x: Math.max(0, Math.min(PAGE_WIDTH - width, center.x - width / 2)),
+              y: Math.max(0, Math.min(PAGE_HEIGHT - height, center.y - height / 2)),
+            },
+          ],
+    );
+    setLayerVisibility((current) => ({ ...current, background: true }));
+    setTool("select");
+    setSelectedIds([id]);
+    setSelectedCoordinateIds([]);
+    setUploadOpen(false);
+    setError("");
+  }
+
+  function insertUpload({ file, preview }: Upload, point?: HandwritingPoint) {
+    if (!preview) return;
+    if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+      setDropPoint(point);
+      setIncomingFile(file);
+      setUploadOpen(false);
+      setFileAction("import");
+      return;
+    }
+    placeUpload(preview.image, preview.width, preview.height, point);
+  }
+
   function closeImport() {
+    setIncomingFile(undefined);
+    setDropPoint(undefined);
     setFileAction(null);
     requestAnimationFrame(() =>
       document
@@ -287,55 +462,30 @@ export function HandwritingStudio({
       image.onload = null;
     };
   }, [background]);
-  const [loadedImportedImages, setLoadedImportedImages] = useState<
-    {
-      id: string;
-      image: HTMLImageElement;
-      frame: Pick<HandwritingImage, "x" | "y" | "width" | "height">;
-      rotation?: number;
-    }[]
-  >([]);
+  const [decodedImages, setDecodedImages] = useState(new Map<string, HTMLImageElement>());
   useEffect(() => {
     let cancelled = false;
-    if (importedImages.length === 0) return;
-    const loaded = importedImages.map(
-      (entry) =>
-        new Promise<{
-          id: string;
-          image: HTMLImageElement;
-          frame: Pick<HandwritingImage, "x" | "y" | "width" | "height">;
-          rotation?: number;
-        } | null>((resolve) => {
-          const image = new Image();
-          image.onload = () =>
-            resolve({
-              id: entry.id,
-              image,
-              frame: entry,
-              ...(entry.rotation === undefined ? {} : { rotation: entry.rotation }),
-            });
-          image.onerror = () => resolve(null);
-          image.src = entry.dataUrl;
-        }),
-    );
-    void Promise.all(loaded).then((entries) => {
-      if (!cancelled)
-        setLoadedImportedImages(
-          entries.filter((entry): entry is NonNullable<typeof entry> => entry !== null),
-        );
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [importedImages]);
+    const sources = [...new Set(importedImages.map((entry) => entry.dataUrl))];
+    for (const source of sources) {
+      if (decodedImages.has(source) || decodedUploads.current.has(source)) continue;
+      const image = new Image();
+      image.onload = () => {
+        if (!cancelled) {
+          setDecodedImages((current) => new Map(current).set(source, image));
+        }
+      };
+      image.src = source;
+    }
+    return () => { cancelled = true; };
+  }, [importedImages, decodedImages]);
   const renderableImportedImages = useMemo(
-    () =>
-      loadedImportedImages.filter((entry) => importedImages.some((image) => image.id === entry.id)),
-    [importedImages, loadedImportedImages, currentUiLanguage],
+    () => importedImages.flatMap((entry) => {
+      const image = decodedUploads.current.get(entry.dataUrl) ?? decodedImages.get(entry.dataUrl);
+      return image ? [{ id: entry.id, image, frame: entry, ...(entry.rotation === undefined ? {} : { rotation: entry.rotation }) }] : [];
+    }),
+    [importedImages, decodedImages],
   );
-  const importedImagesReady = importedImages.every((image) =>
-    loadedImportedImages.some((entry) => entry.id === image.id),
-  );
+  const importedImagesReady = renderableImportedImages.length === importedImages.length;
   const [rulerMeasure, setRulerMeasure] = useState<{
     start: HandwritingPoint;
     end: HandwritingPoint;
@@ -424,6 +574,17 @@ export function HandwritingStudio({
     () => startingDocument?.layers?.order ?? [...DEFAULT_HANDWRITING_LAYER_ORDER],
   );
   const [textMode, setTextMode] = useState(false);
+  const [rotationSide, setRotationSide] = useState<"top" | "left" | "right">("top");
+  const [copiedTextStyle, setCopiedTextStyle] = useState<{ ink: string; textSize: number } | null>(
+    null,
+  );
+  const [styleMessage, setStyleMessage] = useState("");
+  useEffect(() => {
+    if (!styleMessage || copiedTextStyle) return;
+    const timeout = window.setTimeout(() => setStyleMessage(""), 3000);
+    return () => window.clearTimeout(timeout);
+  }, [styleMessage, copiedTextStyle]);
+  const [editingTextId, setEditingTextId] = useState<string | null>(null);
   const setTextAutoCorrect = (value: boolean) => changePreference("textAutoCorrect", value);
   const [stickies, setStickies] = useState<HandwritingSticky[]>(
     () => startingDocument?.stickies ?? [],
@@ -438,10 +599,12 @@ export function HandwritingStudio({
   const [ocrProgress, setOcrProgress] = useState(0);
   const [layersOpen, setLayersOpen] = useState(false);
   const [shapeInsertOpen, setShapeInsertOpen] = useState(false);
+  const [pageNavigationOpen, setPageNavigationOpen] = useState(true);
   const [paperSectionsOpen, setPaperSectionsOpen] = useState({ paper: false, color: false });
   const [fileMenuOpen, setFileMenuOpen] = useState(false);
   const [stickyMenuId, setStickyMenuId] = useState<string | null>(null);
   const [stickyColorMenuId, setStickyColorMenuId] = useState<string | null>(null);
+  const [toolPresses, setToolPresses] = useState(0);
   const [tool, setActiveTool] = useState<HandwritingTool>("pen");
   const [phoneLayout, setPhoneLayout] = useState(
     () => window.matchMedia?.("(max-width: 680px)").matches ?? false,
@@ -454,8 +617,8 @@ export function HandwritingStudio({
     query.addEventListener("change", update);
     return () => query.removeEventListener("change", update);
   }, []);
-  const penInk = useRef(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   function setTool(next: HandwritingTool) {
+    setToolPresses(0);
     setMobileDrawer(
       ["pen", "eraser", "highlighter", "ruler", "space", "curve", "coordinates", "select"].includes(
         next,
@@ -471,11 +634,6 @@ export function HandwritingStudio({
     setStickyColorMenuId(null);
     // Segurar Espaço troca para a mão (rolar a folha) e volta: a curva em andamento continua.
     if (next !== "curve" && next !== "hand" && curveControls.length > 0) finishCurve();
-    if (next === "highlighter" && tool !== "highlighter") {
-      penInk.current = color;
-      setColor("#facc15");
-    }
-    if (tool === "highlighter" && next !== "highlighter") setColor(penInk.current);
     setTextMode(false);
     setActiveTool(next);
   }
@@ -493,30 +651,35 @@ export function HandwritingStudio({
   const PAGE_WIDTH = canvasSize.width;
   const PAGE_HEIGHT = canvasSize.height;
   function selectPaper(next: PaperStyle) {
-    if (next !== "board" && PAGE_WIDTH > 1200) {
-      const fitted = fitHandwriting(currentDocument, 1200, 1600);
-      setStrokes(fitted.strokes);
-      setStickies(fitted.stickies ?? []);
-      setImportedImages(fitted.images ?? []);
-      setCoordinateSystems(fitted.coordinateSystems ?? []);
-      setBackgroundFrame(fitted.backgroundFrame);
-      if (pageText.trim() && fitted.pageTextFrame) setPageTextFrame(fitted.pageTextFrame);
-    }
-    if (next === "board") setCanvasSize({ width: 3200, height: 2400 });
-    else {
-      setCanvasSize({ width: 1200, height: 1600 });
-      setPageTextFrame((frame) => ({
-        x: Math.min(frame.x, 1080),
-        y: Math.min(frame.y, 1540),
-        width: Math.max(120, Math.min(frame.width, 1200 - Math.min(frame.x, 1080))),
-        height: Math.max(60, Math.min(frame.height, 1600 - Math.min(frame.y, 1540))),
-      }));
-    }
+    if (next !== paper) animatePaperChange();
+    // A pauta muda sem encolher, reposicionar ou cortar o conteúdo já escrito.
+    setCanvasSize((size) => ({
+      width: Math.max(3200, size.width),
+      height: Math.max(2400, size.height),
+    }));
     setPaper(next);
   }
   const [paperColor, setPaperColor] = useState<HandwritingPaperColor>(legacyPaperColor);
-  const [color, setColor] = useState(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
-  const [width, setWidth] = useState(5);
+  const [brushSettings, setBrushSettings] = useState<Record<string, { color: string; width: number }>>({});
+  const brushKey = tool === "pen" ? `pen:${brush}` : tool;
+  const defaultInk = paperColor === "night" ? "#fff9ef" : "#17151c";
+  const settings = brushSettings[brushKey] ?? {
+    color: tool === "highlighter" ? "#facc15" : defaultInk,
+    width: 5,
+  };
+  const { color, width } = settings;
+  function setColor(next: string) {
+    setBrushSettings((current) => ({
+      ...current,
+      [brushKey]: { ...(current[brushKey] ?? settings), color: next },
+    }));
+  }
+  function setWidth(next: number) {
+    setBrushSettings((current) => ({
+      ...current,
+      [brushKey]: { ...(current[brushKey] ?? settings), width: next },
+    }));
+  }
   const [eraserWidth, setEraserWidth] = useState(10);
   const [eraserWholeStroke, setEraserWholeStroke] = useState(false);
   const [eraserBackground, setEraserBackground] = useState(false);
@@ -525,7 +688,7 @@ export function HandwritingStudio({
   const [highlighterOpacity, setHighlighterOpacity] = useState(0.3);
   const [gestureRevision, setGestureRevision] = useState(0);
   const remoteBaseRef = useRef<HandwritingDocument | undefined>(initialDocument);
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(0.7);
   const [fitWidth, setFitWidth] = useState(BASE_DISPLAY_WIDTH);
   // Resolução do bitmap da folha: acompanha a densidade da tela e o zoom para a
   // tinta ficar nítida. Muda com um pequeno atraso para o zoom não redesenhar a
@@ -554,6 +717,7 @@ export function HandwritingStudio({
   }, [saveConfirmation]);
 
   function selectPaperColor(nextColor: HandwritingPaperColor) {
+    if (nextColor !== paperColor) animatePaperChange();
     setPaperColor(nextColor);
     if (nextColor === "night" && color === "#17151c") setColor("#fff9ef");
     if (nextColor !== "night" && color === "#fff9ef") setColor("#17151c");
@@ -813,6 +977,7 @@ export function HandwritingStudio({
       pageTextSize,
       pageTextFrame,
       layers: layerVisibility,
+      layerOrder,
     }),
     [
       strokes,
@@ -823,6 +988,7 @@ export function HandwritingStudio({
       pageTextSize,
       pageTextFrame,
       layerVisibility,
+      layerOrder,
       currentUiLanguage,
     ],
   );
@@ -837,6 +1003,7 @@ export function HandwritingStudio({
     pasteSelection,
     duplicateSelection,
     selectAll,
+    allSelected,
     rotateSelection,
     alignSelection,
     nudgeSelection,
@@ -858,7 +1025,10 @@ export function HandwritingStudio({
     setSelectedCoordinateIds,
   });
   const selectionGesture = useSelectionGesture({
+    selectionSnap: preferences.selectionSnap,
+    selectionGuides: preferences.selectionGuides,
     scene: selectionScene,
+    rotationSide,
     selectionMode,
     selectedIds,
     selectedCoordinateIds,
@@ -871,8 +1041,9 @@ export function HandwritingStudio({
     setCoordinateSystems,
     setImportedImages,
     setPageTextFrame,
+    setPageTextSize,
   });
-  const { selectionBox, setSelectionBox, selectionPath, setSelectionPath } = selectionGesture;
+  const { selectionBox, setSelectionBox, selectionPath, transforming, guides } = selectionGesture;
   const pinch = usePinchZoom({
     viewportRef,
     zoom,
@@ -892,9 +1063,24 @@ export function HandwritingStudio({
     },
   });
 
-  useEffect(() => {
+  const paintedPageRef = useRef<{
+    scene: PageScene;
+    scale: number;
+    width: number;
+    height: number;
+    text: string;
+    hidden: string;
+  } | null>(null);
+  useLayoutEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    const previous = paintedPageRef.current;
+    const before = previous?.scene;
+    const resized =
+      !previous ||
+      previous.scale !== renderScale ||
+      previous.width !== PAGE_WIDTH ||
+      previous.height !== PAGE_HEIGHT;
     sizePageCanvas(canvas, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
     if (liveCanvasRef.current)
       sizePageCanvas(liveCanvasRef.current, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
@@ -905,24 +1091,93 @@ export function HandwritingStudio({
     const hidden = new Set(revealsRef.current.map((reveal) => reveal.stroke.id));
     const liveId = liveStrokeRef.current?.id;
     if (liveId) hidden.add(liveId);
-    renderPageScene(canvas, pageScene, {
-      editing: true,
-      strokes: hidden.size > 0 ? strokes.filter((stroke) => !hidden.has(stroke.id)) : strokes,
-      pageText: textMode ? "" : pageText,
-    });
-    // O traço em andamento fica na camada ao vivo, não na folha.
-    const context = canvas.getContext("2d");
-    if (!context) return;
-    drawSelectionOverlay(context, selectionScene, selectedIds, selectionBox, selectionPath);
+    const hiddenKey = [...hidden].join(",");
+    const visibleText = textMode && !editingTextId ? "" : pageText;
+    const coversChanged =
+      before?.strokes !== strokes &&
+      (before?.strokes.some((stroke) => stroke.cover) || strokes.some((stroke) => stroke.cover));
+    const paperChanged =
+      resized ||
+      before?.paper !== pageScene.paper ||
+      before?.paperColor !== pageScene.paperColor ||
+      before?.backgroundImage !== pageScene.backgroundImage ||
+      before?.backgroundFrame !== pageScene.backgroundFrame ||
+      before?.images !== pageScene.images ||
+      before?.layers.background !== pageScene.layers.background ||
+      coversChanged;
+    if (paperChanged) renderPageScene(canvas, pageScene, { onlyLayer: "paper" });
+    const changedLayers = {
+      coordinates:
+        resized ||
+        before?.coordinateSystems !== pageScene.coordinateSystems ||
+        before?.layers.coordinates !== pageScene.layers.coordinates,
+      text:
+        resized ||
+        previous?.text !== visibleText ||
+        before?.pageTextSize !== pageScene.pageTextSize ||
+        before?.pageTextFrame !== pageScene.pageTextFrame ||
+        before?.paperColor !== pageScene.paperColor ||
+        before?.layers.text !== pageScene.layers.text,
+      strokes:
+        resized ||
+        before?.strokes !== strokes ||
+        previous?.hidden !== hiddenKey ||
+        before?.layers.strokes !== pageScene.layers.strokes,
+    };
+    const canvases = [
+      ["coordinates", coordinateCanvasRef.current],
+      ["text", textCanvasRef.current],
+      ["strokes", inkCanvasRef.current],
+    ] as const;
+    for (const [layer, overlay] of canvases) {
+      if (!overlay || !changedLayers[layer]) continue;
+      sizePageCanvas(overlay, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
+      renderPageScene(overlay, pageScene, {
+        onlyLayer: layer,
+        strokes: hidden.size > 0 ? strokes.filter((stroke) => !hidden.has(stroke.id)) : strokes,
+        pageText: visibleText,
+      });
+    }
+    paintedPageRef.current = {
+      scene: pageScene,
+      scale: renderScale,
+      width: PAGE_WIDTH,
+      height: PAGE_HEIGHT,
+      text: visibleText,
+      hidden: hiddenKey,
+    };
+  }, [pageScene, strokes, pageText, textMode, editingTextId, renderScale, PAGE_WIDTH, PAGE_HEIGHT]);
+
+  const displayWidth = Math.max(1, Math.round(fitWidth * (zoom / 0.7)));
+  useLayoutEffect(() => {
+    const canvas = selectionCanvasRef.current;
+    if (!canvas) return;
+    sizePageCanvas(canvas, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
+    clearPageCanvas(canvas);
+    const context = pageContext(canvas);
+    if (context && !textMode)
+      drawSelectionOverlay(
+        context,
+        selectionScene,
+        selectedIds,
+        selectionBox,
+        selectionPath,
+        transforming,
+        guides,
+        rotationSide,
+        phoneLayout ? (PAGE_WIDTH / Math.max(1, displayWidth)) * (24 / 22) : 1,
+      );
   }, [
-    pageScene,
     selectionScene,
+    phoneLayout,
+    displayWidth,
+    textMode,
     selectedIds,
+    transforming,
+    guides,
+    rotationSide,
     selectionBox,
     selectionPath,
-    strokes,
-    pageText,
-    textMode,
     renderScale,
     PAGE_WIDTH,
     PAGE_HEIGHT,
@@ -936,17 +1191,26 @@ export function HandwritingStudio({
     if (!source || !target || !context) return;
     context.clearRect(0, 0, target.width, target.height);
     const mirrorScale = source.width / PAGE_WIDTH;
-    context.drawImage(
-      source,
-      writingWindowX * mirrorScale,
-      writingWindowY * mirrorScale,
-      WRITING_WINDOW_WIDTH * mirrorScale,
-      WRITING_WINDOW_HEIGHT * mirrorScale,
-      0,
-      0,
-      target.width,
-      target.height,
-    );
+    const overlays = {
+      coordinates: coordinateCanvasRef.current,
+      text: textCanvasRef.current,
+      strokes: inkCanvasRef.current,
+      stickies: null,
+    };
+    for (const image of [source, ...pageScene.layerOrder.map((layer) => overlays[layer])]) {
+      if (!image) continue;
+      context.drawImage(
+        image,
+        writingWindowX * mirrorScale,
+        writingWindowY * mirrorScale,
+        WRITING_WINDOW_WIDTH * mirrorScale,
+        WRITING_WINDOW_HEIGHT * mirrorScale,
+        0,
+        0,
+        target.width,
+        target.height,
+      );
+    }
     context.fillStyle = "#7433e055";
     context.fillRect(target.width - 14, 0, 2, target.height);
   }, [
@@ -964,7 +1228,10 @@ export function HandwritingStudio({
   useEffect(() => {
     const viewport = viewportRef.current;
     if (!viewport) return;
-    const update = () => setFitWidth(Math.min(BASE_DISPLAY_WIDTH, viewport.clientWidth - 28));
+    const update = () => {
+      const { paddingLeft, paddingRight } = getComputedStyle(viewport);
+      setFitWidth(viewport.clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight));
+    };
     update();
     if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(update);
@@ -1196,7 +1463,7 @@ export function HandwritingStudio({
       }
     }
     revealsRef.current = active;
-    const main = canvasRef.current;
+    const main = layerVisibility.strokes ? inkCanvasRef.current : null;
     const mainContext = finished.length > 0 && main ? pageContext(main) : null;
     if (mainContext) for (const stroke of finished) drawStroke(mainContext, stroke);
     if (active.length > 0) scheduleLivePaint();
@@ -1223,7 +1490,7 @@ export function HandwritingStudio({
   // Ao soltar a caneta o traço final é desenhado na folha no mesmo instante em que
   // a camada ao vivo é limpa, para não haver um quadro sem tinta entre os dois.
   function commitLiveStroke(stroke: Stroke) {
-    const main = canvasRef.current;
+    const main = layerVisibility.strokes ? inkCanvasRef.current : null;
     const context = main ? pageContext(main) : null;
     if (context) drawStroke(context, stroke);
     clearLive();
@@ -1238,17 +1505,26 @@ export function HandwritingStudio({
     if (!source || !target || !context) return;
     context.clearRect(0, 0, target.width, target.height);
     const mirrorScale = source.width / PAGE_WIDTH;
-    context.drawImage(
-      source,
-      writingWindowX * mirrorScale,
-      writingWindowY * mirrorScale,
-      WRITING_WINDOW_WIDTH * mirrorScale,
-      WRITING_WINDOW_HEIGHT * mirrorScale,
-      0,
-      0,
-      target.width,
-      target.height,
-    );
+    const overlays = {
+      coordinates: coordinateCanvasRef.current,
+      text: textCanvasRef.current,
+      strokes: inkCanvasRef.current,
+      stickies: null,
+    };
+    for (const image of [source, ...pageScene.layerOrder.map((layer) => overlays[layer])]) {
+      if (!image) continue;
+      context.drawImage(
+        image,
+        writingWindowX * mirrorScale,
+        writingWindowY * mirrorScale,
+        WRITING_WINDOW_WIDTH * mirrorScale,
+        WRITING_WINDOW_HEIGHT * mirrorScale,
+        0,
+        0,
+        target.width,
+        target.height,
+      );
+    }
     context.save();
     context.scale(target.width / WRITING_WINDOW_WIDTH, target.height / WRITING_WINDOW_HEIGHT);
     context.translate(-writingWindowX, -writingWindowY);
@@ -1259,6 +1535,8 @@ export function HandwritingStudio({
   }
 
   function start(event: ReactPointerEvent<HTMLCanvasElement>) {
+    objectClickRef.current = null;
+    if (textMode) setTextMode(false);
     hoverPointRef.current = null;
     if (event.pointerType === "pen") {
       palmRef.current = { penDown: true, lastPenAt: performance.now() };
@@ -1286,14 +1564,11 @@ export function HandwritingStudio({
       penDetectedRef.current = true;
       changePreference("penOnly", true);
     }
+    const penAction = isPenEraserTip ? shortcutSettings.penTail : shortcutSettings.penSide;
+    if ((isPenEraserTip || isPenBarrelButton) && penAction === "select" && tool !== "select")
+      setTool("select");
     const rawTool: HandwritingTool =
-      isPenEraserTip && penTailErases
-        ? "eraser"
-        : isPenBarrelButton
-          ? penBarrelErases
-            ? "eraser"
-            : "hand"
-          : tool;
+      (isPenEraserTip || isPenBarrelButton) && penAction !== "selected" ? penAction : tool;
     // Borracha de fundo: em vez de apagar tinta, desenha um traço de cobertura que fura o fundo
     // importado ao ser solto. Daí em diante o gesto é o de um traço comum.
     const coverErase = rawTool === "eraser" && eraserBackground && backgroundAvailable;
@@ -1305,19 +1580,36 @@ export function HandwritingStudio({
       zoomAt(event.clientX, event.clientY, effectiveTool === "zoom-in" ? 1 : -1);
       return;
     }
+    if (effectiveTool === "select" && copiedTextStyle) {
+      applyTextStyle(canvasPoint(canvas, event), event.shiftKey);
+      return;
+    }
+    if (effectiveTool === "select" && selectedIds.length === 1 && !event.shiftKey) {
+      const point = canvasPoint(canvas, event);
+      const id = pickAt(selectionScene, point).ids.at(-1);
+      const frame = selectionBounds();
+      const item = stickies.find((item) => item.id === id);
+      const inset = (3 * PAGE_WIDTH) / canvas.getBoundingClientRect().width;
+      const insideBody =
+        item &&
+        point.x > item.x + inset &&
+        point.y > item.y + inset &&
+        point.x < item.x + stickyWidth(item) - inset &&
+        point.y < item.y + stickyHeight(item) - inset;
+      const radius =
+        ((event.pointerType === "touch" ? 22 : 12) * PAGE_WIDTH) /
+        canvas.getBoundingClientRect().width;
+      if (
+        id &&
+        selectedIds.includes(id) &&
+        (stickies.some((item) => item.id === id) || id === PAGE_TEXT_SELECTION_ID) &&
+        (insideBody || !frame || !hitSelectionHandle(point, frame, radius, rotationSide))
+      )
+        objectClickRef.current = { id, x: event.clientX, y: event.clientY };
+    }
     if (activePointerRef.current !== null) return;
     canvas.setPointerCapture(event.pointerId);
     activePointerRef.current = event.pointerId;
-    if (effectiveTool === "hand" && selectedIds.length > 0) {
-      drawingRef.current = true;
-      selectionGesture.begin(
-        event,
-        canvasPoint(canvas, event),
-        true,
-        PAGE_WIDTH / canvas.getBoundingClientRect().width,
-      );
-      return;
-    }
     if (
       effectiveTool === "hand" ||
       (penOnly && event.pointerType === "touch" && effectiveTool !== "select")
@@ -1436,6 +1728,9 @@ export function HandwritingStudio({
   }
 
   function move(event: ReactPointerEvent<HTMLCanvasElement>) {
+    const press = objectClickRef.current;
+    if (press && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 3)
+      objectClickRef.current = null;
     updateHoverPreview(event);
     if (onCursorMove && canvasRef.current) {
       const at = canvasPoint(canvasRef.current, event);
@@ -1638,9 +1933,9 @@ export function HandwritingStudio({
       return;
     }
     if (activeToolRef.current === "coordinates" && coordinateMeasure) {
-      const width = Math.abs(coordinateMeasure.end.x - coordinateMeasure.start.x);
+      const measuredWidth = Math.abs(coordinateMeasure.end.x - coordinateMeasure.start.x);
       const height = Math.abs(coordinateMeasure.end.y - coordinateMeasure.start.y);
-      if (width > 48 && height > 48)
+      if (measuredWidth > 48 && height > 48)
         setCoordinateSystems((current) => [
           ...current,
           {
@@ -1650,6 +1945,7 @@ export function HandwritingStudio({
             step: coordinateStep,
             measurements: coordinateMeasurements,
             color,
+            lineWidth: width,
           },
         ]);
       else setUndoStack((history) => history.slice(0, -1));
@@ -1833,10 +2129,11 @@ export function HandwritingStudio({
     const bounds = selectionBounds() ?? (coordinateSystem && coordinateBounds(coordinateSystem));
     const origin = bounds ?? { x: 112, y: 80, height: 0 };
     remember();
+    const id = strokeId();
     setStickies((current) => [
       ...current,
       {
-        id: strokeId(),
+        id,
         kind: "text",
         formula: true,
         x: Math.max(24, Math.min(PAGE_WIDTH - 460, origin.x)),
@@ -1988,7 +2285,7 @@ export function HandwritingStudio({
       height: shapeHeight,
     };
     const id = strokeId();
-    const ink = tool === "highlighter" ? penInk.current : color;
+    const ink = tool === "highlighter" ? (brushSettings[`pen:${brush}`]?.color ?? defaultInk) : color;
     const points = canonicalShape(kind, box);
     setStrokes((current) => [
       ...current,
@@ -2007,10 +2304,16 @@ export function HandwritingStudio({
       return;
     }
     remember();
+    const id = strokeId();
+    setTool("select");
+    setEditingTextId(null);
+    setTextMode(false);
+    setSelectedIds([id]);
+    setSelectedCoordinateIds([]);
     setStickies((current) => [
       ...current,
       {
-        id: strokeId(),
+        id,
         x: 160 + (current.length % 3) * 55,
         y: 160 + (current.length % 4) * 55,
         color: "yellow",
@@ -2038,31 +2341,21 @@ export function HandwritingStudio({
     );
   }
 
-  function setStickyMoving(sticky: HandwritingSticky) {
-    setTool("hand");
-    setSelectedIds([sticky.id]);
-    setSelectedCoordinateIds([]);
-    setSelectionBox(stickyBounds(sticky));
-    setSelectionPath(null);
-    setStickyMenuId(null);
-    setStickyColorMenuId(null);
-  }
-
   function toggleLayerVisibility(layer: keyof HandwritingLayerVisibility) {
     remember();
     setLayerVisibility((current) => ({ ...current, [layer]: !current[layer] }));
   }
 
   function moveLayer(layer: HandwritingLayerKey, direction: -1 | 1) {
-    const available = layerOrder.filter((key) => layerAvailability[key]);
+    const available = completeLayerOrder.filter((key) => layerAvailability[key]);
     const visibleIndex = available.indexOf(layer);
     const swapWith = available[visibleIndex + direction];
-    const index = layerOrder.indexOf(layer);
-    const swapIndex = swapWith ? layerOrder.indexOf(swapWith) : -1;
+    const index = completeLayerOrder.indexOf(layer);
+    const swapIndex = swapWith ? completeLayerOrder.indexOf(swapWith) : -1;
     if (index < 0 || swapIndex < 0) return;
     remember();
-    setLayerOrder((current) => {
-      const next = [...current];
+    setLayerOrder(() => {
+      const next = [...completeLayerOrder];
       [next[index], next[swapIndex]] = [next[swapIndex]!, next[index]!];
       return next;
     });
@@ -2115,21 +2408,6 @@ export function HandwritingStudio({
     });
   }
 
-  function moveStickyLayer(stickyId: string, direction: "front" | "back") {
-    const currentIndex = stickies.findIndex((sticky) => sticky.id === stickyId);
-    if (currentIndex < 0) return;
-    const targetIndex = direction === "front" ? stickies.length - 1 : 0;
-    if (currentIndex === targetIndex) return;
-    remember();
-    setStickies((current) => {
-      const next = [...current];
-      const [moved] = next.splice(currentIndex, 1);
-      if (!moved) return current;
-      next.splice(targetIndex, 0, moved);
-      return next;
-    });
-  }
-
   function removeSticky(id: string) {
     remember();
     setStickies((current) => current.filter((sticky) => sticky.id !== id));
@@ -2170,14 +2448,8 @@ export function HandwritingStudio({
     if (!resize || resize.id !== sticky.id || !canvas) return;
     const bounds = canvas.getBoundingClientRect();
     const scale = PAGE_WIDTH / bounds.width;
-    const width = Math.max(
-      STICKY_MIN_WIDTH,
-      Math.min(STICKY_MAX_WIDTH, resize.width + (event.clientX - resize.x) * scale),
-    );
-    const height = Math.max(
-      STICKY_MIN_HEIGHT,
-      Math.min(STICKY_MAX_HEIGHT, resize.height + (event.clientY - resize.y) * scale),
-    );
+    const width = Math.max(STICKY_MIN_WIDTH, resize.width + (event.clientX - resize.x) * scale);
+    const height = Math.max(STICKY_MIN_HEIGHT, resize.height + (event.clientY - resize.y) * scale);
     const nextWidth = Math.min(width, PAGE_WIDTH - sticky.x);
     const nextHeight = Math.min(height, PAGE_HEIGHT - sticky.y);
     updateSticky(sticky.id, { width: nextWidth, height: nextHeight });
@@ -2385,6 +2657,20 @@ export function HandwritingStudio({
     return document;
   }
 
+  const [pageTurn, setPageTurn] = useState<"forward" | "backward" | null>(null);
+  const [navigationPreview, setNavigationPreview] = useState("");
+  useEffect(() => {
+    if (!onSelectPage || !pageNavigationOpen || !importedImagesReady || (background && !backgroundImage)) return;
+    const timer = window.setTimeout(() => {
+      if (drawingRef.current) return;
+      const thumbnail = document.createElement("canvas");
+      sizePageCanvas(thumbnail, 180 / PAGE_WIDTH, PAGE_WIDTH, PAGE_HEIGHT);
+      renderPageScene(thumbnail, pageScene);
+      setNavigationPreview(thumbnail.toDataURL("image/png"));
+    }, 150);
+    return () => window.clearTimeout(timer);
+  }, [onSelectPage, pageNavigationOpen, importedImagesReady, background, backgroundImage, pageScene, gestureRevision]);
+
   function pageImage(): string {
     if (background && !backgroundImage) throw new Error(uiText(302));
     if (!importedImagesReady) throw new Error(uiText(1706));
@@ -2394,13 +2680,55 @@ export function HandwritingStudio({
     return exportPage(canvas);
   }
 
+  function selectedCanvas() {
+    const bounds = selectionBounds();
+    if (!bounds) throw new Error(uiText(301));
+    if (!importedImagesReady) throw new Error(uiText(1706));
+    const chosen = new Set(selectedIds);
+    const source = document.createElement("canvas");
+    sizePageCanvas(source, 1, PAGE_WIDTH, PAGE_HEIGHT);
+    renderPageScene(
+      source,
+      {
+        ...pageScene,
+        strokes: strokes.filter((item) => chosen.has(item.id)),
+        stickies: stickies.filter((item) => chosen.has(item.id)),
+        coordinateSystems: coordinateSystems.filter((item) => chosen.has(item.id)),
+        pageText: chosen.has(PAGE_TEXT_SELECTION_ID) ? pageText : "",
+        images: renderableImportedImages.filter((item) => chosen.has(item.id)),
+        backgroundImage: undefined,
+      },
+      { transparentPaper: true },
+    );
+    const crop = document.createElement("canvas");
+    const x = Math.max(0, Math.floor(bounds.x - 12));
+    const y = Math.max(0, Math.floor(bounds.y - 12));
+    crop.width = Math.max(1, Math.min(PAGE_WIDTH - x, Math.ceil(bounds.width + 24)));
+    crop.height = Math.max(1, Math.min(PAGE_HEIGHT - y, Math.ceil(bounds.height + 24)));
+    const context = crop.getContext("2d");
+    if (!context) throw new Error(uiText(301));
+    context.drawImage(source, x, y, crop.width, crop.height, 0, 0, crop.width, crop.height);
+    return crop;
+  }
+
+  function exportSelectedPng() {
+    try {
+      const link = document.createElement("a");
+      link.href = selectedCanvas().toDataURL("image/png");
+      link.download = "selecao-do-caderno.png";
+      link.click();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : uiText(308));
+    }
+  }
+
   async function exportPng() {
     try {
       const mascot = await loadPaperExportMascot();
       if (background && !backgroundImage) throw new Error(uiText(302));
       if (!importedImagesReady) throw new Error(uiText(1706));
-      const canvas = canvasRef.current;
-      if (!canvas) throw new Error(uiText(303));
+      const canvas = document.createElement("canvas");
+      sizePageCanvas(canvas, 1, PAGE_WIDTH, PAGE_HEIGHT);
       renderPageScene(canvas, pageScene);
       const link = document.createElement("a");
       link.href = brandedExportCanvas(canvas, mascot).toDataURL("image/png");
@@ -2440,14 +2768,34 @@ export function HandwritingStudio({
       const mascot = await loadPaperExportMascot();
       if (background && !backgroundImage) throw new Error(uiText(302));
       if (!importedImagesReady) throw new Error(uiText(1706));
-      const canvas = canvasRef.current;
-      if (!canvas) throw new Error(uiText(303));
+      const canvas = document.createElement("canvas");
+      sizePageCanvas(canvas, 1, PAGE_WIDTH, PAGE_HEIGHT);
       renderPageScene(canvas, pageScene);
       downloadCanvasAsPdf(brandedExportCanvas(canvas, mascot), "folha-do-caderno.pdf");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : uiText(307));
     }
   }
+
+  useEffect(() => {
+    if (!flushOnClose) return;
+    flushOnClose.current = () => {
+      if (!dirty) return true;
+      try {
+        const document = buildDocument();
+        if (JSON.stringify(currentDocument) !== autosavedRef.current) {
+          if (!importedImagesReady || (background && !backgroundImage))
+            throw new Error(uiText(1706));
+          onSave(pageImage(), document);
+        }
+        return true;
+      } catch (caught) {
+        setError(caught instanceof Error ? caught.message : uiText(310));
+        return false;
+      }
+    };
+    return () => { flushOnClose.current = null; };
+  });
 
   function switchPage(navigate: () => void) {
     try {
@@ -2459,8 +2807,49 @@ export function HandwritingStudio({
     }
   }
 
+  function copyTextStyle() {
+    const sticky = [...stickies]
+      .reverse()
+      .find((item) => selectedIds.includes(item.id) && item.kind !== "table" && !item.formula);
+    if (sticky)
+      setCopiedTextStyle({ ink: sticky.ink ?? "#17151c", textSize: sticky.textSize ?? 25 });
+    else if (selectedIds.includes(PAGE_TEXT_SELECTION_ID))
+      setCopiedTextStyle({
+        ink: pageTextFrame.ink ?? (paperColor === "night" ? "#fff9ef" : "#17151c"),
+        textSize: pageTextSize,
+      });
+    else {
+      setStyleMessage(uiText(3792));
+      return;
+    }
+    setTool("select");
+    setStyleMessage(uiText(3789));
+  }
+
+  function applyTextStyle(point: HandwritingPoint, repeat: boolean) {
+    if (!copiedTextStyle) return false;
+    const picked = pickAt(selectionScene, point).ids.at(-1);
+    const target = stickies.find(
+      (item) => item.id === picked && item.kind !== "table" && !item.formula,
+    );
+    if (!target && picked !== PAGE_TEXT_SELECTION_ID) return true;
+    remember();
+    if (target)
+      setStickies((items) =>
+        items.map((item) => (item.id === target.id ? { ...item, ...copiedTextStyle } : item)),
+      );
+    else {
+      setPageTextSize(Math.max(16, copiedTextStyle.textSize));
+      setPageTextFrame((frame) => ({ ...frame, ink: copiedTextStyle.ink }));
+    }
+    if (picked) setSelectedIds([picked]);
+    if (!repeat) setCopiedTextStyle(null);
+    setStyleMessage(uiText(3790));
+    return true;
+  }
+
   function resetView() {
-    setZoom(1);
+    setZoom(0.7);
     const viewport = viewportRef.current;
     if (!viewport) return;
     // Use an immediate reset: smooth scrolling can leave the editor in an
@@ -2485,6 +2874,9 @@ export function HandwritingStudio({
       paste: pasteSelection,
       duplicate: duplicateSelection,
       selectAll,
+      copyStyle: copyTextStyle,
+      insert: (kind) => addSticky(kind === "sticky" ? undefined : kind),
+      cycleSelection,
       hasSelection,
       nudge: nudgeSelection,
     },
@@ -2614,10 +3006,30 @@ export function HandwritingStudio({
     applySpaceShift(spaceGuideY, shift);
   }
 
+  function cycleSelection(direction: -1 | 1) {
+    const ids = pickInBox(selectionScene, {
+      x: 0,
+      y: 0,
+      width: PAGE_WIDTH,
+      height: PAGE_HEIGHT,
+    }).ids;
+    if (!ids.length) return;
+    const index = ids.indexOf(selectedIds.at(-1) ?? "");
+    const next = ids[(index + direction + ids.length) % ids.length]!;
+    setSelectedIds([next]);
+    setSelectedCoordinateIds(coordinateSystems.some((system) => system.id === next) ? [next] : []);
+  }
+
   function handleCanvasKeyDown(event: ReactKeyboardEvent<HTMLCanvasElement>) {
     const viewport = viewportRef.current;
     const canvas = canvasRef.current;
     if (!viewport || !canvas) return;
+    if (event.key === "Escape" && copiedTextStyle) {
+      event.preventDefault();
+      setCopiedTextStyle(null);
+      setStyleMessage("");
+      return;
+    }
     if (tool === "space") handleSpaceKeyDown(event);
     if (tool === "curve") handleCurveKeyDown(event);
     if (
@@ -2661,6 +3073,7 @@ export function HandwritingStudio({
       await onConfirmSave?.(document);
       if (localStorage.getItem(draftStorageKey) === draftBeforeSave)
         localStorage.removeItem(draftStorageKey);
+      autosavedRef.current = savedSnapshot;
       setSavedBaseline(savedSnapshot);
       setDraftStatus(uiText(342));
       setSaveConfirmation(Date.now());
@@ -2671,7 +3084,6 @@ export function HandwritingStudio({
     }
   }
 
-  const displayWidth = Math.max(260, Math.round(fitWidth * zoom * (PAGE_WIDTH / 1200)));
   const wantedScale = pageRenderScale(
     typeof window === "undefined" ? 1 : window.devicePixelRatio || 1,
     displayWidth,
@@ -2706,10 +3118,33 @@ export function HandwritingStudio({
     stickies: stickies.length > 0,
   };
   const hasBackgroundLayer = Boolean(background || importedImages.length > 0);
-  const visibleLayerOrder = layerOrder.filter((layer) => layerAvailability[layer]);
-  const showBrushPanel = tool === "pen" && !textMode && !writingWindowOpen;
-  const showRulerPanel = tool === "ruler" && !textMode;
-  const showCoordinatePanel = tool === "coordinates" && !textMode;
+  const completeLayerOrder = [...new Set([...layerOrder, ...DEFAULT_HANDWRITING_LAYER_ORDER])];
+  const layerDepth = (layer: HandwritingLayerKey) => completeLayerOrder.indexOf(layer) + 1;
+  const selectedStroke =
+    tool === "select" ? strokes.find((stroke) => selectedIds.includes(stroke.id)) : undefined;
+  const selectedText =
+    tool === "select"
+      ? [...stickies]
+          .reverse()
+          .find((item) => selectedIds.includes(item.id) && item.kind !== "table" && !item.formula)
+      : undefined;
+  const selectedTable =
+    tool === "select"
+      ? [...stickies]
+          .reverse()
+          .find((item) => selectedIds.includes(item.id) && item.kind === "table")
+      : undefined;
+  const selectedSticky =
+    selectedIds.length === 1 ? stickies.find((item) => item.id === selectedIds[0]) : undefined;
+  const floatingSelection =
+    tool === "select" && !textMode && selectedIds.length > 0 ? selectionBounds() : null;
+  const visibleLayerOrder = completeLayerOrder
+    .filter((layer) => layerAvailability[layer])
+    .reverse();
+  const optionsOpen = toolPresses === 2 && !textMode;
+  const showBrushPanel = tool === "pen" && optionsOpen && !writingWindowOpen;
+  const showRulerPanel = tool === "ruler" && optionsOpen;
+  const showCoordinatePanel = tool === "coordinates" && optionsOpen;
   const rightPanelCount =
     Number(showBrushPanel) +
     Number(showRulerPanel) +
@@ -2719,7 +3154,18 @@ export function HandwritingStudio({
   return (
     <div
       className="handwriting-studio"
+      onKeyDown={(event) => {
+        if (event.key !== "Escape" || (!copiedTextStyle && !textMode)) return;
+        event.preventDefault();
+        event.stopPropagation();
+        setCopiedTextStyle(null);
+        setStyleMessage("");
+        setTextMode(false);
+        if (editingTextId) setSelectedIds([editingTextId]);
+        canvasRef.current?.focus();
+      }}
       data-mobile-drawer={mobileDrawer ?? "closed"}
+      data-tool-options={optionsOpen}
       data-tool={textMode ? "text" : tool}
     >
       {phoneLayout && (
@@ -2745,6 +3191,7 @@ export function HandwritingStudio({
               <PaperCloseIcon />
             </button>
           )}
+          {captureActions}
         </div>
       )}
       {collaborationActivity && (
@@ -2763,7 +3210,17 @@ export function HandwritingStudio({
           rulerUnit={rulerUnit}
           layersOpen={layersOpen}
           writingWindowOpen={writingWindowOpen}
-          onSelectTool={(next) => setTool(!textMode && next === tool ? "hand" : next)}
+          onSelectTool={(next) => {
+            if (!["pen", "highlighter", "eraser", "ruler", "coordinates", "curve"].includes(next)) {
+              setTool(next);
+            } else if (!textMode && tool === next && toolPresses > 0) {
+              setToolPresses(toolPresses === 1 ? 2 : 1);
+              setMobileDrawer("tool");
+            } else {
+              setTool(next);
+              setToolPresses(1);
+            }
+          }}
           onToggleLayers={() => {
             setLayersOpen((open) => !open);
             setMobileDrawer("tool");
@@ -2771,7 +3228,8 @@ export function HandwritingStudio({
           onToggleText={() => {
             setMobileDrawer(null);
             setWritingWindowOpen(false);
-            setTextMode((active) => !active);
+            if (textMode) setTextMode(false);
+            else addSticky("text");
           }}
           onAddSticky={() => addSticky()}
           onAddTable={() => addSticky("table")}
@@ -2794,7 +3252,11 @@ export function HandwritingStudio({
             onMove={() => setTool("hand")}
             tool={tool}
             selectionMode={selectionMode}
-            onSelectionModeChange={setSelectionMode}
+            onSelectionModeChange={(mode) => {
+              setTool("select");
+              setEditingTextId(null);
+              setSelectionMode(mode);
+            }}
             selectedIds={selectedIds}
             selectedCoordinateIds={selectedCoordinateIds}
             canAlign={strokes.some((stroke) => selectedIds.includes(stroke.id))}
@@ -2811,14 +3273,68 @@ export function HandwritingStudio({
             onPaste={pasteSelection}
             onDuplicate={duplicateSelection}
             onSelectAll={selectAll}
+            allSelected={allSelected}
+            floatingActions
+            strokeProperties={
+              selectedStroke && {
+                color: selectedStroke.color,
+                width: selectedStroke.width,
+                onChange: (change) => {
+                  remember();
+                  setStrokes((current) =>
+                    current.map((stroke) =>
+                      selectedIds.includes(stroke.id) ? { ...stroke, ...change } : stroke,
+                    ),
+                  );
+                },
+              }
+            }
             canPaste={canPaste}
-            hasPageText={Boolean(pageText)}
-            pageTextSize={pageTextSize}
+            hasPageText={Boolean(selectedText) || selectedIds.includes(PAGE_TEXT_SELECTION_ID)}
+            pageTextSize={selectedText ? (selectedText.textSize ?? 25) : pageTextSize}
+            minimumTextSize={selectedText ? 4 : 16}
+            tableProperties={
+              selectedTable && {
+                cells: selectedTable.cells ?? [[""]],
+                onRemember: remember,
+                onChange: (cells) => updateSticky(selectedTable.id, { cells }),
+              }
+            }
+            textProperties={
+              selectedText || selectedIds.includes(PAGE_TEXT_SELECTION_ID)
+                ? {
+                    ink: selectedText
+                      ? (selectedText.ink ?? "#17151c")
+                      : (pageTextFrame.ink ?? (paperColor === "night" ? "#fff9ef" : "#17151c")),
+                    onColorChange: (ink) => {
+                      remember();
+                      setStickies((items) =>
+                        items.map((item) =>
+                          selectedIds.includes(item.id) && item.kind !== "table" && !item.formula
+                            ? { ...item, ink }
+                            : item,
+                        ),
+                      );
+                      if (selectedIds.includes(PAGE_TEXT_SELECTION_ID))
+                        setPageTextFrame((frame) => ({ ...frame, ink }));
+                    },
+                  }
+                : undefined
+            }
             onChangeTextSize={(delta) => {
               remember();
-              setPageTextSize((size) =>
-                delta < 0 ? Math.max(16, size + delta) : Math.min(72, size + delta),
+              setStickies((items) =>
+                items.map((item) =>
+                  selectedIds.includes(item.id) && item.kind !== "table" && !item.formula
+                    ? {
+                        ...item,
+                        textSize: Math.max(4, Math.min(144, (item.textSize ?? 25) + delta)),
+                      }
+                    : item,
+                ),
               );
+              if (selectedIds.includes(PAGE_TEXT_SELECTION_ID))
+                setPageTextSize((size) => Math.max(16, Math.min(144, size + delta)));
             }}
             hasSelectedCoordinateSystem={Boolean(selectedCoordinateSystem)}
             selectedStrokeCount={selectedStrokeCount}
@@ -2832,22 +3348,24 @@ export function HandwritingStudio({
           />
         )}
 
-        <HandwritingInkOptions
-          tool={tool}
-          color={color}
-          onColorChange={setColor}
-          width={tool === "eraser" ? eraserWidth : width}
-          onWidthChange={tool === "eraser" ? setEraserWidth : setWidth}
-          eraserWholeStroke={eraserWholeStroke}
-          onEraserWholeStrokeChange={setEraserWholeStroke}
-          eraserBackground={eraserBackground}
-          onEraserBackgroundChange={setEraserBackground}
-          backgroundAvailable={backgroundAvailable}
-          highlighterOpacity={highlighterOpacity}
-          onHighlighterOpacityChange={setHighlighterOpacity}
-          dash={dash}
-          onDashChange={setDash}
-        />
+        {optionsOpen && (
+          <HandwritingInkOptions
+            tool={tool}
+            color={color}
+            onColorChange={setColor}
+            width={tool === "eraser" ? eraserWidth : width}
+            onWidthChange={tool === "eraser" ? setEraserWidth : setWidth}
+            eraserWholeStroke={eraserWholeStroke}
+            onEraserWholeStrokeChange={setEraserWholeStroke}
+            eraserBackground={eraserBackground}
+            onEraserBackgroundChange={setEraserBackground}
+            backgroundAvailable={backgroundAvailable}
+            highlighterOpacity={highlighterOpacity}
+            onHighlighterOpacityChange={setHighlighterOpacity}
+            dash={dash}
+            onDashChange={setDash}
+          />
+        )}
 
         <HandwritingHistoryBar
           textMode={textMode}
@@ -2872,7 +3390,132 @@ export function HandwritingStudio({
           pages={notebookPages}
           currentPageId={currentPageId ?? draftKey}
           currentImage={pageImage}
-          onUpload={() => setFileAction("import")}
+          selectionImage={
+            floatingSelection ? () => selectedCanvas().toDataURL("image/png") : undefined
+          }
+          uploadOpen={uploadOpen}
+          onUpload={() => {
+            setFileMenuOpen(false);
+            setUploadOpen(!uploadOpen);
+          }}
+          uploadPanel={
+            <>
+              <label className="notebook-upload-picker">
+                <PaperEditorIcon name="cloudUpload" />
+                <span>{uiText(802)}</span>
+                <input
+                  type="file"
+                  multiple
+                  accept=".pdf,image/png,image/jpeg,image/webp"
+                  onChange={(event) => {
+                    addUploads(Array.from(event.currentTarget.files ?? []));
+                    event.currentTarget.value = "";
+                  }}
+                />
+              </label>
+              <small className="notebook-upload-limits">
+                Imagem até 10 MB e 16 MP · PDF até 20 MB e 50 páginas
+              </small>
+              <div className="notebook-upload-grid">
+                {uploads.map((item) => (
+                  <div className="notebook-upload-entry" key={item.id}>
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="notebook-upload-card"
+                    draggable={Boolean(item.preview)}
+                    disabled={!item.preview}
+                    aria-busy={!item.preview && !item.error}
+                    onDragStart={(event) => {
+                      event.dataTransfer.setData("application/x-olena-upload", item.id);
+                      event.dataTransfer.effectAllowed = "copy";
+                    }}
+                    onClick={() => insertUpload(item)}
+                  >
+                    <span className="notebook-upload-thumbnail">
+                      {item.preview ? <img src={item.preview.image} alt="" draggable={false} /> :
+                        <PaperEditorIcon name="page" />}
+                    </span>
+                    <span className="notebook-upload-name" title={item.name ?? item.file.name}>{item.name ?? item.file.name}</span>
+                    {item.error && <small>{item.error}</small>}
+                  </button>
+                  <button
+                    type="button"
+                    className="notebook-upload-more"
+                    data-no-tooltip
+                    aria-label={"Opções de " + (item.name ?? item.file.name)}
+                    aria-expanded={uploadMenu === item.id}
+                    onClick={(event) => {
+                      setUploadMenuAnchor(event.currentTarget.getBoundingClientRect());
+                      setUploadMenu(uploadMenu === item.id ? undefined : item.id);
+                      setUploadView("actions");
+                    }}
+                  >
+                    <PaperEditorIcon name="more" />
+                  </button>
+                  {uploadMenu === item.id && uploadMenuAnchor && createPortal(
+                    <div className="notebook-upload-actions" role="group" aria-label="Opções do arquivo"
+                      style={{
+                        left: Math.max(8, Math.min(uploadMenuAnchor.right - 240, window.innerWidth - 248)),
+                        ...(window.innerHeight - uploadMenuAnchor.bottom > 300
+                          ? { top: uploadMenuAnchor.bottom + 6 }
+                          : { bottom: window.innerHeight - uploadMenuAnchor.top + 6 }),
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === "Escape") {
+                          event.stopPropagation();
+                          setUploadMenu(undefined);
+                        }
+                      }}>
+                      <strong>{item.name ?? item.file.name}</strong>
+                      {uploadView === "actions" && (
+                        <>
+                          <button type="button" onClick={() => setUploadView("rename")}><PaperEditorIcon name="uploadRename" />Renomear</button>
+                          <button type="button" disabled={!item.preview} onClick={() => {
+                            const url = URL.createObjectURL(item.file);
+                            window.open(url, "_blank", "noopener,noreferrer");
+                            window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+                          }}><PaperEditorIcon name="uploadOpen" />Abrir em nova aba</button>
+                          <button type="button" onClick={() => setUploadView("details")}><PaperEditorIcon name="uploadDetails" />Detalhes</button>
+                          <button type="button" disabled={!item.preview} onClick={() => insertUpload(item)}><PaperEditorIcon name="uploadInsert" />Colocar na folha</button>
+                          <button type="button" onClick={() => setUploadView("remove")}><ShelfToolIcon name="trash" />Remover do upload</button>
+                        </>
+                      )}
+                      {uploadView === "rename" && (
+                        <form onSubmit={(event) => {
+                          event.preventDefault();
+                          const name = String(new FormData(event.currentTarget).get("name") ?? "").trim();
+                          if (!name) return;
+                          setUploads((current) => current.map((entry) =>
+                            entry.id === item.id ? { ...entry, name } : entry,
+                          ));
+                          setUploadView("actions");
+                        }}>
+                          <input aria-label="Nome do arquivo" name="name" defaultValue={item.name ?? item.file.name} maxLength={160} required />
+                          <button type="submit"><PaperEditorIcon name="save" />Salvar nome</button>
+                        </form>
+                      )}
+                      {uploadView === "details" && (
+                        <small>{item.file.type || "Arquivo"} · {new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 }).format(item.file.size / 1024)} KB</small>
+                      )}
+                      {uploadView === "remove" && (
+                        <>
+                          <small>Remover este arquivo da lista de uploads?</small>
+                          <button type="button" onClick={() => {
+                            setUploads((current) => current.filter((entry) => entry.id !== item.id));
+                            uploadCount.current--;
+                            setUploadMenu(undefined);
+                          }}><ShelfToolIcon name="trash" />Confirmar remoção</button>
+                        </>
+                      )}
+                      {uploadView !== "actions" && <button type="button" onClick={() => setUploadView("actions")}>Voltar</button>}
+                    </div>, document.body,
+                  )}
+                  </div>
+                ))}
+              </div>
+            </>
+          }
           onSave={() => save(false)}
           onPng={exportPng}
           onPdf={exportPdf}
@@ -2880,9 +3523,11 @@ export function HandwritingStudio({
           menuOpen={fileMenuOpen}
           onMenuChange={(open) => {
             setFileMenuOpen(open);
+            if (open) setUploadOpen(false);
             if (open) setPaperSectionsOpen({ paper: false, color: false });
           }}
         />
+        {!phoneLayout && captureActions}
       </div>
 
       {writingWindowOpen && (
@@ -2926,7 +3571,36 @@ export function HandwritingStudio({
         />
 
         <div
-          className={`handwriting-viewport${paper === "board" ? " handwriting-viewport--board" : ""}`}
+          className="handwriting-viewport handwriting-viewport--board"
+          onDragOver={(event) => {
+            if (
+              event.dataTransfer.types.some(
+                (type) => type === "Files" || type === "application/x-olena-upload",
+              )
+            )
+              event.preventDefault();
+          }}
+          onDrop={(event) => {
+            const id = event.dataTransfer.getData("application/x-olena-upload");
+            const listed = uploads.find((item) => item.id === id);
+            const files = Array.from(event.dataTransfer.files);
+            if (!listed && !files.length) return;
+            event.preventDefault();
+            if (listed && canvasRef.current) {
+              void insertUpload(
+                listed,
+                canvasPoint(canvasRef.current, {
+                  clientX: event.clientX,
+                  clientY: event.clientY,
+                  pressure: 0.5,
+                }),
+              );
+            } else {
+              addUploads(files);
+              setFileMenuOpen(false);
+              setUploadOpen(true);
+            }
+          }}
           ref={viewportRef}
           {...middleMousePan}
         >
@@ -2936,8 +3610,14 @@ export function HandwritingStudio({
             </span>
           )}
           <div
-            className="handwriting-page-shell"
-            style={{ width: displayWidth, height: (displayWidth / PAGE_WIDTH) * PAGE_HEIGHT }}
+            data-page-turn={pageTurn ?? undefined}
+            inert={pageTurn !== null}
+            className={"handwriting-page-shell" + (transforming ? " is-transforming" : "")}
+            style={{
+              width: displayWidth,
+              height: (displayWidth / PAGE_WIDTH) * PAGE_HEIGHT,
+              ["--handwriting-page-width" as string]: displayWidth + "px",
+            }}
           >
             {layerVisibility.background &&
               background &&
@@ -2954,6 +3634,7 @@ export function HandwritingStudio({
                   <div
                     className="handwriting-import-selection"
                     style={{
+                      pointerEvents: "none",
                       left: `${(frame.x / PAGE_WIDTH) * 100}%`,
                       top: `${(frame.y / PAGE_HEIGHT) * 100}%`,
                       width: `${(frame.width / PAGE_WIDTH) * 100}%`,
@@ -3062,7 +3743,7 @@ export function HandwritingStudio({
                 );
               })()}
             {layerVisibility.background &&
-              tool === "select" &&
+              tool === "hand" &&
               !textMode &&
               importedImages.map((image) => (
                 <div
@@ -3421,6 +4102,39 @@ export function HandwritingStudio({
                             ? uiText(330)
                             : uiText(331)
               }
+              onDoubleClick={(event) => {
+                if (tool !== "select" || copiedTextStyle) return;
+                const canvas = canvasRef.current;
+                if (!canvas) return;
+                const id = pickAt(
+                  selectionScene,
+                  canvasPoint(canvas, {
+                    clientX: event.clientX,
+                    clientY: event.clientY,
+                    pressure: 0.5,
+                  }),
+                ).ids.at(-1);
+                const target = stickies.find((item) => item.id === id);
+                if (!target && id !== PAGE_TEXT_SELECTION_ID) return;
+                editObject(target?.id ?? PAGE_TEXT_SELECTION_ID, event.clientX, event.clientY);
+                requestAnimationFrame(() => {
+                  const input = target
+                    ? canvas.parentElement?.querySelector(
+                        '[data-sticky-id="' + CSS.escape(target.id) + '"] textarea',
+                      )
+                    : canvas.parentElement?.querySelector(".handwriting-full-page-text");
+                  if (input instanceof HTMLTextAreaElement) {
+                    input.focus();
+                    input.select();
+                  }
+                });
+              }}
+              onClick={(event) => {
+                const press = objectClickRef.current;
+                objectClickRef.current = null;
+                if (press && Math.hypot(event.clientX - press.x, event.clientY - press.y) <= 3)
+                  editObject(press.id, event.clientX, event.clientY);
+              }}
               onPointerDown={start}
               onPointerMove={move}
               onPointerUp={finish}
@@ -3435,7 +4149,35 @@ export function HandwritingStudio({
               onKeyDown={handleCanvasKeyDown}
             />
             <canvas
+              ref={coordinateCanvasRef}
+              className="handwriting-live-layer"
+              style={{ zIndex: layerDepth("coordinates") }}
+              aria-hidden="true"
+            />
+            <canvas
+              ref={textCanvasRef}
+              className="handwriting-live-layer"
+              style={{ zIndex: layerDepth("text") }}
+              aria-hidden="true"
+            />
+            <canvas
+              ref={inkCanvasRef}
+              className="handwriting-live-layer"
+              style={{ zIndex: layerDepth("strokes") }}
+              aria-hidden="true"
+            />
+            <canvas
+              ref={selectionCanvasRef}
+              className="handwriting-live-layer"
+              style={{ zIndex: completeLayerOrder.length + 1 }}
+              aria-hidden="true"
+            />
+            <canvas
               ref={liveCanvasRef}
+              style={{
+                zIndex: layerDepth("strokes"),
+                visibility: layerVisibility.strokes ? undefined : "hidden",
+              }}
               className="handwriting-live-layer"
               width={PAGE_WIDTH}
               height={PAGE_HEIGHT}
@@ -3456,10 +4198,29 @@ export function HandwritingStudio({
                 <span className="handwriting-remote-cursor__name">{cursor.displayName}</span>
               </div>
             ))}
-            {textMode && layerVisibility.text && (
+            {!textMode && pageText && layerVisibility.text && (
+              <button
+                type="button"
+                className="handwriting-legacy-text-target"
+                aria-label={uiText(332)}
+                style={{
+                  pointerEvents: tool === "select" ? "none" : undefined,
+                  zIndex: layerDepth("text"),
+                  left: (pageTextFrame.x / PAGE_WIDTH) * 100 + "%",
+                  top: (pageTextFrame.y / PAGE_HEIGHT) * 100 + "%",
+                  width: (pageTextFrame.width / PAGE_WIDTH) * 100 + "%",
+                }}
+                onClick={() => {
+                  setEditingTextId(null);
+                  setTextMode(true);
+                }}
+              />
+            )}
+            {textMode && !editingTextId && layerVisibility.text && (
               <div
                 className="handwriting-text-frame"
                 style={{
+                  zIndex: layerDepth("text"),
                   left: `${(pageTextFrame.x / PAGE_WIDTH) * 100}%`,
                   top: `${(pageTextFrame.y / PAGE_HEIGHT) * 100}%`,
                   width: `${(pageTextFrame.width / PAGE_WIDTH) * 100}%`,
@@ -3492,16 +4253,16 @@ export function HandwritingStudio({
                     {uiText(335)}
                   </button>
                   <span>
-                    {pageTextSize}
-                    {uiText(219)}
+                    <PaperDigits value={String(pageTextSize)} />
+                    <b className="handwriting-text-unit">{uiText(219)}</b>
                   </span>
                   <button
                     type="button"
                     aria-label={uiText(336)}
-                    disabled={pageTextSize >= 72}
+                    disabled={pageTextSize >= 144}
                     onClick={() => {
                       remember();
-                      setPageTextSize((size) => Math.min(72, size + 2));
+                      setPageTextSize((size) => Math.min(144, size + 2));
                     }}
                   >
                     {uiText(337)}
@@ -3520,7 +4281,7 @@ export function HandwritingStudio({
                   style={{
                     fontSize: `${(pageTextSize * displayWidth) / PAGE_WIDTH}px`,
                     lineHeight: `${(pageTextSize * (40 / 28) * displayWidth) / PAGE_WIDTH}px`,
-                    color: paperColor === "night" ? "#fff9ef" : "#17151c",
+                    color: pageTextFrame.ink ?? (paperColor === "night" ? "#fff9ef" : "#17151c"),
                   }}
                   onFocus={() => remember()}
                   onBlur={() => {
@@ -3559,64 +4320,197 @@ export function HandwritingStudio({
                 </button>
               </div>
             )}
-            {layerVisibility.stickies &&
-              stickies.map((sticky) => (
-                <HandwritingStickyNote
-                  key={sticky.id}
-                  sticky={sticky}
-                  pageWidth={PAGE_WIDTH}
-                  pageHeight={PAGE_HEIGHT}
-                  isSelected={selectedIds.includes(sticky.id)}
-                  ignorePointer={
-                    tool === "hand" ||
-                    tool === "select" ||
-                    (tool === "eraser" && sticky.kind === "text")
-                  }
-                  menuOpen={stickyMenuId === sticky.id}
-                  colorMenuOpen={stickyColorMenuId === sticky.id}
-                  textAutoCorrect={textAutoCorrect}
-                  onRemember={remember}
-                  onUpdate={(change) => updateSticky(sticky.id, change)}
-                  onDragStart={startStickyDrag}
-                  onDragMove={moveSticky}
-                  onDragEnd={() => {
-                    stickyDragRef.current = null;
-                  }}
-                  onResizeStart={startStickyResize}
-                  onResizeMove={resizeSticky}
-                  onResizeEnd={() => {
-                    stickyResizeRef.current = null;
-                  }}
-                  onToggleMenu={() => {
-                    setStickyMenuId((current) => (current === sticky.id ? null : sticky.id));
-                    setStickyColorMenuId(null);
-                  }}
-                  onToggleColorMenu={() =>
-                    setStickyColorMenuId((current) => (current === sticky.id ? null : sticky.id))
-                  }
-                  onMoveMode={() => setStickyMoving(sticky)}
-                  onToggleChecklist={() => {
-                    toggleStickyChecklist(sticky);
-                    setStickyMenuId(null);
-                  }}
-                  onChangeColor={(nextColor) => {
-                    remember();
-                    updateSticky(sticky.id, { color: nextColor });
-                    setStickyMenuId(null);
-                    setStickyColorMenuId(null);
-                  }}
-                  onLayer={(direction) => moveStickyLayer(sticky.id, direction)}
-                  onRemove={() => {
-                    removeSticky(sticky.id);
-                    setStickyMenuId(null);
-                  }}
-                  onUpdateChecklistItem={(itemId, change) =>
-                    updateChecklistItem(sticky, itemId, change)
-                  }
-                  onRemoveChecklistItem={(itemId) => removeChecklistItem(sticky, itemId)}
-                  onAddChecklistItem={() => addChecklistItem(sticky)}
-                />
-              ))}
+            {styleMessage && (
+              <span className="handwriting-style-status" role="status">
+                {styleMessage}
+              </span>
+            )}
+            {floatingSelection && !transforming && !copiedTextStyle && (
+              <HandwritingSelectionToolbar
+                selection={floatingSelection}
+                canvasRef={canvasRef}
+                viewportRef={viewportRef}
+                depth={completeLayerOrder.length + 2}
+                onRotationSideChange={setRotationSide}
+              >
+                <HandwritingToolTips
+                  className="handwriting-selection-float__tools"
+                  role="group"
+                  label={uiText(195)}
+                >
+                  <button type="button" aria-label={uiText(201)} onClick={copySelection}>
+                    <PaperEditorIcon name="copyLink" />
+                  </button>
+                  <button type="button" aria-label={uiText(204)} onClick={duplicateSelection}>
+                    <PaperEditorIcon name="add" />
+                  </button>
+                  <button type="button" aria-label={uiText(210)} onClick={deleteSelection}>
+                    <PaperEditorIcon name="trash" />
+                  </button>
+                  {selectedText && (
+                    <button
+                      type="button"
+                      aria-label={uiText(3788)}
+                      aria-pressed={Boolean(copiedTextStyle)}
+                      onClick={copyTextStyle}
+                    >
+                      <PaperEditorIcon name="highlighter" />
+                    </button>
+                  )}
+                  <details
+                    key={selectedIds.join(",")}
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape" && event.currentTarget.open) {
+                        event.stopPropagation();
+                        event.currentTarget.open = false;
+                        event.currentTarget.querySelector("summary")?.focus();
+                      }
+                    }}
+                  >
+                    <summary aria-label={uiText(195)}>
+                      <PaperEditorIcon name="more" />
+                    </summary>
+                    <div
+                      className="handwriting-selection-float__menu"
+                      onClick={(event) => {
+                        if (event.target instanceof Element && event.target.closest("button"))
+                          event.currentTarget.closest("details")?.removeAttribute("open");
+                      }}
+                    >
+                      <button type="button" onClick={cutSelection}>
+                        <PaperEditorIcon name="cut" />
+                        {uiText(203)}
+                      </button>
+                      <button type="button" disabled={!canPaste} onClick={pasteSelection}>
+                        <PaperEditorIcon name="selectionPaste" />
+                        {uiText(200)}
+                      </button>
+                      {strokes.some((stroke) => selectedIds.includes(stroke.id)) && (
+                        <button type="button" onClick={alignSelection}>
+                          <PaperEditorIcon name="select" />
+                          {uiText(205)}
+                        </button>
+                      )}
+                      {selectedSticky?.kind === undefined && selectedSticky && (
+                        <button type="button" onClick={() => toggleStickyChecklist(selectedSticky)}>
+                          <PaperEditorIcon name="review" />
+                          {selectedSticky.checklist?.length ? uiText(269) : uiText(1688)}
+                        </button>
+                      )}
+                      {selectedSticky && selectedSticky.kind !== "text" && (
+                        <div
+                          className="handwriting-selection-float__colors"
+                          aria-label={uiText(271)}
+                        >
+                          {(["yellow", "blue", "lilac"] as const).map((nextColor) => (
+                            <button
+                              type="button"
+                              key={nextColor}
+                              aria-label={uiText(1691, [
+                                nextColor === "yellow"
+                                  ? "amarela"
+                                  : nextColor === "blue"
+                                    ? "azul"
+                                    : uiText(1690),
+                              ])}
+                              aria-pressed={selectedSticky.color === nextColor}
+                              style={{
+                                background:
+                                  nextColor === "yellow"
+                                    ? "#ffedab"
+                                    : nextColor === "blue"
+                                      ? "#bfdef1"
+                                      : "#ddc7f5",
+                              }}
+                              onClick={() => {
+                                remember();
+                                updateSticky(selectedSticky.id, { color: nextColor });
+                              }}
+                            />
+                          ))}
+                        </div>
+                      )}
+                      <button type="button" onClick={exportSelectedPng}>
+                        <PaperEditorIcon name="download" />
+                        {uiText(3795)}
+                      </button>
+                    </div>
+                  </details>
+                </HandwritingToolTips>
+              </HandwritingSelectionToolbar>
+            )}
+            {layerVisibility.stickies && (
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  zIndex: layerDepth("stickies"),
+                  pointerEvents: "none",
+                }}
+              >
+                {stickies.map((sticky) => (
+                  <HandwritingStickyNote
+                    key={sticky.id}
+                    sticky={sticky}
+                    selectionManaged
+                    pageWidth={PAGE_WIDTH}
+                    pageHeight={PAGE_HEIGHT}
+                    isSelected={!textMode && selectedIds.includes(sticky.id)}
+                    ignorePointer={!textMode || editingTextId !== sticky.id}
+                    menuOpen={stickyMenuId === sticky.id}
+                    {...(sticky.kind === "text" && !sticky.formula
+                      ? {
+                          editingText: textMode && editingTextId === sticky.id,
+                          onEditText: () => {
+                            setEditingTextId(sticky.id);
+                            setTextMode(true);
+                          },
+                        }
+                      : {})}
+                    colorMenuOpen={stickyColorMenuId === sticky.id}
+                    textAutoCorrect={textAutoCorrect}
+                    onRemember={remember}
+                    onUpdate={(change) => updateSticky(sticky.id, change)}
+                    onDragStart={startStickyDrag}
+                    onDragMove={moveSticky}
+                    onDragEnd={() => {
+                      stickyDragRef.current = null;
+                    }}
+                    onResizeStart={startStickyResize}
+                    onResizeMove={resizeSticky}
+                    onResizeEnd={() => {
+                      stickyResizeRef.current = null;
+                    }}
+                    onToggleMenu={() => {
+                      setStickyMenuId((current) => (current === sticky.id ? null : sticky.id));
+                      setStickyColorMenuId(null);
+                    }}
+                    onToggleColorMenu={() =>
+                      setStickyColorMenuId((current) => (current === sticky.id ? null : sticky.id))
+                    }
+                    onToggleChecklist={() => {
+                      toggleStickyChecklist(sticky);
+                      setStickyMenuId(null);
+                    }}
+                    onChangeColor={(nextColor) => {
+                      remember();
+                      updateSticky(sticky.id, { color: nextColor });
+                      setStickyMenuId(null);
+                      setStickyColorMenuId(null);
+                    }}
+                    onRemove={() => {
+                      removeSticky(sticky.id);
+                      setStickyMenuId(null);
+                    }}
+                    onUpdateChecklistItem={(itemId, change) =>
+                      updateChecklistItem(sticky, itemId, change)
+                    }
+                    onRemoveChecklistItem={(itemId) => removeChecklistItem(sticky, itemId)}
+                    onAddChecklistItem={() => addChecklistItem(sticky)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
         {showBrushPanel && (
@@ -3648,7 +4542,7 @@ export function HandwritingStudio({
             layerVisibility={layerVisibility}
             visibleLayerOrder={visibleLayerOrder}
             onToggleLayer={toggleLayerVisibility}
-            onMoveLayer={moveLayer}
+            onMoveLayer={(layer, direction) => moveLayer(layer, direction === -1 ? 1 : -1)}
           />
         )}
       </div>
@@ -3662,19 +4556,37 @@ export function HandwritingStudio({
       {preferenceError && <p role="status">{preferenceError}</p>}
       {error && <p className="capture-error">{uiText(error)}</p>}
       {onSelectPage && onCreatePage && (
-        <NotebookPageBook
-          pages={notebookPages}
-          currentPageId={currentPageId ?? draftKey}
+        <div
+          className="handwriting-page-navigation"
+          data-open={pageNavigationOpen}
           inert={fileAction === "import"}
-          onSelect={(id) => switchPage(() => onSelectPage?.(id))}
-          onCreate={() => switchPage(() => onCreatePage())}
-          {...(onRemovePage ? { onRemove: onRemovePage } : {})}
-          {...(onMovePage ? { onMove: onMovePage } : {})}
-        />
+        >
+          <button
+            type="button"
+            className="handwriting-page-navigation__toggle"
+            aria-label={uiText(695)}
+            aria-expanded={pageNavigationOpen}
+            onClick={() => setPageNavigationOpen((open) => !open)}
+          >
+            <FocusPaperArrow />
+          </button>
+          <NotebookPageBook
+            pages={notebookPages}
+            currentPreview={navigationPreview}
+            onTurn={setPageTurn}
+            currentPageId={currentPageId ?? draftKey}
+            inert={!pageNavigationOpen}
+            onSelect={(id) => switchPage(() => onSelectPage?.(id))}
+            onCreate={() => switchPage(() => onCreatePage())}
+            {...(onRemovePage ? { onRemove: onRemovePage } : {})}
+            {...(onMovePage ? { onMove: onMovePage } : {})}
+          />
+        </div>
       )}
       {fileAction === "import" && (
         <Suspense fallback={<HelenaLoading label={uiText(343)} compact />}>
           <PageImport
+            initialFile={incomingFile}
             onClose={closeImport}
             onImportMany={(pages) => {
               onImportPages?.(pages);
@@ -3682,19 +4594,8 @@ export function HandwritingStudio({
             }}
             onImport={(image, frame) => {
               if (!frame) return;
-              if (importedImages.length >= 20) {
-                setError(uiText(1709));
-                closeImport();
-                return;
-              }
-              remember();
-              setImportedImages((current) => [
-                ...current,
-                { id: strokeId(), dataUrl: image, ...frame },
-              ]);
-              setTool("select");
+              placeUpload(image, frame.width, frame.height, dropPoint);
               closeImport();
-              setError("");
             }}
           />
         </Suspense>

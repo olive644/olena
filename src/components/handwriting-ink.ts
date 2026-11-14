@@ -38,6 +38,11 @@ function nibAngle(point: HandwritingPoint): number {
 // Diâmetro que o pincel pede para um ponto, antes da suavização ao longo do traço.
 function targetDiameter(stroke: InkStroke, point: HandwritingPoint, direction: number): number {
   const pressure = stroke.tool === "pen" ? point.pressure : 0.7;
+  if (stroke.brush === "ballpoint") return stroke.width * (0.45 + pressure * 0.35);
+  if (stroke.brush === "pencil") return stroke.width * (0.3 + pressure * 0.9);
+  if (stroke.brush === "calligraphy") {
+    return stroke.width * (0.35 + 2 * Math.abs(Math.sin(direction - nibAngle(point))));
+  }
   if (stroke.brush === "ink") {
     return (
       stroke.width *

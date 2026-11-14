@@ -1,6 +1,7 @@
+import { FocusPaperArrow } from "./focus-paper-arrow";
+import { HandwritingToolTips } from "./handwriting-tool-tips";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { PaperEditorIcon } from "./paper-editor-icon";
-import { PaperObjectIcon } from "./paper-object-icon";
 import type { HandwritingTool } from "./handwriting-types";
 import type { RulerUnit } from "../domain/ruler";
 
@@ -34,14 +35,12 @@ export function HandwritingToolGroup({
   onOpenShapeInsert,
 }: HandwritingToolGroupProps) {
   useLanguage();
-
   return (
-    <div className="handwriting-tool-group" aria-label={uiText(344)}>
+    <HandwritingToolTips className="handwriting-tool-group" label={uiText(344)}>
       <button
         type="button"
         className={!textMode && tool === "ruler" ? "is-active" : ""}
         aria-label={uiText(345)}
-        title={uiText(346)}
         aria-pressed={!textMode && tool === "ruler"}
         onClick={() => onSelectTool("ruler")}
       >
@@ -52,49 +51,57 @@ export function HandwritingToolGroup({
           {rulerUnit}
         </b>
         <span>{uiText(345)}</span>
+        {!textMode && tool === "ruler" && (
+          <span className="handwriting-tool-disclosure">
+            <FocusPaperArrow />
+          </span>
+        )}
       </button>
       <button
         type="button"
         className={!textMode && tool === "curve" ? "is-active" : ""}
         aria-label={uiText(347)}
-        title={uiText(348)}
         aria-pressed={!textMode && tool === "curve"}
         onClick={() => onSelectTool("curve")}
       >
-        <PaperObjectIcon name="curve" /> <span>{uiText(347)}</span>
-      </button>
-      <button
-        type="button"
-        className={!textMode && tool === "space" ? "is-active" : ""}
-        aria-label={uiText(349)}
-        title={uiText(350)}
-        aria-pressed={!textMode && tool === "space"}
-        onClick={() => onSelectTool("space")}
-      >
-        <PaperObjectIcon name="space" /> <span>{uiText(115)}</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <use href="/navigation-icons/paper/notebook-tool-curve.svg#art" />
+        </svg>{" "}
+        <span>{uiText(347)}</span>
+        {!textMode && tool === "curve" && (
+          <span className="handwriting-tool-disclosure">
+            <FocusPaperArrow />
+          </span>
+        )}
       </button>
       <button
         type="button"
         className={!textMode && tool === "coordinates" ? "is-active" : ""}
         aria-label={uiText(250)}
-        title={uiText(351)}
         aria-pressed={!textMode && tool === "coordinates"}
         onClick={() => onSelectTool("coordinates")}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-          <use href="/navigation-icons/paper/handwriting-static-1.svg#art" />
+          <use href="/navigation-icons/paper/notebook-tool-coordinates.svg#art" />
         </svg>
         <span>{uiText(352)}</span>
+        {!textMode && tool === "coordinates" && (
+          <span className="handwriting-tool-disclosure">
+            <FocusPaperArrow />
+          </span>
+        )}
       </button>
       <button
         type="button"
         className={layersOpen ? "is-active" : ""}
         aria-label={uiText(260)}
         aria-pressed={layersOpen}
-        title={uiText(353)}
         onClick={() => onToggleLayers()}
       >
-        <PaperEditorIcon name="layers" /> <span>{uiText(354)}</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <use href="/navigation-icons/paper/notebook-tool-layers.svg#art" />
+        </svg>{" "}
+        <span>{uiText(354)}</span>
       </button>
       <button
         type="button"
@@ -103,7 +110,12 @@ export function HandwritingToolGroup({
         aria-pressed={!textMode && tool === "pen"}
         onClick={() => onSelectTool("pen")}
       >
-        <PaperEditorIcon name="pen" /> <span>{uiText(355)}</span>
+        <PaperEditorIcon name="pen" />
+        {!textMode && tool === "pen" && (
+          <span className="handwriting-tool-disclosure">
+            <FocusPaperArrow />
+          </span>
+        )}
       </button>
       <button
         type="button"
@@ -113,6 +125,11 @@ export function HandwritingToolGroup({
         onClick={() => onSelectTool("highlighter")}
       >
         <PaperEditorIcon name="highlighter" /> <span>{uiText(356)}</span>
+        {!textMode && tool === "highlighter" && (
+          <span className="handwriting-tool-disclosure">
+            <FocusPaperArrow />
+          </span>
+        )}
       </button>
       <button
         type="button"
@@ -122,6 +139,11 @@ export function HandwritingToolGroup({
         onClick={() => onSelectTool("eraser")}
       >
         <PaperEditorIcon name="eraser" /> <span>{uiText(357)}</span>
+        {!textMode && tool === "eraser" && (
+          <span className="handwriting-tool-disclosure">
+            <FocusPaperArrow />
+          </span>
+        )}
       </button>
       <button
         type="button"
@@ -143,24 +165,16 @@ export function HandwritingToolGroup({
       <button type="button" aria-label={uiText(362)} onClick={() => onAddSticky()}>
         <PaperEditorIcon name="sticky" /> <span>{uiText(363)}</span>
       </button>
-      <button
-        type="button"
-        aria-label={uiText(364)}
-        title={uiText(365)}
-        onClick={() => onAddTable()}
-      >
+      <button type="button" aria-label={uiText(364)} onClick={() => onAddTable()}>
         <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-          <use href="/navigation-icons/paper/handwriting-static-2.svg#art" />
+          <use href="/navigation-icons/paper/notebook-tool-table.svg#art" />
         </svg>
         <span>{uiText(366)}</span>
       </button>
-      <button
-        type="button"
-        aria-label={uiText(229)}
-        title={uiText(367)}
-        onClick={() => onOpenShapeInsert()}
-      >
-        <PaperObjectIcon name="shapes" />
+      <button type="button" aria-label={uiText(229)} onClick={() => onOpenShapeInsert()}>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <use href="/navigation-icons/paper/notebook-tool-shapes.svg#art" />
+        </svg>
         <span>{uiText(229)}</span>
       </button>
       <button
@@ -172,6 +186,6 @@ export function HandwritingToolGroup({
       >
         <PaperEditorIcon name="zoomIn" /> <span>{uiText(369)}</span>
       </button>
-    </div>
+    </HandwritingToolTips>
   );
 }

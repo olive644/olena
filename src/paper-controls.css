@@ -1,5 +1,5 @@
 /* Shared cut-paper selection mark, including handwriting preferences. */
-:root body input[type="checkbox"] {
+:root body :is(input[type="checkbox"], .notebook-export-options input[type="radio"]) {
   appearance: none;
   display: inline-grid;
   place-items: center;
@@ -13,7 +13,7 @@
   cursor: pointer;
   vertical-align: middle;
 }
-:root body input[type="checkbox"]::after {
+:root body :is(input[type="checkbox"], .notebook-export-options input[type="radio"])::after {
   content: "";
   width: 16px;
   height: 16px;
@@ -21,19 +21,19 @@
   clip-path: none;
   transform: scale(0);
 }
-:root body input[type="checkbox"]:checked {
+:root body :is(input[type="checkbox"], .notebook-export-options input[type="radio"]):checked {
   background: #facc15;
   border-color: #b99100;
   box-shadow: 0 2px 0 #a98200;
 }
-:root body input[type="checkbox"]:checked::after {
+:root body :is(input[type="checkbox"], .notebook-export-options input[type="radio"]):checked::after {
   transform: scale(1);
 }
-:root body input[type="checkbox"]:focus-visible {
+:root body :is(input[type="checkbox"], .notebook-export-options input[type="radio"]):focus-visible {
   outline: none;
   box-shadow: 0 4px 0 #facc15;
 }
-:root body input[type="checkbox"]:disabled {
+:root body :is(input[type="checkbox"], .notebook-export-options input[type="radio"]):disabled {
   cursor: not-allowed;
   opacity: 0.55;
 }
@@ -299,10 +299,10 @@
   }
 }
 @media (forced-colors: active) {
-  :root body input[type="checkbox"] {
+  :root body :is(input[type="checkbox"], .notebook-export-options input[type="radio"]) {
     appearance: auto;
   }
-  :root body input[type="checkbox"]::after {
+  :root body :is(input[type="checkbox"], .notebook-export-options input[type="radio"])::after {
     display: none;
   }
   .local-room-step-slider input[type="range"] {

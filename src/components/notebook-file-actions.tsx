@@ -1,3 +1,8 @@
+import { NotebookToolIcon } from "./notebook-tool-icon";
+import { NotebookPageIndex } from "./notebook-page-index";
+import { FocusPaperArrow } from "./focus-paper-arrow";
+import { PaperCloseIcon } from "./paper-close-icon";
+import { HandwritingToolTips } from "./handwriting-tool-tips";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { PaperEditorIcon } from "./paper-editor-icon";
@@ -10,11 +15,14 @@ import type { ReactNode } from "react";
 
 type Props = {
   settings?: ReactNode;
+  uploadOpen?: boolean;
+  uploadPanel?: ReactNode;
   pages: StudyNote[];
   currentPageId: string;
   currentImage: () => string;
   onUpload: () => void;
   onSave: () => void;
+  selectionImage?: (() => string) | undefined;
   onPng: () => void;
   onPdf: () => void;
   onPrint: () => void;
@@ -24,9 +32,12 @@ type Props = {
 
 export function NotebookFileActions({
   settings,
+  uploadOpen,
+  uploadPanel,
   pages,
   currentPageId,
   currentImage,
+  selectionImage,
   onUpload,
   onSave,
   onPng,
@@ -42,6 +53,9 @@ export function NotebookFileActions({
   const setMenu = onMenuChange ?? setLocalMenu;
   const [selection, setSelection] = useState<"download" | "link" | null>(null);
   const [selected, setSelected] = useState<string[]>([currentPageId]);
+  const [indexOpen, setIndexOpen] = useState(false);
+  const [scope, setScope] = useState<"all" | "page" | "selection" | "custom">("page");
+  const [format, setFormat] = useState<"png" | "pdf">("pdf");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [link, setLink] = useState("");
@@ -57,16 +71,36 @@ export function NotebookFileActions({
     setBusy(true);
     setError("");
     try {
-      const snapshots = options
-        .filter((page) => selected.includes(page.id))
-        .map((page) => ({
-          title: page.title || uiText(2068),
-          image: page.id === currentPageId ? currentImage() : page.assets[0]?.dataUrl,
-        }));
+      const snapshots =
+        scope === "selection"
+          ? [{ title: uiText(3852), image: selectionImage?.() }]
+          : options
+              .filter(
+                (page) =>
+                  scope === "all" ||
+                  (scope === "page" ? page.id === currentPageId : selected.includes(page.id)),
+              )
+              .map((page) => ({
+                title: page.title || uiText(2068),
+                image: page.id === currentPageId ? currentImage() : page.assets[0]?.dataUrl,
+              }));
       if (!snapshots.length || snapshots.some((page) => !page.image)) throw new Error(uiText(672));
       const ready = snapshots.map((page) => ({ title: page.title, image: page.image! }));
       if (selection === "download") {
-        await downloadNotebookPdf(ready.map((page) => page.image));
+        if (scope === "page") {
+          if (format === "png") onPng();
+          else onPdf();
+        } else if (format === "pdf") {
+          await downloadNotebookPdf(
+            ready.map((page) => page.image),
+            scope !== "selection",
+          );
+        } else {
+          const anchor = document.createElement("a");
+          anchor.href = ready[0]!.image;
+          anchor.download = "selecao-do-caderno.png";
+          anchor.click();
+        }
         setSelection(null);
       } else {
         const token = await roomAppCheckToken();
@@ -96,26 +130,41 @@ export function NotebookFileActions({
     }
   }
 
-  function openSelection(kind: "download" | "link") {
+  function openSelection(kind: "download" | "link", choosePages = false) {
     setMenu(false);
     setSelection(kind);
+    setIndexOpen(choosePages);
+    setScope("page");
+    setFormat("pdf");
     setSelected([currentPageId]);
     setError("");
     setLink("");
   }
 
   return (
-    <div className="notebook-file-tools" role="group" aria-label={uiText(675)}>
+    <HandwritingToolTips className="notebook-file-tools" role="group" label={uiText(675)}>
       <span className="notebook-file-tools__label">{uiText(675)}</span>
       {settings}
-      <button type="button" aria-label={uiText(676)} title={uiText(676)} onClick={onUpload}>
+      <button type="button" aria-label={uiText(676)} aria-expanded={uploadOpen} onClick={onUpload}>
         <PaperEditorIcon name="cloudUpload" />
         <span>{uiText(676)}</span>
       </button>
+      {uploadOpen && (
+        <div
+          className="notebook-file-popover notebook-upload-popover"
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              event.stopPropagation();
+              onUpload();
+            }
+          }}
+        >
+          {uploadPanel}
+        </div>
+      )}
       <button
         type="button"
         aria-label={uiText(677)}
-        title={uiText(677)}
         aria-expanded={menu}
         onClick={() => setMenu(!menu)}
       >
@@ -125,7 +174,6 @@ export function NotebookFileActions({
       <button
         type="button"
         aria-label={uiText(678)}
-        title={uiText(678)}
         onClick={() => {
           onSave();
           setMenu(false);
@@ -145,23 +193,9 @@ export function NotebookFileActions({
           }}
         >
           <>
-            <button
-              type="button"
-              onClick={() => {
-                onPng();
-                setMenu(false);
-              }}
-            >
-              {uiText(679)}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                onPdf();
-                setMenu(false);
-              }}
-            >
-              {uiText(680)}
+            <button type="button" onClick={() => openSelection("download")}>
+              <PaperEditorIcon name="download" />
+              {uiText(1472)}
             </button>
             <button
               type="button"
@@ -170,26 +204,26 @@ export function NotebookFileActions({
                 setMenu(false);
               }}
             >
+              <PaperEditorIcon name="print" />
               {uiText(681)}
             </button>
             {options.length > 1 && (
-              <button type="button" onClick={() => openSelection("download")}>
+              <button type="button" onClick={() => openSelection("download", true)}>
+                <NotebookToolIcon name="index" />
                 {uiText(682)}
               </button>
             )}
             <button type="button" onClick={() => openSelection("link")}>
+              <PaperEditorIcon name="copyLink" />
               {uiText(683)}
             </button>
           </>
-          <button type="button" onClick={() => setMenu(false)}>
-            {uiText(123)}
-          </button>
         </div>
       )}
       {selection && (
         <dialog
           ref={dialogRef}
-          className="notebook-pages-dialog"
+          className="notebook-pages-dialog notebook-export-options"
           aria-modal="true"
           onCancel={(event) => {
             event.preventDefault();
@@ -203,29 +237,106 @@ export function NotebookFileActions({
             }
           }}
         >
-          <h3>{selection === "link" ? uiText(684) : uiText(1806)}</h3>
+          <header>
+            <h3>{selection === "link" ? uiText(684) : uiText(1806)}</h3>
+            <button
+              type="button"
+              className="sheet-close"
+              aria-label={uiText(230)}
+              disabled={busy}
+              onClick={() => setSelection(null)}
+            >
+              <PaperCloseIcon />
+            </button>
+          </header>
           {selection === "link" && <p>{uiText(685)}</p>}
           {!link && (
-            <div className="notebook-pages-dialog__list">
-              {options.map((page) => (
-                <label key={page.id}>
+            <fieldset disabled={busy}>
+              <legend>{uiText(3849)}</legend>
+              {(
+                [
+                  ["all", 3850],
+                  ["page", 3851],
+                  ["selection", 3852],
+                  ["custom", 3853],
+                ] as const
+              ).map(([value, label]) => (
+                <label key={value}>
                   <input
-                    type="checkbox"
-                    checked={selected.includes(page.id)}
-                    disabled={busy}
-                    onChange={() =>
-                      setSelected((ids) =>
-                        ids.includes(page.id)
-                          ? ids.filter((id) => id !== page.id)
-                          : [...ids, page.id],
-                      )
-                    }
+                    type="radio"
+                    checked={scope === value}
+                    disabled={value === "selection" && !selectionImage}
+                    onClick={value === "custom" ? () => setIndexOpen(true) : undefined}
+                    onChange={() => {
+                      if (value === "custom") {
+                        setIndexOpen(true);
+                        return;
+                      }
+                      setScope(value);
+                      if (value === "all") setFormat("pdf");
+                    }}
                   />
-                  {page.title || uiText(2068)}
-                  {page.id === currentPageId ? uiText(1807) : ""}
+                  {uiText(label)}
                 </label>
               ))}
-            </div>
+              {selection === "download" && (
+                <label>
+                  {uiText(3854)}
+                  <span className="notebook-export-format">
+                    <select
+                      value={format}
+                      onChange={(event) => setFormat(event.target.value === "png" ? "png" : "pdf")}
+                    >
+                      <option value="pdf">PDF</option>
+                      <option value="png" disabled={scope === "all" || scope === "custom"}>
+                        PNG
+                      </option>
+                    </select>
+                    <FocusPaperArrow />
+                  </span>
+                </label>
+              )}
+            </fieldset>
+          )}
+          {!link && scope === "custom" && (
+            <button
+              type="button"
+              className="secondary-button"
+              disabled={busy}
+              onClick={() => setIndexOpen(true)}
+            >
+              {uiText(3853)} · {selected.length}
+            </button>
+          )}
+          {indexOpen && (
+            <NotebookPageIndex
+              pages={
+                pages.length
+                  ? pages
+                  : [
+                      {
+                        id: currentPageId,
+                        title: uiText(1804),
+                        assets: [],
+                        content: "",
+                        subjectId: "",
+                        updatedAt: "",
+                      },
+                    ]
+              }
+              currentPageId={currentPageId}
+              onSelect={() => {}}
+              onClose={() => setIndexOpen(false)}
+              selection={{
+                ids: selected,
+                onConfirm: (ids) => {
+                  setSelected(ids);
+                  setScope("custom");
+                  setFormat("pdf");
+                  setIndexOpen(false);
+                },
+              }}
+            />
           )}
           {link && (
             <label>
@@ -243,10 +354,10 @@ export function NotebookFileActions({
           {!link && (
             <button
               type="button"
-              disabled={busy || !selected.length}
+              disabled={busy || (scope === "custom" && !selected.length)}
               onClick={() => void confirmSelection()}
             >
-              {selection === "link" ? uiText(1808) : uiText(1809)}
+              {selection === "link" ? uiText(1808) : uiText(3855)}
             </button>
           )}
           {link && (
@@ -261,11 +372,8 @@ export function NotebookFileActions({
               {uiText(461)}
             </button>
           )}
-          <button type="button" disabled={busy} onClick={() => setSelection(null)}>
-            {uiText(230)}
-          </button>
         </dialog>
       )}
-    </div>
+    </HandwritingToolTips>
   );
 }

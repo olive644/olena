@@ -3,8 +3,10 @@ export function stickyTextLayout(
   measure: (text: string, size: number) => number,
   maxWidth = 224,
   maxHeight = 174,
+  preferredSize = 25,
+  fit = true,
 ) {
-  for (let fontSize = 25; fontSize >= 0.25; fontSize -= 0.25) {
+  for (let fontSize = preferredSize; fontSize >= 0.25; fontSize -= 0.25) {
     const lines = text.split("\n").flatMap((paragraph) => {
       const result: string[] = [];
       let line = "";
@@ -17,7 +19,7 @@ export function stickyTextLayout(
       }
       return [...result, line];
     });
-    if (lines.length * fontSize * 1.3 <= maxHeight) return { fontSize, lines };
+    if (!fit || lines.length * fontSize * 1.3 <= maxHeight) return { fontSize, lines };
   }
   return { fontSize: 0.25, lines: [text] };
 }

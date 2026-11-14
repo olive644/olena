@@ -1,3 +1,23 @@
+.handwriting-tool-tip {
+  --nav-tip-paper: #fff9ef;
+  --nav-tip-ink: #292432;
+  --nav-tip-fold: #eee5d3;
+}
+.app-shell > .sidebar:not(.sidebar--expanded) .nav-item > span:last-child,
+:root .notebook-2d-dock .notebook-paper-tool[aria-label]::after,
+.handwriting-tool-tip {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 3px 9px 3px 6px;
+  background-color: var(--nav-tip-paper);
+  background-image: linear-gradient(135deg, var(--nav-tip-fold) 0 7px, transparent 7px);
+  color: var(--nav-tip-ink);
+  box-shadow: 0 3px 0 var(--line);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
 @media (min-width: 900px) {
   .app-shell > .sidebar {
     --nav-tip-paper: #fff9ef;
@@ -15,17 +35,6 @@
     top: 50%;
     width: max-content;
     max-width: 180px;
-    padding: 6px 10px;
-    border: 1px solid var(--line);
-    border-radius: 3px 9px 3px 6px;
-    background-color: var(--nav-tip-paper);
-    background-image: linear-gradient(135deg, var(--nav-tip-fold) 0 7px, transparent 7px);
-    color: var(--nav-tip-ink);
-    box-shadow: 0 3px 0 var(--line);
-    font-size: 0.7rem;
-    font-weight: 700;
-    line-height: 1.3;
-    white-space: nowrap;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;

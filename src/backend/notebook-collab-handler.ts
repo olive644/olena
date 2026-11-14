@@ -391,6 +391,9 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
               avatarUrl: sanitizeNotebookCollabAvatar(body["avatarUrl"]),
             }
           : undefined,
+        typeof body["pageId"] === "string" && body["pageId"].length <= 120
+          ? body["pageId"]
+          : undefined,
       );
       const publicState = await save(updated);
       return jsonResponse(200, {

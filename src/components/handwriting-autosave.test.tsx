@@ -41,6 +41,7 @@ it("confirma o salvamento manual e não confirma quando salvar falha", async () 
 
 it("waits for imported images and retries autosave when they finish loading", async () => {
   vi.useFakeTimers();
+  vi.spyOn(exportTools, "exportPage").mockReturnValue("data:image/png;base64,YQ==");
   vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null);
   vi.spyOn(HTMLCanvasElement.prototype, "toDataURL").mockReturnValue("data:image/png;base64,YQ==");
   const images: { onload?: () => void; src: string }[] = [];
@@ -87,7 +88,7 @@ it("waits for imported images and retries autosave when they finish loading", as
     />,
   );
   fireEvent.click(screen.getByRole("button", { name: "Tipo de papel" }));
-  fireEvent.click(screen.getByRole("button", { name: "Plano semanal" }));
+  fireEvent.click(screen.getByRole("button", { name: "Pautado" }));
   await act(async () => {
     vi.advanceTimersByTime(1000);
   });
@@ -100,6 +101,17 @@ it("waits for imported images and retries autosave when they finish loading", as
   });
   expect(onAutosave).toHaveBeenCalledTimes(1);
   expect(isHandwritingDocument(onAutosave.mock.calls[0]?.[1])).toBe(true);
-  expect(onAutosave.mock.calls[0]?.[1].pageTextFrame.width).toBe(980);
+  expect(onAutosave.mock.calls[0]?.[1].canvasSize).toEqual({ width: 3200, height: 2400 });
+  expect(onAutosave.mock.calls[0]?.[1].strokes[0].points[0]).toEqual({
+    x: 3000,
+    y: 2200,
+    pressure: 0.5,
+  });
+  expect(onAutosave.mock.calls[0]?.[1].images[0]).toMatchObject({
+    x: 3000,
+    y: 2200,
+    width: 100,
+    height: 100,
+  });
   expect(screen.queryByText(/Falha ao salvar/)).toBeNull();
 });

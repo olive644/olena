@@ -36,6 +36,9 @@ export function fitHandwriting(
     stickies:
       document.stickies?.map((sticky) => ({
         ...sticky,
+        ...(sticky.textSize === undefined
+          ? {}
+          : { textSize: Math.max(4, sticky.textSize * scale) }),
         ...frame({ ...sticky, width: sticky.width ?? 220, height: sticky.height ?? 180 }, 160, 120),
       })) ?? [],
     images: document.images?.map((image) => ({ ...image, ...frame(image, 40, 40) })) ?? [],
@@ -46,6 +49,8 @@ export function fitHandwriting(
         end: point(system.end),
       })) ?? [],
     ...(document.backgroundFrame ? { backgroundFrame: frame(document.backgroundFrame) } : {}),
-    ...(document.pageTextFrame ? { pageTextFrame: frame(document.pageTextFrame, 120, 60) } : {}),
+    ...(document.pageTextFrame
+      ? { pageTextFrame: { ...document.pageTextFrame, ...frame(document.pageTextFrame, 120, 60) } }
+      : {}),
   };
 }

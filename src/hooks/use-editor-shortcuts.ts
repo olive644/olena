@@ -1,5 +1,11 @@
 import { useEffect, useRef, type RefObject } from "react";
+import { useNotebookShortcuts, shortcutFromEvent } from "../data/notebook-shortcuts";
 import type { HandwritingTool } from "../components/handwriting-types";
+import {
+  NOTEBOOK_TOOL_SHORTCUTS,
+  NOTEBOOK_INSERT_SHORTCUTS,
+  NOTEBOOK_SHORTCUTS,
+} from "../components/notebook-shortcut-catalog";
 
 export type EditorShortcutState = {
   tool: HandwritingTool;
@@ -15,6 +21,9 @@ export type EditorShortcutState = {
   paste: () => void;
   duplicate: () => void;
   selectAll: () => void;
+  copyStyle?: () => void;
+  insert?: (kind: "text" | "sticky" | "table") => void;
+  cycleSelection?: (direction: -1 | 1) => void;
   // Com algo selecionado, as setas empurram a seleção (Shift: dez vezes mais).
   hasSelection: boolean;
   nudge: (dx: number, dy: number) => void;
@@ -40,8 +49,12 @@ export function useEditorShortcuts(
   viewportRef: RefObject<HTMLElement | null>,
 ) {
   const latest = useRef(state);
+  const { settings } = useNotebookShortcuts();
+  const bindings = useRef(settings.bindings);
+  const holdKey = useRef("");
   useEffect(() => {
     latest.current = state;
+    bindings.current = settings.bindings;
   });
   // Ferramenta que estava ativa antes de o Espaço trocar para a mão.
   const spaceTool = useRef<HandwritingTool | null>(null);
@@ -60,95 +73,103 @@ export function useEditorShortcuts(
     function onKeyDown(event: KeyboardEvent) {
       const current = latest.current;
       if (current.fileAction || current.writingWindowOpen || isEditableTarget(event.target)) return;
-      const ctrlOrCmd = event.ctrlKey || event.metaKey;
-      if (ctrlOrCmd && event.key.toLowerCase() === "z") {
-        event.preventDefault();
-        if (event.shiftKey) current.redo();
-        else current.undo();
-        return;
-      }
-      if (ctrlOrCmd && current.tool === "select") {
-        const actions: Record<string, () => void> = {
-          c: current.copy,
-          x: current.cut,
-          v: current.paste,
-          d: current.duplicate,
-          a: current.selectAll,
-        };
-        const action = actions[event.key.toLowerCase()];
-        if (action) {
-          event.preventDefault();
-          action();
-          return;
-        }
-      }
-      if (ctrlOrCmd && event.key.toLowerCase() === "y") {
-        event.preventDefault();
-        current.redo();
-        return;
-      }
-      if (ctrlOrCmd && (event.key === "+" || event.key === "=")) {
-        event.preventDefault();
-        centerZoom(1);
-        return;
-      }
-      if (ctrlOrCmd && event.key === "-") {
-        event.preventDefault();
-        centerZoom(-1);
-        return;
-      }
-      if (ctrlOrCmd && event.key === "0") {
-        event.preventDefault();
-        current.resetView();
-        return;
-      }
-      const arrow: Record<string, [number, number]> = {
-        ArrowLeft: [-1, 0],
-        ArrowRight: [1, 0],
-        ArrowUp: [0, -1],
-        ArrowDown: [0, 1],
+      const binding = shortcutFromEvent(event);
+      const action = binding
+        ? NOTEBOOK_SHORTCUTS.find((item) => bindings.current[item.id] === binding)?.id
+        : undefined;
+      if (!action) return;
+      const selectionActions = {
+        copy: current.copy,
+        cut: current.cut,
+        paste: current.paste,
+        duplicate: current.duplicate,
+        selectAll: current.selectAll,
       };
-      const step = arrow[event.key];
-      if (step && current.hasSelection && !ctrlOrCmd && !event.altKey) {
+      if (action in selectionActions) {
+        if (current.tool !== "select") return;
         event.preventDefault();
-        const size = event.shiftKey ? 10 : 1;
-        current.nudge(step[0] * size, step[1] * size);
+        selectionActions[action as keyof typeof selectionActions]();
         return;
       }
-      if (ctrlOrCmd || event.altKey) return;
-      if (event.code === "Space") {
+      const directions: Record<string, [number, number]> = {
+        left: [-1, 0],
+        right: [1, 0],
+        up: [0, -1],
+        down: [0, 1],
+      };
+      const direction = directions[action.replace("Large", "")];
+      if (direction) {
+        if (!current.hasSelection) return;
+        event.preventDefault();
+        const step = action.endsWith("Large") ? 10 : 1;
+        current.nudge(direction[0] * step, direction[1] * step);
+        return;
+      }
+      if (action === "nextItem" || action === "previousItem") {
+        if (
+          current.tool !== "select" ||
+          event.target !== canvasRef.current ||
+          !current.cycleSelection
+        )
+          return;
+        event.preventDefault();
+        current.cycleSelection(action === "nextItem" ? 1 : -1);
+        return;
+      }
+      if (action === "panHold") {
         if (!event.repeat && spaceTool.current === null && current.tool !== "hand") {
           spaceTool.current = current.tool;
+          holdKey.current = event.code || event.key.toLowerCase();
           current.setTool("hand");
         }
         event.preventDefault();
         return;
       }
-      const key = event.key.toLowerCase();
-      const tools: Record<string, HandwritingTool> = {
-        p: "pen",
-        e: "eraser",
-        h: "hand",
-        v: "select",
-      };
-      const next = tools[key];
-      if (next) {
+      const tool = NOTEBOOK_TOOL_SHORTCUTS.find((item) => action === "tool-" + item.tool);
+      if (tool) {
         event.preventDefault();
-        current.setTool(next);
+        current.setTool(tool.tool);
+        return;
+      }
+      const insertion = NOTEBOOK_INSERT_SHORTCUTS.find((item) => action === "insert-" + item.kind);
+      if (insertion && current.insert) {
+        event.preventDefault();
+        if (!event.repeat) current.insert(insertion.kind);
+        return;
+      }
+      const actions: Partial<Record<typeof action, (() => void) | undefined>> = {
+        undo: current.undo,
+        redo: current.redo,
+        redoAlt: current.redo,
+        copyStyle: current.copyStyle,
+        zoomIn: () => centerZoom(1),
+        zoomOut: () => centerZoom(-1),
+        resetView: current.resetView,
+      };
+      const run = actions[action];
+      if (run) {
+        event.preventDefault();
+        run();
       }
     }
-    function onKeyUp(event: KeyboardEvent) {
-      if (event.code !== "Space") return;
+    function releasePan() {
       const previous = spaceTool.current;
       if (previous === null) return;
       spaceTool.current = null;
+      holdKey.current = "";
       latest.current.setTool(previous);
     }
+    function onKeyUp(event: KeyboardEvent) {
+      if (event.code !== holdKey.current && event.key.toLowerCase() !== holdKey.current) return;
+      releasePan();
+    }
+    window.addEventListener("blur", releasePan);
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
     return () => {
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
+      window.removeEventListener("blur", releasePan);
     };
   }, [canvasRef]);
 

@@ -13,11 +13,13 @@ export function drawPlannerPaper(
   const ink = dark ? "#FFF9EF" : "#292432";
   const line = dark ? "#6d5f78" : "#d5cce3";
   context.save();
-  context.scale(width / 1200, height / 1600);
+  const scale = paper === "calendar" ? Math.min(width / 1200, height / 1600) : height / 1600;
+  context.scale(paper === "calendar" ? scale : width / 1200, scale);
+  const contentWidth = paper === "calendar" ? width / scale - 128 : 1072;
   context.fillStyle = "#51259B";
-  context.fillRect(64, 70, 1072, 112);
+  context.fillRect(64, 70, contentWidth, 112);
   context.fillStyle = "#7C3AED";
-  context.fillRect(56, 60, 1072, 112);
+  context.fillRect(56, 60, contentWidth, 112);
   context.fillStyle = "#A779EF";
   context.beginPath();
   context.moveTo(56, 60);
@@ -64,7 +66,7 @@ export function drawPlannerPaper(
       }
     });
   } else {
-    const cellWidth = 1072 / 7;
+    const cellWidth = contentWidth / 7;
     labels.forEach((label, index) =>
       box(64 + index * cellWidth, 290, cellWidth, 54, label.slice(0, 3)),
     );
@@ -78,7 +80,7 @@ export function drawPlannerPaper(
         context.fillRect(x + 10, y + 10, 28, 28);
       }
     }
-    box(64, 1320, 1072, 170, "Lembretes do mês");
+    box(64, 1320, contentWidth, 170, "Lembretes do mês");
   }
   context.restore();
 }

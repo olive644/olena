@@ -1,3 +1,55 @@
+## Seta de próxima folha visível, 14/11/2026
+
+O botão à direita da navegação usa a mesma seta original tanto para avançar quanto para criar a próxima folha na última página, preservando os respectivos rótulos e ações. Cores recebem prioridade suficiente para permanecer visíveis nos dois temas. Dois testes verificam ícone e callbacks; PNGs reais claro/escuro e cores computadas confirmam a seta visível.
+
+## Configurações e atalhos editáveis do caderno, 14/11/2026
+
+Editor e perfil usam os mesmos campos em cartões de papel, ícones originais, títulos recortados e seções de atalhos recolhíveis. Seleção ganhou preferências reais de encaixe e guias. Avanço da janela de escrita saiu da lista principal; os antigos toggles dos botões da caneta foram substituídos por seletores de ação. Valores antigos continuam legíveis e migram para as novas ações sem apagar escolhas anteriores.
+
+O catálogo único define atalhos e padrões de ferramentas, inserção, histórico, seleção, copiar/recortar/colar, estilo, zoom, mão temporária, setas e ciclo de itens. Cada combinação pode ser capturada novamente ou removida com Backspace. Conflitos são recusados junto ao controle; Esc cancela a captura. Botão Restaurar atalhos padrão redefine teclado e ações lateral/traseira da caneta. Tab e setas usam o mesmo despachante editável, sem prender o foco dos controles; a mão temporária retorna ao soltar a tecla configurada ou perder foco. Campos de texto conservam a edição nativa.
+
+helena.notebookShortcuts.v1 integra a lista já existente de armazenamento sincronizado. As telas leem alterações locais e snapshots aplicados. A validação cobre padrões para dados ausentes, rejeição de valores inválidos, conflitos, migração, propagação entre instâncias e redefinição persistida. Não houve mudança de regras Firebase ou validação com mesa física; a referência de botões da mesa explica que o driver deve enviar as teclas ao navegador.
+
+Provas locais: testes React e de dados, build e tipos. E2E em desktop/celular emulado e claro/escuro troca T por Q no perfil, usa Q no editor e confirma que T não insere; detecta conflito, troca tabela para F8, persiste as escolhas no perfil, redefine teclado/caneta e confere o padrão após recarregar. Capturas PNG do modal e dos atalhos da caneta revisadas. Sincronização remota com conta real e hardware físico não foram exercitados nesta prova.
+
+## Uso dos objetos por clique e marca da exportação, 14/11/2026
+
+Clique sem arraste sobre um texto, tabela ou post-it já selecionado entra em edição e foca o campo sob o ponteiro. Arraste continua no gesto global; objetos sem seleção recebem primeiro a seleção. Duplo clique permanece disponível. Movimento real cancela a intenção de editar. Alças externas continuam reservadas ao redimensionamento.
+
+Tabela gerida pela seleção distribui linhas e colunas com grid e escala fontes, bordas e espaçamentos conforme a folha, evitando rolagem vertical causada pelo tamanho mínimo das células. Ações de linha/coluna usam cor de texto do tema. E2E cobre clique e digitação nos três tipos, arraste, adição de linha, contraste e ausência de overflow da grade, nos quatro cenários de desktop/celular emulado e claro/escuro. PNG da tabela revisado visualmente.
+
+Exportação compartilhada usa os recortes originais de PAPER_LETTER_PATHS, favicon à esquerda da marca superior, sem polígono roxo ou nome repetido no rodapé. Conteúdo e dimensões da folha preservados, assim como a legenda inferior. Teste verifica posição do favicon, vinte preenchimentos das dez letras e ausência dos desenhos e textos removidos. PNG real gerado e inspecionado.
+
+## Posição fixa dos grupos superiores do caderno, 14/11/2026
+
+Em larguras de desktop a partir de 1051 px, ferramentas principais, histórico/porcentagem, arquivos/configurações e ações de fechar usam colunas explícitas na primeira linha. Opções de ferramenta e propriedades de seleção ocupam linhas próprias abaixo. A presença de seleção não altera a posição dos grupos superiores. Em telas intermediárias a ordem flex mantém os grupos de histórico e arquivos antes das opções contextuais; comportamento móvel preservado. Regressão E2E mede alinhamento dos três grupos e compara suas posições antes e depois de selecionar texto, com janela de 1126 px nos dois temas.
+
+## Texto criado com seleção global, 14/11/2026
+
+Texto agora segue exatamente a inserção de post-it e tabela: nasce selecionado, com corpo disponível para arrastar e barra flutuante presente. Criar texto não ativa mais edição automaticamente. Duplo clique entra em edição; escolher seleção ou Escape encerra a edição. Isso substitui a exceção anterior de criação de texto e elimina a necessidade de desselecionar e selecionar novamente.
+
+Regressão React verifica estado inicial somente leitura, seleção global e barra flutuante; os testes de edição entram explicitamente por duplo clique. E2E cria texto, arrasta pelo corpo imediatamente antes de qualquer troca de ferramenta, edita com duplo clique e valida redimensionamento, estilo e persistência. Arraste imediato exercitado nos dois temas de desktop; celular emulado verifica a seleção inicial e edição, sem reivindicar prova de arraste por toque neste caso.
+
+## Primeira seleção de texto e barra responsiva, 14/11/2026
+
+Ações antigas permanecem desativadas mesmo durante a edição, independentemente da visibilidade da barra flutuante. Retângulo e laço encerram a edição antes de selecionar; o canvas não pinta alças enquanto o texto está em edição, evitando dois controles concorrentes na primeira seleção. Post-its geridos pela seleção também não recebem o estado visual selecionado durante edição.
+
+Recortar usa nova tesoura facetada em SVG separado, sem alterar os símbolos monocromáticos aprovados. Em desktop e tablet, os grupos da barra superior quebram linha em vez de comprimir as ferramentas; controles de seleção também quebram linha. Validação inclui janela de 1126 px, ausência de overflow horizontal e das ações antigas, três transições diretas de edição para seleção em testes React e regressão E2E nos temas claro/escuro, desktop/celular emulado.
+
+## Arraste unificado e barra flutuante, 14/11/2026
+
+Post-its e tabelas entram selecionados. O corpo usa o gesto global da seleção, com edição por duplo clique e Escape para concluir; clicar na ferramenta selecionada mantém a seleção em vez de mudar para Mover. A mão continua rolando a folha, mesmo com objetos selecionados. Os widgets geridos pela seleção não expõem o antigo arraste pelo cabeçalho, alça de resize ou menu próprio. Checklist e cores estão no menu flutuante; ações de objeto duplicadas saíram da barra superior.
+
+Menu flutuante usa a largura da barra, quebra textos, não rola horizontalmente e escolhe abrir acima ou abaixo conforme a viewport. Ícones reaproveitam a arte original com azul, verde, rosa e roxo. Animação respeita movimento reduzido. Validação: 91 testes focados aprovados. E2E aprovado nos quatro cenários desktop/celular emulado e claro/escuro, com inspeção de PNG, ausência dos controles antigos, exportação, desfazer/refazer, persistência e adição de linha; desktop também cobre arraste pelo corpo e edição da tabela por duplo clique. Build e tipos aprovados.
+
+## Seleção contextual do caderno, 14/11/2026
+
+Prioridade segue edição ativa, alças e corpo do objeto superior; Tab percorre objetos visíveis. Guias usam tolerância de seis pixels da tela e calculam os alvos uma vez por gesto. Movimento real registra uma entrada de histórico. A barra flutuante respeita viewport, rolagem e zoom; alças e barra somem durante transformação.
+
+Texto aceita tamanho opcional persistido: lateral reflui sem mudar fonte, canto escala proporcionalmente. Copiar estilo transfere tinta e tamanho, preserva fundo e permite Shift para repetir; Ctrl+Alt+C copia. A seleção pode ser exportada como PNG recortado. Texto e tabela selecionados recebem propriedades contextuais, reutilizando os controles de linhas e colunas. A pintura separada atualiza somente as camadas alteradas. Controles móveis de salvar e fechar ficam no dock.
+
+Validação: suíte completa com 412 arquivos e 2.653 testes aprovados; controles finais com 55 testes aprovados; build aprovado. Fluxo E2E aprovado nos quatro cenários desktop/celular emulado e claro/escuro, incluindo redimensionamento, estilo, exportação, zoom, rolagem e persistência após recarregar. Temas escuros também exercitam movimento reduzido. Medições de quadros variaram sob concorrência, com pico de 306,7 ms no celular emulado; não constituem garantia de 60 fps nem validação em aparelho físico. Expectativas antigas de controles removidos e duas referências SVG foram alinhadas aos ícones ativos.
+
 ## Teco e personalização de Inglês, 09/11/2026
 
 Integração autorizada pela proprietária: Teco usa a imagem aprovada do guaxinim com boina, exportada em WebP 512x512 com alpha. Avatar livre, sem requisito de progresso. Cosméticos ingleses usam o ID english, com header panorâmico, moldura octogonal de abertura circular transparente e fundo opaco que cobre a superfície inteira. Paleta britânica azul, vermelho e branco, livros e conversa, sem raios. SVGs nativos implementam a composição aprovada e mantêm os mesmos caminhos e proporções de Matemática.

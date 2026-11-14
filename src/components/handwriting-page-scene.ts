@@ -19,7 +19,7 @@ export type PageScene = {
   stickies: readonly HandwritingSticky[];
   pageText: string;
   pageTextSize: number;
-  pageTextFrame: { x: number; y: number; width: number; height: number };
+  pageTextFrame: { x: number; y: number; width: number; height: number; ink?: string };
   coordinateSystems: readonly HandwritingCoordinateSystem[];
   backgroundImage: HTMLImageElement | undefined;
   backgroundFrame: { x: number; y: number; width: number; height: number } | undefined;
@@ -36,8 +36,10 @@ export type PageSceneOptions = {
   // Na tela: mostra os controles de edição (ex.: a moldura do post-it) e aceita esconder traços
   // que estão na camada ao vivo. Na exportação: a folha limpa.
   editing?: boolean;
+  onlyLayer?: HandwritingLayerKey | "paper";
   strokes?: readonly Stroke[];
   pageText?: string;
+  transparentPaper?: boolean;
 };
 
 export function renderPageScene(
@@ -61,5 +63,7 @@ export function renderPageScene(
     [...scene.layerOrder],
     scene.images,
     scene.pageTextFrame,
+    options.onlyLayer,
+    options.transparentPaper,
   );
 }

@@ -26,10 +26,8 @@ function noteProps(overrides: Partial<Parameters<typeof HandwritingStickyNote>[0
     onResizeEnd: vi.fn(),
     onToggleMenu: vi.fn(),
     onToggleColorMenu: vi.fn(),
-    onMoveMode: vi.fn(),
     onToggleChecklist: vi.fn(),
     onChangeColor: vi.fn(),
-    onLayer: vi.fn(),
     onRemove: vi.fn(),
     onUpdateChecklistItem: vi.fn(),
     onRemoveChecklistItem: vi.fn(),
@@ -39,6 +37,16 @@ function noteProps(overrides: Partial<Parameters<typeof HandwritingStickyNote>[0
 }
 
 describe("post-it: aparência", () => {
+  it("delega movimento, menu e alças à seleção global", () => {
+    const props = noteProps({ selectionManaged: true });
+    const { container } = render(<HandwritingStickyNote {...props} />);
+    expect(container.querySelector(".handwriting-sticky__resize")).toBeNull();
+    expect(container.querySelector(".handwriting-sticky__menu-trigger")).toBeNull();
+    expect(container.querySelector(".handwriting-sticky__menu")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Mover post-it" })).toBeNull();
+    fireEvent.pointerDown(container.querySelector(".handwriting-sticky__bar")!);
+    expect(props.onDragStart).not.toHaveBeenCalled();
+  });
   it("nomeia o tipo de cada anotação", () => {
     const { rerender } = render(<HandwritingStickyNote {...noteProps()} />);
     expect(screen.getByText("Nota")).toBeTruthy();
@@ -147,17 +155,11 @@ describe("post-it: menu", () => {
   it("oferece todas as ações a uma nota e dispara cada uma", () => {
     const props = noteProps({ menuOpen: true });
     render(<HandwritingStickyNote {...props} />);
-    fireEvent.click(screen.getByRole("button", { name: /Mover$/ }));
     fireEvent.click(screen.getByRole("button", { name: /Checklist/ }));
     fireEvent.click(screen.getByRole("button", { name: /Cores/ }));
-    fireEvent.click(screen.getByRole("button", { name: /Trazer para frente/ }));
-    fireEvent.click(screen.getByRole("button", { name: /Enviar para trás/ }));
     fireEvent.click(screen.getByRole("button", { name: /Remover/ }));
-    expect(props.onMoveMode).toHaveBeenCalledTimes(1);
     expect(props.onToggleChecklist).toHaveBeenCalledTimes(1);
     expect(props.onToggleColorMenu).toHaveBeenCalledTimes(1);
-    expect(props.onLayer).toHaveBeenNthCalledWith(1, "front");
-    expect(props.onLayer).toHaveBeenNthCalledWith(2, "back");
     expect(props.onRemove).toHaveBeenCalledTimes(1);
   });
 

@@ -43,18 +43,18 @@ describe("tamanho dos post-its", () => {
     expect(stickyHeight(sticky())).toBe(220);
   });
 
-  it("limita largura e altura aos mínimos e máximos", () => {
+  it("preserva dimensões grandes e aplica os mínimos", () => {
     expect(stickyWidth(sticky({ width: 10 }))).toBe(160);
-    expect(stickyWidth(sticky({ width: 9000 }))).toBe(520);
+    expect(stickyWidth(sticky({ width: 9000 }))).toBe(9000);
     expect(stickyHeight(sticky({ height: 10 }))).toBe(120);
-    expect(stickyHeight(sticky({ height: 9000 }))).toBe(420);
+    expect(stickyHeight(sticky({ height: 9000 }))).toBe(9000);
   });
 
-  it("monta a caixa do post-it com posição e tamanho já limitados", () => {
+  it("monta a caixa usando as dimensões persistidas", () => {
     expect(stickyBounds(sticky({ width: 9000, height: 10 }))).toEqual({
       x: 10,
       y: 20,
-      width: 520,
+      width: 9000,
       height: 120,
     });
   });

@@ -8,7 +8,7 @@ import {
   type HandwritingImage,
   type HandwritingSticky,
 } from "../domain/handwriting";
-import type { SelectionScene } from "../components/handwriting-selection-scene";
+import { selectionFrame, type SelectionScene } from "../components/handwriting-selection-scene";
 import { selectionHandles } from "../components/handwriting-selection-ops";
 import {
   PAGE_TEXT_SELECTION_ID,
@@ -47,6 +47,7 @@ function useHarness(
   withObjects = false,
   initialStrokes: Stroke[] = [stroke("a", 100, 100), stroke("b", 600, 600)],
   page = { width: 1200, height: 1600 },
+  settings: { selectionSnap?: boolean; selectionGuides?: boolean } = {},
 ) {
   const [strokes, setStrokes] = useState<Stroke[]>(initialStrokes);
   const [stickies, setStickies] = useState<HandwritingSticky[]>(
@@ -75,6 +76,7 @@ function useHarness(
       ? [{ id: "image", dataUrl: "data:,", x: 400, y: 700, width: 100, height: 100 }]
       : [],
   );
+  const [pageTextSize, setPageTextSize] = useState(28);
   const [pageTextFrame, setPageTextFrame] = useState({ x: 700, y: 900, width: 300, height: 200 });
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectedCoordinateIds, setSelectedCoordinateIds] = useState<string[]>([]);
@@ -85,11 +87,12 @@ function useHarness(
     coordinateSystems,
     images,
     pageText: withText ? "Anotação" : "",
-    pageTextSize: 28,
+    pageTextSize,
     pageTextFrame,
     layers: DEFAULT_HANDWRITING_LAYER_VISIBILITY,
   };
   const gesture = useSelectionGesture({
+    ...settings,
     scene,
     selectionMode: mode,
     selectedIds,
@@ -103,13 +106,16 @@ function useHarness(
     setCoordinateSystems,
     setImportedImages,
     setPageTextFrame,
+    setPageTextSize,
   });
   return {
+    scene,
     gesture,
     strokes,
     selectedIds,
     remember,
     pageTextFrame,
+    pageTextSize,
     stickies,
     images,
     coordinateSystems,
@@ -121,6 +127,23 @@ function useHarness(
 const pointer = { pointerId: 1, pointerType: "mouse" };
 
 describe("gesto da ferramenta Selecionar", () => {
+  it("aplica as preferências de encaixe e de guias ao mover", () => {
+    const enabled = renderHook(() => useHarness());
+    act(() => enabled.result.current.gesture.begin(pointer, at(150, 120)));
+    act(() => enabled.result.current.gesture.move(pointer, at(647, 617)));
+    expect(enabled.result.current.gesture.guides.length).toBeGreaterThan(0);
+    const disabled = renderHook(() =>
+      useHarness("rectangle", false, false, undefined, undefined, {
+        selectionSnap: false,
+        selectionGuides: false,
+      }),
+    );
+    act(() => disabled.result.current.gesture.begin(pointer, at(150, 120)));
+    act(() => disabled.result.current.gesture.move(pointer, at(647, 617)));
+    expect(disabled.result.current.gesture.guides).toEqual([]);
+    expect(disabled.result.current.strokes[0]!.points[0]!.x).toBe(597);
+    expect(enabled.result.current.strokes[0]!.points[0]!.x).not.toBe(597);
+  });
   it("redimensiona no quadro amplo sem cortar nos limites antigos da folha", () => {
     const shape = closedRectangleStroke("box");
     shape.points = shape.points.map((point) => ({
@@ -260,9 +283,10 @@ describe("gesto da ferramenta Selecionar", () => {
     act(() => void result.current.gesture.end(at(260, 200)));
     expect(result.current.selectedIds).toEqual(["a"]);
     act(() => result.current.gesture.begin(pointer, at(150, 120)));
-    expect(result.current.remember).toHaveBeenCalledTimes(1);
+    expect(result.current.remember).not.toHaveBeenCalled();
     act(() => void result.current.gesture.move(pointer, at(170, 140)));
     act(() => void result.current.gesture.end(at(170, 140)));
+    expect(result.current.remember).toHaveBeenCalledTimes(1);
     expect(result.current.strokes[0]!.points[0]).toMatchObject({ x: 120, y: 120 });
     expect(result.current.selectedIds).toEqual(["a"]);
   });
@@ -303,5 +327,38 @@ describe("gesto da ferramenta Selecionar", () => {
     expect(result.current.gesture.move({ pointerId: 2 }, at(1, 1))).toBe(false);
     act(() => result.current.gesture.cancel());
     expect(result.current.gesture.end()).toBe(false);
+  });
+
+  it("um clique conserva o histórico e o arraste oculta as ferramentas até soltar", () => {
+    const { result } = renderHook(() => useHarness());
+    act(() => result.current.gesture.begin(pointer, at(150, 120)));
+    act(() => result.current.gesture.end(at(150, 120)));
+    expect(result.current.remember).not.toHaveBeenCalled();
+    act(() => result.current.gesture.begin(pointer, at(150, 120)));
+    act(() => result.current.gesture.move(pointer, at(180, 150)));
+    expect(result.current.gesture.transforming).toBe(true);
+    act(() => result.current.gesture.end(at(180, 150)));
+    expect(result.current.gesture.transforming).toBe(false);
+    expect(result.current.remember).toHaveBeenCalledOnce();
+  });
+
+  it("a lateral do texto legado reflui sem mudar a fonte e o canto escala a fonte", () => {
+    const { result } = renderHook(() => useHarness("rectangle", true));
+    act(() => result.current.setSelectedIds([PAGE_TEXT_SELECTION_ID]));
+    let frame = selectionFrame(result.current.scene, [PAGE_TEXT_SELECTION_ID])!;
+    const side = selectionHandles(frame).e;
+    act(() => result.current.gesture.begin(pointer, at(side.x, side.y)));
+    act(() => result.current.gesture.move(pointer, at(side.x + 150, side.y)));
+    act(() => result.current.gesture.end(at(side.x + 150, side.y)));
+    expect(result.current.pageTextSize).toBe(28);
+    expect(result.current.pageTextFrame.width).toBeGreaterThan(400);
+    expect(result.current.pageTextFrame.x).toBe(700);
+    frame = selectionFrame(result.current.scene, [PAGE_TEXT_SELECTION_ID])!;
+    const corner = selectionHandles(frame).se;
+    act(() => result.current.gesture.begin(pointer, at(corner.x, corner.y)));
+    act(() => result.current.gesture.move(pointer, at(corner.x + 30, corner.y + 10)));
+    act(() => result.current.gesture.end(at(corner.x + 30, corner.y + 10)));
+    expect(result.current.pageTextSize).toBeGreaterThan(28);
+    expect(result.current.remember).toHaveBeenCalledTimes(2);
   });
 });

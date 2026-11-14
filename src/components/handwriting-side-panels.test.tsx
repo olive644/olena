@@ -29,7 +29,8 @@ describe("painel de pincéis", () => {
     const strokes = [...container.querySelectorAll("svg.brush-sample path")].map((path) =>
       path.getAttribute("stroke"),
     );
-    expect(strokes).toEqual(["#7c3aed", "#7c3aed", "#7c3aed"]);
+    expect(strokes).toHaveLength(6);
+    expect(strokes.every((color) => color === "#7c3aed")).toBe(true);
   });
 });
 

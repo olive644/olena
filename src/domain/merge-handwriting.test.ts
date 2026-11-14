@@ -10,6 +10,18 @@ const stroke = (id: string): HandwritingStroke => ({
   points: [{ x: 1, y: 2, pressure: 0.5 }],
 });
 const base: HandwritingDocument = { version: 1, paper: "ruled", strokes: [stroke("old")] };
+it("preserva movimento e texto concorrentes do mesmo post-it", () => {
+  const note = { id: "note", x: 20, y: 30, color: "yellow", text: "Antes" } as const;
+  const shared = { ...base, stickies: [note] };
+  const moved = { ...base, stickies: [{ ...note, x: 90 }] };
+  const edited = { ...base, stickies: [{ ...note, text: "Depois" }] };
+  expect(mergeHandwriting(shared, moved, edited).stickies).toEqual([
+    { ...note, x: 90, text: "Depois" },
+  ]);
+  expect(mergeHandwriting(shared, edited, moved).stickies).toEqual([
+    { ...note, x: 90, text: "Depois" },
+  ]);
+});
 it("preserva as dimensões do quadro durante edições simultâneas", () => {
   const board: HandwritingDocument = {
     ...base,

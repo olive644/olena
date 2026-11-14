@@ -27,7 +27,7 @@ describe("barra de histórico e zoom", () => {
   it("mostra o zoom em porcentagem e dispara as ações", () => {
     const props = historyProps();
     render(<HandwritingHistoryBar {...props} />);
-    expect(screen.getByText("150%")).toBeTruthy();
+    expect(screen.getByRole("status", { name: "Zoom atual" }).textContent).toContain("150");
     fireEvent.click(screen.getByRole("button", { name: "Desfazer" }));
     fireEvent.click(screen.getByRole("button", { name: "Refazer" }));
     fireEvent.click(screen.getByRole("button", { name: "Limpar folha" }));
@@ -96,7 +96,7 @@ describe("seletor de papel", () => {
     expect(screen.getByRole("button", { name: "Pautado" }).getAttribute("aria-pressed")).toBe(
       "true",
     );
-    expect(screen.getByRole("button", { name: "Pontilhado" }).getAttribute("aria-pressed")).toBe(
+    expect(screen.getByRole("button", { name: "Quadro amplo" }).getAttribute("aria-pressed")).toBe(
       "false",
     );
     fireEvent.click(screen.getByRole("button", { name: "Quadriculado" }));

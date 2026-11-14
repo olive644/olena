@@ -1,6 +1,6 @@
 import { brandedExportCanvas, loadPaperExportMascot } from "./paper-export-art";
-export async function downloadNotebookPdf(images: string[]) {
-  const mascot = await loadPaperExportMascot();
+export async function downloadNotebookPdf(images: string[], branded = true) {
+  const mascot = branded ? await loadPaperExportMascot() : undefined;
   const encoder = new TextEncoder();
   const chunks: Uint8Array[] = [];
   const offsets: number[] = [0];
@@ -32,7 +32,7 @@ export async function downloadNotebookPdf(images: string[]) {
     context.fillStyle = "white";
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.drawImage(image, 0, 0);
-    const exported = brandedExportCanvas(canvas, mascot);
+    const exported = mascot ? brandedExportCanvas(canvas, mascot) : canvas;
     const bytes = Uint8Array.from(
       atob(exported.toDataURL("image/jpeg", 0.92).split(",")[1]!),
       (char) => char.charCodeAt(0),

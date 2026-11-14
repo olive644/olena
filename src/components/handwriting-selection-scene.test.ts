@@ -7,6 +7,7 @@ import {
   moveStickies,
   moveStrokes,
   pickInBox,
+  pickAt,
   pickInPolygon,
   selectionFrame,
   type SelectionScene,
@@ -24,6 +25,22 @@ const stroke = (id: string, points: [number, number][]): Stroke =>
     width: 4,
     points: points.map(([x, y]) => ({ x, y, pressure: 0.5 })),
   }) as unknown as Stroke;
+
+it("prioriza o corpo inteiro do texto sobreposto conforme a ordem das camadas", () => {
+  const overlapping = scene({
+    pageText: "Texto curto",
+    pageTextFrame: { x: 100, y: 100, width: 400, height: 100 },
+    stickies: [
+      { id: "note", x: 100, y: 100, width: 400, height: 200, color: "yellow", text: "Nota" },
+    ],
+    layerOrder: ["coordinates", "strokes", "stickies", "text"],
+  });
+  const point = { x: 480, y: 110, pressure: 0.5 };
+  expect(pickAt(overlapping, point).ids.at(-1)).toBe(PAGE_TEXT_SELECTION_ID);
+  expect(
+    pickAt({ ...overlapping, layers: { ...overlapping.layers, text: false } }, point).ids.at(-1),
+  ).toBe("note");
+});
 
 function scene(overrides: Partial<SelectionScene> = {}): SelectionScene {
   return {
@@ -162,11 +179,11 @@ describe("desenhar a seleção", () => {
     return { context: proxy as unknown as CanvasRenderingContext2D, calls };
   }
 
-  it("contorna cada item selecionado e põe as cinco alças na caixa", () => {
+  it("contorna cada item selecionado e põe oito alças facetadas e uma de rotação na caixa", () => {
     const { context, calls } = fakeContext();
     drawSelectionOverlay(context, scene(), ["s1", "n1"], null, null);
     expect(calls.filter((name) => name === "strokeRect")).toHaveLength(3);
-    expect(calls.filter((name) => name === "arc")).toHaveLength(5);
+    expect(calls.filter((name) => name === "arc")).toHaveLength(1);
   });
 
   it("sem seleção não desenha alças, e durante o laço não mostra a caixa", () => {

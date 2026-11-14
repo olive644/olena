@@ -4,7 +4,7 @@ import type {
   HandwritingPoint,
   HandwritingSticky,
 } from "../domain/handwriting";
-import { pointInPolygon } from "./handwriting-geometry";
+import { pointInPolygon, stickyWidth, stickyHeight } from "./handwriting-geometry";
 import { PAGE_HEIGHT, PAGE_WIDTH, type Stroke } from "./handwriting-types";
 
 // Operações puras da seleção (copiar, colar, duplicar, girar e laço). O editor só liga botões e
@@ -181,17 +181,22 @@ export function scaleItems(
   factor: number,
   anchor: { x: number; y: number },
   page = { width: PAGE_WIDTH, height: PAGE_HEIGHT },
+  verticalFactor = factor,
 ): SelectionItems {
   const scale = (value: number, origin: number) => origin + (value - origin) * factor;
   const scalePoint = (point: HandwritingPoint): HandwritingPoint => ({
     ...point,
     x: clamp(scale(point.x, anchor.x), page.width),
-    y: clamp(scale(point.y, anchor.y), page.height),
+    y: clamp(anchor.y + (point.y - anchor.y) * verticalFactor, page.height),
   });
   return {
     strokes: items.strokes.map((stroke) =>
       ids.has(stroke.id)
-        ? { ...stroke, points: stroke.points.map(scalePoint), width: stroke.width * factor }
+        ? {
+            ...stroke,
+            points: stroke.points.map(scalePoint),
+            width: stroke.width * Math.sqrt(factor * verticalFactor),
+          }
         : stroke,
     ),
     coordinateSystems: items.coordinateSystems.map((system) =>
@@ -201,32 +206,41 @@ export function scaleItems(
     ),
     stickies: items.stickies.map((sticky) => {
       if (!ids.has(sticky.id)) return sticky;
-      const width = Math.max(40, (sticky.width ?? 0) * factor);
-      const height = Math.max(40, (sticky.height ?? 0) * factor);
+      const width = Math.max(160, Math.min(page.width, stickyWidth(sticky) * factor));
+      const height = Math.max(120, Math.min(page.height, stickyHeight(sticky) * verticalFactor));
       return {
         ...sticky,
-        ...(sticky.width !== undefined ? { width } : {}),
-        ...(sticky.height !== undefined ? { height } : {}),
+        width,
+        height,
+        ...(sticky.kind === "text" && !sticky.formula && factor === verticalFactor
+          ? { textSize: Math.min(144, Math.max(4, (sticky.textSize ?? 25) * factor)) }
+          : {}),
         x: clamp(scale(sticky.x, anchor.x), page.width - width),
-        y: clamp(scale(sticky.y, anchor.y), page.height - height),
+        y: clamp(anchor.y + (sticky.y - anchor.y) * verticalFactor, page.height - height),
       };
     }),
     images: items.images.map((image) => {
       if (!ids.has(image.id)) return image;
-      const width = Math.max(40, Math.min(page.width, image.width * factor));
-      const height = Math.max(40, Math.min(page.height, image.height * factor));
+      const requested = factor === 1 ? verticalFactor : factor;
+      const imageScale = Math.min(
+        page.width / image.width,
+        page.height / image.height,
+        Math.max(40 / Math.max(image.width, image.height), requested),
+      );
+      const width = image.width * imageScale;
+      const height = image.height * imageScale;
       return {
         ...image,
         width,
         height,
-        x: clamp(scale(image.x, anchor.x), page.width - width),
-        y: clamp(scale(image.y, anchor.y), page.height - height),
+        x: clamp(anchor.x + (image.x - anchor.x) * imageScale, page.width - width),
+        y: clamp(anchor.y + (image.y - anchor.y) * imageScale, page.height - height),
       };
     }),
   };
 }
 
-export type HandleKind = "nw" | "ne" | "se" | "sw" | "rotate";
+export type HandleKind = "nw" | "ne" | "se" | "sw" | "n" | "e" | "s" | "w" | "rotate";
 export type Box = { x: number; y: number; width: number; height: number };
 
 // Distância da alça de girar acima da caixa.
@@ -234,7 +248,10 @@ const ROTATE_HANDLE_GAP = 46;
 // Folga entre a caixa dos itens e a caixa da seleção desenhada.
 export const SELECTION_PAD = 12;
 
-export function selectionHandles(bounds: Box): Record<HandleKind, { x: number; y: number }> {
+export function selectionHandles(
+  bounds: Box,
+  rotationSide: "top" | "left" | "right" = "top",
+): Record<HandleKind, { x: number; y: number }> {
   const left = bounds.x - SELECTION_PAD;
   const top = bounds.y - SELECTION_PAD;
   const right = bounds.x + bounds.width + SELECTION_PAD;
@@ -244,7 +261,17 @@ export function selectionHandles(bounds: Box): Record<HandleKind, { x: number; y
     ne: { x: right, y: top },
     se: { x: right, y: bottom },
     sw: { x: left, y: bottom },
-    rotate: { x: (left + right) / 2, y: top - ROTATE_HANDLE_GAP },
+    n: { x: (left + right) / 2, y: top },
+    e: { x: right, y: (top + bottom) / 2 },
+    s: { x: (left + right) / 2, y: bottom },
+    w: { x: left, y: (top + bottom) / 2 },
+    rotate:
+      rotationSide === "top"
+        ? { x: (left + right) / 2, y: top - ROTATE_HANDLE_GAP }
+        : {
+            x: rotationSide === "right" ? right + ROTATE_HANDLE_GAP : left - ROTATE_HANDLE_GAP,
+            y: (top + bottom) / 2,
+          },
   };
 }
 
@@ -253,9 +280,10 @@ export function hitSelectionHandle(
   point: { x: number; y: number },
   bounds: Box,
   radius: number,
+  rotationSide: "top" | "left" | "right" = "top",
 ): HandleKind | null {
-  const handles = selectionHandles(bounds);
-  const order: HandleKind[] = ["rotate", "nw", "ne", "se", "sw"];
+  const handles = selectionHandles(bounds, rotationSide);
+  const order: HandleKind[] = ["rotate", "nw", "ne", "se", "sw", "n", "e", "s", "w"];
   let closest: HandleKind | null = null;
   let distance = radius;
   for (const kind of order) {
@@ -272,8 +300,18 @@ export function hitSelectionHandle(
 // O canto oposto ao arrastado fica parado.
 export function oppositeCorner(bounds: Box, kind: Exclude<HandleKind, "rotate">) {
   return {
-    x: kind === "nw" || kind === "sw" ? bounds.x + bounds.width : bounds.x,
-    y: kind === "nw" || kind === "ne" ? bounds.y + bounds.height : bounds.y,
+    x:
+      kind === "nw" || kind === "sw" || kind === "w"
+        ? bounds.x + bounds.width
+        : kind === "n" || kind === "s"
+          ? bounds.x + bounds.width / 2
+          : bounds.x,
+    y:
+      kind === "nw" || kind === "ne" || kind === "n"
+        ? bounds.y + bounds.height
+        : kind === "e" || kind === "w"
+          ? bounds.y + bounds.height / 2
+          : bounds.y,
   };
 }
 

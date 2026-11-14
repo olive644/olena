@@ -12,9 +12,7 @@ import type {
 export const PAGE_WIDTH = 1200;
 export const PAGE_HEIGHT = 1600;
 export const STICKY_MIN_WIDTH = 160;
-export const STICKY_MAX_WIDTH = 520;
 export const STICKY_MIN_HEIGHT = 120;
-export const STICKY_MAX_HEIGHT = 420;
 export const BASE_DISPLAY_WIDTH = 760;
 export const WRITING_WINDOW_WIDTH = 500;
 export const WRITING_WINDOW_HEIGHT = 185;
