@@ -69,6 +69,9 @@ export type NotebookCollabHandlerDependencies = {
   ): Promise<{ uid: string; name: string; anonymous?: boolean } | undefined>;
   // Cota de criação de links de leitura (por conta e global). Sem ela, não há limite extra.
   consumeViewCreate?(uid: string): Promise<boolean>;
+  // Conta cada código errado ao entrar, por endereço de quem chama. Devolve false quando o limite
+  // acabou: sem ele, quem varre códigos de 5 letras só esbarra no limite geral de 90 por minuto.
+  consumeJoinMiss?(request: Request): Promise<boolean>;
   identity?: { uid: string; name: string };
   observe?(event: { action: string; status: number; durationMs: number }): void;
 };
@@ -177,10 +180,30 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       const expiresAt = now() + 7 * 24 * 60 * 60 * 1000;
       await dependencies.store.set(
         `notebook-views/${token}`,
-        JSON.stringify({ pages, expiresAt }),
+        JSON.stringify({
+          pages,
+          expiresAt,
+          ...(dependencies.identity ? { ownerUid: dependencies.identity.uid } : {}),
+        }),
         7 * 24 * 60 * 60,
       );
       return jsonResponse(201, { token, expiresAt });
+    }
+    if (action === "view-revoke") {
+      const body = await readJsonBody(request);
+      const token = body["token"];
+      if (typeof token !== "string" || !/^[a-f0-9-]{36}$/.test(token))
+        return jsonResponse(404, { error: "Link de visualização inválido ou expirado." });
+      const owner = dependencies.identity;
+      if (!owner) return jsonResponse(401, { error: "Entre na sua conta para revogar o link." });
+      const raw = await dependencies.store.get(`notebook-views/${token}`);
+      if (!raw) return jsonResponse(404, { error: "Link de visualização inválido ou expirado." });
+      const snapshot = JSON.parse(raw) as { ownerUid?: string };
+      // Links criados antes de existir dono não têm como provar de quem são: expiram sozinhos.
+      if (!snapshot.ownerUid || !safeEqual(snapshot.ownerUid, owner.uid))
+        return jsonResponse(403, { error: "Só quem criou o link pode revogá-lo." });
+      await dependencies.store.del(`notebook-views/${token}`);
+      return jsonResponse(200, { revoked: true });
     }
     if (action === "view-read") {
       const body = await readJsonBody(request);
@@ -262,7 +285,13 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       if (!isValidNotebookCollabCode(code) || !displayName)
         return jsonResponse(400, { error: "Código ou nome inválidos." });
       const state = await loadState(dependencies.store, code);
-      if (!state) return jsonResponse(404, { error: "Caderno compartilhado não encontrado." });
+      if (!state) {
+        if (dependencies.consumeJoinMiss && !(await dependencies.consumeJoinMiss(request)))
+          return jsonResponse(429, {
+            error: "Muitos códigos errados. Tente novamente mais tarde.",
+          });
+        return jsonResponse(404, { error: "Caderno compartilhado não encontrado." });
+      }
       const requestId = typeof body["requestId"] === "string" ? body["requestId"] : "";
       const receipt = requestId ? state.receipts?.[`join:${requestId}`] : undefined;
       const existing = dependencies.identity
@@ -485,6 +514,8 @@ export function createNotebookCollabHandler(dependencies: NotebookCollabHandlerD
               ? "Entre na sua conta para criar um link de visualização."
               : "Entre na sua conta para editar este caderno.",
         });
+      if (action === "view-revoke" && identity?.anonymous)
+        return jsonResponse(401, { error: "Entre na sua conta para revogar o link." });
       if (action === "view-create" && identity) {
         if (identity.anonymous)
           return jsonResponse(401, {

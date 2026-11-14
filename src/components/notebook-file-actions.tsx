@@ -59,6 +59,8 @@ export function NotebookFileActions({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [link, setLink] = useState("");
+  const [viewToken, setViewToken] = useState("");
+  const [notice, setNotice] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -122,6 +124,7 @@ export function NotebookFileActions({
         const url = new URL(window.location.origin);
         url.searchParams.set("notebook-view", payload.token);
         setLink(url.href);
+        setViewToken(payload.token);
       }
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : uiText(674));
@@ -139,6 +142,37 @@ export function NotebookFileActions({
     setSelected([currentPageId]);
     setError("");
     setLink("");
+    setViewToken("");
+    setNotice("");
+  }
+
+  async function revokeLink() {
+    setBusy(true);
+    setError("");
+    try {
+      const token = await roomAppCheckToken();
+      const accountToken = await getFirebaseAccountServices()
+        .then(({ auth }) => auth.currentUser?.getIdToken())
+        .catch(() => undefined);
+      if (!accountToken) throw new Error(uiText(673));
+      const response = await fetch("/api/notebook-collab?action=view-revoke", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accountToken}`,
+          ...(token ? { "X-Firebase-AppCheck": token } : {}),
+        },
+        body: JSON.stringify({ token: viewToken }),
+      });
+      if (!response.ok) throw new Error(uiText(3859));
+      setLink("");
+      setViewToken("");
+      setNotice(uiText(3858));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : uiText(3859));
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -349,6 +383,7 @@ export function NotebookFileActions({
               />
             </label>
           )}
+          {notice && <p role="status">{notice}</p>}
           {error && <p role="alert">{uiText(error)}</p>}
           {busy && <HelenaLoading label={uiText(687)} compact />}
           {!link && (
@@ -370,6 +405,11 @@ export function NotebookFileActions({
               }
             >
               {uiText(461)}
+            </button>
+          )}
+          {link && viewToken && (
+            <button type="button" disabled={busy} onClick={() => void revokeLink()}>
+              {uiText(3857)}
             </button>
           )}
         </dialog>

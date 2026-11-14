@@ -1,3 +1,4 @@
+import { fileMatchesAllowedType } from "../data/file-signature";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useRef, useState } from "react";
 import type { StudyEvent } from "../domain/workspace";
@@ -89,7 +90,7 @@ export function AgendaEventDetails({
         }
         if (
           file.size > 300000 ||
-          !["application/pdf", "image/png", "image/jpeg", "image/webp"].includes(file.type)
+          !(await fileMatchesAllowedType(file, ["pdf", "png", "jpeg", "webp"]))
         ) {
           setError(uiText(27));
           continue;

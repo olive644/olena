@@ -3855,5 +3855,8 @@
   "Choose pages",
   "Format",
   "Download",
-  "Editing invitation"
+  "Editing invitation",
+  "Revoke link",
+  "Link revoked. It no longer opens.",
+  "Could not revoke the link."
 ]
