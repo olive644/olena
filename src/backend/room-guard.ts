@@ -61,6 +61,7 @@ export function createRoomGuard(
       "cursor",
       "view-create",
       "view-read",
+      "view-revoke",
       "speech",
       "upload",
       "play",
@@ -110,13 +111,15 @@ export function createRoomGuard(
     const limit =
       action === "create" || action === "view-create"
         ? 6
-        : action === "upload"
+        : action === "view-revoke"
           ? 30
-          : action === "join" || action === "view-read"
-            ? 90
-            : action === "heartbeat"
-              ? 2400
-              : 600;
+          : action === "upload"
+            ? 30
+            : action === "join" || action === "view-read"
+              ? 90
+              : action === "heartbeat"
+                ? 2400
+                : 600;
     const allowed = await checkRateLimit(store, "room-limits", `${address}:${action}`, limit, 60);
     if (!allowed) {
       log("rate_limited", 429);

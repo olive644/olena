@@ -6,6 +6,7 @@ import {
 } from "../src/backend/firebase-realtime-store.js";
 import { createNotebookCollabHandler } from "../src/backend/notebook-collab-handler.js";
 import { createFirebaseAccountIdentity } from "../src/backend/firebase-account-identity.js";
+import { clientAddress } from "../src/backend/client-address.js";
 import { checkRateLimit } from "../src/backend/rate-limit.js";
 import { createRoomGuard } from "../src/backend/room-guard.js";
 import { createVercelHandler } from "../src/backend/vercel-adapter.js";
@@ -28,6 +29,16 @@ const handler = createNotebookCollabHandler({
       (await checkRateLimit(store, "notebook-view-create-hour", uid, 5, 3600)) &&
       (await checkRateLimit(store, "notebook-view-create-day", uid, 10, 86400)) &&
       (await checkRateLimit(store, "notebook-view-create-global-day", "all", 300, 86400))
+    );
+  },
+  // Códigos errados ao entrar: 20 por hora por endereço, contra quem varre os 33 milhões de códigos.
+  async consumeJoinMiss(request) {
+    return checkRateLimit(
+      store,
+      "notebook-join-miss-hour",
+      clientAddress(request) ?? "unknown",
+      20,
+      3600,
     );
   },
   guard: createRoomGuard(
