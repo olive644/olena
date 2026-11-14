@@ -3786,5 +3786,8 @@
   "Customize notebook",
   "Covers",
   "Answer 100 Math questions correctly.",
-  "Answer 100 English questions correctly."
+  "Answer 100 English questions correctly.",
+  "Revoke link",
+  "Link revoked. It no longer opens.",
+  "Could not revoke the link."
 ]

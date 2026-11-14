@@ -1,3 +1,4 @@
+import { fileMatchesAllowedType } from "../data/file-signature";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { Camera, RotateCw } from "lucide-react";
 import { PaperEditorIcon } from "./paper-editor-icon";
@@ -114,15 +115,15 @@ function Scanner({
     [source],
   );
 
-  function chooseFile(file: File | undefined) {
+  async function chooseFile(file: File | undefined) {
     setError("");
     if (!file) return;
-    if (!/^image\/(?:jpeg|png|webp)$/.test(file.type)) {
-      setError(uiText(1798));
-      return;
-    }
     if (file.size > 12 * 1024 * 1024) {
       setError(uiText(637));
+      return;
+    }
+    if (!(await fileMatchesAllowedType(file, ["png", "jpeg", "webp"]))) {
+      setError(uiText(1798));
       return;
     }
     if (source) URL.revokeObjectURL(source.url);
@@ -150,7 +151,7 @@ function Scanner({
         accept="image/jpeg,image/png,image/webp"
         capture="environment"
         aria-label={uiText(639)}
-        onChange={(event) => chooseFile(event.target.files?.[0])}
+        onChange={(event) => void chooseFile(event.target.files?.[0])}
       />
       {!source ? (
         <button className="scanner-drop" type="button" onClick={() => inputRef.current?.click()}>

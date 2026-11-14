@@ -1,3 +1,4 @@
+import { fileMatchesAllowedType, sniffFileKind } from "../data/file-signature";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PDFDocumentProxy } from "pdfjs-dist";
@@ -138,7 +139,9 @@ export function PageImport({
       taskRef.current = null;
       if (id !== generation.current) return;
       if (file.size > 20 * 1024 * 1024) throw new Error(uiText(796));
-      if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+      const kind = await sniffFileKind(file);
+      if (id !== generation.current) return;
+      if (kind === "pdf") {
         const [reader, worker] = await Promise.all([
           import("pdfjs-dist"),
           import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
@@ -162,7 +165,7 @@ export function PageImport({
         setPage(1);
         setPdf(loaded);
       } else {
-        if (!["image/png", "image/jpeg", "image/webp"].includes(file.type))
+        if (!kind || !(await fileMatchesAllowedType(file, ["png", "jpeg", "webp"])))
           throw new Error(uiText(1879));
         const bitmap = await createImageBitmap(file);
         try {

@@ -84,3 +84,39 @@ it("sem login, orienta a entrar e não envia as folhas", async () => {
   expect(fetchMock).not.toHaveBeenCalled();
   signedIn.token = "conta-token";
 });
+it("revoga o link criado e confirma que ele já não abre", async () => {
+  const fetchMock = vi.fn<typeof fetch>(async (input) =>
+    String(input).includes("view-revoke")
+      ? Response.json({ revoked: true })
+      : Response.json({ token: "read-only-token" }),
+  );
+  vi.stubGlobal("fetch", fetchMock);
+  setup();
+  fireEvent.click(screen.getByRole("button", { name: "Compartilhar" }));
+  fireEvent.click(screen.getByRole("button", { name: "Link de visualização" }));
+  fireEvent.click(screen.getByRole("button", { name: "Criar link" }));
+  await screen.findByRole("textbox", { name: "Link somente para leitura" });
+  fireEvent.click(screen.getByRole("button", { name: "Revogar link" }));
+  await screen.findByText("Link revogado. Ele já não abre.");
+  const revoke = fetchMock.mock.calls[1];
+  expect(revoke?.[0]).toContain("action=view-revoke");
+  expect(JSON.parse(String(revoke?.[1]?.body))).toEqual({ token: "read-only-token" });
+  expect(new Headers(revoke?.[1]?.headers).get("authorization")).toBe("Bearer conta-token");
+  expect(screen.queryByRole("textbox", { name: "Link somente para leitura" })).toBeNull();
+});
+it("se o servidor recusar a revogação, mantém o link e avisa", async () => {
+  const fetchMock = vi.fn<typeof fetch>(async (input) =>
+    String(input).includes("view-revoke")
+      ? Response.json({ error: "x" }, { status: 403 })
+      : Response.json({ token: "read-only-token" }),
+  );
+  vi.stubGlobal("fetch", fetchMock);
+  setup();
+  fireEvent.click(screen.getByRole("button", { name: "Compartilhar" }));
+  fireEvent.click(screen.getByRole("button", { name: "Link de visualização" }));
+  fireEvent.click(screen.getByRole("button", { name: "Criar link" }));
+  await screen.findByRole("textbox", { name: "Link somente para leitura" });
+  fireEvent.click(screen.getByRole("button", { name: "Revogar link" }));
+  await screen.findByText("Não foi possível revogar o link.");
+  expect(screen.getByRole("textbox", { name: "Link somente para leitura" })).toBeTruthy();
+});
