@@ -619,8 +619,12 @@
   transform-origin: left;
 }
 @keyframes notebook-upload-loading {
-  from { transform: scaleX(0.18); }
-  to { transform: scaleX(0.92); }
+  from {
+    transform: scaleX(0.18);
+  }
+  to {
+    transform: scaleX(0.92);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .notebook-upload-card[aria-busy="true"] .notebook-upload-thumbnail::after {
@@ -698,7 +702,8 @@
   margin: 0;
 }
 .notebook-upload-actions button {
-  background: linear-gradient(135deg, var(--line) 0 8px, transparent 8px),
+  background:
+    linear-gradient(135deg, var(--line) 0 8px, transparent 8px),
     linear-gradient(315deg, var(--line) 0 9px, transparent 9px), var(--soft);
   border: 1px solid var(--line);
   border-radius: 5px 13px 6px 11px;

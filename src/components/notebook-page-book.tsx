@@ -45,7 +45,9 @@ export function NotebookPageBook({
   const page = pages[index];
   const [turn, setTurn] = useState<{ id: string; backwards: boolean }>();
   const onSelectRef = useRef(onSelect);
-  onSelectRef.current = onSelect;
+  useEffect(() => {
+    onSelectRef.current = onSelect;
+  }, [onSelect]);
   useEffect(() => {
     if (!turn) return;
     const timer = window.setTimeout(() => {
@@ -59,8 +61,10 @@ export function NotebookPageBook({
   function selectPage(id: string) {
     const target = pages.findIndex((page) => page.id === id);
     if (turn || target < 0 || target === index) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-        document.documentElement.dataset["reduceMotion"] === "true") {
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      document.documentElement.dataset["reduceMotion"] === "true"
+    ) {
       onSelect(id);
       return;
     }
@@ -112,22 +116,40 @@ export function NotebookPageBook({
       )}
       <div className="page-book" key={currentPageId}>
         <span className="page-book__left" aria-hidden="true">
-          {currentPreview ? <img src={currentPreview} alt="" draggable={false} /> : page?.assets[0] ? <NotebookPageThumbnail asset={page.assets[0]} /> : <><i /><i /><i /></>}
+          {currentPreview ? (
+            <img src={currentPreview} alt="" draggable={false} />
+          ) : page?.assets[0] ? (
+            <NotebookPageThumbnail asset={page.assets[0]} />
+          ) : (
+            <>
+              <i />
+              <i />
+              <i />
+            </>
+          )}
         </span>
         <span className="page-book__right">
           {index < pages.length - 1 ? (
             <strong>{page?.title === uiText(746) ? "" : page?.title}</strong>
           ) : (
-            <button type="button" className="page-book__create" aria-label={uiText(700)}
-              disabled={Boolean(turn)} onClick={onCreate}>
+            <button
+              type="button"
+              className="page-book__create"
+              aria-label={uiText(700)}
+              disabled={Boolean(turn)}
+              onClick={onCreate}
+            >
               <PaperEditorIcon name="add" />
             </button>
           )}
         </span>
         {turn && (
           <span className="page-book__turn" data-backwards={turn.backwards} aria-hidden="true">
-            {currentPreview ? <img src={currentPreview} alt="" draggable={false} /> :
-              page?.assets[0] && <NotebookPageThumbnail asset={page.assets[0]} />}
+            {currentPreview ? (
+              <img src={currentPreview} alt="" draggable={false} />
+            ) : (
+              page?.assets[0] && <NotebookPageThumbnail asset={page.assets[0]} />
+            )}
           </span>
         )}
       </div>

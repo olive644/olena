@@ -493,6 +493,7 @@ export function HandwritingStudio({
   }, [importedImages, decodedImages]);
   const renderableImportedImages = useMemo(
     () =>
+      // eslint-disable-next-line react-hooks/refs -- Used by the imperative editor effects and pointer handlers.
       importedImages.flatMap((entry) => {
         const image = decodedUploads.current.get(entry.dataUrl) ?? decodedImages.get(entry.dataUrl);
         return image
@@ -820,6 +821,7 @@ export function HandwritingStudio({
   });
   const [savedBaseline, setSavedBaseline] = useState(baseline);
   const eraseSnapshotRef = useRef({ strokes, pageText, stickies });
+  // eslint-disable-next-line react-hooks/refs -- Used by the imperative editor effects and pointer handlers.
   eraseSnapshotRef.current = { strokes, pageText, stickies };
   const dirty = JSON.stringify(currentDocument) !== savedBaseline;
 
@@ -857,7 +859,9 @@ export function HandwritingStudio({
     revealsRef.current = stillHere;
     const reducedMotion = isMotionReduced();
     if (remoteAuthor && !reducedMotion && shouldReveal(incoming)) {
+      // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
       revealsRef.current = [...stillHere, ...planReveal(incoming, performance.now())];
+      // eslint-disable-next-line react-hooks/immutability -- Used by the imperative editor effects and pointer handlers.
       scheduleLivePaint();
     }
     setStrokes(reconciled.strokes);
@@ -883,6 +887,7 @@ export function HandwritingStudio({
   }, [dirty, onDirtyChange]);
 
   const onDraftChangeRef = useRef(onDraftChange);
+  // eslint-disable-next-line react-hooks/refs -- Used by the imperative editor effects and pointer handlers.
   onDraftChangeRef.current = onDraftChange;
   useEffect(() => {
     if (!drawingRef.current) onDraftChangeRef.current?.(currentDocument);
@@ -897,6 +902,7 @@ export function HandwritingStudio({
         return;
       if ((background && !backgroundImage) || !importedImagesReady) return;
       try {
+        // eslint-disable-next-line react-hooks/immutability -- Used by the imperative editor effects and pointer handlers.
         onAutosave(pageImage(), buildDocument());
         autosavedRef.current = serialized;
         setDraftStatus(uiText(1700));
@@ -1451,6 +1457,7 @@ export function HandwritingStudio({
     }
     eraseSnapshotRef.current = { strokes: nextStrokes, pageText: nextText, stickies: nextStickies };
   }
+  // eslint-disable-next-line react-hooks/refs -- Used by the imperative editor effects and pointer handlers.
   flushEraseRef.current = flushErase;
 
   function paintLive() {
@@ -1476,6 +1483,7 @@ export function HandwritingStudio({
   function paintReveals(context: CanvasRenderingContext2D) {
     const reveals = revealsRef.current;
     if (reveals.length === 0) return;
+    // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
     const now = performance.now();
     const active: RevealingStroke[] = [];
     const finished: Stroke[] = [];
@@ -1493,6 +1501,7 @@ export function HandwritingStudio({
     if (mainContext) for (const stroke of finished) drawStroke(mainContext, stroke);
     if (active.length > 0) scheduleLivePaint();
   }
+  // eslint-disable-next-line react-hooks/refs -- Used by the imperative editor effects and pointer handlers.
   paintLiveRef.current = paintLive;
 
   function scheduleLivePaint() {
@@ -1564,9 +1573,11 @@ export function HandwritingStudio({
     if (textMode) setTextMode(false);
     hoverPointRef.current = null;
     if (event.pointerType === "pen") {
+      // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
       palmRef.current = { penDown: true, lastPenAt: performance.now() };
     } else if (
       event.pointerType === "touch" &&
+      // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
       shouldIgnoreTouch(palmRef.current, performance.now())
     ) {
       // Palma apoiada enquanto a caneta escreve: não é gesto e não pode cancelar o traço.
@@ -1762,9 +1773,11 @@ export function HandwritingStudio({
       onCursorMove(at.x, at.y);
     }
     if (event.pointerType === "pen") {
+      // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
       palmRef.current = { ...palmRef.current, lastPenAt: performance.now() };
     } else if (
       event.pointerType === "touch" &&
+      // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
       shouldIgnoreTouch(palmRef.current, performance.now())
     ) {
       return;
@@ -1905,6 +1918,7 @@ export function HandwritingStudio({
       move(event);
     clearTimeout(holdTimerRef.current);
     if (event.pointerType === "pen") {
+      // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
       palmRef.current = { penDown: false, lastPenAt: performance.now() };
     }
     if (event.pointerType === "touch") pinch.end(event.pointerId);
@@ -2021,6 +2035,7 @@ export function HandwritingStudio({
     // Reta acertada de propósito: pode fechar uma forma com as retas acertadas logo antes. Tudo
     // acontece neste mesmo gesto, então um passo de desfazer volta ao que havia antes desta reta.
     const snappedLine = shapeSnappedRef.current && shapeKindRef.current === "line";
+    // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
     const now = performance.now();
     const recent = pruneRecentLines(recentLinesRef.current, now, strokes);
     const combined = snappedLine
@@ -2817,8 +2832,10 @@ export function HandwritingStudio({
     }
   }
 
+  // eslint-disable-next-line react-hooks/immutability -- Used by the imperative editor effects and pointer handlers.
   useEffect(() => {
     if (!flushOnClose) return;
+    // eslint-disable-next-line react-hooks/immutability -- Used by the imperative editor effects and pointer handlers.
     flushOnClose.current = () => {
       if (!dirty) return true;
       try {
@@ -2971,6 +2988,7 @@ export function HandwritingStudio({
   }
 
   function placeCurvePoint(point: HandwritingPoint) {
+    // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
     const now = performance.now();
     const last = curveClickRef.current;
     setCurveCursor(point);

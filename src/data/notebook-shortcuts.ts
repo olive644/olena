@@ -48,7 +48,7 @@ export function shortcutFromEvent(
     "\\": "backslash",
     "|": "backslash",
     '"': "quote",
-    "\'": "quote",
+    "'": "quote",
     "`": "backquote",
     "~": "backquote",
   };

@@ -26,7 +26,9 @@
   border-color: #b99100;
   box-shadow: 0 2px 0 #a98200;
 }
-:root body :is(input[type="checkbox"], .notebook-export-options input[type="radio"]):checked::after {
+:root
+  body
+  :is(input[type="checkbox"], .notebook-export-options input[type="radio"]):checked::after {
   transform: scale(1);
 }
 :root body :is(input[type="checkbox"], .notebook-export-options input[type="radio"]):focus-visible {

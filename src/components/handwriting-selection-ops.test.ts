@@ -221,6 +221,13 @@ it("reconhece a alça de rotação lateral quando o topo está fora da área vis
 });
 
 it("preserva a proporção da imagem pela alça vertical e no limite da folha", () => {
-  const image = scaleItems(items(), new Set(["i1"]), 1, { x: 0, y: 0 }, { width: 300, height: 300 }, 4).images[0]!;
+  const image = scaleItems(
+    items(),
+    new Set(["i1"]),
+    1,
+    { x: 0, y: 0 },
+    { width: 300, height: 300 },
+    4,
+  ).images[0]!;
   expect(image).toMatchObject({ width: 300, height: 150 });
 });
