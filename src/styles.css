@@ -4665,9 +4665,11 @@ body.local-room-active {
   pointer-events: none;
 }
 
-/* O canto de cima à direita é cortado (a dobra desenhada acima). As camadas da folha seguem a mesma
-   forma: sem isso dava para escrever no triângulo cortado, que não faz parte do papel. */
-.handwriting-page-shell canvas {
+/* O canto de cima à direita é cortado (a dobra desenhada acima). Só o canvas que recebe o toque segue
+   essa forma, para não dar para escrever no triângulo cortado. As outras camadas não recebem toque e o
+   canto delas já é coberto pela dobra; um clip-path em cada uma obrigava a recompor tudo a cada quadro
+   (medido: ~9 a 12 ms por quadro ao escrever). */
+.handwriting-page-shell > .handwriting-canvas {
   clip-path: polygon(0 0, calc(100% - 34px) 0, 100% 34px, 100% 100%, 0 100%);
 }
 
