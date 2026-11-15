@@ -46,6 +46,11 @@ const HelenaChat = lazy(() =>
   import("./components/helena-chat").then((module) => ({ default: module.HelenaChat })),
 );
 const OnboardingView = lazy(() => import("./views/onboarding-view"));
+const AccountLoadFailed = lazy(() =>
+  import("./components/account-load-failed").then((module) => ({
+    default: module.AccountLoadFailed,
+  })),
+);
 const NotFoundView = lazy(() => import("./views/not-found-view"));
 const LibraryView = lazy(() => import("./views/library-view"));
 const LessonBuilderView = lazy(() => import("./views/lesson-builder-view"));
@@ -116,7 +121,20 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     }
   });
 
-  const returningAccount = cloud.ready && cloud.authenticated === true && hasReturningAccountData();
+  // Conta que a nuvem confirmou ter dados também volta direto ao app: a marca de conclusão do
+  // onboarding e o progresso de Matemática ou Inglês são só dois sinais, e podem faltar.
+  const returningAccount =
+    cloud.ready &&
+    cloud.authenticated === true &&
+    (cloud.accountHadData === true || hasReturningAccountData());
+  // A leitura da conta falhou (rede lenta ou fora do ar) e o aparelho não tem nada dela: isto não
+  // é uma conta nova. Mostrar as perguntas aqui faria a pessoa refazer a configuração por cima
+  // dos dados que estão na nuvem.
+  const accountLoadFailed =
+    cloud.ready &&
+    cloud.authenticated === true &&
+    cloud.accountLoaded === false &&
+    !returningAccount;
 
   // Conta com progresso e sem a marca: grava a marca, que também vai para a nuvem, para o próximo
   // aparelho não depender de adivinhar.
@@ -172,6 +190,13 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     return (
       <Suspense fallback={<HelenaLoading label={uiText(0)} />}>
         <NotFoundView />
+      </Suspense>
+    );
+
+  if (accountLoadFailed)
+    return (
+      <Suspense fallback={<HelenaLoading label={uiText(0)} />}>
+        <AccountLoadFailed onRetry={cloud.retryLoad} />
       </Suspense>
     );
 

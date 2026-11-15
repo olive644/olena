@@ -3871,5 +3871,7 @@
   "KB",
   "Remove this file from the uploads list?",
   "Confirm removal",
-  "PDF"
+  "PDF",
+  "We could not load your account right now",
+  "Your studies are still saved in the cloud. We keep trying on our own, and you can try again now."
 ]

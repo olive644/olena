@@ -1487,3 +1487,99 @@ it("restores onboarding and progress when Google returns to the original manual 
     true,
   );
 });
+
+/**
+ * Serviços de login em que o teste decide quando a pessoa entra e sai, para repetir o caminho
+ * "saí da conta, entrei de novo" no mesmo aparelho.
+ */
+function reloginServices(uid: string) {
+  const account = { uid, email: "ana@example.com", getIdToken: vi.fn(async () => "token") };
+  let listener: ((value: typeof account | null) => void) | undefined;
+  const auth = { currentUser: account as typeof account | null };
+  const signOut = vi.fn(async () => {
+    auth.currentUser = null;
+    listener?.(null);
+  });
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth,
+    authApi: {
+      onIdTokenChanged: () => () => undefined,
+      onAuthStateChanged: (_: unknown, next: (value: typeof account | null) => void) => {
+        listener = next;
+        next(account);
+        return () => undefined;
+      },
+      signOut,
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  return {
+    signIn: () => {
+      auth.currentUser = account;
+      listener?.(account);
+    },
+  };
+}
+
+const accountItems = {
+  "helena.onboarding.v1": JSON.stringify({ completed: true, configurationOwner: "ana-google" }),
+  "helena.soloProgress": JSON.stringify({ island: "english", score: 460 }),
+  [MATH_PLACE_REWARDS_KEY]: JSON.stringify({ foundations: { points: 10, receipts: ["a"] } }),
+};
+
+it("sair e entrar de novo devolve tudo da nuvem e não envia nada vazio por cima dela", async () => {
+  const server = firebaseServer({
+    version: 2,
+    updatedAt: 5,
+    items: encodeCloudItems(accountItems),
+  });
+  vi.stubGlobal("fetch", server.fetch);
+  const services = reloginServices("ana-google");
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.accountLoaded).toBe(true));
+  await act(async () => {
+    await result.current.signOut?.();
+  });
+  expect(localStorage.getItem("helena.soloProgress")).toBeNull();
+  const writesBefore = server.writes().length;
+  act(() => services.signIn());
+  await waitFor(() => expect(result.current.accountLoaded).toBe(true));
+  expect(result.current.accountHadData).toBe(true);
+  expect(localStorage.getItem("helena.soloProgress")).toBe(accountItems["helena.soloProgress"]);
+  expect(localStorage.getItem("helena.onboarding.v1")).toBe(accountItems["helena.onboarding.v1"]);
+  expect(server.items()).toMatchObject(accountItems);
+  expect(server.writes().length).toBe(writesBefore);
+});
+
+it("se a nuvem não responde ao entrar de novo, não conta a conta como carregada, não envia nada e tenta sozinho", async () => {
+  const server = firebaseServer({
+    version: 2,
+    updatedAt: 5,
+    items: encodeCloudItems(accountItems),
+  });
+  let slow = false;
+  vi.stubGlobal("fetch", (input: RequestInfo | URL, init?: RequestInit) => {
+    if (slow && (init?.method ?? "GET") === "GET") return Promise.reject(new Error("timeout"));
+    return server.fetch(input, init);
+  });
+  const services = reloginServices("ana-google");
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.accountLoaded).toBe(true));
+  await act(async () => {
+    await result.current.signOut?.();
+  });
+  const writesBefore = server.writes().length;
+  slow = true;
+  act(() => services.signIn());
+  await waitFor(() => expect(result.current.status).toBe("offline"));
+  // Aparelho esvaziado e nuvem inalcançável: isto NÃO é uma conta nova.
+  expect(result.current.accountLoaded).toBe(false);
+  expect(result.current.retryLoad).toBeTypeOf("function");
+  expect(server.writes().length).toBe(writesBefore);
+  // A rede volta sem nenhum evento "online": o app tenta de novo por conta própria.
+  slow = false;
+  await waitFor(() => expect(result.current.accountLoaded).toBe(true), { timeout: 8000 });
+  expect(localStorage.getItem("helena.soloProgress")).toBe(accountItems["helena.soloProgress"]);
+  expect(result.current.accountHadData).toBe(true);
+  expect(server.items()).toMatchObject(accountItems);
+});

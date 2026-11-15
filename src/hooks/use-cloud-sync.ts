@@ -83,6 +83,16 @@ export type CloudSyncState = {
   lastSyncedAt?: number | undefined;
   /** Chaves que as regras da conta recusaram no último envio. O resto do estado foi salvo. */
   rejectedKeys?: string[] | undefined;
+  /**
+   * Verdadeiro só depois que o estado da conta foi lido da nuvem com sucesso neste aparelho.
+   * Falso (e `ready` já verdadeiro) quando a leitura falhou: o aparelho pode estar esvaziado e a
+   * nuvem inalcançável, o que NÃO é uma conta nova. Ausente quando não há conta.
+   */
+  accountLoaded?: boolean | undefined;
+  /** A nuvem devolveu algum dado desta conta na leitura inicial: ela existe e já foi usada. */
+  accountHadData?: boolean | undefined;
+  /** Tenta ler a conta de novo agora (só existe enquanto a leitura inicial está falhando). */
+  retryLoad?: (() => void) | undefined;
   syncNow?: (() => void) | undefined;
   signOut?: ((discardPending?: boolean) => Promise<void>) | undefined;
   // Apaga a conta e os estudos da nuvem. Rejeita com AccountDeletionError.
@@ -97,6 +107,10 @@ export type CloudSyncState = {
 // mudanças de poucos segundos num só envio reduz ainda mais, e o envio imediato ao esconder a
 // página impede que a espera perca o que foi feito.
 const CLOUD_UPLOAD_DELAY_MS = 4000;
+const INITIAL_READ_TIMEOUT_MS = 30000;
+// Quando a leitura inicial da conta falha, o app tenta de novo sozinho (e não só quando o navegador
+// avisa que a rede voltou): 2 s, 5 s, 15 s, 30 s e depois a cada minuto.
+const LOAD_RETRY_DELAYS_MS = [2000, 5000, 15000, 30000, 60000];
 
 export function useCloudSync() {
   const enabled =
@@ -111,6 +125,7 @@ export function useCloudSync() {
     revision: 0,
     enabled,
     status: enabled ? "loading" : "disabled",
+    ...(enabled ? { accountLoaded: false } : {}),
   });
 
   useEffect(() => {
@@ -126,6 +141,8 @@ export function useCloudSync() {
     let changeRevision = 0;
     let conflictPending = false;
     let accountRevision = 0;
+    let loadFailures = 0;
+    let loadRetryTimer: ReturnType<typeof setTimeout> | undefined;
     // Chaves que as regras da conta recusaram. Só saem daqui quando uma gravação posterior passa.
     const rejectedKeys = new Set<string>();
 
@@ -202,6 +219,9 @@ export function useCloudSync() {
               revision: current.revision + 1,
               authenticated: false,
               status: "signed-out",
+              accountLoaded: undefined,
+              accountHadData: undefined,
+              retryLoad: undefined,
             }));
             return;
           }
@@ -303,6 +323,9 @@ export function useCloudSync() {
             ready: false,
             authenticated: true,
             status: "loading",
+            accountLoaded: false,
+            accountHadData: undefined,
+            retryLoad: undefined,
             displayName: user.displayName ?? undefined,
             email: user.email ?? undefined,
             signOut,
@@ -334,8 +357,13 @@ export function useCloudSync() {
             if (!currentAccount()) throw new Error("Account changed");
             return token;
           };
-          const request = async (method: "GET" | "PUT", body?: CloudState, legacy = false) => {
-            const signal = AbortSignal.timeout(12000);
+          const request = async (
+            method: "GET" | "PUT",
+            body?: CloudState,
+            legacy = false,
+            timeoutMs = 12000,
+          ) => {
+            const signal = AbortSignal.timeout(timeoutMs);
             const token = await accessToken(signal);
             const init: RequestInit = { method, signal };
             if (body) {
@@ -393,8 +421,12 @@ export function useCloudSync() {
           // onboarding concluido que acabou de ser salva, jogando a pessoa
           // de volta pro onboarding mesmo apos o login funcionar.
           const localBeforeGet = readSyncedStorage();
-          const modernCloud = await request("GET");
-          const cloud = modernCloud ?? (await request("GET", undefined, true));
+          // A primeira leitura do estado inteiro pode ser grande e a rede do celular lenta: ela tem
+          // mais tempo que as conferências do dia a dia.
+          const modernCloud = await request("GET", undefined, false, INITIAL_READ_TIMEOUT_MS);
+          const cloud =
+            modernCloud ?? (await request("GET", undefined, true, INITIAL_READ_TIMEOUT_MS));
+          loadFailures = 0;
           let migrationPending = modernCloud === null && cloud !== null;
           let cloudUpdatedAt = Number.isFinite(cloud?.updatedAt) ? cloud!.updatedAt! : 0;
           if (!currentAccount()) return;
@@ -748,6 +780,9 @@ export function useCloudSync() {
             ready: true,
             authenticated: true,
             status: dirty ? "syncing" : "synced",
+            accountLoaded: true,
+            accountHadData: Boolean(cloud?.items && Object.keys(cloud.items).length > 0),
+            retryLoad: undefined,
             displayName: user.displayName ?? undefined,
             email: user.email ?? undefined,
             lastSyncedAt: Date.now(),
@@ -834,18 +869,29 @@ export function useCloudSync() {
         const activity = startAccountActivity(() => auth.currentUser);
         const synchronize = (user: (typeof auth)["currentUser"]) => {
           activity.report();
+          clearTimeout(loadRetryTimer);
           const attempt = ++accountRevision;
           void syncUser(user, attempt).catch(() => {
             if (!active || accountRevision !== attempt) return;
+            const retry = () => synchronize(auth.currentUser);
             setState((current) => ({
               ...current,
               ready: true,
               authenticated: Boolean(user),
               status: "offline",
+              // Sem a leitura da conta, o aparelho pode estar vazio: isto não é uma conta nova.
+              accountLoaded: false,
+              retryLoad: user ? retry : undefined,
             }));
             if (onlineListener) window.removeEventListener("online", onlineListener);
-            onlineListener = () => synchronize(auth.currentUser);
+            onlineListener = retry;
             window.addEventListener("online", onlineListener);
+            if (user) {
+              const delay =
+                LOAD_RETRY_DELAYS_MS[Math.min(loadFailures, LOAD_RETRY_DELAYS_MS.length - 1)]!;
+              loadFailures += 1;
+              loadRetryTimer = setTimeout(retry, delay);
+            }
           });
         };
         const unsubscribe = authApi.onAuthStateChanged(auth, synchronize);
@@ -859,6 +905,7 @@ export function useCloudSync() {
     return () => {
       active = false;
       clearTimeout(uploadTimer);
+      clearTimeout(loadRetryTimer);
       eventSource?.close();
       stopIdToken?.();
       if (onlineListener) window.removeEventListener("online", onlineListener);
