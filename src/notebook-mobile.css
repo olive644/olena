@@ -22,6 +22,8 @@
     --mobile-drawer-gap: calc(112px + env(safe-area-inset-bottom));
     display: grid;
     grid-template-rows: 58px minmax(0, 1fr) 54px 44px auto;
+    /* Sem isto a coluna cresce até o conteúdo mais largo e empurra o "+" e o X para fora da tela. */
+    grid-template-columns: minmax(0, 1fr);
     isolation: isolate;
   }
   :root .handwriting-studio > .handwriting-commandbar,
@@ -392,7 +394,27 @@
   }
   .notebook-mobile-dock {
     gap: 4px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    padding-inline: 8px;
+  }
+  /* Com fonte maior ou tela estreita, os textos encolhem (com reticências) e o "+" de chamar amigos
+     e o X de sair da folha nunca caem para uma linha escondida fora da tela. */
+  :root .notebook-mobile-dock > button {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+  :root .notebook-mobile-dock > button > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  :root .notebook-mobile-dock > button[aria-label] {
+    flex: none;
+  }
+  :root .notebook-mobile-dock .capture-header-actions {
+    flex: none;
   }
 }
 @media (max-width: 680px) {
