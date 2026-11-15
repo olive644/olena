@@ -1,0 +1,29 @@
+{
+  "width": 55,
+  "height": 208,
+  "scale": 2,
+  "leaf": 27,
+  "box": 42,
+  "images": {
+    "folhaA": {
+      "file": "folhaA.png",
+      "w": 84,
+      "h": 84
+    },
+    "folhaB": {
+      "file": "folhaB.png",
+      "w": 84,
+      "h": 84
+    },
+    "folhaC": {
+      "file": "folhaC.png",
+      "w": 84,
+      "h": 84
+    },
+    "haste": {
+      "file": "haste.png",
+      "w": 110,
+      "h": 416
+    }
+  }
+}

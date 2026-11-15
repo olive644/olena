@@ -468,6 +468,19 @@ const olenaReadingFile = (await stat(new URL("../dist/olena-reading/olena.riv", 
 console.log(`Olena lendo Rive opcional: ${(olenaReadingFile / 1024).toFixed(1)} KiB .riv`);
 if (olenaReadingFile > 512 * 1024) throw new Error("O olena.riv excedeu 512 KiB.");
 
+// A prateleira dos cadernos anima a Olena dormindo e a hera em Rive e baixa os dois .riv depois do
+// primeiro quadro estático. Medição: 119 KiB e 38 KiB.
+const shelfOlenaFile = (
+  await stat(new URL("../dist/olena-prateleira/olena-dormindo.riv", import.meta.url))
+).size;
+const shelfHeraFile = (await stat(new URL("../dist/olena-prateleira/hera.riv", import.meta.url)))
+  .size;
+console.log(
+  `Prateleira Rive opcional: ${(shelfOlenaFile / 1024).toFixed(1)} KiB a Olena, ${(shelfHeraFile / 1024).toFixed(1)} KiB a hera`,
+);
+if (shelfOlenaFile > 256 * 1024) throw new Error("O olena-dormindo.riv excedeu 256 KiB.");
+if (shelfHeraFile > 128 * 1024) throw new Error("O hera.riv excedeu 128 KiB.");
+
 // O tomate do Pomodoro (aba Foco) também reaproveita o runtime e só baixa o .riv depois do
 // primeiro quadro estático. Medição: 662 KiB (oito peças de mordida, minhoca animada e partículas).
 const tomatoFile = (await stat(new URL("../dist/pomodoro-tomato/tomato.riv", import.meta.url)))
