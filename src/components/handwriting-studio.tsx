@@ -3274,7 +3274,6 @@ export function HandwritingStudio({
               <PaperCloseIcon />
             </button>
           )}
-          {captureActions}
         </div>
       )}
       {collaborationActivity && (
@@ -3678,7 +3677,7 @@ export function HandwritingStudio({
             if (open) setPaperSectionsOpen({ paper: false, color: false });
           }}
         />
-        {!phoneLayout && captureActions}
+        {captureActions}
       </div>
 
       {writingWindowOpen && (

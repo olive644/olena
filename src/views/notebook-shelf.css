@@ -894,3 +894,11 @@
   --cover-stitch: #ffcf16;
   --cover-spine-art: url("/notebook-covers/lombada-pride.webp");
 }
+
+/* No celular a hera ocupa as laterais da prateleira: os cadernos começam depois dela, em vez de
+   ficarem cobertos pelas folhas. Se não couberem, a fileira rola na horizontal. */
+@media (max-width: 680px) {
+  .notebook-display-shelf__books {
+    padding-inline: calc(clamp(8px, 4vw, 44px) + 55px);
+  }
+}
