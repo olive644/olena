@@ -45,7 +45,12 @@ test("quadro amplo, preferências e livro preservam páginas ao navegar e reabri
   await editor.getByRole("button", { name: "Adicionar post-it" }).click();
   await editor.getByRole("textbox", { name: "Texto do post-it" }).fill("Página um preservada");
   await expect(editor.getByText("Falha ao salvar a folha", { exact: false })).toHaveCount(0);
-  await editor.getByRole("button", { name: "Criar próxima folha" }).click();
+  // No celular a bandeja de folhas fica oculta enquanto o painel de seleção está aberto; trocar
+  // de ferramenta a traz de volta.
+  const createPage = editor.getByRole("button", { name: "Criar próxima folha" });
+  await editor.getByRole("button", { name: "Caneta", exact: true }).click();
+  await expect(editor.locator(".handwriting-formula-assist")).toHaveCount(0);
+  await createPage.click();
   await expect(editor.getByRole("textbox", { name: "Texto do post-it" })).toHaveCount(0);
   await editor.getByRole("button", { name: "Folha anterior" }).click();
   await expect(editor.getByRole("textbox", { name: "Texto do post-it" })).toHaveValue(

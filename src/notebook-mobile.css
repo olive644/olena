@@ -22,6 +22,8 @@
     --mobile-drawer-gap: calc(112px + env(safe-area-inset-bottom));
     display: grid;
     grid-template-rows: 58px minmax(0, 1fr) 54px 44px auto;
+    /* Sem isto a coluna cresce até o conteúdo mais largo e empurra o "+" e o X para fora da tela. */
+    grid-template-columns: minmax(0, 1fr);
     isolation: isolate;
   }
   :root .handwriting-studio > .handwriting-commandbar,
@@ -92,8 +94,68 @@
     box-shadow: none;
     z-index: 8;
   }
+  /* "+" de chamar amigos e X de sair ficam na barra de cima, ao lado das ferramentas de arquivo.
+     Os botões encolhem em telas estreitas para os seis caberem na mesma linha. */
+  :root .handwriting-studio .handwriting-commandbar > .capture-header-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 58px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 6px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    z-index: 9;
+  }
+  :root .handwriting-studio .handwriting-commandbar > .capture-header-actions button {
+    min-width: 0;
+    width: clamp(30px, 9.5vw, 40px);
+    padding: 4px;
+  }
+  /* A bolinha do "+" na mesma linha do X e das ferramentas: sem deslocamento vertical nem margem
+     negativa herdados, com o mesmo tamanho dos outros botões e o ícone centrado. */
+  :root .handwriting-studio .handwriting-commandbar > .capture-header-actions .notebook-team {
+    padding: 0;
+  }
+  :root
+    .handwriting-studio
+    .handwriting-commandbar
+    > .capture-header-actions
+    .notebook-team
+    .notebook-team__add {
+    inset-block-start: 0;
+    margin: 0;
+    width: clamp(30px, 9.5vw, 36px);
+    height: clamp(30px, 9.5vw, 36px);
+    flex: none;
+    box-shadow: 0 2px #d9c9ab;
+  }
+  :root
+    .handwriting-studio
+    .handwriting-commandbar
+    > .capture-header-actions
+    .notebook-team__add
+    .paper-editor-icon {
+    width: 24px;
+    height: 24px;
+    translate: -1px -1px;
+  }
+  :root
+    .capture-dialog--handwriting
+    .handwriting-studio
+    .handwriting-commandbar
+    > .notebook-file-tools {
+    left: 116px;
+    right: calc(2 * clamp(30px, 9.5vw, 40px) + 15px);
+    width: calc(100% - 116px - 2 * clamp(30px, 9.5vw, 40px) - 15px);
+    box-sizing: border-box;
+  }
   :root .handwriting-studio .notebook-file-tools > button {
-    min-width: 40px;
+    flex: 0 1 40px;
+    min-width: 26px;
     width: 40px;
     padding: 5px;
   }
@@ -380,19 +442,26 @@
 }
 
 @media (max-width: 680px) {
-  .notebook-mobile-dock .capture-header-actions {
-    position: static;
-    display: flex;
-    gap: 4px;
-    min-width: 0;
-  }
-  .notebook-mobile-dock .capture-header-actions button {
-    min-width: 44px;
-    padding: 4px;
-  }
   .notebook-mobile-dock {
     gap: 4px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    padding-inline: 8px;
+  }
+  /* Com fonte maior ou tela estreita, os textos encolhem (com reticências) e o "+" de chamar amigos
+     e o X de sair da folha nunca caem para uma linha escondida fora da tela. */
+  :root .notebook-mobile-dock > button {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+  :root .notebook-mobile-dock > button > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  :root .notebook-mobile-dock > button[aria-label] {
+    flex: none;
   }
 }
 @media (max-width: 680px) {
@@ -756,15 +825,16 @@
       linear-gradient(315deg, var(--line) 0 15px, transparent 15px), var(--surface);
     box-shadow: 0 3px var(--line);
   }
+  /* No celular os papéis não têm a seta de recolher: ficam sempre à mostra na barra de cima. */
+  :root .handwriting-studio .handwriting-paper-disclosure {
+    display: none;
+  }
   :root .handwriting-studio .handwriting-paper-picker,
   :root .capture-dialog--handwriting .handwriting-studio .notebook-file-tools,
   :root .handwriting-studio .handwriting-paper-picker .handwriting-paper-section__toggle {
     background: transparent;
     border: 0;
     box-shadow: none;
-  }
-  :root .handwriting-studio .handwriting-paper-disclosure {
-    display: none;
   }
 }
 

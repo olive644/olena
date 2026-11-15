@@ -12,6 +12,8 @@ import {
 } from "./notebook-shelves.js";
 
 export const WORKSPACE_VERSION = 7 as const;
+/** Quantas marcas de exclusão de cadernos o espaço guarda (as mais recentes). */
+export const MAX_REMOVAL_MARKS = 300;
 
 export type FocusPreferences = {
   pomodoroMinutes: number;
@@ -227,6 +229,13 @@ type HomeworkList = {
 export type WorkspaceState = {
   notebookShelfName?: string;
   libraryShelfName?: string;
+  /**
+   * Marcas de exclusão: ids de cadernos apagados neste espaço. Servem para uma cópia mais antiga
+   * (a da conta ou a do IndexedDB, gravada com atraso) não trazer de volta o que a pessoa apagou.
+   */
+  removedNotebookIds?: string[];
+  /** A prateleira foi apagada (nome limpo): uma cópia antiga não pode devolver o nome. */
+  notebookShelfCleared?: boolean;
   libraryCollections?: LibraryCollection[];
   version: typeof WORKSPACE_VERSION;
   subjects: Subject[];
@@ -491,8 +500,15 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
   switch (action.type) {
     case "library/shelf-named":
       return { ...state, libraryShelfName: action.name.trim().slice(0, 40) };
-    case "notebook/shelf-named":
-      return { ...state, notebookShelfName: action.name.trim().slice(0, 40) };
+    case "notebook/shelf-named": {
+      const name = action.name.trim().slice(0, 40);
+      const { notebookShelfCleared, ...rest } = state;
+      void notebookShelfCleared;
+      // Limpar um nome que existia é apagar a prateleira; dar um nome novo desfaz a marca.
+      return !name && state.notebookShelfName
+        ? { ...rest, notebookShelfName: name, notebookShelfCleared: true }
+        : { ...rest, notebookShelfName: name };
+    }
     case "workspace/replaced":
       return {
         ...action.workspace,
@@ -642,6 +658,10 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         return state;
       return {
         ...state,
+        // Criar de novo um id que já foi apagado (por exemplo, o caderno padrão) desfaz a marca.
+        ...(state.removedNotebookIds?.includes(action.id)
+          ? { removedNotebookIds: state.removedNotebookIds.filter((id) => id !== action.id) }
+          : {}),
         notebooks: [
           {
             id: action.id,
@@ -766,6 +786,9 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
       );
       return {
         ...state,
+        removedNotebookIds: [
+          ...new Set([...(state.removedNotebookIds ?? []), ...action.ids]),
+        ].slice(-MAX_REMOVAL_MARKS),
         notebooks: state.notebooks
           .filter((notebook) => !ids.has(notebook.id))
           .map((notebook) => {

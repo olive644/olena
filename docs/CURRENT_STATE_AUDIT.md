@@ -5045,3 +5045,105 @@ O #634 (editor de cadernos) entrou com o e2e desatualizado e um falso positivo d
 - **Teste instável da curva.** Media a folha antes de ela se reajustar ao trocar de ferramenta. Agora escolhe a Curva e espera o tamanho estabilizar (6 de 6 execuções estáveis).
 - **Removido de propósito.** `handwriting-vertical-space.spec.ts`, porque a ferramenta "Espaço vertical" saiu do app no #634. Na seleção de tinta, a checagem do ícone da Curva passou a olhar o ícone de papel recortado.
 - **Cuidado ao testar localmente.** O Playwright reaproveita um `vite preview` antigo se já houver um rodando; reconstrua (`npm run build`) ou encerre o servidor antes de validar CSS.
+
+### Interface do caderno no celular (PR 639), 2026-11-15
+
+- **Seta que recolhe os papéis.** No celular a seta fica escondida de propósito (decisão da dona do projeto): os papéis ficam sempre à mostra na barra de cima. No desktop a seta continua. Uma tentativa minha de devolvê-la ao celular foi desfeita a pedido.
+- **Testes adaptados a decisões de desenho da PR** (nenhuma função removida): bordas escuras e facetas coloridas dos ícones no tema escuro, painel de fórmula escuro no tema escuro, setas de seleção com as cores novas, ferramentas de arquivo e papéis sem placa própria no celular, e a folha cobrindo a altura da janela no celular (rola para o resto da largura).
+- **Bandeja de folhas no celular.** Fica oculta enquanto o painel de seleção está aberto, de propósito. Voltar para a caneta traz a bandeja e o botão de nova folha de volta; o teste agora faz isso antes de criar a folha.
+- **Cuidado ao testar.** Rodar desktop e celular juntos com 4 trabalhadores gera falhas por lentidão (eixo, tracejado, rascunho, OCR, perfil). Todas passam com pouco paralelismo.
+
+### Celular: barra de baixo do editor e hera da prateleira, 2026-11-15
+
+- **Relato (print do aparelho).** Dentro da folha sumiam o "+" de chamar amigos e o X de sair, e na prateleira as folhas da hera cobriam o primeiro caderno.
+- **Causa da barra.** A coluna da grade do editor (`.handwriting-studio`) crescia até o conteúdo mais largo (415 px numa tela de 318) e a barra de baixo tinha `flex-wrap: wrap`: com fonte maior ou tela estreita, o "+" e o X caíam para uma segunda linha fora da tela. Correção em `src/notebook-mobile.css`: coluna `minmax(0, 1fr)`, barra de baixo sem quebra de linha e com textos que encurtam.
+- **Decisão da dona do projeto: "+" e X na barra de cima.** Mesmo assim o "+" e o X não cabiam embaixo, então no celular eles passaram para a barra de cima, ao lado das ferramentas de arquivo (`captureActions` renderizado no `handwriting-commandbar`). Os seis botões encolhem em telas estreitas (largura entre 30 e 40 px) e não passam dos 116 px dos dois papéis. Uma regra do editor (`width: max-content; left: auto`) impedia as ferramentas de arquivo de encolherem; foi anulada só no celular.
+- **Bolinha do "+".** Ficava 3 px acima do X e das ferramentas (deslocamento vertical e margem negativa herdados). No celular ela agora tem o mesmo centro dos outros botões (diferença de até 2 px, conferida no teste) e o ícone centrado.
+- **Causa da prateleira.** A hera ocupa as laterais e os cadernos começavam por baixo dela. Correção em `src/views/notebook-shelf.css`: no celular a fileira começa depois da hera e rola na horizontal se não couber.
+- **Provas.** `e2e/notebook-mobile-fit.spec.ts` (celular): barra com 411, 360 e 320 px e fonte maior, e prateleira com três cadernos. Falha sem a correção e passa com ela. A barra de cima é conferida com 411, 360 e 320 px.
+- **Limite.** Validado em emulação de celular; não foi testado num aparelho Android real nem com a escala de fonte do sistema (simulada com fonte maior na barra).
+
+### Caderno e prateleira apagados voltavam ao atualizar, 2026-11-15
+
+Ponto 6 do feedback de um usuário: "apagar cadernos e prateleira não funciona, ao atualizar o site eles retornam".
+
+- **Causas encontradas (reproduzidas em teste).** Ao abrir o app, a cópia mais antiga vencia a local em dois caminhos: (1) `use-workspace` mescla a leitura do localStorage (gravado na hora) com a do IndexedDB (gravado depois) dando o IndexedDB como vencedor, então atualizar a página entre as duas gravações trazia o caderno de volta, mesmo sem conta; (2) com conta, `mergeAccountWorkspace` dá a cópia da conta como vencedora, então uma exclusão que ainda não chegou à nuvem voltava. Além disso, remover na prateleira só vale ao tocar em "Salvar prateleira".
+- **Correção.** O espaço de estudos guarda marcas de exclusão: `removedNotebookIds` (até 300 ids de cadernos apagados) e `notebookShelfCleared` (a prateleira foi apagada). Elas viajam junto com o espaço (e somem com ele ao sair da conta, preservando o isolamento entre contas). `mergeAccountWorkspace` e `mergeWorkspaceStates` juntam as marcas de todas as cópias e retiram os cadernos marcados (com as folhas deles) e o nome da prateleira apagada. Criar de novo um id apagado, ou dar um nome novo à prateleira, desfaz a marca.
+- **Testes.** `src/domain/workspace-removals.test.ts` (redutor, validação, abrir com cópia antiga, sincronização entre aparelhos) e `use-workspace-indexed-mirror.test.tsx` (apagar e atualizar com a cópia atrasada do IndexedDB; falha sem a correção).
+- **Limites.** (a) Ainda é preciso tocar em "Salvar prateleira" para a remoção valer; apagar na hora com "Desfazer" fica como melhoria de interface separada. (b) Um caderno criado e a página atualizada antes de gravar no IndexedDB ainda pode sumir pela mesma regra de "cópia antiga vence"; não faz parte desta correção. (c) Não verificado com conta real em dois aparelhos.
+
+### Feedback de usuário: borracha, S Pen e dobra da folha, 2026-11-15
+
+Pacote rápido de três pontos do feedback de um usuário (cruzado com o código antes de mexer).
+
+- **Anel da borracha ao pairar.** A prévia ao pairar existia só para caneta e marca-texto. Agora a borracha desenha um anel (contorno claro por fora e escuro tracejado por dentro, sem preencher) do tamanho exato da área apagada (raio `eraserWidth * 3`, limitado a 50 no modo de fundo). Vale para a caneta pairando e para o mouse com a borracha, e segue a preferência "prévia da ponta". Funções novas: `drawEraserPreview` (`handwriting-canvas.ts`). Testes: `handwriting-studio-hover.test.tsx` e `e2e/handwriting-eraser-ring.spec.ts`.
+- **Botão lateral da S Pen.** O editor só olhava `event.button === 2`. Quem segura o botão ANTES de encostar na tela gera `button 0` e `buttons 3`, caso comum na S Pen, e o botão era ignorado. Agora `isPenBarrelButton` e `isPenEraserTip` (`handwriting-pointer.ts`) leem também a máscara `buttons` (bits 2 e 32), na escrita normal e na janela de escrita. Testes: `handwriting-pointer.test.ts` e `handwriting-studio-spen.test.tsx`. **Não verificado em aparelho real:** confirmar com uma S Pen que o botão passa a funcionar, com a ação escolhida em Configurações (padrão: mão).
+- **Dobra do canto.** O triângulo de 34 px era só decoração (`::after`) e dava para escrever no canto cortado, que não é papel. As camadas da folha agora têm o mesmo recorte (`clip-path` em `.handwriting-page-shell canvas`). Teste: `e2e/handwriting-fold.spec.ts`.
+- **Fora deste pacote** (pontos 1, 2, 5 a 12 do cruzamento): ver o relatório do cruzamento; o ponto 6 (itens apagados que voltam) tem PR própria.
+
+### Traço de mouse e dedo com cara de caneta, 2026-11-15
+
+Origem: a investigação do Canva mostrou, nos scripts carregados pela página, a biblioteca perfect-freehand (pressão deduzida da velocidade e pontas que afinam). Não afirmo que a caneta do quadro branco use exatamente os parâmetros que li (`thinning 0,6`, `smoothing 0,6`, `streamline 0,5`), porque o trecho pode ser de outro recurso de desenho. O Olena não copiou código nem ganhou dependência: a regra foi escrita aqui.
+
+- **Problema.** Mouse e dedo mandam sempre a mesma pressão (0,5). O traço saía com largura uniforme e pontas chapadas, e o Fineliner era uma linha de largura constante.
+- **Regra nova** (`handwriting-ink-dynamics.ts`, funções puras): pressão simulada pela velocidade (rápido afina, devagar engrossa, faixa 0,3 a 0,8, começa em 0,5) e pontas que afinam até 25% da largura. A conta é causal, então a ponta ao vivo e o traço pronto recebem os mesmos números.
+- **Quem recebe.** Só traços novos de mouse ou dedo, marcados com `dynamics: "simulated"` ao criar (nos dois pontos de criação do estúdio). Traços antigos não têm o campo e abrem exatamente como antes. Caneta (`pointerType "pen"`) e traços com pressão real não mudam. Tracejado, borracha de fundo, marca-texto e formas ficam de fora.
+- **Fineliner.** Mouse e dedo passam a usar o contorno de largura variável, com a mesma largura média de sempre (0,65 da espessura). Caneta com pressão real segue com a linha constante.
+- **Borracha e caixa do traço** usam a mesma `strokeRadii`, então o toque acerta onde a tinta aparece.
+- **Dados.** Campo novo e opcional `dynamics` no traço; o validador do documento aceita ausente ou `"simulated"` e recusa outro valor; juntar linhas retas só une traços com a mesma marca.
+- **Prova.** Testes novos para a regra, o raio e a validação; conferi o desenho antigo contra o novo em um canvas de comparação rodando o `drawStroke` real (Fineliner, Caneta-tinteiro e Pincel macio, mão constante e lenta seguida de rápida). Larguras medidas em mão lenta e rápida: Fineliner 3,9 e 2,7 (antes 3,25), Caneta-tinteiro 8,7 e 4,6 (antes 6,5), Pincel macio 30 e 22 (antes 24).
+- **Seis pincéis da caneta.** A regra vale para os seis (Fineliner, Caneta-tinteiro, Pincel macio, Caneta de caligrafia, Esferográfica e Lápis). Em mouse e dedo a ponta afina em todos; Lápis varia mais com a velocidade que a Esferográfica; a Caligrafia depende da direção da ponta chata, então só ganha o afinamento das pontas. Sem a marca, o raio é o de sempre. As medidas de largura acima são só dos três primeiros. Registro: minha primeira leitura dos pincéis veio de uma cópia antiga e listou só três.
+- **Não verificado.** Desenhar de verdade no estúdio com mouse e com dedo em celular (só unidade e canvas de comparação), a sensação em tela e o ajuste fino das constantes (faixa de pressão, taper e velocidade de referência), que merecem teste de uso. O traço salvo guarda os pontos reais, então ajustar as constantes depois muda também os traços novos já salvos com a marca.
+
+## Lápis pulando sobre os cadernos no modo de edição da prateleira, 15/11/2026
+
+Pedido do proprietário: ao apertar o lápis de edição da prateleira, cada caderno disponível mostra um ícone de lápis pulando acima dele, para indicar que dá para personalizar. O lápis reaproveita o `ShelfToolIcon name="pen"` (papel recortado), fica decorativo (`aria-hidden`, sem foco nem clique, o caderno continua sendo o botão) e só existe com `editing` ligado. Com "reduzir movimento" (sistema ou `data-reduce-motion`) o lápis fica parado, sem animação. Os lápis pulam com pequeno atraso entre si para não ficarem em uníssono.
+
+- Prova: `e2e/notebook-shelf-edit-hint.spec.ts` (um lápis por caderno, acima e centralizado na lombada, animação ligada, sem animação com reduzir movimento, nenhum lápis fora da edição; PC e celular). Captura conferida no PC com tema escuro.
+- Limites: lápis fixo de 30px; com muitos cadernos juntos pode encostar na placa de nome da prateleira (não medido). Não verificado em aparelho real.
+
+## Post-its e tabelas escuros na folha noite, 15/11/2026
+
+Pedido do feedback de usuário (ponto 10): na folha "Escura", post-its e tabelas continuavam em tons de papel claro e destoavam. Agora, quando a cor da folha é noite, post-its amarelo, azul e lilás usam tons escuros (`#5d4f22`, `#2f4a58`, `#4a3a6b`) com texto `#fff9ef`; a tabela usa fundo `#33293f`, grade clara e texto claro. A regra vale no editor (CSS por `data-paper-color` no `.handwriting-page-shell`, em `src/notebook-editor.css`) e no desenho do canvas usado em miniatura, exportação e impressão (`renderPage`, `stickyColor(color, dark)`). Folhas clara e envelhecida não mudam.
+
+- Provas: `src/components/handwriting-canvas-table.test.ts` (cores usadas no canvas, claro e noite) e `e2e/notebook-night-sticky.spec.ts` (cores calculadas no DOM, PC e celular, ida e volta entre noite e clara). Captura conferida no PC.
+- Limites: modo claro e escuro do app não mudam este desenho, pois a cor depende só da folha. Contraste conferido por tons, sem medição automática de razão. Não verificado em aparelho real.
+
+## Caderno vazio sem folha falsa na esquerda, 15/11/2026
+
+Pedido do feedback (ponto 5): no caderno sem folhas, a página da esquerda mostrava um papel pautado que parecia existir, ao lado de "Criar primeira folha". Agora, com o caderno aberto e sem páginas, a esquerda vira a guarda do caderno (mesmo acabamento do lado direito, `.notebook-endpaper`) com uma fita roxa marcadora (`.notebook-endpaper-ribbon`). O papel pautado continua só na miniatura compacta (`compactPreview`), onde não é clicável.
+
+- Prova: `e2e/notebook-empty-endpaper.spec.ts` (nenhum `.notebook-empty-paper` no par de páginas, fita roxa mais alta que larga; PC e celular). Captura conferida no PC.
+- Limite: não verificado no modo escuro do app nem em aparelho real; a guarda usa cores fixas de papel.
+
+## Barra de cores rápidas e conta-gotas no editor, 15/11/2026
+
+Pedido do feedback (ponto 8): trocar de cor da caneta exigia abrir o painel de opções (apertar a ferramenta duas vezes) e não havia como pegar uma cor já usada. Agora, com caneta ou marca-texto selecionados, uma barra fica no topo da área de escrita (`HandwritingQuickColors`, presa por `position: sticky` sem ocupar espaço na folha; o rodapé continua da tira de folhas). Ela tem as seis cores fixas do painel, até cinco cores personalizadas recentes, um seletor livre (cor nativa) e um conta-gotas.
+
+- Conta-gotas: lê a cor que a pessoa vê no ponto tocado, somando as camadas de canvas da folha (papel, imagens, tinta) em `sampleCanvasStack`. O toque é capturado e não desenha nada. Esc cancela; tocar fora da folha cancela. A cor lida vira a cor atual e entra nas recentes.
+- Recentes: preferência só deste aparelho (`localStorage`, chave `olena.handwriting.recent-colors`, até 5 cores hex validadas). Não é progresso nem vai para a conta, então não sincroniza e não substitui nada.
+- Textos novos nos dois idiomas (índices 3875 a 3878) e manifesto do catálogo atualizado.
+- Mobile: a barra começa depois da coluna de papéis (124px) e quebra em linhas; botões de 34px. Tema escuro com fundo `#292432` e contorno claro.
+- Provas: `src/components/handwriting-quick-colors-model.test.ts` (hex, lista de recentes, limite, dados corrompidos) e `e2e/notebook-quick-colors.spec.ts` (PC e celular: cor fixa liga só ela, barra dentro da tela, conta-gotas lê o papel `#fffdf7`, guarda a recente, Esc cancela, tema escuro). Capturas conferidas no PC e no celular.
+- Limites: não verificado em aparelho real nem com S Pen. A cor lida vem da imagem da folha, então suaviza nas bordas dos traços (pegue no miolo de um traço grosso). Sem toque duplo para trocar de cor e sem gradiente (itens do feedback fora deste pacote). A barra não aparece em outras ferramentas (borracha, forma, texto).
+
+## Janela de escrita flutuante, arrastável e com posição lembrada, 15/11/2026
+
+Pedido do feedback (ponto 12) e do proprietário: a janela de escrita ampliada era uma faixa de largura total que empurrava a folha para baixo. Agora ela flutua sobre a área de escrita (`position: absolute` dentro do editor) e tem uma alça (`Mover janela de escrita`, três pontinhos no topo) para arrastar.
+
+- Mover: arrastar a alça com mouse, caneta ou toque; ou focar a alça e usar as setas do teclado (16px por passo, 64px com Shift). Nenhuma ação depende só de ponteiro.
+- Limites: a janela só circula pela área de escrita (a região da folha). Ela nunca cobre as ferramentas, o botão que a fecha, nem a barra de baixo no celular. Girar o celular ou redimensionar a janela do navegador a mantém visível (`ResizeObserver`, com `resize` de reserva).
+- Posição lembrada: guardada só neste aparelho como fração da área de escrita (`localStorage`, chave `olena.handwriting.writing-window-position`, valores validados de 0 a 1). Não é progresso e não vai para a conta, então não sincroniza e não substitui nada. Fechar e reabrir devolve a janela ao mesmo lugar; sem posição guardada ela abre centralizada no topo da folha.
+- Mobile: a janela ocupa quase toda a largura, com a folha de escrita em linha própria e os botões abaixo. Tema escuro pelos mesmos tokens do editor.
+- Textos novos nos dois idiomas (índices 3879 e 3880) e manifesto do catálogo atualizado.
+- Corrigido no caminho: a origem da área de escrita vinha do `offsetTop` do viewport, que é relativo a outro pai posicionado; agora vem da diferença dos retângulos na tela.
+- Provas: `handwriting-writing-window-position.test.ts` (limites, origem da área, fração entre telas, dados inválidos), `handwriting-panels.test.tsx` (alça acessível) e `e2e/notebook-writing-window.spec.ts` (PC e celular: dentro da área, arrasto, teclado, canto sem cobrir o botão da janela, reabertura no mesmo lugar, escrever depois de mover). Captura conferida no celular.
+- Limites: não verificado em aparelho real nem com S Pen. A janela cobre parte da folha enquanto está aberta (é a intenção, e agora dá para tirar do caminho). Posição não acompanha a folha ao rolar, fica fixa no editor.
+
+## Anel da borracha agora acompanha o gesto de apagar, 15/11/2026
+
+Defeito relatado pelo proprietário: o anel que mostra a área da borracha (feito na PR #641) aparecia ao pairar, mas sumia assim que a pessoa apertava para apagar, justamente quando mais importa ver o que está sendo apagado. Causa: `start()` zerava o ponto de pairar e o gesto de apagar não tem traço ao vivo, então a camada ao vivo ficava vazia.
+
+- Correção: `eraserCursorRef` guarda a posição da borracha durante o gesto (no toque inicial e a cada movimento) e `paintLive()` desenha o anel nela. Ao soltar, mouse e caneta continuam com o anel onde a borracha parou (voltam ao estado de pairar); o dedo não paira, então o anel some. O anel durante o gesto respeita a preferência "prévia ao pairar", como o anel de pairar. No `pointerup` evita-se um quadro intermediário com o anel.
+- Provas: `e2e/handwriting-eraser-ring.spec.ts` agora aperta e arrasta o mouse e confere que o anel continua desenhado e centrado onde a borracha está (e não parado no ponto inicial); sem a correção ele falha (0 pixels). `handwriting-studio-hover.test.tsx`: o teste antigo afirmava o comportamento com defeito ("o anel some ao começar a apagar") e foi trocado por três (anel ao apertar e ao mover, e depois de soltar com a caneta; dedo some ao soltar; preferência desligada não mostra).
+- Limites: não verificado com S Pen real nem em aparelho de toque. Janela de escrita ampliada não tem anel (apaga em outra área, fora deste ajuste).

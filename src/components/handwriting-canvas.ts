@@ -22,6 +22,7 @@ import {
   traceOutline,
 } from "./handwriting-ink";
 import { stickyTextLayout } from "./sticky-text-layout";
+import { usesSimulatedWidth } from "./handwriting-ink-dynamics";
 import { drawPlannerPaper } from "./handwriting-planner-paper";
 import { drawCornellPaper, drawStaffPaper } from "./handwriting-template-paper";
 
@@ -188,6 +189,30 @@ export function drawHoverPreview(
   context.restore();
 }
 
+// Anel da borracha, desenhado enquanto a caneta paira antes de tocar: mostra a área que será
+// apagada. Um contorno claro por fora e um escuro por dentro, para aparecer em folha clara, escura
+// ou com imagem, sem preencher nada (a pessoa precisa ver o que está embaixo).
+export function drawEraserPreview(
+  context: CanvasRenderingContext2D,
+  point: HandwritingPoint,
+  radius: number,
+) {
+  const size = Math.max(4, radius);
+  context.save();
+  context.beginPath();
+  context.arc(point.x, point.y, size, 0, Math.PI * 2);
+  context.strokeStyle = "#ffffff";
+  context.globalAlpha = 0.9;
+  context.lineWidth = 3.4;
+  context.stroke();
+  context.strokeStyle = "#292432";
+  context.globalAlpha = 0.9;
+  context.lineWidth = 1.6;
+  context.setLineDash([6, 4]);
+  context.stroke();
+  context.restore();
+}
+
 // Pontas redondas alongam cada traço em uma espessura, então o padrão desconta esse excesso:
 // no tracejado o risco visível tem 3,6 espessuras e o vão 2,2; no pontilhado a bolinha é um
 // comprimento quase nulo e o vão visível é de 1,4.
@@ -244,7 +269,11 @@ export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
   }
   // Linha tracejada ou pontilhada usa sempre a espessura constante: o contorno de largura
   // variável dos outros pincéis é preenchido e não aceita padrão de traço.
-  if (stroke.tool === "highlighter" || stroke.brush === "fine" || stroke.dash) {
+  if (
+    stroke.tool === "highlighter" ||
+    (stroke.brush === "fine" && !usesSimulatedWidth(stroke)) ||
+    stroke.dash
+  ) {
     context.lineWidth = stroke.tool === "highlighter" ? stroke.width : stroke.width * 0.65;
     if (stroke.dash) context.setLineDash(dashPattern(stroke.dash, context.lineWidth));
     context.beginPath();
@@ -396,24 +425,34 @@ export function renderPage(
   };
   const drawStickiesLayer = () => {
     if (!layerVisibility.stickies) return;
+    const nightPaper = paperColor === "night";
+    const noteInk = nightPaper ? "#fff9ef" : "#17151c";
     for (const sticky of stickies) {
       if (editing && (sticky.kind === "text" || sticky.kind === "table")) continue;
       context.save();
       const width = stickyWidth(sticky);
       const height = stickyHeight(sticky);
       if (sticky.kind !== "text" || sticky.formula) {
-        context.fillStyle = "#bfb7a7";
+        context.fillStyle = nightPaper ? "#15121b" : "#bfb7a7";
         context.fillRect(sticky.x + 8, sticky.y + 9, width, height);
-        context.fillStyle = sticky.formula ? "#fff" : stickyColor(sticky.color);
+        context.fillStyle = sticky.formula
+          ? nightPaper
+            ? "#352d42"
+            : "#fff"
+          : sticky.kind === "table"
+            ? nightPaper
+              ? "#33293f"
+              : stickyColor(sticky.color)
+            : stickyColor(sticky.color, nightPaper);
         context.fillRect(sticky.x, sticky.y, width, height);
       }
-      context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? "#17151c") : "#17151c";
+      context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? noteInk) : noteInk;
       if (sticky.kind === "table") {
         const rows = sticky.cells ?? [[""]];
         const columns = rows[0]?.length ?? 1;
         const cellWidth = (width - 16) / columns;
         const cellHeight = (height - 16) / rows.length;
-        context.strokeStyle = "#17151c";
+        context.strokeStyle = nightPaper ? "#c9bfd6" : "#17151c";
         context.lineWidth = 1.4;
         context.font = `${Math.min(15, cellHeight * 0.4)}px sans-serif`;
         context.textBaseline = "top";
@@ -442,7 +481,7 @@ export function renderPage(
         context.font = "bold 16px sans-serif";
         sticky.checklist.forEach((item, index) => {
           const rowY = startY + index * rowHeight;
-          context.strokeStyle = "#17151c";
+          context.strokeStyle = noteInk;
           context.lineWidth = 2;
           context.strokeRect(sticky.x + 18, rowY + 3, 14, 14);
           if (item.done) {
@@ -452,7 +491,7 @@ export function renderPage(
             context.lineTo(sticky.x + 31, rowY + 6);
             context.stroke();
           }
-          context.fillStyle = item.done ? "#6b6570" : "#17151c";
+          context.fillStyle = item.done ? (nightPaper ? "#a69cb3" : "#6b6570") : noteInk;
           context.fillText(item.text.trim().slice(0, 32) || "Item", sticky.x + 42, rowY + 1);
         });
         context.restore();

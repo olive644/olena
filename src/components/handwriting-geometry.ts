@@ -1,5 +1,6 @@
 import { pageTextLines } from "../domain/handwriting";
 import { strokeRadii } from "./handwriting-ink";
+import { usesSimulatedWidth } from "./handwriting-ink-dynamics";
 import type {
   HandwritingCoordinateSystem,
   HandwritingImage,
@@ -13,7 +14,8 @@ import {
   type Stroke,
 } from "./handwriting-types";
 
-export function stickyColor(color: HandwritingSticky["color"]): string {
+export function stickyColor(color: HandwritingSticky["color"], dark = false): string {
+  if (dark) return color === "blue" ? "#2f4a58" : color === "lilac" ? "#4a3a6b" : "#5d4f22";
   return color === "blue" ? "#d9ecf4" : color === "lilac" ? "#e9ddfb" : "#fff0b5";
 }
 
@@ -79,7 +81,7 @@ export function strokeInkBounds(stroke: Stroke): SelectionBox {
   const radii =
     stroke.tool === "highlighter" || stroke.cover
       ? [stroke.width / 2]
-      : stroke.brush === "fine" || stroke.dash
+      : (stroke.brush === "fine" && !usesSimulatedWidth(stroke)) || stroke.dash
         ? [stroke.width * 0.325]
         : strokeRadii(stroke, stroke.points);
   const padding = radii.reduce((largest, next) => Math.max(largest, next), 0);

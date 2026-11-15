@@ -234,3 +234,16 @@
 .is-endpaper .notebook-sheet-create::after {
   display: none;
 }
+
+/* Página esquerda do caderno vazio: guarda sem folha, com uma fita marcadora. Antes era uma folha pautada que
+   parecia existir e não existia. */
+.notebook-endpaper-ribbon {
+  position: absolute;
+  top: 0;
+  left: 62%;
+  width: 11%;
+  height: 34%;
+  background: #a779ef;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 84%, 0 100%);
+  box-shadow: inset -3px 0 #7433e0;
+}

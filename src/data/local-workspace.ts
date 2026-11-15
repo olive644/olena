@@ -6,6 +6,7 @@ import { validFlashcardStudy } from "../domain/flashcard-study.js";
 import { isPomodoroDuration } from "../domain/pomodoro-duration.js";
 import { normalizeNotebookFavorites } from "../domain/notebook-shelves.js";
 import {
+  MAX_REMOVAL_MARKS,
   WORKSPACE_VERSION,
   createInitialWorkspace,
   type Flashcard,
@@ -402,6 +403,7 @@ export function isHandwritingDocument(value: unknown): boolean {
       (stroke["dash"] === undefined ||
         stroke["dash"] === "dashed" ||
         stroke["dash"] === "dotted") &&
+      (stroke["dynamics"] === undefined || stroke["dynamics"] === "simulated") &&
       (stroke["cover"] === undefined || stroke["cover"] === true) &&
       isString(stroke["color"]) &&
       /^#[0-9a-f]{6}$/i.test(stroke["color"]) &&
@@ -824,6 +826,18 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
   )
     return false;
   if (!isRecord(value) || value["version"] !== WORKSPACE_VERSION) return false;
+  if (
+    value["removedNotebookIds"] !== undefined &&
+    (!Array.isArray(value["removedNotebookIds"]) ||
+      value["removedNotebookIds"].length > MAX_REMOVAL_MARKS ||
+      !value["removedNotebookIds"].every((id) => isString(id) && id.length > 0 && id.length <= 120))
+  )
+    return false;
+  if (
+    value["notebookShelfCleared"] !== undefined &&
+    typeof value["notebookShelfCleared"] !== "boolean"
+  )
+    return false;
   if (
     value["libraryCollections"] !== undefined &&
     (!Array.isArray(value["libraryCollections"]) ||

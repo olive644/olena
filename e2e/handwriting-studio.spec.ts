@@ -237,9 +237,10 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
       "rgb(23, 21, 28)",
     );
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+    // No escuro o ícone mantém a borda escura da arte (#51465d); as facetas coloridas é que o destacam.
     await expect(dialog.locator('[data-paper-editor-icon="select"]')).toHaveCSS(
       "color",
-      "rgb(255, 249, 239)",
+      "rgb(81, 70, 93)",
     );
     await expect(dialog.locator(".handwriting-commandbar")).toHaveCSS(
       "background-color",

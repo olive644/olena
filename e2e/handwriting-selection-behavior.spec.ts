@@ -183,11 +183,16 @@ for (const theme of ["light", "dark"]) {
     expect(await note.evaluate((element) => getComputedStyle(element).backgroundColor)).toBe(
       background,
     );
-    expect(
-      await note
-        .locator("textarea")
-        .evaluate((element) => parseFloat(getComputedStyle(element).fontSize)),
-    ).toBeCloseTo(enlargedFont, 1);
+    // A colagem do estilo termina depois do clique: espera a fonte assentar em vez de ler na hora.
+    await expect
+      .poll(
+        async () =>
+          note
+            .locator("textarea")
+            .evaluate((element) => Math.abs(parseFloat(getComputedStyle(element).fontSize))),
+        { timeout: 5000 },
+      )
+      .toBeCloseTo(enlargedFont, 1);
     const historyToggle = editor.getByRole("button", { name: "Histórico e zoom", exact: true });
     if (await historyToggle.isVisible()) await historyToggle.click();
     await editor.getByRole("button", { name: "Desfazer", exact: true }).click();
@@ -230,11 +235,11 @@ for (const theme of ["light", "dark"]) {
     await toolbar.locator("summary").click();
     await expect(toolbar.locator('[data-paper-editor-icon="copyLink"]')).toHaveCSS(
       "color",
-      theme === "dark" ? "rgb(140, 196, 234)" : "rgb(38, 91, 162)",
+      theme === "dark" ? "rgb(74, 143, 229)" : "rgb(38, 91, 162)",
     );
     await expect(toolbar.locator('[data-paper-editor-icon="trash"]')).toHaveCSS(
       "color",
-      theme === "dark" ? "rgb(255, 159, 186)" : "rgb(195, 52, 102)",
+      theme === "dark" ? "rgb(232, 93, 136)" : "rgb(195, 52, 102)",
     );
     const menu = toolbar.locator(".handwriting-selection-float__menu");
     await expect(menu).toBeVisible();

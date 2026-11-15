@@ -162,9 +162,10 @@ test("fórmula branca e comandos compactos em ambos os temas", async ({ page }, 
     await expect(formula.locator("textarea")).toHaveCSS("color", "rgb(41, 36, 50)");
     await page.getByRole("button", { name: "Selecionar traços" }).click();
     await page.getByRole("button", { name: "Selecionar tudo", exact: true }).click();
+    // O painel de fórmula acompanha o tema: escuro no escuro, branco no claro.
     await expect(editor.locator(".handwriting-formula-assist")).toHaveCSS(
       "background-color",
-      "rgb(255, 255, 255)",
+      theme === "dark" ? "rgb(41, 36, 50)" : "rgb(255, 255, 255)",
     );
     await editor
       .locator(".handwriting-formula-assist")

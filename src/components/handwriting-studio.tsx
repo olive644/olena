@@ -65,6 +65,7 @@ import { NotebookPageBook } from "./notebook-page-book";
 import { HandwritingHistoryBar } from "./handwriting-history-bar";
 import { HandwritingPaperPicker } from "./handwriting-paper-picker";
 import { HandwritingWritingWindow } from "./handwriting-writing-window";
+import { HandwritingQuickColors } from "./handwriting-quick-colors";
 import { HandwritingInkOptions } from "./handwriting-ink-options";
 import { HandwritingSelectionActions } from "./handwriting-selection-actions";
 import { OCR_WORKER_OPTIONS } from "./handwriting-ocr";
@@ -99,7 +100,7 @@ import { MAX_CONTROL_POINTS, dedupeControls, splinePoints } from "./handwriting-
 import { clampSpaceShift, itemsBelowLine } from "./handwriting-vertical-space";
 import { hitSelectionHandle } from "./handwriting-selection-ops";
 import { eraseInkArea, eraseWholeStrokes } from "./handwriting-eraser";
-import { pointerSamples } from "./handwriting-pointer";
+import { isPenBarrelButton, isPenEraserTip, pointerSamples } from "./handwriting-pointer";
 import {
   newRemoteStrokes,
   partialStroke,
@@ -143,6 +144,7 @@ import {
 import {
   canvasPoint,
   clearPageCanvas,
+  drawEraserPreview,
   drawHoverPreview,
   drawStroke,
   pageContext,
@@ -565,6 +567,8 @@ export function HandwritingStudio({
   // Ponto onde a caneta paira sem tocar a folha (prévia da ponta); nulo quando não paira,
   // quando solta a folha ou assim que começa a escrever de verdade.
   const hoverPointRef = useRef<HandwritingPoint | null>(null);
+  // Posição do anel da borracha enquanto se apaga (o gesto não tem traço ao vivo).
+  const eraserCursorRef = useRef<HandwritingPoint | null>(null);
   const palmRef = useRef<PalmState>({ penDown: false, lastPenAt: null });
   const stickyDragRef = useRef<{ id: string; x: number; y: number } | null>(null);
   const stickyResizeRef = useRef<{
@@ -1454,6 +1458,10 @@ export function HandwritingStudio({
   // eslint-disable-next-line react-hooks/refs -- Used by the imperative editor effects and pointer handlers.
   flushEraseRef.current = flushErase;
 
+  function eraserRadius() {
+    return eraserBackground ? Math.min(50, eraserWidth * 3) : eraserWidth * 3;
+  }
+
   function paintLive() {
     liveFrameRef.current = null;
     const overlay = liveCanvasRef.current;
@@ -1465,9 +1473,15 @@ export function HandwritingStudio({
     if (stroke) {
       drawStroke(context, withPredictedTail(stroke, predictedRef.current));
       if (writingWindowOpen) paintWritingWindowLive(stroke);
+    } else if (eraserCursorRef.current && penHoverPreview) {
+      // Apagando: o anel acompanha a borracha até soltar, em vez de sumir ao apertar.
+      drawEraserPreview(context, eraserCursorRef.current, eraserRadius());
     } else if (hoverPointRef.current && (tool === "pen" || tool === "highlighter")) {
       const previewWidth = tool === "highlighter" ? Math.min(100, width * 2.5) : width;
       drawHoverPreview(context, hoverPointRef.current, previewWidth / 2, color);
+    } else if (hoverPointRef.current && tool === "eraser") {
+      // A borracha apaga num raio de eraserWidth * 3 (o modo de fundo é limitado a 50).
+      drawEraserPreview(context, hoverPointRef.current, eraserRadius());
     }
     paintReveals(context);
   }
@@ -1585,18 +1599,19 @@ export function HandwritingStudio({
     // ponta de borracha como button 5 e o botao de barril como button 2 em
     // pointerType "pen". Tratamos os dois sem exigir que a pessoa troque de
     // ferramenta manualmente.
-    const isPenEraserTip = event.pointerType === "pen" && event.button === 5;
-    const isPenBarrelButton = event.pointerType === "pen" && event.button === 2;
-    if (event.button !== 0 && !isPenEraserTip && !isPenBarrelButton) return;
+    // Também vale o botão apertado ANTES de encostar (button 0 com buttons 3), comum na S Pen.
+    const isEraserTip = isPenEraserTip(event);
+    const isBarrelButton = isPenBarrelButton(event);
+    if (event.button !== 0 && !isEraserTip && !isBarrelButton) return;
     if (event.pointerType === "pen" && !penDetectedRef.current) {
       penDetectedRef.current = true;
       changePreference("penOnly", true);
     }
-    const penAction = isPenEraserTip ? shortcutSettings.penTail : shortcutSettings.penSide;
-    if ((isPenEraserTip || isPenBarrelButton) && penAction === "select" && tool !== "select")
+    const penAction = isEraserTip ? shortcutSettings.penTail : shortcutSettings.penSide;
+    if ((isEraserTip || isBarrelButton) && penAction === "select" && tool !== "select")
       setTool("select");
     const rawTool: HandwritingTool =
-      (isPenEraserTip || isPenBarrelButton) && penAction !== "selected" ? penAction : tool;
+      (isEraserTip || isBarrelButton) && penAction !== "selected" ? penAction : tool;
     // Borracha de fundo: em vez de apagar tinta, desenha um traço de cobertura que fura o fundo
     // importado ao ser solto. Daí em diante o gesto é o de um traço comum.
     const coverErase = rawTool === "eraser" && eraserBackground && backgroundAvailable;
@@ -1697,7 +1712,9 @@ export function HandwritingStudio({
     if (effectiveTool === "eraser") {
       eraserChangedRef.current = false;
       eraserPointRef.current = null;
+      eraserCursorRef.current = point;
       eraseAt([point]);
+      paintLive();
       return;
     }
     const activeWidth = effectiveTool === "highlighter" ? Math.min(100, width * 2.5) : width;
@@ -1716,6 +1733,9 @@ export function HandwritingStudio({
           tool: effectiveTool === "ruler" ? "pen" : effectiveTool,
           ...(effectiveTool === "pen" ? { brush } : {}),
           ...(effectiveTool === "pen" && dash ? { dash } : {}),
+          ...(effectiveTool === "pen" && event.pointerType !== "pen"
+            ? { dynamics: "simulated" as const }
+            : {}),
           ...(effectiveTool === "highlighter" ? { opacity: highlighterOpacity } : {}),
           color,
           width: activeWidth,
@@ -1742,7 +1762,8 @@ export function HandwritingStudio({
     const canvas = canvasRef.current;
     const shouldShow =
       penHoverPreview &&
-      event.pointerType === "pen" &&
+      // A caneta paira sobre a folha; o mouse também mostra o anel da borracha.
+      (event.pointerType === "pen" || (event.pointerType === "mouse" && tool === "eraser")) &&
       event.buttons === 0 &&
       !drawingRef.current &&
       canvas;
@@ -1850,6 +1871,9 @@ export function HandwritingStudio({
     }
     if (activeToolRef.current === "eraser") {
       eraseAt(points);
+      eraserCursorRef.current = points.at(-1) ?? eraserCursorRef.current;
+      // No pointerup o finish() repinta o estado final; evita um quadro intermediário com o anel.
+      if (event.type !== "pointerup") paintLive();
       return;
     }
     const liveStroke = liveStrokeRef.current;
@@ -2006,6 +2030,10 @@ export function HandwritingStudio({
     if (activeToolRef.current === "eraser") {
       flushErase();
       eraserPointRef.current = null;
+      // Mouse e caneta continuam vendo o anel onde soltaram; o dedo não tem pairar.
+      hoverPointRef.current = event.pointerType === "touch" ? null : eraserCursorRef.current;
+      eraserCursorRef.current = null;
+      paintLive();
       if (!eraserChangedRef.current) setUndoStack((history) => history.slice(0, -1));
       return;
     }
@@ -2547,13 +2575,10 @@ export function HandwritingStudio({
     if ((event.button !== 0 && event.pointerType !== "pen") || writingPointerRef.current !== null)
       return;
     if (tool !== "pen" && tool !== "highlighter" && tool !== "eraser") return;
-    const shortcut =
-      event.pointerType === "pen"
-        ? event.button === 5
-          ? shortcutSettings.penTail
-          : event.button === 2
-            ? shortcutSettings.penSide
-            : "selected"
+    const shortcut = isPenEraserTip(event)
+      ? shortcutSettings.penTail
+      : isPenBarrelButton(event)
+        ? shortcutSettings.penSide
         : "selected";
     if (shortcut !== "selected" && shortcut !== "eraser") return;
     const writingTool = shortcut === "eraser" ? "eraser" : tool;
@@ -2572,7 +2597,11 @@ export function HandwritingStudio({
       id: strokeId(),
       tool: writingTool,
       ...(writingTool === "pen"
-        ? { brush, ...(dash ? { dash } : {}) }
+        ? {
+            brush,
+            ...(dash ? { dash } : {}),
+            ...(event.nativeEvent.pointerType !== "pen" ? { dynamics: "simulated" as const } : {}),
+          }
         : { opacity: highlighterOpacity }),
       color,
       width: writingTool === "highlighter" ? Math.min(100, width * 2.5) : width,
@@ -3274,7 +3303,6 @@ export function HandwritingStudio({
               <PaperCloseIcon />
             </button>
           )}
-          {captureActions}
         </div>
       )}
       {collaborationActivity && (
@@ -3678,7 +3706,7 @@ export function HandwritingStudio({
             if (open) setPaperSectionsOpen({ paper: false, color: false });
           }}
         />
-        {!phoneLayout && captureActions}
+        {captureActions}
       </div>
 
       {writingWindowOpen && (
@@ -3758,8 +3786,14 @@ export function HandwritingStudio({
               {tool === "hand" ? uiText(316) : tool === "zoom-in" ? uiText(317) : uiText(318)}
             </span>
           )}
+          {(tool === "pen" || tool === "highlighter") && !textMode && (
+            <div className="handwriting-quick-colors-dock">
+              <HandwritingQuickColors color={color} onColorChange={setColor} />
+            </div>
+          )}
           <div
             data-page-turn={pageTurn ?? undefined}
+            data-paper-color={paperColor}
             inert={pageTurn !== null}
             className={"handwriting-page-shell" + (transforming ? " is-transforming" : "")}
             style={{
