@@ -19,6 +19,14 @@ type HandwritingBrushPanelProps = {
 
 export function HandwritingBrushPanel({ brush, color, onBrushChange }: HandwritingBrushPanelProps) {
   const language = useLanguage();
+  const instruments = [
+    ["fine", uiText(1667), 2],
+    ["ink", uiText(1668), 7],
+    ["soft", uiText(1669), 14],
+    ["calligraphy", language === "en-US" ? "Calligraphy pen" : "Caneta de caligrafia", 9],
+    ["ballpoint", language === "en-US" ? "Ballpoint pen" : "Caneta esferográfica", 3],
+    ["pencil", language === "en-US" ? "Pencil" : "Lápis", 4],
+  ] as const;
 
   return (
     <aside className="handwriting-brush-panel" aria-label={uiText(233)}>
@@ -27,16 +35,10 @@ export function HandwritingBrushPanel({ brush, color, onBrushChange }: Handwriti
           <small>{uiText(234)}</small>
         </div>
       </header>
-      {(
-        [
-          ["fine", uiText(1667), 2],
-          ["ink", uiText(1668), 7],
-          ["soft", uiText(1669), 14],
-          ["calligraphy", language === "en-US" ? "Calligraphy pen" : "Caneta de caligrafia", 9],
-          ["ballpoint", language === "en-US" ? "Ballpoint pen" : "Caneta esferográfica", 3],
-          ["pencil", language === "en-US" ? "Pencil" : "Lápis", 4],
-        ] as const
-      ).map(([value, title, size]) => (
+      <div className="mobile-instrument-title">
+        {instruments.find(([value]) => value === brush)?.[1]}
+      </div>
+      {instruments.map(([value, title, size]) => (
         <button
           type="button"
           key={value}
@@ -91,6 +93,9 @@ export function HandwritingRulerPanel({
           <small>{uiText(242)}</small>
         </div>
       </header>
+      <div className="mobile-instrument-title">
+        {rulers.find(([kind]) => kind === rulerKind)?.[1]}
+      </div>
       <fieldset className="ruler-unit-picker" aria-label={uiText(243)}>
         <legend>{uiText(244)}</legend>
         {(["cm", "in", "px"] as const).map((unit) => (

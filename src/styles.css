@@ -3588,7 +3588,8 @@ body.local-room-active {
 }
 
 .handwriting-tool-group,
-.handwriting-history {
+.handwriting-history,
+.handwriting-commandbar > .notebook-file-tools {
   padding: 0.28rem;
   border: 1px solid var(--line);
   border-radius: 8px 12px 8px 10px;
@@ -3599,7 +3600,7 @@ body.local-room-active {
 }
 :root[data-theme="dark"]
   .handwriting-commandbar
-  :is(.handwriting-tool-group, .handwriting-history) {
+  :is(.handwriting-tool-group, .handwriting-history, .notebook-file-tools) {
   background:
     linear-gradient(135deg, #51465d 0 18px, transparent 18px),
     linear-gradient(315deg, #17151c 0 20px, transparent 20px), #292432;

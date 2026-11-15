@@ -56,7 +56,7 @@ export function PaperEditorIcon({
         href={
           name === "cut"
             ? "/navigation-icons/paper/notebook-cut.svg#art"
-            : `/navigation-icons/paper/paper-editor-icon.svg#${name}`
+            : `/navigation-icons/paper/paper-editor-icon.svg?v=2#${name}`
         }
       />
     </svg>

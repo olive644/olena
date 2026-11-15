@@ -1252,15 +1252,17 @@ export function HandwritingStudio({
     const viewport = viewportRef.current;
     if (!viewport) return;
     const update = () => {
-      const { paddingLeft, paddingRight } = getComputedStyle(viewport);
-      setFitWidth(viewport.clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight));
+      const { paddingLeft, paddingRight, paddingTop, paddingBottom } = getComputedStyle(viewport);
+      const width = viewport.clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight);
+      const height = viewport.clientHeight - parseFloat(paddingTop) - parseFloat(paddingBottom);
+      setFitWidth(phoneLayout ? Math.max(width, (height * PAGE_WIDTH) / PAGE_HEIGHT) : width);
     };
     update();
     if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(update);
     observer.observe(viewport);
     return () => observer.disconnect();
-  }, []);
+  }, [phoneLayout, PAGE_WIDTH, PAGE_HEIGHT]);
 
   function remember(
     currentStrokes: Stroke[] = strokes,

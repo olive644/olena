@@ -25,7 +25,7 @@ for (const theme of ["light", "dark"]) {
     await expect(menu).toBeVisible();
     await expect(menu.locator("svg")).toHaveCSS(
       "color",
-      theme === "dark" ? "rgb(203, 177, 244)" : "rgb(116, 51, 224)",
+      theme === "dark" ? "rgb(167, 115, 255)" : "rgb(116, 51, 224)",
     );
     await menu.click();
     await menu.click();

@@ -19,7 +19,7 @@
 }
 @media (max-width: 680px) {
   :root .handwriting-studio {
-    --mobile-bottom: calc(160px + env(safe-area-inset-bottom));
+    --mobile-drawer-gap: calc(112px + env(safe-area-inset-bottom));
     display: grid;
     grid-template-rows: 58px minmax(0, 1fr) 54px 44px auto;
     isolation: isolate;
@@ -199,7 +199,9 @@
   :root .handwriting-studio[data-mobile-drawer="history"] .handwriting-history {
     position: absolute;
     display: flex;
-    inset: auto 8px var(--mobile-bottom);
+    grid-area: auto;
+    inset: auto 8px var(--mobile-drawer-gap);
+    justify-self: stretch;
     width: auto;
     min-width: 0;
     max-width: none;
@@ -226,7 +228,9 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    inset: auto 8px calc(var(--mobile-bottom) + 78px);
+    grid-area: auto;
+    inset: auto 8px var(--mobile-drawer-gap);
+    justify-self: stretch;
     width: auto;
     max-width: none;
     gap: 8px;
@@ -247,15 +251,26 @@
   :root .handwriting-studio .ink-size-control {
     flex-basis: 100%;
   }
-  :root
-    .handwriting-studio[data-mobile-drawer="tool"]:is(
-      [data-tool="eraser"],
-      [data-tool="highlighter"]
-    )
-    .handwriting-ink-options {
-    bottom: var(--mobile-bottom);
+  :root .handwriting-studio[data-mobile-drawer="tool"] .handwriting-ink-options {
     border-bottom: 1px solid var(--line);
     border-radius: 18px 18px 4px 4px;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"][data-tool="pen"]:has(.handwriting-brush-panel)
+    .handwriting-ink-options {
+    bottom: calc(var(--mobile-drawer-gap) + 78px);
+    border-bottom: 0;
+    border-radius: 18px 18px 0 0;
+  }
+  :root
+    .handwriting-studio:is(
+      [data-mobile-drawer="history"],
+      [data-mobile-drawer="tool"][data-tool-options="true"],
+      [data-mobile-drawer="tool"][data-tool="select"],
+      [data-mobile-drawer="tool"]:has(.handwriting-layer-panel)
+    )
+    > .handwriting-page-navigation {
+    visibility: hidden;
   }
   :root .handwriting-studio .ink-palette .ink-swatch {
     flex: 0 0 32px;
@@ -274,10 +289,12 @@
     > .handwriting-brush-panel {
     position: absolute;
     display: flex;
-    inset: auto 8px var(--mobile-bottom);
+    grid-area: auto;
+    inset: auto 8px var(--mobile-drawer-gap);
+    justify-self: stretch;
     width: auto;
-    min-height: 78px;
-    max-height: 28dvh;
+    box-sizing: border-box;
+    height: 78px;
     padding: 8px;
     gap: 8px;
     border: 1px solid var(--line);
@@ -297,7 +314,13 @@
     .handwriting-studio[data-mobile-drawer="tool"]
     .handwriting-workspace
     > .handwriting-layer-panel {
+    position: absolute;
+    grid-area: auto;
+    inset: auto 8px var(--mobile-drawer-gap);
+    justify-self: stretch;
     display: block;
+    max-height: 45dvh;
+    overflow: auto;
     z-index: 8;
   }
   :root
@@ -305,7 +328,9 @@
     .handwriting-selection-actions {
     position: absolute;
     display: flex;
-    inset: auto 8px var(--mobile-bottom);
+    grid-area: auto;
+    inset: auto 8px var(--mobile-drawer-gap);
+    justify-self: stretch;
     max-height: 32dvh;
     padding: 12px;
     overflow: auto;
@@ -717,4 +742,537 @@
   width: 22px;
   height: 22px;
   flex: none;
+}
+
+@media (max-width: 680px) {
+  .handwriting-studio::before {
+    content: "";
+    grid-area: 1 / 1;
+    pointer-events: none;
+    border: 1px solid var(--line);
+    border-radius: 5px 13px 6px 11px;
+    background:
+      linear-gradient(135deg, var(--soft) 0 14px, transparent 14px),
+      linear-gradient(315deg, var(--line) 0 15px, transparent 15px), var(--surface);
+    box-shadow: 0 3px var(--line);
+  }
+  /* No celular os papéis não têm a seta de recolher: ficam sempre à mostra na barra de cima. */
+  :root .handwriting-studio .handwriting-paper-disclosure {
+    display: none;
+  }
+  :root .handwriting-studio .handwriting-paper-picker,
+  :root .capture-dialog--handwriting .handwriting-studio .notebook-file-tools,
+  :root .handwriting-studio .handwriting-paper-picker .handwriting-paper-section__toggle {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 680px) {
+  :root .handwriting-studio .handwriting-viewport {
+    padding: 0;
+  }
+  :root[data-theme="dark"]
+    .capture-dialog--handwriting
+    .handwriting-studio
+    .notebook-file-tools
+    > button:is(:hover, :focus-visible, [aria-expanded="true"]) {
+    background: #40354d;
+  }
+}
+
+@media (max-width: 680px) {
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"][data-tool="ruler"]:has(.handwriting-ruler-panel)
+    .handwriting-ink-options {
+    bottom: calc(var(--mobile-drawer-gap) + 78px);
+    border-bottom: 0;
+    border-radius: 18px 18px 0 0;
+  }
+  :root .handwriting-studio .handwriting-brush-panel > button {
+    flex: 0 0 136px;
+    min-width: 136px;
+    grid-template-rows: minmax(26px, auto) 19px;
+  }
+  :root .handwriting-studio .handwriting-brush-panel > button strong {
+    white-space: normal;
+    overflow-wrap: normal;
+    line-height: 1.15;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-unit-picker {
+    flex: 0 0 auto;
+    width: max-content;
+  }
+  :root .handwriting-studio .ruler-unit-picker button {
+    min-width: 32px;
+    padding-inline: 4px;
+    white-space: nowrap;
+  }
+  :root .handwriting-studio .ruler-case > button {
+    min-width: 110px;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]
+    .handwriting-workspace
+    > .handwriting-layer-panel {
+    inset-inline: auto 8px;
+    width: min(240px, calc(100% - 16px));
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 5px 16px 6px 12px;
+    background: linear-gradient(135deg, var(--soft) 0 12px, transparent 12px), var(--surface);
+    box-shadow: 0 4px var(--line);
+  }
+  :root[data-theme="dark"]
+    .handwriting-studio
+    :is(.handwriting-viewport, .handwriting-brush-panel) {
+    color-scheme: dark;
+    scrollbar-color: #675873 #292432;
+  }
+  :root[data-theme="dark"]
+    .handwriting-studio
+    :is(.eraser-mode, .ruler-unit-picker)
+    button:not([aria-pressed="true"]) {
+    background: #352c40;
+    color: #fff9ef;
+    border-color: #675873;
+    box-shadow: 0 3px #17151c;
+  }
+  :root[data-theme="dark"] .handwriting-studio .handwriting-ruler-panel :is(legend, strong, small) {
+    color: #fff9ef;
+  }
+}
+
+@media (max-width: 680px) {
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]
+    .handwriting-workspace
+    > .handwriting-layer-panel {
+    height: auto;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]
+    .handwriting-workspace
+    > .handwriting-ruler-panel {
+    height: 104px;
+    max-height: none;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"][data-tool="ruler"]:has(.handwriting-ruler-panel)
+    .handwriting-ink-options {
+    bottom: calc(var(--mobile-drawer-gap) + 104px);
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case small {
+    display: block;
+  }
+}
+
+@media (max-width: 680px) {
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"][data-tool="pen"]:has(.handwriting-brush-panel)
+    .handwriting-ink-options {
+    bottom: calc(var(--mobile-drawer-gap) + 118px);
+  }
+  :root .handwriting-studio .handwriting-brush-panel > button .brush-card-title {
+    display: block;
+    color: var(--text);
+    white-space: normal;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+  :root .handwriting-studio .handwriting-brush-panel > button .brush-instrument {
+    height: 22px;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]
+    .handwriting-workspace
+    > .handwriting-ruler-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    height: 280px;
+    overflow: auto;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"][data-tool="ruler"]:has(.handwriting-ruler-panel)
+    .handwriting-ink-options {
+    bottom: calc(var(--mobile-drawer-gap) + 272px);
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case > button {
+    min-width: 0;
+    padding: 3px;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-card-art {
+    height: 29px;
+  }
+  :root[data-theme="dark"] .handwriting-studio .ruler-unit-picker {
+    border-color: #82718f;
+    background: #292432;
+  }
+  :root[data-theme="dark"] .handwriting-studio .ruler-unit-picker button[aria-pressed="true"] {
+    background: #facc15;
+    color: #292432;
+    border-color: #facc15;
+  }
+  :root .handwriting-studio .notebook-team__add {
+    background: #fffaf0;
+    border: 1px solid #d9c9ab;
+    border-radius: 50%;
+    box-shadow: 0 3px #d9c9ab;
+  }
+  :root .handwriting-studio .notebook-team__add .paper-editor-icon {
+    color: #237e72;
+    --editor-icon-facet: #61c5a9;
+  }
+}
+
+@media (max-width: 680px) {
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]:is([data-tool="pen"], [data-tool="ruler"])
+    .handwriting-workspace
+    > .handwriting-brush-panel:not(.handwriting-layer-panel) {
+    display: flex;
+    flex-direction: row;
+    height: 78px;
+    max-height: none;
+    gap: 6px;
+    overflow: auto;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"][data-tool="ruler"]:has(.handwriting-ruler-panel)
+    .handwriting-ink-options {
+    bottom: calc(var(--mobile-drawer-gap) + 118px);
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case {
+    display: flex;
+    gap: 4px;
+  }
+  :root .handwriting-studio .handwriting-brush-panel > button,
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case > button {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 56px;
+    width: auto;
+    padding: 3px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  :root .handwriting-studio .handwriting-brush-panel > button .brush-instrument,
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-card-art {
+    width: 52px;
+    height: 23px;
+    order: -1;
+  }
+  :root
+    .handwriting-studio
+    .handwriting-brush-panel
+    > button:not([aria-pressed="true"])
+    .brush-card-title,
+  :root
+    .handwriting-studio
+    .handwriting-ruler-panel
+    .ruler-case
+    > button:not([aria-pressed="true"])
+    strong,
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case > button small {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
+@media (max-width: 680px) {
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]:is([data-tool="pen"], [data-tool="ruler"])
+    .handwriting-workspace
+    > .handwriting-brush-panel:not(.handwriting-layer-panel) {
+    height: 126px;
+    padding-top: 30px;
+    align-items: stretch;
+    gap: 2px;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]:is([data-tool="pen"], [data-tool="ruler"])
+    .handwriting-ink-options {
+    bottom: calc(var(--mobile-drawer-gap) + 118px);
+  }
+  :root .handwriting-studio .handwriting-ruler-panel {
+    flex-direction: column !important;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-unit-picker {
+    align-self: flex-start;
+    margin: 0;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case {
+    flex: 1;
+    min-height: 46px;
+  }
+  :root .handwriting-studio .handwriting-brush-panel > button,
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case > button {
+    position: static;
+    flex: 1 1 0;
+    min-width: 0;
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  :root .handwriting-studio .handwriting-brush-panel > button .brush-instrument {
+    width: 76px;
+    height: 24px;
+    rotate: -90deg;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-card-art {
+    width: 40px;
+    rotate: -90deg;
+  }
+  :root
+    .handwriting-studio
+    .handwriting-brush-panel
+    button[aria-pressed="false"]
+    :is(.brush-instrument, .ruler-card-art) {
+    opacity: 0.65;
+  }
+  :root
+    .handwriting-studio
+    .handwriting-brush-panel
+    > button[aria-pressed="true"]
+    .brush-card-title,
+  :root .handwriting-studio .handwriting-ruler-panel button[aria-pressed="true"] strong {
+    position: absolute;
+    inset: 8px 0 auto;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text);
+  }
+}
+@media (max-width: 680px) {
+  :root .handwriting-studio .handwriting-brush-panel > button,
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case > button {
+    transform: none;
+    filter: none;
+    contain: none;
+  }
+  :root
+    .handwriting-studio
+    .handwriting-brush-panel
+    > button[aria-pressed="true"]
+    .brush-card-title,
+  :root .handwriting-studio .handwriting-ruler-panel button[aria-pressed="true"] strong {
+    width: 100%;
+    white-space: nowrap;
+  }
+}
+@media (max-width: 680px) {
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]
+    .handwriting-workspace
+    > .handwriting-ruler-panel:not(.handwriting-layer-panel) {
+    height: 136px;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"][data-tool="ruler"]:has(.handwriting-ruler-panel)
+    .handwriting-ink-options {
+    bottom: calc(var(--mobile-drawer-gap) + 128px);
+  }
+  :root
+    .handwriting-studio
+    .handwriting-brush-panel
+    > button[aria-pressed="true"]
+    .brush-card-title {
+    max-width: none;
+  }
+}
+@media (max-width: 680px) {
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"][data-tool="ruler"]
+    .handwriting-workspace
+    > .handwriting-brush-panel.handwriting-ruler-panel:not(.handwriting-layer-panel) {
+    height: 136px;
+  }
+}
+
+.mobile-instrument-title {
+  display: none;
+}
+@media (max-width: 680px) {
+  :root .handwriting-studio .mobile-instrument-title {
+    display: block;
+    position: absolute;
+    inset: 7px 0 auto;
+    text-align: center;
+    color: var(--text);
+    font-size: 13px;
+  }
+  :root .handwriting-studio .handwriting-brush-panel > button .brush-card-title,
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case > button strong {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-card-art {
+    width: 76px;
+    height: 52px;
+    flex: none;
+    rotate: none;
+    transform: rotate(-90deg) scale(0.62);
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case {
+    flex: 1 0 52px;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case > button {
+    overflow: visible;
+  }
+}
+@media (max-width: 680px) {
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case {
+    width: 100%;
+    min-width: 0;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case > button {
+    width: 0;
+    max-width: none;
+  }
+}
+
+@media (max-width: 680px) {
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]:is([data-tool="pen"], [data-tool="ruler"])
+    .handwriting-workspace
+    > .handwriting-brush-panel:not(.handwriting-layer-panel) {
+    padding-bottom: 0;
+    overflow: hidden;
+  }
+  :root .handwriting-studio .handwriting-brush-panel > button,
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case > button {
+    justify-content: flex-end;
+    padding-bottom: 0;
+  }
+  :root .handwriting-studio .handwriting-brush-panel > button .brush-instrument {
+    translate: 0 -7px;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-case {
+    align-items: stretch;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-card-art {
+    translate: 0 13px;
+  }
+  :root .handwriting-studio .ruler-unit-picker button {
+    display: grid;
+    place-items: center;
+    align-content: center;
+  }
+  :root .handwriting-studio .ruler-unit-picker button i {
+    display: none;
+  }
+}
+@media (max-width: 680px) {
+  :root .handwriting-studio .mobile-instrument-title {
+    top: 15px;
+  }
+}
+@media (max-width: 680px) and (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"])
+    .handwriting-brush-panel
+    :is(.brush-instrument, .ruler-card-art) {
+    animation: mobile-instrument-rise 200ms ease-out;
+  }
+}
+@keyframes mobile-instrument-rise {
+  from {
+    translate: 0 100px;
+  }
+}
+
+@media (max-width: 680px) {
+  :root .handwriting-studio > p[role="alert"] {
+    position: absolute;
+    inset: 64px 8px auto;
+    z-index: 10;
+    margin: 0;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 5px 13px 6px 11px;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 3px var(--line);
+    font-size: 12px;
+    pointer-events: none;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-unit-picker {
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+    padding: 0;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-unit-picker legend {
+    display: none;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-unit-picker button {
+    min-height: 32px;
+    height: 32px;
+  }
+}
+@media (max-width: 680px) {
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-unit-picker button {
+    border: 0;
+    box-shadow: none;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-unit-picker button::before,
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-unit-picker button::after {
+    content: none;
+  }
+}
+@media (max-width: 680px) {
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-unit-picker {
+    align-self: center;
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-unit-picker button {
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 3px var(--line);
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-unit-picker button::before {
+    content: "";
+  }
+  :root .handwriting-studio .handwriting-ruler-panel .ruler-card-art {
+    transform: rotate(-90deg) scale(0.78);
+    translate: 0 3px;
+  }
+  :root
+    .handwriting-studio
+    .handwriting-ruler-panel
+    .ruler-case
+    > button[aria-pressed="true"]
+    .ruler-card-art {
+    transform: rotate(-90deg) scale(0.84);
+  }
+}
+@media (max-width: 680px) {
+  :root .handwriting-studio .notebook-team__add {
+    position: relative;
+    inset-block-start: -3px;
+  }
+}
+@media (max-width: 680px) {
+  :root[data-theme="dark"] .handwriting-studio .notebook-team__add {
+    background: #352c40;
+    border-color: #675873;
+    box-shadow: 0 3px #17151c;
+  }
+  :root[data-theme="dark"] .handwriting-studio .notebook-team__add .paper-editor-icon {
+    color: #45ad94;
+  }
 }

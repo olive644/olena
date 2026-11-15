@@ -34,7 +34,7 @@
   flex: 0 0 auto;
 }
 
-/* Fórmulas são cartões de papel branco, inclusive no tema escuro. */
+/* O cartão inserido mantém a cor do papel. */
 :root .handwriting-studio .handwriting-formula-assist,
 :root .handwriting-studio .handwriting-sticky--formula {
   --text: #292432;
@@ -746,8 +746,7 @@
   --nav-tip-fold: #393244;
 }
 .handwriting-paper-picker .handwriting-paper-section__toggle,
-.handwriting-paper-picker .handwriting-paper-section__toggle[aria-expanded="true"],
-:root .capture-dialog--handwriting .handwriting-studio .notebook-file-tools {
+.handwriting-paper-picker .handwriting-paper-section__toggle[aria-expanded="true"] {
   background: linear-gradient(135deg, var(--soft) 0 10px, transparent 10px), var(--surface);
   border: 1px solid var(--line);
   border-radius: 5px 13px 6px 11px;
@@ -977,7 +976,7 @@
 }
 @media (max-width: 680px) {
   :root .handwriting-studio:has(.capture-header-actions) {
-    grid-template-rows: 102px minmax(0, 1fr) 54px 44px auto;
+    grid-template-rows: 58px minmax(0, 1fr) 54px 44px auto;
   }
   .handwriting-commandbar > .capture-header-actions {
     position: absolute;
@@ -1008,11 +1007,7 @@
   .handwriting-workspace--panels-two:has(.handwriting-paper-disclosure[aria-expanded="false"]) {
     grid-template-columns: 0px minmax(0, 1fr) repeat(2, minmax(210px, 224px));
   }
-  .handwriting-workspace > .handwriting-paper-picker {
-    overflow: clip;
-    overflow-clip-margin: 0px;
-  }
-  .handwriting-paper-picker .handwriting-paper-disclosure {
+  .handwriting-workspace > .handwriting-paper-disclosure {
     position: absolute;
     top: 50%;
     left: 146px;
@@ -1021,7 +1016,7 @@
     translate: 0 -50%;
     transition: left 220ms ease;
   }
-  .handwriting-paper-picker .handwriting-paper-disclosure[aria-expanded="false"] {
+  .handwriting-workspace > .handwriting-paper-disclosure[aria-expanded="false"] {
     left: 0;
   }
   .handwriting-workspace {
@@ -1036,7 +1031,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .handwriting-workspace,
-  .handwriting-paper-picker .handwriting-paper-disclosure {
+  .handwriting-workspace > .handwriting-paper-disclosure {
     transition: none;
   }
 }
@@ -1049,13 +1044,14 @@
     min-width: 0;
     box-sizing: border-box;
   }
-  .handwriting-paper-picker:has(.handwriting-paper-disclosure[aria-expanded="false"]) {
+  .handwriting-workspace:has(> .handwriting-paper-disclosure[aria-expanded="false"])
+    > .handwriting-paper-picker {
     padding-inline: 0;
     border-right-width: 0;
   }
 }
 
-.handwriting-studio .handwriting-paper-picker button.handwriting-paper-disclosure {
+.handwriting-studio button.handwriting-paper-disclosure {
   border: 0;
   background: transparent;
   box-shadow: none;
@@ -1065,9 +1061,7 @@
   content: none;
 }
 
-.handwriting-studio
-  .handwriting-paper-picker
-  button.handwriting-paper-disclosure:is(:hover, :active) {
+.handwriting-studio button.handwriting-paper-disclosure:is(:hover, :active) {
   transform: none;
 }
 
@@ -1526,10 +1520,10 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
 }
 
 :root[data-theme="dark"] .handwriting-selection-float {
-  --selection-copy: #8cc4ea;
-  --selection-add: #65c9a8;
-  --selection-danger: #ff9fba;
-  --selection-more: #cbb1f4;
+  --selection-copy: #4a8fe5;
+  --selection-add: #24a784;
+  --selection-danger: #e85d88;
+  --selection-more: #a773ff;
 }
 
 :root .handwriting-studio .handwriting-selection-table > button.secondary-button {
@@ -1657,4 +1651,84 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
 .handwriting-studio > .handwriting-commandbar {
   position: relative;
   z-index: 6;
+}
+
+@media (min-width: 681px) {
+  :root .handwriting-commandbar > :is(.handwriting-history, .notebook-file-tools) {
+    align-self: start;
+    box-sizing: border-box;
+    height: 57px;
+    padding: 4px;
+  }
+}
+
+/* Keep the editor artwork's dark edges and colored facets in both themes. */
+:root[data-theme="dark"] .capture-dialog--handwriting .handwriting-commandbar .paper-editor-icon {
+  color: #51465d;
+  --editor-icon-facet: #82718f;
+  --editor-icon-cutout: #292432;
+}
+:root[data-theme="dark"]
+  .capture-dialog--handwriting
+  .handwriting-commandbar
+  [data-paper-editor-icon="undo"] {
+  color: #19765f;
+  --editor-icon-facet: #55b99b;
+}
+:root[data-theme="dark"]
+  .capture-dialog--handwriting
+  .handwriting-commandbar
+  [data-paper-editor-icon="redo"] {
+  color: #265ba2;
+  --editor-icon-facet: #6ba9ea;
+}
+:root[data-theme="dark"]
+  .capture-dialog--handwriting
+  .handwriting-commandbar
+  [data-paper-editor-icon="cloudUpload"] {
+  color: #2876a3;
+  --editor-icon-facet: #6daed1;
+}
+:root[data-theme="dark"]
+  .capture-dialog--handwriting
+  .handwriting-commandbar
+  [data-paper-editor-icon="save"] {
+  color: #8255c7;
+  --editor-icon-facet: #ab87e1;
+  --editor-icon-cutout: #e3d4f9;
+}
+
+:root[data-theme="dark"] .handwriting-studio .handwriting-formula-assist {
+  color: var(--text);
+  background:
+    linear-gradient(135deg, #51465d 0 12px, transparent 12px),
+    linear-gradient(315deg, #17151c 0 14px, transparent 14px), #292432;
+  border-color: #51465d;
+  box-shadow: 0 4px #17151c;
+  --text: #fff9ef;
+}
+:root[data-theme="dark"] .handwriting-studio .handwriting-formula-assist input {
+  background: #17151c;
+  border-color: #675b76;
+  color: #fff9ef;
+  caret-color: #c59cff;
+  color-scheme: dark;
+}
+:root[data-theme="dark"] .handwriting-studio .handwriting-formula-assist input::placeholder {
+  color: #bcb0c9;
+}
+:root[data-theme="dark"] .handwriting-studio .handwriting-formula-assist button:disabled {
+  background: #413353;
+  border-color: #51465d;
+  box-shadow: 0 3px #17151c;
+  opacity: 0.75;
+}
+
+:root .handwriting-studio .handwriting-commandbar .handwriting-formula-insert .paper-editor-icon {
+  color: #ed9b36;
+  --editor-icon-facet: #ffce75;
+}
+:root .handwriting-studio .handwriting-commandbar .notebook-team__add .paper-editor-icon {
+  color: #237e72;
+  --editor-icon-facet: #61c5a9;
 }

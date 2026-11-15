@@ -230,11 +230,11 @@ for (const theme of ["light", "dark"]) {
     await toolbar.locator("summary").click();
     await expect(toolbar.locator('[data-paper-editor-icon="copyLink"]')).toHaveCSS(
       "color",
-      theme === "dark" ? "rgb(140, 196, 234)" : "rgb(38, 91, 162)",
+      theme === "dark" ? "rgb(74, 143, 229)" : "rgb(38, 91, 162)",
     );
     await expect(toolbar.locator('[data-paper-editor-icon="trash"]')).toHaveCSS(
       "color",
-      theme === "dark" ? "rgb(255, 159, 186)" : "rgb(195, 52, 102)",
+      theme === "dark" ? "rgb(232, 93, 136)" : "rgb(195, 52, 102)",
     );
     const menu = toolbar.locator(".handwriting-selection-float__menu");
     await expect(menu).toBeVisible();
