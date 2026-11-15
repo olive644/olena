@@ -5125,3 +5125,11 @@ Pedido do feedback (ponto 12) e do proprietário: a janela de escrita ampliada e
 - Corrigido no caminho: a origem da área de escrita vinha do `offsetTop` do viewport, que é relativo a outro pai posicionado; agora vem da diferença dos retângulos na tela.
 - Provas: `handwriting-writing-window-position.test.ts` (limites, origem da área, fração entre telas, dados inválidos), `handwriting-panels.test.tsx` (alça acessível) e `e2e/notebook-writing-window.spec.ts` (PC e celular: dentro da área, arrasto, teclado, canto sem cobrir o botão da janela, reabertura no mesmo lugar, escrever depois de mover). Captura conferida no celular.
 - Limites: não verificado em aparelho real nem com S Pen. A janela cobre parte da folha enquanto está aberta (é a intenção, e agora dá para tirar do caminho). Posição não acompanha a folha ao rolar, fica fixa no editor.
+
+## Anel da borracha agora acompanha o gesto de apagar, 15/11/2026
+
+Defeito relatado pelo proprietário: o anel que mostra a área da borracha (feito na PR #641) aparecia ao pairar, mas sumia assim que a pessoa apertava para apagar, justamente quando mais importa ver o que está sendo apagado. Causa: `start()` zerava o ponto de pairar e o gesto de apagar não tem traço ao vivo, então a camada ao vivo ficava vazia.
+
+- Correção: `eraserCursorRef` guarda a posição da borracha durante o gesto (no toque inicial e a cada movimento) e `paintLive()` desenha o anel nela. Ao soltar, mouse e caneta continuam com o anel onde a borracha parou (voltam ao estado de pairar); o dedo não paira, então o anel some. O anel durante o gesto respeita a preferência "prévia ao pairar", como o anel de pairar. No `pointerup` evita-se um quadro intermediário com o anel.
+- Provas: `e2e/handwriting-eraser-ring.spec.ts` agora aperta e arrasta o mouse e confere que o anel continua desenhado e centrado onde a borracha está (e não parado no ponto inicial); sem a correção ele falha (0 pixels). `handwriting-studio-hover.test.tsx`: o teste antigo afirmava o comportamento com defeito ("o anel some ao começar a apagar") e foi trocado por três (anel ao apertar e ao mover, e depois de soltar com a caneta; dedo some ao soltar; preferência desligada não mostra).
+- Limites: não verificado com S Pen real nem em aparelho de toque. Janela de escrita ampliada não tem anel (apaga em outra área, fora deste ajuste).

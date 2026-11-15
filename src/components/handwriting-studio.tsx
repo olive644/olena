@@ -567,6 +567,8 @@ export function HandwritingStudio({
   // Ponto onde a caneta paira sem tocar a folha (prévia da ponta); nulo quando não paira,
   // quando solta a folha ou assim que começa a escrever de verdade.
   const hoverPointRef = useRef<HandwritingPoint | null>(null);
+  // Posição do anel da borracha enquanto se apaga (o gesto não tem traço ao vivo).
+  const eraserCursorRef = useRef<HandwritingPoint | null>(null);
   const palmRef = useRef<PalmState>({ penDown: false, lastPenAt: null });
   const stickyDragRef = useRef<{ id: string; x: number; y: number } | null>(null);
   const stickyResizeRef = useRef<{
@@ -1471,6 +1473,9 @@ export function HandwritingStudio({
     if (stroke) {
       drawStroke(context, withPredictedTail(stroke, predictedRef.current));
       if (writingWindowOpen) paintWritingWindowLive(stroke);
+    } else if (eraserCursorRef.current && penHoverPreview) {
+      // Apagando: o anel acompanha a borracha até soltar, em vez de sumir ao apertar.
+      drawEraserPreview(context, eraserCursorRef.current, eraserRadius());
     } else if (hoverPointRef.current && (tool === "pen" || tool === "highlighter")) {
       const previewWidth = tool === "highlighter" ? Math.min(100, width * 2.5) : width;
       drawHoverPreview(context, hoverPointRef.current, previewWidth / 2, color);
@@ -1707,7 +1712,9 @@ export function HandwritingStudio({
     if (effectiveTool === "eraser") {
       eraserChangedRef.current = false;
       eraserPointRef.current = null;
+      eraserCursorRef.current = point;
       eraseAt([point]);
+      paintLive();
       return;
     }
     const activeWidth = effectiveTool === "highlighter" ? Math.min(100, width * 2.5) : width;
@@ -1861,6 +1868,9 @@ export function HandwritingStudio({
     }
     if (activeToolRef.current === "eraser") {
       eraseAt(points);
+      eraserCursorRef.current = points.at(-1) ?? eraserCursorRef.current;
+      // No pointerup o finish() repinta o estado final; evita um quadro intermediário com o anel.
+      if (event.type !== "pointerup") paintLive();
       return;
     }
     const liveStroke = liveStrokeRef.current;
@@ -2017,6 +2027,10 @@ export function HandwritingStudio({
     if (activeToolRef.current === "eraser") {
       flushErase();
       eraserPointRef.current = null;
+      // Mouse e caneta continuam vendo o anel onde soltaram; o dedo não tem pairar.
+      hoverPointRef.current = event.pointerType === "touch" ? null : eraserCursorRef.current;
+      eraserCursorRef.current = null;
+      paintLive();
       if (!eraserChangedRef.current) setUndoStack((history) => history.slice(0, -1));
       return;
     }
