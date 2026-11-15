@@ -5126,3 +5126,24 @@ Pedido do feedback (ponto 8): trocar de cor da caneta exigia abrir o painel de o
 - Mobile: a barra começa depois da coluna de papéis (124px) e quebra em linhas; botões de 34px. Tema escuro com fundo `#292432` e contorno claro.
 - Provas: `src/components/handwriting-quick-colors-model.test.ts` (hex, lista de recentes, limite, dados corrompidos) e `e2e/notebook-quick-colors.spec.ts` (PC e celular: cor fixa liga só ela, barra dentro da tela, conta-gotas lê o papel `#fffdf7`, guarda a recente, Esc cancela, tema escuro). Capturas conferidas no PC e no celular.
 - Limites: não verificado em aparelho real nem com S Pen. A cor lida vem da imagem da folha, então suaviza nas bordas dos traços (pegue no miolo de um traço grosso). Sem toque duplo para trocar de cor e sem gradiente (itens do feedback fora deste pacote). A barra não aparece em outras ferramentas (borracha, forma, texto).
+
+## Janela de escrita flutuante, arrastável e com posição lembrada, 15/11/2026
+
+Pedido do feedback (ponto 12) e do proprietário: a janela de escrita ampliada era uma faixa de largura total que empurrava a folha para baixo. Agora ela flutua sobre a área de escrita (`position: absolute` dentro do editor) e tem uma alça (`Mover janela de escrita`, três pontinhos no topo) para arrastar.
+
+- Mover: arrastar a alça com mouse, caneta ou toque; ou focar a alça e usar as setas do teclado (16px por passo, 64px com Shift). Nenhuma ação depende só de ponteiro.
+- Limites: a janela só circula pela área de escrita (a região da folha). Ela nunca cobre as ferramentas, o botão que a fecha, nem a barra de baixo no celular. Girar o celular ou redimensionar a janela do navegador a mantém visível (`ResizeObserver`, com `resize` de reserva).
+- Posição lembrada: guardada só neste aparelho como fração da área de escrita (`localStorage`, chave `olena.handwriting.writing-window-position`, valores validados de 0 a 1). Não é progresso e não vai para a conta, então não sincroniza e não substitui nada. Fechar e reabrir devolve a janela ao mesmo lugar; sem posição guardada ela abre centralizada no topo da folha.
+- Mobile: a janela ocupa quase toda a largura, com a folha de escrita em linha própria e os botões abaixo. Tema escuro pelos mesmos tokens do editor.
+- Textos novos nos dois idiomas (índices 3879 e 3880) e manifesto do catálogo atualizado.
+- Corrigido no caminho: a origem da área de escrita vinha do `offsetTop` do viewport, que é relativo a outro pai posicionado; agora vem da diferença dos retângulos na tela.
+- Provas: `handwriting-writing-window-position.test.ts` (limites, origem da área, fração entre telas, dados inválidos), `handwriting-panels.test.tsx` (alça acessível) e `e2e/notebook-writing-window.spec.ts` (PC e celular: dentro da área, arrasto, teclado, canto sem cobrir o botão da janela, reabertura no mesmo lugar, escrever depois de mover). Captura conferida no celular.
+- Limites: não verificado em aparelho real nem com S Pen. A janela cobre parte da folha enquanto está aberta (é a intenção, e agora dá para tirar do caminho). Posição não acompanha a folha ao rolar, fica fixa no editor.
+
+## Anel da borracha agora acompanha o gesto de apagar, 15/11/2026
+
+Defeito relatado pelo proprietário: o anel que mostra a área da borracha (feito na PR #641) aparecia ao pairar, mas sumia assim que a pessoa apertava para apagar, justamente quando mais importa ver o que está sendo apagado. Causa: `start()` zerava o ponto de pairar e o gesto de apagar não tem traço ao vivo, então a camada ao vivo ficava vazia.
+
+- Correção: `eraserCursorRef` guarda a posição da borracha durante o gesto (no toque inicial e a cada movimento) e `paintLive()` desenha o anel nela. Ao soltar, mouse e caneta continuam com o anel onde a borracha parou (voltam ao estado de pairar); o dedo não paira, então o anel some. O anel durante o gesto respeita a preferência "prévia ao pairar", como o anel de pairar. No `pointerup` evita-se um quadro intermediário com o anel.
+- Provas: `e2e/handwriting-eraser-ring.spec.ts` agora aperta e arrasta o mouse e confere que o anel continua desenhado e centrado onde a borracha está (e não parado no ponto inicial); sem a correção ele falha (0 pixels). `handwriting-studio-hover.test.tsx`: o teste antigo afirmava o comportamento com defeito ("o anel some ao começar a apagar") e foi trocado por três (anel ao apertar e ao mover, e depois de soltar com a caneta; dedo some ao soltar; preferência desligada não mostra).
+- Limites: não verificado com S Pen real nem em aparelho de toque. Janela de escrita ampliada não tem anel (apaga em outra área, fora deste ajuste).

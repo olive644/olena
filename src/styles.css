@@ -3440,10 +3440,6 @@ body.local-room-active {
   color: var(--violet);
 }
 
-.handwriting-studio:has(.handwriting-writing-window) {
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
-}
-
 .handwriting-writing-window {
   display: flex;
   align-items: center;
