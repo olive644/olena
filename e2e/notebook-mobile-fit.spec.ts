@@ -41,7 +41,10 @@ for (const width of [411, 360, 320]) {
         const insideScreen = boxes.every((box) => box.x >= 0 && box.x + box.width <= width);
         // Os papéis ocupam os 116px da esquerda: nenhuma ferramenta pode invadi-los.
         const clearOfPapers = boxes.every((box) => box.x >= 116);
-        return inTopBar && insideScreen && clearOfPapers;
+        // A bolinha do "+" fica na mesma linha do X e das ferramentas (centros a até 2px).
+        const centers = boxes.map((box) => box.y + box.height / 2);
+        const aligned = Math.max(...centers) - Math.min(...centers) <= 2;
+        return inTopBar && insideScreen && clearOfPapers && aligned;
       })
       .toBe(true);
   });

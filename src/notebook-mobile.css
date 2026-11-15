@@ -115,6 +115,34 @@
     width: clamp(30px, 9.5vw, 40px);
     padding: 4px;
   }
+  /* A bolinha do "+" na mesma linha do X e das ferramentas: sem deslocamento vertical nem margem
+     negativa herdados, com o mesmo tamanho dos outros botões e o ícone centrado. */
+  :root .handwriting-studio .handwriting-commandbar > .capture-header-actions .notebook-team {
+    padding: 0;
+  }
+  :root
+    .handwriting-studio
+    .handwriting-commandbar
+    > .capture-header-actions
+    .notebook-team
+    .notebook-team__add {
+    inset-block-start: 0;
+    margin: 0;
+    width: clamp(30px, 9.5vw, 36px);
+    height: clamp(30px, 9.5vw, 36px);
+    flex: none;
+    box-shadow: 0 2px #d9c9ab;
+  }
+  :root
+    .handwriting-studio
+    .handwriting-commandbar
+    > .capture-header-actions
+    .notebook-team__add
+    .paper-editor-icon {
+    width: 24px;
+    height: 24px;
+    translate: -1px -1px;
+  }
   :root
     .capture-dialog--handwriting
     .handwriting-studio
