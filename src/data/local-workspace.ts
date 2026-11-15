@@ -6,6 +6,7 @@ import { validFlashcardStudy } from "../domain/flashcard-study.js";
 import { isPomodoroDuration } from "../domain/pomodoro-duration.js";
 import { normalizeNotebookFavorites } from "../domain/notebook-shelves.js";
 import {
+  MAX_REMOVAL_MARKS,
   WORKSPACE_VERSION,
   createInitialWorkspace,
   type Flashcard,
@@ -824,6 +825,18 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
   )
     return false;
   if (!isRecord(value) || value["version"] !== WORKSPACE_VERSION) return false;
+  if (
+    value["removedNotebookIds"] !== undefined &&
+    (!Array.isArray(value["removedNotebookIds"]) ||
+      value["removedNotebookIds"].length > MAX_REMOVAL_MARKS ||
+      !value["removedNotebookIds"].every((id) => isString(id) && id.length > 0 && id.length <= 120))
+  )
+    return false;
+  if (
+    value["notebookShelfCleared"] !== undefined &&
+    typeof value["notebookShelfCleared"] !== "boolean"
+  )
+    return false;
   if (
     value["libraryCollections"] !== undefined &&
     (!Array.isArray(value["libraryCollections"]) ||

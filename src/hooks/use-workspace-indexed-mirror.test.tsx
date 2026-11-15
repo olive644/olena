@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { WORKSPACE_STORAGE_KEY } from "../data/local-workspace";
-import { createInitialWorkspace } from "../domain/workspace";
+import { createInitialWorkspace, workspaceReducer } from "../domain/workspace";
 
 const spies = vi.hoisted(() => ({ openIndexedWorkspaceStore: vi.fn() }));
 vi.mock("../data/indexed-workspace-store", () => ({
@@ -82,6 +82,25 @@ describe("IndexedDB como gravação de verdade (etapa 2)", () => {
     );
     await act(async () => resolve(JSON.stringify(old)));
     expect(view.result.current.workspace.notebooks).toHaveLength(0);
+  });
+  it("um caderno apagado não volta ao atualizar a página, mesmo com a cópia atrasada do IndexedDB", async () => {
+    // O localStorage é gravado na hora; o IndexedDB, depois. Se a página recarrega entre os dois,
+    // o IndexedDB ainda tem o caderno que acabou de ser apagado.
+    const stale = createInitialWorkspace();
+    stale.notebooks = [
+      { id: "fica", title: "Fica", subjectId: "", createdAt: "2026", pageIds: [] },
+      { id: "vai", title: "Apagado", subjectId: "", createdAt: "2026", pageIds: [] },
+    ];
+    const indexed = fakeStore(JSON.stringify(stale));
+    spies.openIndexedWorkspaceStore.mockReturnValue(indexed.store);
+    // O que ficou no localStorage depois de apagar: sem o caderno e com a marca de exclusão.
+    const afterDelete = workspaceReducer(stale, { type: "notebook/removed", ids: ["vai"] });
+    localStorage.setItem(WORKSPACE_STORAGE_KEY, JSON.stringify(afterDelete));
+    const view = renderHook(() => useWorkspace());
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(view.result.current.workspace.notebooks.map((item) => item.id)).toEqual(["fica"]);
   });
   it("grava no IndexedDB o mesmo texto salvo no localStorage", async () => {
     const indexed = fakeStore();

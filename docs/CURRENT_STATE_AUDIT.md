@@ -5063,6 +5063,15 @@ O #634 (editor de cadernos) entrou com o e2e desatualizado e um falso positivo d
 - **Provas.** `e2e/notebook-mobile-fit.spec.ts` (celular): barra com 411, 360 e 320 px e fonte maior, e prateleira com três cadernos. Falha sem a correção e passa com ela. A barra de cima é conferida com 411, 360 e 320 px.
 - **Limite.** Validado em emulação de celular; não foi testado num aparelho Android real nem com a escala de fonte do sistema (simulada com fonte maior na barra).
 
+### Caderno e prateleira apagados voltavam ao atualizar, 2026-11-15
+
+Ponto 6 do feedback de um usuário: "apagar cadernos e prateleira não funciona, ao atualizar o site eles retornam".
+
+- **Causas encontradas (reproduzidas em teste).** Ao abrir o app, a cópia mais antiga vencia a local em dois caminhos: (1) `use-workspace` mescla a leitura do localStorage (gravado na hora) com a do IndexedDB (gravado depois) dando o IndexedDB como vencedor, então atualizar a página entre as duas gravações trazia o caderno de volta, mesmo sem conta; (2) com conta, `mergeAccountWorkspace` dá a cópia da conta como vencedora, então uma exclusão que ainda não chegou à nuvem voltava. Além disso, remover na prateleira só vale ao tocar em "Salvar prateleira".
+- **Correção.** O espaço de estudos guarda marcas de exclusão: `removedNotebookIds` (até 300 ids de cadernos apagados) e `notebookShelfCleared` (a prateleira foi apagada). Elas viajam junto com o espaço (e somem com ele ao sair da conta, preservando o isolamento entre contas). `mergeAccountWorkspace` e `mergeWorkspaceStates` juntam as marcas de todas as cópias e retiram os cadernos marcados (com as folhas deles) e o nome da prateleira apagada. Criar de novo um id apagado, ou dar um nome novo à prateleira, desfaz a marca.
+- **Testes.** `src/domain/workspace-removals.test.ts` (redutor, validação, abrir com cópia antiga, sincronização entre aparelhos) e `use-workspace-indexed-mirror.test.tsx` (apagar e atualizar com a cópia atrasada do IndexedDB; falha sem a correção).
+- **Limites.** (a) Ainda é preciso tocar em "Salvar prateleira" para a remoção valer; apagar na hora com "Desfazer" fica como melhoria de interface separada. (b) Um caderno criado e a página atualizada antes de gravar no IndexedDB ainda pode sumir pela mesma regra de "cópia antiga vence"; não faz parte desta correção. (c) Não verificado com conta real em dois aparelhos.
+
 ### Feedback de usuário: borracha, S Pen e dobra da folha, 2026-11-15
 
 Pacote rápido de três pontos do feedback de um usuário (cruzado com o código antes de mexer).
