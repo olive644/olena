@@ -1769,3 +1769,94 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
 .handwriting-page-shell[data-paper-color="night"] .handwriting-sticky__resize {
   color: #fff9ef;
 }
+
+/* Barra de cores rápidas: faixa própria acima da folha (não cobre a escrita) que fica presa ao topo
+   ao rolar. A faixa não pega toque; só a barra pega. O rodapé pertence à tira de folhas. */
+.handwriting-quick-colors-dock {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  padding: 8px 8px 6px;
+  pointer-events: none;
+}
+.handwriting-quick-colors {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  pointer-events: auto;
+  border: 1px solid #d8cbb2;
+  border-radius: 6px 14px 7px 10px;
+  background: #fff9ef;
+  box-shadow: 3px 4px 0 #d8cbb2;
+}
+.handwriting-quick-colors .quick-color {
+  position: relative;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  padding: 0;
+  place-items: center;
+  border: 2px solid #17151c;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.handwriting-quick-colors .quick-color[aria-pressed="true"] {
+  border-width: 3px;
+  box-shadow: 0 3px 0 #7433e0;
+}
+.handwriting-quick-colors .quick-color--custom {
+  overflow: hidden;
+  background: conic-gradient(#ef476f, #facc15, #2d8a67, #38bdf8, #7c3aed, #ef476f);
+}
+.handwriting-quick-colors .quick-color--custom input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.handwriting-quick-colors .quick-color--dropper {
+  background: #fff2ce;
+}
+.handwriting-quick-colors .quick-color--dropper svg {
+  width: 22px;
+  height: 22px;
+}
+.handwriting-quick-colors .quick-color-hint {
+  flex-basis: 100%;
+  color: #17151c;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+.handwriting-studio:has(.handwriting-quick-colors[data-picking]) .handwriting-page-shell,
+.handwriting-studio:has(.handwriting-quick-colors[data-picking]) .handwriting-page-shell * {
+  cursor: crosshair !important;
+}
+:root[data-theme="dark"] .handwriting-quick-colors {
+  border-color: #6d5f78;
+  background: #292432;
+  box-shadow: 3px 4px 0 #15121b;
+}
+:root[data-theme="dark"] .handwriting-quick-colors .quick-color {
+  border-color: #fff9ef;
+}
+:root[data-theme="dark"] .handwriting-quick-colors .quick-color-hint {
+  color: #fff9ef;
+}
+@media (max-width: 680px) {
+  .handwriting-quick-colors {
+    gap: 4px;
+    padding: 4px 6px;
+  }
+  .handwriting-quick-colors .quick-color {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+  }
+}

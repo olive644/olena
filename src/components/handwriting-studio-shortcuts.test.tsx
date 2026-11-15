@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { HandwritingStudio } from "./handwriting-studio";
 
@@ -102,23 +102,31 @@ it("Ctrl+Z desfaz e Ctrl+Shift+Z refaz", () => {
 it("restaura a cor e a largura ao alternar entre caneta e marca-texto", () => {
   renderStudio();
   const tool = (name: string) => screen.getByRole("button", { name });
+  // As cores aparecem no painel de opções e na barra de cores rápidas: o painel é o alvo aqui.
+  const ink = (name: string) =>
+    within(document.querySelector<HTMLElement>(".handwriting-ink-options")!).getByRole("button", {
+      name,
+    });
+  const quick = (name: string) =>
+    within(screen.getByRole("group", { name: "Cores rápidas" })).getByRole("button", { name });
   const width = () =>
     screen.getByRole("slider", { name: "Espessura do pincel" }) as HTMLInputElement;
   fireEvent.click(tool("Caneta"));
   fireEvent.click(tool("Caneta"));
-  fireEvent.click(tool("Tinta Roxo"));
+  fireEvent.click(ink("Tinta Roxo"));
+  expect(quick("Tinta Roxo").getAttribute("aria-pressed")).toBe("true");
   fireEvent.change(width(), { target: { value: "31" } });
   fireEvent.click(tool("Marca-texto"));
   fireEvent.click(tool("Marca-texto"));
-  expect(tool("Tinta Roxo").getAttribute("aria-pressed")).toBe("false");
-  fireEvent.click(tool("Tinta Roxo"));
+  expect(ink("Tinta Roxo").getAttribute("aria-pressed")).toBe("false");
+  fireEvent.click(ink("Tinta Roxo"));
   fireEvent.change(width(), { target: { value: "76" } });
   fireEvent.click(tool("Caneta"));
   fireEvent.click(tool("Caneta"));
   expect(width().value).toBe("31");
-  expect(tool("Tinta Roxo").getAttribute("aria-pressed")).toBe("true");
+  expect(ink("Tinta Roxo").getAttribute("aria-pressed")).toBe("true");
   fireEvent.click(tool("Marca-texto"));
   fireEvent.click(tool("Marca-texto"));
   expect(width().value).toBe("76");
-  expect(tool("Tinta Roxo").getAttribute("aria-pressed")).toBe("true");
+  expect(ink("Tinta Roxo").getAttribute("aria-pressed")).toBe("true");
 });

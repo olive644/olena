@@ -5095,6 +5095,13 @@ Origem: a investigação do Canva mostrou, nos scripts carregados pela página, 
 - **Seis pincéis da caneta.** A regra vale para os seis (Fineliner, Caneta-tinteiro, Pincel macio, Caneta de caligrafia, Esferográfica e Lápis). Em mouse e dedo a ponta afina em todos; Lápis varia mais com a velocidade que a Esferográfica; a Caligrafia depende da direção da ponta chata, então só ganha o afinamento das pontas. Sem a marca, o raio é o de sempre. As medidas de largura acima são só dos três primeiros. Registro: minha primeira leitura dos pincéis veio de uma cópia antiga e listou só três.
 - **Não verificado.** Desenhar de verdade no estúdio com mouse e com dedo em celular (só unidade e canvas de comparação), a sensação em tela e o ajuste fino das constantes (faixa de pressão, taper e velocidade de referência), que merecem teste de uso. O traço salvo guarda os pontos reais, então ajustar as constantes depois muda também os traços novos já salvos com a marca.
 
+## Lápis pulando sobre os cadernos no modo de edição da prateleira, 15/11/2026
+
+Pedido do proprietário: ao apertar o lápis de edição da prateleira, cada caderno disponível mostra um ícone de lápis pulando acima dele, para indicar que dá para personalizar. O lápis reaproveita o `ShelfToolIcon name="pen"` (papel recortado), fica decorativo (`aria-hidden`, sem foco nem clique, o caderno continua sendo o botão) e só existe com `editing` ligado. Com "reduzir movimento" (sistema ou `data-reduce-motion`) o lápis fica parado, sem animação. Os lápis pulam com pequeno atraso entre si para não ficarem em uníssono.
+
+- Prova: `e2e/notebook-shelf-edit-hint.spec.ts` (um lápis por caderno, acima e centralizado na lombada, animação ligada, sem animação com reduzir movimento, nenhum lápis fora da edição; PC e celular). Captura conferida no PC com tema escuro.
+- Limites: lápis fixo de 30px; com muitos cadernos juntos pode encostar na placa de nome da prateleira (não medido). Não verificado em aparelho real.
+
 ## Post-its e tabelas escuros na folha noite, 15/11/2026
 
 Pedido do feedback de usuário (ponto 10): na folha "Escura", post-its e tabelas continuavam em tons de papel claro e destoavam. Agora, quando a cor da folha é noite, post-its amarelo, azul e lilás usam tons escuros (`#5d4f22`, `#2f4a58`, `#4a3a6b`) com texto `#fff9ef`; a tabela usa fundo `#33293f`, grade clara e texto claro. A regra vale no editor (CSS por `data-paper-color` no `.handwriting-page-shell`, em `src/notebook-editor.css`) e no desenho do canvas usado em miniatura, exportação e impressão (`renderPage`, `stickyColor(color, dark)`). Folhas clara e envelhecida não mudam.
@@ -5108,3 +5115,14 @@ Pedido do feedback (ponto 5): no caderno sem folhas, a página da esquerda mostr
 
 - Prova: `e2e/notebook-empty-endpaper.spec.ts` (nenhum `.notebook-empty-paper` no par de páginas, fita roxa mais alta que larga; PC e celular). Captura conferida no PC.
 - Limite: não verificado no modo escuro do app nem em aparelho real; a guarda usa cores fixas de papel.
+
+## Barra de cores rápidas e conta-gotas no editor, 15/11/2026
+
+Pedido do feedback (ponto 8): trocar de cor da caneta exigia abrir o painel de opções (apertar a ferramenta duas vezes) e não havia como pegar uma cor já usada. Agora, com caneta ou marca-texto selecionados, uma barra fica no topo da área de escrita (`HandwritingQuickColors`, presa por `position: sticky` sem ocupar espaço na folha; o rodapé continua da tira de folhas). Ela tem as seis cores fixas do painel, até cinco cores personalizadas recentes, um seletor livre (cor nativa) e um conta-gotas.
+
+- Conta-gotas: lê a cor que a pessoa vê no ponto tocado, somando as camadas de canvas da folha (papel, imagens, tinta) em `sampleCanvasStack`. O toque é capturado e não desenha nada. Esc cancela; tocar fora da folha cancela. A cor lida vira a cor atual e entra nas recentes.
+- Recentes: preferência só deste aparelho (`localStorage`, chave `olena.handwriting.recent-colors`, até 5 cores hex validadas). Não é progresso nem vai para a conta, então não sincroniza e não substitui nada.
+- Textos novos nos dois idiomas (índices 3875 a 3878) e manifesto do catálogo atualizado.
+- Mobile: a barra começa depois da coluna de papéis (124px) e quebra em linhas; botões de 34px. Tema escuro com fundo `#292432` e contorno claro.
+- Provas: `src/components/handwriting-quick-colors-model.test.ts` (hex, lista de recentes, limite, dados corrompidos) e `e2e/notebook-quick-colors.spec.ts` (PC e celular: cor fixa liga só ela, barra dentro da tela, conta-gotas lê o papel `#fffdf7`, guarda a recente, Esc cancela, tema escuro). Capturas conferidas no PC e no celular.
+- Limites: não verificado em aparelho real nem com S Pen. A cor lida vem da imagem da folha, então suaviza nas bordas dos traços (pegue no miolo de um traço grosso). Sem toque duplo para trocar de cor e sem gradiente (itens do feedback fora deste pacote). A barra não aparece em outras ferramentas (borracha, forma, texto).
