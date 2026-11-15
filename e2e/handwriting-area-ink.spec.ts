@@ -58,7 +58,9 @@ for (const pointerType of ["mouse", "pen", "touch"]) {
       );
     };
     await send("pointerdown", 100, 300);
-    await send("pointermove", 300, 300);
+    // Um traço de verdade tem um ponto a cada poucos milissegundos. Com poucos pontos e saltos
+    // enormes, a largura (que afina nas pontas) seria interpolada pelo traço inteiro.
+    for (let x = 120; x <= 300; x += 20) await send("pointermove", x, 300);
     const tipVisible = await editor.locator(".handwriting-live-layer").evaluate(async (element) => {
       await new Promise(requestAnimationFrame);
       const canvas = element as HTMLCanvasElement;
@@ -74,28 +76,34 @@ for (const pointerType of ["mouse", "pen", "touch"]) {
       return data.some((value, index) => index % 4 === 3 && value > 0);
     });
     expect(tipVisible).toBe(true);
+    for (let x = 320; x <= 580; x += 20) await send("pointermove", x, 300);
     // Esta posição só chega ao levantar: precisa ser preservada no traço final.
     await send("pointerup", 600, 300);
     // A tinta confirmada fica na camada transparente da folha, não na que recebe o ponteiro.
     const sheet = editor.locator(".handwriting-committed-ink");
-    const inkAt = async (x: number) =>
-      sheet.evaluate((element, position) => {
-        const canvas = element as HTMLCanvasElement;
-        const scale = canvas.width / Number(canvas.dataset["pageWidth"]);
-        const data = canvas
-          .getContext("2d")!
-          .getImageData(
-            Math.floor((position - 4) * scale),
-            Math.floor(296 * scale),
-            Math.ceil(8 * scale),
-            Math.ceil(8 * scale),
-          ).data;
-        for (let i = 0; i < data.length; i += 4)
-          if (data[i + 3]! > 200 && data[i]! < 80 && data[i + 1]! < 80 && data[i + 2]! < 80)
-            return true;
-        return false;
-      }, x);
-    await expect.poll(() => inkAt(597)).toBe(true);
+    // Mouse e dedo afinam a ponta do traço de propósito (largura pela velocidade): ali a tinta é
+    // um fio e o alfa fica baixo. A caneta mantém a espessura até o fim.
+    const inkAt = async (x: number, minAlpha = 200) =>
+      sheet.evaluate(
+        (element, [position, alpha]) => {
+          const canvas = element as HTMLCanvasElement;
+          const scale = canvas.width / Number(canvas.dataset["pageWidth"]);
+          const data = canvas
+            .getContext("2d")!
+            .getImageData(
+              Math.floor((position - 4) * scale),
+              Math.floor(296 * scale),
+              Math.ceil(8 * scale),
+              Math.ceil(8 * scale),
+            ).data;
+          for (let i = 0; i < data.length; i += 4)
+            if (data[i + 3]! > alpha! && data[i]! < 80 && data[i + 1]! < 80 && data[i + 2]! < 80)
+              return true;
+          return false;
+        },
+        [x, minAlpha] as const,
+      );
+    await expect.poll(() => inkAt(597, pointerType === "pen" ? 200 : 20)).toBe(true);
     await editor.getByRole("button", { name: "Borracha", exact: true }).click();
     await send("pointerdown", 350, 200);
     await send("pointermove", 350, 400);
