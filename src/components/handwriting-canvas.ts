@@ -188,6 +188,30 @@ export function drawHoverPreview(
   context.restore();
 }
 
+// Anel da borracha, desenhado enquanto a caneta paira antes de tocar: mostra a área que será
+// apagada. Um contorno claro por fora e um escuro por dentro, para aparecer em folha clara, escura
+// ou com imagem, sem preencher nada (a pessoa precisa ver o que está embaixo).
+export function drawEraserPreview(
+  context: CanvasRenderingContext2D,
+  point: HandwritingPoint,
+  radius: number,
+) {
+  const size = Math.max(4, radius);
+  context.save();
+  context.beginPath();
+  context.arc(point.x, point.y, size, 0, Math.PI * 2);
+  context.strokeStyle = "#ffffff";
+  context.globalAlpha = 0.9;
+  context.lineWidth = 3.4;
+  context.stroke();
+  context.strokeStyle = "#292432";
+  context.globalAlpha = 0.9;
+  context.lineWidth = 1.6;
+  context.setLineDash([6, 4]);
+  context.stroke();
+  context.restore();
+}
+
 // Pontas redondas alongam cada traço em uma espessura, então o padrão desconta esse excesso:
 // no tracejado o risco visível tem 3,6 espessuras e o vão 2,2; no pontilhado a bolinha é um
 // comprimento quase nulo e o vão visível é de 1,4.
