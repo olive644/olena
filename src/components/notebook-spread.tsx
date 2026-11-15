@@ -473,7 +473,7 @@ export function NotebookSpread({
               <div className="notebook-spread-pair">
                 {basePages.map((page, side) => (
                   <article
-                    className={`notebook-sheet ${!page && side === 1 ? "is-endpaper" : ""} ${removing?.side === side ? "is-revealing" : ""}`}
+                    className={`notebook-sheet ${!page && (side === 1 || (!compactPreview && pages.length === 0)) ? "is-endpaper" : ""} ${removing?.side === side ? "is-revealing" : ""}`}
                     key={side}
                     data-page-id={page?.id}
                   >
@@ -481,6 +481,11 @@ export function NotebookSpread({
                       <div className="notebook-endpaper" aria-hidden="true">
                         <span className="notebook-endpaper-card" />
                         <span className="notebook-endpaper-pocket" />
+                      </div>
+                    )}
+                    {!page && side === 0 && !compactPreview && pages.length === 0 && (
+                      <div className="notebook-endpaper" aria-hidden="true">
+                        <span className="notebook-endpaper-ribbon" />
                       </div>
                     )}
                     {page ? (
@@ -509,9 +514,9 @@ export function NotebookSpread({
                           )}
                         </footer>
                       </>
-                    ) : compactPreview || (side === 0 && pages.length === 0) ? (
+                    ) : compactPreview ? (
                       <div className="notebook-empty-paper" aria-label={uiText(743)} />
-                    ) : (
+                    ) : side === 0 && pages.length === 0 ? null : (
                       <button
                         type="button"
                         className="notebook-sheet-create"
