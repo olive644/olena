@@ -5081,6 +5081,13 @@ Pacote rápido de três pontos do feedback de um usuário (cruzado com o código
 - **Dobra do canto.** O triângulo de 34 px era só decoração (`::after`) e dava para escrever no canto cortado, que não é papel. As camadas da folha agora têm o mesmo recorte (`clip-path` em `.handwriting-page-shell canvas`). Teste: `e2e/handwriting-fold.spec.ts`.
 - **Fora deste pacote** (pontos 1, 2, 5 a 12 do cruzamento): ver o relatório do cruzamento; o ponto 6 (itens apagados que voltam) tem PR própria.
 
+## Lápis pulando sobre os cadernos no modo de edição da prateleira, 15/11/2026
+
+Pedido do proprietário: ao apertar o lápis de edição da prateleira, cada caderno disponível mostra um ícone de lápis pulando acima dele, para indicar que dá para personalizar. O lápis reaproveita o `ShelfToolIcon name="pen"` (papel recortado), fica decorativo (`aria-hidden`, sem foco nem clique, o caderno continua sendo o botão) e só existe com `editing` ligado. Com "reduzir movimento" (sistema ou `data-reduce-motion`) o lápis fica parado, sem animação. Os lápis pulam com pequeno atraso entre si para não ficarem em uníssono.
+
+- Prova: `e2e/notebook-shelf-edit-hint.spec.ts` (um lápis por caderno, acima e centralizado na lombada, animação ligada, sem animação com reduzir movimento, nenhum lápis fora da edição; PC e celular). Captura conferida no PC com tema escuro.
+- Limites: lápis fixo de 30px; com muitos cadernos juntos pode encostar na placa de nome da prateleira (não medido). Não verificado em aparelho real.
+
 ## Post-its e tabelas escuros na folha noite, 15/11/2026
 
 Pedido do feedback de usuário (ponto 10): na folha "Escura", post-its e tabelas continuavam em tons de papel claro e destoavam. Agora, quando a cor da folha é noite, post-its amarelo, azul e lilás usam tons escuros (`#5d4f22`, `#2f4a58`, `#4a3a6b`) com texto `#fff9ef`; a tabela usa fundo `#33293f`, grade clara e texto claro. A regra vale no editor (CSS por `data-paper-color` no `.handwriting-page-shell`, em `src/notebook-editor.css`) e no desenho do canvas usado em miniatura, exportação e impressão (`renderPage`, `stickyColor(color, dark)`). Folhas clara e envelhecida não mudam.
