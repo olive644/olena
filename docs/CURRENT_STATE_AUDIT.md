@@ -5045,3 +5045,10 @@ O #634 (editor de cadernos) entrou com o e2e desatualizado e um falso positivo d
 - **Teste instável da curva.** Media a folha antes de ela se reajustar ao trocar de ferramenta. Agora escolhe a Curva e espera o tamanho estabilizar (6 de 6 execuções estáveis).
 - **Removido de propósito.** `handwriting-vertical-space.spec.ts`, porque a ferramenta "Espaço vertical" saiu do app no #634. Na seleção de tinta, a checagem do ícone da Curva passou a olhar o ícone de papel recortado.
 - **Cuidado ao testar localmente.** O Playwright reaproveita um `vite preview` antigo se já houver um rodando; reconstrua (`npm run build`) ou encerre o servidor antes de validar CSS.
+
+### Interface do caderno no celular (PR 639), 2026-11-15
+
+- **Seta que recolhe os papéis.** A PR escondia a seta no celular (`display: none`), o que tirava a única forma de recolher e reabrir os papéis. Ela voltou, dentro da barra de cima ao lado dos dois papéis, fora do fluxo da grade (`src/notebook-mobile.css`). Validada no celular recolhendo e reabrindo.
+- **Testes adaptados a decisões de desenho da PR** (nenhuma função removida): bordas escuras e facetas coloridas dos ícones no tema escuro, painel de fórmula escuro no tema escuro, setas de seleção com as cores novas, ferramentas de arquivo e papéis sem placa própria no celular, e a folha cobrindo a altura da janela no celular (rola para o resto da largura).
+- **Bandeja de folhas no celular.** Fica oculta enquanto o painel de seleção está aberto, de propósito. Voltar para a caneta traz a bandeja e o botão de nova folha de volta; o teste agora faz isso antes de criar a folha.
+- **Cuidado ao testar.** Rodar desktop e celular juntos com 4 trabalhadores gera falhas por lentidão (eixo, tracejado, rascunho, OCR, perfil). Todas passam com pouco paralelismo.

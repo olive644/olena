@@ -47,7 +47,11 @@ for (const theme of ["light", "dark"]) {
     }
     const fileTools = editor.locator(".notebook-file-tools");
     await expect(fileTools.getByRole("button")).toHaveCount(4);
-    await expect(fileTools).toHaveCSS("background-image", /linear-gradient/);
+    // No celular as ferramentas de arquivo dividem a placa da barra de cima (sem fundo próprio).
+    await expect(fileTools).toHaveCSS(
+      "background-image",
+      info.project.name === "mobile" ? "none" : /linear-gradient/,
+    );
     expect((await fileTools.boundingBox())!.width).toBeLessThan(280);
     const save = fileTools.getByRole("button", { name: "Salvar caderno", exact: true });
     await save.hover();
@@ -57,20 +61,33 @@ for (const theme of ["light", "dark"]) {
     await expect(disclosure).toHaveAttribute("aria-expanded", "true");
     const sheet = editor.locator(".handwriting-page-shell");
     const viewport = editor.locator(".handwriting-viewport");
-    await expect
-      .poll(async () =>
-        sheet.evaluate((node) => {
-          const parent = node.parentElement!;
-          const style = getComputedStyle(parent);
-          return Math.abs(
-            node.getBoundingClientRect().width -
-              parent.clientWidth +
-              parseFloat(style.paddingLeft) +
-              parseFloat(style.paddingRight),
-          );
-        }),
-      )
-      .toBeLessThanOrEqual(1);
+    if (info.project.name === "mobile") {
+      // No celular a folha cobre a altura da janela e o excesso de largura se alcança arrastando.
+      await expect
+        .poll(async () =>
+          sheet.evaluate((node) => {
+            const parent = node.parentElement!;
+            const box = node.getBoundingClientRect();
+            return box.height >= parent.clientHeight - 1 && box.width >= parent.clientWidth - 1;
+          }),
+        )
+        .toBe(true);
+    } else {
+      await expect
+        .poll(async () =>
+          sheet.evaluate((node) => {
+            const parent = node.parentElement!;
+            const style = getComputedStyle(parent);
+            return Math.abs(
+              node.getBoundingClientRect().width -
+                parent.clientWidth +
+                parseFloat(style.paddingLeft) +
+                parseFloat(style.paddingRight),
+            );
+          }),
+        )
+        .toBeLessThanOrEqual(1);
+    }
     if (info.project.name === "desktop") {
       const before = await disclosure.boundingBox();
       await disclosure.hover();
@@ -84,7 +101,10 @@ for (const theme of ["light", "dark"]) {
     await expect(disclosure).toHaveAttribute("aria-expanded", "true");
 
     const picker = editor.getByRole("button", { name: "Tipo de papel", exact: true });
-    await expect(picker).toHaveCSS("background-image", /linear-gradient/);
+    await expect(picker).toHaveCSS(
+      "background-image",
+      info.project.name === "mobile" ? "none" : /linear-gradient/,
+    );
     await expect(picker.locator(".focus-paper-arrow")).toHaveCSS("rotate", "-90deg");
     const canvas = editor.locator(".handwriting-viewport canvas").first();
     const dimensions = () =>
