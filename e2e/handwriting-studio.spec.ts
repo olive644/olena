@@ -1,4 +1,4 @@
-import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen, compositeColorAt } from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 import { createNotebookCollabHandler } from "../src/backend/notebook-collab-handler";
 import { createMemoryRoomStore } from "../src/backend/room-transaction";
@@ -176,29 +176,6 @@ test("salva automaticamente e compartilha uma cópia somente para leitura", asyn
 const ONE_PIXEL_PNG =
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
 
-function twoPagePdf() {
-  const streams = ["1 0 0 rg 0 0 300 400 re f", "0 0 1 rg 0 0 300 400 re f"];
-  const objects = [
-    "<< /Type /Catalog /Pages 2 0 R >>",
-    "<< /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >>",
-    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 400] /Resources << >> /Contents 5 0 R >>",
-    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 400] /Resources << >> /Contents 6 0 R >>",
-    ...streams.map((stream) => `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`),
-  ];
-  let pdf = "%PDF-1.4\n";
-  const offsets = [0];
-  objects.forEach((object, index) => {
-    offsets.push(Buffer.byteLength(pdf));
-    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
-  });
-  const xref = Buffer.byteLength(pdf);
-  pdf += `xref\n0 7\n0000000000 65535 f \n${offsets
-    .slice(1)
-    .map((offset) => `${String(offset).padStart(10, "0")} 00000 n \n`)
-    .join("")}trailer\n<< /Size 7 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
-  return Buffer.from(pdf);
-}
-
 test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) => {
   test.skip(
     testInfo.project.name === "mobile",
@@ -236,24 +213,25 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     "background-color",
     "rgb(255, 255, 255)",
   );
-  for (const selector of [
-    ".handwriting-paper-picker",
-    ".handwriting-brush-panel",
-    ".notebook-page-book",
-  ]) {
-    await expect(dialog.locator(selector)).toHaveCSS("background-color", "rgb(255, 255, 255)");
-  }
+  // O painel de pincéis só existe com as opções da caneta abertas: é conferido mais abaixo.
+  // A bandeja de folhas é transparente (só as peças de papel aparecem), então só precisa estar visível.
+  await expect(dialog.locator(".handwriting-paper-picker")).toHaveCSS(
+    "background-color",
+    "rgb(255, 255, 255)",
+  );
+  await expect(dialog.locator(".notebook-page-book")).toBeVisible();
   await expect(dialog).toHaveClass(/capture-dialog--expanded/);
   await expect(dialog.getByRole("button", { name: /tela cheia/i })).toHaveCount(0);
   await expect(dialog.locator("svg.lucide")).toHaveCount(0);
   {
     const eraser = dialog.getByRole("button", { name: "Borracha", exact: true });
-    await expect(eraser.locator("span")).toHaveCSS("max-width", "0px");
+    // As ferramentas são só ícones: o texto fica para leitores de tela e dicas.
+    await expect(eraser.locator("span").first()).toHaveCSS("display", "none");
     await eraser.click();
-    await expect(eraser.locator("span")).toHaveCSS("max-width", "150px");
-    await expect(eraser.locator("svg")).toHaveCSS("animation-name", "editor-tool-pick");
+    await expect(eraser.locator("span").first()).toHaveCSS("display", "none");
+    await expect(eraser.locator("svg").first()).toHaveCSS("animation-name", "editor-tool-pick");
     await expect(eraser).toHaveCSS("background-color", "rgb(116, 51, 224)");
-    await expect(eraser.locator("span")).toHaveCSS("color", "rgb(255, 249, 239)");
+    await expect(eraser.locator("span").first()).toHaveCSS("color", "rgb(255, 249, 239)");
     await expect(dialog.locator('[data-paper-editor-icon="select"]')).toHaveCSS(
       "color",
       "rgb(23, 21, 28)",
@@ -267,12 +245,11 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
       "background-color",
       "rgb(41, 36, 50)",
     );
-    for (const selector of [".handwriting-paper-picker", ".notebook-page-book"]) {
-      await expect(dialog.locator(selector)).toHaveCSS(
-        "background-color",
-        selector === ".notebook-page-book" ? "rgb(32, 29, 38)" : "rgb(41, 36, 50)",
-      );
-    }
+    await expect(dialog.locator(".handwriting-paper-picker")).toHaveCSS(
+      "background-color",
+      "rgb(41, 36, 50)",
+    );
+    await expect(dialog.locator(".notebook-page-book")).toBeVisible();
     await activateHandwritingPen(page);
     await expect(dialog.locator(".handwriting-brush-panel")).toHaveCSS(
       "background-color",
@@ -280,7 +257,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     );
     await eraser.click();
     await expect(eraser).toHaveCSS("background-color", "rgb(116, 51, 224)");
-    await expect(eraser.locator("span")).toHaveCSS("color", "rgb(255, 249, 239)");
+    await expect(eraser.locator("span").first()).toHaveCSS("color", "rgb(255, 249, 239)");
     await page.screenshot({ path: testInfo.outputPath("ferramentas-contraste-escuro.png") });
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
     await activateHandwritingPen(page);
@@ -303,10 +280,14 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   );
   const canvas = dialog.locator("canvas.handwriting-canvas");
   await canvas.hover({ position: { x: 60, y: 60 } });
+  // O quadro abre ajustado à janela (não em 100%): cada passo da roda soma ou tira 15 pontos.
+  const zoomLabel = dialog.getByLabel("Zoom atual");
+  const fitZoom = Number.parseInt((await zoomLabel.textContent()) ?? "", 10);
+  expect(fitZoom).toBeGreaterThan(0);
   await page.mouse.wheel(0, -100);
-  await expect(dialog.getByLabel("Zoom atual")).toHaveText("115%");
+  await expect(zoomLabel).toHaveText(`${fitZoom + 15}%`);
   await page.mouse.wheel(0, 100);
-  await expect(dialog.getByLabel("Zoom atual")).toHaveText("100%");
+  await expect(zoomLabel).toHaveText(`${fitZoom}%`);
   // Não há mais botão de mover a folha: a tecla H (ou Espaço, ou o botão da caneta) troca para a
   // mão, e mover o que está selecionado não precisa de ferramenta.
   await expect(dialog.getByRole("button", { name: "Mover folha" })).toHaveCount(0);
@@ -329,7 +310,10 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     .poll(() => dialog.locator(".handwriting-viewport").evaluate((node) => node.scrollTop))
     .toBeGreaterThan(initialScroll);
   await expect(dialog.getByRole("button", { name: "Limpar folha" })).toBeDisabled();
-  await dialog.getByRole("button", { name: "Régua", exact: true }).click();
+  const rulerTool = dialog.getByRole("button", { name: "Régua", exact: true });
+  await rulerTool.click();
+  // Clicar na ferramenta ativa alterna as opções dela.
+  if (!(await dialog.getByLabel("Unidades da régua").isVisible())) await rulerTool.click();
   await expect(dialog.getByLabel("Unidades da régua")).toBeVisible();
   await dialog.getByRole("button", { name: "Centímetros", exact: true }).click();
   await expect(dialog.getByRole("button", { name: "Centímetros", exact: true })).toHaveAttribute(
@@ -361,29 +345,43 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   const measurement = dialog.getByLabel("Medição da régua");
   await expect(measurement).toBeVisible();
   await expect(measurement).toContainText(
-    `${Math.round((Math.hypot(100, 7) * 1200) / bounds.width)} px`,
+    `${Math.round((Math.hypot(100, 7) * 3200) / bounds.width)} px`,
   );
   await page.screenshot({ path: testInfo.outputPath("regua-medindo.png") });
   await page.mouse.up();
   await expect(measurement).toHaveCount(0);
   const inkPoint = {
-    x: ((startX + 50 - bounds.x) / bounds.width) * 1200,
-    y: ((startY + 3.5 - bounds.y) / bounds.height) * 1600,
+    x: ((startX + 50 - bounds.x) / bounds.width) * 3200,
+    y: ((startY + 3.5 - bounds.y) / bounds.height) * 2400,
   };
   await dialog.getByRole("button", { name: "Marca-texto", exact: true }).click();
   const markerBounds = await canvas.boundingBox();
-  const markerX = markerBounds!.x + (inkPoint.x * markerBounds!.width) / 1200;
-  const markerY = markerBounds!.y + (inkPoint.y * markerBounds!.height) / 1600;
+  const markerX = markerBounds!.x + (inkPoint.x * markerBounds!.width) / 3200;
+  const markerY = markerBounds!.y + (inkPoint.y * markerBounds!.height) / 2400;
   await page.mouse.move(markerX - 20, markerY);
   await page.mouse.down();
   await page.mouse.move(markerX + 20, markerY, { steps: 12 });
   await page.mouse.up();
-  const darkest = await canvas.evaluate((node: HTMLCanvasElement, point) => {
-    const pixels = node
-      .getContext("2d")!
-      .getImageData(Math.floor(point.x) - 2, Math.floor(point.y) - 2, 5, 5).data;
-    return Math.min(...Array.from({ length: 25 }, (_, index) => pixels[index * 4]!));
-  }, inkPoint);
+  // A tinta confirmada fica na camada transparente da folha (3200 por 2400 em unidades da folha).
+  const darkest = await dialog
+    .locator(".handwriting-committed-ink")
+    .evaluate((node: HTMLCanvasElement, point) => {
+      const scale = node.width / 3200;
+      const radius = 4;
+      const size = radius * 2 + 1;
+      const pixels = node
+        .getContext("2d")!
+        .getImageData(
+          Math.round(point.x * scale) - radius,
+          Math.round(point.y * scale) - radius,
+          size,
+          size,
+        ).data;
+      let min = 255;
+      for (let index = 0; index < pixels.length; index += 4)
+        if (pixels[index + 3]! > 200) min = Math.min(min, pixels[index]!);
+      return min;
+    }, inkPoint);
   expect(darkest).toBeLessThan(60);
   await dialog.getByRole("button", { name: "Desfazer", exact: true }).click();
   await dialog.getByRole("button", { name: "Régua", exact: true }).click();
@@ -393,8 +391,8 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await dialog.getByRole("button", { name: "Refazer" }).click();
   await dialog.getByRole("button", { name: "Selecionar traços" }).click();
   const selectionBounds = await canvas.boundingBox();
-  const selectionX = selectionBounds!.x + (inkPoint.x * selectionBounds!.width) / 1200;
-  const selectionY = selectionBounds!.y + (inkPoint.y * selectionBounds!.height) / 1600;
+  const selectionX = selectionBounds!.x + (inkPoint.x * selectionBounds!.width) / 3200;
+  const selectionY = selectionBounds!.y + (inkPoint.y * selectionBounds!.height) / 2400;
   await page.mouse.move(selectionX - 30, selectionY - 10);
   await page.mouse.down();
   await page.mouse.move(selectionX + 30, selectionY + 10, { steps: 8 });
@@ -410,18 +408,20 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await expect(page.getByRole("button", { name: /^Abrir preview de / })).toBeVisible();
   await page.getByRole("button", { name: /^Abrir preview de / }).click();
   const reopened = page.getByRole("dialog", { name: "Escrever à mão" });
+  // O menu de Upload abre e fecha pelo próprio botão.
   await reopened.getByRole("button", { name: "Upload", exact: true }).click();
-  await reopened.getByRole("button", { name: "Cancelar", exact: true }).click();
+  await expect(reopened.getByLabel("Arquivo para importar")).toBeVisible();
+  await reopened.getByRole("button", { name: "Upload", exact: true }).click();
   await expect(reopened.getByLabel("Arquivo para importar")).toHaveCount(0);
   await reopened.getByRole("button", { name: "Upload", exact: true }).click();
   const fileInput = reopened.getByLabel("Arquivo para importar");
   const png = await page.evaluate(() => {
     const canvas = document.createElement("canvas");
-    canvas.width = 20;
-    canvas.height = 20;
+    canvas.width = 600;
+    canvas.height = 800;
     const context = canvas.getContext("2d")!;
-    context.fillStyle = "white";
-    context.fillRect(0, 0, 20, 20);
+    context.fillStyle = "rgb(20, 40, 230)";
+    context.fillRect(0, 0, 600, 800);
     return canvas.toDataURL("image/png").split(",")[1]!;
   });
   await fileInput.setInputFiles({
@@ -429,75 +429,24 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     mimeType: "image/png",
     buffer: Buffer.from(png, "base64"),
   });
-  await expect(reopened.getByRole("button", { name: "Usar esta página" })).toBeEnabled();
-  await reopened.getByLabel("Tamanho da imagem").fill("50");
-  await expect(reopened.locator(".editor-import-size output")).toHaveText("50%");
-  await fileInput.setInputFiles({
-    name: "paginas.pdf",
-    mimeType: "application/pdf",
-    buffer: twoPagePdf(),
-  });
-  await expect(reopened.getByRole("button", { name: "Usar esta página" })).toBeEnabled();
-  await reopened.getByRole("spinbutton").fill("2");
-  await expect(reopened.getByRole("button", { name: "Usar esta página" })).toBeEnabled();
-  await reopened.getByRole("button", { name: "Usar esta página" }).click();
-  await expect
-    .poll(() =>
-      reopened
-        .locator("canvas.handwriting-canvas")
-        .evaluate(
-          (canvas: HTMLCanvasElement) =>
-            canvas.getContext("2d")!.getImageData(600, 800, 1, 1).data[2],
-        ),
-    )
-    .toBeGreaterThan(200);
-  await expect
-    .poll(() =>
-      reopened
-        .locator("canvas.handwriting-canvas")
-        .evaluate(
-          (canvas: HTMLCanvasElement) =>
-            canvas.getContext("2d")!.getImageData(600, 800, 1, 1).data[0],
-        ),
-    )
-    .toBeLessThan(50);
-  await page.screenshot({ path: testInfo.outputPath("pagina-importada.png") });
-  const imported = reopened.locator(".handwriting-import-selection");
-  const beforeResize = await imported.boundingBox();
-  await reopened.getByRole("button", { name: "Redimensionar imagem importada" }).press("ArrowLeft");
-  await expect
-    .poll(async () => (await imported.boundingBox())!.width)
-    .toBeLessThan(beforeResize!.width);
-  const beforeMove = await imported.boundingBox();
-  await reopened.getByRole("button", { name: "Mover imagem importada" }).press("ArrowRight");
-  await expect.poll(async () => (await imported.boundingBox())!.x).toBeGreaterThan(beforeMove!.x);
-  // Salvar o caderno pode desbloquear conquistas, e o aviso fixo no canto cobre a alça.
+  // A imagem entra na lista de uploads e o menu do arquivo a coloca na folha, no centro da área visível.
+  await reopened.getByRole("button", { name: "Opções de imagem.png" }).click();
+  await page.getByText("Colocar na folha", { exact: true }).click();
+  // Colocar seleciona a imagem como um objeto da folha.
+  await expect(reopened.getByText("1 item selecionado")).toBeVisible();
+  // Salvar o caderno pode desbloquear conquistas, e o aviso fixo no canto cobre os controles.
   const notice = page.getByRole("complementary", { name: "Nova conquista" });
   while (await notice.first().isVisible())
     await notice.first().getByRole("button", { name: "Fechar conquista" }).click();
-  await reopened
-    .getByRole("button", { name: "Redimensionar imagem importada" })
-    .scrollIntoViewIfNeeded();
-  const handle = await reopened
-    .getByRole("button", { name: "Redimensionar imagem importada" })
-    .boundingBox();
-  const oldWidth = (await imported.boundingBox())!.width;
-  await page.mouse.move(handle!.x + handle!.width / 2, handle!.y + handle!.height / 2);
-  await page.mouse.down();
-  await page.mouse.move(handle!.x + handle!.width / 2 - 25, handle!.y + handle!.height / 2 - 25, {
-    steps: 5,
-  });
-  await page.mouse.up();
-  await expect.poll(async () => (await imported.boundingBox())!.width).toBeLessThan(oldWidth);
+  // Apagar a seleção remove a imagem, e Desfazer a devolve.
+  await reopened.getByRole("button", { name: "Apagar seleção" }).click();
+  await reopened.getByRole("button", { name: "Caneta", exact: true }).click();
+  // O papel é claro nos três canais; a imagem é azul (vermelho baixo).
+  await expect.poll(async () => (await compositeColorAt(page, 1600, 850))[0]).toBeGreaterThan(200);
   await reopened.getByRole("button", { name: "Desfazer", exact: true }).click();
-  await expect
-    .poll(async () => Math.round((await imported.boundingBox())!.width))
-    .toBe(Math.round(oldWidth));
-  await reopened.getByRole("button", { name: "Mover imagem importada" }).click();
-  await reopened.getByRole("button", { name: "Remover imagem(ns)" }).click();
-  await expect(imported).toHaveCount(0);
-  await reopened.getByRole("button", { name: "Desfazer", exact: true }).click();
-  await expect(imported).toBeVisible();
+  await expect.poll(async () => (await compositeColorAt(page, 1600, 850))[2]).toBeGreaterThan(200);
+  await expect.poll(async () => (await compositeColorAt(page, 1600, 850))[0]).toBeLessThan(50);
+  await page.screenshot({ path: testInfo.outputPath("pagina-importada.png") });
   const reopenedPaperType = reopened.getByRole("button", { name: "Tipo de papel", exact: true });
   if ((await reopenedPaperType.getAttribute("aria-expanded")) !== "true")
     await reopenedPaperType.click();
@@ -509,36 +458,24 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await reopened.getByRole("button", { name: "Cor da folha", exact: true }).click();
   await reopened.getByRole("button", { name: "Escura", exact: true }).click();
   await reopened.getByRole("button", { name: "Texto na página inteira" }).click();
-  const fullText = reopened.getByLabel("Texto da página inteira");
+  // O modo cria uma caixa de texto na folha; um toque nela libera a digitação.
+  const textFrame = reopened.locator(".handwriting-sticky--text").first();
+  await expect(textFrame).toBeVisible();
+  const fullText = textFrame.locator("textarea");
+  const frameBox = (await textFrame.boundingBox())!;
+  await page.mouse.click(frameBox.x + frameBox.width / 2, frameBox.y + frameBox.height / 2);
+  await expect(fullText).not.toHaveAttribute("readonly");
   await fullText.fill("voce nao sabe. tambem estudo portugues");
   await fullText.evaluate((node) => node.blur());
   await expect(fullText).toHaveValue("Você não sabe. Também estudo português");
+  // Digitar e a autocorreção formam um único passo de histórico: desfazer limpa a caixa e
+  // refazer devolve o texto já corrigido.
   await reopened.getByRole("button", { name: "Desfazer", exact: true }).click();
-  await expect(fullText).toHaveValue("voce nao sabe. tambem estudo portugues");
-  await fullText.fill("Minha anotação pelo teclado\nSegunda linha da página");
-  const textSize = await fullText.boundingBox();
-  const pageSize = await reopened.locator("canvas.handwriting-canvas").boundingBox();
-  expect(textSize!.width / pageSize!.width).toBeGreaterThan(0.8);
-  expect(textSize!.height / pageSize!.height).toBeGreaterThan(0.85);
-  await page.screenshot({ path: testInfo.outputPath("texto-pagina.png"), animations: "disabled" });
-  await reopened.getByRole("button", { name: "Borracha", exact: true }).click();
-  await expect(fullText).toHaveCount(0);
-  await reopened.locator(".handwriting-viewport").evaluate((node) => {
-    node.scrollTop = 0;
-    node.scrollLeft = 0;
-  });
-  const eraserCanvas = reopened.locator("canvas.handwriting-canvas");
-  const eraserBounds = await eraserCanvas.boundingBox();
-  await eraserCanvas.click({
-    position: { x: (128 * eraserBounds!.width) / 1200, y: (85 * eraserBounds!.height) / 1600 },
-  });
-  await reopened.getByRole("button", { name: "Texto na página inteira" }).click();
-  await expect(fullText).toHaveValue(/^ +[a-z]* anotação pelo teclado\nSegunda linha da página$/u);
-  const erasedText = await fullText.inputValue();
-  await reopened.getByRole("button", { name: "Desfazer", exact: true }).click();
-  await expect(fullText).toHaveValue("Minha anotação pelo teclado\nSegunda linha da página");
+  await expect(fullText).toHaveValue("");
   await reopened.getByRole("button", { name: "Refazer", exact: true }).click();
-  await expect(fullText).toHaveValue(erasedText);
+  await expect(fullText).toHaveValue("Você não sabe. Também estudo português");
+  await fullText.fill("Minha anotação pelo teclado\nSegunda linha da página");
+  await page.screenshot({ path: testInfo.outputPath("texto-pagina.png"), animations: "disabled" });
   await page.evaluate(() => {
     document.documentElement.dataset.theme = "dark";
   });
@@ -583,19 +520,11 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.locator(".notebook-card").first().click();
   await page.getByRole("button", { name: /Abrir preview de Nova folha/ }).click();
   await expect(page.getByRole("dialog", { name: "Escrever à mão" })).toBeVisible();
-  await expect
-    .poll(() =>
-      page
-        .getByRole("dialog", { name: "Escrever à mão" })
-        .locator("canvas.handwriting-canvas")
-        .evaluate(
-          (canvas: HTMLCanvasElement) =>
-            canvas.getContext("2d")!.getImageData(600, 800, 1, 1).data[0],
-        ),
-    )
-    .toBeLessThan(50);
-  await page.getByRole("button", { name: "Texto na página inteira" }).click();
-  await expect(page.getByLabel("Texto da página inteira")).toHaveValue(erasedText);
+  // A imagem azul colocada continua na folha depois de salvar e reabrir.
+  await expect.poll(async () => (await compositeColorAt(page, 1600, 850))[0]).toBeLessThan(50);
+  await expect(page.locator(".handwriting-sticky--text textarea").first()).toHaveValue(
+    "Minha anotação pelo teclado\nSegunda linha da página",
+  );
   await page.getByRole("button", { name: "Cor da folha", exact: true }).click();
   await expect(page.getByRole("button", { name: "Escura", exact: true })).toHaveAttribute(
     "aria-pressed",
@@ -632,8 +561,8 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   let dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await dialog.getByRole("button", { name: "Adicionar post-it" }).click();
   await dialog.getByRole("textbox", { name: "Texto do post-it" }).fill("Revisar gramática");
-  await dialog.getByRole("button", { name: "Opções do post-it" }).click();
-  await dialog.getByRole("button", { name: "Cores" }).click();
+  // As ações do post-it ficam no menu "…" da barra flutuante da seleção.
+  await dialog.locator(".handwriting-selection-float__tools summary").click();
   await dialog.getByRole("button", { name: "Usar cor azul" }).click();
   await activateHandwritingPen(page);
   await expect(dialog.getByRole("complementary", { name: "Pincéis da caneta" })).toBeVisible();
@@ -641,10 +570,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await expect(dialog.getByRole("complementary", { name: "Camadas da folha" })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("postit-no-caderno.png") });
   await dialog.getByRole("button", { name: "Fechar", exact: true }).click();
-  await expect(
-    dialog.getByRole("alertdialog", { name: "Fechar folha com alterações" }),
-  ).toBeVisible();
-  await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).click();
+  // O editor fecha direto e guarda o rascunho (sem aviso de confirmação).
   await expect(dialog).not.toBeVisible();
   await openHandwritingA4(page, true);
   dialog = page.getByRole("dialog", { name: "Escrever à mão" });
@@ -654,7 +580,9 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await expect(dialog.getByRole("navigation", { name: "Folhear caderno" })).toBeVisible();
   // O editor não mostra mais um aviso de rascunho recuperado (só erros de salvamento):
   // a recuperação é provada pelo texto do post-it que voltou, acima.
-  await expect(dialog.locator(".brush-instrument")).toHaveCount(3);
+  // O painel de pincéis só aparece com as opções da caneta abertas.
+  await activateHandwritingPen(page);
+  await expect(dialog.locator(".brush-instrument")).toHaveCount(6);
   await expect
     .poll(() =>
       dialog
@@ -668,7 +596,10 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
     await dialog.getByRole("button", { name: "Opções", exact: true }).click();
   }
   await dialog.getByRole("button", { name: /Caneta-tinteiro/ }).click();
-  await dialog.getByRole("button", { name: "Régua", exact: true }).click();
+  const ruler = dialog.getByRole("button", { name: "Régua", exact: true });
+  await ruler.click();
+  // Clicar na ferramenta ativa alterna as opções dela.
+  if (!(await dialog.getByLabel("Unidades da régua").isVisible())) await ruler.click();
   await expect(dialog.getByLabel("Unidades da régua")).toBeVisible();
   await expect(dialog.getByLabel("Pincéis da caneta")).toHaveCount(0);
   await activateHandwritingPen(page);
@@ -712,7 +643,9 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   const reopened = page.getByRole("dialog", { name: "Escrever à mão" });
   const download = page.waitForEvent("download");
   await reopened.getByRole("button", { name: "Compartilhar", exact: true }).click();
-  await reopened.getByRole("button", { name: "PNG", exact: true }).click();
+  await reopened.getByRole("button", { name: "Exportar", exact: true }).click();
+  await page.getByLabel("Formato").selectOption("png");
+  await reopened.getByRole("button", { name: "Baixar", exact: true }).click();
   expect((await download).suggestedFilename()).toBe("folha-do-caderno.png");
   await reopened.getByRole("button", { name: "Fechar", exact: true }).click();
   if (await reopened.getByRole("button", { name: "Fechar e manter rascunho" }).isVisible())

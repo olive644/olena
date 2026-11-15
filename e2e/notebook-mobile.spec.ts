@@ -90,11 +90,11 @@ test("navegação escura e gavetas do caderno mantêm contraste e ações separa
   await expect(editor.locator(".handwriting-paper-options")).toHaveCount(1);
   await editor.getByRole("button", { name: "Compartilhar", exact: true }).click();
   await expect(editor.locator(".handwriting-paper-options")).toHaveCount(0);
-  await expect(editor.getByRole("button", { name: "PNG", exact: true })).toBeVisible();
-  await expect(editor.getByRole("button", { name: "Baixar PDF" })).toBeVisible();
+  await expect(editor.getByRole("button", { name: "Exportar", exact: true })).toBeVisible();
+  await expect(editor.getByRole("button", { name: "Imprimir", exact: true })).toBeVisible();
   await expect(editor.getByRole("button", { name: "Link de visualização" })).toBeVisible();
   await expect(editor.getByRole("button", { name: "Download da folha atual" })).toHaveCount(0);
   await page.screenshot({ path: info.outputPath("compartilhar-mobile.png") });
   await editor.getByRole("button", { name: "Salvar caderno" }).click();
-  await expect(editor.getByRole("button", { name: "PNG", exact: true })).toBeHidden();
+  await expect(editor.getByRole("button", { name: "Exportar", exact: true })).toBeHidden();
 });

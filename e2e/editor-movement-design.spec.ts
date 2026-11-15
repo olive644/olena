@@ -78,7 +78,8 @@ for (const pointerType of ["mouse", "pen", "touch"]) {
     const editor = page.locator(".handwriting-studio");
     const pen = page.getByRole("button", { name: "Caneta", exact: true });
     await expect(pen).toHaveAttribute("aria-pressed", "true");
-    await pen.click();
+    // Clicar na caneta ativa só alterna as opções; a tecla H troca para a mão.
+    await page.keyboard.press("h");
     await expect(pen).toHaveAttribute("aria-pressed", "false");
     await expect(editor).toHaveAttribute("data-tool", "hand");
     const canvas = editor.locator(".handwriting-canvas");
@@ -114,15 +115,28 @@ for (const pointerType of ["mouse", "pen", "touch"]) {
     await send("pointerdown", 100, 200);
     await send("pointermove", 100, 160);
     await send("pointerup", 100, 160);
-    expect(await viewport.evaluate((element) => element.scrollTop)).toBeGreaterThan(scrollBefore);
+    // O quadro abre ajustado à largura do celular e pode caber inteiro na janela. Só há o que rolar
+    // quando a folha é maior que a janela; nos dois casos a mão nunca deve desenhar nem perder a
+    // ferramenta.
+    const scrollable = await viewport.evaluate(
+      (element) => element.scrollHeight > element.clientHeight + 1,
+    );
+    if (scrollable)
+      expect(await viewport.evaluate((element) => element.scrollTop)).toBeGreaterThan(scrollBefore);
+    await expect(editor).toHaveAttribute("data-tool", "hand");
     await page.getByRole("button", { name: "Selecionar traços" }).click();
     await page.getByRole("button", { name: "Selecionar tudo", exact: true }).click();
-    await page.getByRole("button", { name: "Mover", exact: true }).click();
+    // Mover o que está selecionado não precisa de ferramenta própria.
     const formula = editor.locator(".handwriting-sticky--formula").first();
     const before = await formula.evaluate((element) => parseFloat(element.style.left));
-    await send("pointerdown", 150, 150);
-    await send("pointermove", 180, 165);
-    await send("pointerup", 180, 165);
+    // Agarra a fórmula perto do canto, longe das alças (a folha se ajusta ao celular, e a caixa fica pequena).
+    const formulaBox = (await formula.boundingBox())!;
+    const canvasBox = (await canvas.boundingBox())!;
+    const gx = formulaBox.x - canvasBox.x + formulaBox.width * 0.7;
+    const gy = formulaBox.y - canvasBox.y + formulaBox.height * 0.3;
+    await send("pointerdown", gx, gy);
+    await send("pointermove", gx + 30, gy + 15);
+    await send("pointerup", gx + 30, gy + 15);
     await expect
       .poll(() => formula.evaluate((element) => parseFloat(element.style.left)))
       .toBeGreaterThan(before);

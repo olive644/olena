@@ -5017,3 +5017,14 @@ Leitura do código de `main` (sem mexer em produção). Verificado: cabeçalhos 
 - **Descartado:** remover `style-src 'unsafe-inline'` da CSP. O React e vários componentes usam estilo inline, e o ganho é pequeno diante do risco de quebrar a interface. Fica como risco conhecido.
 - **Ações da dona do projeto (não feitas por mim):** conferir `FIREBASE_APPCHECK_ENFORCE=true` na Vercel, publicar as regras do Firebase se mudarem (não comparei o console com `firebase-room.rules.json`), ativar o relato privado de vulnerabilidades no GitHub e definir o canal de contato do `SECURITY.md`.
 - **Não verificado:** o comportamento dos novos limites em produção (precisa de conta real e dois aparelhos, como já diz o documento de compartilhamento) e a interface do botão em modo escuro e no celular.
+
+### CI da main vermelho desde o #634, 2026-11-15
+
+O #634 (editor de cadernos) entrou com o e2e desatualizado e um falso positivo do gitleaks. Conserto em uma PR própria, um teste por vez.
+
+- **Secret scan.** Falso positivo no commit `b5c0e4da`, tratado com uma entrada de fingerprint no `.gitleaksignore` (o repositório usa commit de mesclagem, não squash, por causa desse arquivo).
+- **Bug real achado pelo e2e.** O menu de Upload do editor ficava atrás da folha: só o cabeçalho aparecia e a lista de arquivos era inalcançável. A barra de comandos agora tem nível próprio (`position: relative; z-index: 6` em `src/notebook-editor.css`). No celular o painel de tipo de papel, quando aberto, ainda cobre parte do menu de Upload (limite conhecido, não novo).
+- **Testes adaptados ao editor novo** (quadro 3200 por 2400, opções abertas ao clicar na ferramenta ativa, menu "…" da barra de seleção, Compartilhar, Exportar e Baixar, uploads em lista com "Colocar na folha", espessura em milímetros, painel de pincéis com 6 pincéis, caixa de texto móvel no lugar do texto de página inteira, fecho do caderno sem o elemento `i`). `compositeColorAt` em `e2e/notebook-helpers.ts` soma todas as camadas da folha, inclusive a base com papel e imagens.
+- **Teste instável da curva.** Media a folha antes de ela se reajustar ao trocar de ferramenta. Agora escolhe a Curva e espera o tamanho estabilizar (6 de 6 execuções estáveis).
+- **Removido de propósito.** `handwriting-vertical-space.spec.ts`, porque a ferramenta "Espaço vertical" saiu do app no #634. Na seleção de tinta, a checagem do ícone da Curva passou a olhar o ícone de papel recortado.
+- **Cuidado ao testar localmente.** O Playwright reaproveita um `vite preview` antigo se já houver um rodando; reconstrua (`npm run build`) ou encerre o servidor antes de validar CSS.

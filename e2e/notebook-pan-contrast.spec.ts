@@ -20,10 +20,12 @@ for (const theme of ["light", "dark"]) {
     const picker = editor.getByRole("button", { name: "Tipo de papel", exact: true });
     if ((await picker.getAttribute("aria-expanded")) === "true") await picker.click();
     await editor.getByRole("button", { name: "Adicionar post-it", exact: true }).click();
-    const menu = editor.getByRole("button", { name: "Opções do post-it", exact: true });
+    // As ações do post-it ficam no menu "…" da barra flutuante da seleção.
+    const menu = editor.locator(".handwriting-selection-float__tools summary");
+    await expect(menu).toBeVisible();
     await expect(menu.locator("svg")).toHaveCSS(
       "color",
-      theme === "dark" ? "rgb(23, 21, 28)" : "rgb(41, 36, 50)",
+      theme === "dark" ? "rgb(203, 177, 244)" : "rgb(116, 51, 224)",
     );
     await menu.click();
     await menu.click();

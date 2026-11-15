@@ -1651,3 +1651,10 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
     grid-row: 3;
   }
 }
+
+/* O menu de Upload sai da barra de comandos e desce sobre a folha. Sem um nível próprio, a folha
+   (que vem depois no documento) o cobria e só o cabeçalho da lista de arquivos aparecia. */
+.handwriting-studio > .handwriting-commandbar {
+  position: relative;
+  z-index: 6;
+}
