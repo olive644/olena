@@ -23,7 +23,7 @@ it("mostra o ícone de adicionar na página vazia e cria somente ao clicar", () 
   );
   const next = screen.getByRole("button", { name: "Criar próxima folha" });
   expect(next.querySelector("use")?.getAttribute("href")).toBe(
-    "/navigation-icons/paper/paper-editor-icon.svg#add",
+    "/navigation-icons/paper/paper-editor-icon.svg?v=2#add",
   );
   fireEvent.click(next);
   expect(onCreate).toHaveBeenCalledOnce();
@@ -35,7 +35,7 @@ it("usa a mesma seta para avançar a uma folha existente", () => {
   );
   const next = screen.getByRole("button", { name: "Próxima folha" });
   expect(next.querySelector("use")?.getAttribute("href")).toBe(
-    "/navigation-icons/paper/paper-editor-icon.svg#redo",
+    "/navigation-icons/paper/paper-editor-icon.svg?v=2#redo",
   );
   vi.useFakeTimers();
   try {

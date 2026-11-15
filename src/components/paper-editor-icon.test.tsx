@@ -8,7 +8,7 @@ it("ajustes compartilha engrenagem facetada com oito dentes e núcleo amarelo", 
   const icon = container.querySelector('svg[data-paper-editor-icon="settings"]');
   expect(icon?.getAttribute("viewBox")).toBe("0 0 48 48");
   expect(icon?.querySelector("use")?.getAttribute("href")).toBe(
-    "/navigation-icons/paper/paper-editor-icon.svg#settings",
+    "/navigation-icons/paper/paper-editor-icon.svg?v=2#settings",
   );
   const art = new DOMParser()
     .parseFromString(
