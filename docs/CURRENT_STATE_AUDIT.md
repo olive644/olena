@@ -5018,6 +5018,14 @@ Leitura do código de `main` (sem mexer em produção). Verificado: cabeçalhos 
 - **Ações da dona do projeto (não feitas por mim):** conferir `FIREBASE_APPCHECK_ENFORCE=true` na Vercel, publicar as regras do Firebase se mudarem (não comparei o console com `firebase-room.rules.json`), ativar o relato privado de vulnerabilidades no GitHub e definir o canal de contato do `SECURITY.md`.
 - **Não verificado:** o comportamento dos novos limites em produção (precisa de conta real e dois aparelhos, como já diz o documento de compartilhamento) e a interface do botão em modo escuro e no celular.
 
+## Olena lendo em Rive ligada ao onboarding, 2026-11-14
+
+- **Problema.** O Rive da Olena lendo (`public/olena-reading/olena.riv`) entrou em 10/11 só como arquivo, gerador e verificação, sem ligação ao onboarding. A tela continuava com a imagem estática.
+- **Mudança.** `src/components/olena-reading-art.tsx` desenha a Olena nas duas telas do onboarding (a recepção e a conversa), usando o runtime Rive já vendorizado em `public/helena-assistant`, sem dependência nova. A imagem estática é o primeiro quadro, o quadro de reserva se o Rive não carregar e a única arte com movimento reduzido (nesse caso o Rive nem é buscado). O canvas passa 6,25% da imagem para cada lado, porque o quadro do Rive (720 x 720) é 12,5% maior que a arte (640 x 640). A tela mantém duas Olenas montadas (uma escondida): o Rive pausa quando a Olena não está visível.
+- **Contrato mudado.** `.onboarding__helena` passou a ser o contêiner (`span`) com a imagem e o canvas dentro, em vez de ser a própria imagem. Testes de unidade e e2e que liam o `src` agora leem `.onboarding__helena > img`.
+- **Provas.** Teste de unidade do componente (arquivo e máquina de estados certos, troca ao carregar, decorativo sem texto, movimento reduzido sem Rive) e e2e novo no desktop e no celular: o Rive carrega (`data-ready`), o canvas fica visível e a imagem some atrás dele, sem rolagem horizontal. Capturas conferidas no desktop (1280 x 800) e no celular (390 x 844); sem erros de console nem respostas 4xx.
+- **Limites.** O onboarding usa fundo creme também com o tema escuro, então não há variação de tema a validar nesta tela. Safari/WebKit e celular real não verificados. As esperas e o pulinho `clique` do Rive não são acionados pela interface: só as cinco esperas automáticas rodam.
+
 ## Conta que sai e entra de novo não volta mais ao onboarding por leitura falha, 2026-11-14
 
 - **Relato.** Uma pessoa com conta Google saiu, entrou de novo, caiu nas perguntas do onboarding e viu a conta sem os dados.

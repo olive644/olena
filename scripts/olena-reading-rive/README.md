@@ -1,8 +1,8 @@
 # Olena lendo em Rive
 
 A arte do passo 1 do onboarding (`public/helena-onboarding-step-1-cutout.webp`, 640 x 640) é
-cortada em 24 peças de papel e montada em `public/olena-reading/olena.riv`. O arquivo ainda não
-está ligado ao onboarding.
+cortada em 24 peças de papel e montada em `public/olena-reading/olena.riv`. O arquivo é usado
+pelo onboarding em `src/components/olena-reading-art.tsx`.
 
 ## Arquivos
 

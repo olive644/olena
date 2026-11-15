@@ -1,3 +1,4 @@
+import { OlenaReadingArt } from "../components/olena-reading-art";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { uiText, useLanguage, localizeLabels, changeLanguage, uiLocale } from "../i18n/runtime";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
@@ -720,9 +721,8 @@ export default function OnboardingView({
         >
           {welcomeStep !== "avatar" && (
             <>
-              <img
+              <OlenaReadingArt
                 src={ONBOARDING_OLENA}
-                alt=""
                 width={640}
                 height={640}
                 className="onboarding__helena"
@@ -1103,12 +1103,11 @@ export default function OnboardingView({
         data-finished={finished}
       >
         <div className="onboarding__stage" data-reacting={stage === "reacting"}>
-          <img
+          <OlenaReadingArt
             src={ONBOARDING_OLENA}
             alt={uiText(2019)}
             width={640}
             height={640}
-            decoding="async"
             className={talking ? "onboarding__helena is-talking" : "onboarding__helena"}
           />
         </div>

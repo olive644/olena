@@ -5,13 +5,30 @@ test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
 });
 
+test("a Olena do onboarding é animada em Rive quando o movimento não está reduzido", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/?onboarding=1");
+  const olena = page.locator(".onboarding__helena:visible");
+  await expect(olena).toHaveAttribute("data-ready", "true", { timeout: 15_000 });
+  await expect(olena.locator("canvas")).toBeVisible();
+  await expect(olena.locator("canvas")).toHaveCSS("opacity", "1");
+  // A imagem estática continua no DOM como quadro de reserva, mas some atrás do canvas.
+  await expect(olena.locator("img")).toHaveAttribute("src", /-cutout\.webp$/);
+  await expect(olena.locator("img")).toHaveCSS("opacity", "0");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
 test("conversa mantém arte aprovada e exige autenticação para concluir", async ({ page }) => {
   await page.goto("/?onboarding=1");
   // O texto existe duas vezes (versão para leitor de tela e a animada): basta uma presente.
   await expect(page.getByText("Olá! Eu sou a Olena.", { exact: true }).first()).toBeAttached();
+  // Com movimento reduzido a Olena fica só na imagem estática: o Rive nem é carregado.
+  await expect(page.locator(".onboarding__helena canvas")).toHaveCount(0);
   let source: string | null = null;
   await answerOnboarding(page, async () => {
-    const image = page.locator(".onboarding__helena:visible");
+    const image = page.locator(".onboarding__helena:visible > img");
     await expect(image).toBeVisible();
     const current = await image.getAttribute("src");
     if (source) expect(current).toBe(source);
