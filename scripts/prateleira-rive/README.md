@@ -17,7 +17,7 @@ primeiro quadro, o que sobra com movimento reduzido e o que aparece se o Rive n�
 - `generate-hera.cjs`: monta `public/olena-prateleira/hera.riv`.
 
 Refazer: `node scripts/prateleira-rive/slice-olena.cjs`, `generate-olena.cjs`, `slice-hera.cjs` e
-`generate-hera.cjs`. `OLENA_STRESS=1 OLENA_OUT=<arquivo>` acrescenta a animação `estresse` (poses
+`generate-hera.cjs`, e depois `npx prettier --write scripts/prateleira-rive` (os `layers.json` saem sem formatação; o `.riv` não muda). `OLENA_STRESS=1 OLENA_OUT=<arquivo>` acrescenta a animação `estresse` (poses
 extremas, só para verificar frestas); o arquivo publicado nunca a inclui.
 
 ## Olena dormindo (máquina `Olena`)
