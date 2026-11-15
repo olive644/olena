@@ -1726,6 +1726,9 @@ export function HandwritingStudio({
           tool: effectiveTool === "ruler" ? "pen" : effectiveTool,
           ...(effectiveTool === "pen" ? { brush } : {}),
           ...(effectiveTool === "pen" && dash ? { dash } : {}),
+          ...(effectiveTool === "pen" && event.pointerType !== "pen"
+            ? { dynamics: "simulated" as const }
+            : {}),
           ...(effectiveTool === "highlighter" ? { opacity: highlighterOpacity } : {}),
           color,
           width: activeWidth,
@@ -2580,7 +2583,11 @@ export function HandwritingStudio({
       id: strokeId(),
       tool: writingTool,
       ...(writingTool === "pen"
-        ? { brush, ...(dash ? { dash } : {}) }
+        ? {
+            brush,
+            ...(dash ? { dash } : {}),
+            ...(event.nativeEvent.pointerType !== "pen" ? { dynamics: "simulated" as const } : {}),
+          }
         : { opacity: highlighterOpacity }),
       color,
       width: writingTool === "highlighter" ? Math.min(100, width * 2.5) : width,

@@ -5081,6 +5081,20 @@ Pacote rápido de três pontos do feedback de um usuário (cruzado com o código
 - **Dobra do canto.** O triângulo de 34 px era só decoração (`::after`) e dava para escrever no canto cortado, que não é papel. As camadas da folha agora têm o mesmo recorte (`clip-path` em `.handwriting-page-shell canvas`). Teste: `e2e/handwriting-fold.spec.ts`.
 - **Fora deste pacote** (pontos 1, 2, 5 a 12 do cruzamento): ver o relatório do cruzamento; o ponto 6 (itens apagados que voltam) tem PR própria.
 
+### Traço de mouse e dedo com cara de caneta, 2026-11-15
+
+Origem: a investigação do Canva mostrou, nos scripts carregados pela página, a biblioteca perfect-freehand (pressão deduzida da velocidade e pontas que afinam). Não afirmo que a caneta do quadro branco use exatamente os parâmetros que li (`thinning 0,6`, `smoothing 0,6`, `streamline 0,5`), porque o trecho pode ser de outro recurso de desenho. O Olena não copiou código nem ganhou dependência: a regra foi escrita aqui.
+
+- **Problema.** Mouse e dedo mandam sempre a mesma pressão (0,5). O traço saía com largura uniforme e pontas chapadas, e o Fineliner era uma linha de largura constante.
+- **Regra nova** (`handwriting-ink-dynamics.ts`, funções puras): pressão simulada pela velocidade (rápido afina, devagar engrossa, faixa 0,3 a 0,8, começa em 0,5) e pontas que afinam até 25% da largura. A conta é causal, então a ponta ao vivo e o traço pronto recebem os mesmos números.
+- **Quem recebe.** Só traços novos de mouse ou dedo, marcados com `dynamics: "simulated"` ao criar (nos dois pontos de criação do estúdio). Traços antigos não têm o campo e abrem exatamente como antes. Caneta (`pointerType "pen"`) e traços com pressão real não mudam. Tracejado, borracha de fundo, marca-texto e formas ficam de fora.
+- **Fineliner.** Mouse e dedo passam a usar o contorno de largura variável, com a mesma largura média de sempre (0,65 da espessura). Caneta com pressão real segue com a linha constante.
+- **Borracha e caixa do traço** usam a mesma `strokeRadii`, então o toque acerta onde a tinta aparece.
+- **Dados.** Campo novo e opcional `dynamics` no traço; o validador do documento aceita ausente ou `"simulated"` e recusa outro valor; juntar linhas retas só une traços com a mesma marca.
+- **Prova.** Testes novos para a regra, o raio e a validação; conferi o desenho antigo contra o novo em um canvas de comparação rodando o `drawStroke` real (Fineliner, Caneta-tinteiro e Pincel macio, mão constante e lenta seguida de rápida). Larguras medidas em mão lenta e rápida: Fineliner 3,9 e 2,7 (antes 3,25), Caneta-tinteiro 8,7 e 4,6 (antes 6,5), Pincel macio 30 e 22 (antes 24).
+- **Seis pincéis da caneta.** A regra vale para os seis (Fineliner, Caneta-tinteiro, Pincel macio, Caneta de caligrafia, Esferográfica e Lápis). Em mouse e dedo a ponta afina em todos; Lápis varia mais com a velocidade que a Esferográfica; a Caligrafia depende da direção da ponta chata, então só ganha o afinamento das pontas. Sem a marca, o raio é o de sempre. As medidas de largura acima são só dos três primeiros. Registro: minha primeira leitura dos pincéis veio de uma cópia antiga e listou só três.
+- **Não verificado.** Desenhar de verdade no estúdio com mouse e com dedo em celular (só unidade e canvas de comparação), a sensação em tela e o ajuste fino das constantes (faixa de pressão, taper e velocidade de referência), que merecem teste de uso. O traço salvo guarda os pontos reais, então ajustar as constantes depois muda também os traços novos já salvos com a marca.
+
 ## Lápis pulando sobre os cadernos no modo de edição da prateleira, 15/11/2026
 
 Pedido do proprietário: ao apertar o lápis de edição da prateleira, cada caderno disponível mostra um ícone de lápis pulando acima dele, para indicar que dá para personalizar. O lápis reaproveita o `ShelfToolIcon name="pen"` (papel recortado), fica decorativo (`aria-hidden`, sem foco nem clique, o caderno continua sendo o botão) e só existe com `editing` ligado. Com "reduzir movimento" (sistema ou `data-reduce-motion`) o lápis fica parado, sem animação. Os lápis pulam com pequeno atraso entre si para não ficarem em uníssono.
