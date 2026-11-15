@@ -420,24 +420,34 @@ export function renderPage(
   };
   const drawStickiesLayer = () => {
     if (!layerVisibility.stickies) return;
+    const nightPaper = paperColor === "night";
+    const noteInk = nightPaper ? "#fff9ef" : "#17151c";
     for (const sticky of stickies) {
       if (editing && (sticky.kind === "text" || sticky.kind === "table")) continue;
       context.save();
       const width = stickyWidth(sticky);
       const height = stickyHeight(sticky);
       if (sticky.kind !== "text" || sticky.formula) {
-        context.fillStyle = "#bfb7a7";
+        context.fillStyle = nightPaper ? "#15121b" : "#bfb7a7";
         context.fillRect(sticky.x + 8, sticky.y + 9, width, height);
-        context.fillStyle = sticky.formula ? "#fff" : stickyColor(sticky.color);
+        context.fillStyle = sticky.formula
+          ? nightPaper
+            ? "#352d42"
+            : "#fff"
+          : sticky.kind === "table"
+            ? nightPaper
+              ? "#33293f"
+              : stickyColor(sticky.color)
+            : stickyColor(sticky.color, nightPaper);
         context.fillRect(sticky.x, sticky.y, width, height);
       }
-      context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? "#17151c") : "#17151c";
+      context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? noteInk) : noteInk;
       if (sticky.kind === "table") {
         const rows = sticky.cells ?? [[""]];
         const columns = rows[0]?.length ?? 1;
         const cellWidth = (width - 16) / columns;
         const cellHeight = (height - 16) / rows.length;
-        context.strokeStyle = "#17151c";
+        context.strokeStyle = nightPaper ? "#c9bfd6" : "#17151c";
         context.lineWidth = 1.4;
         context.font = `${Math.min(15, cellHeight * 0.4)}px sans-serif`;
         context.textBaseline = "top";
@@ -466,7 +476,7 @@ export function renderPage(
         context.font = "bold 16px sans-serif";
         sticky.checklist.forEach((item, index) => {
           const rowY = startY + index * rowHeight;
-          context.strokeStyle = "#17151c";
+          context.strokeStyle = noteInk;
           context.lineWidth = 2;
           context.strokeRect(sticky.x + 18, rowY + 3, 14, 14);
           if (item.done) {
@@ -476,7 +486,7 @@ export function renderPage(
             context.lineTo(sticky.x + 31, rowY + 6);
             context.stroke();
           }
-          context.fillStyle = item.done ? "#6b6570" : "#17151c";
+          context.fillStyle = item.done ? (nightPaper ? "#a69cb3" : "#6b6570") : noteInk;
           context.fillText(item.text.trim().slice(0, 32) || "Item", sticky.x + 42, rowY + 1);
         });
         context.restore();

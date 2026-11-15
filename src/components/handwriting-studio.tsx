@@ -3766,6 +3766,7 @@ export function HandwritingStudio({
           )}
           <div
             data-page-turn={pageTurn ?? undefined}
+            data-paper-color={paperColor}
             inert={pageTurn !== null}
             className={"handwriting-page-shell" + (transforming ? " is-transforming" : "")}
             style={{

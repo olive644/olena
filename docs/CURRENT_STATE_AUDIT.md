@@ -5080,3 +5080,17 @@ Pacote rápido de três pontos do feedback de um usuário (cruzado com o código
 - **Botão lateral da S Pen.** O editor só olhava `event.button === 2`. Quem segura o botão ANTES de encostar na tela gera `button 0` e `buttons 3`, caso comum na S Pen, e o botão era ignorado. Agora `isPenBarrelButton` e `isPenEraserTip` (`handwriting-pointer.ts`) leem também a máscara `buttons` (bits 2 e 32), na escrita normal e na janela de escrita. Testes: `handwriting-pointer.test.ts` e `handwriting-studio-spen.test.tsx`. **Não verificado em aparelho real:** confirmar com uma S Pen que o botão passa a funcionar, com a ação escolhida em Configurações (padrão: mão).
 - **Dobra do canto.** O triângulo de 34 px era só decoração (`::after`) e dava para escrever no canto cortado, que não é papel. As camadas da folha agora têm o mesmo recorte (`clip-path` em `.handwriting-page-shell canvas`). Teste: `e2e/handwriting-fold.spec.ts`.
 - **Fora deste pacote** (pontos 1, 2, 5 a 12 do cruzamento): ver o relatório do cruzamento; o ponto 6 (itens apagados que voltam) tem PR própria.
+
+## Post-its e tabelas escuros na folha noite, 15/11/2026
+
+Pedido do feedback de usuário (ponto 10): na folha "Escura", post-its e tabelas continuavam em tons de papel claro e destoavam. Agora, quando a cor da folha é noite, post-its amarelo, azul e lilás usam tons escuros (`#5d4f22`, `#2f4a58`, `#4a3a6b`) com texto `#fff9ef`; a tabela usa fundo `#33293f`, grade clara e texto claro. A regra vale no editor (CSS por `data-paper-color` no `.handwriting-page-shell`, em `src/notebook-editor.css`) e no desenho do canvas usado em miniatura, exportação e impressão (`renderPage`, `stickyColor(color, dark)`). Folhas clara e envelhecida não mudam.
+
+- Provas: `src/components/handwriting-canvas-table.test.ts` (cores usadas no canvas, claro e noite) e `e2e/notebook-night-sticky.spec.ts` (cores calculadas no DOM, PC e celular, ida e volta entre noite e clara). Captura conferida no PC.
+- Limites: modo claro e escuro do app não mudam este desenho, pois a cor depende só da folha. Contraste conferido por tons, sem medição automática de razão. Não verificado em aparelho real.
+
+## Caderno vazio sem folha falsa na esquerda, 15/11/2026
+
+Pedido do feedback (ponto 5): no caderno sem folhas, a página da esquerda mostrava um papel pautado que parecia existir, ao lado de "Criar primeira folha". Agora, com o caderno aberto e sem páginas, a esquerda vira a guarda do caderno (mesmo acabamento do lado direito, `.notebook-endpaper`) com uma fita roxa marcadora (`.notebook-endpaper-ribbon`). O papel pautado continua só na miniatura compacta (`compactPreview`), onde não é clicável.
+
+- Prova: `e2e/notebook-empty-endpaper.spec.ts` (nenhum `.notebook-empty-paper` no par de páginas, fita roxa mais alta que larga; PC e celular). Captura conferida no PC.
+- Limite: não verificado no modo escuro do app nem em aparelho real; a guarda usa cores fixas de papel.
