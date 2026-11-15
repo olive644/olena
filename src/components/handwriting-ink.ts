@@ -1,5 +1,6 @@
 import type { HandwritingPoint } from "../domain/handwriting";
 import type { Stroke } from "./handwriting-types";
+import { simulatedPressures, taperFactors, usesSimulatedWidth } from "./handwriting-ink-dynamics";
 
 // Motor de traço: transforma os pontos da caneta em um contorno de largura
 // variável desenhado com um único preenchimento. Desenhar cada segmento com seu
@@ -10,7 +11,7 @@ import type { Stroke } from "./handwriting-types";
 type Vec = { x: number; y: number };
 type InkDisc = { x: number; y: number; r: number };
 export type StrokeOutline = { left: Vec[]; right: Vec[]; discs: InkDisc[] };
-type InkStroke = Pick<Stroke, "tool" | "brush" | "width">;
+type InkStroke = Pick<Stroke, "tool" | "brush" | "width" | "dash" | "cover" | "dynamics">;
 
 // Distância (em unidades da folha) em que a largura alcança ~63% do alvo. Suaviza
 // degraus de pressão e de ângulo sem borrar a diferença entre traço fino e grosso.
@@ -36,8 +37,16 @@ function nibAngle(point: HandwritingPoint): number {
 }
 
 // Diâmetro que o pincel pede para um ponto, antes da suavização ao longo do traço.
-function targetDiameter(stroke: InkStroke, point: HandwritingPoint, direction: number): number {
-  const pressure = stroke.tool === "pen" ? point.pressure : 0.7;
+function targetDiameter(
+  stroke: InkStroke,
+  point: HandwritingPoint,
+  direction: number,
+  simulated?: number,
+): number {
+  const pressure = stroke.tool === "pen" ? (simulated ?? point.pressure) : 0.7;
+  // Fineliner de mouse ou dedo: a mesma largura média de sempre (0,65), que varia com a velocidade.
+  if (simulated !== undefined && stroke.brush === "fine")
+    return stroke.width * 0.65 * (0.55 + 0.9 * pressure);
   if (stroke.brush === "ballpoint") return stroke.width * (0.45 + pressure * 0.35);
   if (stroke.brush === "pencil") return stroke.width * (0.3 + pressure * 0.9);
   if (stroke.brush === "calligraphy") {
@@ -60,6 +69,12 @@ function targetDiameter(stroke: InkStroke, point: HandwritingPoint, direction: n
 export function strokeRadii(stroke: InkStroke, points: readonly HandwritingPoint[]): number[] {
   const radii: number[] = [];
   let previous = 0;
+  // Mouse e dedo: a pressão sai da velocidade e as pontas afinam. Caneta com pressão real fica
+  // como sempre foi.
+  const simulated = usesSimulatedWidth({ ...stroke, points })
+    ? simulatedPressures(points, Math.max(6, stroke.width * 2.2))
+    : undefined;
+  const taper = simulated ? taperFactors(points, Math.max(12, stroke.width * 4)) : undefined;
   for (let index = 0; index < points.length; index += 1) {
     const point = points[index]!;
     const before = points[index - 1] ?? point;
@@ -67,7 +82,8 @@ export function strokeRadii(stroke: InkStroke, points: readonly HandwritingPoint
     const dx = after.x - before.x;
     const dy = after.y - before.y;
     const direction = dx === 0 && dy === 0 ? Math.PI / 4 : Math.atan2(dy, dx);
-    const target = targetDiameter(stroke, point, direction) / 2;
+    const target =
+      (targetDiameter(stroke, point, direction, simulated?.[index]) * (taper?.[index] ?? 1)) / 2;
     let radius = target;
     if (index > 0) {
       const gap = Math.hypot(point.x - before.x, point.y - before.y);

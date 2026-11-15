@@ -20,6 +20,7 @@ const sameStyle = (a: Stroke, b: Stroke) =>
   a.width === b.width &&
   a.brush === b.brush &&
   a.dash === b.dash &&
+  a.dynamics === b.dynamics &&
   !a.cover &&
   !b.cover;
 

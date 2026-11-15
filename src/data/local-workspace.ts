@@ -403,6 +403,7 @@ export function isHandwritingDocument(value: unknown): boolean {
       (stroke["dash"] === undefined ||
         stroke["dash"] === "dashed" ||
         stroke["dash"] === "dotted") &&
+      (stroke["dynamics"] === undefined || stroke["dynamics"] === "simulated") &&
       (stroke["cover"] === undefined || stroke["cover"] === true) &&
       isString(stroke["color"]) &&
       /^#[0-9a-f]{6}$/i.test(stroke["color"]) &&

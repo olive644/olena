@@ -1,6 +1,7 @@
 import type { HandwritingPoint } from "../domain/handwriting";
 import type { Stroke } from "./handwriting-types";
 import { strokeRadii } from "./handwriting-ink";
+import { usesSimulatedWidth } from "./handwriting-ink-dynamics";
 
 type Interval = [number, number];
 const EPSILON = 1e-7;
@@ -121,7 +122,7 @@ export function eraseStrokeArea(
   const radii =
     stroke.tool === "highlighter" || stroke.cover
       ? stroke.points.map(() => stroke.width / 2)
-      : stroke.brush === "fine" || stroke.dash
+      : (stroke.brush === "fine" && !usesSimulatedWidth(stroke)) || stroke.dash
         ? stroke.points.map(() => (stroke.width * 0.65) / 2)
         : strokeRadii(stroke, stroke.points);
   const fragments: HandwritingPoint[][] = [];

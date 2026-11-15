@@ -1,5 +1,6 @@
 import { pageTextLines } from "../domain/handwriting";
 import { strokeRadii } from "./handwriting-ink";
+import { usesSimulatedWidth } from "./handwriting-ink-dynamics";
 import type {
   HandwritingCoordinateSystem,
   HandwritingImage,
@@ -79,7 +80,7 @@ export function strokeInkBounds(stroke: Stroke): SelectionBox {
   const radii =
     stroke.tool === "highlighter" || stroke.cover
       ? [stroke.width / 2]
-      : stroke.brush === "fine" || stroke.dash
+      : (stroke.brush === "fine" && !usesSimulatedWidth(stroke)) || stroke.dash
         ? [stroke.width * 0.325]
         : strokeRadii(stroke, stroke.points);
   const padding = radii.reduce((largest, next) => Math.max(largest, next), 0);

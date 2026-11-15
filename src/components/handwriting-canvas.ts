@@ -22,6 +22,7 @@ import {
   traceOutline,
 } from "./handwriting-ink";
 import { stickyTextLayout } from "./sticky-text-layout";
+import { usesSimulatedWidth } from "./handwriting-ink-dynamics";
 import { drawPlannerPaper } from "./handwriting-planner-paper";
 import { drawCornellPaper, drawStaffPaper } from "./handwriting-template-paper";
 
@@ -268,7 +269,11 @@ export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
   }
   // Linha tracejada ou pontilhada usa sempre a espessura constante: o contorno de largura
   // variável dos outros pincéis é preenchido e não aceita padrão de traço.
-  if (stroke.tool === "highlighter" || stroke.brush === "fine" || stroke.dash) {
+  if (
+    stroke.tool === "highlighter" ||
+    (stroke.brush === "fine" && !usesSimulatedWidth(stroke)) ||
+    stroke.dash
+  ) {
     context.lineWidth = stroke.tool === "highlighter" ? stroke.width : stroke.width * 0.65;
     if (stroke.dash) context.setLineDash(dashPattern(stroke.dash, context.lineWidth));
     context.beginPath();
