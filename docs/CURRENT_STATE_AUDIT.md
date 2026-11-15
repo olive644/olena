@@ -5147,3 +5147,26 @@ Defeito relatado pelo proprietário: o anel que mostra a área da borracha (feit
 - Correção: `eraserCursorRef` guarda a posição da borracha durante o gesto (no toque inicial e a cada movimento) e `paintLive()` desenha o anel nela. Ao soltar, mouse e caneta continuam com o anel onde a borracha parou (voltam ao estado de pairar); o dedo não paira, então o anel some. O anel durante o gesto respeita a preferência "prévia ao pairar", como o anel de pairar. No `pointerup` evita-se um quadro intermediário com o anel.
 - Provas: `e2e/handwriting-eraser-ring.spec.ts` agora aperta e arrasta o mouse e confere que o anel continua desenhado e centrado onde a borracha está (e não parado no ponto inicial); sem a correção ele falha (0 pixels). `handwriting-studio-hover.test.tsx`: o teste antigo afirmava o comportamento com defeito ("o anel some ao começar a apagar") e foi trocado por três (anel ao apertar e ao mover, e depois de soltar com a caneta; dedo some ao soltar; preferência desligada não mostra).
 - Limites: não verificado com S Pen real nem em aparelho de toque. Janela de escrita ampliada não tem anel (apaga em outra área, fora deste ajuste).
+
+## Investigação do lag da caneta e menos camadas na composição, 15/11/2026
+
+Ponto 1 do feedback ("a caneta parece atrasada"). Em vez de supor, medi o caminho do traço no app real: um traço senoidal longo (900 amostras, 2 por quadro como uma caneta de 120 Hz, disparado de dentro da página) e o intervalo entre quadros.
+
+**O que a medição mostrou**
+
+- O JavaScript por quadro de pintura da camada ao vivo custa ~0,2 ms e não cresce com o comprimento do traço (primeiro terço 0,23 ms, último 0,25 ms). Redesenhar o traço inteiro a cada quadro, o filtro de suavização e a previsão da ponta não são o gargalo. Também descartei o tamanho do bitmap por si só (uma página limpa com quatro canvases do tamanho da folha roda a 16,7 ms por quadro, com limpeza total ou parcial, `will-change`, bitmap menor ou `desynchronized`) e o `border-radius`.
+- O custo estava em quantos canvases do tamanho da folha ficam empilhados na composição. A folha tem seis (base, coordenadas, texto, tinta confirmada, seleção e camada ao vivo); cada um custou ~4 a 6 ms por quadro. Isolando: só base e camada ao vivo deram 18,1 ms (60 fps); com tudo, 42 a 48 ms.
+- O `clip-path` do canto dobrado, que eu pus em todos os canvases na PR #641, custava sozinho ~9 a 12 ms por quadro. Foi uma regressão minha.
+
+**O que mudou**
+
+- `clip-path` só no canvas que recebe o toque (`.handwriting-page-shell > .handwriting-canvas`): é nele que o triângulo cortado precisa recusar o toque. As outras camadas não recebem toque e o canto delas já é coberto pela dobra.
+- Camadas sem nada para mostrar saem da composição (`display: none`): coordenadas sem sistemas, texto sem texto e seleção sem seleção, caixa, laço nem guias. A tinta confirmada fica sempre visível porque o traço é desenhado direto nela ao soltar a caneta; esconder poderia piscar um quadro sem tinta.
+- Resultado no mesmo teste: intervalo médio de 42,6 a 47,9 ms para 19,5 a 21,2 ms (mediana 41 a 43 para 18,4 a 19,5; quadros acima de 33 ms de 449 em 449 para 6 a 9).
+- Prova: `e2e/handwriting-layer-cost.spec.ts` (folha em branco tem só 3 canvases visíveis, escrever não acorda camadas, selecionar traz a camada de seleção, `clip-path` só no canvas de toque; falha sem a correção com 3 camadas extras). Os e2e da dobra seguem verdes.
+
+**Limites (importante)**
+
+- O navegador desta máquina renderiza por software, então os milissegundos absolutos são piores que os de um tablet com GPU; vale a comparação antes e depois, não o valor. **Não medi em aparelho real nem com S Pen.** A confirmação real é abrir uma folha no tablet e comparar a sensação de escrever.
+- Eventos sintéticos não trazem pontos previstos nem amostras agrupadas, então a previsão da ponta não entrou na medição.
+- Ainda há ~20 ms contra o ideal de 16,7 ms, e a camada de tinta confirmada continua sendo um canvas de folha inteira. Ideias que não medi e não implementei: `desynchronized` no canvas ao vivo (ajuda em Chrome com caneta, sem efeito em Safari e Firefox), reduzir a resolução das camadas de cena e juntar camadas.
