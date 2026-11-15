@@ -5087,3 +5087,17 @@ Pedido do proprietário: ao apertar o lápis de edição da prateleira, cada cad
 
 - Prova: `e2e/notebook-shelf-edit-hint.spec.ts` (um lápis por caderno, acima e centralizado na lombada, animação ligada, sem animação com reduzir movimento, nenhum lápis fora da edição; PC e celular). Captura conferida no PC com tema escuro.
 - Limites: lápis fixo de 30px; com muitos cadernos juntos pode encostar na placa de nome da prateleira (não medido). Não verificado em aparelho real.
+
+## Post-its e tabelas escuros na folha noite, 15/11/2026
+
+Pedido do feedback de usuário (ponto 10): na folha "Escura", post-its e tabelas continuavam em tons de papel claro e destoavam. Agora, quando a cor da folha é noite, post-its amarelo, azul e lilás usam tons escuros (`#5d4f22`, `#2f4a58`, `#4a3a6b`) com texto `#fff9ef`; a tabela usa fundo `#33293f`, grade clara e texto claro. A regra vale no editor (CSS por `data-paper-color` no `.handwriting-page-shell`, em `src/notebook-editor.css`) e no desenho do canvas usado em miniatura, exportação e impressão (`renderPage`, `stickyColor(color, dark)`). Folhas clara e envelhecida não mudam.
+
+- Provas: `src/components/handwriting-canvas-table.test.ts` (cores usadas no canvas, claro e noite) e `e2e/notebook-night-sticky.spec.ts` (cores calculadas no DOM, PC e celular, ida e volta entre noite e clara). Captura conferida no PC.
+- Limites: modo claro e escuro do app não mudam este desenho, pois a cor depende só da folha. Contraste conferido por tons, sem medição automática de razão. Não verificado em aparelho real.
+
+## Caderno vazio sem folha falsa na esquerda, 15/11/2026
+
+Pedido do feedback (ponto 5): no caderno sem folhas, a página da esquerda mostrava um papel pautado que parecia existir, ao lado de "Criar primeira folha". Agora, com o caderno aberto e sem páginas, a esquerda vira a guarda do caderno (mesmo acabamento do lado direito, `.notebook-endpaper`) com uma fita roxa marcadora (`.notebook-endpaper-ribbon`). O papel pautado continua só na miniatura compacta (`compactPreview`), onde não é clicável.
+
+- Prova: `e2e/notebook-empty-endpaper.spec.ts` (nenhum `.notebook-empty-paper` no par de páginas, fita roxa mais alta que larga; PC e celular). Captura conferida no PC.
+- Limite: não verificado no modo escuro do app nem em aparelho real; a guarda usa cores fixas de papel.

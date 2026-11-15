@@ -1732,3 +1732,40 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
   color: #237e72;
   --editor-icon-facet: #61c5a9;
 }
+
+/* Folha noite: post-its e tabelas ganham tons escuros com texto claro, como no desenho do canvas. */
+.handwriting-page-shell[data-paper-color="night"] .handwriting-sticky {
+  color: #fff9ef;
+  border-color: rgb(255 249 239 / 22%);
+  box-shadow: 3px 5px 0 rgb(8 6 12 / 60%);
+}
+.handwriting-page-shell[data-paper-color="night"] .handwriting-sticky--yellow {
+  background: #5d4f22;
+}
+.handwriting-page-shell[data-paper-color="night"] .handwriting-sticky--blue {
+  background: #2f4a58;
+}
+.handwriting-page-shell[data-paper-color="night"] .handwriting-sticky--lilac {
+  background: #4a3a6b;
+}
+.handwriting-page-shell[data-paper-color="night"] .handwriting-sticky--table {
+  background: #33293f;
+  border-color: #6d5f78;
+  box-shadow: 3px 5px 0 rgb(8 6 12 / 60%);
+}
+.handwriting-page-shell[data-paper-color="night"]
+  .handwriting-sticky--table
+  .handwriting-sticky__table-grid {
+  border-color: #6d5f78;
+  background: #292432;
+}
+.handwriting-page-shell[data-paper-color="night"] .handwriting-sticky__table td {
+  border-color: #6d5f78;
+}
+.handwriting-page-shell[data-paper-color="night"] .handwriting-sticky textarea,
+.handwriting-page-shell[data-paper-color="night"] .handwriting-sticky__drag-hint {
+  color: #fff9ef;
+}
+.handwriting-page-shell[data-paper-color="night"] .handwriting-sticky__resize {
+  color: #fff9ef;
+}
