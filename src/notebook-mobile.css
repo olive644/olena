@@ -94,8 +94,40 @@
     box-shadow: none;
     z-index: 8;
   }
+  /* "+" de chamar amigos e X de sair ficam na barra de cima, ao lado das ferramentas de arquivo.
+     Os botões encolhem em telas estreitas para os seis caberem na mesma linha. */
+  :root .handwriting-studio .handwriting-commandbar > .capture-header-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 58px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 6px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    z-index: 9;
+  }
+  :root .handwriting-studio .handwriting-commandbar > .capture-header-actions button {
+    min-width: 0;
+    width: clamp(30px, 9.5vw, 40px);
+    padding: 4px;
+  }
+  :root
+    .capture-dialog--handwriting
+    .handwriting-studio
+    .handwriting-commandbar
+    > .notebook-file-tools {
+    left: 116px;
+    right: calc(2 * clamp(30px, 9.5vw, 40px) + 15px);
+    width: calc(100% - 116px - 2 * clamp(30px, 9.5vw, 40px) - 15px);
+    box-sizing: border-box;
+  }
   :root .handwriting-studio .notebook-file-tools > button {
-    min-width: 40px;
+    flex: 0 1 40px;
+    min-width: 26px;
     width: 40px;
     padding: 5px;
   }
@@ -382,16 +414,6 @@
 }
 
 @media (max-width: 680px) {
-  .notebook-mobile-dock .capture-header-actions {
-    position: static;
-    display: flex;
-    gap: 4px;
-    min-width: 0;
-  }
-  .notebook-mobile-dock .capture-header-actions button {
-    min-width: 44px;
-    padding: 4px;
-  }
   .notebook-mobile-dock {
     gap: 4px;
     flex-wrap: nowrap;
@@ -411,9 +433,6 @@
     white-space: nowrap;
   }
   :root .notebook-mobile-dock > button[aria-label] {
-    flex: none;
-  }
-  :root .notebook-mobile-dock .capture-header-actions {
     flex: none;
   }
 }
