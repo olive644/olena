@@ -7,10 +7,14 @@ export async function activateHandwritingPen(page: Page) {
   const options = editor.getByRole("button", { name: "Opções", exact: true });
   if ((await options.isVisible()) && (await options.getAttribute("aria-expanded")) !== "true")
     await options.click();
-  if (!(await editor.getByRole("button", { name: "Tinta Roxo", exact: true }).isVisible())) {
+  // O sinal de painel aberto é a tinta DENTRO do painel de opções: a barra de cores rápidas
+  // também tem "Tinta Roxo" e fica sempre visível com a caneta.
+  const panelInk = editor
+    .locator(".handwriting-ink-options")
+    .getByRole("button", { name: "Tinta Roxo", exact: true });
+  if (!(await panelInk.isVisible())) {
     await pen.click();
-    if (!(await editor.getByRole("button", { name: "Tinta Roxo", exact: true }).isVisible()))
-      await pen.click();
+    if (!(await panelInk.isVisible())) await pen.click();
   }
 }
 
