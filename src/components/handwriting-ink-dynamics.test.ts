@@ -175,3 +175,31 @@ describe("validação do documento", () => {
     expect(isHandwritingDocument(document("outra"))).toBe(false);
   });
 });
+
+describe("todos os pincéis da caneta", () => {
+  const points = line(60, 4);
+  const brushes = ["fine", "ink", "soft", "calligraphy", "ballpoint", "pencil"] as const;
+
+  it.each(brushes)("%s: a ponta afina no traço de mouse", (brush) => {
+    const radii = strokeRadii({ tool: "pen", brush, width: 5, dynamics: "simulated" }, points);
+    expect(radii[0]!).toBeLessThan(radii[30]! * 0.7);
+    expect(radii.at(-1)!).toBeLessThan(radii[30]! * 0.7);
+  });
+
+  it.each(brushes)("%s: sem a marca o raio é o de sempre, igual em todo o traço", (brush) => {
+    if (brush === "calligraphy" || brush === "ink") return; // dependem da direção, não só da pressão
+    const radii = strokeRadii({ tool: "pen", brush, width: 5 }, points);
+    expect(new Set(radii.map((r) => r.toFixed(6))).size).toBe(1);
+  });
+
+  it("lápis varia mais com a velocidade que a esferográfica", () => {
+    const slow = line(60, 0.8);
+    const fast = line(60, 12);
+    const spread = (brush: "pencil" | "ballpoint") => {
+      const mark = { tool: "pen", brush, width: 5, dynamics: "simulated" } as const;
+      return strokeRadii(mark, slow)[40]! / strokeRadii(mark, fast)[40]!;
+    };
+    expect(spread("pencil")).toBeGreaterThan(spread("ballpoint"));
+    expect(spread("ballpoint")).toBeGreaterThan(1);
+  });
+});
