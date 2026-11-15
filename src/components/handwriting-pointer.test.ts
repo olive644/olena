@@ -17,3 +17,25 @@ it("funciona sem eventos agrupados e não duplica a última amostra", () => {
   Object.defineProperty(event, "getCoalescedEvents", { value: () => [event] });
   expect(pointerSamples(event)).toEqual([event]);
 });
+
+import { isPenBarrelButton, isPenEraserTip } from "./handwriting-pointer";
+
+it("o botão lateral vale quando apertado antes de encostar (button 0, buttons 3) e durante o toque", () => {
+  // S Pen com o botão segurado antes do toque: o navegador manda button 0 e buttons = 1 + 2.
+  expect(isPenBarrelButton({ pointerType: "pen", button: 0, buttons: 3 })).toBe(true);
+  expect(isPenBarrelButton({ pointerType: "pen", button: 2, buttons: 2 })).toBe(true);
+  expect(isPenBarrelButton({ pointerType: "pen", button: 0, buttons: 1 })).toBe(false);
+});
+
+it("a ponta de borracha vale por button 5 ou pela máscara de botões 32", () => {
+  expect(isPenEraserTip({ pointerType: "pen", button: 5, buttons: 32 })).toBe(true);
+  expect(isPenEraserTip({ pointerType: "pen", button: 0, buttons: 33 })).toBe(true);
+  expect(isPenEraserTip({ pointerType: "pen", button: 0, buttons: 1 })).toBe(false);
+});
+
+it("mouse e toque nunca contam como botões da caneta", () => {
+  for (const pointerType of ["mouse", "touch"]) {
+    expect(isPenBarrelButton({ pointerType, button: 2, buttons: 2 })).toBe(false);
+    expect(isPenEraserTip({ pointerType, button: 5, buttons: 32 })).toBe(false);
+  }
+});

@@ -4669,6 +4669,12 @@ body.local-room-active {
   pointer-events: none;
 }
 
+/* O canto de cima à direita é cortado (a dobra desenhada acima). As camadas da folha seguem a mesma
+   forma: sem isso dava para escrever no triângulo cortado, que não faz parte do papel. */
+.handwriting-page-shell canvas {
+  clip-path: polygon(0 0, calc(100% - 34px) 0, 100% 34px, 100% 100%, 0 100%);
+}
+
 .handwriting-canvas {
   display: block;
   width: 100%;
