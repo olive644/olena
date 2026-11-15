@@ -186,25 +186,16 @@
   border: 1px solid #ded3bf;
   border-radius: 2px 3px 8px 3px;
 }
+/* Fita marcadora saindo do bolso. Antes era um cartão claro que parecia uma folha que não existe. */
 .notebook-endpaper-card {
   position: absolute;
   bottom: 10%;
-  left: 16%;
-  width: 66%;
-  height: 24%;
-  background: #fff9ef;
-  border: 1px solid #d5ccba;
-  transform: rotate(-5deg);
-  box-shadow: 2px 2px #d5ccba;
-}
-.notebook-endpaper-card::before {
-  content: "";
-  position: absolute;
-  top: 12%;
-  left: 10%;
-  width: 22%;
-  height: 5px;
+  left: 62%;
+  width: 11%;
+  height: 30%;
   background: #a779ef;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 84%, 0 100%);
+  box-shadow: inset -3px 0 #7433e0;
 }
 .notebook-endpaper-pocket {
   position: absolute;
