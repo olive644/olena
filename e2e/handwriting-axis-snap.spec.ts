@@ -20,7 +20,7 @@ test("segurar a caneta parada: reta quase reta encaixa no eixo e retângulo gira
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await activateHandwritingPen(page);
-  const sheet = dialog.locator(".handwriting-viewport canvas").first();
+  const sheet = dialog.locator(".handwriting-committed-ink");
   await sheet.scrollIntoViewIfNeeded();
   const box = (await sheet.boundingBox())!;
   const view = (await dialog.locator(".handwriting-viewport").boundingBox())!;

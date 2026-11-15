@@ -44,15 +44,12 @@ for (const theme of ["light", "dark"]) {
         .getByRole("button", { name: "Traço Forte", exact: true })
         .locator(".ink-selection-mark"),
     ).toHaveCSS("opacity", "0");
-    for (const [label, icon] of [
-      ["Curva", "curve"],
-      ["Espaço vertical", "space"],
-    ]) {
-      const button = dialog.getByRole("button", { name: label, exact: true });
-      await button.click();
-      await expect(button.locator(`[data-paper-object="${icon}"]`)).toBeVisible();
-      await expect(button).toHaveAttribute("aria-pressed", "true");
-    }
+    // A ferramenta Curva usa o ícone de papel recortado (a ferramenta "Espaço vertical" foi removida).
+    const curve = dialog.getByRole("button", { name: "Curva", exact: true });
+    await curve.click();
+    await expect(curve.locator('use[href*="notebook-tool-curve.svg"]')).toHaveCount(1);
+    await expect(curve.locator("svg").first()).toBeVisible();
+    await expect(curve).toHaveAttribute("aria-pressed", "true");
     await dialog.screenshot({ path: info.outputPath(`ink-selection-${theme}.png`) });
   });
 }

@@ -62,9 +62,11 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   await page.screenshot({ path: testInfo.outputPath("abertura.png") });
   await expect(page.locator(".notebook-journey-book > .notebook-journey-clasp")).toHaveCount(1);
   await expect(page.locator(".notebook-journey-clasp")).toHaveCSS("transform-style", "preserve-3d");
-  await expect(page.locator(".notebook-journey-clasp i")).toHaveCSS(
+  // O fecho é uma peça só (o fio dourado é o filho b): fica visível dos dois lados da capa.
+  await expect(page.locator(".notebook-journey-clasp .book-cover__clasp-edge")).toHaveCount(1);
+  await expect(page.locator(".notebook-journey-clasp")).toHaveCSS(
     "backface-visibility",
-    "hidden",
+    "visible",
   );
   const clasp = await page.locator(".notebook-journey-clasp").boundingBox();
   const carrier = await page.locator(".notebook-journey").boundingBox();

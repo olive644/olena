@@ -28,3 +28,10 @@ fecdc123f530934f8f842f7b622a4b9aa1ee23a1:firebase-room.rules.json:generic-api-ke
 8b539201f2786ac4b084ebb70f10f5fee2fe632a:firebase-room.rules.json:generic-api-key:44
 # Base64url storage key for notebook shortcuts, not a credential.
 dfcc734d2796fdc4e2412626bb7dd63342712070:firebase-room.rules.json:generic-api-key:44
+
+# Falso positivo conhecido do gitleaks: a lista de nomes de chave sincronizados (codificados em
+# base64) na allowlist de users/$uid das regras do Firebase, não um segredo. Os nomes saem de
+# SYNCED_STORAGE_KEYS e são públicos no código. A impressão digital é do commit da PR 634, que
+# alterou a linha e continua no histórico da branch (não pode ser reescrito). Exceção limitada
+# à ocorrência, sem ignorar o arquivo.
+b5c0e4da53861b71e3640ca53b64adf4c67a7161:firebase-room.rules.json:generic-api-key:44

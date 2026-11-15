@@ -35,7 +35,7 @@ test("o traço em andamento fica na camada ao vivo e vai para a folha ao soltar"
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await activateHandwritingPen(page);
-  const sheet = dialog.locator(".handwriting-viewport canvas").first();
+  const sheet = dialog.locator(".handwriting-committed-ink");
   const live = dialog.locator(".handwriting-live-layer");
   await sheet.scrollIntoViewIfNeeded();
   const box = (await sheet.boundingBox())!;
@@ -87,7 +87,7 @@ test("a camada ao vivo mostra o traço inteiro de novo a cada quadro, sem falhas
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await activateHandwritingPen(page);
   await dialog.getByRole("button", { name: /Pincel macio/ }).click();
-  const sheet = dialog.locator(".handwriting-viewport canvas").first();
+  const sheet = dialog.locator(".handwriting-committed-ink");
   const live = dialog.locator(".handwriting-live-layer");
   await sheet.scrollIntoViewIfNeeded();
   const box = (await sheet.boundingBox())!;
@@ -120,7 +120,12 @@ test("a camada ao vivo mostra o traço inteiro de novo a cada quadro, sem falhas
     const target = element as HTMLCanvasElement;
     const { data } = target.getContext("2d")!.getImageData(0, 0, target.width, target.height);
     let darkest = 255;
-    for (let index = 0; index < data.length; index += 4) darkest = Math.min(darkest, data[index]!);
+    // A camada confirmada é transparente: mede o tom do traço já composto sobre o papel claro.
+    for (let index = 0; index < data.length; index += 4) {
+      const alpha = data[index + 3]!;
+      if (alpha > 0)
+        darkest = Math.min(darkest, (data[index]! * alpha + 255 * (255 - alpha)) / 255);
+    }
     return darkest;
   });
   // O pincel macio é translúcido: a opacidade máxima na camada não passa da soma de
