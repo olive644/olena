@@ -197,7 +197,7 @@ describe("anel da borracha ao pairar", () => {
     expect(spies.drawEraserPreview).toHaveBeenCalledTimes(1);
   });
 
-  it("o anel some ao começar a apagar e respeita a preferência de prévia", () => {
+  it("o anel continua visível enquanto se apaga e depois de soltar", () => {
     const canvas = renderStudio();
     chooseEraser();
     fireEvent.pointerMove(canvas, {
@@ -207,7 +207,6 @@ describe("anel da borracha ao pairar", () => {
       clientY: 300,
       pointerId: 1,
     });
-    expect(spies.drawEraserPreview).toHaveBeenCalledTimes(1);
     fireEvent.pointerDown(canvas, {
       pointerType: "pen",
       button: 0,
@@ -215,7 +214,65 @@ describe("anel da borracha ao pairar", () => {
       clientY: 300,
       pointerId: 1,
     });
+    // Ao apertar, o anel já aparece no ponto do toque.
+    expect(spies.drawEraserPreview).toHaveBeenCalled();
     spies.drawEraserPreview.mockClear();
+    fireEvent.pointerMove(canvas, {
+      pointerType: "pen",
+      buttons: 1,
+      clientX: 210,
+      clientY: 300,
+      pointerId: 1,
+    });
+    // Apagando, o anel acompanha a borracha em vez de sumir.
+    expect(spies.drawEraserPreview).toHaveBeenCalled();
+    const [, point] = spies.drawEraserPreview.mock.calls.at(-1)!;
+    expect(point.x).toBeGreaterThan(200);
+    spies.drawEraserPreview.mockClear();
+    fireEvent.pointerUp(canvas, {
+      pointerType: "pen",
+      button: 0,
+      clientX: 210,
+      clientY: 300,
+      pointerId: 1,
+    });
+    // A caneta continua pairando onde soltou: o anel fica.
+    expect(spies.drawEraserPreview).toHaveBeenCalled();
+  });
+
+  it("com o dedo o anel some ao soltar, e a preferência de prévia desliga o anel ao apagar", () => {
+    const canvas = renderStudio();
+    chooseEraser();
+    fireEvent.pointerDown(canvas, {
+      pointerType: "touch",
+      button: 0,
+      clientX: 200,
+      clientY: 300,
+      pointerId: 2,
+    });
+    spies.drawEraserPreview.mockClear();
+    fireEvent.pointerUp(canvas, {
+      pointerType: "touch",
+      button: 0,
+      clientX: 200,
+      clientY: 300,
+      pointerId: 2,
+    });
+    // O dedo não paira: depois de soltar não há anel.
+    expect(spies.drawEraserPreview).not.toHaveBeenCalled();
+  });
+
+  it("sem a prévia ao pairar, apagar também não mostra o anel", () => {
+    localStorage.setItem(NOTEBOOK_PREFERENCES_KEY, JSON.stringify({ penHoverPreview: false }));
+    const canvas = renderStudio();
+    chooseEraser();
+    fireEvent.pointerDown(canvas, {
+      pointerType: "pen",
+      button: 0,
+      clientX: 200,
+      clientY: 300,
+      pointerId: 1,
+    });
     fireEvent.pointerMove(canvas, {
       pointerType: "pen",
       buttons: 1,
