@@ -5062,3 +5062,12 @@ O #634 (editor de cadernos) entrou com o e2e desatualizado e um falso positivo d
 - **Causa da prateleira.** A hera ocupa as laterais e os cadernos começavam por baixo dela. Correção em `src/views/notebook-shelf.css`: no celular a fileira começa depois da hera e rola na horizontal se não couber.
 - **Provas.** `e2e/notebook-mobile-fit.spec.ts` (celular): barra com 411, 360 e 320 px e fonte maior, e prateleira com três cadernos. Falha sem a correção e passa com ela. A barra de cima é conferida com 411, 360 e 320 px.
 - **Limite.** Validado em emulação de celular; não foi testado num aparelho Android real nem com a escala de fonte do sistema (simulada com fonte maior na barra).
+
+### Feedback de usuário: borracha, S Pen e dobra da folha, 2026-11-15
+
+Pacote rápido de três pontos do feedback de um usuário (cruzado com o código antes de mexer).
+
+- **Anel da borracha ao pairar.** A prévia ao pairar existia só para caneta e marca-texto. Agora a borracha desenha um anel (contorno claro por fora e escuro tracejado por dentro, sem preencher) do tamanho exato da área apagada (raio `eraserWidth * 3`, limitado a 50 no modo de fundo). Vale para a caneta pairando e para o mouse com a borracha, e segue a preferência "prévia da ponta". Funções novas: `drawEraserPreview` (`handwriting-canvas.ts`). Testes: `handwriting-studio-hover.test.tsx` e `e2e/handwriting-eraser-ring.spec.ts`.
+- **Botão lateral da S Pen.** O editor só olhava `event.button === 2`. Quem segura o botão ANTES de encostar na tela gera `button 0` e `buttons 3`, caso comum na S Pen, e o botão era ignorado. Agora `isPenBarrelButton` e `isPenEraserTip` (`handwriting-pointer.ts`) leem também a máscara `buttons` (bits 2 e 32), na escrita normal e na janela de escrita. Testes: `handwriting-pointer.test.ts` e `handwriting-studio-spen.test.tsx`. **Não verificado em aparelho real:** confirmar com uma S Pen que o botão passa a funcionar, com a ação escolhida em Configurações (padrão: mão).
+- **Dobra do canto.** O triângulo de 34 px era só decoração (`::after`) e dava para escrever no canto cortado, que não é papel. As camadas da folha agora têm o mesmo recorte (`clip-path` em `.handwriting-page-shell canvas`). Teste: `e2e/handwriting-fold.spec.ts`.
+- **Fora deste pacote** (pontos 1, 2, 5 a 12 do cruzamento): ver o relatório do cruzamento; o ponto 6 (itens apagados que voltam) tem PR própria.
