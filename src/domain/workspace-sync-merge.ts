@@ -1,4 +1,4 @@
-import type { PracticeActivity, WorkspaceState } from "./workspace.js";
+import { MAX_REMOVAL_MARKS, type PracticeActivity, type WorkspaceState } from "./workspace.js";
 import { normalizeNotebookFavorites } from "./notebook-shelves.js";
 import { validateCalendarEvent } from "./agenda-calendar";
 
@@ -119,6 +119,34 @@ function unionPracticeActivities(
   return [...(preferred ?? []), ...(other ?? []).filter((item) => !ids.has(item.id))];
 }
 
+// Marcas de exclusão: o que a pessoa apagou aqui não volta por uma cópia mais antiga (a da conta
+// ou a do IndexedDB, gravada com atraso). As marcas de todas as cópias valem juntas.
+function unionRemovals(...lists: (readonly string[] | undefined)[]): string[] {
+  return [...new Set(lists.flatMap((list) => list ?? []))].slice(-MAX_REMOVAL_MARKS);
+}
+
+// Tira do espaço os cadernos marcados como apagados, com as folhas deles, e solta os que eram
+// subpastas de um caderno apagado.
+function withoutRemovedNotebooks(workspace: WorkspaceState, removed: readonly string[]) {
+  if (removed.length === 0) return workspace;
+  const marks = new Set(removed);
+  const gone = workspace.notebooks.filter((notebook) => marks.has(notebook.id));
+  if (gone.length === 0) return workspace;
+  const pageIds = new Set(gone.flatMap((notebook) => notebook.pageIds));
+  return {
+    ...workspace,
+    notebooks: workspace.notebooks
+      .filter((notebook) => !marks.has(notebook.id))
+      .map((notebook) => {
+        if (!notebook.parentId || !marks.has(notebook.parentId)) return notebook;
+        const { parentId, ...rest } = notebook;
+        void parentId;
+        return rest;
+      }),
+    notes: workspace.notes.filter((note) => !pageIds.has(note.id)),
+  };
+}
+
 // Espaço que vem da conta ao abrir o app: vale a cópia da conta, mas o histórico concluído neste
 // aparelho (sessões de foco e atividades de prática) nunca some por ainda não ter sido enviado.
 export function mergeAccountWorkspace(
@@ -132,10 +160,24 @@ export function mergeAccountWorkspace(
     account.practiceActivities,
     local.practiceActivities,
   );
+  const removed = unionRemovals(account.removedNotebookIds, local.removedNotebookIds);
+  // Se esta cópia apagou a prateleira, uma cópia antiga da conta não devolve o nome.
+  const shelfCleared = Boolean(local.notebookShelfCleared || account.notebookShelfCleared);
+  const merged = withoutRemovedNotebooks(
+    {
+      ...account,
+      focusSessions: [...sessions.values()],
+      ...(practiceActivities ? { practiceActivities } : {}),
+    },
+    removed,
+  );
+  const { notebookShelfCleared, removedNotebookIds, ...rest } = merged;
+  void notebookShelfCleared;
+  void removedNotebookIds;
   return {
-    ...account,
-    focusSessions: [...sessions.values()],
-    ...(practiceActivities ? { practiceActivities } : {}),
+    ...rest,
+    ...(removed.length ? { removedNotebookIds: removed } : {}),
+    ...(shelfCleared ? { notebookShelfCleared: true, notebookShelfName: "" } : {}),
   };
 }
 
@@ -219,5 +261,30 @@ export function mergeWorkspaceStates(
     focusPreferences: value(base.focusPreferences, local.focusPreferences, remote.focusPreferences),
     studyPreferences: value(base.studyPreferences, local.studyPreferences, remote.studyPreferences),
   };
-  return { workspace, conflicts };
+  // Marcas de exclusão de todas as cópias valem juntas: um caderno apagado em qualquer aparelho
+  // não volta porque o outro ainda o tinha.
+  const removed = unionRemovals(
+    base.removedNotebookIds,
+    local.removedNotebookIds,
+    remote.removedNotebookIds,
+  );
+  // A marca de prateleira apagada se mescla como qualquer valor: dar um nome novo (que a limpa)
+  // vence a marca antiga que ainda esteja na outra cópia.
+  const cleared = value(
+    Boolean(base.notebookShelfCleared),
+    Boolean(local.notebookShelfCleared),
+    Boolean(remote.notebookShelfCleared),
+  );
+  const cleaned = withoutRemovedNotebooks(workspace, removed);
+  const { notebookShelfCleared, removedNotebookIds, ...rest } = cleaned;
+  void notebookShelfCleared;
+  void removedNotebookIds;
+  return {
+    workspace: {
+      ...rest,
+      ...(removed.length ? { removedNotebookIds: removed } : {}),
+      ...(cleared ? { notebookShelfCleared: true, notebookShelfName: "" } : {}),
+    },
+    conflicts,
+  };
 }
