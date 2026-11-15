@@ -183,11 +183,16 @@ for (const theme of ["light", "dark"]) {
     expect(await note.evaluate((element) => getComputedStyle(element).backgroundColor)).toBe(
       background,
     );
-    expect(
-      await note
-        .locator("textarea")
-        .evaluate((element) => parseFloat(getComputedStyle(element).fontSize)),
-    ).toBeCloseTo(enlargedFont, 1);
+    // A colagem do estilo termina depois do clique: espera a fonte assentar em vez de ler na hora.
+    await expect
+      .poll(
+        async () =>
+          note
+            .locator("textarea")
+            .evaluate((element) => Math.abs(parseFloat(getComputedStyle(element).fontSize))),
+        { timeout: 5000 },
+      )
+      .toBeCloseTo(enlargedFont, 1);
     const historyToggle = editor.getByRole("button", { name: "Histórico e zoom", exact: true });
     if (await historyToggle.isVisible()) await historyToggle.click();
     await editor.getByRole("button", { name: "Desfazer", exact: true }).click();
