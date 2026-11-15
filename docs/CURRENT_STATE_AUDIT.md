@@ -5048,7 +5048,7 @@ O #634 (editor de cadernos) entrou com o e2e desatualizado e um falso positivo d
 
 ### Interface do caderno no celular (PR 639), 2026-11-15
 
-- **Seta que recolhe os papéis.** A PR escondia a seta no celular (`display: none`), o que tirava a única forma de recolher e reabrir os papéis. Ela voltou, dentro da barra de cima ao lado dos dois papéis, fora do fluxo da grade (`src/notebook-mobile.css`). Validada no celular recolhendo e reabrindo.
+- **Seta que recolhe os papéis.** No celular a seta fica escondida de propósito (decisão da dona do projeto): os papéis ficam sempre à mostra na barra de cima. No desktop a seta continua. Uma tentativa minha de devolvê-la ao celular foi desfeita a pedido.
 - **Testes adaptados a decisões de desenho da PR** (nenhuma função removida): bordas escuras e facetas coloridas dos ícones no tema escuro, painel de fórmula escuro no tema escuro, setas de seleção com as cores novas, ferramentas de arquivo e papéis sem placa própria no celular, e a folha cobrindo a altura da janela no celular (rola para o resto da largura).
 - **Bandeja de folhas no celular.** Fica oculta enquanto o painel de seleção está aberto, de propósito. Voltar para a caneta traz a bandeja e o botão de nova folha de volta; o teste agora faz isso antes de criar a folha.
 - **Cuidado ao testar.** Rodar desktop e celular juntos com 4 trabalhadores gera falhas por lentidão (eixo, tracejado, rascunho, OCR, perfil). Todas passam com pouco paralelismo.

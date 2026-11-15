@@ -95,10 +95,17 @@ for (const theme of ["light", "dark"]) {
     }
     await expect(viewport).toBeVisible();
 
-    await disclosure.click();
-    await expect(editor.getByRole("button", { name: "Tipo de papel", exact: true })).toHaveCount(0);
-    await disclosure.click();
-    await expect(disclosure).toHaveAttribute("aria-expanded", "true");
+    if (info.project.name === "mobile") {
+      // No celular os papéis ficam sempre à mostra: a seta de recolher só existe no desktop.
+      await expect(disclosure).toBeHidden();
+    } else {
+      await disclosure.click();
+      await expect(editor.getByRole("button", { name: "Tipo de papel", exact: true })).toHaveCount(
+        0,
+      );
+      await disclosure.click();
+      await expect(disclosure).toHaveAttribute("aria-expanded", "true");
+    }
 
     const picker = editor.getByRole("button", { name: "Tipo de papel", exact: true });
     await expect(picker).toHaveCSS(

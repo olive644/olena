@@ -756,13 +756,9 @@
       linear-gradient(315deg, var(--line) 0 15px, transparent 15px), var(--surface);
     box-shadow: 0 3px var(--line);
   }
-  /* A seta que recolhe e reabre os papéis fica dentro da barra de cima, ao lado dos dois papéis,
-     fora do fluxo da grade para não empurrar as ferramentas. */
+  /* No celular os papéis não têm a seta de recolher: ficam sempre à mostra na barra de cima. */
   :root .handwriting-studio .handwriting-paper-disclosure {
-    position: absolute;
-    top: 29px;
-    left: 118px;
-    z-index: 5;
+    display: none;
   }
   :root .handwriting-studio .handwriting-paper-picker,
   :root .capture-dialog--handwriting .handwriting-studio .notebook-file-tools,
