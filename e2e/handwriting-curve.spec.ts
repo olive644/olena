@@ -64,7 +64,6 @@ test("curva: pontos marcados com o mouse e com o teclado viram um traço liso po
       { point, radius },
     );
 
-
   // Mouse: quatro toques e um toque duplo no último concluem a curva.
   const mouseControls = [
     { x: box.x + box.width * 0.15, y: bottom - 20 },

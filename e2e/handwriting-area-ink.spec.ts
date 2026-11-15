@@ -76,8 +76,10 @@ for (const pointerType of ["mouse", "pen", "touch"]) {
     expect(tipVisible).toBe(true);
     // Esta posição só chega ao levantar: precisa ser preservada no traço final.
     await send("pointerup", 600, 300);
+    // A tinta confirmada fica na camada transparente da folha, não na que recebe o ponteiro.
+    const sheet = editor.locator(".handwriting-committed-ink");
     const inkAt = async (x: number) =>
-      canvas.evaluate((element, position) => {
+      sheet.evaluate((element, position) => {
         const canvas = element as HTMLCanvasElement;
         const scale = canvas.width / Number(canvas.dataset["pageWidth"]);
         const data = canvas
@@ -89,7 +91,8 @@ for (const pointerType of ["mouse", "pen", "touch"]) {
             Math.ceil(8 * scale),
           ).data;
         for (let i = 0; i < data.length; i += 4)
-          if (data[i]! < 80 && data[i + 1]! < 80 && data[i + 2]! < 80) return true;
+          if (data[i + 3]! > 200 && data[i]! < 80 && data[i + 1]! < 80 && data[i + 2]! < 80)
+            return true;
         return false;
       }, x);
     await expect.poll(() => inkAt(597)).toBe(true);
