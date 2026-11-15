@@ -1,8 +1,8 @@
 import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 
-// Tela de alta densidade (como um celular ou notebook 2x): o bitmap da folha precisa
-// ter mais pixels que os 1200 de largura da folha, senão a tinta sai borrada.
+// Tela de alta densidade (como um celular ou notebook 2x): o bitmap da folha não pode ter menos
+// pixels que a largura da folha (3200), senão a tinta sai borrada.
 test.use({ deviceScaleFactor: 2 });
 
 test("a folha ganha resolução em tela densa e com zoom, e a tinta cai onde a caneta está", async ({
@@ -24,17 +24,17 @@ test("a folha ganha resolução em tela densa e com zoom, e a tinta cai onde a c
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await activateHandwritingPen(page);
-  const sheet = dialog.locator(".handwriting-viewport canvas").first();
+  const sheet = dialog.locator(".handwriting-committed-ink");
   const live = dialog.locator(".handwriting-live-layer");
   await sheet.scrollIntoViewIfNeeded();
 
-  // Tela 2x: o bitmap tem mais pixels que os 1200 da folha, nas duas camadas.
+  // Tela 2x: o bitmap tem ao menos os 3200 pixels da folha, nas duas camadas.
   const bitmapWidth = () => sheet.evaluate((element) => (element as HTMLCanvasElement).width);
   await expect
     .poll(async () => {
       const width = await bitmapWidth();
       const liveWidth = await live.evaluate((element) => (element as HTMLCanvasElement).width);
-      return width > 1200 && width === liveWidth;
+      return width >= 3200 && width === liveWidth;
     })
     .toBe(true);
   const initialSize = await sheet.evaluate((element) => {
@@ -42,7 +42,7 @@ test("a folha ganha resolução em tela densa e com zoom, e a tinta cai onde a c
     return { width: canvas.width, height: canvas.height };
   });
   const initial = initialSize.width;
-  expect(initialSize.height).toBe(Math.round((initial / 1200) * 1600));
+  expect(initialSize.height).toBe(Math.round((initial / 3200) * 2400));
 
   // A tinta cai onde a caneta está, mesmo com o bitmap em outra escala.
   const box = (await sheet.boundingBox())!;
@@ -62,21 +62,27 @@ test("a folha ganha resolução em tela densa e com zoom, e a tinta cai onde a c
     const y = Math.round(((position.y - bounds.top) / bounds.height) * canvas.height);
     const { data } = canvas.getContext("2d")!.getImageData(x - 6, y - 6, 12, 12);
     for (let index = 0; index < data.length; index += 4) {
-      if (data[index]! < 90 && data[index + 1]! < 90 && data[index + 2]! < 100) return true;
+      if (
+        data[index + 3]! > 200 &&
+        data[index]! < 90 &&
+        data[index + 1]! < 90 &&
+        data[index + 2]! < 100
+      )
+        return true;
     }
     return false;
   }, target);
   expect(inkAtPointer).toBe(true);
 
   // Ampliar a folha aumenta a resolução do bitmap, e o traço continua no lugar.
-  await sheet.hover();
+  await dialog.locator(".handwriting-canvas").hover();
   for (let click = 0; click < 6; click += 1) {
     await page.mouse.wheel(0, -100);
     await page.waitForTimeout(60);
   }
   await expect.poll(bitmapWidth, { timeout: 5000 }).toBeGreaterThan(initial);
   const zoomed = await bitmapWidth();
-  expect(zoomed).toBeLessThanOrEqual(Math.round(1200 * Math.sqrt(9_000_000 / (1200 * 1600))));
+  expect(zoomed).toBeLessThanOrEqual(Math.round(3200 * Math.sqrt(9_000_000 / (3200 * 2400))));
   await expect
     .poll(() =>
       sheet.evaluate((element) => {
@@ -84,7 +90,13 @@ test("a folha ganha resolução em tela densa e com zoom, e a tinta cai onde a c
         const { data } = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height);
         let dark = 0;
         for (let index = 0; index < data.length; index += 4) {
-          if (data[index]! < 90 && data[index + 1]! < 90 && data[index + 2]! < 100) dark += 1;
+          if (
+            data[index + 3]! > 200 &&
+            data[index]! < 90 &&
+            data[index + 1]! < 90 &&
+            data[index + 2]! < 100
+          )
+            dark += 1;
         }
         return dark;
       }),

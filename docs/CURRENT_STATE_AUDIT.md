@@ -5025,3 +5025,14 @@ Leitura do código de `main` (sem mexer em produção). Verificado: cabeçalhos 
 - **Contrato mudado.** `.onboarding__helena` passou a ser o contêiner (`span`) com a imagem e o canvas dentro, em vez de ser a própria imagem. Testes de unidade e e2e que liam o `src` agora leem `.onboarding__helena > img`.
 - **Provas.** Teste de unidade do componente (arquivo e máquina de estados certos, troca ao carregar, decorativo sem texto, movimento reduzido sem Rive) e e2e novo no desktop e no celular: o Rive carrega (`data-ready`), o canvas fica visível e a imagem some atrás dele, sem rolagem horizontal. Capturas conferidas no desktop (1280 x 800) e no celular (390 x 844); sem erros de console nem respostas 4xx.
 - **Limites.** O onboarding usa fundo creme também com o tema escuro, então não há variação de tema a validar nesta tela. Safari/WebKit e celular real não verificados. As esperas e o pulinho `clique` do Rive não são acionados pela interface: só as cinco esperas automáticas rodam.
+
+### CI da main vermelho desde o #634, 2026-11-15
+
+O #634 (editor de cadernos) entrou com o e2e desatualizado e um falso positivo do gitleaks. Conserto em uma PR própria, um teste por vez.
+
+- **Secret scan.** Falso positivo no commit `b5c0e4da`, tratado com uma entrada de fingerprint no `.gitleaksignore` (o repositório usa commit de mesclagem, não squash, por causa desse arquivo).
+- **Bug real achado pelo e2e.** O menu de Upload do editor ficava atrás da folha: só o cabeçalho aparecia e a lista de arquivos era inalcançável. A barra de comandos agora tem nível próprio (`position: relative; z-index: 6` em `src/notebook-editor.css`). No celular o painel de tipo de papel, quando aberto, ainda cobre parte do menu de Upload (limite conhecido, não novo).
+- **Testes adaptados ao editor novo** (quadro 3200 por 2400, opções abertas ao clicar na ferramenta ativa, menu "…" da barra de seleção, Compartilhar, Exportar e Baixar, uploads em lista com "Colocar na folha", espessura em milímetros, painel de pincéis com 6 pincéis, caixa de texto móvel no lugar do texto de página inteira, fecho do caderno sem o elemento `i`). `compositeColorAt` em `e2e/notebook-helpers.ts` soma todas as camadas da folha, inclusive a base com papel e imagens.
+- **Teste instável da curva.** Media a folha antes de ela se reajustar ao trocar de ferramenta. Agora escolhe a Curva e espera o tamanho estabilizar (6 de 6 execuções estáveis).
+- **Removido de propósito.** `handwriting-vertical-space.spec.ts`, porque a ferramenta "Espaço vertical" saiu do app no #634. Na seleção de tinta, a checagem do ícone da Curva passou a olhar o ícone de papel recortado.
+- **Cuidado ao testar localmente.** O Playwright reaproveita um `vite preview` antigo se já houver um rodando; reconstrua (`npm run build`) ou encerre o servidor antes de validar CSS.

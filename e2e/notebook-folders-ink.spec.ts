@@ -49,7 +49,7 @@ test("salvamento confirmado, índice legível e capa única", async ({ page }, i
   await page.screenshot({ path: info.outputPath("capa-fixa.png") });
 });
 
-test("tamanho percentual e fundos corretos no modo escuro", async ({ page }, info) => {
+test("tamanho em milímetros e fundos corretos no modo escuro", async ({ page }, info) => {
   await page.evaluate(() => localStorage.setItem("helenastudy.theme", "dark"));
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
@@ -61,14 +61,17 @@ test("tamanho percentual e fundos corretos no modo escuro", async ({ page }, inf
   const pen = editor.getByRole("slider", { name: "Espessura do pincel" });
   await expect(pen).toBeVisible();
   await pen.fill("0");
-  await expect(pen).toHaveAttribute("aria-valuetext", "0%");
+  await expect(pen).toHaveAttribute("aria-valuetext", "0,09 mm (personalizada)");
   await pen.fill("100");
-  await expect(pen).toHaveAttribute("aria-valuetext", "100%");
+  await expect(pen).toHaveAttribute("aria-valuetext", "7 mm (personalizada)");
   await editor.getByRole("button", { name: "Borracha", exact: true }).click();
   const eraser = editor.getByRole("slider", { name: "Tamanho da borracha" });
+  // Clicar na ferramenta ativa alterna as opções dela.
+  if (!(await eraser.isVisible()))
+    await editor.getByRole("button", { name: "Borracha", exact: true }).click();
   await expect(eraser).toBeVisible();
   await eraser.fill("37");
-  await expect(eraser).toHaveAttribute("aria-valuetext", "37%");
+  await expect(eraser).toHaveAttribute("aria-valuetext", "2,65 mm (personalizada)");
   await expect(editor.locator(".handwriting-tool-group")).toHaveCSS(
     "background-color",
     "rgb(41, 36, 50)",
