@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { it, expect, vi } from "vitest";
 import { App } from "./app";
 import { useCloudSync } from "./hooks/use-cloud-sync";
@@ -120,4 +120,75 @@ it("mostra o onboarding a uma conta nova mesmo com chaves de progresso vazias", 
   });
   render(<App />);
   expect(await screen.findByText("Olá! Eu sou a Olena.", {}, { timeout: 5000 })).toBeTruthy();
+});
+
+it("não mostra o onboarding quando a leitura da conta falha com o aparelho esvaziado (nuvem lenta ao entrar de novo)", async () => {
+  localStorage.clear();
+  window.history.replaceState(null, "", "/");
+  // Acabou de sair da conta: o aparelho não guarda nada, e a nuvem não respondeu ao entrar.
+  localStorage.setItem("olena.returning.v1", "1");
+  const retryLoad = vi.fn();
+  vi.mocked(useCloudSync).mockReturnValue({
+    enabled: true,
+    ready: true,
+    authenticated: true,
+    status: "offline",
+    accountLoaded: false,
+    retryLoad,
+    revision: 2,
+  });
+  render(<App />);
+  expect(await screen.findByRole("alert")).toBeTruthy();
+  expect(
+    screen.getByRole("heading", { name: "Não conseguimos carregar a sua conta agora" }),
+  ).toBeTruthy();
+  expect(screen.queryByText("Olá! Eu sou a Olena.")).toBeNull();
+  expect(document.querySelector(".onboarding__welcome, .onboarding__form")).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Tentar de novo" }));
+  expect(retryLoad).toHaveBeenCalledTimes(1);
+  // Nada foi gravado como se a pessoa tivesse concluído o onboarding.
+  expect(localStorage.getItem("helena.onboarding.v1")).toBeNull();
+});
+
+it("uma conta que a nuvem confirmou ter dados volta ao app mesmo sem a marca de conclusão e sem progresso de Matemática ou Inglês", async () => {
+  localStorage.clear();
+  window.history.replaceState(null, "", "/");
+  localStorage.setItem("helena.account.v1", "uid-so-agenda");
+  vi.mocked(useCloudSync).mockReturnValue({
+    enabled: true,
+    ready: true,
+    authenticated: true,
+    status: "synced",
+    accountLoaded: true,
+    accountHadData: true,
+    revision: 3,
+  });
+  render(<App />);
+  expect(await screen.findByRole("heading", { name: "Espaço do aluno" })).toBeTruthy();
+  expect(document.querySelector(".onboarding")).toBeNull();
+  const record = JSON.parse(localStorage.getItem("helena.onboarding.v1")!);
+  expect(record.completed).toBe(true);
+  expect(record.configurationOwner).toBe("uid-so-agenda");
+});
+
+it("com a leitura da conta falhando, mas dados da conta no aparelho, o app abre normalmente", async () => {
+  localStorage.clear();
+  window.history.replaceState(null, "", "/");
+  localStorage.setItem("helena.account.v1", "uid-com-cache");
+  localStorage.setItem(
+    "helena.onboarding.v1",
+    JSON.stringify({ completed: true, configurationOwner: "uid-com-cache" }),
+  );
+  vi.mocked(useCloudSync).mockReturnValue({
+    enabled: true,
+    ready: true,
+    authenticated: true,
+    status: "offline",
+    accountLoaded: false,
+    retryLoad: vi.fn(),
+    revision: 4,
+  });
+  render(<App />);
+  expect(await screen.findByRole("heading", { name: "Espaço do aluno" })).toBeTruthy();
+  expect(screen.queryByRole("alert")).toBeNull();
 });
