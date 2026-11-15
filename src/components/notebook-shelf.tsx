@@ -173,6 +173,11 @@ export function NotebookShelf({
                   editing ? (setCategory("details"), setModal(notebook)) : onOpen(notebook)
                 }
               >
+                {editing && (
+                  <span className="shelf-edit-hint" aria-hidden="true" data-shelf-edit-hint>
+                    <ShelfToolIcon name="pen" />
+                  </span>
+                )}
                 <span className="notebook-spine__inspection" aria-hidden="true">
                   <span className="notebook-spine__body book-cover__spine">
                     <i />
