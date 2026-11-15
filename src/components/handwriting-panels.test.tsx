@@ -135,6 +135,16 @@ describe("janela de escrita ampliada", () => {
     };
   }
 
+  it("tem uma alça acessível para mover a janela, também por teclado", () => {
+    render(<HandwritingWritingWindow {...windowProps()} />);
+    const grip = screen.getByRole("button", { name: "Mover janela de escrita" });
+    expect(grip.getAttribute("title")).toContain("setas do teclado");
+    // Sem layout (jsdom) a janela ainda monta e as setas não quebram nada.
+    fireEvent.keyDown(grip, { key: "ArrowRight" });
+    fireEvent.keyDown(grip, { key: "a" });
+    expect(screen.getByRole("region", { name: "Janela de escrita ampliada" })).toBeTruthy();
+  });
+
   it("mostra o status e dispara voltar, avançar e próxima linha", () => {
     const props = windowProps();
     render(<HandwritingWritingWindow {...props} />);

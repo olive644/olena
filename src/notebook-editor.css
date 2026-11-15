@@ -545,22 +545,6 @@
   }
 }
 @media (max-width: 680px) {
-  .handwriting-studio:has(.handwriting-writing-window) {
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-  }
-  .handwriting-studio:has(.handwriting-writing-window) > * {
-    flex-shrink: 0;
-  }
-  .handwriting-studio:has(.handwriting-writing-window) .handwriting-workspace {
-    min-height: 260px;
-    flex: 1 0 260px;
-  }
-  .handwriting-writing-window {
-    position: relative;
-    z-index: 2;
-  }
   .handwriting-commandbar {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -1858,5 +1842,54 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
     width: 34px;
     height: 34px;
     min-width: 34px;
+  }
+}
+
+/* Janela de escrita ampliada: flutua sobre o editor, com alça para arrastar e posição lembrada. */
+.handwriting-studio .handwriting-writing-window {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 9;
+  display: flex;
+  width: min(760px, calc(100% - 16px));
+  max-width: calc(100% - 16px);
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 2px 10px 10px;
+  gap: 6px 12px;
+  border: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 6px 16px 8px 12px;
+  background: var(--surface);
+  box-shadow: 4px 6px 0 var(--line-strong);
+}
+.handwriting-writing-window__grip {
+  display: grid;
+  flex: 1 1 100%;
+  height: 26px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+.handwriting-writing-window__grip:active {
+  cursor: grabbing;
+}
+.handwriting-writing-window__grip::before {
+  display: block;
+  width: 56px;
+  height: 6px;
+  content: "";
+  background: radial-gradient(circle, var(--muted) 2.2px, transparent 2.8px) 0 0 / 14px 6px repeat-x;
+}
+.handwriting-studio .handwriting-writing-window > .handwriting-writing-window__paper {
+  flex: 1 1 320px;
+}
+@media (max-width: 680px) {
+  .handwriting-studio .handwriting-writing-window > .handwriting-writing-window__paper {
+    flex-basis: 100%;
   }
 }

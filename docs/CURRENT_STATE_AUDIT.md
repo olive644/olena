@@ -5112,3 +5112,16 @@ Pedido do feedback (ponto 8): trocar de cor da caneta exigia abrir o painel de o
 - Mobile: a barra começa depois da coluna de papéis (124px) e quebra em linhas; botões de 34px. Tema escuro com fundo `#292432` e contorno claro.
 - Provas: `src/components/handwriting-quick-colors-model.test.ts` (hex, lista de recentes, limite, dados corrompidos) e `e2e/notebook-quick-colors.spec.ts` (PC e celular: cor fixa liga só ela, barra dentro da tela, conta-gotas lê o papel `#fffdf7`, guarda a recente, Esc cancela, tema escuro). Capturas conferidas no PC e no celular.
 - Limites: não verificado em aparelho real nem com S Pen. A cor lida vem da imagem da folha, então suaviza nas bordas dos traços (pegue no miolo de um traço grosso). Sem toque duplo para trocar de cor e sem gradiente (itens do feedback fora deste pacote). A barra não aparece em outras ferramentas (borracha, forma, texto).
+
+## Janela de escrita flutuante, arrastável e com posição lembrada, 15/11/2026
+
+Pedido do feedback (ponto 12) e do proprietário: a janela de escrita ampliada era uma faixa de largura total que empurrava a folha para baixo. Agora ela flutua sobre a área de escrita (`position: absolute` dentro do editor) e tem uma alça (`Mover janela de escrita`, três pontinhos no topo) para arrastar.
+
+- Mover: arrastar a alça com mouse, caneta ou toque; ou focar a alça e usar as setas do teclado (16px por passo, 64px com Shift). Nenhuma ação depende só de ponteiro.
+- Limites: a janela só circula pela área de escrita (a região da folha). Ela nunca cobre as ferramentas, o botão que a fecha, nem a barra de baixo no celular. Girar o celular ou redimensionar a janela do navegador a mantém visível (`ResizeObserver`, com `resize` de reserva).
+- Posição lembrada: guardada só neste aparelho como fração da área de escrita (`localStorage`, chave `olena.handwriting.writing-window-position`, valores validados de 0 a 1). Não é progresso e não vai para a conta, então não sincroniza e não substitui nada. Fechar e reabrir devolve a janela ao mesmo lugar; sem posição guardada ela abre centralizada no topo da folha.
+- Mobile: a janela ocupa quase toda a largura, com a folha de escrita em linha própria e os botões abaixo. Tema escuro pelos mesmos tokens do editor.
+- Textos novos nos dois idiomas (índices 3879 e 3880) e manifesto do catálogo atualizado.
+- Corrigido no caminho: a origem da área de escrita vinha do `offsetTop` do viewport, que é relativo a outro pai posicionado; agora vem da diferença dos retângulos na tela.
+- Provas: `handwriting-writing-window-position.test.ts` (limites, origem da área, fração entre telas, dados inválidos), `handwriting-panels.test.tsx` (alça acessível) e `e2e/notebook-writing-window.spec.ts` (PC e celular: dentro da área, arrasto, teclado, canto sem cobrir o botão da janela, reabertura no mesmo lugar, escrever depois de mover). Captura conferida no celular.
+- Limites: não verificado em aparelho real nem com S Pen. A janela cobre parte da folha enquanto está aberta (é a intenção, e agora dá para tirar do caminho). Posição não acompanha a folha ao rolar, fica fixa no editor.

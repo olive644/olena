@@ -3877,5 +3877,7 @@
   "Quick colors",
   "Eyedropper",
   "Tap the page to pick a color. Esc cancels.",
-  "Color {0} picked"
+  "Color {0} picked",
+  "Move writing window",
+  "Drag the handle or use the arrow keys to move the window"
 ]
