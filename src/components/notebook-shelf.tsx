@@ -1,3 +1,4 @@
+import { OlenaShelfCat, ShelfVines } from "./olena-shelf-art";
 import { useEffect, useRef, useState, type Dispatch } from "react";
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { StudyNotebook, WorkspaceAction, WorkspaceState } from "../domain/workspace";
@@ -140,13 +141,8 @@ export function NotebookShelf({
           </div>
         )}
         <section className="notebook-display-shelf" aria-label={uiText(1991, [1])}>
-          {["left", "right"].map((side) => (
-            <span key={side} className={`notebook-shelf-vines is-${side}`} aria-hidden="true">
-              {Array.from({ length: 16 }, (_, index) => (
-                <i key={index} style={{ top: index * 12 }} />
-              ))}
-            </span>
-          ))}
+          <ShelfVines side="left" />
+          <ShelfVines side="right" />
           {name && (
             <div
               key={`${name}-${installing}`}
@@ -205,12 +201,7 @@ export function NotebookShelf({
                 <span aria-hidden="true">+</span>
               </button>
             )}
-            <img
-              className="notebook-shelf-cat"
-              src="/olena-shelf-sleeping.webp"
-              alt=""
-              draggable={false}
-            />
+            <OlenaShelfCat src="/olena-shelf-sleeping.webp" />
           </div>
         </section>
         {books.length >= 5 && (

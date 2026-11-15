@@ -248,10 +248,38 @@
 }
 
 .notebook-shelf-cat {
+  position: relative;
+  display: block;
   width: clamp(100px, 16vw, 164px);
+  aspect-ratio: 2 / 1;
   flex: none;
   align-self: end;
   pointer-events: none;
+}
+
+.notebook-shelf-cat img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* O quadro do Rive tem 16 unidades de folga em volta da arte de 480 x 240. */
+.notebook-shelf-cat canvas {
+  position: absolute;
+  left: -3.3333%;
+  top: -6.6667%;
+  width: 106.6667%;
+  height: 113.3333%;
+  opacity: 0;
+  pointer-events: auto;
+}
+
+.notebook-shelf-cat[data-ready="true"] canvas {
+  opacity: 1;
+}
+
+.notebook-shelf-cat[data-ready="true"] img {
+  opacity: 0;
 }
 
 :root body .notebook-display-shelf__create span {
@@ -312,6 +340,26 @@
 .notebook-shelf-vines i:nth-child(2n) {
   left: 18px;
   rotate: -32deg;
+}
+
+/* O quadro do Rive tem 10 px de folga dos lados e 6 px em cima e embaixo. */
+.notebook-shelf-vines canvas {
+  position: absolute;
+  left: -10px;
+  top: -6px;
+  width: 75px;
+  height: 220px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.notebook-shelf-vines[data-ready="true"] canvas {
+  opacity: 1;
+}
+
+.notebook-shelf-vines[data-ready="true"] i,
+.notebook-shelf-vines[data-ready="true"]::before {
+  opacity: 0;
 }
 
 .notebook-shelf-vines.is-right {
