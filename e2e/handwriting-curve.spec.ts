@@ -20,15 +20,32 @@ test("curva: pontos marcados com o mouse e com o teclado viram um traço liso po
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await activateHandwritingPen(page);
-  const sheet = dialog.locator(".handwriting-viewport canvas").first();
+  const sheet = dialog.locator(".handwriting-committed-ink");
+  // Trocar de ferramenta fecha o painel de pincéis e a folha se reajusta: escolhe a Curva antes de medir.
+  await dialog.getByRole("button", { name: "Curva", exact: true }).click();
   await sheet.scrollIntoViewIfNeeded();
+  // A folha se ajusta à janela logo depois de abrir: mede só quando o tamanho parou de mudar.
+  let previousWidth = -1;
+  let steady = 0;
+  await expect
+    .poll(
+      async () => {
+        const width = (await sheet.boundingBox())!.width;
+        steady = width === previousWidth ? steady + 1 : 0;
+        previousWidth = width;
+        return steady >= 6;
+      },
+      { intervals: [100] },
+    )
+    .toBe(true);
   const box = (await sheet.boundingBox())!;
   const view = (await dialog.locator(".handwriting-viewport").boundingBox())!;
   const top = Math.max(box.y, view.y) + 30;
-  const bottom = Math.min(box.y + box.height, view.y + view.height) - 30;
+  // A bandeja de folhas ocupa o pé da janela e intercepta cliques: os pontos ficam acima dela.
+  const bottom = Math.min(box.y + box.height, view.y + view.height) - 110;
 
-  // Há tinta escura perto de um ponto da folha dado em pixels de tela (raio em pixels do bitmap).
-  const inkNear = (point: { x: number; y: number }, radius = 5) =>
+  // Há tinta escura perto de um ponto da folha dado em pixels de tela (raio em pixels do bitmap, com a folha de 3200 por 2400).
+  const inkNear = (point: { x: number; y: number }, radius = 18) =>
     sheet.evaluate(
       (element, args) => {
         const canvas = element as HTMLCanvasElement;
@@ -46,8 +63,6 @@ test("curva: pontos marcados com o mouse e com o teclado viram um traço liso po
       },
       { point, radius },
     );
-
-  await dialog.getByRole("button", { name: "Curva", exact: true }).click();
 
   // Mouse: quatro toques e um toque duplo no último concluem a curva.
   const mouseControls = [
@@ -69,7 +84,8 @@ test("curva: pontos marcados com o mouse e com o teclado viram um traço liso po
   expect(await inkNear(mouseControls[1]!)).toBe(false);
   await page.mouse.dblclick(mouseControls[3]!.x, mouseControls[3]!.y);
   await page.waitForTimeout(150);
-  for (const control of mouseControls) expect(await inkNear(control)).toBe(true);
+  // A tinta é confirmada na folha logo depois do toque duplo: espera em vez de adivinhar o tempo.
+  for (const control of mouseControls) await expect.poll(() => inkNear(control)).toBe(true);
   // O meio de um vão entre dois pontos também tem tinta (a curva é contínua).
   const between = {
     x: (mouseControls[1]!.x + mouseControls[2]!.x) / 2,
@@ -83,9 +99,10 @@ test("curva: pontos marcados com o mouse e com o teclado viram um traço liso po
   expect(await inkNear(mouseControls[0]!)).toBe(false);
 
   // Teclado: setas movem o cursor, Enter marca, Shift com Enter conclui.
-  await sheet.focus();
+  // O teclado é lido pela camada que recebe o ponteiro, não pela folha de tinta.
+  await dialog.locator(".handwriting-canvas").focus();
   // O cursor do teclado continua de onde o último ponto foi marcado com o mouse.
-  const unit = box.width / 1200;
+  const unit = box.width / 3200;
   const start = mouseControls[3]!;
   await page.keyboard.press("Enter");
   for (let step = 0; step < 10; step += 1) await page.keyboard.press("ArrowRight");

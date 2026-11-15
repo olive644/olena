@@ -20,7 +20,7 @@ test("três retas acertadas com folga nos cantos viram um triângulo fechado, em
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await activateHandwritingPen(page);
-  const sheet = dialog.locator(".handwriting-viewport canvas").first();
+  const sheet = dialog.locator(".handwriting-committed-ink");
   await sheet.scrollIntoViewIfNeeded();
 
   // Tudo em coordenadas da folha (1200 por 1600); convertido para a tela a cada gesto.

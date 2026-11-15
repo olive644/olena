@@ -25,7 +25,8 @@ async function gapsAlong(
         let ink = false;
         for (let row = 0; row < 7; row += 1) {
           const i = (row * width + x) * 4;
-          if (data[i]! < 110 && data[i + 1]! < 110 && data[i + 2]! < 120) ink = true;
+          if (data[i + 3]! > 200 && data[i]! < 110 && data[i + 1]! < 110 && data[i + 2]! < 120)
+            ink = true;
         }
         if (ink) {
           if (started && inGap) gaps += 1;
@@ -58,7 +59,7 @@ test("linha tracejada e pontilhada desenham vãos na folha, e a contínua não",
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await activateHandwritingPen(page);
-  const sheet = dialog.locator(".handwriting-viewport canvas").first();
+  const sheet = dialog.locator(".handwriting-committed-ink");
   await sheet.scrollIntoViewIfNeeded();
   // A folha é maior que a janela: as linhas ficam só na parte visível.
   const box = (await sheet.boundingBox())!;

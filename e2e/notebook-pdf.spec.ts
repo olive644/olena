@@ -138,8 +138,9 @@ test("Upload importa PDF de uma página como folha do caderno", async ({ page },
     await page.getByRole("button", { name: "Abrir Caderno PDF", exact: true }).click();
     await page.getByRole("button", { name: /Abrir preview de Página importada 1/i }).click();
     await editor.getByRole("button", { name: "Compartilhar", exact: true }).click();
+    await editor.getByRole("button", { name: "Exportar", exact: true }).click();
     const download = page.waitForEvent("download");
-    await editor.getByRole("button", { name: "Baixar PDF", exact: true }).click();
+    await editor.getByRole("button", { name: "Baixar", exact: true }).click();
     expect((await download).suggestedFilename()).toBe("folha-do-caderno.pdf");
   }
 });
