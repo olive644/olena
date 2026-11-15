@@ -65,6 +65,7 @@ import { NotebookPageBook } from "./notebook-page-book";
 import { HandwritingHistoryBar } from "./handwriting-history-bar";
 import { HandwritingPaperPicker } from "./handwriting-paper-picker";
 import { HandwritingWritingWindow } from "./handwriting-writing-window";
+import { HandwritingQuickColors } from "./handwriting-quick-colors";
 import { HandwritingInkOptions } from "./handwriting-ink-options";
 import { HandwritingSelectionActions } from "./handwriting-selection-actions";
 import { OCR_WORKER_OPTIONS } from "./handwriting-ocr";
@@ -3763,6 +3764,11 @@ export function HandwritingStudio({
             <span className="handwriting-viewport-hint" aria-hidden="true">
               {tool === "hand" ? uiText(316) : tool === "zoom-in" ? uiText(317) : uiText(318)}
             </span>
+          )}
+          {(tool === "pen" || tool === "highlighter") && !textMode && (
+            <div className="handwriting-quick-colors-dock">
+              <HandwritingQuickColors color={color} onColorChange={setColor} />
+            </div>
           )}
           <div
             data-page-turn={pageTurn ?? undefined}
