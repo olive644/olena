@@ -1167,6 +1167,16 @@ export function HandwritingStudio({
         pageText: visibleText,
       });
     }
+    // Camadas vazias não entram na composição: cada canvas do tamanho da folha custa uns milissegundos
+    // por quadro enquanto se escreve. A tinta confirmada fica sempre visível porque o traço é
+    // desenhado direto nela ao soltar a caneta.
+    const emptyLayer = {
+      coordinates: !pageScene.layers.coordinates || pageScene.coordinateSystems.length === 0,
+      text: !pageScene.layers.text || visibleText === "",
+      strokes: false,
+    };
+    for (const [layer, overlay] of canvases)
+      if (overlay) overlay.style.display = emptyLayer[layer] ? "none" : "";
     paintedPageRef.current = {
       scene: pageScene,
       scale: renderScale,
@@ -1183,6 +1193,15 @@ export function HandwritingStudio({
     if (!canvas) return;
     sizePageCanvas(canvas, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
     clearPageCanvas(canvas);
+    // Sem seleção, caixa, laço nem guias a camada não tem o que mostrar: sai da composição.
+    canvas.style.display =
+      !textMode &&
+      (selectedIds.length > 0 ||
+        Boolean(selectionBox) ||
+        Boolean(selectionPath?.length) ||
+        guides.length > 0)
+        ? ""
+        : "none";
     const context = pageContext(canvas);
     if (context && !textMode)
       drawSelectionOverlay(
