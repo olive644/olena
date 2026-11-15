@@ -5078,3 +5078,10 @@ Pedido do feedback de usuário (ponto 10): na folha "Escura", post-its e tabelas
 
 - Provas: `src/components/handwriting-canvas-table.test.ts` (cores usadas no canvas, claro e noite) e `e2e/notebook-night-sticky.spec.ts` (cores calculadas no DOM, PC e celular, ida e volta entre noite e clara). Captura conferida no PC.
 - Limites: modo claro e escuro do app não mudam este desenho, pois a cor depende só da folha. Contraste conferido por tons, sem medição automática de razão. Não verificado em aparelho real.
+
+## Caderno vazio sem folha falsa na esquerda, 15/11/2026
+
+Pedido do feedback (ponto 5): no caderno sem folhas, a página da esquerda mostrava um papel pautado que parecia existir, ao lado de "Criar primeira folha". Agora, com o caderno aberto e sem páginas, a esquerda vira a guarda do caderno (mesmo acabamento do lado direito, `.notebook-endpaper`) com uma fita roxa marcadora (`.notebook-endpaper-ribbon`). O papel pautado continua só na miniatura compacta (`compactPreview`), onde não é clicável.
+
+- Prova: `e2e/notebook-empty-endpaper.spec.ts` (nenhum `.notebook-empty-paper` no par de páginas, fita roxa mais alta que larga; PC e celular). Captura conferida no PC.
+- Limite: não verificado no modo escuro do app nem em aparelho real; a guarda usa cores fixas de papel.

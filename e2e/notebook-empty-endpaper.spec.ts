@@ -9,7 +9,10 @@ test("caderno vazio não mostra uma folha falsa, só a guarda com a fita", async
   await page.goto("/cadernos");
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  const achievement = page.getByRole("button", { name: "Fechar conquista" });
+  while (await achievement.first().isVisible()) await achievement.first().click();
   await page.locator(".notebook-spine").first().click();
+  while (await achievement.first().isVisible()) await achievement.first().click();
   await expect(
     page.getByRole("button", { name: "Criar primeira folha", exact: true }),
   ).toBeVisible();
