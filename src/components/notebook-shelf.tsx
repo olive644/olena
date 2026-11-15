@@ -1,11 +1,14 @@
+import { LibraryShelfView } from "../views/library-shelf-view";
+import type { LibraryFolderStyle } from "../domain/workspace";
+import { ShelfEditorTools } from "./shelf-editor-tools";
+import { ShelfToolIcon } from "./shelf-tool-icon";
+import { NotebookShelfFrame } from "./notebook-shelf-frame";
 import { useEffect, useRef, useState, type Dispatch } from "react";
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { StudyNotebook, WorkspaceAction, WorkspaceState } from "../domain/workspace";
 import { NotebookCover } from "./notebook-cover";
 import { notebookPaperTabs } from "./notebook-paper-tools";
-import { ShelfToolIcon } from "./shelf-tool-icon";
 import { PaperDigits } from "./paper-digits";
-import { PaperArrow } from "./paper-arrow";
 import { LibraryDialog } from "./library-dialog";
 import { cosmeticAchievements } from "../domain/cosmetic-achievements";
 import { useStoredProfile } from "../hooks/use-stored-profile";
@@ -36,6 +39,9 @@ export function NotebookShelf({
   const earned = cosmeticAchievements(english, profile.achievementHistory);
   const [covers, setCovers] = useState<Record<string, NotebookCoverStyle>>({});
   const [category, setCategory] = useState<"details" | "covers">("details");
+  const [folderStyles, setFolderStyles] = useState<Partial<Record<string, LibraryFolderStyle>>>({});
+  const [removedFolders, setRemovedFolders] = useState<string[]>([]);
+  const folders = workspace.libraryCollections ?? [];
   const [editing, setEditing] = useState(false);
   const [draftName, setDraftName] = useState("");
   const [removed, setRemoved] = useState<string[]>([]);
@@ -63,11 +69,14 @@ export function NotebookShelf({
   }
   const books = workspace.notebooks.filter((book) => !book.kind);
   const visible = books.filter((book) => !removed.includes(book.id));
-  const name = editing ? draftName : (workspace.notebookShelfName ?? "");
+  const shelfName = workspace.notebookShelfName ?? workspace.libraryShelfName ?? "";
+  const name = editing ? draftName : shelfName;
   const changed =
     Object.keys(covers).length > 0 ||
-    draftName !== (workspace.notebookShelfName ?? "") ||
-    removed.length > 0;
+    draftName !== shelfName ||
+    removed.length > 0 ||
+    removedFolders.length > 0 ||
+    Object.keys(folderStyles).length > 0;
   function finish(save: boolean) {
     if (save) {
       dispatch({ type: "notebook/shelf-named", name: draftName });
@@ -75,16 +84,24 @@ export function NotebookShelf({
         if (!removed.includes(id) && notebookCoverUnlocked(coverStyle, earned))
           dispatch({ type: "notebook/organized", id, changes: { coverStyle } });
       }
+      for (const folder of folders) {
+        const style = folderStyles[folder.id];
+        if (style && !removedFolders.includes(folder.id))
+          dispatch({ type: "library/collection-saved", collection: { ...folder, style } });
+      }
+      for (const id of removedFolders) dispatch({ type: "library/collection-removed", id });
       if (removed.length) dispatch({ type: "notebook/removed", ids: removed });
     }
     setCovers({});
     setEditing(false);
+    setFolderStyles({});
+    setRemovedFolders([]);
     setRemoved([]);
   }
   function begin() {
     setCovers({});
     setInstalling(0);
-    setDraftName(workspace.notebookShelfName ?? "");
+    setDraftName(shelfName);
     setRemoved([]);
     setEditing(true);
   }
@@ -94,121 +111,92 @@ export function NotebookShelf({
       aria-label={uiText(1364)}
     >
       <div className="notebook-shelves">
-        {(books.length > 0 || editing) && (
-          <div className="shelf-editor-tools" role="group" aria-label={uiText(3769)}>
-            {editing && (
-              <button
-                className="shelf-back"
-                aria-label={uiText(3770)}
-                onClick={() => finish(false)}
-              >
-                <PaperArrow back />
-              </button>
-            )}
-            <div className="shelf-editor-cluster" key={editing ? "editing" : "resting"}>
-              <button
-                className="shelf-wood-button"
-                aria-label={uiText(editing ? 3771 : 3772)}
-                disabled={editing && !changed}
-                onClick={() => (editing ? finish(true) : begin())}
-              >
-                <ShelfToolIcon name={editing ? "save" : "pen"} />
-              </button>
-              {editing && (
-                <>
-                  <button
-                    className="shelf-wood-button shelf-name-tool"
-                    aria-label={uiText(3773)}
-                    onClick={() => {
-                      setInputName(draftName);
-                      setModal("name");
-                    }}
-                  >
-                    <ShelfToolIcon name="text" />
-                    <span>{uiText(3773)}</span>
-                  </button>
-                  <button
-                    className="shelf-wood-button shelf-trash"
-                    aria-label={uiText(3774)}
-                    onClick={() => setModal("delete")}
-                  >
-                    <ShelfToolIcon name="trash" />
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
+        {(books.length > 0 || folders.length > 0 || editing) && (
+          <ShelfEditorTools
+            editing={editing}
+            changed={changed}
+            onBack={() => finish(false)}
+            onPrimary={() => (editing ? finish(true) : begin())}
+            onName={() => {
+              setInputName(draftName);
+              setModal("name");
+            }}
+            onDelete={() => setModal("delete")}
+          />
         )}
-        <section className="notebook-display-shelf" aria-label={uiText(1991, [1])}>
-          {["left", "right"].map((side) => (
-            <span key={side} className={`notebook-shelf-vines is-${side}`} aria-hidden="true">
-              {Array.from({ length: 16 }, (_, index) => (
-                <i key={index} style={{ top: index * 12 }} />
-              ))}
-            </span>
-          ))}
-          {name && (
-            <div
-              key={`${name}-${installing}`}
-              className={`shelf-wood-sign${installing ? " is-installing" : ""}`}
-              aria-live="polite"
-            >
-              <span>{name}</span>
-              <i className="shelf-nail" />
-              <i className="shelf-hammer" aria-hidden="true" />
-            </div>
-          )}
-          <div className="notebook-display-shelf__books">
-            {visible.map((notebook) => (
-              <button
-                className="notebook-card notebook-spine"
-                data-cover-theme={notebookCoverTheme(covers[notebook.id] ?? notebook.coverStyle)}
-                data-notebook-drop={notebook.id}
-                type="button"
-                key={notebook.id}
-                aria-label={
-                  editing ? uiText(3775, [notebook.title]) : uiText(1813, [notebook.title])
-                }
-                onClick={() =>
-                  editing ? (setCategory("details"), setModal(notebook)) : onOpen(notebook)
-                }
-              >
-                <span className="notebook-spine__inspection" aria-hidden="true">
-                  <span className="notebook-spine__body book-cover__spine">
-                    <i />
-                    <i />
-                    <i />
-                  </span>
-                  <span className="notebook-spine__front">
-                    <strong>{notebook.title}</strong>
-                    <NotebookCover
-                      coverStyle={covers[notebook.id] ?? notebook.coverStyle}
-                      subjectColor="#7C3AED"
-                      title={notebook.title}
-                      tabs={notebookPaperTabs(notebook, workspace.notes, workspace.subjects)}
-                    />
-                  </span>
-                </span>
-              </button>
-            ))}
-            {!editing && books.length < 5 && (
-              <button
-                className="notebook-display-shelf__create"
-                aria-label={uiText(1348)}
-                onClick={onCreate}
-              >
-                <span aria-hidden="true">+</span>
-              </button>
-            )}
-            <img
-              className="notebook-shelf-cat"
-              src="/olena-shelf-sleeping.webp"
-              alt=""
-              draggable={false}
+        <NotebookShelfFrame
+          lowerShelf={
+            <LibraryShelfView
+              workspace={workspace}
+              dispatch={dispatch}
+              editing={editing}
+              styles={folderStyles}
+              removed={removedFolders}
+              onStyle={(id, style) => setFolderStyles((current) => ({ ...current, [id]: style }))}
+              onRemove={(id) => setRemovedFolders((current) => [...current, id])}
             />
-          </div>
-        </section>
-        {books.length >= 5 && (
+          }
+          label={uiText(1991, [1])}
+          sign={
+            name && (
+              <div
+                key={`${name}-${installing}`}
+                className={`shelf-wood-sign${installing ? " is-installing" : ""}`}
+                aria-live="polite"
+              >
+                <span>{name}</span>
+                <i className="shelf-nail" />
+                <i className="shelf-hammer" aria-hidden="true" />
+              </div>
+            )
+          }
+        >
+          {visible.map((notebook) => (
+            <button
+              className="notebook-card notebook-spine"
+              data-cover-theme={notebookCoverTheme(covers[notebook.id] ?? notebook.coverStyle)}
+              data-notebook-drop={notebook.id}
+              type="button"
+              key={notebook.id}
+              aria-label={editing ? uiText(3775, [notebook.title]) : uiText(1813, [notebook.title])}
+              onClick={() =>
+                editing ? (setCategory("details"), setModal(notebook)) : onOpen(notebook)
+              }
+            >
+              {editing && (
+                <span className="shelf-item-pencil" aria-hidden="true">
+                  <ShelfToolIcon name="pen" />
+                </span>
+              )}
+              <span className="notebook-spine__inspection" aria-hidden="true">
+                <span className="notebook-spine__body book-cover__spine">
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                <span className="notebook-spine__front">
+                  <strong>{notebook.title}</strong>
+                  <NotebookCover
+                    coverStyle={covers[notebook.id] ?? notebook.coverStyle}
+                    subjectColor="#7C3AED"
+                    title={notebook.title}
+                    tabs={notebookPaperTabs(notebook, workspace.notes, workspace.subjects)}
+                  />
+                </span>
+              </span>
+            </button>
+          ))}
+          {!editing && books.length < 5 && (
+            <button
+              className="notebook-display-shelf__create"
+              aria-label={uiText(1348)}
+              onClick={onCreate}
+            >
+              <span aria-hidden="true">+</span>
+            </button>
+          )}
+        </NotebookShelfFrame>
+        {(books.length >= 5 || folders.length >= 3) && (
           <p className="notebook-shelf-pro">
             <PaperCardTitle value="EM BREVE OLENA PRO" />
           </p>
@@ -260,6 +248,7 @@ export function NotebookShelf({
               "Ao salvar, o nome, todos os cadernos desta prateleira e suas páginas serão excluídos. Esta ação não pode ser desfeita.",
             )}
           </p>
+          <p>{uiText(2946)}</p>
           <div className="shelf-dialog-actions">
             <button className="secondary-button" onClick={closeModal}>
               {uiText("Cancelar")}
@@ -268,6 +257,7 @@ export function NotebookShelf({
               className="shelf-wood-button"
               onClick={() => {
                 setRemoved(books.map((book) => book.id));
+                setRemovedFolders(folders.map((folder) => folder.id));
                 setDraftName("");
                 closeModal();
               }}

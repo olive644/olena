@@ -89,10 +89,7 @@ const NAVIGATION_SECTIONS: readonly { label: string; items: readonly NavigationI
     },
     {
       label: uiText(1610),
-      items: [
-        { view: "library", label: uiText(1311), icon: "library" },
-        { view: "notes", label: uiText(652), mobileLabel: uiText(652), icon: "notes" },
-      ],
+      items: [{ view: "library", label: uiText(1311), icon: "library" }],
     },
   ]);
 

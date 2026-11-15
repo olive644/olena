@@ -832,7 +832,9 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
           isRecord(item) &&
           isString(item["id"]) &&
           isString(item["title"]) &&
-          ["moon", "sun", "book"].includes(String(item["motif"])),
+          ["moon", "sun", "book"].includes(String(item["motif"])) &&
+          (item["style"] === undefined ||
+            ["classic", "pride", "mathematics", "english"].includes(String(item["style"]))),
       ))
   )
     return false;

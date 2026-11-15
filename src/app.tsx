@@ -52,7 +52,6 @@ const AccountLoadFailed = lazy(() =>
   })),
 );
 const NotFoundView = lazy(() => import("./views/not-found-view"));
-const LibraryView = lazy(() => import("./views/library-view"));
 const LessonBuilderView = lazy(() => import("./views/lesson-builder-view"));
 const NotesView = lazy(() => import("./views/notes-view"));
 const ActivityBankView = lazy(() => import("./views/activity-bank-view"));
@@ -90,10 +89,6 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   useLanguage();
 
   const [moreOpen, setMoreOpen] = useState(false);
-  const [libraryMaterialId, setLibraryMaterialId] = useState(
-    () => new URLSearchParams(window.location.search).get("material")?.slice(0, 160) ?? "",
-  );
-  const [focusMaterialId, setFocusMaterialId] = useState("");
   const [view, setView] = useAppView("today");
   useEffect(() => {
     const open = () => setView("notifications");
@@ -279,7 +274,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
             {uiText(3713)}
           </p>
         )}
-        <Sidebar view={view} onNavigate={setView} />
+        <Sidebar view={view === "notes" ? "library" : view} onNavigate={setView} />
         {workspace.events.some((event) => event.reminders?.length) && (
           <Suspense fallback={null}>
             <AgendaReminders
@@ -314,36 +309,14 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
             <FocusView
               workspace={workspace}
               dispatch={dispatch}
-              initialMaterialId={focusMaterialId}
-              onMaterial={(id) => {
-                setLibraryMaterialId(id);
-                setView("library");
-              }}
+              onMaterial={() => setView("library")}
             />
           )}
-          {view === "notes" && (
+          {(view === "notes" || view === "library") && (
             <NotesView workspace={workspace} dispatch={dispatch} cloud={cloud} />
           )}
           {view === "lesson-builder" && <LessonBuilderView onBack={() => setView("today")} />}
           {view === "learn" && <LearnView workspace={workspace} dispatch={dispatch} />}
-          {view === "library" && (
-            <LibraryView
-              workspace={workspace}
-              dispatch={dispatch}
-              scope={cloud.email ?? "guest"}
-              initialMaterialId={libraryMaterialId}
-              onFocus={(id) => {
-                setFocusMaterialId(id);
-                setView("focus");
-              }}
-              onNotebook={(id, page) => {
-                setView("notes");
-                const params = new URLSearchParams({ caderno: id });
-                if (page) params.set("folha", page);
-                window.history.replaceState(null, "", `/cadernos?${params}`);
-              }}
-            />
-          )}
           {view === "activity-bank" && <ActivityBankView onBack={() => setView("today")} />}
           {view === "profile" && (
             <ProfileView
