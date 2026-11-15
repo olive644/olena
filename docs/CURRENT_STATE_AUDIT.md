@@ -5094,3 +5094,17 @@ Origem: a investigação do Canva mostrou, nos scripts carregados pela página, 
 - **Prova.** Testes novos para a regra, o raio e a validação; conferi o desenho antigo contra o novo em um canvas de comparação rodando o `drawStroke` real (Fineliner, Caneta-tinteiro e Pincel macio, mão constante e lenta seguida de rápida). Larguras medidas em mão lenta e rápida: Fineliner 3,9 e 2,7 (antes 3,25), Caneta-tinteiro 8,7 e 4,6 (antes 6,5), Pincel macio 30 e 22 (antes 24).
 - **Seis pincéis da caneta.** A regra vale para os seis (Fineliner, Caneta-tinteiro, Pincel macio, Caneta de caligrafia, Esferográfica e Lápis). Em mouse e dedo a ponta afina em todos; Lápis varia mais com a velocidade que a Esferográfica; a Caligrafia depende da direção da ponta chata, então só ganha o afinamento das pontas. Sem a marca, o raio é o de sempre. As medidas de largura acima são só dos três primeiros. Registro: minha primeira leitura dos pincéis veio de uma cópia antiga e listou só três.
 - **Não verificado.** Desenhar de verdade no estúdio com mouse e com dedo em celular (só unidade e canvas de comparação), a sensação em tela e o ajuste fino das constantes (faixa de pressão, taper e velocidade de referência), que merecem teste de uso. O traço salvo guarda os pontos reais, então ajustar as constantes depois muda também os traços novos já salvos com a marca.
+
+## Post-its e tabelas escuros na folha noite, 15/11/2026
+
+Pedido do feedback de usuário (ponto 10): na folha "Escura", post-its e tabelas continuavam em tons de papel claro e destoavam. Agora, quando a cor da folha é noite, post-its amarelo, azul e lilás usam tons escuros (`#5d4f22`, `#2f4a58`, `#4a3a6b`) com texto `#fff9ef`; a tabela usa fundo `#33293f`, grade clara e texto claro. A regra vale no editor (CSS por `data-paper-color` no `.handwriting-page-shell`, em `src/notebook-editor.css`) e no desenho do canvas usado em miniatura, exportação e impressão (`renderPage`, `stickyColor(color, dark)`). Folhas clara e envelhecida não mudam.
+
+- Provas: `src/components/handwriting-canvas-table.test.ts` (cores usadas no canvas, claro e noite) e `e2e/notebook-night-sticky.spec.ts` (cores calculadas no DOM, PC e celular, ida e volta entre noite e clara). Captura conferida no PC.
+- Limites: modo claro e escuro do app não mudam este desenho, pois a cor depende só da folha. Contraste conferido por tons, sem medição automática de razão. Não verificado em aparelho real.
+
+## Caderno vazio sem folha falsa na esquerda, 15/11/2026
+
+Pedido do feedback (ponto 5): no caderno sem folhas, a página da esquerda mostrava um papel pautado que parecia existir, ao lado de "Criar primeira folha". Agora, com o caderno aberto e sem páginas, a esquerda vira a guarda do caderno (mesmo acabamento do lado direito, `.notebook-endpaper`) com uma fita roxa marcadora (`.notebook-endpaper-ribbon`). O papel pautado continua só na miniatura compacta (`compactPreview`), onde não é clicável.
+
+- Prova: `e2e/notebook-empty-endpaper.spec.ts` (nenhum `.notebook-empty-paper` no par de páginas, fita roxa mais alta que larga; PC e celular). Captura conferida no PC.
+- Limite: não verificado no modo escuro do app nem em aparelho real; a guarda usa cores fixas de papel.

@@ -14,7 +14,8 @@ import {
   type Stroke,
 } from "./handwriting-types";
 
-export function stickyColor(color: HandwritingSticky["color"]): string {
+export function stickyColor(color: HandwritingSticky["color"], dark = false): string {
+  if (dark) return color === "blue" ? "#2f4a58" : color === "lilac" ? "#4a3a6b" : "#5d4f22";
   return color === "blue" ? "#d9ecf4" : color === "lilac" ? "#e9ddfb" : "#fff0b5";
 }
 
