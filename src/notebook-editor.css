@@ -1770,22 +1770,19 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
   color: #fff9ef;
 }
 
-/* Barra de cores rápidas: presa ao topo da área de escrita, sem ocupar espaço na folha. O rodapé
-   pertence à tira de folhas. */
+/* Barra de cores rápidas: faixa própria acima da folha (não cobre a escrita) que fica presa ao topo
+   ao rolar. A faixa não pega toque; só a barra pega. O rodapé pertence à tira de folhas. */
 .handwriting-quick-colors-dock {
   position: sticky;
-  top: 8px;
+  top: 0;
   z-index: 6;
-  height: 0;
-  overflow: visible;
+  padding: 8px 8px 6px;
   pointer-events: none;
 }
 .handwriting-quick-colors {
-  position: absolute;
-  top: 0;
-  left: 8px;
   display: flex;
-  max-width: calc(100% - 16px);
+  width: fit-content;
+  max-width: 100%;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
@@ -1853,10 +1850,7 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
   color: #fff9ef;
 }
 @media (max-width: 680px) {
-  /* No celular a coluna dos papéis ocupa os 116px da esquerda: a barra começa depois dela. */
   .handwriting-quick-colors {
-    left: 124px;
-    max-width: calc(100% - 132px);
     gap: 4px;
     padding: 4px 6px;
   }

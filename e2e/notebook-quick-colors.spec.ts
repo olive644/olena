@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { activateHandwritingPen, openHandwritingA4 } from "./notebook-helpers";
+import { compositeColorAt, openHandwritingA4 } from "./notebook-helpers";
 
 // Barra de cores rápidas: cores fixas, seletor livre e conta-gotas que lê a cor da folha.
 test("barra de cores rápidas com conta-gotas que lê a folha e lembra a cor", async ({ page }) => {
@@ -12,8 +12,10 @@ test("barra de cores rápidas com conta-gotas que lê a folha e lembra a cor", a
   await page.locator(".notebook-spine").first().click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
-  await activateHandwritingPen(page);
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
+  // Só escolhe a caneta: o painel de opções (que a helper abriria) cobre a folha no celular.
+  const pen = editor.getByRole("button", { name: "Caneta", exact: true });
+  if ((await pen.getAttribute("aria-pressed")) !== "true") await pen.click();
   // No celular o seletor de papel abre aberto; fecha para ver a área de escrita.
   const picker = editor.getByRole("button", { name: "Tipo de papel", exact: true });
   if ((await picker.getAttribute("aria-expanded")) === "true") await picker.click();
@@ -41,15 +43,33 @@ test("barra de cores rápidas com conta-gotas que lê a folha e lembra a cor", a
   await dropper.click();
   await expect(dropper).toHaveAttribute("aria-pressed", "true");
   const shell = (await editor.locator(".handwriting-page-shell").boundingBox())!;
-  await page.mouse.click(shell.x + shell.width * 0.5, shell.y + shell.height * 0.5);
+  // Um ponto da folha que esteja na área visível (no celular a folha é mais alta que a tela).
+  const view = (await editor.locator(".handwriting-viewport").boundingBox())!;
+  const clickX = Math.max(shell.x + 20, view.x + view.width * 0.5);
+  const clickY = Math.max(shell.y + 20, view.y + view.height * 0.4);
+  await page.mouse.click(clickX, clickY);
   await expect(dropper).toHaveAttribute("aria-pressed", "false");
-  // Papel claro: #fffdf7. Fica como cor recente (não é uma das fixas) e já vem selecionada.
-  const paper = bar.getByRole("button", { name: "Tinta #fffdf7", exact: true });
-  await expect(paper).toBeVisible();
-  await expect(paper).toHaveAttribute("aria-pressed", "true");
+  // A cor lida tem de ser a que a folha mostra naquele ponto (papel + pauta somados).
+  const [red = 0, green = 0, blue = 0] = await compositeColorAt(
+    page,
+    ((clickX - shell.x) / shell.width) * 3200,
+    ((clickY - shell.y) / shell.height) * 2400,
+  );
+  const expected = `#${[red, green, blue].map((part) => part.toString(16).padStart(2, "0")).join("")}`;
+  // Fica como cor recente (se não for uma das fixas) e já vem selecionada.
+  const picked = bar.getByRole("button", { name: `Tinta ${expected}`, exact: true });
+  await expect(picked).toBeVisible();
+  await expect(picked).toHaveAttribute("aria-pressed", "true");
   await expect
     .poll(() => page.evaluate(() => localStorage.getItem("olena.handwriting.recent-colors")))
-    .toBe(JSON.stringify(["#fffdf7"]));
+    .toBe(JSON.stringify([expected]));
+
+  // Esc cancela o conta-gotas sem mudar a cor.
+  await dropper.click();
+  await expect(dropper).toHaveAttribute("aria-pressed", "true");
+  await page.keyboard.press("Escape");
+  await expect(dropper).toHaveAttribute("aria-pressed", "false");
+  await expect(picked).toHaveAttribute("aria-pressed", "true");
 
   // Tema escuro: a barra troca o papel claro por tons escuros, com contorno claro nas cores.
   await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
@@ -57,12 +77,5 @@ test("barra de cores rápidas com conta-gotas que lê a folha e lembra a cor", a
   await expect(pink).toHaveCSS("border-top-color", "rgb(255, 249, 239)");
   await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
 
-  if (process.env.QC_SHOT) await bar.screenshot({ path: process.env.QC_SHOT });
-
-  // Esc cancela o conta-gotas sem mudar a cor.
-  await dropper.click();
-  await expect(dropper).toHaveAttribute("aria-pressed", "true");
-  await page.keyboard.press("Escape");
-  await expect(dropper).toHaveAttribute("aria-pressed", "false");
-  await expect(paper).toHaveAttribute("aria-pressed", "true");
+  if (process.env.QC_SHOT) await page.screenshot({ path: process.env.QC_SHOT });
 });
