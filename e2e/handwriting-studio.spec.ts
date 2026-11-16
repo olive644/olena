@@ -561,7 +561,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await page.screenshot({ path: testInfo.outputPath("estojo-restaurado.png") });
   await dialog.getByRole("button", { name: "Janela de escrita ampliada" }).click();
   await expect(dialog.getByRole("region", { name: "Janela de escrita ampliada" })).toBeVisible();
-  await dialog.getByRole("button", { name: "Próxima linha" }).click();
+  await expect(dialog.getByRole("button", { name: "Próxima linha" })).toHaveCount(0);
   const writingCanvas = dialog.getByLabel("Área ampliada para escrever com dedo ou caneta");
   const bounds = await writingCanvas.boundingBox();
   expect(bounds).not.toBeNull();

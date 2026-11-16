@@ -3,6 +3,7 @@ import { uiText, useLanguage } from "../i18n/runtime";
 import { saveStudentResume } from "../data/student-resume";
 import { NotebookPageBook } from "../components/notebook-page-book";
 import { TextNoteEditor } from "../components/text-note";
+import { NoteFlashcardTools } from "../components/library-links";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 import { mergeNotebookPages, type NotebookCollabPage } from "../domain/notebook-collab";
 import { NotebookPageIndex } from "../components/notebook-page-index";
@@ -578,6 +579,16 @@ export function NotesView({
       {journey && <NotebookJourney journey={journey} onDone={finishJourney} />}
       {pageJourney && <NotebookPageJourney journey={pageJourney} onDone={finishPageJourney} />}
       <PageHeader showUpdates={false} />
+      {(() => {
+        // Notas de texto mantêm cartões e fontes; o caderno manuscrito não repete esse bloco.
+        if (activeNotebook?.kind !== "note" && activePage?.kind !== "note") return null;
+        const note = workspace.notes.find(
+          (item) => item.id === (activePage?.id ?? activeNotebook?.pageIds[0]),
+        );
+        return note ? (
+          <NoteFlashcardTools key={note.id} note={note} workspace={workspace} dispatch={dispatch} />
+        ) : null;
+      })()}
       {initialJoinCode && collaboration.state.error && (
         <div role="alert">
           <p>{collaboration.state.error}</p>

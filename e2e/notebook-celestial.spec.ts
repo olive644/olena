@@ -30,27 +30,28 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   const card = page.locator(".notebook-card").filter({ hasText: "Meu atlas de ideias" });
   await card.click();
   await expect(page.locator(".notebook-journey")).toBeVisible();
+  await expect
+    .poll(() =>
+      page.locator(".notebook-journey-clasp").evaluate((node) => node.getAnimations().length),
+    )
+    .toBeGreaterThan(0);
   const openingPhases = await page.locator(".notebook-journey-clasp").evaluate((node) => {
-    const effect = node.getAnimations()[0]?.effect as KeyframeEffect;
+    const effect = node.getAnimations()[0]!.effect as KeyframeEffect;
     const frames = effect.getKeyframes();
     const duration = Number(effect.getTiming().duration);
     const start = frames[1]!.computedOffset;
     const end = frames[2]!.computedOffset;
-    const carrier = node.closest(".notebook-journey")!;
-    const cover = carrier
-      .getAnimations()
-      .find((animation) =>
-        (animation.effect as KeyframeEffect)
-          .getKeyframes()
-          .some((frame) => "--cover-angle" in frame),
-      )!.effect as KeyframeEffect;
+    const leaf = node.closest(".notebook-journey")!.querySelector(".notebook-journey-leaf")!;
+    const cover = leaf.getAnimations()[0]!.effect as KeyframeEffect;
     return {
       claspMs: (end - start) * duration,
       claspEnd: end,
-      coverStart: cover.getKeyframes()[1]!.computedOffset,
+      coverStart: Number(cover.getTiming().delay) / duration,
+      coverFrames: cover.getKeyframes().length,
     };
   });
   expect(openingPhases.claspMs).toBeCloseTo(420, 0);
+  expect(openingPhases.coverFrames).toBe(17);
   expect(openingPhases.claspEnd).toBeLessThanOrEqual(openingPhases.coverStart);
 
   await page.locator(".notebook-journey").evaluate(() =>

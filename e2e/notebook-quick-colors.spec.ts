@@ -1,11 +1,13 @@
 import { expect, test } from "@playwright/test";
-import { compositeColorAt, openHandwritingA4 } from "./notebook-helpers";
+import { activateHandwritingPen, compositeColorAt, openHandwritingA4 } from "./notebook-helpers";
 
 // Barra de cores rápidas: cores fixas, seletor livre e conta-gotas que lê a cor da folha.
 test("barra de cores rápidas com conta-gotas que lê a folha e lembra a cor", async ({ page }) => {
-  await page.addInitScript(() =>
-    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
-  );
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    // Exercita a leitura da própria folha, sem abrir o seletor nativo do sistema.
+    Object.defineProperty(window, "EyeDropper", { configurable: true, value: undefined });
+  });
   await page.goto("/cadernos");
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
@@ -13,9 +15,7 @@ test("barra de cores rápidas com conta-gotas que lê a folha e lembra a cor", a
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
-  // Só escolhe a caneta: o painel de opções (que a helper abriria) cobre a folha no celular.
-  const pen = editor.getByRole("button", { name: "Caneta", exact: true });
-  if ((await pen.getAttribute("aria-pressed")) !== "true") await pen.click();
+  await activateHandwritingPen(page);
   // No celular o seletor de papel abre aberto; fecha para ver a área de escrita.
   const picker = editor.getByRole("button", { name: "Tipo de papel", exact: true });
   if ((await picker.getAttribute("aria-expanded")) === "true") await picker.click();
@@ -74,7 +74,7 @@ test("barra de cores rápidas com conta-gotas que lê a folha e lembra a cor", a
   // Tema escuro: a barra troca o papel claro por tons escuros, com contorno claro nas cores.
   await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
   await expect(bar).toHaveCSS("background-color", "rgb(41, 36, 50)");
-  await expect(pink).toHaveCSS("border-top-color", "rgb(255, 249, 239)");
+  await expect(pink).toHaveCSS("border-top-color", "rgb(109, 95, 120)");
   await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
 
   if (process.env.QC_SHOT) await page.screenshot({ path: process.env.QC_SHOT });
