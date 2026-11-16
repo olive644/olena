@@ -33,6 +33,13 @@ export function NotebookPreferenceFields({
         ["shapeSnap", uiText(1845), uiText(722)],
         ["inkPrediction", uiText(1846), uiText(723)],
         ["penHoverPreview", uiText(724), uiText(1847)],
+        [
+          "penDiagnostics",
+          uiText("Medidor da caneta"),
+          uiText(
+            "Mostra na tela a entrada da caneta e o tempo de cada quadro enquanto você escreve, para achar travadas. Nada sai do aparelho.",
+          ),
+        ],
       ],
     ],
     [
