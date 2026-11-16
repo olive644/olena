@@ -1,4 +1,5 @@
-import { LibraryShelfView } from "../views/library-shelf-view";
+import { flushSync } from "react-dom";
+import { LibraryFolderContents, LibraryShelfView } from "../views/library-shelf-view";
 import type { LibraryFolderStyle } from "../domain/workspace";
 import { ShelfEditorTools } from "./shelf-editor-tools";
 import { ShelfToolIcon } from "./shelf-tool-icon";
@@ -37,6 +38,7 @@ export function NotebookShelf({
   const [profile] = useStoredProfile();
   const english = useEnglishProgress(workspace.practiceActivities);
   const earned = cosmeticAchievements(english, profile.achievementHistory);
+  const [openFolderId, setOpenFolderId] = useState<string>();
   const [covers, setCovers] = useState<Record<string, NotebookCoverStyle>>({});
   const [category, setCategory] = useState<"details" | "covers">("details");
   const [folderStyles, setFolderStyles] = useState<Partial<Record<string, LibraryFolderStyle>>>({});
@@ -105,6 +107,32 @@ export function NotebookShelf({
     setRemoved([]);
     setEditing(true);
   }
+  function navigateFolder(id?: string) {
+    if (
+      !document.startViewTransition ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      document.documentElement.dataset["reduceMotion"] === "true"
+    ) {
+      setOpenFolderId(id);
+      return;
+    }
+    document.startViewTransition(() => flushSync(() => setOpenFolderId(id)));
+  }
+  const openFolder = workspace.libraryCollections?.find((folder) => folder.id === openFolderId);
+  if (openFolder) {
+    return (
+      <LibraryFolderContents
+        key={openFolder.id}
+        folder={openFolder}
+        materials={workspace.materials.filter(
+          (material) => material.collectionId === openFolder.id && !material.archived,
+        )}
+        subjectId={workspace.subjects[0]?.id ?? ""}
+        dispatch={dispatch}
+        onBack={() => navigateFolder()}
+      />
+    );
+  }
   return (
     <section
       className={`notebooks-showcase${editing ? " is-editing-shelf" : ""}`}
@@ -130,6 +158,7 @@ export function NotebookShelf({
               workspace={workspace}
               dispatch={dispatch}
               editing={editing}
+              onOpen={navigateFolder}
               styles={folderStyles}
               removed={removedFolders}
               onStyle={(id, style) => setFolderStyles((current) => ({ ...current, [id]: style }))}

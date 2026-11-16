@@ -46,7 +46,7 @@ export function createCloudflareTeacher(
                 content: helenaModelInput(request),
               },
             ],
-            max_tokens: 700,
+            max_tokens: request.capability === "summarize" ? 2400 : 700,
             stream: true,
           }),
         },
@@ -74,7 +74,7 @@ export function createCloudflareTeacher(
                 content: helenaModelInput(request),
               },
             ],
-            max_tokens: 700,
+            max_tokens: request.capability === "summarize" ? 2400 : 700,
           }),
         },
       );

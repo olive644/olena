@@ -480,8 +480,12 @@
   display: grid;
   gap: 10px;
 }
-:root body .shelf-wood-dialog input,
-:root[data-theme] body .notebooks-main .shelf-wood-dialog input {
+:root body .shelf-wood-dialog input:not(.library-study-confirm input[type="checkbox"]),
+:root[data-theme]
+  body
+  .notebooks-main
+  .shelf-wood-dialog
+  input:not(.library-study-confirm input[type="checkbox"]) {
   width: 100%;
   min-height: 48px;
   background: #fff9ef;
