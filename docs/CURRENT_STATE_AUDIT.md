@@ -5180,3 +5180,27 @@ Defeito relatado pelo proprietário com captura do celular: riscos continuavam a
 - Efeito colateral aceito: a metade de baixo do `::after` é a aba da dobra (papel) e agora também fica acima da tinta; um triângulo de uns 17px a 34px sob a aba não mostra tinta.
 - Provas: `handwriting-fold.test.ts` (geometria do triângulo), `e2e/handwriting-fold.spec.ts` (um traço arrastado para dentro da dobra não deixa tinta no triângulo, 252 pixels sem a correção; o `::after` fica acima das camadas e não pega toque) e `e2e/handwriting-layer-cost.spec.ts` (clip-path continua só no canvas de toque).
 - Limites: não verificado no celular real; o teste usa mouse no navegador de teste. O corte vale para a dobra de 34px em tela; ao dar zoom a dobra desenhada tem sempre 34px e o triângulo de bloqueio acompanha.
+
+## Cadernos dentro da Biblioteca, ajuste dos testes, 16/11/2026
+
+Decisão do proprietário: a aba Cadernos saiu do menu e os cadernos passaram a viver na prateleira da Biblioteca, junto com as pastas. A rota `/cadernos` continua abrindo essa prateleira.
+
+**O que mudou nos testes**
+
+- Os testes unitários e e2e que clicavam no item "Cadernos" do menu passam a abrir a prateleira pela rota (`openNotebooksView` nos e2e, `openNotebooks` em `src/app.test.tsx`). Contagens do menu (6 itens no PC, 1 item extra em "Mais ferramentas" no celular) atualizadas.
+- O lápis que pula sobre cada caderno no modo de edição da prateleira voltou a aparecer na estante de cadernos.
+- O e2e de imagem local agora cria uma pasta, entra nela e envia a imagem por "Enviar documento", conferindo que persiste ao recarregar.
+- O e2e da nota com fonte mantém: criar flashcard do trecho e vincular material da Biblioteca. Saiu dele a parte de abrir o material por `/biblioteca?material=...` e a busca por "algebra".
+
+**Funções da tela antiga da Biblioteca que não existem na prateleira nova (testes removidos)**
+
+- Criar flashcard manual (frente e verso) e a lista de flashcards criados à mão.
+- "Adicionar material" com título e tipo, e a busca "Buscar no acervo".
+- Abrir um material pelo link `/biblioteca?material=...` e o botão "Ver fonte" na folha.
+
+`src/views/library-view.tsx` continua no repositório, mas nada o renderiza. Foi removido o teste unitário e o e2e que dependiam dele para criar flashcard. Se alguma dessas funções precisar voltar, deve entrar na pasta da nova Biblioteca, com teste novo.
+
+**Limites**
+
+- Os e2e foram rodados localmente nos arquivos afetados (app, shelf-edit, shelf-edit-hint, showcase, library-connections), com resultado verde; a suíte inteira roda no CI.
+- Os 8 testes de `src/data/listening-audio.test.ts` falham neste ambiente sem relação com esta mudança (`object.stream is not a function`).

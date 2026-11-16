@@ -60,27 +60,6 @@ function studentSpaceButton(page: Page, projectName: string) {
   });
 }
 
-async function navigateToTool(
-  page: Page,
-  projectName: string,
-  desktopLabel: string,
-  mobileLabel: string,
-) {
-  if (projectName === "mobile") {
-    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-    await page
-      .getByRole("dialog", { name: "Mais ferramentas" })
-      .getByRole("button", { name: mobileLabel, exact: true })
-      .click();
-    return;
-  }
-
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: desktopLabel, exact: true })
-    .click();
-}
-
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
@@ -276,28 +255,6 @@ test("organiza uma tarefa e mantém o dado após recarregar", async ({ page }, t
 test("oculta por enquanto as ferramentas do professor", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Planos de aula" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Banco de atividades" })).toHaveCount(0);
-});
-
-test("preserva um flashcard ao explorar o protótipo", async ({ page }, testInfo) => {
-  await navigateToTool(page, testInfo.project.name, "Biblioteca", "Biblioteca");
-  await page.getByRole("button", { name: "Criar flashcard", exact: true }).click();
-  const dialog = page.getByRole("dialog", { name: "Criar flashcard", exact: true });
-  await dialog.getByLabel("Frente").fill("Improve");
-  await dialog.getByLabel("Verso").fill("Melhorar");
-  await dialog.getByRole("button", { name: "Criar flashcard", exact: true }).click();
-  await expect(dialog).toHaveCount(0);
-  await expect(page.getByText("Improve", { exact: true })).toBeVisible();
-  await studentSpaceButton(page, testInfo.project.name).click();
-  await page
-    .getByRole("navigation", {
-      name: testInfo.project.name === "mobile" ? "Navegação móvel" : "Navegação principal",
-    })
-    .getByRole("button", { name: "Praticar", exact: true })
-    .click();
-  await page.getByRole("button", { name: "Explorar Matemática" }).click();
-  await page.getByRole("button", { name: "Voltar às ilhas" }).click();
-  await navigateToTool(page, testInfo.project.name, "Biblioteca", "Biblioteca");
-  await expect(page.getByText("Improve", { exact: true })).toBeVisible();
 });
 
 test("mantém os módulos acessíveis e sem rolagem horizontal no celular", async ({

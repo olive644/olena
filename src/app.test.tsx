@@ -404,24 +404,4 @@ describe("App", () => {
     expect(screen.queryByRole("button", { name: "Planos de aula" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Banco de atividades" })).toBeNull();
   });
-
-  it("preserva flashcards locais ao abrir o protótipo de Matemática", async () => {
-    localStorage.setItem("helena.soloProgress", "2");
-    render(<App />);
-    navigate("Biblioteca");
-    fireEvent.click(await screen.findByRole("button", { name: "Criar flashcard" }));
-    const front = await screen.findByLabelText("Frente");
-    fireEvent.change(front, { target: { value: "Improve" } });
-    fireEvent.change(screen.getByLabelText("Verso"), { target: { value: "Melhorar" } });
-    fireEvent.click(
-      within(screen.getByRole("dialog")).getByRole("button", { name: /criar flashcard/i }),
-    );
-    expect(screen.getByText("Improve")).toBeTruthy();
-
-    navigate("Praticar");
-    fireEvent.click(await screen.findByRole("button", { name: "Explorar Matemática" }));
-    fireEvent.click(screen.getByRole("button", { name: "Voltar às ilhas" }));
-    navigate("Biblioteca");
-    expect(await screen.findByText("Improve")).toBeTruthy();
-  });
 });
