@@ -489,7 +489,7 @@ export function LibraryFolderContents({
         />
       </label>
       <small aria-live="polite">
-        {selectedSources.length} de {maxSelectedSources} fontes selecionadas
+        {uiText("{0} de {1} fontes selecionadas", [selectedSources.length, maxSelectedSources])}
       </small>
     </div>
   );
@@ -497,10 +497,15 @@ export function LibraryFolderContents({
   return (
     <section className="library-folder-contents" aria-label={folder.title}>
       <header>
-        <button type="button" className="shelf-back" aria-label="Voltar à estante" onClick={onBack}>
+        <button
+          type="button"
+          className="shelf-back"
+          aria-label={uiText("Voltar à estante")}
+          onClick={onBack}
+        >
           <PaperArrow back />
         </button>
-        <nav aria-label="Seções da pasta">
+        <nav aria-label={uiText("Seções da pasta")}>
           {folderSections.map((label) => (
             <button
               className="shelf-wood-button"
@@ -535,11 +540,11 @@ export function LibraryFolderContents({
               aria-expanded={showSources}
               onClick={() => setShowSources(!showSources)}
             >
-              <img src="/room-icons/add.svg" alt="" /> Adicionar fontes
+              <img src="/room-icons/add.svg" alt="" /> {uiText("Adicionar fontes")}
             </button>
             <div className="library-source-drawer" data-open={showSources} inert={!showSources}>
               <div>
-                <div className="library-study-type-menu" aria-label="Tipos de fonte">
+                <div className="library-study-type-menu" aria-label={uiText("Tipos de fonte")}>
                   <button
                     type="button"
                     className="shelf-wood-button"
@@ -548,7 +553,7 @@ export function LibraryFolderContents({
                       input.current?.click();
                     }}
                   >
-                    <img src="/room-icons/upload.svg" alt="" /> Enviar documento
+                    <img src="/room-icons/upload.svg" alt="" /> {uiText("Enviar documento")}
                   </button>
                   {(
                     [
@@ -577,13 +582,13 @@ export function LibraryFolderContents({
             ) : (
               <div className="library-folder-upload">
                 <img src="/room-icons/upload.svg" alt="" width="36" height="36" />
-                <p>Envie PDFs ou imagens para começar</p>
+                <p>{uiText("Envie PDFs ou imagens para começar")}</p>
                 <button
                   type="button"
                   className="shelf-wood-button"
                   onClick={() => input.current?.click()}
                 >
-                  Escolher um arquivo
+                  {uiText("Escolher um arquivo")}
                 </button>
               </div>
             )}
@@ -592,8 +597,12 @@ export function LibraryFolderContents({
               {showStudyTypes && selectedSources.length > 0 && (
                 <div className="library-study-type-menu" id="library-study-types">
                   <p>
-                    Criar a partir de {selectedSources.length}{" "}
-                    {selectedSources.length === 1 ? "fonte" : "fontes"}
+                    {uiText(
+                      selectedSources.length === 1
+                        ? "Criar a partir de {0} fonte"
+                        : "Criar a partir de {0} fontes",
+                      [selectedSources.length],
+                    )}
                   </p>
                   {(Object.keys(studySections) as Array<keyof typeof studySections>).map(
                     (label) => (
@@ -620,7 +629,7 @@ export function LibraryFolderContents({
                 aria-expanded={showStudyTypes && selectedSources.length > 0}
                 onClick={() => setShowStudyTypes(!showStudyTypes)}
               >
-                <img src="/room-icons/add.svg" alt="" /> Criar material de estudo
+                <img src="/room-icons/add.svg" alt="" /> {uiText("Criar material de estudo")}
               </button>
             </div>
           </>
@@ -630,7 +639,7 @@ export function LibraryFolderContents({
               <div role="status" className="library-summary-card library-summary-loading">
                 <span>
                   <img src="/room-icons/manual-words.svg" alt="" width="26" height="26" />
-                  Criando resumo…
+                  {uiText("Criando resumo…")}
                 </span>
                 <span className="library-summary-loading-track" aria-hidden="true" />
               </div>
@@ -664,7 +673,7 @@ export function LibraryFolderContents({
                     >
                       <input
                         name="title"
-                        aria-label="Nome do resumo"
+                        aria-label={uiText("Nome do resumo")}
                         required
                         maxLength={80}
                         defaultValue={summary.title}
@@ -675,7 +684,11 @@ export function LibraryFolderContents({
                           }
                         }}
                       />
-                      <button type="submit" className="shelf-wood-button" aria-label="Salvar nome">
+                      <button
+                        type="submit"
+                        className="shelf-wood-button"
+                        aria-label={uiText("Salvar nome")}
+                      >
                         <ShelfToolIcon name="save" />
                       </button>
                     </form>
@@ -707,7 +720,7 @@ export function LibraryFolderContents({
                           setRenamingId(summary.id);
                         }}
                       >
-                        <ShelfToolIcon name="pen" /> Renomear
+                        <ShelfToolIcon name="pen" /> {uiText("Renomear")}
                       </button>
                       <button
                         type="button"
@@ -717,7 +730,7 @@ export function LibraryFolderContents({
                           removeMaterial(summary.id);
                         }}
                       >
-                        <ShelfToolIcon name="trash" /> Excluir
+                        <ShelfToolIcon name="trash" /> {uiText("Excluir")}
                       </button>
                     </div>
                   </details>
@@ -752,8 +765,9 @@ export function LibraryFolderContents({
             {sourceType === "Goodnotes" ? (
               <>
                 <p>
-                  No Goodnotes, abra o caderno, escolha Compartilhar e exporte como PDF. Selecione o
-                  PDF exportado para adicioná-lo à pasta.
+                  {uiText(
+                    "No Goodnotes, abra o caderno, escolha Compartilhar e exporte como PDF. Selecione o PDF exportado para adicioná-lo à pasta.",
+                  )}
                 </p>
                 <button
                   type="button"
@@ -763,7 +777,7 @@ export function LibraryFolderContents({
                     input.current?.click();
                   }}
                 >
-                  Escolher PDF
+                  {uiText("Escolher PDF")}
                 </button>
               </>
             ) : (
@@ -803,21 +817,21 @@ export function LibraryFolderContents({
               >
                 {sourceType === "YouTube" ? (
                   <label>
-                    Link do vídeo <input name="content" type="url" required />
+                    {uiText("Link do vídeo")} <input name="content" type="url" required />
                   </label>
                 ) : (
                   <>
                     <label>
-                      Título <input name="title" maxLength={80} required />
+                      {uiText("Título")} <input name="title" maxLength={80} required />
                     </label>
                     <label>
-                      Nota <textarea name="content" maxLength={20000} required />
+                      {uiText("Nota")} <textarea name="content" maxLength={20000} required />
                     </label>
                   </>
                 )}
                 {error && <p role="alert">{error}</p>}
                 <button type="submit" className="shelf-wood-button">
-                  Adicionar fonte
+                  {uiText("Adicionar fonte")}
                 </button>
               </form>
             )}
@@ -846,7 +860,7 @@ export function LibraryFolderContents({
                 }}
               >
                 <img src="/room-icons/manual-words.svg" alt="" width="22" height="22" />
-                Gerar resumo estruturado com a Olena
+                {uiText("Gerar resumo estruturado com a Olena")}
               </button>
             )}
             <div className="library-summary-paper">
@@ -884,7 +898,7 @@ export function LibraryFolderContents({
             }
           >
             <div className="library-study-confirm-tools">
-              <span>Selecionar fontes</span>
+              <span>{uiText("Selecionar fontes")}</span>
               {materials.length > 0 && (
                 <button
                   type="button"
@@ -911,14 +925,14 @@ export function LibraryFolderContents({
                   setSection("Fontes");
                 }}
               >
-                Adicionar fontes
+                {uiText("Adicionar fontes")}
               </button>
             )}
             {creating === "Resumo" && (
-              <p>Ao gerar, o texto das fontes selecionadas é enviado à Olena.</p>
+              <p>{uiText("Ao gerar, o texto das fontes selecionadas é enviado à Olena.")}</p>
             )}
             {creating !== "Resumo" && (
-              <p>A geração deste tipo de material ainda não está disponível.</p>
+              <p>{uiText("A geração deste tipo de material ainda não está disponível.")}</p>
             )}
             <button
               type="button"
@@ -926,7 +940,7 @@ export function LibraryFolderContents({
               disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
               onClick={() => void generateSummary()}
             >
-              Gerar
+              {uiText("Gerar")}
             </button>
           </LibraryDialog>
         )}
