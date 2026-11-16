@@ -3901,5 +3901,6 @@
   "Generate",
   "{0} of {1} sources selected",
   "Create from {0} source",
-  "Create from {0} sources"
+  "Create from {0} sources",
+  "Folder name"
 ]

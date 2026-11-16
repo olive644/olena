@@ -234,7 +234,7 @@ export function LibraryShelfView({
         >
           <h2 id="library-folder-title">{uiText(1985)}</h2>
           <label>
-            {uiText(713)}
+            {uiText("Nome da pasta")}
             <input name="folderName" required maxLength={80} />
           </label>
           <div className="shelf-dialog-actions">
