@@ -2059,3 +2059,32 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
       crosshair;
   }
 }
+
+/* Medidor da caneta (diagnóstico opcional): fixo na tela, sem ocupar lugar na folha nem receber toques. */
+.handwriting-pen-meter {
+  position: fixed;
+  top: 96px;
+  left: 8px;
+  z-index: 60;
+  display: grid;
+  gap: 2px;
+  max-width: min(320px, calc(100vw - 16px));
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font:
+    600 11px/1.35 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.handwriting-pen-meter strong {
+  font-size: 12px;
+}
+.handwriting-pen-meter [data-slow] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}

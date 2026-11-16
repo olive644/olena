@@ -11,6 +11,7 @@ export const DEFAULT_NOTEBOOK_PREFERENCES = {
   shapeSnap: true,
   inkPrediction: true,
   penHoverPreview: true,
+  penDiagnostics: false,
   penOnly: false,
   penBarrelErases: false,
   penTailErases: true,

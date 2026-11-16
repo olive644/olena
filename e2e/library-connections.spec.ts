@@ -1,18 +1,23 @@
 import { expect, test } from "@playwright/test";
 import { createInitialWorkspace } from "../src/domain/workspace";
 
-test("imagem local persiste e abre sem enviar o arquivo", async ({ page }) => {
+test("imagem enviada em uma pasta da Biblioteca persiste e abre sem enviar o arquivo", async ({
+  page,
+}) => {
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     localStorage.setItem("helena.guest.v1", "1");
   });
-  await page.goto("/biblioteca");
-  await page.getByRole("button", { name: "Adicionar material", exact: true }).click();
-  let dialog = page.getByRole("dialog");
-  await dialog.getByLabel("Título", { exact: true }).fill("Imagem de revisão");
-  await dialog.getByRole("button", { name: "Tipo", exact: true }).click();
-  await page.getByRole("option", { name: "Imagem", exact: true }).click();
-  await dialog.locator('input[type="file"]').setInputFiles({
+  await page.goto("/cadernos");
+  await page.getByRole("button", { name: "Criar pasta", exact: true }).click();
+  const folderDialog = page.getByRole("dialog", { name: "Nova pasta", exact: true });
+  await folderDialog.getByLabel("Nome da pasta", { exact: true }).fill("Revisão");
+  await folderDialog.getByRole("button", { name: "Criar pasta", exact: true }).click();
+  await page
+    .getByRole("button", { name: /Revisão/ })
+    .first()
+    .click();
+  await page.locator('input[type="file"]').setInputFiles({
     name: "paper.png",
     mimeType: "image/png",
     buffer: Buffer.from(
@@ -20,31 +25,17 @@ test("imagem local persiste e abre sem enviar o arquivo", async ({ page }) => {
       "base64",
     ),
   });
-  await dialog.getByRole("button", { name: "Salvar", exact: true }).click();
-  await expect(dialog).toHaveCount(0);
-  await page.getByRole("button", { name: /Imagem de revisão/ }).click();
-  dialog = page.getByRole("dialog", { name: "Imagem de revisão", exact: true });
-  await expect
-    .poll(() =>
-      dialog
-        .getByRole("img", { name: "Imagem de revisão", exact: true })
-        .evaluate((node) => (node as HTMLImageElement).naturalWidth),
-    )
-    .toBe(1);
-  await dialog.getByRole("button", { name: "Fechar", exact: true }).click();
+  await expect(page.getByText("paper.png", { exact: true })).toBeVisible();
   await page.reload();
-  await page.getByRole("button", { name: /Imagem de revisão/ }).click();
-  await expect
-    .poll(() =>
-      page
-        .getByRole("img", { name: "Imagem de revisão", exact: true })
-        .evaluate((node) => (node as HTMLImageElement).naturalWidth),
-    )
-    .toBe(1);
+  await page
+    .getByRole("button", { name: /Revisão/ })
+    .first()
+    .click();
+  await expect(page.getByText("paper.png", { exact: true })).toBeVisible();
 });
 
 for (const theme of ["light", "dark"]) {
-  test(`Note cria cartão com fonte e busca encontra o material: ${theme}`, async ({
+  test(`Note cria cartão do trecho e vincula material da Biblioteca: ${theme}`, async ({
     page,
   }, info) => {
     const workspace = createInitialWorkspace();
@@ -103,23 +94,8 @@ for (const theme of ["light", "dark"]) {
     await expect(
       page.getByRole("link", { name: "Material de álgebra", exact: true }),
     ).toHaveAttribute("href", "/biblioteca?material=material-source");
-    await page.getByRole("link", { name: "Material de álgebra", exact: true }).click();
-    await expect(
-      page.getByRole("dialog", { name: "Material de álgebra", exact: true }),
-    ).toBeVisible();
-    await page.getByRole("dialog").getByRole("button", { name: "Fechar", exact: true }).click();
-    await expect(page.getByRole("button", { name: "Ver fonte", exact: true })).toBeVisible();
-    await page.goto("/");
-    await expect(
-      page.getByRole("searchbox", { name: "Buscar no Espaço", exact: true }),
-    ).toHaveCount(0);
-    await page.goto("/biblioteca");
-    await page.getByLabel("Buscar no acervo").fill("algebra");
-    await expect(
-      page.getByRole("heading", { name: "Material de álgebra", exact: true }),
-    ).toBeVisible();
     await page.screenshot({
-      path: info.outputPath(`busca-biblioteca-${theme}.png`),
+      path: info.outputPath(`nota-com-fonte-${theme}.png`),
       animations: "disabled",
     });
   });

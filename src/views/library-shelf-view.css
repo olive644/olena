@@ -234,8 +234,10 @@
     scale: 0.72;
     transform-origin: top left;
   }
+  /* A hera da direita é espelhada (scaleX(-1)). Espelhar em torno da borda direita jogava o vaso
+     para fora da prateleira e da tela; em torno do centro ele fica no lugar. */
   .has-lower-shelf .notebook-shelf-vines.is-right {
-    transform-origin: top right;
+    transform-origin: top center;
   }
 }
 .has-lower-shelf .notebook-shelf-vines::before {
@@ -890,6 +892,46 @@ html:has(.notebooks-showcase)::view-transition-old(library-folder-view) {
 .library-summary-reader .library-summary-paper {
   text-align: start;
 }
+.library-summary-paper aside > strong:first-child {
+  display: block;
+  margin-bottom: 4px;
+}
+.library-summary-paper ul {
+  margin-block: 8px 12px;
+  padding-inline-start: 1.4em;
+}
+.library-summary-paper li {
+  margin-block: 4px;
+}
+.library-summary-paper .library-summary-table {
+  margin-block: 14px;
+  overflow-x: auto;
+  border: 1px solid #a77951;
+  border-radius: 4px 12px 4px 8px;
+}
+.library-summary-paper table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.library-summary-paper th,
+.library-summary-paper td {
+  padding: 8px 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+  text-align: start;
+  vertical-align: top;
+}
+.library-summary-paper th:first-child,
+.library-summary-paper td:first-child {
+  width: 1%;
+  overflow-wrap: normal;
+  white-space: nowrap;
+}
+.library-summary-paper th {
+  background: color-mix(in srgb, var(--surface) 75%, #a77951);
+}
+.library-summary-paper tr:last-child td {
+  border-bottom: 0;
+}
 .library-summary-paper aside {
   margin-block: 18px;
   background:
@@ -899,5 +941,69 @@ html:has(.notebooks-showcase)::view-transition-old(library-folder-view) {
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-reduce-motion="true"]) .library-summary-reader[open] {
     animation: library-folder-tab-in 260ms ease-out both;
+  }
+}
+
+/* Celular: a prateleira dupla cabe na tela sem rolar. A altura do caderno acompanha a altura útil
+   (tela menos cabeçalho, ferramentas, vasos e navegação), e a fileira de baixo fica mais baixa.
+   Em telas muito baixas o mínimo vale e a área rola, como antes. */
+@media (max-width: 680px) {
+  .notebook-display-shelf.has-lower-shelf {
+    --shelf-book-height: clamp(128px, calc(100dvh - 610px), 300px);
+  }
+  .notebook-display-shelf.has-lower-shelf
+    > .notebook-display-shelf__books:not(.library-folder-row) {
+    padding-top: 40px;
+    min-height: calc(var(--shelf-book-height) + 40px);
+  }
+  .notebook-display-shelf.has-lower-shelf > .library-folder-row {
+    min-height: 150px;
+    padding-top: 20px;
+  }
+}
+
+/* Celular: a seta de voltar fica numa linha e as cinco abas da pasta dividem a largura inteira,
+   com o ícone acima do nome, para todas aparecerem sem rolar de lado. */
+@media (max-width: 560px) {
+  .library-folder-contents header {
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .library-folder-contents nav {
+    flex: 1 1 100%;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    padding: 0 0 8px;
+  }
+  :root body .library-folder-contents nav .shelf-wood-button {
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-width: 0;
+    min-height: 54px;
+    padding: 6px 2px;
+    font-size: clamp(0.56rem, 2.7vw, 0.75rem);
+    line-height: 1.1;
+  }
+  .library-folder-contents nav .shelf-wood-button > img {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* O conteúdo da pasta rola dentro da própria área: a tela da Biblioteca não rola (a prateleira cabe
+   inteira), e sem isso o botão de baixo ("Criar resumo", "Adicionar fontes") ficava escondido atrás
+   da navegação do celular. */
+.library-folder-contents {
+  max-height: calc(100dvh - 6rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+@media (max-width: 680px) {
+  .library-folder-contents {
+    min-height: 0;
+    max-height: none;
+    height: calc(100dvh - 11rem);
   }
 }

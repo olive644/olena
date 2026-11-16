@@ -1,5 +1,5 @@
 import { expect, test, type Locator } from "@playwright/test";
-import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen, openNotebooksView } from "./notebook-helpers";
 
 async function inkPixels(canvas: Locator): Promise<number> {
   return canvas.evaluate((element) => {
@@ -23,10 +23,7 @@ test("a palma apoiada com a caneta escrevendo não cancela o traço", async ({
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();

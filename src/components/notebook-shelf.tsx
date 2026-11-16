@@ -193,7 +193,7 @@ export function NotebookShelf({
               }
             >
               {editing && (
-                <span className="shelf-item-pencil" aria-hidden="true">
+                <span className="shelf-edit-hint" aria-hidden="true" data-shelf-edit-hint>
                   <ShelfToolIcon name="pen" />
                 </span>
               )}

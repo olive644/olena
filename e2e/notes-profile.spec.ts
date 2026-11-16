@@ -1,3 +1,4 @@
+import { openNotebooksView } from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 import { setTestTheme } from "./theme-setup";
 
@@ -18,7 +19,7 @@ test("Perfil desktop e ícones dos Cadernos nos dois temas", async ({ page }, te
       "aria-current",
       "page",
     );
-    await navigation.getByRole("button", { name: "Cadernos", exact: true }).click();
+    await openNotebooksView(page);
     if (theme === "Claro") {
       await page.getByRole("button", { name: "Crie", exact: true }).click();
       await page.getByRole("button", { name: "Criar caderno", exact: true }).click();

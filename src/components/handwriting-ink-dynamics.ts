@@ -61,9 +61,15 @@ const smooth = (t: number) => t * t * (3 - 2 * t);
 /**
  * Multiplicador da largura em cada ponto: a ponta do começo e a do fim afinam ao longo de
  * `taperLength` (unidades da folha, medidas pelo caminho). Traço mais curto que dois tapers
- * divide o comprimento ao meio.
+ * divide o comprimento ao meio. `ends` liga ou desliga cada ponta: o traço em andamento não pode
+ * afinar a ponta, porque ela é a posição atual da caneta e não o fim do traço.
  */
-export function taperFactors(points: readonly HandwritingPoint[], taperLength: number): number[] {
+export function taperFactors(
+  points: readonly HandwritingPoint[],
+  taperLength: number,
+  ends: { start?: boolean; end?: boolean } = {},
+): number[] {
+  const { start = true, end = true } = ends;
   const count = points.length;
   if (count < 2 || taperLength <= 0) return points.map(() => 1);
   const along: number[] = [0];
@@ -76,7 +82,7 @@ export function taperFactors(points: readonly HandwritingPoint[], taperLength: n
   if (total <= 0) return points.map(() => 1);
   const length = Math.min(taperLength, total / 2);
   return along.map((distance) => {
-    const edge = Math.min(distance, total - distance);
+    const edge = Math.min(start ? distance : Infinity, end ? total - distance : Infinity);
     const t = Math.min(1, edge / length);
     return TAPER_FLOOR + (1 - TAPER_FLOOR) * smooth(t);
   });
@@ -85,9 +91,12 @@ export function taperFactors(points: readonly HandwritingPoint[], taperLength: n
 /**
  * O traço é de mouse ou dedo (marcado ao criar), é de caneta e não é tracejado: a largura variável
  * vale. Se o dispositivo mandou pressão real mesmo assim (alguns toques informam força), vale a real.
+ * Fineliner e Esferográfica são as canetas de escrever e ficam sempre com largura constante: a
+ * largura que muda com a velocidade e as pontas finas dão cara de pincelada, que atrapalha a letra.
  */
 export function usesSimulatedWidth(stroke: {
   tool: "pen" | "highlighter";
+  brush?: string;
   dash?: "dashed" | "dotted";
   cover?: true;
   dynamics?: "simulated";
@@ -96,6 +105,8 @@ export function usesSimulatedWidth(stroke: {
   return (
     stroke.dynamics === "simulated" &&
     stroke.tool === "pen" &&
+    stroke.brush !== "fine" &&
+    stroke.brush !== "ballpoint" &&
     !stroke.cover &&
     !stroke.dash &&
     stroke.points.length >= 2 &&

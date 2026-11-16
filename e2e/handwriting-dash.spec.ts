@@ -1,4 +1,4 @@
-import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen, openNotebooksView } from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 
 // Conta quantos vãos (trechos sem tinta) existem ao longo de uma linha horizontal da folha.
@@ -48,10 +48,7 @@ test("linha tracejada e pontilhada desenham vãos na folha, e a contínua não",
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();

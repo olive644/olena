@@ -1,5 +1,6 @@
 import { getFirebaseAccountServices } from "../data/firebase-account";
-import { requestHelena } from "../data/helena-client";
+import { dataUrlBytes } from "../data/data-url";
+import { streamHelena } from "../data/helena-client";
 import { OCR_WORKER_OPTIONS } from "../components/handwriting-ocr";
 import type { HelenaRequest } from "../ai/helena-contract";
 import { PaperEditorIcon } from "../components/paper-editor-icon";
@@ -9,7 +10,7 @@ import { ShelfToolIcon } from "../components/shelf-tool-icon";
 import { PaperDigits } from "../components/paper-digits";
 import { LibraryDialog } from "../components/library-dialog";
 import { uiText, useLanguage } from "../i18n/runtime";
-import { useRef, useState, type Dispatch } from "react";
+import { useRef, useState, type Dispatch, type ReactNode } from "react";
 import {
   createWorkspaceId,
   type LibraryFolderStyle,
@@ -234,7 +235,7 @@ export function LibraryShelfView({
         >
           <h2 id="library-folder-title">{uiText(1985)}</h2>
           <label>
-            {uiText(713)}
+            {uiText("Nome da pasta")}
             <input name="folderName" required maxLength={80} />
           </label>
           <div className="shelf-dialog-actions">
@@ -264,6 +265,82 @@ const studySections = {
 
 type FolderSection = "Fontes" | keyof typeof studySections;
 const folderSections = ["Fontes", ...Object.keys(studySections)] as FolderSection[];
+const summaryInline = (value: string) =>
+  value
+    .split(/\*\*([^*]+)\*\*/)
+    .map((part, partIndex) => (partIndex % 2 ? <strong key={partIndex}>{part}</strong> : part));
+
+/** Desenha o resumo: títulos, parágrafos, listas, tabelas e caixas (a mesma sintaxe da Olena). */
+function SummaryMarkdown({ content }: { content: string }) {
+  const lines = content.split(/\n+/).filter((line) => line.trim());
+  const blocks: ReactNode[] = [];
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index]!;
+    if (/^#{1,4} /.test(line)) {
+      blocks.push(<h3 key={index}>{summaryInline(line.replace(/^#+ /, ""))}</h3>);
+    } else if (line.startsWith("> ")) {
+      blocks.push(<aside key={index}>{summaryInline(line.slice(2))}</aside>);
+    } else if (/^\|.*\|\s*$/.test(line)) {
+      const rows: string[][] = [];
+      const first = index;
+      while (index < lines.length && /^\|.*\|\s*$/.test(lines[index]!)) {
+        const cells = lines[index]!.trim()
+          .replace(/^\||\|$/g, "")
+          .split("|")
+          .map((cell) => cell.trim());
+        if (!cells.every((cell) => /^:?-{2,}:?$/.test(cell))) rows.push(cells);
+        index += 1;
+      }
+      index -= 1;
+      const [head, ...body] = rows;
+      blocks.push(
+        <div key={first} className="library-summary-table" tabIndex={0}>
+          <table>
+            {head && (
+              <thead>
+                <tr>
+                  {head.map((cell, cellIndex) => (
+                    <th key={cellIndex} scope="col">
+                      {summaryInline(cell)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {body.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {row.map((cell, cellIndex) => (
+                    <td key={cellIndex}>{summaryInline(cell)}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>,
+      );
+    } else if (/^[-*] /.test(line)) {
+      const first = index;
+      const items: string[] = [];
+      while (index < lines.length && /^[-*] /.test(lines[index]!)) {
+        items.push(lines[index]!.replace(/^[-*] /, ""));
+        index += 1;
+      }
+      index -= 1;
+      blocks.push(
+        <ul key={first}>
+          {items.map((item, itemIndex) => (
+            <li key={itemIndex}>{summaryInline(item)}</li>
+          ))}
+        </ul>,
+      );
+    } else {
+      blocks.push(<p key={index}>{summaryInline(line)}</p>);
+    }
+  }
+  return <>{blocks}</>;
+}
+
 export function LibraryFolderContents({
   folder,
   materials: folderMaterials,
@@ -315,7 +392,7 @@ export function LibraryFolderContents({
       async function recognize(image: HTMLCanvasElement | string) {
         if (!scanner) {
           const { createWorker } = await import("tesseract.js");
-          scanner = await createWorker("eng", 1, OCR_WORKER_OPTIONS);
+          scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
         }
         return (await scanner.recognize(image)).data.text;
       }
@@ -329,9 +406,13 @@ export function LibraryFolderContents({
               import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
             ]);
             pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-            const loading = pdfjs.getDocument({ url: source.content });
+            const bytes = dataUrlBytes(source.content);
+            if (!bytes) throw new Error("Não consegui abrir o PDF " + source.title + ".");
+            const loading = pdfjs.getDocument({ data: bytes });
             try {
-              const pdf = await loading.promise;
+              const pdf = await loading.promise.catch(() => {
+                throw new Error("Não consegui abrir o PDF " + source.title + ".");
+              });
               for (let index = 1; index <= pdf.numPages; index++) {
                 const page = await pdf.getPage(index);
                 const text = await page.getTextContent();
@@ -381,16 +462,18 @@ export function LibraryFolderContents({
       } finally {
         await scanner?.terminate();
       }
-      const result = await requestHelena(
+      // Pela transmissão em fluxo: a resposta sem fluxo tem 20 s de limite no servidor, e um guia de
+      // de muitos tokens costuma passar disso, o que chegava ao aluno como "Serviço indisponível".
+      const result = await streamHelena(
         {
           version: 1,
           capability: "summarize",
           prompt:
-            "Escreva um guia de estudo em português brasileiro usando apenas as fontes fornecidas. Sintetize em palavras próprias e organize por assunto. Comece com # e um título curto. Use de 4 a 7 seções com títulos ## numerados, parágrafos curtos, - para listas e **negrito** para termos-chave. Intercale pelo menos três caixas com uma linha inteira começando por > e um rótulo em negrito, por exemplo Definição, Atenção, Cronologia ou Ponto essencial. Inclua datas, exemplos ou cálculos quando sustentados pelas fontes. Preserve números e fatos. Indique lacunas quando os trechos forem incompletos. Entregue somente o guia, sem bloco de código.",
+            "Escreva um guia de estudo em português brasileiro usando apenas as fontes fornecidas. Sintetize em palavras próprias e organize por assunto. Comece com # e um título curto. Use de 4 a 7 seções com títulos ## numerados, parágrafos curtos, - para listas e **negrito** para termos-chave. Intercale pelo menos três caixas com uma linha inteira começando por > e um rótulo em negrito, por exemplo Definição, Atenção, Cronologia ou Ponto essencial. Inclua datas, exemplos ou cálculos quando sustentados pelas fontes. Preserve números e fatos. Indique lacunas quando os trechos forem incompletos. Seja conciso: no máximo 600 palavras no total. Entregue somente o guia, sem bloco de código.",
           sources,
           privacy: { consent: true, retention: "none" },
         },
-        { token },
+        { token, onText: () => {} },
       );
       const heading = result.answer.match(/^#\s+(.+)/m)?.[1]?.trim();
       dispatch({
@@ -406,6 +489,103 @@ export function LibraryFolderContents({
       });
     } catch (error) {
       setSummaryError(error instanceof Error ? error.message : "Não foi possível gerar o resumo.");
+    } finally {
+      setSummaryBusy(false);
+    }
+  }
+  /** Resumo automático: feito no aparelho, sem IA e sem enviar nada para fora. */
+  async function generateAutomaticSummary() {
+    if (summaryBusy || !selectedSources.length) return;
+    setCreating(undefined);
+    setSection("Resumo");
+    setSummaryError("");
+    setSummaryBusy(true);
+    try {
+      const { summarizePdf, summarizePlainText } = await import("../domain/pdf-summary");
+      const made: { title: string; sourceTitle: string; markdown: string }[] = [];
+      for (const source of selectedSources) {
+        const fileTitle = source.title.replace(/\.[^.]+$/, "");
+        let result: Awaited<ReturnType<typeof summarizePlainText>>;
+        if (source.kind === "image") {
+          throw new Error(uiText("O resumo automático lê PDF e texto. Para imagens, use a Olena."));
+        } else if (source.kind === "text") {
+          result = await summarizePlainText(source.content, fileTitle);
+        } else {
+          const [pdfjs, worker] = await Promise.all([
+            import("pdfjs-dist"),
+            import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
+          ]);
+          pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
+          const bytes = dataUrlBytes(source.content);
+          if (!bytes) throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
+          const loading = pdfjs.getDocument({ data: bytes });
+          try {
+            const pdf = await loading.promise.catch(() => {
+              throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
+            });
+            // Páginas que são só imagem (PDF escaneado) passam pelo OCR em português, no aparelho.
+            let scanner:
+              Awaited<ReturnType<typeof import("tesseract.js").createWorker>> | undefined;
+            try {
+              result = await summarizePdf(pdf, {
+                title: fileTitle,
+                ocr: async (pageNumber) => {
+                  const page = await pdf.getPage(pageNumber);
+                  const viewport = page.getViewport({ scale: 1 });
+                  const scaled = page.getViewport({
+                    scale: 2000 / Math.max(viewport.width, viewport.height),
+                  });
+                  const canvas = document.createElement("canvas");
+                  canvas.width = Math.ceil(scaled.width);
+                  canvas.height = Math.ceil(scaled.height);
+                  await page.render({ canvas, viewport: scaled }).promise;
+                  if (!scanner) {
+                    const { createWorker } = await import("tesseract.js");
+                    scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
+                  }
+                  const text = (await scanner.recognize(canvas)).data.text;
+                  canvas.width = 0;
+                  canvas.height = 0;
+                  return text;
+                },
+              });
+            } finally {
+              await scanner?.terminate();
+            }
+          } finally {
+            await loading.destroy();
+          }
+        }
+        if (result.stats.sentences === 0) {
+          throw new Error(
+            uiText(
+              "Não encontrei texto em {0}, nem lendo as imagens. Se a foto estiver torta ou borrada, tente outra ou use a Olena.",
+              [source.title],
+            ),
+          );
+        }
+        made.push({
+          title: result.title.slice(0, 80) || fileTitle || "Resumo",
+          sourceTitle: source.title,
+          markdown: result.markdown.replace(/^# [^\n]+\n*/, "").trim(),
+        });
+      }
+      for (const item of made) {
+        dispatch({
+          type: "material/added",
+          collectionId: folder.id,
+          subjectId,
+          title: item.title,
+          kind: "text",
+          content: item.markdown,
+          tags: ["folder-summary", item.sourceTitle],
+          createdAt: new Date().toISOString(),
+        });
+      }
+    } catch (error) {
+      setSummaryError(
+        error instanceof Error ? error.message : uiText("Não foi possível gerar o resumo."),
+      );
     } finally {
       setSummaryBusy(false);
     }
@@ -489,7 +669,7 @@ export function LibraryFolderContents({
         />
       </label>
       <small aria-live="polite">
-        {selectedSources.length} de {maxSelectedSources} fontes selecionadas
+        {uiText("{0} de {1} fontes selecionadas", [selectedSources.length, maxSelectedSources])}
       </small>
     </div>
   );
@@ -497,10 +677,15 @@ export function LibraryFolderContents({
   return (
     <section className="library-folder-contents" aria-label={folder.title}>
       <header>
-        <button type="button" className="shelf-back" aria-label="Voltar à estante" onClick={onBack}>
+        <button
+          type="button"
+          className="shelf-back"
+          aria-label={uiText("Voltar à estante")}
+          onClick={onBack}
+        >
           <PaperArrow back />
         </button>
-        <nav aria-label="Seções da pasta">
+        <nav aria-label={uiText("Seções da pasta")}>
           {folderSections.map((label) => (
             <button
               className="shelf-wood-button"
@@ -535,11 +720,11 @@ export function LibraryFolderContents({
               aria-expanded={showSources}
               onClick={() => setShowSources(!showSources)}
             >
-              <img src="/room-icons/add.svg" alt="" /> Adicionar fontes
+              <img src="/room-icons/add.svg" alt="" /> {uiText("Adicionar fontes")}
             </button>
             <div className="library-source-drawer" data-open={showSources} inert={!showSources}>
               <div>
-                <div className="library-study-type-menu" aria-label="Tipos de fonte">
+                <div className="library-study-type-menu" aria-label={uiText("Tipos de fonte")}>
                   <button
                     type="button"
                     className="shelf-wood-button"
@@ -548,7 +733,7 @@ export function LibraryFolderContents({
                       input.current?.click();
                     }}
                   >
-                    <img src="/room-icons/upload.svg" alt="" /> Enviar documento
+                    <img src="/room-icons/upload.svg" alt="" /> {uiText("Enviar documento")}
                   </button>
                   {(
                     [
@@ -577,13 +762,13 @@ export function LibraryFolderContents({
             ) : (
               <div className="library-folder-upload">
                 <img src="/room-icons/upload.svg" alt="" width="36" height="36" />
-                <p>Envie PDFs ou imagens para começar</p>
+                <p>{uiText("Envie PDFs ou imagens para começar")}</p>
                 <button
                   type="button"
                   className="shelf-wood-button"
                   onClick={() => input.current?.click()}
                 >
-                  Escolher um arquivo
+                  {uiText("Escolher um arquivo")}
                 </button>
               </div>
             )}
@@ -592,8 +777,12 @@ export function LibraryFolderContents({
               {showStudyTypes && selectedSources.length > 0 && (
                 <div className="library-study-type-menu" id="library-study-types">
                   <p>
-                    Criar a partir de {selectedSources.length}{" "}
-                    {selectedSources.length === 1 ? "fonte" : "fontes"}
+                    {uiText(
+                      selectedSources.length === 1
+                        ? "Criar a partir de {0} fonte"
+                        : "Criar a partir de {0} fontes",
+                      [selectedSources.length],
+                    )}
                   </p>
                   {(Object.keys(studySections) as Array<keyof typeof studySections>).map(
                     (label) => (
@@ -620,7 +809,7 @@ export function LibraryFolderContents({
                 aria-expanded={showStudyTypes && selectedSources.length > 0}
                 onClick={() => setShowStudyTypes(!showStudyTypes)}
               >
-                <img src="/room-icons/add.svg" alt="" /> Criar material de estudo
+                <img src="/room-icons/add.svg" alt="" /> {uiText("Criar material de estudo")}
               </button>
             </div>
           </>
@@ -630,7 +819,7 @@ export function LibraryFolderContents({
               <div role="status" className="library-summary-card library-summary-loading">
                 <span>
                   <img src="/room-icons/manual-words.svg" alt="" width="26" height="26" />
-                  Criando resumo…
+                  {uiText("Criando resumo…")}
                 </span>
                 <span className="library-summary-loading-track" aria-hidden="true" />
               </div>
@@ -664,7 +853,7 @@ export function LibraryFolderContents({
                     >
                       <input
                         name="title"
-                        aria-label="Nome do resumo"
+                        aria-label={uiText("Nome do resumo")}
                         required
                         maxLength={80}
                         defaultValue={summary.title}
@@ -675,7 +864,11 @@ export function LibraryFolderContents({
                           }
                         }}
                       />
-                      <button type="submit" className="shelf-wood-button" aria-label="Salvar nome">
+                      <button
+                        type="submit"
+                        className="shelf-wood-button"
+                        aria-label={uiText("Salvar nome")}
+                      >
                         <ShelfToolIcon name="save" />
                       </button>
                     </form>
@@ -707,7 +900,7 @@ export function LibraryFolderContents({
                           setRenamingId(summary.id);
                         }}
                       >
-                        <ShelfToolIcon name="pen" /> Renomear
+                        <ShelfToolIcon name="pen" /> {uiText("Renomear")}
                       </button>
                       <button
                         type="button"
@@ -717,7 +910,7 @@ export function LibraryFolderContents({
                           removeMaterial(summary.id);
                         }}
                       >
-                        <ShelfToolIcon name="trash" /> Excluir
+                        <ShelfToolIcon name="trash" /> {uiText("Excluir")}
                       </button>
                     </div>
                   </details>
@@ -752,8 +945,9 @@ export function LibraryFolderContents({
             {sourceType === "Goodnotes" ? (
               <>
                 <p>
-                  No Goodnotes, abra o caderno, escolha Compartilhar e exporte como PDF. Selecione o
-                  PDF exportado para adicioná-lo à pasta.
+                  {uiText(
+                    "No Goodnotes, abra o caderno, escolha Compartilhar e exporte como PDF. Selecione o PDF exportado para adicioná-lo à pasta.",
+                  )}
                 </p>
                 <button
                   type="button"
@@ -763,7 +957,7 @@ export function LibraryFolderContents({
                     input.current?.click();
                   }}
                 >
-                  Escolher PDF
+                  {uiText("Escolher PDF")}
                 </button>
               </>
             ) : (
@@ -803,21 +997,21 @@ export function LibraryFolderContents({
               >
                 {sourceType === "YouTube" ? (
                   <label>
-                    Link do vídeo <input name="content" type="url" required />
+                    {uiText("Link do vídeo")} <input name="content" type="url" required />
                   </label>
                 ) : (
                   <>
                     <label>
-                      Título <input name="title" maxLength={80} required />
+                      {uiText("Título")} <input name="title" maxLength={80} required />
                     </label>
                     <label>
-                      Nota <textarea name="content" maxLength={20000} required />
+                      {uiText("Nota")} <textarea name="content" maxLength={20000} required />
                     </label>
                   </>
                 )}
                 {error && <p role="alert">{error}</p>}
                 <button type="submit" className="shelf-wood-button">
-                  Adicionar fonte
+                  {uiText("Adicionar fonte")}
                 </button>
               </form>
             )}
@@ -846,26 +1040,11 @@ export function LibraryFolderContents({
                 }}
               >
                 <img src="/room-icons/manual-words.svg" alt="" width="22" height="22" />
-                Gerar resumo estruturado com a Olena
+                {uiText("Gerar resumo estruturado com a Olena")}
               </button>
             )}
             <div className="library-summary-paper">
-              {readingSummary.content
-                .split(/\n+/)
-                .filter((line) => line.trim())
-                .map((line, index) => {
-                  const inline = (value: string) =>
-                    value
-                      .split(/\*\*([^*]+)\*\*/)
-                      .map((part, partIndex) =>
-                        partIndex % 2 ? <strong key={partIndex}>{part}</strong> : part,
-                      );
-                  if (/^#{1,4} /.test(line))
-                    return <h3 key={index}>{inline(line.replace(/^#+ /, ""))}</h3>;
-                  if (line.startsWith("> "))
-                    return <aside key={index}>{inline(line.slice(2))}</aside>;
-                  return <p key={index}>{inline(line.replace(/^[-*] /, "• "))}</p>;
-                })}
+              <SummaryMarkdown content={readingSummary.content} />
             </div>
           </LibraryDialog>
         )}
@@ -884,7 +1063,7 @@ export function LibraryFolderContents({
             }
           >
             <div className="library-study-confirm-tools">
-              <span>Selecionar fontes</span>
+              <span>{uiText("Selecionar fontes")}</span>
               {materials.length > 0 && (
                 <button
                   type="button"
@@ -911,14 +1090,23 @@ export function LibraryFolderContents({
                   setSection("Fontes");
                 }}
               >
-                Adicionar fontes
+                {uiText("Adicionar fontes")}
               </button>
             )}
             {creating === "Resumo" && (
-              <p>Ao gerar, o texto das fontes selecionadas é enviado à Olena.</p>
+              <p>
+                {uiText(
+                  "Resumo automático: grátis, feito no seu aparelho, sem IA. Escolhe as frases mais importantes do próprio arquivo.",
+                )}
+              </p>
+            )}
+            {creating === "Resumo" && (
+              <p>
+                {uiText("Ao gerar com a Olena, o texto das fontes selecionadas é enviado a ela.")}
+              </p>
             )}
             {creating !== "Resumo" && (
-              <p>A geração deste tipo de material ainda não está disponível.</p>
+              <p>{uiText("A geração deste tipo de material ainda não está disponível.")}</p>
             )}
             <button
               type="button"
@@ -926,7 +1114,15 @@ export function LibraryFolderContents({
               disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
               onClick={() => void generateSummary()}
             >
-              Gerar
+              {uiText("Gerar com a Olena")}
+            </button>
+            <button
+              type="button"
+              className="shelf-wood-button library-study-confirm-generate"
+              disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
+              onClick={() => void generateAutomaticSummary()}
+            >
+              {uiText("Resumo automático")}
             </button>
           </LibraryDialog>
         )}
