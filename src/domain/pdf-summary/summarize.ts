@@ -6,6 +6,7 @@ import {
   hasCue,
   hasQuantity,
   isReferenceLike,
+  isMisconception,
   isWarning,
   keyTerms,
   type Definition,
@@ -48,6 +49,8 @@ type Sentence = {
   candidate: boolean;
   /** Frase anterior reservada para dar contexto a esta (quando ela começa com "Isso", "Ele"...). */
   context: number[];
+  /** Item de lista do arquivo (marcador, tópico): entra como lista, não como frase solta. */
+  item: boolean;
 };
 
 type Section = {
@@ -59,12 +62,14 @@ type Section = {
   chars: number;
 };
 
+type RawParagraph = { text: string; page: number; item?: boolean };
+
 type RawSection = {
   title: string;
   startPage: number;
   endPage: number;
   subtopics: string[];
-  parts: { sub: string | undefined; paragraphs: { text: string; page: number }[] }[];
+  parts: { sub: string | undefined; paragraphs: RawParagraph[] }[];
 };
 
 const tick = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
@@ -83,7 +88,7 @@ function sectionsFromHeadings(doc: StructuredDocument): RawSection[] {
   const sectionLevel = level1 >= 2 ? 1 : level2 >= 2 ? 2 : 1;
   const raw: RawSection[] = [];
   let current: RawSection | undefined;
-  const preface: { text: string; page: number }[] = [];
+  const preface: RawParagraph[] = [];
   let skipping = false;
   for (const block of doc.blocks) {
     if (block.kind === "heading") {
@@ -110,14 +115,14 @@ function sectionsFromHeadings(doc: StructuredDocument): RawSection[] {
       continue;
     }
     if (skipping) continue;
+    const paragraph: RawParagraph = block.item
+      ? { text: block.text, page: block.page, item: true }
+      : { text: block.text, page: block.page };
     if (!current) {
-      preface.push({ text: block.text, page: block.page });
+      preface.push(paragraph);
       continue;
     }
-    current.parts[current.parts.length - 1]!.paragraphs.push({
-      text: block.text,
-      page: block.page,
-    });
+    current.parts[current.parts.length - 1]!.paragraphs.push(paragraph);
     current.endPage = Math.max(current.endPage, block.page);
   }
   if (preface.length > 0) {
@@ -195,11 +200,15 @@ function capitalize(text: string): string {
 function sectionsByTopic(doc: StructuredDocument): RawSection[] {
   const paragraphs = doc.blocks
     .filter((block) => block.kind === "paragraph")
-    .map((block) => ({ text: block.text, page: block.page }));
+    .map((block): RawParagraph =>
+      block.item
+        ? { text: block.text, page: block.page, item: true }
+        : { text: block.text, page: block.page },
+    );
   if (paragraphs.length === 0) return [];
   const total = chars(paragraphs);
   const wanted = Math.max(1, Math.min(12, Math.round(total / 5000)));
-  const make = (slice: { text: string; page: number }[], title: string): RawSection => ({
+  const make = (slice: RawParagraph[], title: string): RawSection => ({
     title,
     startPage: slice[0]!.page,
     endPage: slice[slice.length - 1]!.page,
@@ -285,6 +294,14 @@ function cleanSentence(text: string): string {
     .trim();
 }
 
+function cleanItem(text: string): string {
+  return text
+    .replace(/\*\*/g, "")
+    .replace(/^(?:[•▪◦·●○■*]|[-\u2013\u2014]|\d{1,2}[.)]|[a-zA-Z][.)])\s+/, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function withEnding(text: string): string {
   return /[.!?…]["”')\]]?$/.test(text) ? text : `${text}.`;
 }
@@ -318,7 +335,9 @@ function prepare(doc: StructuredDocument): Prepared {
     };
     for (const part of rawSection.parts) {
       for (const paragraph of part.paragraphs) {
-        const pieces = splitSentences(paragraph.text).map(cleanSentence).filter(Boolean);
+        const pieces = paragraph.item
+          ? [cleanItem(paragraph.text)].filter(Boolean)
+          : splitSentences(paragraph.text).map(cleanSentence).filter(Boolean);
         pieces.forEach((text, position) => {
           const stems = contentStems(text, doc.language);
           const sentence: Sentence = {
@@ -338,6 +357,7 @@ function prepare(doc: StructuredDocument): Prepared {
             dates: [],
             candidate: false,
             context: [],
+            item: paragraph.item === true,
           };
           sentences.push(sentence);
           section.sentences.push(sentence);
@@ -369,10 +389,12 @@ function prepare(doc: StructuredDocument): Prepared {
       termWeights.set(stem, (termWeights.get(stem) ?? 0) + weight);
     }
     sentence.norm = Math.sqrt(norm);
-    sentence.definition = findDefinition(sentence.text);
+    sentence.definition = sentence.item ? undefined : findDefinition(sentence.text);
     sentence.dates = findDates(sentence.text);
     const length = sentence.text.length;
     sentence.candidate =
+      !sentence.item &&
+      !/:$/.test(sentence.text) &&
       length >= 35 &&
       length <= 520 &&
       countWords(sentence.text) >= 5 &&
@@ -509,7 +531,7 @@ function scoreSection(prepared: Prepared, section: Section): void {
 // Seleção
 
 function targetCharacters(totalChars: number): number {
-  const target = 10.5 * Math.pow(Math.max(totalChars, 1), 0.62);
+  const target = 11 * Math.pow(Math.max(totalChars, 1), 0.62);
   return Math.min(Math.max(target, 500), 30_000, totalChars * 0.6);
 }
 
@@ -652,7 +674,15 @@ export async function summarizeDocument(
   const tops = sections
     .map((section) => ({
       section,
-      best: section.sentences.filter(standalone).sort((a, b) => b.score - a.score)[0],
+      best: section.sentences
+        .filter(
+          (sentence) =>
+            standalone(sentence) &&
+            !sentence.definition &&
+            !isWarning(sentence.text) &&
+            !isMisconception(sentence.text),
+        )
+        .sort((a, b) => b.score - a.score)[0],
     }))
     .filter((entry): entry is { section: Section; best: Sentence } => entry.best !== undefined);
   const overviewCount = Math.min(7, Math.max(3, Math.ceil(sections.length / 2) + 1));
@@ -692,26 +722,75 @@ export async function summarizeDocument(
     }
   }
 
+  // Linha do tempo: reservada antes das seções, para que as datas do arquivo não se percam.
+  const timelineLimit = Math.min(14, Math.max(6, Math.round(sections.length * 1.5)));
+  let timeline: Sentence[] = [];
+  if (!tiny) {
+    const dated = sentences
+      .filter(
+        (sentence) =>
+          standalone(sentence) &&
+          sentence.dates.length > 0 &&
+          sentence.text.length <= 240 &&
+          !isWarning(sentence.text) &&
+          !isMisconception(sentence.text),
+      )
+      .sort((a, b) => b.score - a.score);
+    const budget = wordsIn * 0.2;
+    let spent = 0;
+    for (const sentence of dated.slice(0, timelineLimit)) {
+      const cost = countWords(sentence.text) + 2;
+      if (spent + cost > budget) continue;
+      timeline.push(sentence);
+      spent += cost;
+    }
+    if (timeline.length < 3) timeline = [];
+    timeline.sort((a, b) => yearOf(a)!.sortKey - yearOf(b)!.sortKey || a.id - b.id);
+    for (const sentence of timeline) used.add(sentence.id);
+  }
+  const timelineChars = timeline.reduce((sum, sentence) => sum + sentence.text.length, 0);
+
   const selectedBySection: { section: Section; items: Sentence[] }[] = [];
   const definitionsSeen: Sentence[] = [];
+  let sectionNumber = 0;
   for (const section of sections) {
+    sectionNumber += 1;
     const budget = Math.max(
       200,
-      (Math.max(target - overviewChars, target * 0.4) * sectionWeight(section)) / weightSum,
+      (Math.max(target - overviewChars - timelineChars, target * 0.4) * sectionWeight(section)) /
+        weightSum,
     );
+    const plain = plainTitle(section.title);
     const heading =
-      sections.length === 1 && section.title === "Pontos principais"
-        ? "Pontos principais"
-        : section.title;
-    lines.push(`## ${heading} (${pageLabel(section.startPage, section.endPage)})`);
+      sections.length === 1 && section.title === "Pontos principais" ? "Pontos principais" : plain;
+    const label = sections.length === 1 ? heading : `${sectionNumber}. ${heading}`;
+    lines.push(`## ${label} (${pageLabel(section.startPage, section.endPage)})`);
     if (section.subtopics.length > 0) {
       lines.push(`**Subtópicos:** ${section.subtopics.join("; ")}`);
     }
+    // Lista do próprio arquivo: entra inteira (até 10 itens), com a frase que a anuncia.
+    const listed = section.sentences.filter((sentence) => sentence.item).slice(0, 10);
+    const listLead = (() => {
+      const first = listed[0];
+      const before = first ? sentences[first.id - 1] : undefined;
+      return before && !before.item && before.section === first?.section && /:$/.test(before.text)
+        ? before
+        : undefined;
+    })();
+    if (listLead) used.add(listLead.id);
     const definitions = section.sentences
       .filter((sentence) => standalone(sentence) && sentence.definition && !used.has(sentence.id))
       .sort((a, b) => b.score - a.score)
       .slice(0, 2);
     for (const sentence of definitions) used.add(sentence.id);
+    const mistakes = section.sentences
+      .filter(
+        (sentence) =>
+          standalone(sentence) && isMisconception(sentence.text) && !used.has(sentence.id),
+      )
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 1);
+    for (const sentence of mistakes) used.add(sentence.id);
     const warnings = section.sentences
       .filter(
         (sentence) => standalone(sentence) && isWarning(sentence.text) && !used.has(sentence.id),
@@ -719,10 +798,13 @@ export async function summarizeDocument(
       .sort((a, b) => b.score - a.score)
       .slice(0, 1);
     for (const sentence of warnings) used.add(sentence.id);
-    const spentOnBoxes = [...definitions, ...warnings].reduce(
-      (sum, item) => sum + item.text.length,
-      0,
-    );
+    const spentOnBoxes = [
+      ...definitions,
+      ...mistakes,
+      ...warnings,
+      ...listed,
+      ...(listLead ? [listLead] : []),
+    ].reduce((sum, item) => sum + item.text.length, 0);
     const chosen = select(
       section.sentences,
       sentences,
@@ -730,54 +812,53 @@ export async function summarizeDocument(
       used,
       1,
     );
-    const central =
-      [...chosen]
-        .sort((a, b) => b.score - a.score)
-        .find((sentence) => sentence.context.length > 0 || !dependsOnPrevious(sentence.text)) ??
-      [...chosen].sort((a, b) => b.score - a.score)[0];
-    if (central) {
-      lines.push(`**Ideia central:** ${withEnding(withContext(central, sentences))}`);
+    const ordered = [...chosen].sort((a, b) => a.id - b.id);
+    // Abertura em parágrafo corrido; o ponto essencial é a melhor das demais frases.
+    const openingCount = ordered.length >= 4 ? 2 : 1;
+    const opening = ordered.slice(0, openingCount);
+    const others = ordered.slice(openingCount);
+    const central = [...others].sort((a, b) => b.score - a.score)[0];
+    const supporting = others.filter((sentence) => sentence !== central);
+    if (opening.length > 0) {
+      lines.push(opening.map((sentence) => withEnding(withContext(sentence, sentences))).join(" "));
     }
-    const rest = chosen.filter((sentence) => sentence !== central).sort((a, b) => a.id - b.id);
-    for (const sentence of rest) lines.push(`- ${withEnding(withContext(sentence, sentences))}`);
+    if (listed.length > 0) {
+      if (listLead) lines.push(withEnding(listLead.text.replace(/:$/, "")).replace(/\.$/, ":"));
+      for (const item of listed) {
+        used.add(item.id);
+        lines.push(`- ${item.text.replace(/[.;]$/, "")}`);
+      }
+    }
+    for (const sentence of supporting) {
+      lines.push(`- ${withEnding(withContext(sentence, sentences))}`);
+    }
     for (const sentence of definitions) {
-      lines.push(`> **Definição** ${withEnding(sentence.text)}`);
+      lines.push(
+        `> **Definição: ${(sentence.definition?.term ?? "").replace(/^(?:o|a|os|as|um|uma)\s+/i, "")}** ${withEnding(sentence.text)}`,
+      );
       definitionsSeen.push(sentence);
     }
+    for (const sentence of mistakes)
+      lines.push(`> **Erro frequente** ${withEnding(sentence.text)}`);
     for (const sentence of warnings) lines.push(`> **Atenção** ${withEnding(sentence.text)}`);
-    selectedBySection.push({ section, items: central ? [central, ...rest] : rest });
+    if (central) {
+      lines.push(`> **Ponto essencial** ${withEnding(withContext(central, sentences))}`);
+    }
+    selectedBySection.push({
+      section,
+      items: [central ?? opening[0], ...opening, ...supporting].filter(
+        (item): item is Sentence => item !== undefined,
+      ),
+    });
     if (sections.length > 8) await tick();
   }
 
   // Partes de estudo (linha do tempo, perguntas, dados e termos) entram só até o texto do resumo
   // chegar a 70% do original: um resumo maior que o arquivo não resume nada.
   const coreWords = countWords(lines.join("\n"));
-  const wordCap = wordsIn * 0.75;
+  const wordCap = wordsIn * 0.8;
   let remaining = Math.max(0, wordCap - coreWords);
   const takeWords = (fraction: number) => Math.min(remaining, Math.max(0, remaining * fraction));
-
-  const dated = sentences
-    .filter(
-      (sentence) =>
-        standalone(sentence) && sentence.dates.length > 0 && sentence.text.length <= 240,
-    )
-    .sort((a, b) => b.score - a.score);
-  const timelineLimit = Math.min(14, Math.max(6, Math.round(sections.length * 1.5)));
-  let timeline: Sentence[] = [];
-  {
-    let spent = 0;
-    const budget = takeWords(0.35);
-    for (const sentence of dated.slice(0, timelineLimit)) {
-      const cost = countWords(sentence.text) + 2;
-      if (spent + cost > budget && timeline.length >= 3) break;
-      if (spent + cost > budget) continue;
-      timeline.push(sentence);
-      spent += cost;
-    }
-    if (timeline.length < 3) timeline = [];
-    timeline.sort((a, b) => yearOf(a)!.sortKey - yearOf(b)!.sortKey || a.id - b.id);
-    remaining -= spent;
-  }
 
   const questionLimit = tiny ? 2 : Math.min(20, Math.max(4, sections.length + 3));
   const questions: { question: string; answer: string }[] = [];
@@ -843,8 +924,12 @@ export async function summarizeDocument(
 
   if (timeline.length >= 3) {
     lines.push("## Linha do tempo");
+    lines.push("| Quando | O que aconteceu |");
+    lines.push("| --- | --- |");
     for (const sentence of timeline) {
-      lines.push(`- **${yearOf(sentence)!.label}:** ${withEnding(sentence.text)}`);
+      lines.push(
+        `| ${yearOf(sentence)!.label} | ${withEnding(sentence.text).replace(/\|/g, "/")} |`,
+      );
     }
   }
   if (numeric.length >= 2) {

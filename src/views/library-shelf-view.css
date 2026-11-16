@@ -892,6 +892,46 @@ html:has(.notebooks-showcase)::view-transition-old(library-folder-view) {
 .library-summary-reader .library-summary-paper {
   text-align: start;
 }
+.library-summary-paper aside > strong:first-child {
+  display: block;
+  margin-bottom: 4px;
+}
+.library-summary-paper ul {
+  margin-block: 8px 12px;
+  padding-inline-start: 1.4em;
+}
+.library-summary-paper li {
+  margin-block: 4px;
+}
+.library-summary-paper .library-summary-table {
+  margin-block: 14px;
+  overflow-x: auto;
+  border: 1px solid #a77951;
+  border-radius: 4px 12px 4px 8px;
+}
+.library-summary-paper table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.library-summary-paper th,
+.library-summary-paper td {
+  padding: 8px 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+  text-align: start;
+  vertical-align: top;
+}
+.library-summary-paper th:first-child,
+.library-summary-paper td:first-child {
+  width: 1%;
+  overflow-wrap: normal;
+  white-space: nowrap;
+}
+.library-summary-paper th {
+  background: color-mix(in srgb, var(--surface) 75%, #a77951);
+}
+.library-summary-paper tr:last-child td {
+  border-bottom: 0;
+}
 .library-summary-paper aside {
   margin-block: 18px;
   background:

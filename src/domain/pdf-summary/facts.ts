@@ -249,6 +249,14 @@ export function isWarning(sentence: string): boolean {
   return WARNING.test(sentence);
 }
 
+const MISCONCEPTION =
+  /\b(?:n[ãa]o confunda|n[ãa]o se deve confundir|confunde|n[ãa]o [ée] (?:o mesmo|sin[ôo]nimo)|ao contr[áa]rio|erro (?:comum|frequente)|equivocad[oa]|na verdade|(?:afirmar|dizer|pensar|achar|acreditar) que|em vez de|diferen(?:te|ça)s? (?:de|do|da|entre)|e n[ãa]o (?:do|da|dos|das|de|o|a|os|as)\b)/i;
+
+/** Frase que corrige uma confusão comum ("e não do gás carbônico", "não confunda..."). */
+export function isMisconception(sentence: string): boolean {
+  return MISCONCEPTION.test(sentence);
+}
+
 const ANAPHORA =
   /^(?:ele|ela|eles|elas|isso|isto|aquilo|esse|essa|esses|essas|este|esta|estes|estas|nesse|nessa|neste|nesta|desse|dessa|deste|desta|tal|tais|assim|portanto|al[ée]m disso|por isso|dessa forma|desta forma|mas|por[ée]m|contudo|entretanto|todavia|e|ou|tamb[ée]m|he|she|they|this|that|these|those|however|but)\b/i;
 

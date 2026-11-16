@@ -301,13 +301,26 @@ export function assembleDocument(
   const levels = headingLevels(entries);
   const blocks: DocumentBlock[] = [];
   let paragraph:
-    { text: string; page: number; lastY: number; lastX: number; lastSize: number } | undefined;
+    | {
+        text: string;
+        page: number;
+        lastY: number;
+        lastX: number;
+        lastSize: number;
+        item: boolean;
+      }
+    | undefined;
   let skipping = false;
   const flush = () => {
     if (!paragraph) return;
     const text = cleanParagraph(paragraph.text);
-    if (text.split(/\s+/).length >= 3 && !isNoise(text)) {
-      blocks.push({ kind: "paragraph", text, page: paragraph.page });
+    const item = paragraph.item && text.length <= 220;
+    if (text.split(/\s+/).length >= (item ? 1 : 3) && !isNoise(text)) {
+      blocks.push(
+        item
+          ? { kind: "paragraph", text, page: paragraph.page, item: true }
+          : { kind: "paragraph", text, page: paragraph.page },
+      );
     }
     paragraph = undefined;
   };
@@ -349,7 +362,14 @@ export function assembleDocument(
     if (CAPTION.test(text) && text.length < 90) continue;
     const startsItem = BULLET.test(text);
     if (!paragraph) {
-      paragraph = { text, page: line.page, lastY: line.y, lastX: line.x, lastSize: line.size };
+      paragraph = {
+        text,
+        page: line.page,
+        lastY: line.y,
+        lastX: line.x,
+        lastSize: line.size,
+        item: startsItem,
+      };
       continue;
     }
     const samePage = line.page === paragraph.page || line.page === paragraph.page;
@@ -363,7 +383,14 @@ export function assembleDocument(
     const pageBreakEnds = line.page !== paragraph.page && hasTerminalPunctuation(paragraph.text);
     if (startsItem || bigGap || indented || pageBreakEnds) {
       flush();
-      paragraph = { text, page: line.page, lastY: line.y, lastX: line.x, lastSize: line.size };
+      paragraph = {
+        text,
+        page: line.page,
+        lastY: line.y,
+        lastX: line.x,
+        lastSize: line.size,
+        item: startsItem,
+      };
     } else {
       paragraph.text = joinLines(paragraph.text, text);
       paragraph.lastY = line.y;
@@ -461,6 +488,17 @@ export function structureText(text: string, fileTitle = ""): StructuredDocument 
           ? Math.min(depth[1]!.replace(/\.$/, "").split(".").length, 3)
           : 1;
       blocks.push({ kind: "heading", level: level as 1 | 2 | 3, text: trimmed, page: 1 });
+      continue;
+    }
+    const rows = trimmed.split("\n").map((row) => row.trim());
+    const ITEM = /^(?:[-*\u2022]|\d{1,2}[.)])\s+\S/;
+    const firstItem = rows.findIndex((row) => ITEM.test(row));
+    if (firstItem >= 0 && rows.slice(firstItem).every((row) => ITEM.test(row))) {
+      const lead = cleanParagraph(rows.slice(0, firstItem).join(" "));
+      if (lead) blocks.push({ kind: "paragraph", text: lead, page: 1 });
+      for (const row of rows.slice(firstItem)) {
+        blocks.push({ kind: "paragraph", text: cleanParagraph(row), page: 1, item: true });
+      }
       continue;
     }
     const joined = cleanParagraph(
