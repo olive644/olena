@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { activateHandwritingPen } from "./notebook-helpers";
+import { activateHandwritingPen, openNotebooksView } from "./notebook-helpers";
 
 test("celular distribui ações e recolhe as opções para liberar a folha", async ({ page }, info) => {
   test.skip(info.project.name !== "mobile");
@@ -7,11 +7,7 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-  await page
-    .getByRole("dialog", { name: "Mais ferramentas" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();
@@ -87,7 +83,10 @@ test("navegação escura e gavetas do caderno mantêm contraste e ações separa
   await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
   const menu = page.getByRole("dialog", { name: "Mais ferramentas" });
   await expect(menu.getByRole("button", { name: "Planos de aula" })).toHaveCount(0);
-  await menu.getByRole("button", { name: "Cadernos", exact: true }).click();
+  // Os cadernos agora ficam na Biblioteca: o menu não tem mais o item "Cadernos".
+  await expect(menu.getByRole("button", { name: "Cadernos", exact: true })).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();

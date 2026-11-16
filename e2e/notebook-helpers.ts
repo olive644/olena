@@ -61,3 +61,12 @@ export async function compositeColorAt(page: Page, px: number, py: number) {
     { px, py },
   );
 }
+
+// A tela de cadernos continua em /cadernos, mas o item "Cadernos" saiu do menu lateral (os cadernos
+// agora ficam na Biblioteca). Navega pela rota como o app faz, sem recarregar a página.
+export async function openNotebooksView(page: Page) {
+  await page.evaluate(() => {
+    window.history.pushState(null, "", "/cadernos");
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  });
+}

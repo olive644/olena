@@ -3,6 +3,7 @@ import {
   openHandwritingToolOptions,
   activateHandwritingPen,
   compositeColorAt,
+  openNotebooksView,
 } from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 
@@ -14,10 +15,7 @@ test("borracha de fundo apaga a página importada e deixa a tinta e a pauta", as
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();
