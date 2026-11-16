@@ -13,6 +13,7 @@ const files = [
   ["tesseract.js-core/tesseract-core-lstm.wasm.js", "tesseract-core-lstm.wasm.js"],
   ["tesseract.js-core/tesseract-core-simd-lstm.wasm.js", "tesseract-core-simd-lstm.wasm.js"],
   ["@tesseract.js-data/eng/4.0.0_best_int/eng.traineddata.gz", "lang/eng.traineddata.gz"],
+  ["@tesseract.js-data/por/4.0.0_best_int/por.traineddata.gz", "lang/por.traineddata.gz"],
 ];
 
 async function copyIfChanged(from, to) {

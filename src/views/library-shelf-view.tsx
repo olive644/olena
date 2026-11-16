@@ -392,7 +392,7 @@ export function LibraryFolderContents({
       async function recognize(image: HTMLCanvasElement | string) {
         if (!scanner) {
           const { createWorker } = await import("tesseract.js");
-          scanner = await createWorker("eng", 1, OCR_WORKER_OPTIONS);
+          scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
         }
         return (await scanner.recognize(image)).data.text;
       }
@@ -523,7 +523,35 @@ export function LibraryFolderContents({
             const pdf = await loading.promise.catch(() => {
               throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
             });
-            result = await summarizePdf(pdf, { title: fileTitle });
+            // Páginas que são só imagem (PDF escaneado) passam pelo OCR em português, no aparelho.
+            let scanner:
+              Awaited<ReturnType<typeof import("tesseract.js").createWorker>> | undefined;
+            try {
+              result = await summarizePdf(pdf, {
+                title: fileTitle,
+                ocr: async (pageNumber) => {
+                  const page = await pdf.getPage(pageNumber);
+                  const viewport = page.getViewport({ scale: 1 });
+                  const scaled = page.getViewport({
+                    scale: 2000 / Math.max(viewport.width, viewport.height),
+                  });
+                  const canvas = document.createElement("canvas");
+                  canvas.width = Math.ceil(scaled.width);
+                  canvas.height = Math.ceil(scaled.height);
+                  await page.render({ canvas, viewport: scaled }).promise;
+                  if (!scanner) {
+                    const { createWorker } = await import("tesseract.js");
+                    scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
+                  }
+                  const text = (await scanner.recognize(canvas)).data.text;
+                  canvas.width = 0;
+                  canvas.height = 0;
+                  return text;
+                },
+              });
+            } finally {
+              await scanner?.terminate();
+            }
           } finally {
             await loading.destroy();
           }
@@ -531,7 +559,7 @@ export function LibraryFolderContents({
         if (result.stats.sentences === 0) {
           throw new Error(
             uiText(
-              "Não encontrei texto em {0}. Se for um PDF escaneado, use a Olena para ler as imagens.",
+              "Não encontrei texto em {0}, nem lendo as imagens. Se a foto estiver torta ou borrada, tente outra ou use a Olena.",
               [source.title],
             ),
           );
