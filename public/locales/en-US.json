@@ -3902,5 +3902,15 @@
   "{0} of {1} sources selected",
   "Create from {0} source",
   "Create from {0} sources",
-  "Folder name"
+  "Folder name",
+  "Pen meter",
+  "Shows the pen input and the time of each frame on screen while you write, to find stutters. Nothing leaves the device.",
+  "Write a word to measure",
+  "Input: {0} events/s, {1} points/s",
+  "Input queue: average {0} ms, worst {1} ms",
+  "Longest pause without input: {0} ms",
+  "Frames: median {0} ms, p95 {1} ms, worst {2} ms",
+  "Slow frames (over {0} ms): {1} of {2}",
+  "Live drawing: average {0} ms, worst {1} ms",
+  "Sheet: {0} x {1} px, {2} layers, screen {3}x"
 ]

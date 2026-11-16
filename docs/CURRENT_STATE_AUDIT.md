@@ -5204,3 +5204,27 @@ Decisão do proprietário: a aba Cadernos saiu do menu e os cadernos passaram a 
 
 - Os e2e foram rodados localmente nos arquivos afetados (app, shelf-edit, shelf-edit-hint, showcase, library-connections), com resultado verde; a suíte inteira roda no CI.
 - Os 8 testes de `src/data/listening-audio.test.ts` falham neste ambiente sem relação com esta mudança (`object.stream is not a function`).
+
+## Medidor da caneta, 16/11/2026
+
+Pedido do proprietário depois de um vídeo da escrita no aparelho: a tinta aparecia em blocos, com 89 atualizações em 2,5 s, mediana de 22 ms entre elas, 25 intervalos acima de 33 ms e o maior com 100 ms. Sem uma medida no próprio aparelho, não dá para saber se o gargalo é a entrada da caneta ou o desenho.
+
+**O que mudou**
+
+- Nova opção em Configurações do editor, Caneta: "Medidor da caneta" (`penDiagnostics`, desligada por padrão). Com ela ligada, um painel fixo mostra, para o último traço: eventos e pontos por segundo, fila da entrada (tempo entre o carimbo do navegador e o app tratar o evento), maior pausa sem entrada, quadros (mediana, p95, pior e quantos passaram de 33 ms), tempo de desenho da camada ao vivo e o tamanho da folha com o número de camadas e a densidade da tela.
+- Os números ficam na tela depois de soltar a caneta, para dar tempo de tirar uma captura. Nada é enviado para fora do aparelho e nada é guardado: o painel só lê contadores em memória.
+- Com a opção desligada nenhum código de medição roda (sem laço de quadros e sem leitura de relógio por evento).
+- Código: `handwriting-pen-meter.ts` (contadores puros), `use-handwriting-pen-meter.ts` (liga ao editor), `handwriting-pen-meter-panel.tsx` (painel). Testes: `handwriting-pen-meter.test.ts`, `handwriting-pen-meter-panel.test.tsx`, `e2e/handwriting-pen-meter.spec.ts` (claro e escuro, PC e celular).
+
+**Como ler**
+
+- Muita fila da entrada ou pausas grandes sem entrada: o aparelho ou o navegador entrega pouco, e o app não é o gargalo.
+- Entrada boa (60 a 240 pontos/s, sem pausas) com quadros lentos e desenho ao vivo alto: o gargalo é o desenho, e o próximo passo é reduzir camadas ou resolução delas.
+- Desenho ao vivo baixo e quadros lentos: o custo está na composição das camadas (GPU), não no JavaScript.
+
+**Limites (importante)**
+
+- Validado no navegador desta máquina, que renderiza por software; os números absolutos de um tablet serão outros. Só a captura no aparelho do proprietário responde à pergunta.
+- O desenho com o ponteiro só é verificado no PC pelo e2e; no celular o e2e confere que o painel aparece e cabe na tela, nos dois temas.
+- O painel cobre uma parte da folha enquanto está ligado, e foi pensado para ficar ligado só durante o diagnóstico.
+- Os 8 testes de `src/data/listening-audio.test.ts` falham neste ambiente (`object.stream is not a function`) também sem as mudanças desta PR, então não vêm dela. O CI é a referência para eles.
