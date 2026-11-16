@@ -1,6 +1,14 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { App } from "./app";
+
+// Os cadernos ficam na Biblioteca: o menu não tem mais o item "Cadernos".
+function openNotebooks() {
+  act(() => {
+    window.history.pushState(null, "", "/cadernos");
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  });
+}
 
 function navigate(label: string) {
   const navigation = screen.getByRole("navigation", { name: "Navegação principal" });
@@ -131,7 +139,8 @@ describe("App", () => {
     const navigation = screen.getByRole("navigation", { name: "Navegação principal" });
     const main = screen.getByRole("main");
 
-    expect(within(navigation).getByRole("button", { name: "Cadernos" })).toBeTruthy();
+    expect(within(navigation).queryByRole("button", { name: "Cadernos" })).toBeNull();
+    expect(within(navigation).getByRole("button", { name: "Biblioteca" })).toBeTruthy();
     expect(within(main).queryByRole("button", { name: "Cadernos" })).toBeNull();
   });
 
@@ -174,7 +183,6 @@ describe("App", () => {
       ["Foco", "focus"],
       ["Praticar", "gamepad"],
       ["Biblioteca", "library"],
-      ["Cadernos", "notes"],
     ] as const;
 
     icons.forEach(([label, icon]) => {
@@ -234,7 +242,7 @@ describe("App", () => {
   it("cria caderno sem exibir o módulo de hábitos removido", async () => {
     render(<App />);
     expect(screen.queryByRole("button", { name: "Hábitos" })).toBeNull();
-    navigate("Cadernos");
+    openNotebooks();
     fireEvent.click(await screen.findByRole("button", { name: "Crie" }, { timeout: 5000 }));
     expect(screen.queryByRole("button", { name: /Anotações/ })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Criar caderno" }));
@@ -244,7 +252,7 @@ describe("App", () => {
 
   it("cria a primeira folha diretamente na prévia do caderno", async () => {
     render(<App />);
-    navigate("Cadernos");
+    openNotebooks();
     fireEvent.click(await screen.findByRole("button", { name: "Crie" }, { timeout: 5000 }));
     fireEvent.click(screen.getByRole("button", { name: "Criar caderno" }));
     fireEvent.click(screen.getByRole("button", { name: /^Abrir Meu caderno/i }));
