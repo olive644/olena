@@ -1,5 +1,5 @@
 import { getFirebaseAccountServices } from "../data/firebase-account";
-import { requestHelena } from "../data/helena-client";
+import { streamHelena } from "../data/helena-client";
 import { OCR_WORKER_OPTIONS } from "../components/handwriting-ocr";
 import type { HelenaRequest } from "../ai/helena-contract";
 import { PaperEditorIcon } from "../components/paper-editor-icon";
@@ -381,7 +381,9 @@ export function LibraryFolderContents({
       } finally {
         await scanner?.terminate();
       }
-      const result = await requestHelena(
+      // Pela transmissão em fluxo: a resposta sem fluxo tem 20 s de limite no servidor, e um guia de
+      // até 2400 tokens costuma passar disso, o que chegava ao aluno como "Serviço indisponível".
+      const result = await streamHelena(
         {
           version: 1,
           capability: "summarize",
@@ -390,7 +392,7 @@ export function LibraryFolderContents({
           sources,
           privacy: { consent: true, retention: "none" },
         },
-        { token },
+        { token, onText: () => {} },
       );
       const heading = result.answer.match(/^#\s+(.+)/m)?.[1]?.trim();
       dispatch({

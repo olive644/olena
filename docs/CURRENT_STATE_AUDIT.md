@@ -5253,6 +5253,26 @@ Relato do proprietário com captura do celular: depois de unificar cadernos e pa
 - Em telas muito baixas (cerca de 640 px de altura ou menos) o mínimo de 128 px vale e a área rola, como antes. Não verificado em aparelho real; o teste usa o emulador do navegador.
 - O desconto de 610 px assume as alturas atuais de cabeçalho, ferramentas e navegação. No tema escuro o conjunto fica 16 px mais baixo que no claro, e o desconto cobre os dois. Se esses elementos mudarem, o teste acusa.
 
+## Resumo estruturado com a Olena na pasta da Biblioteca, 16/11/2026
+
+Relato do proprietário: o resumo estruturado com a Olena não estava funcionando. A geração é a da aba Resumo da pasta ("Criar resumo", "Gerar") e do botão "Gerar resumo estruturado com a Olena" de um resumo antigo.
+
+**Causa provável (lida no código; não reproduzida contra o serviço de produção)**
+
+- O resumo pedia a resposta sem fluxo (`requestHelena`). No servidor, essa rota (`createCloudflareTeacher.generate`) cancela a chamada ao modelo em 20 s (`AbortSignal.timeout(20_000)`), mas o guia pede até 2400 tokens (`max_tokens` do `summarize`) a partir de até 3 fontes de cerca de 8 mil caracteres. Um modelo de 8 bilhões de parâmetros leva em geral mais de 20 s nisso. O cancelamento vira erro 503 e o aluno via "Serviço indisponível. Tente mais tarde." (o chat não sofre disso porque usa a transmissão em fluxo, que tem 45 s no servidor e 55 s no cliente).
+- Não havia nenhum teste da geração do resumo.
+
+**O que mudou** (`src/views/library-shelf-view.tsx`)
+
+- O resumo passa a usar `streamHelena`, o mesmo caminho do chat: limite de 45 s no servidor e 55 s no cliente em vez de 20 s. O pedido, o consentimento, a política de privacidade (`retention: "none"`) e o texto enviado são os mesmos de antes.
+- Provas: `src/views/library-shelf-view.test.tsx` (4 testes): o pedido sai com `capability: "summarize"`, consentimento e fontes certos e o resumo é guardado na pasta com o título do `#`; sem login a pessoa é orientada a entrar e a Olena não é chamada; erro do serviço aparece sem guardar nada; o botão "Gerar resumo estruturado com a Olena" de um resumo antigo marca as mesmas fontes e gera o guia. Sem a correção, 2 dos testes falham.
+
+**Limites (importante)**
+
+- Não verifiquei contra a Olena em produção: gerar exige uma conta logada e o consumo é pago. Os logs de produção do Vercel (plano Hobby, 1 hora de retenção) e os agrupamentos de erro das últimas 24 h não mostram falhas de `/api/helena`, então não há registro do erro do relato para confirmar a causa. Para conferir: entrar na conta, gerar um resumo de um PDF com 3 fontes e ver se termina.
+- A transmissão em fluxo tem teto de 12 000 caracteres de resposta e 45 s no servidor. Um guia de 2400 tokens cabe nos dois em condições normais; se o modelo estiver lento, o resumo ainda pode ser interrompido com "A resposta foi interrompida. Tente novamente.".
+- O texto parcial que chega pelo fluxo não é mostrado; a tela segue com o indicador de espera até terminar.
+
 ## Abas da pasta da Biblioteca no celular, 16/11/2026
 
 Relato do proprietário com captura do celular: dentro de uma pasta da Biblioteca, a fileira de abas (Fontes, Resumo, Flashcards, Quizzes e Simulados) passava da largura da tela e "Simulados" ficava cortado.
