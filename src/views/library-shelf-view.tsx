@@ -387,13 +387,13 @@ export function LibraryFolderContents({
         await scanner?.terminate();
       }
       // Pela transmissão em fluxo: a resposta sem fluxo tem 20 s de limite no servidor, e um guia de
-      // até 2400 tokens costuma passar disso, o que chegava ao aluno como "Serviço indisponível".
+      // de muitos tokens costuma passar disso, o que chegava ao aluno como "Serviço indisponível".
       const result = await streamHelena(
         {
           version: 1,
           capability: "summarize",
           prompt:
-            "Escreva um guia de estudo em português brasileiro usando apenas as fontes fornecidas. Sintetize em palavras próprias e organize por assunto. Comece com # e um título curto. Use de 4 a 7 seções com títulos ## numerados, parágrafos curtos, - para listas e **negrito** para termos-chave. Intercale pelo menos três caixas com uma linha inteira começando por > e um rótulo em negrito, por exemplo Definição, Atenção, Cronologia ou Ponto essencial. Inclua datas, exemplos ou cálculos quando sustentados pelas fontes. Preserve números e fatos. Indique lacunas quando os trechos forem incompletos. Entregue somente o guia, sem bloco de código.",
+            "Escreva um guia de estudo em português brasileiro usando apenas as fontes fornecidas. Sintetize em palavras próprias e organize por assunto. Comece com # e um título curto. Use de 4 a 7 seções com títulos ## numerados, parágrafos curtos, - para listas e **negrito** para termos-chave. Intercale pelo menos três caixas com uma linha inteira começando por > e um rótulo em negrito, por exemplo Definição, Atenção, Cronologia ou Ponto essencial. Inclua datas, exemplos ou cálculos quando sustentados pelas fontes. Preserve números e fatos. Indique lacunas quando os trechos forem incompletos. Seja conciso: no máximo 600 palavras no total. Entregue somente o guia, sem bloco de código.",
           sources,
           privacy: { consent: true, retention: "none" },
         },

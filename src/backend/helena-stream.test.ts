@@ -332,3 +332,36 @@ it("the authenticated HTTP chat adds checked mathematics before streaming to the
   expect(text).toHaveBeenCalledWith("x = 4");
   expect(providerFetch).toHaveBeenCalledTimes(1);
 });
+
+it("registra no servidor por que o fluxo foi interrompido, sem o conteúdo do aluno", async () => {
+  const log = vi.spyOn(console, "error").mockImplementation(() => undefined);
+  const provider: HelenaProvider = {
+    generate: async () => ({ answer: "x", suggestions: [] }),
+    async *stream() {
+      yield "Início do guia";
+      throw new Error("Streaming provider unavailable (429)");
+    },
+  };
+  const fetcher = await serve(provider);
+  await expect(
+    streamHelena(
+      {
+        ...payload,
+        capability: "summarize",
+        prompt: "Resuma",
+        sources: [
+          { id: "f1", kind: "material", title: "Segredo.pdf", content: "TEXTO PRIVADO DO ALUNO" },
+        ],
+      },
+      { fetcher, onText: () => undefined },
+    ),
+  ).rejects.toThrow("A resposta foi interrompida");
+  const lines = log.mock.calls.map((call) => call.join(" "));
+  const entry = lines.find((line) => line.includes("[helena] fluxo interrompido"))!;
+  expect(entry).toContain('"capability":"summarize"');
+  expect(entry).toContain('"motivo":"Streaming provider unavailable (429)"');
+  expect(entry).toContain('"chars":14');
+  expect(lines.join("\n")).not.toContain("TEXTO PRIVADO DO ALUNO");
+  expect(lines.join("\n")).not.toContain("Segredo.pdf");
+  log.mockRestore();
+});

@@ -8,6 +8,18 @@ import {
 } from "../ai/helena-contract.js";
 
 const MAX_BODY_BYTES = 64_000;
+// A função da Vercel tem 60 s (`maxDuration`). O resumo, que gera um texto longo, ganha mais tempo
+// que a conversa.
+const STREAM_TIMEOUT_MS = 45_000;
+const SUMMARY_STREAM_TIMEOUT_MS = 55_000;
+
+/** Motivo curto para o registro do servidor: só mensagens nossas ou de rede, nunca o conteúdo. */
+function failureReason(error: unknown, signal: AbortSignal): string {
+  const aborted: unknown = signal.reason;
+  if (signal.aborted && aborted instanceof Error && aborted.name === "TimeoutError")
+    return "tempo esgotado";
+  return error instanceof Error ? error.message.slice(0, 120) : "desconhecido";
+}
 
 export type HelenaProvider = {
   generate(
@@ -108,7 +120,14 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
       if (request.headers.get("Accept")?.includes("text/event-stream")) {
         if (!dependencies.provider.stream) throw new Error("Streaming unavailable");
         const abort = new AbortController();
-        const signal = AbortSignal.any([request.signal, abort.signal, AbortSignal.timeout(45_000)]);
+        const startedAt = Date.now();
+        const signal = AbortSignal.any([
+          request.signal,
+          abort.signal,
+          AbortSignal.timeout(
+            parsed.value.capability === "summarize" ? SUMMARY_STREAM_TIMEOUT_MS : STREAM_TIMEOUT_MS,
+          ),
+        ]);
         const iterator = dependencies.provider.stream(parsed.value, signal)[Symbol.asyncIterator]();
         const encoder = new TextEncoder();
         let answer = "";
@@ -142,8 +161,18 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
                   if (!completed.ok) throw new Error("Invalid completion");
                   controller.enqueue(event({ type: "done", response: completed.value }));
                   controller.close();
-                } catch {
+                } catch (error) {
                   const cancelled = request.signal.aborted || abort.signal.aborted;
+                  if (!cancelled)
+                    console.error(
+                      "[helena] fluxo interrompido",
+                      JSON.stringify({
+                        capability: parsed.value.capability,
+                        ms: Date.now() - startedAt,
+                        chars: answer.length,
+                        motivo: failureReason(error, signal),
+                      }),
+                    );
                   abort.abort();
                   await iterator.return?.().catch(() => {});
                   if (cancelled) controller.error(new Error("Aborted"));
@@ -187,7 +216,14 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
       const validated = parseHelenaResponse(response);
       if (!validated.ok) throw new Error(validated.message);
       return jsonResponse(200, validated.value);
-    } catch {
+    } catch (error) {
+      console.error(
+        "[helena] resposta indisponível",
+        JSON.stringify({
+          capability: parsed.value.capability,
+          motivo: error instanceof Error ? error.message.slice(0, 120) : "desconhecido",
+        }),
+      );
       return errorResponse(503, "provider_unavailable", "A Olena está indisponível no momento.");
     }
   };
