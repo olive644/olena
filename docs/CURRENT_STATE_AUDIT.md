@@ -5198,7 +5198,9 @@ Decisão do proprietário: a aba Cadernos saiu do menu e os cadernos passaram a 
 - "Adicionar material" com título e tipo, e a busca "Buscar no acervo".
 - Abrir um material pelo link `/biblioteca?material=...` e o botão "Ver fonte" na folha.
 
-`src/views/library-view.tsx` continua no repositório, mas nada o renderiza. Foi removido o teste unitário e o e2e que dependiam dele para criar flashcard. Se alguma dessas funções precisar voltar, deve entrar na pasta da nova Biblioteca, com teste novo.
+Decisão do proprietário (opção A, 16/11/2026): essas funções foram removidas de propósito junto com a tela antiga. Por isso saíram os e2e `library.spec.ts` (Biblioteca integrada com revisão e Discord; leitor de PDF local com pesquisa, marcador e anotações), `library-review.spec.ts` (baralhos, edição, TSV e limite diário de revisão) e `library-study.spec.ts` ("Trecho" mantém fonte no caderno e no flashcard e vincula o Pomodoro). Todos dependiam de "Adicionar material" da tela antiga.
+
+`src/views/library-view.tsx` continua no repositório, com seus testes unitários, mas nada o renderiza. Foi removido o teste unitário e o e2e que dependiam dele para criar flashcard. Se alguma dessas funções precisar voltar, deve entrar na pasta da nova Biblioteca, com teste novo.
 
 **Limites**
 
