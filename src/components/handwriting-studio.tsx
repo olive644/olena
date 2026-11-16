@@ -76,6 +76,7 @@ import { cursorColor } from "./handwriting-cursor";
 import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
 import { HandwritingShapeInsert, type InsertKind } from "./handwriting-shape-insert";
 import { predictedTail, withPredictedTail } from "./handwriting-prediction";
+import { isInFoldCorner } from "./handwriting-fold";
 import { compactPoints } from "./handwriting-precision";
 import { useSelectionActions } from "../hooks/use-selection-actions";
 import { useSelectionGesture } from "../hooks/use-selection-gesture";
@@ -1167,6 +1168,16 @@ export function HandwritingStudio({
         pageText: visibleText,
       });
     }
+    // Camadas vazias não entram na composição: cada canvas do tamanho da folha custa uns milissegundos
+    // por quadro enquanto se escreve. A tinta confirmada fica sempre visível porque o traço é
+    // desenhado direto nela ao soltar a caneta.
+    const emptyLayer = {
+      coordinates: !pageScene.layers.coordinates || pageScene.coordinateSystems.length === 0,
+      text: !pageScene.layers.text || visibleText === "",
+      strokes: false,
+    };
+    for (const [layer, overlay] of canvases)
+      if (overlay) overlay.style.display = emptyLayer[layer] ? "none" : "";
     paintedPageRef.current = {
       scene: pageScene,
       scale: renderScale,
@@ -1183,6 +1194,15 @@ export function HandwritingStudio({
     if (!canvas) return;
     sizePageCanvas(canvas, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
     clearPageCanvas(canvas);
+    // Sem seleção, caixa, laço nem guias a camada não tem o que mostrar: sai da composição.
+    canvas.style.display =
+      !textMode &&
+      (selectedIds.length > 0 ||
+        Boolean(selectionBox) ||
+        Boolean(selectionPath?.length) ||
+        guides.length > 0)
+        ? ""
+        : "none";
     const context = pageContext(canvas);
     if (context && !textMode)
       drawSelectionOverlay(
@@ -1879,8 +1899,15 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     if (!liveStroke) return;
     if (shapeSnappedRef.current) return;
+    // Na dobra do canto não há papel: pontos ali nem entram no traço.
+    const onPaper = sampleEvents.map(
+      (sample) => !isInFoldCorner(bounds, sample.clientX, sample.clientY),
+    );
+    const paperPoints = points.filter((_, index) => onPaper[index]);
+    if (paperPoints.length === 0) return;
+    const paperTimes = sampleTimes.filter((_, index) => onPaper[index]);
     const previous = liveStroke.points.at(-1);
-    const added = (liveStabilizerRef.current?.push(points, sampleTimes) ?? points).reduce<
+    const added = (liveStabilizerRef.current?.push(paperPoints, paperTimes) ?? paperPoints).reduce<
       HandwritingPoint[]
     >((accepted, point) => {
       const lastPoint = accepted.at(-1) ?? previous;
