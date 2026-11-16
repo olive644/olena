@@ -5261,7 +5261,7 @@ Relato do proprietário com captura do celular: dentro de uma pasta da Bibliotec
 
 **O que mudou** (`src/views/library-shelf-view.css`, só até 560 px de largura)
 
-- A seta de voltar fica numa linha própria e as cinco abas dividem a largura inteira em cinco colunas iguais, com o ícone acima do nome e fonte de ``clamp(0.56rem, 2.7vw, 0.75rem)``.
+- A seta de voltar fica numa linha própria e as cinco abas dividem a largura inteira em cinco colunas iguais, com o ícone acima do nome e fonte de `clamp(0.56rem, 2.7vw, 0.75rem)`.
 - Em 360x800 as abas ocupam de 24 a 336 px, sem rolagem de lado; em 320x568 e 412x915 também cabem.
 
 **Prova:** `e2e/library-folder-mobile.spec.ts` (celular, claro e escuro, 320x568, 360x800 e 412x915): cinco abas, nenhuma passando da largura, sem rolagem horizontal. Os 6 casos falham sem a correção e passam com ela. Captura conferida em 360x800.
