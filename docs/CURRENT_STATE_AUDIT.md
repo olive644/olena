@@ -1,3 +1,13 @@
+## OCR em português para PDF escaneado, 16/11/2026
+
+O Resumo automático agora lê PDF escaneado (páginas só com imagem): a página é renderizada em canvas (lado maior de 2000 px), lida pelo tesseract.js com o idioma `por` e o texto entra no mesmo pipeline do PDF com texto. O OCR só roda nas páginas sem camada de texto (menos de 25 caracteres), carrega o tesseract.js sob demanda e é encerrado ao fim. Tudo roda no aparelho: worker, núcleo WASM e idioma saem de `/ocr` no mesmo domínio, sem CDN e sem chamar a Olena. O mesmo OCR em português passou a valer para o caminho "Gerar com a Olena" (leitura de imagens e PDFs escaneados antes de enviar o texto).
+
+Dependência nova, com justificativa: `@tesseract.js-data/por` (MIT, devDependency, só fonte do arquivo copiado no build por `scripts/copy-ocr-assets.mjs`). Usa a variante `4.0.0_best_int`, a mesma do inglês: 1,39 MB compactado (o inglês tem 2,95 MB). Não entra no JavaScript da aplicação nem no orçamento de desempenho; é baixado só quando uma página precisa de OCR e fica em cache do navegador (cabeçalho de 7 dias em `/ocr/*`).
+
+Provas: dois testes de tela com o tesseract simulado (PDF escaneado resumido, PDF sem texto nem para o OCR) e e2e `library-scanned-summary.spec.ts` com OCR real sobre um PDF escaneado de verdade (`e2e/fixtures/escaneado-fotossintese.pdf`, 88 KB, só imagem), em desktop e celular, claro e escuro: o texto lido tem os acentos corretos, nenhuma requisição sai do domínio nem chama a Olena e a página não ganha rolagem horizontal.
+
+Limites, sem esconder: a precisão foi medida só em texto impresso limpo gerado para o teste, não em fotos reais de caderno ou páginas tortas e borradas (não verificado, conferir com amostras reais). Não há velocidade medida em celular: cada página é lida em série e pode levar vários segundos. Manuscrito não é suportado de forma confiável. O título de um PDF escaneado cai no nome do arquivo, porque o OCR não distingue tamanho de fonte para detectar títulos.
+
 ## Resumo automático em formato de guia de estudo, 16/11/2026
 
 O Resumo automático agora monta o resumo como um guia de estudo, qualquer que seja o tamanho do arquivo. Cada seção é numerada e traz: parágrafo de abertura, a lista do próprio arquivo (inteira, com a frase que a anuncia), pontos de apoio, caixa "Definição: termo", caixa "Erro frequente" (frases que corrigem confusões, como "não confunda" ou "e não do"), "Atenção" e "Ponto essencial". No fim entram a Linha do tempo em tabela (Quando, O que aconteceu), dados e números, termos-chave e perguntas de revisão. A linha do tempo é reservada antes das seções para que as datas não se percam, e essas frases não se repetem nas seções.

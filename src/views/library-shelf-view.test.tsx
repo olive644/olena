@@ -10,6 +10,15 @@ vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: service
 const pdfOpen = vi.hoisted(() => vi.fn());
 vi.mock("pdfjs-dist", () => ({ GlobalWorkerOptions: {}, getDocument: pdfOpen }));
 vi.mock("pdfjs-dist/build/pdf.worker.min.mjs?url", () => ({ default: "pdf.worker.js" }));
+const recognized = vi.hoisted(() => vi.fn());
+const terminate = vi.hoisted(() => vi.fn(async () => undefined));
+const createWorker = vi.hoisted(() =>
+  vi.fn(async () => ({
+    recognize: async () => ({ data: { text: recognized() as string } }),
+    terminate,
+  })),
+);
+vi.mock("tesseract.js", () => ({ createWorker }));
 
 const folder = { id: "pasta-1", title: "Tese", motif: "book" as const, createdAt: "2026-11-16" };
 const source = {
@@ -254,6 +263,9 @@ describe("resumo automático no aparelho", () => {
     stream.mockReset();
     services.mockReset();
     pdfOpen.mockReset();
+    recognized.mockReset();
+    createWorker.mockClear();
+    terminate.mockClear();
   });
 
   function renderWith(material: WorkspaceState["materials"][number]) {
@@ -294,27 +306,48 @@ describe("resumo automático no aparelho", () => {
     expect(action.content).not.toMatch(/[\u2013\u2014]/);
   });
 
-  it("explica quando o PDF não tem texto selecionável", async () => {
+  const scannedPdf = () => {
     const page = {
       getViewport: () => ({ width: 600, height: 800 }),
       getTextContent: async () => ({ items: [] }),
+      render: () => ({ promise: Promise.resolve() }),
       cleanup: () => undefined,
     };
     pdfOpen.mockReturnValue({
       promise: Promise.resolve({ numPages: 1, getPage: async () => page }),
       destroy: async () => undefined,
     });
-    const { dispatch, dialog } = renderWith({
+    return renderWith({
       ...source,
       id: "pdf-3",
       title: "escaneado.pdf",
       kind: "pdf",
       content: "data:application/pdf;base64,JVBERi0xLjQK",
     });
+  };
+
+  it("lê PDF escaneado com OCR em português e resume o texto", async () => {
+    recognized.mockReturnValue(
+      "A fotossíntese é o processo pelo qual as plantas transformam energia luminosa em energia química.\n\nNesse processo, a planta usa gás carbônico, água e luz para produzir glicose e liberar oxigênio.\n\nO cloroplasto é a organela que contém a clorofila, pigmento verde que absorve a luz do sol.",
+    );
+    const { dispatch, dialog } = scannedPdf();
+    fireEvent.click(within(dialog).getByRole("button", { name: "Resumo automático" }));
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(createWorker).toHaveBeenCalledWith("por", 1, expect.anything());
+    expect(terminate).toHaveBeenCalled();
+    const action = dispatch.mock.calls[0]![0];
+    if (action.type !== "material/added") throw new Error("ação inesperada");
+    expect(action.content).toContain("fotossíntese");
+    expect(stream).not.toHaveBeenCalled();
+  });
+
+  it("explica quando nem o OCR encontra texto", async () => {
+    recognized.mockReturnValue("");
+    const { dispatch, dialog } = scannedPdf();
     fireEvent.click(within(dialog).getByRole("button", { name: "Resumo automático" }));
     expect(await screen.findByRole("alert")).toHaveProperty(
       "textContent",
-      "Não encontrei texto em escaneado.pdf. Se for um PDF escaneado, use a Olena para ler as imagens.",
+      "Não encontrei texto em escaneado.pdf, nem lendo as imagens. Se a foto estiver torta ou borrada, tente outra ou use a Olena.",
     );
     expect(dispatch).not.toHaveBeenCalled();
   });

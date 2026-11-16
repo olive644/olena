@@ -3920,5 +3920,6 @@
   "I found no text in {0}. If it is a scanned PDF, use Olena to read the images.",
   "The summary could not be generated.",
   "Automatic summary: free, made on your device, without AI. It picks the most important sentences from the file itself.",
-  "When you generate with Olena, the text of the selected sources is sent to her."
+  "When you generate with Olena, the text of the selected sources is sent to her.",
+  "I found no text in {0}, even reading the images. If the photo is crooked or blurry, try another one or use Olena."
 ]

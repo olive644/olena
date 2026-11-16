@@ -3920,5 +3920,6 @@
   "Não encontrei texto em {0}. Se for um PDF escaneado, use a Olena para ler as imagens.",
   "Não foi possível gerar o resumo.",
   "Resumo automático: grátis, feito no seu aparelho, sem IA. Escolhe as frases mais importantes do próprio arquivo.",
-  "Ao gerar com a Olena, o texto das fontes selecionadas é enviado a ela."
+  "Ao gerar com a Olena, o texto das fontes selecionadas é enviado a ela.",
+  "Não encontrei texto em {0}, nem lendo as imagens. Se a foto estiver torta ou borrada, tente outra ou use a Olena."
 ]
