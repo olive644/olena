@@ -3912,5 +3912,13 @@
   "Frames: median {0} ms, p95 {1} ms, worst {2} ms",
   "Slow frames (over {0} ms): {1} of {2}",
   "Live drawing: average {0} ms, worst {1} ms",
-  "Sheet: {0} x {1} px, {2} layers, screen {3}x"
+  "Sheet: {0} x {1} px, {2} layers, screen {3}x",
+  "Generate with Olena",
+  "Automatic summary",
+  "The automatic summary reads PDF and text. For images, use Olena.",
+  "I could not open the PDF {0}.",
+  "I found no text in {0}. If it is a scanned PDF, use Olena to read the images.",
+  "The summary could not be generated.",
+  "Automatic summary: free, made on your device, without AI. It picks the most important sentences from the file itself.",
+  "When you generate with Olena, the text of the selected sources is sent to her."
 ]

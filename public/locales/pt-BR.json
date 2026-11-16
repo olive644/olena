@@ -3912,5 +3912,13 @@
   "Quadros: mediana {0} ms, p95 {1} ms, pior {2} ms",
   "Quadros lentos (mais de {0} ms): {1} de {2}",
   "Desenho ao vivo: média {0} ms, pior {1} ms",
-  "Folha: {0} x {1} px, {2} camadas, tela {3}x"
+  "Folha: {0} x {1} px, {2} camadas, tela {3}x",
+  "Gerar com a Olena",
+  "Resumo automático",
+  "O resumo automático lê PDF e texto. Para imagens, use a Olena.",
+  "Não consegui abrir o PDF {0}.",
+  "Não encontrei texto em {0}. Se for um PDF escaneado, use a Olena para ler as imagens.",
+  "Não foi possível gerar o resumo.",
+  "Resumo automático: grátis, feito no seu aparelho, sem IA. Escolhe as frases mais importantes do próprio arquivo.",
+  "Ao gerar com a Olena, o texto das fontes selecionadas é enviado a ela."
 ]

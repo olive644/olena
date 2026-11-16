@@ -417,6 +417,75 @@ export function LibraryFolderContents({
       setSummaryBusy(false);
     }
   }
+  /** Resumo automático: feito no aparelho, sem IA e sem enviar nada para fora. */
+  async function generateAutomaticSummary() {
+    if (summaryBusy || !selectedSources.length) return;
+    setCreating(undefined);
+    setSection("Resumo");
+    setSummaryError("");
+    setSummaryBusy(true);
+    try {
+      const { summarizePdf, summarizePlainText } = await import("../domain/pdf-summary");
+      const made: { title: string; sourceTitle: string; markdown: string }[] = [];
+      for (const source of selectedSources) {
+        const fileTitle = source.title.replace(/\.[^.]+$/, "");
+        let result: Awaited<ReturnType<typeof summarizePlainText>>;
+        if (source.kind === "image") {
+          throw new Error(uiText("O resumo automático lê PDF e texto. Para imagens, use a Olena."));
+        } else if (source.kind === "text") {
+          result = await summarizePlainText(source.content, fileTitle);
+        } else {
+          const [pdfjs, worker] = await Promise.all([
+            import("pdfjs-dist"),
+            import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
+          ]);
+          pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
+          const bytes = dataUrlBytes(source.content);
+          if (!bytes) throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
+          const loading = pdfjs.getDocument({ data: bytes });
+          try {
+            const pdf = await loading.promise.catch(() => {
+              throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
+            });
+            result = await summarizePdf(pdf, { title: fileTitle });
+          } finally {
+            await loading.destroy();
+          }
+        }
+        if (result.stats.sentences === 0) {
+          throw new Error(
+            uiText(
+              "Não encontrei texto em {0}. Se for um PDF escaneado, use a Olena para ler as imagens.",
+              [source.title],
+            ),
+          );
+        }
+        made.push({
+          title: result.title.slice(0, 80) || fileTitle || "Resumo",
+          sourceTitle: source.title,
+          markdown: result.markdown.replace(/^# [^\n]+\n*/, "").trim(),
+        });
+      }
+      for (const item of made) {
+        dispatch({
+          type: "material/added",
+          collectionId: folder.id,
+          subjectId,
+          title: item.title,
+          kind: "text",
+          content: item.markdown,
+          tags: ["folder-summary", item.sourceTitle],
+          createdAt: new Date().toISOString(),
+        });
+      }
+    } catch (error) {
+      setSummaryError(
+        error instanceof Error ? error.message : uiText("Não foi possível gerar o resumo."),
+      );
+    } finally {
+      setSummaryBusy(false);
+    }
+  }
   function removeMaterial(id: string) {
     setSelectedIds((current) => current.filter((sourceId) => sourceId !== id));
     if (
@@ -936,7 +1005,16 @@ export function LibraryFolderContents({
               </button>
             )}
             {creating === "Resumo" && (
-              <p>{uiText("Ao gerar, o texto das fontes selecionadas é enviado à Olena.")}</p>
+              <p>
+                {uiText(
+                  "Resumo automático: grátis, feito no seu aparelho, sem IA. Escolhe as frases mais importantes do próprio arquivo.",
+                )}
+              </p>
+            )}
+            {creating === "Resumo" && (
+              <p>
+                {uiText("Ao gerar com a Olena, o texto das fontes selecionadas é enviado a ela.")}
+              </p>
             )}
             {creating !== "Resumo" && (
               <p>{uiText("A geração deste tipo de material ainda não está disponível.")}</p>
@@ -947,7 +1025,15 @@ export function LibraryFolderContents({
               disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
               onClick={() => void generateSummary()}
             >
-              {uiText("Gerar")}
+              {uiText("Gerar com a Olena")}
+            </button>
+            <button
+              type="button"
+              className="shelf-wood-button library-study-confirm-generate"
+              disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
+              onClick={() => void generateAutomaticSummary()}
+            >
+              {uiText("Resumo automático")}
             </button>
           </LibraryDialog>
         )}
