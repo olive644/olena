@@ -50,10 +50,10 @@ test("a dobra do canto da folha não aceita escrita", async ({ page }, testInfo)
   await page.waitForTimeout(200);
   expect(await ink()).toBe(0);
 
-  // A cobertura da dobra fica acima de todas as camadas de escrita e não pega toque: é o que esconde
+  // A dobra (::after) fica acima de todas as camadas de escrita e não pega toque: é o que esconde
   // tinta que já estivesse no triângulo (a tinta fica acima do ::after da dobra no empilhamento).
   const cover = await shell.evaluate((element) => {
-    const style = getComputedStyle(element, "::before");
+    const style = getComputedStyle(element, "::after");
     return { z: Number(style.zIndex), events: style.pointerEvents, content: style.content };
   });
   expect(cover.events).toBe("none");
