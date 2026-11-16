@@ -1497,7 +1497,7 @@ export function HandwritingStudio({
     if (!context) return;
     const stroke = liveStrokeRef.current;
     if (stroke) {
-      drawStroke(context, withPredictedTail(stroke, predictedRef.current));
+      drawStroke(context, withPredictedTail(stroke, predictedRef.current), true);
       if (writingWindowOpen) paintWritingWindowLive(stroke);
       penMeter.recordPaint(paintStartedAt);
     } else if (eraserCursorRef.current && penHoverPreview) {
@@ -1597,7 +1597,7 @@ export function HandwritingStudio({
     context.save();
     context.scale(target.width / WRITING_WINDOW_WIDTH, target.height / WRITING_WINDOW_HEIGHT);
     context.translate(-writingWindowX, -writingWindowY);
-    drawStroke(context, stroke);
+    drawStroke(context, stroke, true);
     context.restore();
   }
 
