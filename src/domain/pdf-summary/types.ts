@@ -37,7 +37,7 @@ export type TextLine = {
 
 export type DocumentBlock =
   | { kind: "heading"; level: 1 | 2 | 3; text: string; page: number }
-  | { kind: "paragraph"; text: string; page: number };
+  | { kind: "paragraph"; text: string; page: number; item?: boolean };
 
 export type StructuredDocument = {
   title: string;

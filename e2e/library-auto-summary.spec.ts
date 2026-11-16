@@ -4,11 +4,16 @@ import { expect, test } from "@playwright/test";
 // envia um texto, gera o resumo e confere o resultado e o layout em claro e escuro.
 const text = [
   "# O ENIAC",
-  "O ENIAC foi concluído em 1945 na Universidade da Pensilvânia, nos Estados Unidos. Ele foi um dos primeiros computadores eletrônicos de uso geral e foi construído para calcular tabelas de tiro da artilharia. Usava cerca de 18 mil válvulas e pesava aproximadamente 30 toneladas.",
-  "## Programação",
-  "A programação era feita por cabos e chaves, que precisavam ser reconectados a cada nova tarefa. Isso levava dias de trabalho de uma equipe, formada em grande parte por mulheres matemáticas. A ideia do programa armazenado foi descrita em 1945 por John von Neumann.",
+  "## O que foi o ENIAC",
+  "O ENIAC foi um dos primeiros computadores digitais, eletrônicos e de uso geral. Um computador digital é uma máquina que processa informações representadas de forma discreta, usando circuitos eletrônicos. O projeto foi liderado por:",
+  "- John Mauchly\n- J. Presper Eckert",
+  "O projeto começou em 1943 na Universidade da Pensilvânia, nos Estados Unidos. A máquina foi concluída em 1945 e apresentada ao público em 1946. Ela funcionou até 1955, quando foi desligada.",
+  "## Como era programado",
+  "O ENIAC não usava uma linguagem de programação como os computadores modernos. Era preciso configurar a máquina fisicamente, ligando cabos entre painéis e ajustando chaves. Não confunda a conclusão da máquina, em 1945, com a apresentação pública, em 1946. Seis mulheres tiveram um papel essencial na programação:",
+  "- Jean Bartik\n- Betty Holberton\n- Kathleen Antonelli",
+  "Elas preparavam os problemas matemáticos e transformavam as operações em uma configuração que a máquina pudesse executar. A ideia do programa armazenado foi descrita em 1945 por John von Neumann.",
   "## Legado",
-  "Os computadores seguintes passaram a usar essa arquitetura, que continua sendo a base das máquinas atuais. O transistor, inventado em 1947, substituiu as válvulas porque era menor, mais barato e consumia muito menos energia.",
+  "O transistor, inventado em 1947, substituiu as válvulas porque era menor, mais barato e consumia muito menos energia. Em 1971, a Intel lançou o primeiro microprocessador comercial. O ENIAC é considerado um marco da história da computação, pois mostrou que uma máquina eletrônica podia resolver problemas variados com rapidez.",
 ].join("\n\n");
 
 for (const theme of ["light", "dark"]) {
@@ -57,8 +62,14 @@ for (const theme of ["light", "dark"]) {
     await card.click();
     await expect(page.getByText(/feito no seu aparelho, sem IA/).first()).toBeVisible();
     await expect(page.getByText(/1945/).first()).toBeVisible();
+    await expect(page.locator(".library-summary-paper li").first()).toBeVisible();
+    await expect(page.locator(".library-summary-paper table").first()).toBeVisible();
+    await expect(page.getByText("Ponto essencial").first()).toBeVisible();
     await page.waitForTimeout(1200);
     await page.screenshot({ path: info.outputPath(`resumo-${theme}.png`) });
+    await page.locator(".library-summary-table").first().scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+    await page.screenshot({ path: info.outputPath(`resumo-tabela-${theme}.png`) });
 
     expect(aiCalls).toEqual([]);
     expect(

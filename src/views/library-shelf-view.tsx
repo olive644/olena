@@ -10,7 +10,7 @@ import { ShelfToolIcon } from "../components/shelf-tool-icon";
 import { PaperDigits } from "../components/paper-digits";
 import { LibraryDialog } from "../components/library-dialog";
 import { uiText, useLanguage } from "../i18n/runtime";
-import { useRef, useState, type Dispatch } from "react";
+import { useRef, useState, type Dispatch, type ReactNode } from "react";
 import {
   createWorkspaceId,
   type LibraryFolderStyle,
@@ -265,6 +265,82 @@ const studySections = {
 
 type FolderSection = "Fontes" | keyof typeof studySections;
 const folderSections = ["Fontes", ...Object.keys(studySections)] as FolderSection[];
+const summaryInline = (value: string) =>
+  value
+    .split(/\*\*([^*]+)\*\*/)
+    .map((part, partIndex) => (partIndex % 2 ? <strong key={partIndex}>{part}</strong> : part));
+
+/** Desenha o resumo: títulos, parágrafos, listas, tabelas e caixas (a mesma sintaxe da Olena). */
+function SummaryMarkdown({ content }: { content: string }) {
+  const lines = content.split(/\n+/).filter((line) => line.trim());
+  const blocks: ReactNode[] = [];
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index]!;
+    if (/^#{1,4} /.test(line)) {
+      blocks.push(<h3 key={index}>{summaryInline(line.replace(/^#+ /, ""))}</h3>);
+    } else if (line.startsWith("> ")) {
+      blocks.push(<aside key={index}>{summaryInline(line.slice(2))}</aside>);
+    } else if (/^\|.*\|\s*$/.test(line)) {
+      const rows: string[][] = [];
+      const first = index;
+      while (index < lines.length && /^\|.*\|\s*$/.test(lines[index]!)) {
+        const cells = lines[index]!.trim()
+          .replace(/^\||\|$/g, "")
+          .split("|")
+          .map((cell) => cell.trim());
+        if (!cells.every((cell) => /^:?-{2,}:?$/.test(cell))) rows.push(cells);
+        index += 1;
+      }
+      index -= 1;
+      const [head, ...body] = rows;
+      blocks.push(
+        <div key={first} className="library-summary-table" tabIndex={0}>
+          <table>
+            {head && (
+              <thead>
+                <tr>
+                  {head.map((cell, cellIndex) => (
+                    <th key={cellIndex} scope="col">
+                      {summaryInline(cell)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {body.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {row.map((cell, cellIndex) => (
+                    <td key={cellIndex}>{summaryInline(cell)}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>,
+      );
+    } else if (/^[-*] /.test(line)) {
+      const first = index;
+      const items: string[] = [];
+      while (index < lines.length && /^[-*] /.test(lines[index]!)) {
+        items.push(lines[index]!.replace(/^[-*] /, ""));
+        index += 1;
+      }
+      index -= 1;
+      blocks.push(
+        <ul key={first}>
+          {items.map((item, itemIndex) => (
+            <li key={itemIndex}>{summaryInline(item)}</li>
+          ))}
+        </ul>,
+      );
+    } else {
+      blocks.push(<p key={index}>{summaryInline(line)}</p>);
+    }
+  }
+  return <>{blocks}</>;
+}
+
 export function LibraryFolderContents({
   folder,
   materials: folderMaterials,
@@ -940,22 +1016,7 @@ export function LibraryFolderContents({
               </button>
             )}
             <div className="library-summary-paper">
-              {readingSummary.content
-                .split(/\n+/)
-                .filter((line) => line.trim())
-                .map((line, index) => {
-                  const inline = (value: string) =>
-                    value
-                      .split(/\*\*([^*]+)\*\*/)
-                      .map((part, partIndex) =>
-                        partIndex % 2 ? <strong key={partIndex}>{part}</strong> : part,
-                      );
-                  if (/^#{1,4} /.test(line))
-                    return <h3 key={index}>{inline(line.replace(/^#+ /, ""))}</h3>;
-                  if (line.startsWith("> "))
-                    return <aside key={index}>{inline(line.slice(2))}</aside>;
-                  return <p key={index}>{inline(line.replace(/^[-*] /, "• "))}</p>;
-                })}
+              <SummaryMarkdown content={readingSummary.content} />
             </div>
           </LibraryDialog>
         )}

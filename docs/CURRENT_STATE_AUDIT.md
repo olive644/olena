@@ -1,3 +1,11 @@
+## Resumo automático em formato de guia de estudo, 16/11/2026
+
+O Resumo automático agora monta o resumo como um guia de estudo, qualquer que seja o tamanho do arquivo. Cada seção é numerada e traz: parágrafo de abertura, a lista do próprio arquivo (inteira, com a frase que a anuncia), pontos de apoio, caixa "Definição: termo", caixa "Erro frequente" (frases que corrigem confusões, como "não confunda" ou "e não do"), "Atenção" e "Ponto essencial". No fim entram a Linha do tempo em tabela (Quando, O que aconteceu), dados e números, termos-chave e perguntas de revisão. A linha do tempo é reservada antes das seções para que as datas não se percam, e essas frases não se repetem nas seções.
+
+Limite importante e honesto: o resumo continua extrativo, então não escreve explicações novas como uma IA (por exemplo, "A importância do seu trabalho ultrapassava..."). A arquitetura e os rótulos seguem o modelo de guia; o texto de cada bloco é sempre frase do arquivo. Listas só aparecem quando o arquivo tem marcadores (PDF com marcadores, TXT/Markdown com "- "). Em arquivos pequenos o resumo chega perto de 90% das palavras, porque a estrutura repete frases (visão geral, ponto essencial); o limite é 80% das palavras do arquivo para as partes opcionais.
+
+Leitor (`SummaryMarkdown` em `library-shelf-view.tsx`): ganhou lista `ul`, tabela com rolagem horizontal focável pelo teclado e rótulo das caixas em linha própria. A sintaxe continua compatível com os resumos da Olena. Provas: testes de domínio das listas, do erro frequente e da numeração; e2e `library-auto-summary.spec.ts` confere lista, tabela e Ponto essencial em claro e escuro, desktop e celular, com capturas da tabela.
+
 ## Resumo automático de PDF e texto, 16/11/2026
 
 A pasta da Biblioteca ganhou o "Resumo automático": grátis, feito no aparelho, sem IA e sem enviar nada para fora. O botão "Gerar com a Olena" continua sendo o caminho com IA (exige login e envia o texto das fontes). O motor fica em `src/domain/pdf-summary/` e é extrativo: toda frase do resumo vem do próprio arquivo, nada é reescrito ou inventado (o ponto final pode ser acrescentado). Por isso o rodapé do resumo diz "Resumo automático feito no seu aparelho, sem IA".
