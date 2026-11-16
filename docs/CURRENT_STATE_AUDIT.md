@@ -5405,3 +5405,9 @@ Relato da dona, com mouse: "fazer linhas retas faz a linha não ficar perfeita, 
 - A remoção do bloco legado dos cadernos também retirou as ações de flashcard e fontes das notas de texto. Essas ações voltam apenas para notas de texto, sem reaparecer na tela dos cadernos manuscritos. Um teste de regressão cobre os dois tipos e a criação do cartão.
 - Evidência inicial: no commit 73fb168, 2881 testes unitários passaram e um falhou; os cenários de navegador falharam nos seletores antigos, na animação antiga e nas ações removidas de notas.
 - Não verificado localmente: npm run verify, e2e e validação visual, pois o executor e o navegador deste chat estão indisponíveis. A atualização foi solicitada explicitamente pelo proprietário após a comunicação desse limite. A validação fica pendente no CI do novo commit; não foi declarado resultado verde.
+
+## Segunda execução do CI da PR 664, 16/11/2026
+
+- O commit a0c95fd parou no lint por cinco diferenças de formatação: quatro cadeias de seletores no teste móvel e uma chamada render no teste de notas. Aplicadas as quebras de linha indicadas pelo próprio Prettier.
+- Os quatro shards de navegador não chegaram a executar os cenários: o comando npm run build do webServer terminou com código 1. O log capturado mostrou apenas a falha de inicialização, sem a saída do processo filho. Configurado stdout e stderr como pipe no Playwright para que o próximo CI exponha o diagnóstico do build; a causa dessa falha ainda não foi confirmada.
+- Não verificado localmente: formatação, compilação e testes, pois o executor continua indisponível. Nenhum check foi desativado e nenhum resultado verde foi declarado.

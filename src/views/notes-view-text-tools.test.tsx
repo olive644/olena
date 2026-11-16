@@ -42,9 +42,7 @@ it.each(["note", "handwriting"] as const)(
       },
     ];
     const dispatch = vi.fn();
-    render(
-      <NotesView workspace={workspace} dispatch={dispatch} initialNotebookId="source-book" />,
-    );
+    render(<NotesView workspace={workspace} dispatch={dispatch} initialNotebookId="source-book" />);
     const create = screen.queryByRole("button", { name: "Criar flashcard do trecho", exact: true });
     if (kind === "handwriting") {
       expect(create).toBeNull();

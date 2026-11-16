@@ -20,7 +20,9 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
   await expect(editor.getByRole("button", { name: "Mover folha", exact: true })).toHaveCount(0);
   await expect(
-    editor.getByRole("group", { name: "Cores rápidas" }).getByRole("button", { name: "Tinta Roxo" }),
+    editor
+      .getByRole("group", { name: "Cores rápidas" })
+      .getByRole("button", { name: "Tinta Roxo" }),
   ).toBeHidden();
   const paper = await editor
     .getByRole("button", { name: "Tipo de papel", exact: true })
@@ -33,7 +35,9 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   await page.screenshot({ path: info.outputPath("editor-mobile.png") });
   await activateHandwritingPen(page);
   await expect(
-    editor.getByRole("group", { name: "Cores rápidas" }).getByRole("button", { name: "Tinta Roxo" }),
+    editor
+      .getByRole("group", { name: "Cores rápidas" })
+      .getByRole("button", { name: "Tinta Roxo" }),
   ).toBeVisible();
   await editor
     .getByRole("group", { name: "Cores rápidas" })
@@ -43,7 +47,9 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   await page.screenshot({ path: info.outputPath("caneta-mobile.png") });
   await editor.getByRole("button", { name: "Borracha", exact: true }).click();
   await expect(
-    editor.getByRole("group", { name: "Cores rápidas" }).getByRole("button", { name: "Tinta Roxo" }),
+    editor
+      .getByRole("group", { name: "Cores rápidas" })
+      .getByRole("button", { name: "Tinta Roxo" }),
   ).toBeHidden();
   await editor.getByRole("button", { name: "Histórico e zoom", exact: true }).click();
   await expect(editor.getByLabel("Zoom atual")).toBeVisible();
@@ -53,7 +59,9 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
   await activateHandwritingPen(page);
   await expect(
-    editor.getByRole("group", { name: "Cores rápidas" }).getByRole("button", { name: "Tinta Roxo" }),
+    editor
+      .getByRole("group", { name: "Cores rápidas" })
+      .getByRole("button", { name: "Tinta Roxo" }),
   ).toBeVisible();
   await page.screenshot({ path: info.outputPath("caneta-360-dark.png") });
   await page.setViewportSize({ width: 820, height: 1180 });
