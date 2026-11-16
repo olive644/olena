@@ -33,11 +33,20 @@ export type TextLine = {
   text: string;
   /** Altura da página, para reconhecer cabeçalho e rodapé. */
   pageHeight: number;
+  /** Células, quando a linha tem pedaços separados por vãos grandes (candidata a linha de tabela). */
+  cells?: { x: number; right: number; text: string }[];
 };
 
 export type DocumentBlock =
   | { kind: "heading"; level: 1 | 2 | 3; text: string; page: number }
-  | { kind: "paragraph"; text: string; page: number; item?: boolean };
+  | {
+      kind: "paragraph";
+      text: string;
+      page: number;
+      item?: boolean;
+      /** Tabela do arquivo (primeira linha é o cabeçalho); `text` é o conteúdo corrido dela. */
+      table?: string[][];
+    };
 
 export type StructuredDocument = {
   title: string;

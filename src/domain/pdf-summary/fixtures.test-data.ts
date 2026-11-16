@@ -2,7 +2,9 @@
 // traz a lista de trechos que um bom resumo precisa conter ("ouro") e o que nunca pode aparecer.
 
 export type FixtureBlock =
-  { kind: "heading"; level: 1 | 2 | 3; text: string } | { kind: "paragraph"; text: string };
+  | { kind: "heading"; level: 1 | 2 | 3; text: string }
+  | { kind: "paragraph"; text: string }
+  | { kind: "table"; rows: string[][] };
 
 export type Fixture = {
   name: string;
@@ -156,10 +158,46 @@ export const shortNote: Fixture = {
   forbidden: [],
 };
 
+export const statesOfMatter: Fixture = {
+  name: "estados-da-materia",
+  title: "Estados da matéria",
+  blocks: [
+    { kind: "heading", level: 1, text: "1. Os três estados" },
+    {
+      kind: "paragraph",
+      text: "A matéria costuma aparecer em três estados físicos: sólido, líquido e gasoso. O estado depende da temperatura e da pressão, e a mesma substância pode passar de um estado para outro. A água é o exemplo mais comum, pois é encontrada como gelo, como água líquida e como vapor.",
+    },
+    {
+      kind: "table",
+      rows: [
+        ["Estado", "Forma", "Volume"],
+        ["Sólido", "Definida", "Definido"],
+        ["Líquido", "Do recipiente", "Definido"],
+        ["Gasoso", "Do recipiente", "Variável"],
+      ],
+    },
+    { kind: "heading", level: 1, text: "2. Mudanças de estado" },
+    {
+      kind: "paragraph",
+      text: "A fusão é a passagem do estado sólido para o líquido, e a vaporização é a passagem do líquido para o gasoso. Na solidificação e na condensação ocorre o caminho contrário, pois a substância perde energia. A sublimação é a passagem direta do sólido para o gasoso, sem passar pelo líquido.",
+    },
+    {
+      kind: "paragraph",
+      text: "O ponto de fusão da água é de 0 grau Celsius ao nível do mar, e o ponto de ebulição é de 100 graus Celsius. Esses valores mudam quando a pressão muda, e por isso a água ferve a uma temperatura menor no alto de uma montanha.",
+    },
+  ],
+  gold: ["Sólido", "Do recipiente", "A sublimação é a passagem direta do sólido para o gasoso"],
+  forbidden: [],
+};
+
 export function fixtureAsText(fixture: Fixture): string {
   return fixture.blocks
     .map((block) =>
-      block.kind === "heading" ? `${"#".repeat(block.level)} ${block.text}` : block.text,
+      block.kind === "heading"
+        ? `${"#".repeat(block.level)} ${block.text}`
+        : block.kind === "table"
+          ? block.rows.map((row) => `| ${row.join(" | ")} |`).join("\n")
+          : block.text,
     )
     .join("\n\n");
 }

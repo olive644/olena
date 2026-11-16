@@ -119,6 +119,22 @@ export function layoutFixture(fixture: Fixture, options: PdfLayoutOptions = {}):
       y -= 14;
       for (const line of wrap(block.text, columnWidth, size, false)) place(line, "F2", size);
       y -= 6;
+    } else if (block.kind === "table") {
+      const cell = columnWidth / block.rows[0]!.length;
+      for (const row of block.rows) {
+        if (y - leading < bottom) nextColumn();
+        row.forEach((text, index) => {
+          pages[pages.length - 1]!.push({
+            font: row === block.rows[0] ? "F2" : "F1",
+            size: body,
+            x: MARGIN + column * (columnWidth + gap) + index * cell,
+            y,
+            text,
+          });
+        });
+        y -= leading;
+      }
+      y -= 10;
     } else {
       for (const line of wrap(block.text, columnWidth, body, options.hyphenate ?? false)) {
         place(line, "F1", body);

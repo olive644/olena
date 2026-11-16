@@ -60,9 +60,11 @@ type Section = {
   subtopics: string[];
   sentences: Sentence[];
   chars: number;
+  /** Tabelas do arquivo nesta seção (a primeira linha é o cabeçalho). */
+  tables: string[][][];
 };
 
-type RawParagraph = { text: string; page: number; item?: boolean };
+type RawParagraph = { text: string; page: number; item?: boolean; table?: string[][] };
 
 type RawSection = {
   title: string;
@@ -115,9 +117,12 @@ function sectionsFromHeadings(doc: StructuredDocument): RawSection[] {
       continue;
     }
     if (skipping) continue;
-    const paragraph: RawParagraph = block.item
-      ? { text: block.text, page: block.page, item: true }
-      : { text: block.text, page: block.page };
+    const paragraph: RawParagraph = {
+      text: block.text,
+      page: block.page,
+      ...(block.item ? { item: true as const } : {}),
+      ...(block.table ? { table: block.table } : {}),
+    };
     if (!current) {
       preface.push(paragraph);
       continue;
@@ -200,11 +205,12 @@ function capitalize(text: string): string {
 function sectionsByTopic(doc: StructuredDocument): RawSection[] {
   const paragraphs = doc.blocks
     .filter((block) => block.kind === "paragraph")
-    .map((block): RawParagraph =>
-      block.item
-        ? { text: block.text, page: block.page, item: true }
-        : { text: block.text, page: block.page },
-    );
+    .map((block): RawParagraph => ({
+      text: block.text,
+      page: block.page,
+      ...(block.item ? { item: true as const } : {}),
+      ...(block.table ? { table: block.table } : {}),
+    }));
   if (paragraphs.length === 0) return [];
   const total = chars(paragraphs);
   const wanted = Math.max(1, Math.min(12, Math.round(total / 5000)));
@@ -302,6 +308,20 @@ function cleanItem(text: string): string {
     .trim();
 }
 
+/** Tabela do arquivo em Markdown (até 15 linhas e 6 colunas; células com "|" trocam por "/"). */
+function tableLines(table: string[][]): string[] {
+  const width = Math.min(6, Math.max(...table.map((row) => row.length)));
+  if (width < 2 || table.length < 2) return [];
+  const clean = (row: string[]) =>
+    `| ${Array.from({ length: width }, (_, index) => (row[index] ?? "").replace(/\|/g, "/").replace(/\s+/g, " ").trim() || " ").join(" | ")} |`;
+  const [head, ...body] = table;
+  return [
+    clean(head ?? []),
+    `| ${Array.from({ length: width }, () => "---").join(" | ")} |`,
+    ...body.slice(0, 15).map(clean),
+  ];
+}
+
 function withEnding(text: string): string {
   return /[.!?…]["”')\]]?$/.test(text) ? text : `${text}.`;
 }
@@ -332,9 +352,14 @@ function prepare(doc: StructuredDocument): Prepared {
       subtopics: rawSection.subtopics.slice(0, 8),
       sentences: [],
       chars: 0,
+      tables: [],
     };
     for (const part of rawSection.parts) {
       for (const paragraph of part.paragraphs) {
+        if (paragraph.table) {
+          section.tables.push(paragraph.table);
+          continue;
+        }
         const pieces = paragraph.item
           ? [cleanItem(paragraph.text)].filter(Boolean)
           : splitSentences(paragraph.text).map(cleanSentence).filter(Boolean);
@@ -829,6 +854,7 @@ export async function summarizeDocument(
         lines.push(`- ${item.text.replace(/[.;]$/, "")}`);
       }
     }
+    for (const table of section.tables.slice(0, 3)) lines.push(...tableLines(table));
     for (const sentence of supporting) {
       lines.push(`- ${withEnding(withContext(sentence, sentences))}`);
     }
