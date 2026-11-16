@@ -5315,3 +5315,25 @@ Relato do proprietário com captura do celular, na aba Resumo de uma pasta da Bi
 
 - Não verificado em aparelho real nem com o PDF do proprietário. O erro do PDF vem de `pdfjs` pedindo o endereço `data:`; troquei para os bytes, que é o caminho que o leitor de PDF da Biblioteca já usa, mas não consegui reproduzir a falha do aparelho em si no navegador de teste (lá o endereço `data:` funciona).
 - Em telas muito baixas a área da pasta rola em vez de mostrar tudo de uma vez.
+
+## Resumo com a Olena interrompido no celular, diagnóstico e ajuste, 16/11/2026
+
+Relato do proprietário com captura do celular, depois do #655 e do #656: o PDF passou a abrir, mas a geração terminava com "A resposta foi interrompida. Tente novamente." Eu não tinha validado a geração de ponta a ponta (ela exige conta logada e gasta o modelo pago); a captura mostrou que o #655 não bastava.
+
+**O que ficou confirmado**
+
+- O erro anterior do PDF ("Unexpected server response (0) while retrieving PDF data:application/pdf...") tem causa confirmada no `vercel.json`: a política de segurança (`connect-src`) não lista `data:`, então o leitor de PDF não consegue buscar o endereço `data:`. Abrir o PDF pelos bytes (#656) contorna isso, e a captura nova prova: o erro do PDF sumiu.
+- "A resposta foi interrompida" é a mensagem fixa que o servidor envia no fluxo quando o modelo falha no meio, e que o cliente mostra quando o fluxo quebra (tempo, formato ou texto acima de 12 000 caracteres).
+
+**O que não está confirmado:** o motivo da interrupção. Os logs de produção do Vercel (Hobby, 1 hora) mostram a chamada e nenhum erro, porque o servidor engolia a causa sem registrar. Hipótese principal: o guia pede até 2400 tokens e o fluxo do servidor cortava em 45 s; um modelo de 8 bilhões de parâmetros pode não terminar nesse tempo. Outras possibilidades: a Cloudflare recusar o fluxo (cota do dia, erro de token, status diferente de 200) ou o texto passar de 12 000 caracteres.
+
+**O que mudou**
+
+- O servidor passa a registrar, em `console.error`, cada fluxo interrompido: capacidade, milissegundos, caracteres recebidos e o motivo (`tempo esgotado`, `Streaming provider unavailable (429)`, etc.). Só mensagens nossas ou de rede, nunca o texto das fontes ou das respostas (há teste para isso). Quando o modelo recusa o fluxo, o erro agora traz o status HTTP da Cloudflare.
+- O resumo gera no máximo 1600 tokens em vez de 2400 (cerca de 600 palavras; o pedido também diz "no máximo 600 palavras"), e o limite do fluxo do resumo sobe de 45 para 55 s no servidor (a função da Vercel tem 60 s) e de 55 para 58 s no cliente. A conversa não muda.
+- Provas: `helena-teacher.test.ts` (1600 tokens no fluxo e fora dele; status da Cloudflare no erro) e `helena-stream.test.ts` (o registro traz capacidade, motivo e número de caracteres e não contém o conteúdo do aluno).
+
+**Limites (importante)**
+
+- Continua sem validação ponta a ponta contra a Olena em produção. A mudança reduz a chance de corte por tempo e passa a registrar a causa real; se ainda falhar, o registro do servidor diz o motivo, e é preciso olhar o log logo depois da tentativa, porque o plano atual guarda só 1 hora.
+- Um resumo mais curto é uma troca deliberada de tamanho por confiabilidade.
