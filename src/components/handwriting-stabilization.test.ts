@@ -201,18 +201,95 @@ describe("filtro 1€ ao vivo", () => {
 });
 
 describe("endireitar traços", () => {
-  it("nivela uma linha quase horizontal sem suavizar", () => {
-    const line = Array.from({ length: 21 }, (_, index) => point(index * 10, index * 0.8));
-    const straightened = straightenStroke(line);
-    const before = line.at(-1)!.y - line[0]!.y;
-    const after = straightened.at(-1)!.y - straightened[0]!.y;
-    expect(Math.abs(after)).toBeLessThan(Math.abs(before));
+  // Reta feita à mão: `tilt` unidades de subida ao longo de `length`, com tremor de até `shake`.
+  const handLine = (length: number, tilt: number, shake: number, vertical = false) =>
+    Array.from({ length: 41 }, (_, index) => {
+      const t = index / 40;
+      const along = length * t;
+      const across = tilt * t + Math.sin(index * 1.7) * shake;
+      return vertical ? point(across, along) : point(along, across);
+    });
+  const sagOf = (points: ReturnType<typeof handLine>) => {
+    const a = points[0]!;
+    const b = points.at(-1)!;
+    const chord = Math.hypot(b.x - a.x, b.y - a.y);
+    return Math.max(
+      ...points.map((p) =>
+        Math.abs(((b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x)) / chord),
+      ),
+    );
+  };
+
+  it("tira o tremor de uma reta horizontal e a deixa exatamente horizontal", () => {
+    const result = straightenStroke(handLine(380, 2, 1.2));
+    expect(new Set(result.map((p) => p.y.toFixed(6))).size).toBe(1);
+    expect(result[0]!.x).toBeLessThan(result.at(-1)!.x);
   });
 
-  it("deixa curvas e traços curtos intactos", () => {
+  it("endireita também a reta vertical", () => {
+    const result = straightenStroke(handLine(300, 3, 1.2, true));
+    expect(new Set(result.map((p) => p.x.toFixed(6))).size).toBe(1);
+  });
+
+  it("uma reta inclinada fica reta e mantém a inclinação", () => {
+    const line = handLine(400, 140, 1.5);
+    const result = straightenStroke(line);
+    expect(sagOf(result)).toBeLessThan(1e-6);
+    const before = Math.atan2(line.at(-1)!.y - line[0]!.y, line.at(-1)!.x - line[0]!.x);
+    const after = Math.atan2(result.at(-1)!.y - result[0]!.y, result.at(-1)!.x - result[0]!.x);
+    expect(after).toBeCloseTo(before, 5);
+  });
+
+  it("a horizontal encaixa até 12 graus; mais inclinada que isso mantém o ângulo", () => {
+    const near = straightenStroke(handLine(400, 60, 0.8)); // cerca de 8,5 graus
+    expect(new Set(near.map((p) => p.y.toFixed(6))).size).toBe(1);
+    const tilted = straightenStroke(handLine(400, 120, 0.8)); // cerca de 17 graus
+    expect(tilted.at(-1)!.y - tilted[0]!.y).toBeGreaterThan(100);
+  });
+
+  it("a vertical encaixa até 3 graus; uma inclinada de propósito não fica em pé", () => {
+    const near = straightenStroke(handLine(400, 15, 0.8, true)); // cerca de 2 graus
+    expect(new Set(near.map((p) => p.x.toFixed(6))).size).toBe(1);
+    const slanted = straightenStroke(handLine(400, 60, 0.8, true)); // cerca de 8,5 graus
+    expect(slanted.at(-1)!.x - slanted[0]!.x).toBeGreaterThan(50);
+  });
+
+  it("mantém a quantidade de pontos, a pressão e a ordem", () => {
+    const line = handLine(380, 2, 1.2).map((p, index) => ({ ...p, pressure: 0.2 + index * 0.01 }));
+    const result = straightenStroke(line);
+    expect(result).toHaveLength(line.length);
+    result.forEach((p, index) => expect(p.pressure).toBe(line[index]!.pressure));
+    for (let index = 1; index < result.length; index += 1)
+      expect(result[index]!.x).toBeGreaterThanOrEqual(result[index - 1]!.x);
+  });
+
+  it("os extremos se mexem pouco: a reta passa pelo meio da corda", () => {
+    const line = handLine(380, 2, 1.2);
+    const result = straightenStroke(line);
+    expect(Math.hypot(result[0]!.x - line[0]!.x, result[0]!.y - line[0]!.y)).toBeLessThan(4);
+    expect(
+      Math.hypot(result.at(-1)!.x - line.at(-1)!.x, result.at(-1)!.y - line.at(-1)!.y),
+    ).toBeLessThan(4);
+  });
+
+  it("deixa curvas, arcos, letras e traços curtos intactos", () => {
     const curve = Array.from({ length: 21 }, (_, index) => point(index * 10, Math.sin(index) * 40));
     expect(straightenStroke(curve)).toEqual(curve);
+    const arc = Array.from({ length: 41 }, (_, index) =>
+      point(index * 10, Math.sin((index / 40) * Math.PI) * 34),
+    ); // flecha de 34 sobre uma corda de 400: curva de propósito
+    expect(straightenStroke(arc)).toEqual(arc);
+    const letterLength = handLine(60, 1, 0.5);
+    expect(straightenStroke(letterLength)).toEqual(letterLength);
     const short = [point(0, 0), point(10, 1)];
     expect(straightenStroke(short)).toEqual(short);
+  });
+
+  it("não dobra a reta sobre si mesma quando a mão volta um pouco", () => {
+    const back = handLine(300, 0, 0.5);
+    back[20] = { ...back[20]!, x: back[20]!.x - 6 };
+    const result = straightenStroke(back);
+    for (let index = 1; index < result.length; index += 1)
+      expect(result[index]!.x).toBeGreaterThanOrEqual(result[index - 1]!.x);
   });
 });
