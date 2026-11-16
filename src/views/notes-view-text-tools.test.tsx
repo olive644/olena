@@ -52,9 +52,9 @@ it.each(["note", "handwriting"] as const)(
     expect(create).not.toBeNull();
     expect(screen.getByRole("button", { name: "Vincular material" })).toBeTruthy();
     fireEvent.click(create!);
-    expect(
-      (screen.getByRole("textbox", { name: "Frente" }) as HTMLTextAreaElement).value,
-    ).toBe("Uma equação preserva a igualdade.");
+    expect((screen.getByRole("textbox", { name: "Frente" }) as HTMLTextAreaElement).value).toBe(
+      "Uma equação preserva a igualdade.",
+    );
     fireEvent.change(screen.getByRole("textbox", { name: "Verso" }), {
       target: { value: "Dois lados iguais" },
     });
