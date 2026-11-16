@@ -3,8 +3,8 @@ import { activateHandwritingPen, openHandwritingA4 } from "./notebook-helpers";
 
 // Cada canvas do tamanho da folha empilhado custa alguns milissegundos por quadro enquanto se
 // escreve (medido: ~4 a 6 ms cada, em renderização por software). Camadas sem nada para mostrar
-// saem da composição, e só o canvas que recebe o toque segue o corte da dobra.
-test("camadas vazias saem da composição e o clip-path fica só no canvas de toque", async ({
+// saem da composição, e só o canvas de toque e a tinta confirmada seguem o corte da dobra.
+test("camadas vazias saem da composição e o clip-path fica só no toque e na tinta confirmada", async ({
   page,
 }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Fluxo de desenho verificado no desktop.");
@@ -40,15 +40,17 @@ test("camadas vazias saem da composição e o clip-path fica só no canvas de to
       "handwriting-live-layer",
     ]);
 
-  // O corte da dobra vale só para o canvas que recebe o toque.
+  // O corte da dobra vale só onde há toque ou tinta de escrita: o canvas de toque e a tinta confirmada.
   const clips = await shell.evaluate((element) =>
     [...element.querySelectorAll("canvas")].map((canvas) => ({
-      base: canvas.classList.contains("handwriting-canvas"),
+      cuts:
+        canvas.classList.contains("handwriting-canvas") ||
+        canvas.classList.contains("handwriting-committed-ink"),
       clip: getComputedStyle(canvas).clipPath,
     })),
   );
-  for (const { base, clip } of clips) {
-    if (base) expect(clip).toContain("polygon");
+  for (const { cuts, clip } of clips) {
+    if (cuts) expect(clip).toContain("polygon");
     else expect(clip).toBe("none");
   }
 

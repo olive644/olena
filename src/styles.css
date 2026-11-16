@@ -4665,11 +4665,14 @@ body.local-room-active {
   pointer-events: none;
 }
 
-/* O canto de cima à direita é cortado (a dobra desenhada acima). Só o canvas que recebe o toque segue
-   essa forma, para não dar para escrever no triângulo cortado. As outras camadas não recebem toque e o
-   canto delas já é coberto pela dobra; um clip-path em cada uma obrigava a recompor tudo a cada quadro
-   (medido: ~9 a 12 ms por quadro ao escrever). */
-.handwriting-page-shell > .handwriting-canvas {
+/* O canto de cima à direita é cortado (a dobra desenhada acima). O canvas que recebe o toque e a camada
+   da tinta confirmada seguem essa forma: o primeiro não deixa começar traço no triângulo e a segunda
+   esconde qualquer tinta que passe por ali (a dobra desenhada NÃO cobre a tinta, que fica por cima dela).
+   As outras camadas não têm tinta de escrita; um clip-path em cada uma obrigava a recompor tudo a cada
+   quadro (medido: ~9 a 12 ms por quadro ao escrever). Pontos dentro do triângulo nem entram no traço
+   (handwriting-fold.ts, mesmo tamanho de 34px). */
+.handwriting-page-shell > .handwriting-canvas,
+.handwriting-page-shell > .handwriting-committed-ink {
   clip-path: polygon(0 0, calc(100% - 34px) 0, 100% 34px, 100% 100%, 0 100%);
 }
 

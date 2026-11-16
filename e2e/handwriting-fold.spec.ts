@@ -49,4 +49,33 @@ test("a dobra do canto da folha não aceita escrita", async ({ page }, testInfo)
   await page.mouse.up();
   await page.waitForTimeout(200);
   expect(await ink()).toBe(0);
+
+  // Um traço que começa no papel e entra na dobra para no limite do triângulo: não fica tinta ali,
+  // nem por cima da dobra desenhada (a tinta fica acima dela, então precisa ser cortada de verdade).
+  const inTriangleAndElsewhere = () =>
+    dialog.locator(".handwriting-committed-ink").evaluate((element) => {
+      const canvas = element as HTMLCanvasElement;
+      const rect = canvas.getBoundingClientRect();
+      const fold = Math.ceil((34 * canvas.width) / rect.width);
+      const { data } = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height);
+      let inside = 0;
+      let outside = 0;
+      for (let y = 0; y < canvas.height; y += 1)
+        for (let x = 0; x < canvas.width; x += 1) {
+          if (data[(y * canvas.width + x) * 4 + 3]! <= 40) continue;
+          const fromRight = canvas.width - x;
+          if (y < fold && fromRight + y < fold - 2) inside += 1;
+          else outside += 1;
+        }
+      return { inside, outside };
+    });
+  await page.mouse.move(box.x + box.width - 90, box.y + 120);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width - 8, box.y + 6, { steps: 14 });
+  await page.mouse.move(box.x + box.width - 30, box.y + 70, { steps: 8 });
+  await page.mouse.up();
+  await page.waitForTimeout(300);
+  const dragged = await inTriangleAndElsewhere();
+  expect(dragged.outside).toBeGreaterThan(100);
+  expect(dragged.inside).toBe(0);
 });
