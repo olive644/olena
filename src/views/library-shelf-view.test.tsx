@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { WorkspaceAction } from "../domain/workspace";
+import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
 import { LibraryFolderContents } from "./library-shelf-view";
 
 const stream = vi.hoisted(() => vi.fn());
@@ -63,7 +63,7 @@ describe("resumo estruturado com a Olena", () => {
       generatedAt: "2026-11-16T12:00:00.000Z",
     });
     const { dispatch, dialog } = renderFolder();
-    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar" }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
     await waitFor(() => expect(dispatch).toHaveBeenCalled());
 
     const [request, options] = stream.mock.calls[0]!;
@@ -88,7 +88,7 @@ describe("resumo estruturado com a Olena", () => {
   it("explica quando a pessoa não está logada, sem chamar a Olena", async () => {
     services.mockResolvedValue({ auth: { currentUser: null } });
     const { dispatch, dialog } = renderFolder();
-    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar" }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
     expect(await screen.findByRole("alert")).toHaveProperty(
       "textContent",
       "Entre na sua conta para gerar com a Olena.",
@@ -101,7 +101,7 @@ describe("resumo estruturado com a Olena", () => {
     signedIn();
     stream.mockRejectedValue(new Error("Serviço indisponível. Tente mais tarde."));
     const { dispatch, dialog } = renderFolder();
-    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar" }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
     expect(await screen.findByRole("alert")).toHaveProperty(
       "textContent",
       "Serviço indisponível. Tente mais tarde.",
@@ -148,7 +148,7 @@ describe("resumo estruturado com a Olena", () => {
       (within(dialog).getByRole("checkbox", { name: "Selecionar ENIAC.txt" }) as HTMLInputElement)
         .checked,
     ).toBe(true);
-    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar" }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
     await waitFor(() => expect(dispatch).toHaveBeenCalled());
     expect(stream.mock.calls[0]![0].sources).toEqual([
       expect.objectContaining({ id: "fonte-1", title: "ENIAC.txt" }),
@@ -197,7 +197,7 @@ describe("resumo estruturado com a Olena", () => {
     fireEvent.click(screen.getByRole("button", { name: "Criar resumo" }));
     const dialog = screen.getByRole("dialog");
     fireEvent.click(within(dialog).getByRole("checkbox", { name: "Selecionar eniac.pdf" }));
-    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar" }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
     await waitFor(() => expect(dispatch).toHaveBeenCalled());
     const options = pdfOpen.mock.calls[0]![0];
     expect(options.url).toBeUndefined();
@@ -233,11 +233,105 @@ describe("resumo estruturado com a Olena", () => {
     fireEvent.click(screen.getByRole("button", { name: "Criar resumo" }));
     const dialog = screen.getByRole("dialog");
     fireEvent.click(within(dialog).getByRole("checkbox", { name: "Selecionar quebrado.pdf" }));
-    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar" }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
     expect(await screen.findByRole("alert")).toHaveProperty(
       "textContent",
       "Não consegui abrir o PDF quebrado.pdf.",
     );
     expect(stream).not.toHaveBeenCalled();
+  });
+});
+
+describe("resumo automático no aparelho", () => {
+  const longText = [
+    "# O ENIAC",
+    "O ENIAC foi concluído em 1945 na Universidade da Pensilvânia, nos Estados Unidos. Ele foi um dos primeiros computadores eletrônicos de uso geral e foi construído para calcular tabelas de tiro da artilharia.",
+    "Usava cerca de 18 mil válvulas e pesava aproximadamente 30 toneladas. A programação era feita por cabos e chaves, que precisavam ser reconectados a cada nova tarefa.",
+    "A ideia do programa armazenado foi descrita em 1945 por John von Neumann. Os computadores seguintes passaram a usar essa arquitetura, que continua sendo a base das máquinas atuais.",
+  ].join("\n\n");
+
+  beforeEach(() => {
+    stream.mockReset();
+    services.mockReset();
+    pdfOpen.mockReset();
+  });
+
+  function renderWith(material: WorkspaceState["materials"][number]) {
+    const dispatch = vi.fn<(action: WorkspaceAction) => void>();
+    render(
+      <LibraryFolderContents
+        folder={folder}
+        materials={[material]}
+        subjectId="materia-1"
+        dispatch={dispatch}
+        onBack={() => undefined}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Resumo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Criar resumo" }));
+    const dialog = screen.getByRole("dialog");
+    fireEvent.click(within(dialog).getByRole("checkbox", { name: `Selecionar ${material.title}` }));
+    return { dispatch, dialog };
+  }
+
+  it("resume um texto sem login, sem rede e sem chamar a Olena", async () => {
+    const { dispatch, dialog } = renderWith({ ...source, content: longText });
+    fireEvent.click(within(dialog).getByRole("button", { name: "Resumo automático" }));
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(services).not.toHaveBeenCalled();
+    expect(stream).not.toHaveBeenCalled();
+    const action = dispatch.mock.calls[0]![0];
+    expect(action).toEqual(
+      expect.objectContaining({
+        type: "material/added",
+        kind: "text",
+        collectionId: "pasta-1",
+        tags: ["folder-summary", "ENIAC.txt"],
+      }),
+    );
+    if (action.type !== "material/added") throw new Error("ação inesperada");
+    expect(action.content).toContain("Sobre este resumo");
+    expect(action.content).not.toMatch(/[\u2013\u2014]/);
+  });
+
+  it("explica quando o PDF não tem texto selecionável", async () => {
+    const page = {
+      getViewport: () => ({ width: 600, height: 800 }),
+      getTextContent: async () => ({ items: [] }),
+      cleanup: () => undefined,
+    };
+    pdfOpen.mockReturnValue({
+      promise: Promise.resolve({ numPages: 1, getPage: async () => page }),
+      destroy: async () => undefined,
+    });
+    const { dispatch, dialog } = renderWith({
+      ...source,
+      id: "pdf-3",
+      title: "escaneado.pdf",
+      kind: "pdf",
+      content: "data:application/pdf;base64,JVBERi0xLjQK",
+    });
+    fireEvent.click(within(dialog).getByRole("button", { name: "Resumo automático" }));
+    expect(await screen.findByRole("alert")).toHaveProperty(
+      "textContent",
+      "Não encontrei texto em escaneado.pdf. Se for um PDF escaneado, use a Olena para ler as imagens.",
+    );
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it("avisa que imagens precisam da Olena", async () => {
+    const { dispatch, dialog } = renderWith({
+      ...source,
+      id: "img-1",
+      title: "foto.png",
+      kind: "image",
+      content: "data:image/png;base64,AAAA",
+    });
+    fireEvent.click(within(dialog).getByRole("button", { name: "Resumo automático" }));
+    expect(await screen.findByRole("alert")).toHaveProperty(
+      "textContent",
+      "O resumo automático lê PDF e texto. Para imagens, use a Olena.",
+    );
+    expect(dispatch).not.toHaveBeenCalled();
   });
 });
