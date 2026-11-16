@@ -1,4 +1,5 @@
 import { getFirebaseAccountServices } from "../data/firebase-account";
+import { dataUrlBytes } from "../data/data-url";
 import { streamHelena } from "../data/helena-client";
 import { OCR_WORKER_OPTIONS } from "../components/handwriting-ocr";
 import type { HelenaRequest } from "../ai/helena-contract";
@@ -329,9 +330,13 @@ export function LibraryFolderContents({
               import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
             ]);
             pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-            const loading = pdfjs.getDocument({ url: source.content });
+            const bytes = dataUrlBytes(source.content);
+            if (!bytes) throw new Error("Não consegui abrir o PDF " + source.title + ".");
+            const loading = pdfjs.getDocument({ data: bytes });
             try {
-              const pdf = await loading.promise;
+              const pdf = await loading.promise.catch(() => {
+                throw new Error("Não consegui abrir o PDF " + source.title + ".");
+              });
               for (let index = 1; index <= pdf.numPages; index++) {
                 const page = await pdf.getPage(index);
                 const text = await page.getTextContent();

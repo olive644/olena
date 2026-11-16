@@ -5291,3 +5291,27 @@ Relato do proprietário com captura do celular: dentro de uma pasta da Bibliotec
 - Em 320 px de largura o nome "Flashcards" fica pequeno (cerca de 9 px); cabe, mas é o limite do layout em cinco colunas.
 - Só as abas foram reorganizadas. O conteúdo das abas Resumo, Flashcards, Quizzes e Simulados não foi revisto em outras larguras além do que o e2e acima exercita.
 - Não verificado em aparelho real; o teste usa o emulador do navegador.
+
+## Botões das abas da pasta e PDF no resumo, 16/11/2026
+
+Relato do proprietário com captura do celular, na aba Resumo de uma pasta da Biblioteca: (1) o erro "Unexpected server response (0) while retrieving PDF "data:application/pdf;base64,..."" ao gerar o resumo; (2) o botão de baixo de todas as abas não aparecia.
+
+**Causas (reproduzidas em 360x800)**
+
+- O PDF enviado fica guardado como endereço `data:application/pdf;base64,...`, e a geração do resumo o entregava ao leitor de PDF como `{ url }`. O leitor faz uma requisição interna para esse endereço, que falha em alguns celulares com "Unexpected server response (0)"; a mensagem em inglês ia crua para a tela.
+- A tela da Biblioteca não rola (`main.notebooks-main` com `overflow: hidden`, a prateleira cabe inteira), e o conteúdo da pasta tinha `min-height: calc(100dvh - 6rem)`. Em 360x800 ele terminava em 788 px e o botão ("Criar resumo", "Adicionar fontes", "Criar flashcards"...) ficava em 724 px, atrás da navegação do celular, que começa em 721 px. Conteúdo mais longo (lista de fontes, vários resumos) simplesmente era cortado, sem como rolar.
+
+**O que mudou**
+
+- `src/data/data-url.ts`: `dataUrlBytes` decodifica o endereço `data:` e a geração passa os bytes ao leitor (`getDocument({ data })`), como os outros leitores de PDF do app já faziam. Se o PDF não abre, a mensagem é "Não consegui abrir o PDF {nome}." em português.
+- `src/views/library-shelf-view.css`: o conteúdo da pasta passa a rolar dentro da própria área (`overflow-y: auto`). No celular (até 680 px) a altura é `calc(100dvh - 11rem)`, o que deixa o botão de baixo acima da navegação; no PC o teto é o mesmo de antes (`100dvh - 6rem`).
+
+**Provas**
+
+- `src/data/data-url.test.ts` (3) e `src/views/library-shelf-view.test.tsx` (mais 2: o PDF é aberto pelos bytes, sem `url`, e o PDF que não abre mostra a mensagem em português sem chamar a Olena).
+- `e2e/library-folder-mobile.spec.ts`: em 360x800 e 390x844, o botão de cada uma das cinco abas não está coberto por nada (`elementFromPoint`). Falha sem a correção ("Criar resumo ficou coberto") e passa com ela. Captura conferida em 360x800.
+
+**Limites**
+
+- Não verificado em aparelho real nem com o PDF do proprietário. O erro do PDF vem de `pdfjs` pedindo o endereço `data:`; troquei para os bytes, que é o caminho que o leitor de PDF da Biblioteca já usa, mas não consegui reproduzir a falha do aparelho em si no navegador de teste (lá o endereço `data:` funciona).
+- Em telas muito baixas a área da pasta rola em vez de mostrar tudo de uma vez.

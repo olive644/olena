@@ -7,6 +7,9 @@ const stream = vi.hoisted(() => vi.fn());
 const services = vi.hoisted(() => vi.fn());
 vi.mock("../data/helena-client", () => ({ streamHelena: stream }));
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: services }));
+const pdfOpen = vi.hoisted(() => vi.fn());
+vi.mock("pdfjs-dist", () => ({ GlobalWorkerOptions: {}, getDocument: pdfOpen }));
+vi.mock("pdfjs-dist/build/pdf.worker.min.mjs?url", () => ({ default: "pdf.worker.js" }));
 
 const folder = { id: "pasta-1", title: "Tese", motif: "book" as const, createdAt: "2026-11-16" };
 const source = {
@@ -47,6 +50,7 @@ describe("resumo estruturado com a Olena", () => {
   beforeEach(() => {
     stream.mockReset();
     services.mockReset();
+    pdfOpen.mockReset();
   });
 
   it("pede o guia pela transmissão em fluxo e guarda o resumo na pasta", async () => {
@@ -152,5 +156,88 @@ describe("resumo estruturado com a Olena", () => {
     expect(dispatch).toHaveBeenCalledWith(
       expect.objectContaining({ title: "Guia do ENIAC", tags: ["folder-summary", "ENIAC.txt"] }),
     );
+  });
+
+  it("abre o PDF pelos bytes, sem pedir o endereço data: ao leitor", async () => {
+    signedIn();
+    const page = {
+      getTextContent: async () => ({ items: [{ str: "O ENIAC foi concluído em 1945." }] }),
+      cleanup: () => undefined,
+    };
+    pdfOpen.mockReturnValue({
+      promise: Promise.resolve({ numPages: 1, getPage: async () => page }),
+      destroy: async () => undefined,
+    });
+    stream.mockResolvedValue({
+      version: 1,
+      requestId: "r3",
+      answer: "# Guia\n\n## 1. Origem\nTexto.",
+      suggestions: [],
+      generatedAt: "2026-11-16T12:00:00.000Z",
+    });
+    const dispatch = vi.fn<(action: WorkspaceAction) => void>();
+    render(
+      <LibraryFolderContents
+        folder={folder}
+        materials={[
+          {
+            ...source,
+            id: "pdf-1",
+            title: "eniac.pdf",
+            kind: "pdf",
+            content: "data:application/pdf;base64,JVBERi0xLjQK",
+          },
+        ]}
+        subjectId="materia-1"
+        dispatch={dispatch}
+        onBack={() => undefined}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Resumo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Criar resumo" }));
+    const dialog = screen.getByRole("dialog");
+    fireEvent.click(within(dialog).getByRole("checkbox", { name: "Selecionar eniac.pdf" }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar" }));
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    const options = pdfOpen.mock.calls[0]![0];
+    expect(options.url).toBeUndefined();
+    expect(options.data).toBeInstanceOf(Uint8Array);
+    expect(stream.mock.calls[0]![0].sources[0].content).toContain("Página 1: O ENIAC");
+  });
+
+  it("explica em português quando o PDF não abre", async () => {
+    signedIn();
+    pdfOpen.mockReturnValue({
+      promise: Promise.reject(new Error("Unexpected server response (0) while retrieving PDF")),
+      destroy: async () => undefined,
+    });
+    const dispatch = vi.fn<(action: WorkspaceAction) => void>();
+    render(
+      <LibraryFolderContents
+        folder={folder}
+        materials={[
+          {
+            ...source,
+            id: "pdf-2",
+            title: "quebrado.pdf",
+            kind: "pdf",
+            content: "data:application/pdf;base64,JVBERi0xLjQK",
+          },
+        ]}
+        subjectId="materia-1"
+        dispatch={dispatch}
+        onBack={() => undefined}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Resumo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Criar resumo" }));
+    const dialog = screen.getByRole("dialog");
+    fireEvent.click(within(dialog).getByRole("checkbox", { name: "Selecionar quebrado.pdf" }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar" }));
+    expect(await screen.findByRole("alert")).toHaveProperty(
+      "textContent",
+      "Não consegui abrir o PDF quebrado.pdf.",
+    );
+    expect(stream).not.toHaveBeenCalled();
   });
 });
