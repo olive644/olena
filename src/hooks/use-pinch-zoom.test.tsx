@@ -64,3 +64,26 @@ describe("pinça de dois dedos", () => {
     expect(zoomTo).not.toHaveBeenCalled();
   });
 });
+
+it("preserva a rolagem aplicada pelo zoom entre movimentos da pin�a", () => {
+  const viewport = document.createElement("div");
+  viewport.scrollLeft = 50;
+  const zoomTo = vi.fn(() => {
+    viewport.scrollLeft += 100;
+  });
+  const { result } = renderHook(() =>
+    usePinchZoom({
+      viewportRef: { current: viewport },
+      zoom: 1,
+      zoomTo,
+      onPinchStart: vi.fn(),
+    }),
+  );
+  const pinch = result.current;
+  pinch.start(finger(1, 100, 100));
+  pinch.start(finger(2, 200, 100));
+  pinch.move(finger(2, 220, 100));
+  expect(viewport.scrollLeft).toBe(140);
+  pinch.move(finger(2, 240, 100));
+  expect(viewport.scrollLeft).toBe(230);
+});

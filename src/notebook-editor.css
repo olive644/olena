@@ -1754,44 +1754,46 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
   color: #fff9ef;
 }
 
-/* Barra de cores rápidas: faixa própria acima da folha (não cobre a escrita) que fica presa ao topo
-   ao rolar. A faixa não pega toque; só a barra pega. O rodapé pertence à tira de folhas. */
-.handwriting-quick-colors-dock {
-  position: sticky;
-  top: 0;
-  z-index: 6;
-  padding: 8px 8px 6px;
-  pointer-events: none;
+.handwriting-workspace {
+  position: relative;
 }
 .handwriting-quick-colors {
   display: flex;
-  width: fit-content;
-  max-width: 100%;
-  flex-wrap: wrap;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  width: 52px;
+  max-height: 100%;
+  overflow-y: auto;
   align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
+  gap: 8px;
+  padding: 8px 6px;
   pointer-events: auto;
   border: 1px solid #d8cbb2;
-  border-radius: 6px 14px 7px 10px;
-  background: #fff9ef;
-  box-shadow: 3px 4px 0 #d8cbb2;
+  border-radius: 5px 14px 6px 10px;
+  background: linear-gradient(135deg, #f5e6c8 0 14px, #fff9ef 14px);
+  box-shadow: 0 4px #d8cbb2;
 }
 .handwriting-quick-colors .quick-color {
   position: relative;
   display: grid;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
   padding: 0;
   place-items: center;
-  border: 2px solid #17151c;
-  border-radius: 50%;
+  border: 1px solid #d8cbb2;
+  border-radius: 4px 10px 4px 7px;
+  box-shadow: 0 3px #4d4058;
   cursor: pointer;
 }
+.handwriting-quick-colors .quick-color > svg {
+  width: 20px;
+  height: 20px;
+}
 .handwriting-quick-colors .quick-color[aria-pressed="true"] {
-  border-width: 3px;
-  box-shadow: 0 3px 0 #7433e0;
+  outline: 2px solid #a979f1;
+  outline-offset: 1px;
 }
 .handwriting-quick-colors .quick-color--custom {
   overflow: hidden;
@@ -1828,7 +1830,7 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
   box-shadow: 3px 4px 0 #15121b;
 }
 :root[data-theme="dark"] .handwriting-quick-colors .quick-color {
-  border-color: #fff9ef;
+  border-color: #6d5f78;
 }
 :root[data-theme="dark"] .handwriting-quick-colors .quick-color-hint {
   color: #fff9ef;
@@ -1891,5 +1893,169 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
 @media (max-width: 680px) {
   .handwriting-studio .handwriting-writing-window > .handwriting-writing-window__paper {
     flex-basis: 100%;
+  }
+}
+
+.handwriting-color-dock {
+  position: absolute;
+  inset: 0 auto auto 0;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  width: 52px;
+  padding-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 5px 14px 6px 10px;
+  background: var(--surface);
+  box-shadow: 0 4px var(--soft);
+  box-sizing: border-box;
+}
+.handwriting-color-dock[hidden] {
+  display: none;
+}
+.handwriting-color-dock > .handwriting-quick-colors {
+  min-height: 0;
+  width: auto;
+  border: 0;
+  box-shadow: none;
+}
+.handwriting-color-dock-grip {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 20px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: grab;
+  touch-action: none;
+}
+.handwriting-color-dock[data-dragging] .handwriting-color-dock-grip {
+  cursor: grabbing;
+}
+.handwriting-color-dock:is([data-edge="top"], [data-edge="bottom"]) {
+  flex-direction: row;
+  width: max-content;
+  padding: 0 0 0 18px;
+}
+.handwriting-color-dock:is([data-edge="top"], [data-edge="bottom"]) .handwriting-quick-colors {
+  flex-direction: row;
+  overflow-x: auto;
+}
+.handwriting-color-dock:is([data-edge="top"], [data-edge="bottom"]) .handwriting-color-dock-grip {
+  inset: 0 auto 0 0;
+  width: 20px;
+  height: auto;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"]) .handwriting-color-dock:not([data-dragging]) {
+    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* A janela usa toda a largura para escrita; gestos substituem os controles laterais. */
+.handwriting-studio .handwriting-writing-window > .handwriting-writing-window__paper {
+  flex-basis: 100%;
+  max-width: none;
+}
+.handwriting-writing-window__paper canvas {
+  touch-action: none;
+}
+
+:root body .handwriting-writing-window[data-resized="true"] {
+  box-sizing: border-box;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+.handwriting-studio
+  .handwriting-writing-window[data-resized="true"]
+  > .handwriting-writing-window__paper {
+  flex: 1 1 0;
+  width: 100%;
+  min-height: 0;
+}
+.handwriting-writing-window[data-resized="true"] .handwriting-writing-window__grip {
+  flex: 0 0 26px;
+}
+.handwriting-writing-window[data-resized="true"] .handwriting-writing-window__paper canvas {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+}
+:root body .handwriting-writing-window__resize {
+  position: absolute;
+  z-index: 2;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  touch-action: none;
+}
+.handwriting-writing-window__resize.is-n,
+.handwriting-writing-window__resize.is-s {
+  left: 22px;
+  right: 22px;
+  height: 12px;
+  cursor: ns-resize;
+}
+.handwriting-writing-window__resize.is-n {
+  top: -5px;
+}
+.handwriting-writing-window__resize.is-s {
+  bottom: -5px;
+}
+.handwriting-writing-window__resize.is-e,
+.handwriting-writing-window__resize.is-w {
+  top: 22px;
+  bottom: 22px;
+  width: 12px;
+  cursor: ew-resize;
+}
+.handwriting-writing-window__resize.is-e {
+  right: -5px;
+}
+.handwriting-writing-window__resize.is-w {
+  left: -5px;
+}
+.handwriting-writing-window__resize:is(.is-ne, .is-se, .is-nw, .is-sw) {
+  width: 24px;
+  height: 24px;
+}
+.handwriting-writing-window__resize:is(.is-ne, .is-nw) {
+  top: -5px;
+}
+.handwriting-writing-window__resize:is(.is-se, .is-sw) {
+  bottom: -5px;
+}
+.handwriting-writing-window__resize:is(.is-ne, .is-se) {
+  right: -5px;
+}
+.handwriting-writing-window__resize:is(.is-nw, .is-sw) {
+  left: -5px;
+}
+.handwriting-writing-window__resize:is(.is-nw, .is-se) {
+  cursor: nwse-resize;
+}
+.handwriting-writing-window__resize:is(.is-ne, .is-sw) {
+  cursor: nesw-resize;
+}
+.handwriting-writing-window__resize::after {
+  content: "";
+  position: absolute;
+  inset: 40%;
+  border-radius: 2px;
+  background: var(--muted);
+}
+@media (pointer: fine) {
+  :root
+    .handwriting-studio[data-tool="pen"]
+    :is(.handwriting-canvas, .handwriting-writing-window__paper canvas) {
+    cursor:
+      url("/navigation-icons/paper/notebook-pencil-cursor.svg?v=2") 6 21,
+      crosshair;
   }
 }

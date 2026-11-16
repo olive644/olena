@@ -197,3 +197,20 @@ describe("borracha: modo de fundo", () => {
     expect(screen.queryByRole("button", { name: "Apagar só o fundo importado" })).toBeNull();
   });
 });
+
+it.each(["pen", "highlighter", "ruler", "curve", "coordinates"] as const)(
+  "%s: as opções não repetem a paleta lateral",
+  (tool) => {
+    const view = render(
+      <HandwritingInkOptions
+        tool={tool}
+        color="#17151c"
+        onColorChange={vi.fn()}
+        width={5}
+        onWidthChange={vi.fn()}
+      />,
+    );
+    expect(view.container.querySelector(".ink-palette")).toBeNull();
+    expect(view.container.querySelector('input[type="color"]')).toBeNull();
+  },
+);

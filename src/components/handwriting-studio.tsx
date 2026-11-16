@@ -1,3 +1,5 @@
+import { pencilCursor } from "./handwriting-pencil-cursor";
+import { writingViewSize, type WritingView } from "./handwriting-writing-view";
 import { createPortal } from "react-dom";
 import { ShelfToolIcon } from "./shelf-tool-icon";
 import { useNotebookShortcuts } from "../data/notebook-shortcuts";
@@ -22,6 +24,7 @@ import {
   lazy,
   Suspense,
   useEffect,
+  useCallback,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -65,7 +68,7 @@ import { NotebookPageBook } from "./notebook-page-book";
 import { HandwritingHistoryBar } from "./handwriting-history-bar";
 import { HandwritingPaperPicker } from "./handwriting-paper-picker";
 import { HandwritingWritingWindow } from "./handwriting-writing-window";
-import { HandwritingQuickColors } from "./handwriting-quick-colors";
+import { HandwritingColorDock } from "./handwriting-color-dock";
 import { HandwritingInkOptions } from "./handwriting-ink-options";
 import { HandwritingSelectionActions } from "./handwriting-selection-actions";
 import { OCR_WORKER_OPTIONS } from "./handwriting-ocr";
@@ -118,13 +121,7 @@ import {
   HandwritingRulerPanel,
 } from "./handwriting-side-panels";
 import { HandwritingToolGroup } from "./handwriting-tool-group";
-import {
-  STICKY_MIN_WIDTH,
-  STICKY_MIN_HEIGHT,
-  BASE_DISPLAY_WIDTH,
-  WRITING_WINDOW_WIDTH,
-  WRITING_WINDOW_HEIGHT,
-} from "./handwriting-types";
+import { STICKY_MIN_WIDTH, STICKY_MIN_HEIGHT, BASE_DISPLAY_WIDTH } from "./handwriting-types";
 import type {
   HandwritingTool,
   PaperStyle,
@@ -715,6 +712,13 @@ export function HandwritingStudio({
   const [gestureRevision, setGestureRevision] = useState(0);
   const remoteBaseRef = useRef<HandwritingDocument | undefined>(initialDocument);
   const [zoom, setZoom] = useState(0.7);
+  const zoomRef = useRef(zoom);
+  const zoomAnchorRef = useRef<{
+    x: number;
+    y: number;
+    relativeX: number;
+    relativeY: number;
+  } | null>(null);
   const [fitWidth, setFitWidth] = useState(BASE_DISPLAY_WIDTH);
   // Resolução do bitmap da folha: acompanha a densidade da tela e o zoom para a
   // tinta ficar nítida. Muda com um pequeno atraso para o zoom não redesenhar a
@@ -731,7 +735,15 @@ export function HandwritingStudio({
   const [writingWindowOpen, setWritingWindowOpen] = useState(false);
   const [writingWindowX, setWritingWindowX] = useState(100);
   const [writingWindowY, setWritingWindowY] = useState(110);
-  const [writingWindowStatus, setWritingWindowStatus] = useState(uiText(1696));
+  const [writingWindowZoom, setWritingWindowZoom] = useState(1);
+  const [writingWindowAspect, setWritingWindowAspect] = useState(500 / 185);
+  const writingSize = writingViewSize(writingWindowZoom, writingWindowAspect);
+  function navigateWritingWindow(view: WritingView) {
+    setWritingWindowX(view.x);
+    setWritingWindowY(view.y);
+    setWritingWindowZoom(view.zoom);
+    if (view.aspect) setWritingWindowAspect(view.aspect);
+  }
   const [draftStatus, setDraftStatus] = useState(recovered ? uiText(1697) : "");
   const [saveConfirmation, setSaveConfirmation] = useState(0);
   useEffect(() => {
@@ -1073,6 +1085,21 @@ export function HandwritingStudio({
     setPageTextSize,
   });
   const { selectionBox, setSelectionBox, selectionPath, transforming, guides } = selectionGesture;
+  const zoomTo = useCallback((clientX: number, clientY: number, nextZoom: number) => {
+    const canvas = canvasRef.current;
+    const viewport = viewportRef.current;
+    if (!canvas || !viewport) return;
+    const bounds = canvas.getBoundingClientRect();
+    if (!bounds.width || !bounds.height || !Number.isFinite(nextZoom)) return;
+    const relativeX = (clientX - bounds.left) / bounds.width;
+    const relativeY = (clientY - bounds.top) / bounds.height;
+    const clampedZoom = Math.max(0.7, Math.min(2, Math.round(nextZoom * 100) / 100));
+    if (clampedZoom === zoomRef.current) return;
+    zoomAnchorRef.current = { x: clientX, y: clientY, relativeX, relativeY };
+    zoomRef.current = clampedZoom;
+    setZoom(clampedZoom);
+  }, []);
+
   const pinch = usePinchZoom({
     viewportRef,
     zoom,
@@ -1179,6 +1206,33 @@ export function HandwritingStudio({
 
   const displayWidth = Math.max(1, Math.round(fitWidth * (zoom / 0.7)));
   useLayoutEffect(() => {
+    zoomRef.current = zoom;
+    const anchor = zoomAnchorRef.current;
+    const canvas = canvasRef.current;
+    const viewport = viewportRef.current;
+    if (!anchor || !canvas || !viewport) return;
+    const bounds = canvas.getBoundingClientRect();
+    viewport.scrollLeft += bounds.left + anchor.relativeX * bounds.width - anchor.x;
+    viewport.scrollTop += bounds.top + anchor.relativeY * bounds.height - anchor.y;
+    zoomAnchorRef.current = null;
+  }, [zoom, displayWidth]);
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const wheel = (event: WheelEvent) => {
+      if (!event.ctrlKey && !event.metaKey) return;
+      event.preventDefault();
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.clientHeight : 1;
+      zoomTo(
+        event.clientX,
+        event.clientY,
+        zoomRef.current * Math.exp(-event.deltaY * unit * 0.002),
+      );
+    };
+    viewport.addEventListener("wheel", wheel, { passive: false });
+    return () => viewport.removeEventListener("wheel", wheel);
+  }, [zoomTo]);
+  useLayoutEffect(() => {
     const canvas = selectionCanvasRef.current;
     if (!canvas) return;
     sizePageCanvas(canvas, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
@@ -1232,8 +1286,8 @@ export function HandwritingStudio({
         image,
         writingWindowX * mirrorScale,
         writingWindowY * mirrorScale,
-        WRITING_WINDOW_WIDTH * mirrorScale,
-        WRITING_WINDOW_HEIGHT * mirrorScale,
+        writingSize.width * mirrorScale,
+        writingSize.height * mirrorScale,
         0,
         0,
         target.width,
@@ -1248,6 +1302,8 @@ export function HandwritingStudio({
     writingWindowOpen,
     writingWindowX,
     writingWindowY,
+    writingWindowZoom,
+    writingWindowAspect,
     backgroundImage,
     renderScale,
   ]);
@@ -1380,25 +1436,8 @@ export function HandwritingStudio({
     );
   }
 
-  function zoomTo(clientX: number, clientY: number, nextZoom: number) {
-    const canvas = canvasRef.current;
-    const viewport = viewportRef.current;
-    if (!canvas || !viewport) return;
-    const bounds = canvas.getBoundingClientRect();
-    const relativeX = (clientX - bounds.left) / bounds.width;
-    const relativeY = (clientY - bounds.top) / bounds.height;
-    const clampedZoom = Math.max(0.7, Math.min(2, Math.round(nextZoom * 100) / 100));
-    if (clampedZoom === zoom) return;
-    setZoom(clampedZoom);
-    requestAnimationFrame(() => {
-      const nextBounds = canvas.getBoundingClientRect();
-      viewport.scrollLeft += nextBounds.left + relativeX * nextBounds.width - clientX;
-      viewport.scrollTop += nextBounds.top + relativeY * nextBounds.height - clientY;
-    });
-  }
-
   function zoomAt(clientX: number, clientY: number, direction: 1 | -1) {
-    zoomTo(clientX, clientY, zoom + direction * 0.15);
+    zoomTo(clientX, clientY, zoomRef.current + direction * 0.15);
   }
 
   function eraseAt(points: HandwritingPoint[]) {
@@ -1518,6 +1557,8 @@ export function HandwritingStudio({
   }
 
   function clearLive() {
+    canvasRef.current?.style.removeProperty("cursor");
+    writingCanvasRef.current?.style.removeProperty("cursor");
     predictedRef.current = [];
     if (liveFrameRef.current !== null) cancelAnimationFrame(liveFrameRef.current);
     liveFrameRef.current = null;
@@ -1559,8 +1600,8 @@ export function HandwritingStudio({
         image,
         writingWindowX * mirrorScale,
         writingWindowY * mirrorScale,
-        WRITING_WINDOW_WIDTH * mirrorScale,
-        WRITING_WINDOW_HEIGHT * mirrorScale,
+        writingSize.width * mirrorScale,
+        writingSize.height * mirrorScale,
         0,
         0,
         target.width,
@@ -1568,7 +1609,7 @@ export function HandwritingStudio({
       );
     }
     context.save();
-    context.scale(target.width / WRITING_WINDOW_WIDTH, target.height / WRITING_WINDOW_HEIGHT);
+    context.scale(target.width / writingSize.width, target.height / writingSize.height);
     context.translate(-writingWindowX, -writingWindowY);
     drawStroke(context, stroke);
     context.restore();
@@ -1742,6 +1783,8 @@ export function HandwritingStudio({
           points: [point],
         };
     if (effectiveTool !== "ruler") liveStrokeRef.current = nextStroke;
+    if (effectiveTool === "pen" && event.pointerType === "mouse")
+      event.currentTarget.style.cursor = pencilCursor(nextStroke.color, true);
     liveStabilizerRef.current =
       stabilization && effectiveTool !== "ruler"
         ? createLiveStabilizer(point, {
@@ -2554,8 +2597,8 @@ export function HandwritingStudio({
         Math.max(
           0,
           Math.min(
-            WRITING_WINDOW_WIDTH,
-            ((event.clientX - bounds.left) / bounds.width) * WRITING_WINDOW_WIDTH,
+            writingSize.width,
+            ((event.clientX - bounds.left) / bounds.width) * writingSize.width,
           ),
         ),
       y:
@@ -2563,8 +2606,8 @@ export function HandwritingStudio({
         Math.max(
           0,
           Math.min(
-            WRITING_WINDOW_HEIGHT,
-            ((event.clientY - bounds.top) / bounds.height) * WRITING_WINDOW_HEIGHT,
+            writingSize.height,
+            ((event.clientY - bounds.top) / bounds.height) * writingSize.height,
           ),
         ),
       pressure: event.pressure > 0 ? event.pressure : 0.5,
@@ -2608,6 +2651,8 @@ export function HandwritingStudio({
       points: [point],
     };
     liveStrokeRef.current = nextStroke;
+    if (writingTool === "pen" && event.pointerType === "mouse")
+      event.currentTarget.style.cursor = pencilCursor(nextStroke.color, true);
     // Na janela ampliada a tinta tem que ficar sob a caneta enquanto se escreve.
     // A inércia do estabilizador ao vivo, calibrada para a folha inteira, aparece
     // ampliada aqui e faz a tinta ficar atrás da ponta, então só se suaviza ao
@@ -2672,53 +2717,15 @@ export function HandwritingStudio({
     if (event.type === "pointerup" && relativeX >= 0.82) advanceWritingWindow();
   }
 
-  function goBackWritingWindow() {
-    setWritingWindowX((current) => {
-      const next = Math.max(0, current - 300);
-      setWritingWindowStatus(
-        uiText(1704, [
-          Math.floor((next - 100) / 300) + 1,
-          Math.floor((writingWindowY - 110) / 48) + 1,
-        ]),
-      );
-      return next;
-    });
-  }
-
-  function nextWritingLine() {
-    setWritingWindowX(100);
-    setWritingWindowY((current) => Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, current + 48));
-    setWritingWindowStatus(
-      uiText(1705, [
-        Math.floor(
-          (Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, writingWindowY + 48) - 110) / 48,
-        ) + 1,
-      ]),
-    );
-  }
-
   function advanceWritingWindow() {
-    if (writingWindowX + WRITING_WINDOW_WIDTH + 300 < PAGE_WIDTH) {
-      setWritingWindowX((current) => {
-        const next = current + 300;
-        setWritingWindowStatus(
-          uiText(1704, [
-            Math.floor((next - 100) / 300) + 1,
-            Math.floor((writingWindowY - 110) / 48) + 1,
-          ]),
-        );
-        return next;
-      });
+    const step = Math.min(300, writingSize.width * 0.6);
+    if (writingWindowX + writingSize.width + step < PAGE_WIDTH) {
+      setWritingWindowX((current) => current + step);
     } else {
-      setWritingWindowX(100);
-      setWritingWindowY((current) => {
-        const next = Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, current + 48);
-        setWritingWindowStatus(uiText(1705, [Math.floor((next - 110) / 48) + 1]));
-        return next;
-      });
+      setWritingWindowX(Math.min(100, Math.max(0, PAGE_WIDTH - writingSize.width)));
+      setWritingWindowY((current) => Math.min(PAGE_HEIGHT - writingSize.height, current + 48));
     }
   }
-
   function buildDocument(): HandwritingDocument {
     const document: HandwritingDocument = {
       version: 1,
@@ -3712,13 +3719,18 @@ export function HandwritingStudio({
       {writingWindowOpen && (
         <HandwritingWritingWindow
           canvasRef={writingCanvasRef}
-          status={writingWindowStatus}
+          view={{
+            x: writingWindowX,
+            y: writingWindowY,
+            zoom: writingWindowZoom,
+            aspect: writingWindowAspect,
+          }}
+          page={{ width: PAGE_WIDTH, height: PAGE_HEIGHT }}
+          tool={tool}
+          onNavigate={navigateWritingWindow}
           onStart={startWritingWindow}
           onMove={moveWritingWindow}
           onFinish={finishWritingWindow}
-          onBack={goBackWritingWindow}
-          onAdvance={advanceWritingWindow}
-          onNextLine={nextWritingLine}
         />
       )}
 
@@ -3726,6 +3738,13 @@ export function HandwritingStudio({
         className={`handwriting-workspace${rightPanelCount ? " handwriting-workspace--brushes" : ""}${rightPanelCount > 1 ? " handwriting-workspace--panels-two" : ""}`}
         inert={fileAction === "import"}
       >
+        <HandwritingColorDock
+          active={
+            optionsOpen && ["pen", "highlighter", "ruler", "curve", "coordinates"].includes(tool)
+          }
+          color={color}
+          onColorChange={setColor}
+        />
         <HandwritingPaperPicker
           paper={paper}
           paperColor={paperColor}
@@ -3785,11 +3804,6 @@ export function HandwritingStudio({
             <span className="handwriting-viewport-hint" aria-hidden="true">
               {tool === "hand" ? uiText(316) : tool === "zoom-in" ? uiText(317) : uiText(318)}
             </span>
-          )}
-          {(tool === "pen" || tool === "highlighter") && !textMode && (
-            <div className="handwriting-quick-colors-dock">
-              <HandwritingQuickColors color={color} onColorChange={setColor} />
-            </div>
           )}
           <div
             data-page-turn={pageTurn ?? undefined}

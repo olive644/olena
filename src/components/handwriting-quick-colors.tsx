@@ -1,3 +1,4 @@
+import { PaperCheckIcon } from "./paper-check-icon";
 import { useEffect, useRef, useState } from "react";
 import { uiText } from "../i18n/runtime";
 import {
@@ -61,11 +62,16 @@ export function HandwritingQuickColors({ color, onColorChange }: HandwritingQuic
       }
       event.preventDefault();
       event.stopPropagation();
-      const picked = sampleCanvasStack(
-        Array.from(shell.querySelectorAll("canvas")),
-        event.clientX,
-        event.clientY,
-      );
+      let picked: string | null = null;
+      try {
+        picked = sampleCanvasStack(
+          Array.from(shell.querySelectorAll("canvas")),
+          event.clientX,
+          event.clientY,
+        );
+      } catch {
+        setMessage(uiText(3877));
+      }
       setPicking(false);
       if (!picked) return;
       changeRef.current(picked);
@@ -99,14 +105,16 @@ export function HandwritingQuickColors({ color, onColorChange }: HandwritingQuic
         <button
           key={hex}
           type="button"
-          className="quick-color"
+          className="quick-color ink-swatch"
           aria-label={label}
           aria-pressed={current === hex}
           style={{ backgroundColor: hex }}
           onClick={() => onColorChange(hex)}
-        />
+        >
+          {current === hex && <PaperCheckIcon />}
+        </button>
       ))}
-      <label className="quick-color quick-color--custom" title={uiText(184)}>
+      <label className="quick-color ink-swatch quick-color--custom" title={uiText(184)}>
         <span className="visually-hidden">{uiText(184)}</span>
         <input
           type="color"
@@ -121,20 +129,30 @@ export function HandwritingQuickColors({ color, onColorChange }: HandwritingQuic
         aria-label={uiText(3876)}
         title={uiText(3876)}
         aria-pressed={picking}
-        onClick={() => {
+        onClick={async () => {
           setMessage("");
-          setPicking((value) => !value);
+          const EyeDropper = (
+            window as Window & {
+              EyeDropper?: new () => { open: () => Promise<{ sRGBHex: string }> };
+            }
+          ).EyeDropper;
+          if (!EyeDropper) {
+            setPicking((value) => !value);
+            return;
+          }
+          try {
+            const result = await new EyeDropper().open();
+            const hex = normalizeHex(result.sRGBHex);
+            if (hex) {
+              changeRef.current(hex);
+              setMessage(uiText(3878, [hex]));
+            }
+          } catch {
+            // Esc fecha o seletor nativo sem mudar a tinta atual.
+          }
         }}
       >
-        <svg viewBox="0 0 48 48" aria-hidden="true">
-          <path d="m34 3 11 11-6 6-11-11Z" fill="#a779ef" />
-          <path d="m39 14 6 0-6 6-5-5Z" fill="#7433e0" />
-          <path d="m26 12 11 11-5 5-11-11Z" fill="#7433e0" />
-          <path d="m21 17 11 11-16 16-6-6Z" fill="#9bdcf5" />
-          <path d="m21 17 4 4-15 15 0-6Z" fill="#fff2ce" />
-          <path d="m16 28 4 4-12 12-4-4Z" fill="#ffdb29" />
-          <path d="m10 44-6 1 1-6Z" fill="#654237" />
-        </svg>
+        <img src="/navigation-icons/paper/notebook-eyedropper.svg" alt="" width="24" height="24" />
       </button>
       {picking && <span className="quick-color-hint">{uiText(3877)}</span>}
       <span className="visually-hidden" aria-live="polite">

@@ -108,7 +108,12 @@ export function NotebookJourney({
       snapshot.setAttribute("inert", "");
       snapshot.setAttribute("aria-hidden", "true");
       snapshot.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
-      marks.current?.replaceChildren(snapshot.cloneNode(true));
+      if (snapshot.querySelector(".notebook-attached-tab")) {
+        const markSnapshot = snapshot.cloneNode(true) as HTMLElement;
+        marks.current?.replaceChildren(markSnapshot);
+      } else {
+        marks.current?.replaceChildren();
+      }
       snapshot.querySelectorAll(".notebook-attached-tabs").forEach((node) => node.remove());
       paper.current.replaceChildren(snapshot);
       // O verso leva a primeira folha na mesma escala do miolo. Ao completar
@@ -233,30 +238,35 @@ export function NotebookJourney({
               ...(closed ? [] : [{ transform: transport, "--shelf-angle": "0deg" }]),
             ],
       );
-      // O ângulo é uma propriedade registrada: brilho, sombra e elevação saem dele no CSS.
-      const open = back ? "180deg" : "-180deg";
-      if (!closed)
-        animations.push(
-          element.animate(
-            journey.returning
-              ? [
-                  { "--cover-angle": open, easing: NOTEBOOK_TURN_EASING },
-                  { "--cover-angle": "0deg", offset: coverClosingEnd },
-                  { "--cover-angle": "0deg" },
-                ]
-              : [
-                  { "--cover-angle": "0deg" },
-                  {
-                    "--cover-angle": "0deg",
-                    offset: openingStart,
-                    easing: NOTEBOOK_TURN_EASING,
-                  },
-                  { "--cover-angle": open, offset: openingEnd },
-                  { "--cover-angle": open },
-                ],
-            timing,
-          ),
+      // Transform pode rodar no compositor, sem recalcular o
+      // ângulo herdado e os estilos de toda a árvore do caderno a cada quadro.
+      if (!closed) {
+        const direction = back ? 1 : -1;
+        const start = journey.returning ? 0 : openingStart;
+        const end = journey.returning ? coverClosingEnd : openingEnd;
+        const samples = Array.from({ length: 17 }, (_, index) => {
+          const progress = index / 16;
+          const angle = Math.PI * (journey.returning ? 1 - progress : progress);
+          return { angle, offset: progress };
+        });
+        const coverTiming = {
+          ...timing,
+          duration: (end - start) * duration,
+          delay: start * duration,
+          easing: NOTEBOOK_TURN_EASING,
+        };
+        const turn = (node: Element | null, frames: Keyframe[]) => {
+          if (node) animations.push(node.animate(frames, coverTiming));
+        };
+        // A elevação acompanha o giro sem atualizar propriedades herdadas.
+        turn(
+          element.querySelector(".notebook-journey-leaf"),
+          samples.map(({ angle, offset }) => ({
+            offset,
+            transform: `translateZ(${Math.sin(angle) * 34}px) rotateY(${direction * angle}rad)`,
+          })),
         );
+      }
       const clasp = element.querySelector<HTMLElement>(".notebook-journey-clasp");
       const openClasp = (journey.returning ? paper.current : target)?.querySelector<HTMLElement>(
         ".notebook-open-clasp",
@@ -371,7 +381,6 @@ export function NotebookJourney({
         <div className="notebook-journey-pages" ref={paper} />
         <div className="notebook-journey-marks" ref={marks} />
         <span className="book-cover__clasp-anchor" />
-        <i className="notebook-journey-cast" />
         <div className="notebook-journey-leaf">
           {journey.side === "back" ? (
             <NotebookBackCover coverStyle={journey.notebook.coverStyle} subjectColor="#7C3AED" />
@@ -383,9 +392,7 @@ export function NotebookJourney({
               clasp={false}
             />
           )}
-          <i className="notebook-journey-shade is-front" />
           <div className="notebook-journey-lining" ref={lining} />
-          <i className="notebook-journey-shade is-lining" />
         </div>
         <NotebookClasp className="notebook-journey-clasp" />
       </div>

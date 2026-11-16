@@ -19,8 +19,6 @@ export function usePinchZoom({ viewportRef, zoom, zoomTo, onPinchStart }: PinchI
     zoom: number;
     centerX: number;
     centerY: number;
-    scrollLeft: number;
-    scrollTop: number;
   } | null>(null);
 
   // Devolve true quando este toque começou uma pinça (o segundo dedo).
@@ -29,14 +27,11 @@ export function usePinchZoom({ viewportRef, zoom, zoomTo, onPinchStart }: PinchI
     if (touches.current.size < 2) return false;
     const [first, second] = [...touches.current.values()].slice(0, 2);
     if (!first || !second) return false;
-    const viewport = viewportRef.current;
     pinch.current = {
       distance: Math.hypot(second.x - first.x, second.y - first.y),
       zoom,
       centerX: (first.x + second.x) / 2,
       centerY: (first.y + second.y) / 2,
-      scrollLeft: viewport?.scrollLeft ?? 0,
-      scrollTop: viewport?.scrollTop ?? 0,
     };
     onPinchStart();
     return true;
@@ -54,11 +49,13 @@ export function usePinchZoom({ viewportRef, zoom, zoomTo, onPinchStart }: PinchI
     const centerY = (first.y + second.y) / 2;
     const viewport = viewportRef.current;
     if (viewport) {
-      viewport.scrollLeft = current.scrollLeft + current.centerX - centerX;
-      viewport.scrollTop = current.scrollTop + current.centerY - centerY;
+      viewport.scrollLeft += current.centerX - centerX;
+      viewport.scrollTop += current.centerY - centerY;
     }
     const distance = Math.hypot(second.x - first.x, second.y - first.y);
     zoomTo(centerX, centerY, current.zoom * (distance / current.distance));
+    current.centerX = centerX;
+    current.centerY = centerY;
     return true;
   }
 
