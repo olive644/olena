@@ -65,6 +65,8 @@ import { NotebookPageBook } from "./notebook-page-book";
 import { HandwritingHistoryBar } from "./handwriting-history-bar";
 import { HandwritingPaperPicker } from "./handwriting-paper-picker";
 import { HandwritingWritingWindow } from "./handwriting-writing-window";
+import { HandwritingPenMeterPanel } from "./handwriting-pen-meter-panel";
+import { useHandwritingPenMeter } from "./use-handwriting-pen-meter";
 import { HandwritingQuickColors } from "./handwriting-quick-colors";
 import { HandwritingInkOptions } from "./handwriting-ink-options";
 import { HandwritingSelectionActions } from "./handwriting-selection-actions";
@@ -310,11 +312,13 @@ export function HandwritingStudio({
     shapeSnap,
     inkPrediction,
     penHoverPreview,
+    penDiagnostics,
     penOnly,
     textAutoCorrect,
     coordinateMeasurements,
     equalCoordinateAxes,
   } = preferences;
+  const penMeter = useHandwritingPenMeter(penDiagnostics);
   const setCoordinateMeasurements = (value: boolean) =>
     changePreference("coordinateMeasurements", value);
   const setEqualCoordinateAxes = (value: boolean) => changePreference("equalCoordinateAxes", value);
@@ -1485,6 +1489,8 @@ export function HandwritingStudio({
     liveFrameRef.current = null;
     const overlay = liveCanvasRef.current;
     if (!overlay) return;
+    // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
+    const paintStartedAt = penDiagnostics ? performance.now() : 0;
     clearPageCanvas(overlay);
     const context = pageContext(overlay);
     if (!context) return;
@@ -1492,6 +1498,7 @@ export function HandwritingStudio({
     if (stroke) {
       drawStroke(context, withPredictedTail(stroke, predictedRef.current));
       if (writingWindowOpen) paintWritingWindowLive(stroke);
+      penMeter.recordPaint(paintStartedAt);
     } else if (eraserCursorRef.current && penHoverPreview) {
       // Apagando: o anel acompanha a borracha até soltar, em vez de sumir ao apertar.
       drawEraserPreview(context, eraserCursorRef.current, eraserRadius());
@@ -1761,6 +1768,7 @@ export function HandwritingStudio({
           points: [point],
         };
     if (effectiveTool !== "ruler") liveStrokeRef.current = nextStroke;
+    if (effectiveTool === "pen" || effectiveTool === "highlighter") penMeter.begin();
     liveStabilizerRef.current =
       stabilization && effectiveTool !== "ruler"
         ? createLiveStabilizer(point, {
@@ -1836,6 +1844,8 @@ export function HandwritingStudio({
       return point;
     });
     const sampleTimes = sampleEvents.map((sample) => sample.timeStamp);
+    if (activeToolRef.current === "pen" || activeToolRef.current === "highlighter")
+      penMeter.recordEvent(event.nativeEvent.timeStamp, sampleEvents.length);
     if (activeToolRef.current === "ruler") {
       const end = points.at(-1);
       if (end)
@@ -2059,6 +2069,7 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     liveStrokeRef.current = null;
     if (!liveStroke) return;
+    penMeter.end();
     const settledPoints = settleLiveStroke(liveStroke.points);
     const points = compactPoints(
       (stabilization && !shapeSnappedRef.current
@@ -2682,6 +2693,7 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     liveStrokeRef.current = null;
     if (liveStroke) {
+      penMeter.end();
       const points = stabilization ? straightenStroke(liveStroke.points) : liveStroke.points;
       commitLiveStroke({ ...liveStroke, points });
       setStrokes((current) => [...current, { ...liveStroke, points }]);
@@ -3805,6 +3817,7 @@ export function HandwritingStudio({
               {tool === "hand" ? uiText(316) : tool === "zoom-in" ? uiText(317) : uiText(318)}
             </span>
           )}
+          {penDiagnostics && <HandwritingPenMeterPanel meter={penMeter.meter} sheet={canvasRef} />}
           {(tool === "pen" || tool === "highlighter") && !textMode && (
             <div className="handwriting-quick-colors-dock">
               <HandwritingQuickColors color={color} onColorChange={setColor} />

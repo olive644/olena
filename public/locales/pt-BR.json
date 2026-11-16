@@ -3879,5 +3879,15 @@
   "Toque na folha para pegar a cor. Esc cancela.",
   "Cor {0} escolhida",
   "Mover janela de escrita",
-  "Arraste a alça ou use as setas do teclado para mover a janela"
+  "Arraste a alça ou use as setas do teclado para mover a janela",
+  "Medidor da caneta",
+  "Mostra na tela a entrada da caneta e o tempo de cada quadro enquanto você escreve, para achar travadas. Nada sai do aparelho.",
+  "Escreva uma palavra para medir",
+  "Entrada: {0} eventos/s, {1} pontos/s",
+  "Fila da entrada: média {0} ms, pior {1} ms",
+  "Maior pausa sem entrada: {0} ms",
+  "Quadros: mediana {0} ms, p95 {1} ms, pior {2} ms",
+  "Quadros lentos (mais de {0} ms): {1} de {2}",
+  "Desenho ao vivo: média {0} ms, pior {1} ms",
+  "Folha: {0} x {1} px, {2} camadas, tela {3}x"
 ]
