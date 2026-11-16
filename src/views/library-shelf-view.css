@@ -921,3 +921,33 @@ html:has(.notebooks-showcase)::view-transition-old(library-folder-view) {
     padding-top: 20px;
   }
 }
+
+/* Celular: a seta de voltar fica numa linha e as cinco abas da pasta dividem a largura inteira,
+   com o ícone acima do nome, para todas aparecerem sem rolar de lado. */
+@media (max-width: 560px) {
+  .library-folder-contents header {
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .library-folder-contents nav {
+    flex: 1 1 100%;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    padding: 0 0 8px;
+  }
+  :root body .library-folder-contents nav .shelf-wood-button {
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-width: 0;
+    min-height: 54px;
+    padding: 6px 2px;
+    font-size: clamp(0.56rem, 2.7vw, 0.75rem);
+    line-height: 1.1;
+  }
+  .library-folder-contents nav .shelf-wood-button > img {
+    width: 18px;
+    height: 18px;
+  }
+}

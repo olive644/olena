@@ -5272,3 +5272,22 @@ Relato do proprietário: o resumo estruturado com a Olena não estava funcionand
 - Não verifiquei contra a Olena em produção: gerar exige uma conta logada e o consumo é pago. Os logs de produção do Vercel (plano Hobby, 1 hora de retenção) e os agrupamentos de erro das últimas 24 h não mostram falhas de `/api/helena`, então não há registro do erro do relato para confirmar a causa. Para conferir: entrar na conta, gerar um resumo de um PDF com 3 fontes e ver se termina.
 - A transmissão em fluxo tem teto de 12 000 caracteres de resposta e 45 s no servidor. Um guia de 2400 tokens cabe nos dois em condições normais; se o modelo estiver lento, o resumo ainda pode ser interrompido com "A resposta foi interrompida. Tente novamente.".
 - O texto parcial que chega pelo fluxo não é mostrado; a tela segue com o indicador de espera até terminar.
+
+## Abas da pasta da Biblioteca no celular, 16/11/2026
+
+Relato do proprietário com captura do celular: dentro de uma pasta da Biblioteca, a fileira de abas (Fontes, Resumo, Flashcards, Quizzes e Simulados) passava da largura da tela e "Simulados" ficava cortado.
+
+**Causa (reproduzida em 360x800):** a seta de voltar e as cinco abas dividiam a mesma linha. As abas têm `flex: none` e `white-space: nowrap`, então a fileira media 340 px de conteúdo para 256 px disponíveis, e a última aba terminava em 420 px numa tela de 360.
+
+**O que mudou** (`src/views/library-shelf-view.css`, só até 560 px de largura)
+
+- A seta de voltar fica numa linha própria e as cinco abas dividem a largura inteira em cinco colunas iguais, com o ícone acima do nome e fonte de `clamp(0.56rem, 2.7vw, 0.75rem)`.
+- Em 360x800 as abas ocupam de 24 a 336 px, sem rolagem de lado; em 320x568 e 412x915 também cabem.
+
+**Prova:** `e2e/library-folder-mobile.spec.ts` (celular, claro e escuro, 320x568, 360x800 e 412x915): cinco abas, nenhuma passando da largura, sem rolagem horizontal. Os 6 casos falham sem a correção e passam com ela. Captura conferida em 360x800.
+
+**Limites**
+
+- Em 320 px de largura o nome "Flashcards" fica pequeno (cerca de 9 px); cabe, mas é o limite do layout em cinco colunas.
+- Só as abas foram reorganizadas. O conteúdo das abas Resumo, Flashcards, Quizzes e Simulados não foi revisto em outras larguras além do que o e2e acima exercita.
+- Não verificado em aparelho real; o teste usa o emulador do navegador.
