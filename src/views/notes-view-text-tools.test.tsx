@@ -43,22 +43,22 @@ it.each(["note", "handwriting"] as const)(
     ];
     const dispatch = vi.fn();
     render(<NotesView workspace={workspace} dispatch={dispatch} initialNotebookId="source-book" />);
-    const create = screen.queryByRole("button", { name: "Criar flashcard do trecho", exact: true });
+    const create = screen.queryByRole("button", { name: "Criar flashcard do trecho" });
     if (kind === "handwriting") {
       expect(create).toBeNull();
-      expect(screen.queryByRole("button", { name: "Vincular material", exact: true })).toBeNull();
+      expect(screen.queryByRole("button", { name: "Vincular material" })).toBeNull();
       return;
     }
     expect(create).not.toBeNull();
-    expect(screen.getByRole("button", { name: "Vincular material", exact: true })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Vincular material" })).toBeTruthy();
     fireEvent.click(create!);
     expect(
-      (screen.getByRole("textbox", { name: "Frente", exact: true }) as HTMLTextAreaElement).value,
+      (screen.getByRole("textbox", { name: "Frente" }) as HTMLTextAreaElement).value,
     ).toBe("Uma equação preserva a igualdade.");
-    fireEvent.change(screen.getByRole("textbox", { name: "Verso", exact: true }), {
+    fireEvent.change(screen.getByRole("textbox", { name: "Verso" }), {
       target: { value: "Dois lados iguais" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Criar flashcard", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Criar flashcard" }));
     expect(dispatch).toHaveBeenCalledWith(
       expect.objectContaining({
         type: "flashcard/added",
