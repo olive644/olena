@@ -5395,3 +5395,19 @@ Relato da dona, com mouse: "fazer linhas retas faz a linha não ficar perfeita, 
 - **Prova.** Testes novos (horizontal, vertical, inclinada, encaixe no eixo, pontos e pressão preservados, curvas e letras intactas, mão que volta). Captura do editor com as mesmas três retas antes e depois: ondulada e torta contra perfeita.
 - **Não resolvido.** A linha **ao vivo**, enquanto se arrasta, ainda mostra os degraus (a reta perfeita aparece ao soltar), e traços que não são retos (curvas, letras) continuam com degraus de pixel. Atacar isso pede suavizar a posição por quantização, o que arredonda cantos de letra: não foi feito.
 - **Não verificado.** O limiar de 100 unidades pode endireitar um traço longo e reto de letra grande (por exemplo, um "l" muito alto); os limites de 3%, 2% e 3° foram escolhidos por conta e merecem uso real. Não medi o efeito com caneta de verdade nem com dedo.
+
+## Correções do CI da PR 664, 16/11/2026
+
+- O helper de escrita ainda procurava as cores em .handwriting-ink-options. A paleta foi movida para um dock e essa busca passava a alternar as opções sem reconhecer que já estavam abertas. Agora o helper observa o grupo Cores rápidas, garante que ele está visível e usa o encaixe por teclado à direita para liberar a região de desenho dos testes.
+- O teste unitário de restauração de cor e largura e o cenário móvel usam a paleta única. O teste do conta-gotas desativa explicitamente a API nativa para exercitar a leitura das camadas da folha; o contraste esperado acompanha a borda atual da paleta escura.
+- A prova de abertura do caderno espera as animações e mede o delay da folha transformada, sem procurar a propriedade herdada --cover-angle removida pela otimização. A ordem entre abertura do fecho e giro da capa continua sendo verificada.
+- O cenário de escrita ampliada exige a ausência da antiga seta Próxima linha e preserva a prova de escrita, salvamento e recuperação.
+- A remoção do bloco legado dos cadernos também retirou as ações de flashcard e fontes das notas de texto. Essas ações voltam apenas para notas de texto, sem reaparecer na tela dos cadernos manuscritos. Um teste de regressão cobre os dois tipos e a criação do cartão.
+- Evidência inicial: no commit 73fb168, 2881 testes unitários passaram e um falhou; os cenários de navegador falharam nos seletores antigos, na animação antiga e nas ações removidas de notas.
+- Não verificado localmente: npm run verify, e2e e validação visual, pois o executor e o navegador deste chat estão indisponíveis. A atualização foi solicitada explicitamente pelo proprietário após a comunicação desse limite. A validação fica pendente no CI do novo commit; não foi declarado resultado verde.
+
+## Segunda execução do CI da PR 664, 16/11/2026
+
+- O commit a0c95fd parou no lint por cinco diferenças de formatação: quatro cadeias de seletores no teste móvel e uma chamada render no teste de notas. Aplicadas as quebras de linha indicadas pelo próprio Prettier.
+- Os quatro shards de navegador não chegaram a executar os cenários: o comando npm run build do webServer terminou com código 1. O log capturado mostrou apenas a falha de inicialização, sem a saída do processo filho. Configurado stdout e stderr como pipe no Playwright para que o próximo CI exponha o diagnóstico do build; a causa dessa falha ainda não foi confirmada.
+- Não verificado localmente: formatação, compilação e testes, pois o executor continua indisponível. Nenhum check foi desativado e nenhum resultado verde foi declarado.

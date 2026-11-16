@@ -34,8 +34,6 @@ const DASH_CHOICES = localizeLabels(
 
 export function HandwritingInkOptions({
   tool,
-  color,
-  onColorChange,
   width,
   onWidthChange,
   eraserWholeStroke = false,
@@ -116,42 +114,6 @@ export function HandwritingInkOptions({
             </button>
           )}
         </HandwritingToolTips>
-      )}
-      {tool !== "eraser" && (
-        <fieldset className="ink-palette">
-          <legend className="visually-hidden">{uiText(183)}</legend>
-          {[
-            ["#17151c", uiText(1573)],
-            ["#7c3aed", uiText(1568)],
-            ["#ef476f", uiText(1570)],
-            ["#2d8a67", uiText(1571)],
-            ["#facc15", uiText(1569)],
-            ["#fff9ef", uiText(1641)],
-          ].map(([ink, label]) => (
-            <button
-              key={ink}
-              type="button"
-              className="ink-swatch"
-              aria-label={uiText(1642, [label])}
-              aria-pressed={color.toLowerCase() === ink}
-              style={{ backgroundColor: ink }}
-              onClick={() => ink && onColorChange(ink)}
-            >
-              <span aria-hidden="true">
-                {color.toLowerCase() === ink ? <PaperCheckIcon /> : null}
-              </span>
-            </button>
-          ))}
-          <label className="ink-custom" title={uiText(184)}>
-            <span>{uiText(185)}</span>
-            <input
-              type="color"
-              aria-label={uiText(183)}
-              value={color}
-              onChange={(event) => onColorChange(event.target.value)}
-            />
-          </label>
-        </fieldset>
       )}
       {tool === "highlighter" && onHighlighterOpacityChange && (
         <fieldset className="highlighter-opacity">

@@ -580,10 +580,10 @@ export function NotesView({
       {pageJourney && <NotebookPageJourney journey={pageJourney} onDone={finishPageJourney} />}
       <PageHeader showUpdates={false} />
       {(() => {
+        // Notas de texto mantêm cartões e fontes; o caderno manuscrito não repete esse bloco.
+        if (activeNotebook?.kind !== "note" && activePage?.kind !== "note") return null;
         const note = workspace.notes.find(
-          (item) =>
-            item.id ===
-            (activePage?.id ?? (activeNotebook?.kind === "note" ? activeNotebook.pageIds[0] : "")),
+          (item) => item.id === (activePage?.id ?? activeNotebook?.pageIds[0]),
         );
         return note ? (
           <NoteFlashcardTools key={note.id} note={note} workspace={workspace} dispatch={dispatch} />

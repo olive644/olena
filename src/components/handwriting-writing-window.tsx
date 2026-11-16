@@ -1,6 +1,11 @@
+import {
+  resizeWritingWindow,
+  type WritingResizeBox,
+  type WritingResizeEdge,
+} from "./handwriting-writing-window-resize";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { HandwritingToolTips } from "./handwriting-tool-tips";
-import { PaperEditorIcon } from "./paper-editor-icon";
+import { useWritingWindowNavigation } from "../hooks/use-writing-window-navigation";
+import type { WritingView, WritingPageSize } from "./handwriting-writing-view";
 import { uiText, useLanguage } from "../i18n/runtime";
 import {
   clampWritingWindow,
@@ -18,30 +23,42 @@ import type {
 
 type HandwritingWritingWindowProps = {
   canvasRef: RefObject<HTMLCanvasElement | null>;
-  status: string;
+  view: WritingView;
+  page: WritingPageSize;
+  tool: string;
+  onNavigate: (view: WritingView) => void;
   onStart: (event: ReactPointerEvent<HTMLCanvasElement>) => void;
   onMove: (event: ReactPointerEvent<HTMLCanvasElement>) => void;
   onFinish: (event: ReactPointerEvent<HTMLCanvasElement>) => void;
-  onBack: () => void;
-  onAdvance: () => void;
-  onNextLine: () => void;
 };
 
 const KEY_STEP = 16;
 
 export function HandwritingWritingWindow({
   canvasRef,
-  status,
+  view,
+  page,
+  tool,
+  onNavigate,
   onStart,
   onMove,
   onFinish,
-  onBack,
-  onAdvance,
-  onNextLine,
 }: HandwritingWritingWindowProps) {
   useLanguage();
+  const navigation = useWritingWindowNavigation({ canvasRef, view, page, tool, onNavigate });
   const rootRef = useRef<HTMLElement>(null);
   const [position, setPosition] = useState<WritingWindowPoint | null>(null);
+  const [size, setSize] = useState<{ width: number; height: number }>();
+  const resizeRef = useRef<{
+    id: number;
+    edge: WritingResizeEdge;
+    startX: number;
+    startY: number;
+    origin: WritingResizeBox;
+    area: WritingResizeBox;
+    next: WritingResizeBox;
+  } | null>(null);
+  const resizeFrame = useRef(0);
   const fractionRef = useRef<WritingWindowPoint | null>(readWritingWindowFraction());
   const dragRef = useRef<{
     pointerId: number;
@@ -104,17 +121,43 @@ export function HandwritingWritingWindow({
     const keepVisible = () => {
       const box = measure();
       if (!box) return;
-      setPosition((current) =>
-        current ? clampWritingWindow(current, box.area, box.size) : current,
+      const current = rootRef.current;
+      if (!current || resizeRef.current) return;
+      const rect = current.getBoundingClientRect();
+      const parent = current.offsetParent;
+      if (!(parent instanceof HTMLElement)) return;
+      const parentRect = parent.getBoundingClientRect();
+      const next = resizeWritingWindow(
+        {
+          x: rect.left - parentRect.left - parent.clientLeft,
+          y: rect.top - parentRect.top - parent.clientTop,
+          ...box.size,
+        },
+        "se",
+        0,
+        0,
+        box.area,
       );
+      setSize({ width: next.width, height: next.height });
+      setPosition({ x: next.x, y: next.y });
     };
     if (typeof ResizeObserver === "undefined") {
       window.addEventListener("resize", keepVisible);
-      return () => window.removeEventListener("resize", keepVisible);
+      return () => {
+        window.removeEventListener("resize", keepVisible);
+        cancelAnimationFrame(resizeFrame.current);
+        resizeRef.current = null;
+      };
     }
     const observer = new ResizeObserver(keepVisible);
     observer.observe(area);
-    return () => observer.disconnect();
+    const viewport = area.querySelector(".handwriting-viewport");
+    if (viewport) observer.observe(viewport);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(resizeFrame.current);
+      resizeRef.current = null;
+    };
   }, [measure]);
 
   function moveTo(next: WritingWindowPoint, remember: boolean) {
@@ -178,12 +221,33 @@ export function HandwritingWritingWindow({
     moveTo({ x: position.x + move[0], y: position.y + move[1] }, true);
   }
 
+  function applyResize(next: WritingResizeBox) {
+    setPosition({ x: next.x, y: next.y });
+    setSize({ width: next.width, height: next.height });
+  }
+  function endResize(event: ReactPointerEvent<HTMLButtonElement>) {
+    const current = resizeRef.current;
+    if (!current || current.id !== event.pointerId) return;
+    cancelAnimationFrame(resizeFrame.current);
+    resizeRef.current = null;
+    const next = event.type === "pointercancel" ? current.origin : current.next;
+    applyResize(next);
+    const fraction = toFraction(next, current.area, next);
+    fractionRef.current = fraction;
+    writeWritingWindowFraction(fraction);
+    if (event.currentTarget.hasPointerCapture(event.pointerId))
+      event.currentTarget.releasePointerCapture(event.pointerId);
+  }
   return (
     <section
       ref={rootRef}
       className="handwriting-writing-window"
       aria-label={uiText(368)}
-      style={position ? { left: position.x, top: position.y } : undefined}
+      style={{
+        ...(position ? { left: position.x, top: position.y } : {}),
+        ...(size ? { width: size.width, height: size.height } : {}),
+      }}
+      data-resized={Boolean(size)}
     >
       <button
         type="button"
@@ -202,45 +266,78 @@ export function HandwritingWritingWindow({
           width={600}
           height={220}
           aria-label={uiText(372)}
-          onPointerDown={onStart}
-          onPointerMove={onMove}
-          onPointerUp={onFinish}
-          onPointerCancel={onFinish}
+          onPointerDown={(event) => {
+            if (!navigation.start(event)) onStart(event);
+          }}
+          onPointerMove={(event) => {
+            if (!navigation.move(event)) onMove(event);
+          }}
+          onPointerUp={(event) => {
+            if (!navigation.end(event)) onFinish(event);
+          }}
+          onPointerCancel={(event) => {
+            if (!navigation.end(event)) onFinish(event);
+          }}
+          onLostPointerCapture={(event) => {
+            navigation.end(event);
+          }}
+          onAuxClick={(event) => {
+            if (event.button === 1) event.preventDefault();
+          }}
         />
       </div>
-      <p className="handwriting-writing-window__status" aria-live="polite">
-        {uiText(status)}
-      </p>
-      <HandwritingToolTips
-        className="handwriting-writing-window__actions"
-        label={uiText(368)}
-        role="group"
-      >
+      {(["n", "ne", "e", "se", "s", "sw", "w", "nw"] as const).map((edge) => (
         <button
-          className="secondary-button"
+          key={edge}
           type="button"
-          aria-label={uiText(374)}
-          onClick={onBack}
-        >
-          <PaperEditorIcon name="undo" />
-        </button>
-        <button
-          className="secondary-button"
-          type="button"
-          aria-label={uiText(375)}
-          onClick={onAdvance}
-        >
-          <PaperEditorIcon name="redo" />
-        </button>
-        <button
-          className="secondary-button"
-          type="button"
-          aria-label={uiText(376)}
-          onClick={onNextLine}
-        >
-          <PaperEditorIcon name="uploadInsert" />
-        </button>
-      </HandwritingToolTips>
+          className={"handwriting-writing-window__resize is-" + edge}
+          aria-label={uiText("Redimensionar janela") + " " + edge.toUpperCase()}
+          onPointerDown={(event) => {
+            if (event.button !== 0) return;
+            const box = measure();
+            if (!box || !position) return;
+            event.preventDefault();
+            event.stopPropagation();
+            event.currentTarget.setPointerCapture(event.pointerId);
+            const origin = { ...position, ...box.size };
+            resizeRef.current = {
+              id: event.pointerId,
+              edge,
+              startX: event.clientX,
+              startY: event.clientY,
+              origin,
+              area: box.area,
+              next: origin,
+            };
+          }}
+          onPointerMove={(event) => {
+            const current = resizeRef.current;
+            if (!current || current.id !== event.pointerId) return;
+            current.next = resizeWritingWindow(
+              current.origin,
+              edge,
+              event.clientX - current.startX,
+              event.clientY - current.startY,
+              current.area,
+            );
+            cancelAnimationFrame(resizeFrame.current);
+            resizeFrame.current = requestAnimationFrame(() => applyResize(current.next));
+          }}
+          onPointerUp={endResize}
+          onPointerCancel={endResize}
+          onLostPointerCapture={endResize}
+          onKeyDown={(event) => {
+            const box = measure();
+            if (!box || !position) return;
+            const step = event.shiftKey ? 32 : 8;
+            const dx = event.key === "ArrowLeft" ? -step : event.key === "ArrowRight" ? step : 0;
+            const dy = event.key === "ArrowUp" ? -step : event.key === "ArrowDown" ? step : 0;
+            if (!dx && !dy) return;
+            event.preventDefault();
+            applyResize(resizeWritingWindow({ ...position, ...box.size }, edge, dx, dy, box.area));
+          }}
+        />
+      ))}{" "}
     </section>
   );
 }

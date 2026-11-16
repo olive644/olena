@@ -7,15 +7,15 @@ export async function activateHandwritingPen(page: Page) {
   const options = editor.getByRole("button", { name: "Opções", exact: true });
   if ((await options.isVisible()) && (await options.getAttribute("aria-expanded")) !== "true")
     await options.click();
-  // O sinal de painel aberto é a tinta DENTRO do painel de opções: a barra de cores rápidas
-  // também tem "Tinta Roxo" e fica sempre visível com a caneta.
-  const panelInk = editor
-    .locator(".handwriting-ink-options")
-    .getByRole("button", { name: "Tinta Roxo", exact: true });
-  if (!(await panelInk.isVisible())) {
+  // A paleta única só existe com as opções abertas, fora do painel de espessura.
+  const palette = editor.getByRole("group", { name: "Cores rápidas", exact: true });
+  for (let attempt = 0; attempt < 2 && !(await palette.isVisible()); attempt += 1)
     await pen.click();
-    if (!(await panelInk.isVisible())) await pen.click();
-  }
+  await expect(palette).toBeVisible();
+  // Encaixar à direita deixa livre a região esquerda usada pelos testes de escrita.
+  const grip = editor.getByRole("button", { name: "Mover paleta de cores", exact: true });
+  await grip.press("ArrowRight");
+  await expect(editor.locator(".handwriting-color-dock")).toHaveAttribute("data-edge", "right");
 }
 
 // Escolhe a ferramenta e abre as opções dela: clicar de novo na ferramenta ativa mostra ou esconde

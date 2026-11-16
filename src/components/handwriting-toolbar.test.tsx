@@ -1,3 +1,4 @@
+import { HandwritingQuickColors } from "./handwriting-quick-colors";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { HandwritingInkOptions } from "./handwriting-ink-options";
@@ -325,7 +326,7 @@ function inkProps(overrides: Partial<Parameters<typeof HandwritingInkOptions>[0]
 describe("opções de tinta", () => {
   it("marca a cor atual sem diferenciar maiúsculas e escolhe outra", () => {
     const props = inkProps();
-    render(<HandwritingInkOptions {...props} />);
+    render(<HandwritingQuickColors color={props.color} onColorChange={props.onColorChange} />);
     expect(screen.getByRole("button", { name: "Tinta Grafite" }).getAttribute("aria-pressed")).toBe(
       "true",
     );
@@ -338,8 +339,8 @@ describe("opções de tinta", () => {
 
   it("aceita uma cor personalizada", () => {
     const props = inkProps();
-    render(<HandwritingInkOptions {...props} />);
-    fireEvent.change(screen.getByLabelText("Cor da tinta", { selector: "input" }), {
+    render(<HandwritingQuickColors color={props.color} onColorChange={props.onColorChange} />);
+    fireEvent.change(document.querySelector('input[type="color"]')!, {
       target: { value: "#123456" },
     });
     expect(props.onColorChange).toHaveBeenCalledWith("#123456");

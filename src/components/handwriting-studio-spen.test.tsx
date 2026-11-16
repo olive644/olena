@@ -60,3 +60,37 @@ describe("botão lateral da S Pen", () => {
     expect(studio.dataset["tool"]).toBe("pen");
   });
 });
+
+it.each(["pointerUp", "pointerCancel"] as const)(
+  "a bolinha pertence ao cursor s� durante o tra�o e some em %s",
+  (end) => {
+    const { canvas } = renderStudio();
+    fireEvent.pointerMove(canvas, {
+      pointerType: "mouse",
+      buttons: 0,
+      clientX: 100,
+      clientY: 100,
+      pointerId: 1,
+    });
+    expect(canvas.style.cursor).toBe("");
+    fireEvent.pointerDown(canvas, {
+      pointerType: "mouse",
+      button: 0,
+      buttons: 1,
+      clientX: 100,
+      clientY: 100,
+      pointerId: 1,
+    });
+    expect(canvas.style.cursor).toContain("circle");
+    expect(canvas.style.cursor).toContain("6 21");
+    fireEvent[end](canvas, {
+      pointerType: "mouse",
+      button: 0,
+      buttons: 0,
+      clientX: 130,
+      clientY: 110,
+      pointerId: 1,
+    });
+    expect(canvas.style.cursor).toBe("");
+  },
+);

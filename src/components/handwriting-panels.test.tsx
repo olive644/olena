@@ -125,13 +125,13 @@ describe("janela de escrita ampliada", () => {
   function windowProps() {
     return {
       canvasRef: createRef<HTMLCanvasElement>(),
-      status: "Coluna 2, linha 3",
+      view: { x: 100, y: 110, zoom: 1 },
+      page: { width: 1200, height: 1600 },
+      tool: "pen",
+      onNavigate: vi.fn(),
       onStart: vi.fn(),
       onMove: vi.fn(),
       onFinish: vi.fn(),
-      onBack: vi.fn(),
-      onAdvance: vi.fn(),
-      onNextLine: vi.fn(),
     };
   }
 
@@ -145,18 +145,13 @@ describe("janela de escrita ampliada", () => {
     expect(screen.getByRole("region", { name: "Janela de escrita ampliada" })).toBeTruthy();
   });
 
-  it("mostra o status e dispara voltar, avançar e próxima linha", () => {
-    const props = windowProps();
-    render(<HandwritingWritingWindow {...props} />);
-    expect(screen.getByText("Coluna 2, linha 3")).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Voltar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Avançar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Próxima linha" }));
-    expect(props.onBack).toHaveBeenCalledTimes(1);
-    expect(props.onAdvance).toHaveBeenCalledTimes(1);
-    expect(props.onNextLine).toHaveBeenCalledTimes(1);
+  it("usa navegação por gestos sem as três setas nem o status de coluna", () => {
+    render(<HandwritingWritingWindow {...windowProps()} />);
+    expect(screen.queryByRole("button", { name: "Voltar" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Avançar" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Próxima linha" })).toBeNull();
+    expect(document.querySelector(".handwriting-writing-window__status")).toBeNull();
   });
-
   it("mantém o acompanhamento sem oferecer um controle para desativá-lo", () => {
     render(<HandwritingWritingWindow {...windowProps()} />);
     expect(screen.queryByRole("checkbox", { name: "Acompanhar escrita" })).toBeNull();
