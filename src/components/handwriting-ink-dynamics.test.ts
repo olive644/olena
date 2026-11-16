@@ -85,6 +85,15 @@ describe("pontas que afinam", () => {
     expect(factors[2]).toBe(1);
   });
 
+  it("dá para ligar só uma das pontas (o traço em andamento não afina o fim)", () => {
+    const noEnd = taperFactors(line(60, 3), 30, { end: false });
+    expect(noEnd[0]).toBeCloseTo(0.25, 5);
+    expect(noEnd.at(-1)).toBe(1);
+    const noStart = taperFactors(line(60, 3), 30, { start: false });
+    expect(noStart[0]).toBe(1);
+    expect(noStart.at(-1)).toBeCloseTo(0.25, 5);
+  });
+
   it("sem pontos suficientes ou comprimento nulo, não mexe na largura", () => {
     expect(taperFactors([point(0, 0)], 10)).toEqual([1]);
     expect(taperFactors([point(0, 0), point(0, 0)], 10)).toEqual([1, 1]);
@@ -107,16 +116,23 @@ describe("quem usa a largura simulada", () => {
     expect(usesSimulatedWidth({ ...base, points: [point(0, 0)] })).toBe(false);
   });
 
+  it("Fineliner e Esferográfica, as canetas de escrever, ficam de fora", () => {
+    expect(usesSimulatedWidth({ ...base, brush: "fine" })).toBe(false);
+    expect(usesSimulatedWidth({ ...base, brush: "ballpoint" })).toBe(false);
+    for (const brush of ["ink", "soft", "calligraphy", "pencil"])
+      expect(usesSimulatedWidth({ ...base, brush })).toBe(true);
+  });
+
   it("se o toque mandou pressão real, vale a real", () => {
     const points = [point(0, 0, 0.2), point(5, 0, 0.8), point(9, 0, 0.5)];
     expect(usesSimulatedWidth({ ...base, points })).toBe(false);
   });
 });
 
-describe("raio do traço de mouse", () => {
+describe("raio do traço de mouse nos pincéis de desenho", () => {
   const points = line(60, 4);
-  const mouse = { tool: "pen", brush: "fine", width: 5, dynamics: "simulated" } as const;
-  const old = { tool: "pen", brush: "fine", width: 5 } as const;
+  const mouse = { tool: "pen", brush: "pencil", width: 5, dynamics: "simulated" } as const;
+  const old = { tool: "pen", brush: "pencil", width: 5 } as const;
 
   it("afina nas pontas e engrossa no meio", () => {
     const radii = strokeRadii(mouse, points);
@@ -124,11 +140,13 @@ describe("raio do traço de mouse", () => {
     expect(radii.at(-1)!).toBeLessThan(radii[30]! * 0.6);
   });
 
-  it("o fineliner de mouse mantém a largura média de sempre no meio", () => {
-    // Mão num ritmo médio: o meio do traço fica perto do 0,65 antigo.
-    const middle = strokeRadii(mouse, line(60, 5))[30]! * 2;
-    expect(middle).toBeGreaterThan(5 * 0.65 * 0.8);
-    expect(middle).toBeLessThan(5 * 0.65 * 1.35);
+  it("ao vivo só a ponta do começo afina: a do fim é a posição atual da caneta", () => {
+    const live = strokeRadii(mouse, points, { live: true });
+    const done = strokeRadii(mouse, points);
+    expect(live[0]!).toBeLessThan(live[30]! * 0.6);
+    // o fim ao vivo fica na espessura do meio (sem agulha), e o traço pronto afina
+    expect(live.at(-1)!).toBeGreaterThan(live[30]! * 0.85);
+    expect(done.at(-1)!).toBeLessThan(done[30]! * 0.6);
   });
 
   it("traço sem a marca abre exatamente como antes", () => {
@@ -138,9 +156,8 @@ describe("raio do traço de mouse", () => {
 
   it("a mesma conta serve à ponta ao vivo e ao traço pronto", () => {
     const full = strokeRadii(mouse, points);
-    const partial = strokeRadii(mouse, points.slice(0, 30));
-    // Só o raio do penúltimo ponto de um trecho pode mudar (depende do vizinho seguinte) e o
-    // afinamento do fim, que depende do comprimento total; o começo do traço é estável.
+    const partial = strokeRadii(mouse, points.slice(0, 30), { live: true });
+    // o começo do traço é estável: crescer o traço não muda os primeiros raios
     expect(partial.slice(0, 3)).toEqual(full.slice(0, 3));
   });
 
@@ -178,28 +195,28 @@ describe("validação do documento", () => {
 
 describe("todos os pincéis da caneta", () => {
   const points = line(60, 4);
-  const brushes = ["fine", "ink", "soft", "calligraphy", "ballpoint", "pencil"] as const;
+  it.each(["ink", "soft", "calligraphy", "pencil"] as const)(
+    "%s: a ponta do começo afina no traço de mouse",
+    (brush) => {
+      const live = strokeRadii({ tool: "pen", brush, width: 5, dynamics: "simulated" }, points, {
+        live: true,
+      });
+      expect(live[0]!).toBeLessThan(live[30]! * 0.7);
+    },
+  );
 
-  it.each(brushes)("%s: a ponta afina no traço de mouse", (brush) => {
-    const radii = strokeRadii({ tool: "pen", brush, width: 5, dynamics: "simulated" }, points);
-    expect(radii[0]!).toBeLessThan(radii[30]! * 0.7);
-    expect(radii.at(-1)!).toBeLessThan(radii[30]! * 0.7);
+  // As canetas de escrever não viram pincelada: largura igual do começo ao fim, com ou sem a marca.
+  it.each(["fine", "ballpoint"] as const)("%s: largura constante no traço de mouse", (brush) => {
+    const marked = strokeRadii({ tool: "pen", brush, width: 5, dynamics: "simulated" }, points);
+    const plain = strokeRadii({ tool: "pen", brush, width: 5 }, points);
+    expect(marked).toEqual(plain);
+    expect(new Set(marked.map((r) => r.toFixed(6))).size).toBe(1);
   });
 
-  it.each(brushes)("%s: sem a marca o raio é o de sempre, igual em todo o traço", (brush) => {
-    if (brush === "calligraphy" || brush === "ink") return; // dependem da direção, não só da pressão
-    const radii = strokeRadii({ tool: "pen", brush, width: 5 }, points);
-    expect(new Set(radii.map((r) => r.toFixed(6))).size).toBe(1);
-  });
-
-  it("lápis varia mais com a velocidade que a esferográfica", () => {
-    const slow = line(60, 0.8);
-    const fast = line(60, 12);
-    const spread = (brush: "pencil" | "ballpoint") => {
-      const mark = { tool: "pen", brush, width: 5, dynamics: "simulated" } as const;
-      return strokeRadii(mark, slow)[40]! / strokeRadii(mark, fast)[40]!;
-    };
-    expect(spread("pencil")).toBeGreaterThan(spread("ballpoint"));
-    expect(spread("ballpoint")).toBeGreaterThan(1);
+  it("lápis varia com a velocidade: devagar engrossa, rápido afina", () => {
+    const mark = { tool: "pen", brush: "pencil", width: 5, dynamics: "simulated" } as const;
+    const slow = strokeRadii(mark, line(60, 0.8))[40]!;
+    const fast = strokeRadii(mark, line(60, 12))[40]!;
+    expect(slow).toBeGreaterThan(fast);
   });
 });

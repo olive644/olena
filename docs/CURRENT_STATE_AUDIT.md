@@ -5357,3 +5357,12 @@ Relato do proprietário com captura do celular, depois do #655 e do #656: o PDF 
 
 - Continua sem validação ponta a ponta contra a Olena em produção. A mudança reduz a chance de corte por tempo e passa a registrar a causa real; se ainda falhar, o registro do servidor diz o motivo, e é preciso olhar o log logo depois da tentativa, porque o plano atual guarda só 1 hora.
 - Um resumo mais curto é uma troca deliberada de tamanho por confiabilidade.
+
+### Escrita: Fineliner e Esferográfica voltam a largura constante e a ponta ao vivo não afina, 2026-11-16
+
+Relato da dona, escrevendo com mouse: a linha "vai saindo dura e depois se constrói como pincelada". Reproduzido com eventos de mouse no ritmo real e com ponta prevista (uma amostra a cada ~3 px, duas por quadro, ampliado 3x): o quadro ao vivo mostrava a ponta do traço terminando em agulha fina, com o que já estava escrito na espessura normal.
+
+- **Causa (minha, PR 645).** O afinamento de ponta tratava o ponto atual da caneta como o fim do traço, então a ponta ao vivo afinava o tempo todo (a ponta prevista aumentava o efeito). Além disso, a largura pela velocidade valia para o Fineliner, a caneta padrão de escrever, e dava cara de pincelada à letra.
+- **Correção.** Fineliner e Esferográfica, as canetas de escrever, voltam a ter largura constante (como antes da PR 645). Nos pincéis de desenho (Caneta-tinteiro, Pincel macio, Caligrafia e Lápis) a ponta do começo continua afinando, mas o fim só afina quando o traço termina: ao vivo ele fica na espessura normal (`drawStroke(context, stroke, true)`). O traço ao vivo e o pronto continuam com a mesma conta.
+- **Prova.** Teste novo: ao vivo o fim fica na espessura do meio e o traço pronto afina; Fineliner e Esferográfica têm largura constante com ou sem a marca `dynamics`. Capturas ampliadas do traço ao vivo antes e depois da correção (a agulha some).
+- **Não verificado.** Escrita real com mouse do começo ao fim em uma palavra longa; os eventos foram sintéticos (ponta prevista simulada). O pior atraso do medidor da caneta (32 ms) e o tamanho das camadas (3464 x 2598 px, 6 camadas) seguem como hipótese de causa das batidas perdidas, sem teste A/B ainda.
