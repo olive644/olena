@@ -1899,7 +1899,8 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
 .handwriting-color-dock {
   position: absolute;
   inset: 0 auto auto 0;
-  z-index: 7;
+  /* Acima do painel de opções: no celular ele cobria as últimas cores e o conta-gotas. */
+  z-index: 40;
   display: flex;
   flex-direction: column;
   width: 52px;

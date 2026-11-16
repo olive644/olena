@@ -46,7 +46,22 @@ test("barra de cores rápidas com conta-gotas que lê a folha e lembra a cor", a
   // Um ponto da folha que esteja na área visível (no celular a folha é mais alta que a tela).
   const view = (await editor.locator(".handwriting-viewport").boundingBox())!;
   const clickX = Math.max(shell.x + 20, view.x + view.width * 0.5);
-  const clickY = Math.max(shell.y + 20, view.y + view.height * 0.4);
+  // Com as opções abertas (a paleta só aparece assim), o painel pode cobrir a folha no celular:
+  // se o toque cair nele, sobe para a parte da folha que continua à mostra.
+  const panel = await editor
+    .locator(".handwriting-brush-panel, .handwriting-ink-options")
+    .first()
+    .boundingBox();
+  let clickY = Math.max(shell.y + 20, view.y + view.height * 0.4);
+  if (
+    panel &&
+    clickX >= panel.x &&
+    clickX <= panel.x + panel.width &&
+    clickY >= panel.y &&
+    clickY <= panel.y + panel.height
+  ) {
+    clickY = Math.max(shell.y + 20, panel.y - 40);
+  }
   await page.mouse.click(clickX, clickY);
   await expect(dropper).toHaveAttribute("aria-pressed", "false");
   // A cor lida tem de ser a que a folha mostra naquele ponto (papel + pauta somados).
