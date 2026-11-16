@@ -234,8 +234,10 @@
     scale: 0.72;
     transform-origin: top left;
   }
+  /* A hera da direita é espelhada (scaleX(-1)). Espelhar em torno da borda direita jogava o vaso
+     para fora da prateleira e da tela; em torno do centro ele fica no lugar. */
   .has-lower-shelf .notebook-shelf-vines.is-right {
-    transform-origin: top right;
+    transform-origin: top center;
   }
 }
 .has-lower-shelf .notebook-shelf-vines::before {
@@ -899,5 +901,23 @@ html:has(.notebooks-showcase)::view-transition-old(library-folder-view) {
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-reduce-motion="true"]) .library-summary-reader[open] {
     animation: library-folder-tab-in 260ms ease-out both;
+  }
+}
+
+/* Celular: a prateleira dupla cabe na tela sem rolar. A altura do caderno acompanha a altura útil
+   (tela menos cabeçalho, ferramentas, vasos e navegação), e a fileira de baixo fica mais baixa.
+   Em telas muito baixas o mínimo vale e a área rola, como antes. */
+@media (max-width: 680px) {
+  .notebook-display-shelf.has-lower-shelf {
+    --shelf-book-height: clamp(128px, calc(100dvh - 610px), 300px);
+  }
+  .notebook-display-shelf.has-lower-shelf
+    > .notebook-display-shelf__books:not(.library-folder-row) {
+    padding-top: 40px;
+    min-height: calc(var(--shelf-book-height) + 40px);
+  }
+  .notebook-display-shelf.has-lower-shelf > .library-folder-row {
+    min-height: 150px;
+    padding-top: 20px;
   }
 }

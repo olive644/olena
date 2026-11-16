@@ -5230,3 +5230,25 @@ Pedido do proprietário depois de um vídeo da escrita no aparelho: a tinta apar
 - O desenho com o ponteiro só é verificado no PC pelo e2e; no celular o e2e confere que o painel aparece e cabe na tela, nos dois temas.
 - O painel cobre uma parte da folha enquanto está ligado, e foi pensado para ficar ligado só durante o diagnóstico.
 - Os 8 testes de `src/data/listening-audio.test.ts` falham neste ambiente (`object.stream is not a function`) também sem as mudanças desta PR, então não vêm dela. O CI é a referência para eles.
+
+## Prateleira de cadernos e pastas no celular, 16/11/2026
+
+Relato do proprietário com captura do celular: depois de unificar cadernos e pastas, a prateleira dupla não cabia na tela, a de baixo ficava sob a navegação e o vaso do canto direito saía cortado.
+
+**Causas (reproduzidas em 360x800)**
+
+- O caderno da prateleira usa `clamp(218px, 32vh, 300px)` de altura, e a prateleira dupla somava 524 px; a área útil entre cabeçalho e navegação tinha cerca de 460 px. O conteúdo rolava dentro da própria área (`.notebooks-showcase` com 628 de altura para 712 de conteúdo).
+- A hera da direita é espelhada com `transform: scaleX(-1)`. A regra de celular mudou `transform-origin` para `top right`, e espelhar em torno da borda direita jogou a hera e o vaso para fora da prateleira (40 px além, cortados pela tela).
+
+**O que mudou** (`src/views/library-shelf-view.css`, só até 680 px de largura; PC e tablet largo ficam como estavam)
+
+- Altura do caderno na prateleira dupla: `clamp(128px, calc(100dvh - 610px), 300px)`, acompanhando a altura útil. A fileira de pastas passa de 172 para 150 px e o espaço acima dos cadernos de 60 para 40 px.
+- A hera da direita espelha em torno do centro (`transform-origin: top center`), e o vaso fica dentro da tela.
+- Em 360x800 a prateleira termina em 698 px com a navegação em 721 px, sem rolagem interna.
+
+**Prova:** `e2e/library-shelf-mobile.spec.ts` (celular, claro e escuro, 360x800, 390x844 e 412x915): sem rolagem interna, sem rolagem horizontal, prateleira acima da navegação e hera dentro da largura. Os 6 casos falham sem a correção e passam com ela. Capturas conferidas em 360x800 e 360x700.
+
+**Limites**
+
+- Em telas muito baixas (cerca de 640 px de altura ou menos) o mínimo de 128 px vale e a área rola, como antes. Não verificado em aparelho real; o teste usa o emulador do navegador.
+- O desconto de 610 px assume as alturas atuais de cabeçalho, ferramentas e navegação. No tema escuro o conjunto fica 16 px mais baixo que no claro, e o desconto cobre os dois. Se esses elementos mudarem, o teste acusa.
