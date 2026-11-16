@@ -951,3 +951,19 @@ html:has(.notebooks-showcase)::view-transition-old(library-folder-view) {
     height: 18px;
   }
 }
+
+/* O conteúdo da pasta rola dentro da própria área: a tela da Biblioteca não rola (a prateleira cabe
+   inteira), e sem isso o botão de baixo ("Criar resumo", "Adicionar fontes") ficava escondido atrás
+   da navegação do celular. */
+.library-folder-contents {
+  max-height: calc(100dvh - 6rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+@media (max-width: 680px) {
+  .library-folder-contents {
+    min-height: 0;
+    max-height: none;
+    height: calc(100dvh - 11rem);
+  }
+}
