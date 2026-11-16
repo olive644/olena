@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen, openNotebooksView } from "./notebook-helpers";
 
 test("seleção: laço, copiar, colar, duplicar, girar e selecionar tudo", async ({
   page,
@@ -9,10 +9,7 @@ test("seleção: laço, copiar, colar, duplicar, girar e selecionar tudo", async
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();
@@ -84,10 +81,7 @@ test("alças da caixa: arrastar o canto redimensiona e a alça de cima gira", as
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();
@@ -178,10 +172,7 @@ test("segurar a caneta parada no fim de um traço acerta a reta e o círculo", a
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();
@@ -233,10 +224,7 @@ test("com algo selecionado as setas empurram, e não existe botão de mover a fo
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();

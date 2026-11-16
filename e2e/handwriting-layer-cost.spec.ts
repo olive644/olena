@@ -3,7 +3,7 @@ import { activateHandwritingPen, openHandwritingA4 } from "./notebook-helpers";
 
 // Cada canvas do tamanho da folha empilhado custa alguns milissegundos por quadro enquanto se
 // escreve (medido: ~4 a 6 ms cada, em renderização por software). Camadas sem nada para mostrar
-// saem da composição, e só o canvas que recebe o toque segue o corte da dobra.
+// saem da composição, e só o canvas de toque segue o corte da dobra.
 test("camadas vazias saem da composição e o clip-path fica só no canvas de toque", async ({
   page,
 }, testInfo) => {
@@ -40,7 +40,8 @@ test("camadas vazias saem da composição e o clip-path fica só no canvas de to
       "handwriting-live-layer",
     ]);
 
-  // O corte da dobra vale só para o canvas que recebe o toque.
+  // O corte da dobra vale só para o canvas de toque (um clip-path em camada de tinta custa ~7 a 12 ms
+  // por quadro); a tinta no triângulo é escondida pela cobertura do ::before.
   const clips = await shell.evaluate((element) =>
     [...element.querySelectorAll("canvas")].map((canvas) => ({
       base: canvas.classList.contains("handwriting-canvas"),

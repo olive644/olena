@@ -1,4 +1,4 @@
-import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen, openNotebooksView } from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 
 // Tela de alta densidade (como um celular ou notebook 2x): o bitmap da folha não pode ter menos
@@ -13,10 +13,7 @@ test("a folha ganha resolução em tela densa e com zoom, e a tinta cai onde a c
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();

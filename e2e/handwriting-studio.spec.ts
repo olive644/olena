@@ -1,4 +1,9 @@
-import { openHandwritingA4, activateHandwritingPen, compositeColorAt } from "./notebook-helpers";
+import {
+  openHandwritingA4,
+  activateHandwritingPen,
+  compositeColorAt,
+  openNotebooksView,
+} from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 import { createNotebookCollabHandler } from "../src/backend/notebook-collab-handler";
 import { createMemoryRoomStore } from "../src/backend/room-transaction";
@@ -11,18 +16,7 @@ test("colaboração exige conta e mostra apenas convite por link", async ({
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  if (testInfo.project.name === "mobile") {
-    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-    await page
-      .getByRole("dialog", { name: "Mais ferramentas" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  } else {
-    await page
-      .getByRole("navigation", { name: "Navegação principal" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  }
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();
@@ -108,18 +102,7 @@ test("salva automaticamente e compartilha uma cópia somente para leitura", asyn
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  if (testInfo.project.name === "mobile") {
-    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-    await page
-      .getByRole("dialog", { name: "Mais ferramentas" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  } else {
-    await page
-      .getByRole("navigation", { name: "Navegação principal" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  }
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();
@@ -186,18 +169,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
   await page.goto("/");
-  if (testInfo.project.name === "mobile") {
-    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-    await page
-      .getByRole("dialog", { name: "Mais ferramentas" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  } else {
-    await page
-      .getByRole("navigation", { name: "Navegação principal" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  }
+  await openNotebooksView(page);
   await expect(page.getByText("Matéria do novo caderno")).toHaveCount(0);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByLabel("Nome", { exact: true }).fill("Meu universo");
@@ -505,18 +477,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   // Aceita o formato antigo (points) e o compacto (pts, três números por ponto).
   const savedStroke = saved?.strokes[0];
   expect(savedStroke?.points?.length ?? (savedStroke?.pts?.length ?? 0) / 3).toBe(2);
-  if (testInfo.project.name === "mobile") {
-    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-    await page
-      .getByRole("dialog", { name: "Mais ferramentas" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  } else {
-    await page
-      .getByRole("navigation", { name: "Navegação principal" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  }
+  await openNotebooksView(page);
   await page.screenshot({ path: testInfo.outputPath("vitrine-cadernos.png"), fullPage: true });
   await page.locator(".notebook-card").first().click();
   await page.getByRole("button", { name: /Abrir preview de Nova folha/ }).click();
@@ -542,18 +503,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
   await page.goto("/");
-  if (testInfo.project.name === "mobile") {
-    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-    await page
-      .getByRole("dialog", { name: "Mais ferramentas" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  } else {
-    await page
-      .getByRole("navigation", { name: "Navegação principal" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  }
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();
@@ -676,18 +626,7 @@ test("a escrita na janela acompanha a caneta e aparece ao vivo na folha", async 
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
   await page.goto("/");
-  if (testInfo.project.name === "mobile") {
-    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-    await page
-      .getByRole("dialog", { name: "Mais ferramentas" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  } else {
-    await page
-      .getByRole("navigation", { name: "Navegação principal" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  }
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByLabel("Nome", { exact: true }).fill("Janela de escrita");
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();

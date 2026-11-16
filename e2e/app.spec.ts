@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { openNotebooksView } from "./notebook-helpers";
 import { setTestTheme } from "./theme-setup";
 
 test("carrega os ícones de papel no desktop e mobile em ambos os temas", async ({
@@ -28,7 +29,7 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
       await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
       const menu = page.getByRole("dialog", { name: "Mais ferramentas" });
       const secondary = menu.locator(".navigation-icon__variant:visible");
-      await expect(secondary).toHaveCount(2);
+      await expect(secondary).toHaveCount(1);
       await expect(menu.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
       for (const icon of await secondary.all()) {
         await expect(icon).toHaveAttribute("src", /\/navigation-icons\/paper\/.*\.svg$/);
@@ -57,27 +58,6 @@ function studentSpaceButton(page: Page, projectName: string) {
     name: mobile ? "Espaço" : "Espaço do aluno",
     exact: true,
   });
-}
-
-async function navigateToTool(
-  page: Page,
-  projectName: string,
-  desktopLabel: string,
-  mobileLabel: string,
-) {
-  if (projectName === "mobile") {
-    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-    await page
-      .getByRole("dialog", { name: "Mais ferramentas" })
-      .getByRole("button", { name: mobileLabel, exact: true })
-      .click();
-    return;
-  }
-
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: desktopLabel, exact: true })
-    .click();
 }
 
 test.beforeEach(async ({ page }) => {
@@ -166,7 +146,7 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
   const navigation = page.getByRole("navigation", { name: "Navegação principal" });
   const sidebar = page.locator(".sidebar");
 
-  await expect(navigation.getByRole("button")).toHaveCount(7);
+  await expect(navigation.getByRole("button")).toHaveCount(6);
   await expect(navigation.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
   await expect(navigation.getByRole("button", { name: "Modo Sala", exact: true })).toHaveCount(0);
   await expect(navigation.getByRole("button", { name: "Espaço do aluno" })).toHaveAttribute(
@@ -277,28 +257,6 @@ test("oculta por enquanto as ferramentas do professor", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Banco de atividades" })).toHaveCount(0);
 });
 
-test("preserva um flashcard ao explorar o protótipo", async ({ page }, testInfo) => {
-  await navigateToTool(page, testInfo.project.name, "Biblioteca", "Biblioteca");
-  await page.getByRole("button", { name: "Criar flashcard", exact: true }).click();
-  const dialog = page.getByRole("dialog", { name: "Criar flashcard", exact: true });
-  await dialog.getByLabel("Frente").fill("Improve");
-  await dialog.getByLabel("Verso").fill("Melhorar");
-  await dialog.getByRole("button", { name: "Criar flashcard", exact: true }).click();
-  await expect(dialog).toHaveCount(0);
-  await expect(page.getByText("Improve", { exact: true })).toBeVisible();
-  await studentSpaceButton(page, testInfo.project.name).click();
-  await page
-    .getByRole("navigation", {
-      name: testInfo.project.name === "mobile" ? "Navegação móvel" : "Navegação principal",
-    })
-    .getByRole("button", { name: "Praticar", exact: true })
-    .click();
-  await page.getByRole("button", { name: "Explorar Matemática" }).click();
-  await page.getByRole("button", { name: "Voltar às ilhas" }).click();
-  await navigateToTool(page, testInfo.project.name, "Biblioteca", "Biblioteca");
-  await expect(page.getByText("Improve", { exact: true })).toBeVisible();
-});
-
 test("mantém os módulos acessíveis e sem rolagem horizontal no celular", async ({
   page,
 }, testInfo) => {
@@ -322,7 +280,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   await expect(toolsDialog).toBeVisible();
   await page.waitForTimeout(350);
   const toolItems = toolsDialog.locator(".more-item");
-  await expect(toolItems).toHaveCount(2);
+  await expect(toolItems).toHaveCount(1);
   await expect(toolsDialog.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
 
   for (const item of await toolItems.all()) {
@@ -339,7 +297,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   await toolsDialog.getByRole("button", { name: "Fechar menu" }).click();
   await expect(toolsDialog).toBeHidden();
 
-  for (const label of ["Cadernos", "Biblioteca"]) {
+  for (const label of ["Biblioteca"]) {
     await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
     const more = page.getByRole("dialog", { name: "Mais ferramentas" });
     await expect(more).toBeVisible();
@@ -384,7 +342,7 @@ test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, te
 
 test("abre escrita à mão, retoma a folha e completa um bingo", async ({ page }, testInfo) => {
   await page.evaluate(() => localStorage.setItem("helena.soloProgress", "4"));
-  await navigateToTool(page, testInfo.project.name, "Cadernos", "Cadernos");
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();

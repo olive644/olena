@@ -5171,6 +5171,42 @@ Ponto 1 do feedback ("a caneta parece atrasada"). Em vez de supor, medi o caminh
 - Eventos sintéticos não trazem pontos previstos nem amostras agrupadas, então a previsão da ponta não entrou na medição.
 - Ainda há ~20 ms contra o ideal de 16,7 ms, e a camada de tinta confirmada continua sendo um canvas de folha inteira. Ideias que não medi e não implementei: `desynchronized` no canvas ao vivo (ajuda em Chrome com caneta, sem efeito em Safari e Firefox), reduzir a resolução das camadas de cena e juntar camadas.
 
+## Tinta por cima da dobra do canto, 16/11/2026
+
+Defeito relatado pelo proprietário com captura do celular: riscos continuavam aparecendo no canto de cima à direita, em cima da dobra. Causa: na #649 tirei o `clip-path` das camadas de tinta achando que o `::after` da dobra já cobria o triângulo. Não cobre: as camadas de escrita têm `z-index` de 1 a 5 e o `::after` tinha `z-index: auto`, então a tinta ficava por cima da dobra. Reproduzido no navegador: 259 pixels de tinta dentro do triângulo depois de arrastar um traço para dentro dele.
+
+- Correção em duas partes. (1) Pontos dentro do triângulo nem entram no traço (`isInFoldCorner`, em `handwriting-fold.ts`, 34px como o `::after`): o traço para na borda da dobra e não deixa tinta nova ali. (2) O `::after` da dobra sobe para `z-index: 9`, acima de todas as camadas de escrita, e esconde a tinta que já estivesse no triângulo (por exemplo, riscos feitos antes desta correção; os dados continuam guardados, só ficam sem aparecer).
+- O que foi descartado, com medição (intervalo médio por quadro ao escrever um traço longo): `clip-path` também na camada da tinta confirmada, 27,5 a 28,5 ms; um elemento extra de cobertura, 24 a 24,6 ms; subir o `::after` existente, 23,7 a 25,1 ms. A `main` na mesma hora deu 24,4 a 24,6 ms, então a solução escolhida não custa nada por quadro. (A máquina de teste oscila ~4 ms entre dias, por isso a comparação é sempre na mesma hora.)
+- Efeito colateral aceito: a metade de baixo do `::after` é a aba da dobra (papel) e agora também fica acima da tinta; um triângulo de uns 17px a 34px sob a aba não mostra tinta.
+- Provas: `handwriting-fold.test.ts` (geometria do triângulo), `e2e/handwriting-fold.spec.ts` (um traço arrastado para dentro da dobra não deixa tinta no triângulo, 252 pixels sem a correção; o `::after` fica acima das camadas e não pega toque) e `e2e/handwriting-layer-cost.spec.ts` (clip-path continua só no canvas de toque).
+- Limites: não verificado no celular real; o teste usa mouse no navegador de teste. O corte vale para a dobra de 34px em tela; ao dar zoom a dobra desenhada tem sempre 34px e o triângulo de bloqueio acompanha.
+
+## Cadernos dentro da Biblioteca, ajuste dos testes, 16/11/2026
+
+Decisão do proprietário: a aba Cadernos saiu do menu e os cadernos passaram a viver na prateleira da Biblioteca, junto com as pastas. A rota `/cadernos` continua abrindo essa prateleira.
+
+**O que mudou nos testes**
+
+- Os testes unitários e e2e que clicavam no item "Cadernos" do menu passam a abrir a prateleira pela rota (`openNotebooksView` nos e2e, `openNotebooks` em `src/app.test.tsx`). Contagens do menu (6 itens no PC, 1 item extra em "Mais ferramentas" no celular) atualizadas.
+- O lápis que pula sobre cada caderno no modo de edição da prateleira voltou a aparecer na estante de cadernos.
+- O e2e de imagem local agora cria uma pasta, entra nela e envia a imagem por "Enviar documento", conferindo que persiste ao recarregar.
+- O e2e da nota com fonte mantém: criar flashcard do trecho e vincular material da Biblioteca. Saiu dele a parte de abrir o material por `/biblioteca?material=...` e a busca por "algebra".
+
+**Funções da tela antiga da Biblioteca que não existem na prateleira nova (testes removidos)**
+
+- Criar flashcard manual (frente e verso) e a lista de flashcards criados à mão.
+- "Adicionar material" com título e tipo, e a busca "Buscar no acervo".
+- Abrir um material pelo link `/biblioteca?material=...` e o botão "Ver fonte" na folha.
+
+Decisão do proprietário (opção A, 16/11/2026): essas funções foram removidas de propósito junto com a tela antiga. Por isso saíram os e2e `library.spec.ts` (Biblioteca integrada com revisão e Discord; leitor de PDF local com pesquisa, marcador e anotações), `library-review.spec.ts` (baralhos, edição, TSV e limite diário de revisão) e `library-study.spec.ts` ("Trecho" mantém fonte no caderno e no flashcard e vincula o Pomodoro). Todos dependiam de "Adicionar material" da tela antiga.
+
+`src/views/library-view.tsx` continua no repositório, com seus testes unitários, mas nada o renderiza. Foi removido o teste unitário e o e2e que dependiam dele para criar flashcard. Se alguma dessas funções precisar voltar, deve entrar na pasta da nova Biblioteca, com teste novo.
+
+**Limites**
+
+- Os e2e foram rodados localmente nos arquivos afetados (app, shelf-edit, shelf-edit-hint, showcase, library-connections), com resultado verde; a suíte inteira roda no CI.
+- Os 8 testes de `src/data/listening-audio.test.ts` falham neste ambiente sem relação com esta mudança (`object.stream is not a function`).
+
 ## Medidor da caneta, 16/11/2026
 
 Pedido do proprietário depois de um vídeo da escrita no aparelho: a tinta aparecia em blocos, com 89 atualizações em 2,5 s, mediana de 22 ms entre elas, 25 intervalos acima de 33 ms e o maior com 100 ms. Sem uma medida no próprio aparelho, não dá para saber se o gargalo é a entrada da caneta ou o desenho.

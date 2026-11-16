@@ -219,6 +219,17 @@ export function mergeWorkspaceStates(
           ),
         }
       : {}),
+    ...(base.libraryShelfName !== undefined ||
+    local.libraryShelfName !== undefined ||
+    remote.libraryShelfName !== undefined
+      ? {
+          libraryShelfName: value(
+            base.libraryShelfName ?? "",
+            local.libraryShelfName ?? base.libraryShelfName ?? "",
+            remote.libraryShelfName ?? base.libraryShelfName ?? "",
+          ),
+        }
+      : {}),
     version: local.version,
     subjects: list(base.subjects, local.subjects, remote.subjects),
     tasks: (() => {

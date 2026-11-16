@@ -1,4 +1,4 @@
-import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen, openNotebooksView } from "./notebook-helpers";
 import { expect, test, type Locator } from "@playwright/test";
 
 // Conta pixels com tinta (alfa alto) em uma faixa do canvas.
@@ -24,10 +24,7 @@ test("o traço em andamento fica na camada ao vivo e vai para a folha ao soltar"
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();
@@ -75,10 +72,7 @@ test("a camada ao vivo mostra o traço inteiro de novo a cada quadro, sem falhas
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();

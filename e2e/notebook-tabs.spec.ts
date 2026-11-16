@@ -1,3 +1,4 @@
+import { openNotebooksView } from "./notebook-helpers";
 import { expect, test, type Locator } from "@playwright/test";
 
 test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
@@ -9,18 +10,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  if (testInfo.project.name === "mobile") {
-    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-    await page
-      .getByRole("dialog", { name: "Mais ferramentas" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  } else {
-    await page
-      .getByRole("navigation", { name: "Navegação principal" })
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
-  }
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();

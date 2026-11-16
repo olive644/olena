@@ -1,4 +1,4 @@
-import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen, openNotebooksView } from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 
 test("segurar a caneta parada: reta quase reta encaixa no eixo e retângulo girado é reconhecido", async ({
@@ -9,10 +9,7 @@ test("segurar a caneta parada: reta quase reta encaixa no eixo e retângulo gira
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.locator(".notebook-spine").first().click();

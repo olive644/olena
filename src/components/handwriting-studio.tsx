@@ -78,6 +78,7 @@ import { cursorColor } from "./handwriting-cursor";
 import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
 import { HandwritingShapeInsert, type InsertKind } from "./handwriting-shape-insert";
 import { predictedTail, withPredictedTail } from "./handwriting-prediction";
+import { isInFoldCorner } from "./handwriting-fold";
 import { compactPoints } from "./handwriting-precision";
 import { useSelectionActions } from "../hooks/use-selection-actions";
 import { useSelectionGesture } from "../hooks/use-selection-gesture";
@@ -1908,8 +1909,15 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     if (!liveStroke) return;
     if (shapeSnappedRef.current) return;
+    // Na dobra do canto não há papel: pontos ali nem entram no traço.
+    const onPaper = sampleEvents.map(
+      (sample) => !isInFoldCorner(bounds, sample.clientX, sample.clientY),
+    );
+    const paperPoints = points.filter((_, index) => onPaper[index]);
+    if (paperPoints.length === 0) return;
+    const paperTimes = sampleTimes.filter((_, index) => onPaper[index]);
     const previous = liveStroke.points.at(-1);
-    const added = (liveStabilizerRef.current?.push(points, sampleTimes) ?? points).reduce<
+    const added = (liveStabilizerRef.current?.push(paperPoints, paperTimes) ?? paperPoints).reduce<
       HandwritingPoint[]
     >((accepted, point) => {
       const lastPoint = accepted.at(-1) ?? previous;

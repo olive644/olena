@@ -34,7 +34,7 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("button", { name: "Crie", exact: true }).click();
     await page.getByRole("textbox", { name: "Nome", exact: true }).fill("Ideias de teste");
     await page
-      .locator(".notebook-create-dialog")
+      .locator(".notebook-create-dialog[open]")
       .screenshot({ path: info.outputPath(`create-${theme}.png`) });
     await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
     const achievementClose = page.getByRole("button", { name: "Fechar conquista", exact: true });

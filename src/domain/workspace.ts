@@ -151,7 +151,14 @@ export type StudyMaterial = {
   annotations?: { id: string; page: number; quote: string; note: string }[];
 };
 
-type LibraryCollection = { id: string; title: string; motif: "moon" | "sun" | "book" };
+export type LibraryFolderStyle = "classic" | "pride" | "mathematics" | "english";
+type LibraryCollection = {
+  id: string;
+  title: string;
+  motif: "moon" | "sun" | "book";
+  style?: LibraryFolderStyle;
+  createdAt?: string;
+};
 
 export type FlashcardRating = "again" | "hard" | "easy";
 
@@ -221,6 +228,7 @@ type HomeworkList = {
 
 export type WorkspaceState = {
   notebookShelfName?: string;
+  libraryShelfName?: string;
   /**
    * Marcas de exclusão: ids de cadernos apagados neste espaço. Servem para uma cópia mais antiga
    * (a da conta ou a do IndexedDB, gravada com atraso) não trazer de volta o que a pessoa apagou.
@@ -294,6 +302,7 @@ export type WorkspaceAction =
   | { type: "material/removed"; id: string }
   | { type: "notebook/favorite-toggled"; id: string }
   | { type: "notebook/shelf-named"; name: string }
+  | { type: "library/shelf-named"; name: string }
   | { type: "practice/recorded"; activity: PracticeActivity }
   | { type: "workspace/replaced"; workspace: WorkspaceState }
   | { type: "subject/added"; id?: string; name: string; color: string }
@@ -489,6 +498,8 @@ function addDays(dateKey: string, days: number): string {
 
 export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): WorkspaceState {
   switch (action.type) {
+    case "library/shelf-named":
+      return { ...state, libraryShelfName: action.name.trim().slice(0, 40) };
     case "notebook/shelf-named": {
       const name = action.name.trim().slice(0, 40);
       const { notebookShelfCleared, ...rest } = state;

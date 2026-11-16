@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen, openNotebooksView } from "./notebook-helpers";
 
 for (const theme of ["light", "dark"]) {
   test(`seleção de linha e espessura visível em papel: ${theme}`, async ({ page }, info) => {
@@ -8,15 +8,7 @@ for (const theme of ["light", "dark"]) {
       localStorage.setItem("helenastudy.theme", appearance);
     }, theme);
     await page.goto("/");
-    const mobile = (page.viewportSize()?.width ?? 1280) < 900;
-    if (mobile) await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-    await (
-      mobile
-        ? page.getByRole("dialog", { name: "Mais ferramentas" })
-        : page.getByRole("navigation", { name: "Navegação principal" })
-    )
-      .getByRole("button", { name: "Cadernos", exact: true })
-      .click();
+    await openNotebooksView(page);
     await page.getByRole("button", { name: "Crie", exact: true }).click();
     await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
     await page.locator(".notebook-spine").first().click();
