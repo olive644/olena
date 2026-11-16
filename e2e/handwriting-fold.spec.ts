@@ -50,8 +50,18 @@ test("a dobra do canto da folha não aceita escrita", async ({ page }, testInfo)
   await page.waitForTimeout(200);
   expect(await ink()).toBe(0);
 
-  // Um traço que começa no papel e entra na dobra para no limite do triângulo: não fica tinta ali,
-  // nem por cima da dobra desenhada (a tinta fica acima dela, então precisa ser cortada de verdade).
+  // A cobertura da dobra fica acima de todas as camadas de escrita e não pega toque: é o que esconde
+  // tinta que já estivesse no triângulo (a tinta fica acima do ::after da dobra no empilhamento).
+  const cover = await shell.evaluate((element) => {
+    const style = getComputedStyle(element, "::before");
+    return { z: Number(style.zIndex), events: style.pointerEvents, content: style.content };
+  });
+  expect(cover.events).toBe("none");
+  expect(cover.z).toBeGreaterThan(5);
+  expect(cover.content).not.toBe("none");
+
+  // Um traço que começa no papel e entra na dobra para no limite do triângulo: nenhum ponto dentro
+  // do triângulo entra no traço.
   const inTriangleAndElsewhere = () =>
     dialog.locator(".handwriting-committed-ink").evaluate((element) => {
       const canvas = element as HTMLCanvasElement;
