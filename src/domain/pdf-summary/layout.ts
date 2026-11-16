@@ -48,6 +48,29 @@ function joinItems(items: PdfTextItem[]): { text: string; x: number; right: numb
   return { text: text.replace(/­/g, ""), x: first ? first.x : 0, right };
 }
 
+/** Divide uma linha em células quando há vãos grandes entre os pedaços (linha de tabela). */
+function splitCells(group: PdfTextItem[]): TextLine["cells"] {
+  const sorted = [...group].sort((a, b) => a.x - b.x);
+  if (sorted.length < 2) return undefined;
+  const parts: PdfTextItem[][] = [[sorted[0]!]];
+  let right = sorted[0]!.x + sorted[0]!.width;
+  for (const item of sorted.slice(1)) {
+    const gap = item.x - right;
+    if (gap > Math.max(item.size * 1.6, 14)) parts.push([item]);
+    else parts[parts.length - 1]!.push(item);
+    right = Math.max(right, item.x + item.width);
+  }
+  if (parts.length < 2) return undefined;
+  return parts.map((part) => {
+    const joined = joinItems(part);
+    return {
+      x: joined.x,
+      right: joined.right,
+      text: joined.text.replace(/\s+/g, " ").trim(),
+    };
+  });
+}
+
 function groupIntoLines(items: PdfTextItem[], page: PdfPageText): TextLine[] {
   const sorted = [...items].sort((a, b) => b.y - a.y || a.x - b.x);
   const groups: PdfTextItem[][] = [];
@@ -73,6 +96,7 @@ function groupIntoLines(items: PdfTextItem[], page: PdfPageText): TextLine[] {
     const dominant = group.reduce((best, item) =>
       item.text.length > best.text.length ? item : best,
     );
+    const cells = splitCells(group);
     lines.push({
       page: page.page,
       x: joined.x,
@@ -82,6 +106,7 @@ function groupIntoLines(items: PdfTextItem[], page: PdfPageText): TextLine[] {
       font: dominant.font,
       text,
       pageHeight: page.height,
+      ...(cells ? { cells } : {}),
     });
   }
   return lines;
@@ -289,6 +314,76 @@ function isNoise(text: string): boolean {
   return false;
 }
 
+type TableRun = { end: number; rows: string[][] };
+
+const spread = (values: number[]) => Math.max(...values) - Math.min(...values);
+
+/** Procura tabelas: 3 ou mais linhas seguidas com o mesmo número de células, alinhadas em colunas. */
+function findTables(entries: Classified[]): Map<number, TableRun> {
+  const tables = new Map<number, TableRun>();
+  let index = 0;
+  while (index < entries.length) {
+    const first = entries[index]!;
+    if (!first.line.cells) {
+      index += 1;
+      continue;
+    }
+    let end = index;
+    while (end + 1 < entries.length) {
+      const next = entries[end + 1]!;
+      const previous = entries[end]!.line;
+      if (
+        !next.line.cells ||
+        next.line.page !== previous.page ||
+        previous.y - next.line.y > Math.max(previous.size, 1) * 2.6
+      )
+        break;
+      end += 1;
+    }
+    const run = entries.slice(index, end + 1);
+    const counts = new Map<number, number>();
+    for (const entry of run) {
+      const size = entry.line.cells!.length;
+      counts.set(size, (counts.get(size) ?? 0) + 1);
+    }
+    const [width, regular] = [...counts.entries()].sort((a, b) => b[1] - a[1] || b[0] - a[0])[0]!;
+    if (run.length >= 3 && regular >= 3 && regular >= run.length * 0.7) {
+      const rows = run.filter((entry) => entry.line.cells!.length === width);
+      let aligned = true;
+      for (let column = 0; column < width && aligned; column += 1) {
+        const cells = rows.map((entry) => entry.line.cells![column]!);
+        const starts = spread(cells.map((cell) => cell.x));
+        const ends = spread(cells.map((cell) => cell.right));
+        const centers = spread(cells.map((cell) => (cell.x + cell.right) / 2));
+        aligned = Math.min(starts, ends, centers) <= 10;
+      }
+      const average =
+        rows.reduce(
+          (sum, entry) => sum + entry.line.cells!.reduce((cell, c) => cell + c.text.length, 0),
+          0,
+        ) /
+        (rows.length * width);
+      const hasLetters = rows.some((entry) =>
+        entry.line.cells!.some((cell) => /\p{L}{2}/u.test(cell.text)),
+      );
+      if (aligned && average <= 70 && hasLetters) {
+        tables.set(index, {
+          end,
+          rows: run.map((entry) => {
+            const cells = entry.line.cells!.map((cell) => cell.text);
+            while (cells.length < width) cells.push("");
+            const extra = cells.splice(width);
+            if (extra.length > 0) cells[width - 1] = [cells[width - 1], ...extra].join(" ");
+            return cells;
+          }),
+        });
+      }
+    }
+    index = end + 1;
+  }
+  return tables;
+}
+
 /** Monta títulos e parágrafos a partir das linhas (já em ordem de leitura, todas as páginas). */
 export function assembleDocument(
   pageLines: TextLine[][],
@@ -298,6 +393,7 @@ export function assembleDocument(
   const cleaned = removeRunningText(pageLines);
   const lines = cleaned.flat();
   const { entries, bodySize } = classify(lines);
+  const tables = findTables(entries);
   const levels = headingLevels(entries);
   const blocks: DocumentBlock[] = [];
   let paragraph:
@@ -328,6 +424,18 @@ export function assembleDocument(
   while (index < entries.length) {
     const entry = entries[index]!;
     const line = entry.line;
+    const table = skipping ? undefined : tables.get(index);
+    if (table) {
+      flush();
+      blocks.push({
+        kind: "paragraph",
+        text: table.rows.map((row) => row.join(" ")).join(" "),
+        page: line.page,
+        table: table.rows,
+      });
+      index = table.end + 1;
+      continue;
+    }
     if (entry.heading) {
       flush();
       let text = line.text.trim();
@@ -491,6 +599,25 @@ export function structureText(text: string, fileTitle = ""): StructuredDocument 
       continue;
     }
     const rows = trimmed.split("\n").map((row) => row.trim());
+    if (rows.length >= 3 && rows.every((row) => /^\|.*\|$/.test(row))) {
+      const grid = rows
+        .map((row) =>
+          row
+            .replace(/^\||\|$/g, "")
+            .split("|")
+            .map((cell) => cell.trim()),
+        )
+        .filter((cells) => !cells.every((cell) => /^:?-{2,}:?$/.test(cell)));
+      if (grid.length >= 2) {
+        blocks.push({
+          kind: "paragraph",
+          text: grid.map((cells) => cells.join(" ")).join(" "),
+          page: 1,
+          table: grid,
+        });
+        continue;
+      }
+    }
     const ITEM = /^(?:[-*\u2022]|\d{1,2}[.)])\s+\S/;
     const firstItem = rows.findIndex((row) => ITEM.test(row));
     if (firstItem >= 0 && rows.slice(firstItem).every((row) => ITEM.test(row))) {
