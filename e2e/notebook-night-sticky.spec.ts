@@ -34,10 +34,11 @@ test("post-it e tabela ficam escuros na folha noite e voltam ao claro na folha c
   await editor.getByRole("button", { name: "Adicionar tabela", exact: true }).click();
   const table = editor.locator(".handwriting-sticky--table").first();
   await expect(table).toBeVisible();
-  await expect(table).toHaveCSS("background-color", "rgb(51, 41, 63)");
+  await expect(table).toHaveCSS("background-color", "rgb(93, 79, 34)");
+  // A tabela segue a cor escolhida (amarelo, azul ou lilás) também na folha noite.
   await expect(table.locator(".handwriting-sticky__table-grid")).toHaveCSS(
     "background-color",
-    "rgb(41, 36, 50)",
+    "rgb(93, 79, 34)",
   );
   await expect(table.locator("td textarea").first()).toHaveCSS("color", "rgb(255, 249, 239)");
 
@@ -45,5 +46,5 @@ test("post-it e tabela ficam escuros na folha noite e voltam ao claro na folha c
     await color.click();
   await editor.getByRole("button", { name: "Clara", exact: true }).click();
   await expect(note).toHaveCSS("background-color", "rgb(255, 240, 181)");
-  await expect(table).toHaveCSS("background-color", "rgb(252, 247, 236)");
+  await expect(table).toHaveCSS("background-color", "rgb(255, 240, 181)");
 });

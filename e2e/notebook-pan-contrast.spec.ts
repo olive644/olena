@@ -35,8 +35,9 @@ for (const theme of ["light", "dark"]) {
     await activateHandwritingPen(page);
     await expect(pen).toHaveAttribute("aria-pressed", "true");
     const viewport = editor.locator(".handwriting-viewport");
+    // A folha cabe quase inteira na janela: parte de uma posição com espaço de sobra para rolar.
     await viewport.evaluate((element) => {
-      element.scrollTop = 150;
+      element.scrollTop = Math.min(150, (element.scrollHeight - element.clientHeight) * 0.3);
     });
     const before = await viewport.evaluate((element) => element.scrollTop);
     const inkBefore = await editor
@@ -51,7 +52,7 @@ for (const theme of ["light", "dark"]) {
     await expect(viewport).toHaveAttribute("data-middle-pan", "true");
     await page.mouse.up({ button: "middle" });
     await expect(viewport).not.toHaveAttribute("data-middle-pan");
-    expect(await viewport.evaluate((element) => element.scrollTop)).toBeGreaterThan(before + 40);
+    expect(await viewport.evaluate((element) => element.scrollTop)).toBeGreaterThan(before + 20);
     await expect(pen).toHaveAttribute("aria-pressed", "true");
     expect(
       await editor
