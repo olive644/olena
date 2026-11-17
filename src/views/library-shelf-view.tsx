@@ -265,6 +265,8 @@ const studySections = {
 
 type FolderSection = "Fontes" | keyof typeof studySections;
 const folderSections = ["Fontes", ...Object.keys(studySections)] as FolderSection[];
+// O resumo automático é grátis e roda no aparelho: sempre o maior que o texto comporta.
+const SUMMARY_DETAIL = "long" as const;
 const summaryInline = (value: string) =>
   value
     .split(/\*\*([^*]+)\*\*/)
@@ -360,7 +362,6 @@ export function LibraryFolderContents({
   const readingSummary = summaries.find(({ id }) => id === readingSummaryId);
   const [summaryBusy, setSummaryBusy] = useState(false);
   const [summaryError, setSummaryError] = useState("");
-  const [summaryDetail, setSummaryDetail] = useState<"short" | "medium" | "long">("medium");
   const [section, setSection] = useState<FolderSection>("Fontes");
   const [renamingId, setRenamingId] = useState<string>();
   const [removingIds, setRemovingIds] = useState<string[]>([]);
@@ -513,12 +514,12 @@ export function LibraryFolderContents({
           const scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
           try {
             const text = (await scanner.recognize(source.content)).data.text;
-            result = await summarizePlainText(text, fileTitle, { detail: summaryDetail });
+            result = await summarizePlainText(text, fileTitle, { detail: SUMMARY_DETAIL });
           } finally {
             await scanner.terminate();
           }
         } else if (source.kind === "text") {
-          result = await summarizePlainText(source.content, fileTitle, { detail: summaryDetail });
+          result = await summarizePlainText(source.content, fileTitle, { detail: SUMMARY_DETAIL });
         } else {
           const [pdfjs, worker] = await Promise.all([
             import("pdfjs-dist"),
@@ -538,7 +539,7 @@ export function LibraryFolderContents({
             try {
               result = await summarizePdf(pdf, {
                 title: fileTitle,
-                detail: summaryDetail,
+                detail: SUMMARY_DETAIL,
                 ocr: async (pageNumber) => {
                   const page = await pdf.getPage(pageNumber);
                   const viewport = page.getViewport({ scale: 1 });
@@ -1109,28 +1110,6 @@ export function LibraryFolderContents({
                   "Resumo automático: grátis, feito no seu aparelho, sem IA. Escolhe as frases mais importantes do próprio arquivo.",
                 )}
               </p>
-            )}
-            {creating === "Resumo" && (
-              <fieldset className="library-summary-detail">
-                <legend>{uiText("Tamanho do resumo automático")}</legend>
-                {(
-                  [
-                    ["short", "Curto"],
-                    ["medium", "Médio"],
-                    ["long", "Longo"],
-                  ] as const
-                ).map(([value, label]) => (
-                  <label key={value}>
-                    <input
-                      type="radio"
-                      name="library-summary-detail"
-                      checked={summaryDetail === value}
-                      onChange={() => setSummaryDetail(value)}
-                    />
-                    {uiText(label)}
-                  </label>
-                ))}
-              </fieldset>
             )}
             {creating === "Resumo" && (
               <p>

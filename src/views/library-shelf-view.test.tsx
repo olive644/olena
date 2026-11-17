@@ -386,11 +386,11 @@ describe("resumo automático no aparelho", () => {
     expect(dispatch).not.toHaveBeenCalled();
   });
 
-  it("oferece Curto, Médio e Longo e começa em Médio", () => {
+  it("não oferece escolher o tamanho: o resumo grátis já sai no máximo", () => {
     const { dialog } = renderWith(source);
-    const group = within(dialog).getByRole("group", { name: "Tamanho do resumo automático" });
-    expect(within(group).getByRole("radio", { name: "Médio" })).toHaveProperty("checked", true);
-    fireEvent.click(within(group).getByRole("radio", { name: "Curto" }));
-    expect(within(group).getByRole("radio", { name: "Curto" })).toHaveProperty("checked", true);
+    expect(
+      within(dialog).queryByRole("group", { name: "Tamanho do resumo automático" }),
+    ).toBeNull();
+    expect(within(dialog).queryByRole("radio", { name: "Curto" })).toBeNull();
   });
 });

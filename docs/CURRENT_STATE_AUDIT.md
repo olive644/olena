@@ -5479,3 +5479,9 @@ Tudo local, sem IA e sem rede, na mesma PR do teto diário da Olena.
 - Avisos de limite, cota, login e interrupção do servidor agora seguem o idioma do app (`X-App-Language`), com testes em `helena-quota.test.ts` e `helena-handler.test.ts`.
 - Removidos `e2e/helena-app.spec.ts`, `e2e/helena-first-frame.spec.ts` e `e2e/helena-mascot.spec.ts` (testavam o botão e a estrela flutuantes que não existem mais no app). Mantido `e2e/helena-chat-preview.spec.ts`.
 - Limite: o app do celular com versão antiga ainda mostra o chat e receberá o aviso de conversa desligada; validação visual em claro e escuro não se aplica porque nenhuma tela nova foi criada.
+
+## Resumo automático sempre no tamanho máximo, 17/11/2026
+
+- Decisão do proprietário: o resumo é grátis e roda no aparelho, então não há motivo para escolher Curto ou Médio. O seletor de tamanho saiu do diálogo de criação e a Biblioteca sempre pede `detail: "long"` (o maior que o texto comporta). O padrão do domínio (`summarize.ts`) não mudou.
+- Substitui a linha "Tamanho do resumo: Curto, Médio e Longo" da seção anterior. Entradas de catálogo de "Tamanho do resumo automático", "Curto" e "Longo" ficaram sem uso (índices preservados, `i18n:check` passa).
+- Prova: teste da Biblioteca confirma que o grupo de rádios não existe mais; interface só perdeu um controle, sem tela nova.
