@@ -9,6 +9,7 @@ import { PaperArrow } from "../components/paper-arrow";
 import { ShelfToolIcon } from "../components/shelf-tool-icon";
 import { PaperDigits } from "../components/paper-digits";
 import { LibraryDialog } from "../components/library-dialog";
+import { FlashcardViewer } from "../components/flashcard-viewer";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useRef, useState, type Dispatch, type ReactNode } from "react";
 import {
@@ -370,6 +371,24 @@ export function LibraryFolderContents({
 }) {
   const summaries = folderMaterials.filter((item) => item.tags?.[0] === "folder-summary");
   const materials = folderMaterials.filter((item) => item.tags?.[0] !== "folder-summary");
+  const [openDeckId, setOpenDeckId] = useState<string>();
+  const [renamingDeckId, setRenamingDeckId] = useState<string>();
+  const decks = flashcards.reduce<
+    { id: string; title: string; sourceTitle: string; cards: Flashcard[] }[]
+  >((groups, card) => {
+    const id = card.materialId ?? card.deck ?? "";
+    const group = groups.find((item) => item.id === id);
+    if (group) group.cards.push(card);
+    else
+      groups.push({
+        id,
+        title: card.deck || uiText("Sem baralho"),
+        sourceTitle: folderMaterials.find((item) => item.id === card.materialId)?.title ?? "",
+        cards: [card],
+      });
+    return groups;
+  }, []);
+  const openDeck = decks.find(({ id }) => id === openDeckId);
   const [readingSummaryId, setReadingSummaryId] = useState<string>();
   const readingSummary = summaries.find(({ id }) => id === readingSummaryId);
   const [summaryBusy, setSummaryBusy] = useState(false);
@@ -584,9 +603,10 @@ export function LibraryFolderContents({
     setCardsBusy(true);
     try {
       const { flashcardsFromPdf, flashcardsFromPlainText } = await import("../domain/pdf-summary");
-      const made: { front: string; back: string; deck: string }[] = [];
+      const made: { sourceId: string; deck: string; front: string; back: string; page: number }[] =
+        [];
       for (const source of selectedSources) {
-        const fileTitle = source.title.replace(/.[^.]+$/, "");
+        const fileTitle = source.title.replace(/\.[^.]+$/, "");
         const cards = await readSource(source, fileTitle, {
           text: (text, title) => flashcardsFromPlainText(text, title),
           pdf: (pdf, options) => flashcardsFromPdf(pdf, options),
@@ -598,20 +618,38 @@ export function LibraryFolderContents({
             ]),
           );
         }
-        for (const card of cards)
-          made.push({ front: card.front, back: card.back, deck: folder.title });
+        const deck = fileTitle.replace(/[-_]+/g, " ").trim() || source.title;
+        for (const card of cards) {
+          const repeated = flashcards.some(
+            (item) => item.materialId === source.id && item.front === card.front,
+          );
+          if (!repeated)
+            made.push({
+              sourceId: source.id,
+              deck,
+              front: card.front,
+              back: card.back,
+              page: card.page,
+            });
+        }
       }
-      dispatch({
-        type: "flashcards/imported",
-        cards: made,
-        subjectId,
-        createdOn: toDateKey(new Date()),
-      });
+      const today = toDateKey(new Date());
+      for (const card of made) {
+        dispatch({
+          type: "flashcard/added",
+          deck: card.deck,
+          materialId: card.sourceId,
+          sourcePage: card.page,
+          subjectId,
+          front: card.front,
+          back: card.back,
+          createdOn: today,
+        });
+      }
       setCardsMessage({
-        text: uiText(
-          "{0} flashcards criados no baralho {1}. Revise em Flashcards, na Biblioteca.",
-          [String(made.length), folder.title],
-        ),
+        text: made.length
+          ? uiText("{0} flashcards criados. Toque no baralho para estudar.", [String(made.length)])
+          : uiText("Esses flashcards já estavam criados."),
         error: false,
       });
     } catch (error) {
@@ -918,18 +956,101 @@ export function LibraryFolderContents({
                 <span className="library-summary-loading-track" aria-hidden="true" />
               </div>
             )}
-            {section === "Flashcards" && !cardsBusy && flashcards.length > 0 && (
-              <ul className="library-flashcard-list" aria-label={uiText("Flashcards desta pasta")}>
-                {flashcards.map((card) => (
-                  <li key={card.id}>
-                    <details className="library-summary-card">
-                      <summary>{card.front}</summary>
-                      <p>{card.back}</p>
-                    </details>
-                  </li>
-                ))}
-              </ul>
-            )}
+            {section === "Flashcards" &&
+              decks.map((deck) => (
+                <article key={deck.id} className="library-summary-card">
+                  {renamingDeckId === deck.id ? (
+                    <form
+                      className="library-summary-rename"
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        const title = String(
+                          new FormData(event.currentTarget).get("title") ?? "",
+                        ).trim();
+                        if (!title) return;
+                        for (const card of deck.cards)
+                          dispatch({
+                            type: "flashcard/updated",
+                            id: card.id,
+                            changes: {
+                              front: card.front,
+                              back: card.back,
+                              subjectId: card.subjectId,
+                              deck: title,
+                            },
+                          });
+                        setRenamingDeckId(undefined);
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === "Escape") setRenamingDeckId(undefined);
+                      }}
+                    >
+                      <input
+                        name="title"
+                        aria-label={uiText("Nome do baralho")}
+                        required
+                        maxLength={80}
+                        defaultValue={deck.title}
+                        ref={(field) => {
+                          if (field && field !== document.activeElement) {
+                            field.focus();
+                            field.select();
+                          }
+                        }}
+                      />
+                      <button
+                        type="submit"
+                        className="shelf-wood-button"
+                        aria-label={uiText("Salvar nome")}
+                      >
+                        <ShelfToolIcon name="save" />
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      type="button"
+                      className="library-summary-open"
+                      onClick={() => setOpenDeckId(deck.id)}
+                    >
+                      <img src="/room-icons/flashcards.svg" alt="" width="26" height="26" />
+                      <span>
+                        <strong>{deck.title}</strong>
+                        <small>
+                          {[deck.sourceTitle, uiText("{0} cartões", [String(deck.cards.length)])]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </small>
+                      </span>
+                    </button>
+                  )}
+                  <details className="library-summary-actions">
+                    <summary className="shelf-wood-button" aria-label={"Opções de " + deck.title}>
+                      <PaperEditorIcon name="more" />
+                    </summary>
+                    <div className="library-summary-popover">
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.currentTarget.closest("details")?.removeAttribute("open");
+                          setRenamingDeckId(deck.id);
+                        }}
+                      >
+                        <ShelfToolIcon name="pen" /> {uiText("Renomear")}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.currentTarget.closest("details")?.removeAttribute("open");
+                          for (const card of deck.cards)
+                            dispatch({ type: "flashcard/removed", id: card.id });
+                        }}
+                      >
+                        <ShelfToolIcon name="trash" /> {uiText("Excluir")}
+                      </button>
+                    </div>
+                  </details>
+                </article>
+              ))}
             {section === "Flashcards" && cardsMessage && (
               <p role={cardsMessage.error ? "alert" : "status"}>{cardsMessage.text}</p>
             )}
@@ -1025,10 +1146,7 @@ export function LibraryFolderContents({
                 </article>
               ))}
             {(section !== "Resumo" || (!summaryBusy && summaries.length === 0)) &&
-              !(
-                section === "Flashcards" &&
-                (cardsBusy || cardsMessage || flashcards.length > 0)
-              ) && (
+              !(section === "Flashcards" && (cardsBusy || cardsMessage || decks.length > 0)) && (
                 <div className="library-folder-study-empty">
                   <img
                     src={"/room-icons/" + studySections[section].icon + ".svg"}
@@ -1047,6 +1165,13 @@ export function LibraryFolderContents({
               <img src="/room-icons/add.svg" alt="" /> {studySections[section].action}
             </button>
           </>
+        )}
+        {openDeck && (
+          <FlashcardViewer
+            title={openDeck.title}
+            cards={openDeck.cards}
+            onClose={() => setOpenDeckId(undefined)}
+          />
         )}
         {sourceType && (
           <LibraryDialog
@@ -1220,7 +1345,7 @@ export function LibraryFolderContents({
             {creating === "Flashcards" && (
               <p>
                 {uiText(
-                  "Flashcards automáticos: grátis, feitos no seu aparelho, sem IA. Cria o máximo de cartões que o próprio arquivo permite: definições, datas e lacunas.",
+                  "Flashcards automáticos: grátis, feitos no seu aparelho, sem IA. Cria o máximo de perguntas e respostas que o próprio arquivo permite.",
                 )}
               </p>
             )}

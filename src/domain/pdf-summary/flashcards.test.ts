@@ -30,16 +30,15 @@ describe("flashcards automáticos", () => {
     for (const card of cards) expect(source).toContain(squash(card.back).replace(/[.]$/, ""));
   });
 
-  it("as lacunas escondem o termo e a resposta devolve o termo", async () => {
-    const cards = await flashcardsFromPlainText(
-      fixtureAsText(computingHistory),
-      computingHistory.title,
-    );
-    const cloze = cards.filter((card) => card.front.startsWith("Complete: "));
-    expect(cloze.length).toBeGreaterThan(0);
-    for (const card of cloze) {
-      expect(card.front).toContain("_____");
-      expect(squash(card.front)).not.toContain(squash(card.back));
+  it("todo cartão é uma pergunta de verdade, nunca uma lacuna para completar", async () => {
+    for (const fixture of [computingHistory, photosynthesis]) {
+      const cards = await flashcardsFromPlainText(fixtureAsText(fixture), fixture.title);
+      expect(cards.length).toBeGreaterThan(0);
+      for (const card of cards) {
+        expect(card.front.endsWith("?")).toBe(true);
+        expect(card.front).not.toContain("_____");
+        expect(card.front.startsWith("Complete")).toBe(false);
+      }
     }
   });
 

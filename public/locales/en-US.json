@@ -3929,10 +3929,17 @@
   "Short",
   "Long",
   "Could not create flashcards from {0}: the text has too few definitions and facts.",
-  "{0} flashcards created in the deck {1}. Review them in Flashcards, in the Library.",
+  "{0} flashcards created. Tap the deck to study.",
   "Could not create the flashcards.",
   "Creating flashcards…",
-  "Automatic flashcards: free, made on your device, no AI. Creates as many cards as the file allows: definitions, dates and fill-in-the-blanks.",
+  "Automatic flashcards: free, made on your device, no AI. Creates as many questions and answers as the file allows.",
   "Automatic flashcards",
-  "Flashcards in this folder"
+  "Those flashcards were already created.",
+  "{0} cards",
+  "Deck name",
+  "Deck progress",
+  "Go to the next card",
+  "Flip card",
+  "Previous card",
+  "Tap the card to flip"
 ]

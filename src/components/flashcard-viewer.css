@@ -1,0 +1,78 @@
+.flashcard-viewer__progress {
+  height: 8px;
+  margin: 4px 0 14px;
+  border-radius: 6px;
+  background: #3f2928;
+  overflow: hidden;
+}
+.flashcard-viewer__progress span {
+  display: block;
+  height: 100%;
+  background: #e8b96b;
+  transition: width 0.2s ease;
+}
+.flashcard-viewer__stage {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 8px;
+}
+.flashcard-viewer__step {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+}
+.flashcard-viewer__step:disabled {
+  opacity: 0.35;
+}
+.flashcard-viewer__card {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
+  min-height: min(52vh, 360px);
+  padding: 18px 16px 12px;
+  text-align: center;
+  color: #fff4df;
+  background: linear-gradient(152deg, #a77b55 0 7%, #80543e 7% 63%, #604035 63%);
+  border: 1px solid #ac8059;
+  border-radius: 5px 16px 5px 10px;
+  box-shadow: 0 4px #3f2928;
+  cursor: pointer;
+}
+.flashcard-viewer__card[data-side="back"] {
+  background: linear-gradient(152deg, #7f9a6a 0 7%, #5d7650 7% 63%, #43533b 63%);
+  border-color: #8fa97a;
+}
+.flashcard-viewer__card small {
+  font-size: 0.78rem;
+  opacity: 0.8;
+}
+.flashcard-viewer__card strong {
+  align-self: center;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.flashcard-viewer__card span {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+.flashcard-viewer__hint {
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 0.85rem;
+}
+@media (max-width: 520px) {
+  .flashcard-viewer__stage {
+    grid-template-columns: 36px minmax(0, 1fr) 36px;
+    gap: 4px;
+  }
+  .flashcard-viewer__step {
+    width: 36px;
+  }
+}

@@ -421,10 +421,12 @@ describe("resumo automático no aparelho", () => {
     expect(services).not.toHaveBeenCalled();
     expect(stream).not.toHaveBeenCalled();
     const action = dispatch.mock.calls[0]![0];
-    if (action.type !== "flashcards/imported") throw new Error("ação inesperada");
+    if (action.type !== "flashcard/added") throw new Error("ação inesperada");
     expect(action.subjectId).toBe("materia-1");
-    expect(action.cards.length).toBeGreaterThan(0);
-    expect(action.cards.every((card) => card.deck === folder.title)).toBe(true);
+    expect(action.materialId).toBe(source.id);
+    expect(action.deck).toBe("ENIAC");
+    expect(action.front.endsWith("?")).toBe(true);
+    expect(action.front).not.toContain("_____");
     expect(await screen.findByRole("status")).toBeTruthy();
   });
 
@@ -435,31 +437,41 @@ describe("resumo automático no aparelho", () => {
     expect(dispatch).not.toHaveBeenCalled();
   });
 
-  it("lista na pasta os flashcards do baralho dela, com a resposta ao abrir", () => {
+  it("mostra o baralho como uma linha e abre os cartões ao tocar, um por vez", () => {
+    const card = (id: string, front: string, back: string) => ({
+      id,
+      subjectId: "materia-1",
+      deck: "ENIAC",
+      materialId: source.id,
+      front,
+      back,
+      intervalDays: 0,
+      nextReview: "2026-11-17",
+    });
     render(
       <LibraryFolderContents
         folder={folder}
         materials={[source]}
         subjectId="materia-1"
         flashcards={[
-          {
-            id: "c1",
-            subjectId: "materia-1",
-            deck: folder.title,
-            front: "O que é o ENIAC?",
-            back: "Um dos primeiros computadores eletrônicos.",
-            intervalDays: 0,
-            nextReview: "2026-11-17",
-          },
+          card("c1", "O que é o ENIAC?", "Um dos primeiros computadores eletrônicos."),
+          card("c2", "O que aconteceu em 1945?", "O ENIAC foi concluído."),
         ]}
         dispatch={vi.fn()}
         onBack={() => undefined}
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: "Flashcards" }));
-    const list = screen.getByRole("list", { name: "Flashcards desta pasta" });
-    expect(within(list).getByText("O que é o ENIAC?")).toBeTruthy();
-    expect(within(list).getByText("Um dos primeiros computadores eletrônicos.")).toBeTruthy();
+    expect(screen.getByText("ENIAC.txt · 2 cartões")).toBeTruthy();
     expect(screen.queryByText("Ainda não há flashcards")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /^ENIAC/ }));
+    const viewer = screen.getAllByRole("dialog").at(-1)!;
+    expect(within(viewer).getByText("O que é o ENIAC?")).toBeTruthy();
+    expect(within(viewer).getByText("1 de 2")).toBeTruthy();
+    fireEvent.click(within(viewer).getByRole("button", { name: "Virar cartão" }));
+    expect(within(viewer).getByText("Um dos primeiros computadores eletrônicos.")).toBeTruthy();
+    fireEvent.click(within(viewer).getByRole("button", { name: "Ir para o próximo cartão" }));
+    expect(within(viewer).getByText("O que aconteceu em 1945?")).toBeTruthy();
+    expect(within(viewer).getByText("2 de 2")).toBeTruthy();
   });
 });

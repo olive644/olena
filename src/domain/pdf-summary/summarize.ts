@@ -1059,9 +1059,10 @@ function blankOut(sentence: string, term: string): string | undefined {
 }
 
 /**
- * Flashcards automáticos, feitos no aparelho e sem IA: definições viram "O que é X?", datas viram
- * "O que aconteceu em Y?" e as demais frases importantes viram lacunas com o termo-chave. Usa só
- * o texto do próprio arquivo, então não inventa nada. Sempre o máximo que o texto sustenta.
+ * Flashcards automáticos, feitos no aparelho e sem IA, sempre como pergunta e resposta: definições
+ * viram "O que é X?", datas viram "O que aconteceu em Y?", cada seção ganha uma pergunta central e
+ * as demais frases importantes viram "O que o texto diz sobre X?". A resposta é sempre a frase do
+ * próprio arquivo, então nada é inventado. Sempre o máximo que o texto sustenta.
  */
 export async function flashcardsFromDocument(
   doc: StructuredDocument,
@@ -1096,18 +1097,37 @@ export async function flashcardsFromDocument(
     if (when && standalone(sentence))
       add(sentence, whenQuestion(when.label, doc.language), sentence.text);
   }
+  // Uma pergunta central por seção, como no resumo.
+  if (sections.length >= 2) {
+    const labels = LABELS[doc.language];
+    for (const section of sections) {
+      const central = [...section.sentences]
+        .filter((sentence) => standalone(sentence) && !usedSentences.has(sentence.id))
+        .sort((x, y) => y.score - x.score)[0];
+      if (central)
+        add(
+          central,
+          labels.centralQuestion(plainTitle(section.title)),
+          withContext(central, sentences),
+        );
+    }
+  }
+  // O que sobrou de importante vira "O que o texto diz sobre X?", com X o termo-chave da frase.
   const terms = keyTerms(
     sentences.map((sentence) => sentence.text),
     language,
     80,
   ).filter(({ term }) => term.length >= 3);
-  const lead = language === "en" ? "Fill in the blank: " : "Complete: ";
+  const ask = (term: string) =>
+    language === "en"
+      ? `What does the text say about ${term}?`
+      : `O que o texto diz sobre ${term}?`;
   for (const sentence of byScore) {
     if (usedSentences.has(sentence.id) || !standalone(sentence)) continue;
     if (isReferenceLike(sentence.text) || sentence.text.length > 320) continue;
     for (const { term } of terms) {
-      const masked = blankOut(sentence.text, term);
-      if (masked && masked.indexOf("_____") > 0 && add(sentence, lead + masked, term)) break;
+      if (blankOut(sentence.text, term) === undefined) continue;
+      if (add(sentence, ask(term), sentence.text)) break;
     }
   }
   return made.sort((a, b) => a.id - b.id).map(({ card }) => card);

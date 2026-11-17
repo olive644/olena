@@ -3929,10 +3929,17 @@
   "Curto",
   "Longo",
   "Não consegui criar flashcards de {0}: o texto tem poucas definições e fatos.",
-  "{0} flashcards criados no baralho {1}. Revise em Flashcards, na Biblioteca.",
+  "{0} flashcards criados. Toque no baralho para estudar.",
   "Não foi possível criar os flashcards.",
   "Criando flashcards…",
-  "Flashcards automáticos: grátis, feitos no seu aparelho, sem IA. Cria o máximo de cartões que o próprio arquivo permite: definições, datas e lacunas.",
+  "Flashcards automáticos: grátis, feitos no seu aparelho, sem IA. Cria o máximo de perguntas e respostas que o próprio arquivo permite.",
   "Flashcards automáticos",
-  "Flashcards desta pasta"
+  "Esses flashcards já estavam criados.",
+  "{0} cartões",
+  "Nome do baralho",
+  "Progresso do baralho",
+  "Cartão anterior",
+  "Ir para o próximo cartão",
+  "Virar cartão",
+  "Toque no cartão para virar"
 ]
