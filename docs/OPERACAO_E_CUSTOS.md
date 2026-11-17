@@ -144,6 +144,16 @@ O `.gitleaksignore` contém a impressão digital `ee79bb7…:firebase-room.rules
 - Como pagar o CI em repositório privado: pagar minutos, rodar o e2e fora do GitHub (máquina própria ou local) ou reduzir muito as execuções (ver `docs/CI_MINUTOS.md`). Nenhum corte sozinho cabe no teto gratuito.
 - Escolher o e-mail de contato de segurança (seção 4.3).
 
+## Cota diária da Olena (resumo e conversa), 17/11/2026
+
+A Olena usa o plano gratuito do Cloudflare Workers AI: 10.000 neurons por dia para a conta inteira, zerados à 00:00 UTC (21h em Brasília). Conta de preço da página oficial (conferida em 16/11/2026, não verificada de novo hoje): o modelo `llama-3.1-8b-instruct-fp8-fast` gasta cerca de 4.090 neurons por milhão de tokens de entrada e 34.870 por milhão de saída. Um resumo de 8 mil caracteres de entrada com 1.000 tokens de saída fica perto de 68 neurons, o que dá cerca de 148 resumos por dia se nada mais usasse a cota.
+
+Limites atuais em `helena-runtime.ts` e `helena-quota.ts`: 5 por minuto e 30 por dia por conta; 100 por dia por endereço; **novo, só para resumos:** 5 por dia por conta e 100 por dia no total; 300 por dia no total de todos os pedidos. O teto de 100 resumos fecha em cerca de 6.800 neurons no pior caso e deixa uns 3.000 para a conversa. Os números 5 e 100 são uma escolha de projeto a partir dessa conta, **não foram medidos com uso real**: ajuste depois de olhar o consumo no painel da Cloudflare.
+
+O que a pessoa lê quando acaba: cada limite tem sua mensagem, com a hora em que volta ("às 21h, horário de Brasília"), e o resumo lembra que o Resumo automático continua funcionando. Se a própria Cloudflare recusar por cota (HTTP 429 ou o código 4006), o aviso é o mesmo de limite gratuito do dia. A resposta leva o cabeçalho `Retry-After`. Antes, o cliente trocava qualquer erro de limite por "Serviço indisponível", e a pessoa não sabia o que aconteceu.
+
+Não verificado, para a dona conferir no painel da Cloudflare: (1) quantos neurons por dia o resto do app já gasta, principalmente a voz (`speech-quota.ts` permite 6.000 pedidos por dia e a voz também usa a mesma cota gratuita); (2) o código exato que a Cloudflare devolve quando a cota acaba (tratamos 429 e o texto "4006" ou "daily free allocation").
+
 ## Orçamento de Idiomas, 02/11/2026
 
 Autorização vigente do proprietário para ampliar o teto de JavaScript quando a funcionalidade exigir. Revisão das atividades de Inglês medida em build: 1704,7 KiB contra 1699,8 KiB anterior, acréscimo de 4,9 KiB para planejamento adaptativo com fallback compartilhado, revisão da Olena e catálogo de idiomas gerais. Banco de 720 tarefas e guias continuam em JSON carregado sob demanda; sem biblioteca nova ou aumento da entrada por conteúdo didático. Ajuste explícito do teto total e teto rígido de 1704 para 1708 KiB. Nenhuma alteração no teto de entrada, workflows, testes ou tempos. Não se trata de redução de proteção nem de economia alegada: os demais gates continuam obrigatórios.
@@ -165,3 +175,10 @@ Medição com a retomada: aplicação 1719,8 KiB de 1720 e entrada 220,7 KiB. O 
 ## Teto de JavaScript autorizado, 10/11/2026
 
 Proprietário pediu explicitamente subir o teto após a medição de 1761,1 KiB. Orçamento total e teto rígido passam de 1748 para 1764 KiB, com 2,9 KiB de margem na medição atual. Entrada, dependências, outros orçamentos, workflows e tempos permanecem iguais. Ampliação cobre a entrada visual e a associação/retorno de contas; não foi alegada redução de tamanho nem de custo.
+
+### Voz e conversa desligadas para guardar a cota do resumo, 17/11/2026
+
+- A cota gratuita da Cloudflare (10.000 neurons por dia) agora é só do Resumo com a Olena. A voz natural (`api/speech.ts`, MeloTTS) responde 410 sem chamar a Cloudflare e o app usa a voz do aparelho. Para religar, restaure o handler anterior do histórico do git.
+- A conversa, o plano de estudo e a explicação da Olena foram desligados: o botão flutuante saiu do app e `/api/helena` devolve 410 para qualquer pedido que não seja `summarize` (sem gastar cota). A variável `HELENA_CHAT_ENABLED=true` na Vercel religa o servidor (a interface precisaria voltar em `src/app.tsx`).
+- Os avisos de cota e de erro do servidor saem em inglês quando o app está em inglês (cabeçalho `X-App-Language`).
+- Efeito sobre os limites da seção anterior: o teto de 300 pedidos por dia e os limites de conversa agora só valem para o resumo. Não verificado: quantos neurons por dia sobram; conferir no painel da Cloudflare depois de alguns dias.

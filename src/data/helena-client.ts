@@ -1,3 +1,4 @@
+import { uiLocale } from "../i18n/runtime";
 import {
   parseHelenaResponse,
   type HelenaErrorCode,
@@ -9,6 +10,26 @@ import { readEventStream } from "../ai/event-stream";
 const HELENA_ENDPOINT = "/api/helena";
 const MAX_RESPONSE_LENGTH = 32_000;
 const INVALID_RESPONSE = "Resposta inválida. Tente novamente.";
+
+/** Só o texto de limite de uso vem do servidor (é nosso e curto): é o que explica a falta de cota. */
+async function limitErrorFrom(response: Response): Promise<HelenaClientError | undefined> {
+  if (response.status !== 429) return undefined;
+  try {
+    const body: unknown = await response.json();
+    const error =
+      body && typeof body === "object" && "error" in body
+        ? (body as { error: unknown }).error
+        : undefined;
+    if (error && typeof error === "object" && "code" in error && "message" in error) {
+      const { code, message } = error as { code: unknown; message: unknown };
+      if (code === "rate_limited" && typeof message === "string" && message.length <= 300)
+        return new HelenaClientError("rate_limited", message);
+    }
+  } catch {
+    // Corpo que não é JSON nosso (um proxy, por exemplo): vale o texto padrão.
+  }
+  return undefined;
+}
 
 export class HelenaClientError extends Error {
   readonly code: HelenaErrorCode;
@@ -43,6 +64,7 @@ export async function streamHelena(
     headers: {
       Accept: "text/event-stream",
       "Content-Type": "application/json",
+      "X-App-Language": uiLocale(),
       ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
     },
     body: JSON.stringify(request),
@@ -53,6 +75,8 @@ export async function streamHelena(
     !response.body ||
     !response.headers.get("Content-Type")?.includes("text/event-stream")
   ) {
+    const limited = await limitErrorFrom(response);
+    if (limited) throw limited;
     await response.body?.cancel();
     throw new HelenaClientError(
       response.status === 429 ? "rate_limited" : "provider_unavailable",
@@ -79,11 +103,20 @@ export async function streamHelena(
         const completed = parseHelenaResponse(event.response);
         if (!completed.ok || completed.value.answer !== answer) throw new Error();
         return completed.value;
+      } else if (
+        event.type === "error" &&
+        "code" in event &&
+        event.code === "rate_limited" &&
+        "message" in event &&
+        typeof event.message === "string" &&
+        event.message.length <= 300
+      ) {
+        throw new HelenaClientError("rate_limited", event.message);
       } else throw new Error();
     }
     throw new Error();
   } catch (error) {
-    if (options.signal?.aborted) throw error;
+    if (options.signal?.aborted || error instanceof HelenaClientError) throw error;
     throw new HelenaClientError(
       "provider_unavailable",
       "A resposta foi interrompida. Tente novamente.",
@@ -104,7 +137,11 @@ export async function requestHelena(
   const init: RequestInit = {
     method: "POST",
     credentials: "same-origin",
-    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-App-Language": uiLocale(),
+    },
     body: JSON.stringify(request),
   };
   if (options.token)
@@ -114,6 +151,8 @@ export async function requestHelena(
   const response = await fetcher(HELENA_ENDPOINT, init);
   if (!response.ok) {
     // Do not display arbitrary server/proxy error text in the conversation.
+    const limited = await limitErrorFrom(response);
+    if (limited) throw limited;
     throw new HelenaClientError(
       response.status === 429 ? "rate_limited" : "provider_unavailable",
       response.status === 401

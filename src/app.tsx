@@ -42,9 +42,6 @@ const PrivacyNotice = lazy(() =>
 const AgendaReminders = lazy(() =>
   import("./components/agenda-reminders").then((module) => ({ default: module.AgendaReminders })),
 );
-const HelenaChat = lazy(() =>
-  import("./components/helena-chat").then((module) => ({ default: module.HelenaChat })),
-);
 const OnboardingView = lazy(() => import("./views/onboarding-view"));
 const AccountLoadFailed = lazy(() =>
   import("./components/account-load-failed").then((module) => ({
@@ -332,7 +329,6 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
         </Suspense>
         <MobileNavigation view={view} onNavigate={setView} />
         <Suspense fallback={null}>
-          <HelenaChat currentView={view} materials={workspace.materials} />
           {(!cloud.enabled || cloud.authenticated === true || guest) && (
             <PrivacyNotice authenticated={cloud.authenticated === true && !guest} />
           )}

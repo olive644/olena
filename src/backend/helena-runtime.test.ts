@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
+// Estes testes exercitam a conversa, desligada por padrão na produção.
+process.env["HELENA_CHAT_ENABLED"] = "true";
+
 const mocks = vi.hoisted(() => ({
   identify: vi.fn(),
   quota: vi.fn(),
@@ -34,7 +37,7 @@ beforeEach(() => {
 });
 afterEach(() => vi.unstubAllEnvs());
 
-async function send(prompt: string, address?: string) {
+async function send(prompt: string, address?: string, capability = "tutor") {
   const { handleHelenaRuntime } = await import("./helena-runtime");
   return handleHelenaRuntime(
     new Request("https://olena.test/api/helena", {
@@ -46,9 +49,12 @@ async function send(prompt: string, address?: string) {
       },
       body: JSON.stringify({
         version: 1,
-        capability: "tutor",
+        capability,
         prompt,
-        sources: [],
+        sources:
+          capability === "summarize"
+            ? [{ id: "fonte", kind: "material", title: "Aula", content: "Texto da aula." }]
+            : [],
         privacy: { consent: true, retention: "none" },
       }),
     }),
@@ -119,4 +125,31 @@ it("sem endereço identificável, o teto por endereço é ignorado e o global co
   });
   expect((await send("Explique frações.")).status).toBe(200);
   expect(buckets).toEqual(["helena-user-minute", "helena-user-day", "helena-global-day"]);
+});
+
+it("o resumo tem teto próprio por pessoa e geral, e o chat segue livre quando ele acaba", async () => {
+  const blocked = new Set<string>();
+  mocks.quota.mockImplementation(
+    async (_store: unknown, namespace: string) => !blocked.has(namespace),
+  );
+
+  blocked.add("helena-summary-day");
+  const global = await send("Resuma a aula", undefined, "summarize");
+  expect(global.status).toBe(429);
+  expect(((await global.json()) as { error: { message: string } }).error.message).toContain(
+    "limite gratuito de hoje",
+  );
+  expect(global.headers.get("Retry-After")).toMatch(/^\d+$/);
+
+  blocked.clear();
+  blocked.add("helena-summary-user-day");
+  const personal = await send("Resuma a aula", undefined, "summarize");
+  expect(personal.status).toBe(429);
+  expect(((await personal.json()) as { error: { message: string } }).error.message).toContain(
+    "resumos com a Olena hoje",
+  );
+
+  // Com os dois tetos do resumo cheios, a conversa continua respondendo.
+  blocked.add("helena-summary-day");
+  expect((await send("Explique frações")).status).toBe(200);
 });

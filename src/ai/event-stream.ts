@@ -42,6 +42,25 @@ export async function* readEventStream(
   }
 }
 
+/** A cota gratuita do provedor acabou (HTTP 429 ou o código 4006 da Cloudflare). */
+export class ModelProviderQuotaError extends Error {
+  constructor() {
+    super("Provider quota exhausted");
+    this.name = "ModelProviderQuotaError";
+  }
+}
+
+/** Lê até 2 KB do corpo de uma resposta com erro e diz se foi a cota diária que acabou. */
+export async function isProviderQuotaFailure(response: Response): Promise<boolean> {
+  let text = "";
+  try {
+    text = (await response.text()).slice(0, 2000);
+  } catch {
+    // Sem corpo legível: vale só o código HTTP.
+  }
+  return response.status === 429 || /\b4006\b|daily free allocation/i.test(text);
+}
+
 /** Cloudflare native SSE and OpenAI-compatible text deltas only, never reasoning. */
 export async function* readModelStream(response: Response, signal?: AbortSignal) {
   if (
@@ -49,7 +68,10 @@ export async function* readModelStream(response: Response, signal?: AbortSignal)
     !response.body ||
     !response.headers.get("Content-Type")?.includes("text/event-stream")
   ) {
-    await response.body?.cancel();
+    if (!response.ok) {
+      // O corpo já foi lido por isProviderQuotaFailure: não há mais o que cancelar.
+      if (await isProviderQuotaFailure(response)) throw new ModelProviderQuotaError();
+    } else await response.body?.cancel();
     throw new Error(`Streaming provider unavailable (${response.status})`);
   }
   let length = 0;

@@ -352,7 +352,12 @@ describe("resumo automático no aparelho", () => {
     expect(dispatch).not.toHaveBeenCalled();
   });
 
-  it("avisa que imagens precisam da Olena", async () => {
+  it("lê o texto de uma imagem no aparelho e resume sem a Olena", async () => {
+    recognized.mockReturnValue(
+      "A fotossíntese é o processo pelo qual as plantas produzem energia a partir da luz. " +
+        "A clorofila absorve a luz do sol dentro dos cloroplastos. " +
+        "Sem luz, a planta não consegue produzir o açúcar de que precisa para crescer.",
+    );
     const { dispatch, dialog } = renderWith({
       ...source,
       id: "img-1",
@@ -361,10 +366,31 @@ describe("resumo automático no aparelho", () => {
       content: "data:image/png;base64,AAAA",
     });
     fireEvent.click(within(dialog).getByRole("button", { name: "Resumo automático" }));
-    expect(await screen.findByRole("alert")).toHaveProperty(
-      "textContent",
-      "O resumo automático lê PDF e texto. Para imagens, use a Olena.",
-    );
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(createWorker).toHaveBeenCalledWith("por", 1, expect.anything());
+    expect(terminate).toHaveBeenCalled();
+    expect(stream).not.toHaveBeenCalled();
+  });
+
+  it("avisa quando nem o OCR acha texto na imagem", async () => {
+    recognized.mockReturnValue("");
+    const { dispatch, dialog } = renderWith({
+      ...source,
+      id: "img-2",
+      title: "foto.png",
+      kind: "image",
+      content: "data:image/png;base64,AAAA",
+    });
+    fireEvent.click(within(dialog).getByRole("button", { name: "Resumo automático" }));
+    expect(await screen.findByRole("alert")).toBeTruthy();
     expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it("oferece Curto, Médio e Longo e começa em Médio", () => {
+    const { dialog } = renderWith(source);
+    const group = within(dialog).getByRole("group", { name: "Tamanho do resumo automático" });
+    expect(within(group).getByRole("radio", { name: "Médio" })).toHaveProperty("checked", true);
+    fireEvent.click(within(group).getByRole("radio", { name: "Curto" }));
+    expect(within(group).getByRole("radio", { name: "Curto" })).toHaveProperty("checked", true);
   });
 });

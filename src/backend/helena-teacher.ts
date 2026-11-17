@@ -1,7 +1,11 @@
 import type { HelenaRequest } from "../ai/helena-contract.js";
 import type { HelenaProvider } from "./helena-handler.js";
 import { helenaModelInput } from "./helena-model-input.js";
-import { readModelStream } from "../ai/event-stream.js";
+import {
+  ModelProviderQuotaError,
+  isProviderQuotaFailure,
+  readModelStream,
+} from "../ai/event-stream.js";
 
 export const HELENA_TEACHER_POLICY =
   "Você é Olena, tutora da OlenaStudy. Responda em português brasileiro, com clareza e gentileza. " +
@@ -82,7 +86,10 @@ export function createCloudflareTeacher(
           }),
         },
       );
-      if (!response.ok) throw new Error("Professor indisponível.");
+      if (!response.ok) {
+        if (await isProviderQuotaFailure(response)) throw new ModelProviderQuotaError();
+        throw new Error("Professor indisponível.");
+      }
       const raw = await response.text();
       if (raw.length > 64_000) throw new Error("Resposta muito longa.");
       const payload: unknown = JSON.parse(raw);

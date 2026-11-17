@@ -360,6 +360,7 @@ export function LibraryFolderContents({
   const readingSummary = summaries.find(({ id }) => id === readingSummaryId);
   const [summaryBusy, setSummaryBusy] = useState(false);
   const [summaryError, setSummaryError] = useState("");
+  const [summaryDetail, setSummaryDetail] = useState<"short" | "medium" | "long">("medium");
   const [section, setSection] = useState<FolderSection>("Fontes");
   const [renamingId, setRenamingId] = useState<string>();
   const [removingIds, setRemovingIds] = useState<string[]>([]);
@@ -507,9 +508,17 @@ export function LibraryFolderContents({
         const fileTitle = source.title.replace(/\.[^.]+$/, "");
         let result: Awaited<ReturnType<typeof summarizePlainText>>;
         if (source.kind === "image") {
-          throw new Error(uiText("O resumo automático lê PDF e texto. Para imagens, use a Olena."));
+          // Foto ou imagem de página: o OCR em português lê o texto, no aparelho.
+          const { createWorker } = await import("tesseract.js");
+          const scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
+          try {
+            const text = (await scanner.recognize(source.content)).data.text;
+            result = await summarizePlainText(text, fileTitle, { detail: summaryDetail });
+          } finally {
+            await scanner.terminate();
+          }
         } else if (source.kind === "text") {
-          result = await summarizePlainText(source.content, fileTitle);
+          result = await summarizePlainText(source.content, fileTitle, { detail: summaryDetail });
         } else {
           const [pdfjs, worker] = await Promise.all([
             import("pdfjs-dist"),
@@ -529,6 +538,7 @@ export function LibraryFolderContents({
             try {
               result = await summarizePdf(pdf, {
                 title: fileTitle,
+                detail: summaryDetail,
                 ocr: async (pageNumber) => {
                   const page = await pdf.getPage(pageNumber);
                   const viewport = page.getViewport({ scale: 1 });
@@ -1099,6 +1109,28 @@ export function LibraryFolderContents({
                   "Resumo automático: grátis, feito no seu aparelho, sem IA. Escolhe as frases mais importantes do próprio arquivo.",
                 )}
               </p>
+            )}
+            {creating === "Resumo" && (
+              <fieldset className="library-summary-detail">
+                <legend>{uiText("Tamanho do resumo automático")}</legend>
+                {(
+                  [
+                    ["short", "Curto"],
+                    ["medium", "Médio"],
+                    ["long", "Longo"],
+                  ] as const
+                ).map(([value, label]) => (
+                  <label key={value}>
+                    <input
+                      type="radio"
+                      name="library-summary-detail"
+                      checked={summaryDetail === value}
+                      onChange={() => setSummaryDetail(value)}
+                    />
+                    {uiText(label)}
+                  </label>
+                ))}
+              </fieldset>
             )}
             {creating === "Resumo" && (
               <p>

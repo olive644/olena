@@ -1,3 +1,9 @@
+## Teto diário e aviso de cota da Olena, 17/11/2026
+
+O resumo com a Olena ganhou teto próprio (5 por dia por conta e 100 por dia no total), separado do teto geral de 300 pedidos, para não esgotar a cota gratuita da Cloudflare e deixar a conversa sem resposta. Cada limite devolve sua mensagem, com a hora em que volta e o cabeçalho `Retry-After`. A cota esgotada no próprio provedor (HTTP 429 ou código 4006) também vira aviso claro, no fluxo e fora dele. O cliente (`helena-client.ts`) passou a mostrar a mensagem do servidor quando o código é `rate_limited` (texto curto e nosso), em vez de "Serviço indisponível"; textos de proxy ou de outros erros continuam sendo trocados pelo texto padrão. Contas e números detalhados em `docs/OPERACAO_E_CUSTOS.md`.
+
+Provas: testes de cota (`helena-quota.test.ts`, `helena-runtime.test.ts` com o resumo bloqueado e o chat livre), handler, cliente (mensagem de cota por resposta, por evento do fluxo e recusa de texto arbitrário), professor e fluxo (429 e 4006 viram cota; 500 segue falha comum). Limites: os tetos 5 e 100 não foram medidos com uso real; o código que a Cloudflare devolve quando a cota acaba não foi confirmado; o aviso está só em português (vem do servidor).
+
 ## Resumo da Olena interrompido no primeiro título numerado, 17/11/2026
 
 Sintoma relatado: um resumo e depois nada funcionava. Não era a cota. Os registros da Vercel (produção, 16 e 17/11) mostram 4 interrupções de 2 usuários em `/api/helena` com a capacidade `summarize` e o motivo `Invalid model delta`, depois de 305 a 913 caracteres de resposta, ou seja, no primeiro título numerado que o pedido manda escrever ("## 1. ..."). A leitura do fluxo em `src/ai/event-stream.ts` recusava qualquer pedaço que não fosse texto, e a Cloudflare entrega como número o pedaço formado só de dígitos. Causa provável, não confirmada com o conteúdo bruto do fluxo (os registros não guardam o pedaço): a coincidência entre o ponto do corte e o primeiro numeral é forte, mas não prova.
@@ -5454,3 +5460,22 @@ Pedido: riscar a escrita em zigue-zague com o pincel apaga o que está por baixo
 - Tabelas respeitam amarelo/azul/lilás na folha escura, inclusive na renderização exportada. Perfil: campo Bio removido do editor, lixeira atual sem fundo e cosméticos separados em Padrões, Orgulho gay e Matérias.
 - Provas: conferência na prévia desktop em tema escuro, seleção dos instrumentos, painel de camadas combinado, arrastar/minimizar/reabrir paleta, seletor circular e troca da tabela de lilás para azul na folha noite. Testes direcionados e TypeScript passaram antes da atualização com main.
 - Limites: visual mobile e tema claro deste conjunto não reconferidos; compatibilidade entre navegadores não medida. CI será acompanhado pelo Claude a pedido do proprietário.
+
+## Melhorias grátis no Resumo automático, 17/11/2026
+
+Tudo local, sem IA e sem rede, na mesma PR do teto diário da Olena.
+
+- Fórmulas (linhas curtas com `=`, raiz, soma, expoente) viram itens `Fórmula` e exemplos ("por exemplo", "suponha") ganham caixa própria.
+- Termos-chave preservam nomes próprios com maiúscula (antes "John" virava "john").
+- Tamanho do resumo: Curto, Médio (padrão) e Longo, no diálogo de criação (grupo de rádios, 44 px de toque, teclado e celular). Curto fica abaixo de 65% das palavras do arquivo e Longo não passa de 105% (testes em `improvements.test.ts`).
+- Rótulos em português e inglês (`labels.ts`); a detecção de definições e erros comuns segue só em português.
+- Imagens (foto de página) agora passam pelo OCR em português no aparelho, em vez de pedir a Olena. Se nem o OCR achar texto, o aviso de erro aparece e nada é criado.
+- Prova: `npm run verify` com 2944 testes passando e só as 8 falhas ambientais de `listening-audio` (`object.stream is not a function`, também na main limpa); e2e dos três fluxos de resumo em desktop e celular, claro e escuro (12 passaram).
+- Limites: qualidade não validada em PDFs reais de aula; precisão do OCR em foto torta ou borrada não medida; seletor de tamanho sem captura de tela dedicada nesta rodada.
+
+## Voz e conversa da Olena desligadas, avisos em inglês, 17/11/2026
+
+- Decisão do proprietário: economizar a cota gratuita da Cloudflare para o resumo. Voz natural responde 410 (cai na voz do aparelho), o chat saiu do app (componente e página de preview continuam no código) e o servidor só aceita `summarize`.
+- Avisos de limite, cota, login e interrupção do servidor agora seguem o idioma do app (`X-App-Language`), com testes em `helena-quota.test.ts` e `helena-handler.test.ts`.
+- Removidos `e2e/helena-app.spec.ts`, `e2e/helena-first-frame.spec.ts` e `e2e/helena-mascot.spec.ts` (testavam o botão e a estrela flutuantes que não existem mais no app). Mantido `e2e/helena-chat-preview.spec.ts`.
+- Limite: o app do celular com versão antiga ainda mostra o chat e receberá o aviso de conversa desligada; validação visual em claro e escuro não se aplica porque nenhuma tela nova foi criada.

@@ -12,6 +12,7 @@ export async function summarizePdf(
 ): Promise<SummaryResult> {
   const document = await readPdf(pdf, options);
   const summaryOptions: SummaryOptions = {};
+  if (options.detail) summaryOptions.detail = options.detail;
   if (options.onProgress) summaryOptions.onProgress = options.onProgress;
   if (options.signal) summaryOptions.signal = options.signal;
   return summarizeDocument(document, summaryOptions);

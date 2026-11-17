@@ -6,6 +6,8 @@ import {
   hasCue,
   hasQuantity,
   isReferenceLike,
+  isExample,
+  isFormula,
   isMisconception,
   isWarning,
   keyTerms,
@@ -19,9 +21,11 @@ import {
   splitSentences,
   words,
 } from "./portuguese";
+import { LABELS, type Labels } from "./labels";
 import type {
   Language,
   StructuredDocument,
+  SummaryDetail,
   SummaryOptions,
   SummaryResult,
   SummaryStage,
@@ -62,6 +66,8 @@ type Section = {
   chars: number;
   /** Tabelas do arquivo nesta seção (a primeira linha é o cabeçalho). */
   tables: string[][][];
+  /** Linhas de fórmula ou equação do arquivo nesta seção. */
+  formulas: string[];
 };
 
 type RawParagraph = { text: string; page: number; item?: boolean; table?: string[][] };
@@ -136,7 +142,7 @@ function sectionsFromHeadings(doc: StructuredDocument): RawSection[] {
     if (first && prefaceChars < 150) first.parts[0]!.paragraphs.unshift(...preface);
     else
       raw.unshift({
-        title: "Introdução",
+        title: LABELS[doc.language].intro,
         startPage: preface[0]!.page,
         endPage: preface[preface.length - 1]!.page,
         subtopics: [],
@@ -221,7 +227,8 @@ function sectionsByTopic(doc: StructuredDocument): RawSection[] {
     subtopics: [],
     parts: [{ sub: undefined, paragraphs: slice }],
   });
-  if (wanted === 1 || paragraphs.length < 4) return [make(paragraphs, "Pontos principais")];
+  if (wanted === 1 || paragraphs.length < 4)
+    return [make(paragraphs, LABELS[doc.language].mainPoints)];
   const bags = paragraphs.map((paragraph) => bagOf(paragraph.text, doc.language));
   const merge = (from: number, to: number) => {
     const merged = new Map<string, number>();
@@ -258,7 +265,9 @@ function sectionsByTopic(doc: StructuredDocument): RawSection[] {
       3,
     );
     const label = terms.map((term) => term.term.toLowerCase()).join(", ");
-    sections.push(make(slice, label ? capitalize(label) : `Parte ${index + 1}`));
+    sections.push(
+      make(slice, label ? capitalize(label) : `${LABELS[doc.language].part} ${index + 1}`),
+    );
   }
   return sections;
 }
@@ -326,8 +335,10 @@ function withEnding(text: string): string {
   return /[.!?…]["”')\]]?$/.test(text) ? text : `${text}.`;
 }
 
-function pageLabel(start: number, end: number): string {
-  return start === end ? `pág. ${start}` : `págs. ${start} a ${end}`;
+function pageLabel(start: number, end: number, labels: Labels): string {
+  return start === end
+    ? `${labels.page} ${start}`
+    : `${labels.pages} ${start} ${labels.pageTo} ${end}`;
 }
 
 type Prepared = {
@@ -353,11 +364,17 @@ function prepare(doc: StructuredDocument): Prepared {
       sentences: [],
       chars: 0,
       tables: [],
+      formulas: [],
     };
     for (const part of rawSection.parts) {
       for (const paragraph of part.paragraphs) {
         if (paragraph.table) {
           section.tables.push(paragraph.table);
+          continue;
+        }
+        const formulaText = paragraph.item ? cleanItem(paragraph.text) : paragraph.text.trim();
+        if (isFormula(formulaText)) {
+          section.formulas.push(formulaText.replace(/\s+/g, " "));
           continue;
         }
         const pieces = paragraph.item
@@ -555,9 +572,16 @@ function scoreSection(prepared: Prepared, section: Section): void {
 // ---------------------------------------------------------------------------------------------
 // Seleção
 
-function targetCharacters(totalChars: number): number {
-  const target = 11 * Math.pow(Math.max(totalChars, 1), 0.62);
-  return Math.min(Math.max(target, 500), 30_000, totalChars * 0.6);
+const DETAIL = {
+  short: { size: 0.5, ceiling: 0.4, words: 0.45, timeline: 0.1, minimum: 110 },
+  medium: { size: 1, ceiling: 0.6, words: 0.8, timeline: 0.2, minimum: 200 },
+  long: { size: 1.45, ceiling: 0.7, words: 0.9, timeline: 0.22, minimum: 200 },
+} as const;
+
+function targetCharacters(totalChars: number, detail: SummaryDetail): number {
+  const { size, ceiling } = DETAIL[detail];
+  const target = 11 * size * Math.pow(Math.max(totalChars, 1), 0.62);
+  return Math.min(Math.max(target, 500 * Math.min(size, 1)), 30_000, totalChars * ceiling);
 }
 
 /** Escolhe frases de um conjunto, uma a uma, sem repetir ideias (MMR), até gastar o orçamento. */
@@ -635,7 +659,8 @@ function withContext(sentence: Sentence, all: Sentence[]): string {
   return [...before, sentence.text].join(" ");
 }
 
-function whenQuestion(label: string): string {
+function whenQuestion(label: string, language: Language): string {
+  if (language === "en") return `What happened in ${label}?`;
   if (/^século/i.test(label)) return `O que aconteceu no ${label}?`;
   if (/^década/i.test(label)) return `O que aconteceu na ${label}?`;
   return `O que aconteceu em ${label}?`;
@@ -682,7 +707,9 @@ export async function summarizeDocument(
   }
 
   const totalChars = sections.reduce((sum, section) => sum + section.chars, 0);
-  const target = targetCharacters(totalChars);
+  const detail = options.detail ?? "medium";
+  const L = LABELS[doc.language];
+  const target = targetCharacters(totalChars, detail);
   const used = new Set<number>();
   const lines: string[] = [];
   const title = doc.title;
@@ -710,7 +737,10 @@ export async function summarizeDocument(
         .sort((a, b) => b.score - a.score)[0],
     }))
     .filter((entry): entry is { section: Section; best: Sentence } => entry.best !== undefined);
-  const overviewCount = Math.min(7, Math.max(3, Math.ceil(sections.length / 2) + 1));
+  const overviewCount =
+    detail === "short"
+      ? Math.min(3, sections.length)
+      : Math.min(7, Math.max(3, Math.ceil(sections.length / 2) + 1));
   const overviewPicks = [...tops]
     .sort(
       (a, b) => b.best.score * sectionWeight(b.section) - a.best.score * sectionWeight(a.section),
@@ -736,14 +766,14 @@ export async function summarizeDocument(
     sections.length === 1 ? overview.reduce((sum, sentence) => sum + sentence.text.length, 0) : 0;
   if (overview.length > 0) {
     lines.push(
-      `> **Visão geral** ${overview.map((sentence) => withEnding(withContext(sentence, sentences))).join(" ")}`,
+      `> **${L.overview}** ${overview.map((sentence) => withEnding(withContext(sentence, sentences))).join(" ")}`,
     );
   }
 
   if (sections.length >= 3) {
-    lines.push("## Roteiro do arquivo");
+    lines.push(`## ${L.route}`);
     for (const section of sections) {
-      lines.push(`- **${section.title}** (${pageLabel(section.startPage, section.endPage)})`);
+      lines.push(`- **${section.title}** (${pageLabel(section.startPage, section.endPage, L)})`);
     }
   }
 
@@ -761,7 +791,7 @@ export async function summarizeDocument(
           !isMisconception(sentence.text),
       )
       .sort((a, b) => b.score - a.score);
-    const budget = wordsIn * 0.2;
+    const budget = wordsIn * DETAIL[detail].timeline;
     let spent = 0;
     for (const sentence of dated.slice(0, timelineLimit)) {
       const cost = countWords(sentence.text) + 2;
@@ -781,17 +811,16 @@ export async function summarizeDocument(
   for (const section of sections) {
     sectionNumber += 1;
     const budget = Math.max(
-      200,
+      DETAIL[detail].minimum,
       (Math.max(target - overviewChars - timelineChars, target * 0.4) * sectionWeight(section)) /
         weightSum,
     );
     const plain = plainTitle(section.title);
-    const heading =
-      sections.length === 1 && section.title === "Pontos principais" ? "Pontos principais" : plain;
+    const heading = sections.length === 1 && section.title === L.mainPoints ? L.mainPoints : plain;
     const label = sections.length === 1 ? heading : `${sectionNumber}. ${heading}`;
-    lines.push(`## ${label} (${pageLabel(section.startPage, section.endPage)})`);
+    lines.push(`## ${label} (${pageLabel(section.startPage, section.endPage, L)})`);
     if (section.subtopics.length > 0) {
-      lines.push(`**Subtópicos:** ${section.subtopics.join("; ")}`);
+      lines.push(`**${L.subtopics}:** ${section.subtopics.join("; ")}`);
     }
     // Lista do próprio arquivo: entra inteira (até 10 itens), com a frase que a anuncia.
     const listed = section.sentences.filter((sentence) => sentence.item).slice(0, 10);
@@ -823,10 +852,22 @@ export async function summarizeDocument(
       .sort((a, b) => b.score - a.score)
       .slice(0, 1);
     for (const sentence of warnings) used.add(sentence.id);
+    const examples = section.sentences
+      .filter(
+        (sentence) =>
+          standalone(sentence) &&
+          isExample(sentence.text) &&
+          !sentence.definition &&
+          !used.has(sentence.id),
+      )
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 1);
+    for (const sentence of examples) used.add(sentence.id);
     const spentOnBoxes = [
       ...definitions,
       ...mistakes,
       ...warnings,
+      ...examples,
       ...listed,
       ...(listLead ? [listLead] : []),
     ].reduce((sum, item) => sum + item.text.length, 0);
@@ -855,20 +896,22 @@ export async function summarizeDocument(
       }
     }
     for (const table of section.tables.slice(0, 3)) lines.push(...tableLines(table));
+    for (const formula of section.formulas.slice(0, 8))
+      lines.push(`- **${L.formula}:** ${formula}`);
     for (const sentence of supporting) {
       lines.push(`- ${withEnding(withContext(sentence, sentences))}`);
     }
     for (const sentence of definitions) {
       lines.push(
-        `> **Definição: ${(sentence.definition?.term ?? "").replace(/^(?:o|a|os|as|um|uma)\s+/i, "")}** ${withEnding(sentence.text)}`,
+        `> **${L.definition}: ${(sentence.definition?.term ?? "").replace(/^(?:o|a|os|as|um|uma)\s+/i, "")}** ${withEnding(sentence.text)}`,
       );
       definitionsSeen.push(sentence);
     }
-    for (const sentence of mistakes)
-      lines.push(`> **Erro frequente** ${withEnding(sentence.text)}`);
-    for (const sentence of warnings) lines.push(`> **Atenção** ${withEnding(sentence.text)}`);
+    for (const sentence of mistakes) lines.push(`> **${L.mistake}** ${withEnding(sentence.text)}`);
+    for (const sentence of warnings) lines.push(`> **${L.warning}** ${withEnding(sentence.text)}`);
+    for (const sentence of examples) lines.push(`> **${L.example}** ${withEnding(sentence.text)}`);
     if (central) {
-      lines.push(`> **Ponto essencial** ${withEnding(withContext(central, sentences))}`);
+      lines.push(`> **${L.essential}** ${withEnding(withContext(central, sentences))}`);
     }
     selectedBySection.push({
       section,
@@ -882,11 +925,12 @@ export async function summarizeDocument(
   // Partes de estudo (linha do tempo, perguntas, dados e termos) entram só até o texto do resumo
   // chegar a 70% do original: um resumo maior que o arquivo não resume nada.
   const coreWords = countWords(lines.join("\n"));
-  const wordCap = wordsIn * 0.8;
+  const wordCap = wordsIn * DETAIL[detail].words;
   let remaining = Math.max(0, wordCap - coreWords);
   const takeWords = (fraction: number) => Math.min(remaining, Math.max(0, remaining * fraction));
 
-  const questionLimit = tiny ? 2 : Math.min(20, Math.max(4, sections.length + 3));
+  const questionLimit =
+    detail === "short" ? 3 : tiny ? 2 : Math.min(20, Math.max(4, sections.length + 3));
   const questions: { question: string; answer: string }[] = [];
   {
     const seen = new Set<string>();
@@ -901,19 +945,17 @@ export async function summarizeDocument(
       spent += cost;
     };
     for (const sentence of [...definitionsSeen].sort((a, b) => b.score - a.score)) {
-      if (sentence.definition) push(definitionQuestion(sentence.definition), sentence.text);
+      if (sentence.definition)
+        push(definitionQuestion(sentence.definition, doc.language), sentence.text);
     }
     for (const sentence of timeline.slice(0, 4)) {
-      push(whenQuestion(yearOf(sentence)!.label), sentence.text);
+      push(whenQuestion(yearOf(sentence)!.label, doc.language), sentence.text);
     }
     if (sections.length >= 3) {
       for (const entry of selectedBySection) {
         const central = entry.items[0];
         if (central) {
-          push(
-            `Qual é a ideia central de “${plainTitle(entry.section.title)}”?`,
-            withContext(central, sentences),
-          );
+          push(L.centralQuestion(plainTitle(entry.section.title)), withContext(central, sentences));
         }
       }
     }
@@ -937,7 +979,7 @@ export async function summarizeDocument(
       numeric.push(sentence);
       spent += cost;
     }
-    if (numeric.length < 2) numeric.length = 0;
+    if (numeric.length < 2 || detail === "short") numeric.length = 0;
     numeric.sort((a, b) => a.id - b.id);
     remaining -= spent;
   }
@@ -949,8 +991,8 @@ export async function summarizeDocument(
   );
 
   if (timeline.length >= 3) {
-    lines.push("## Linha do tempo");
-    lines.push("| Quando | O que aconteceu |");
+    lines.push(`## ${L.timeline}`);
+    lines.push(`| ${L.when} | ${L.whatHappened} |`);
     lines.push("| --- | --- |");
     for (const sentence of timeline) {
       lines.push(
@@ -959,21 +1001,21 @@ export async function summarizeDocument(
     }
   }
   if (numeric.length >= 2) {
-    lines.push("## Dados e números");
+    lines.push(`## ${L.numbers}`);
     for (const sentence of numeric) {
       used.add(sentence.id);
       lines.push(`- ${withEnding(sentence.text)}`);
     }
   }
   if (terms.length >= 3 && !tiny) {
-    lines.push("## Termos-chave");
+    lines.push(`## ${L.terms}`);
     lines.push(terms.map((term) => `**${term.term}**`).join(", "));
   }
   if (questions.length >= 2) {
-    lines.push("## Perguntas de revisão");
+    lines.push(`## ${L.review}`);
     questions.forEach((item, index) => {
-      lines.push(`**Pergunta ${index + 1}:** ${item.question}`);
-      lines.push(`**Resposta:** ${withEnding(item.answer)}`);
+      lines.push(`**${L.question} ${index + 1}:** ${item.question}`);
+      lines.push(`**${L.answer}:** ${withEnding(item.answer)}`);
     });
   }
 
@@ -985,9 +1027,7 @@ export async function summarizeDocument(
     0,
   );
   const ratio = wordsIn > 0 ? selectedWords / wordsIn : 0;
-  lines.push(
-    `> **Sobre este resumo** Resumo automático feito no seu aparelho, sem IA: ${selectedSentences} de ${sentences.length} frases do próprio arquivo, organizadas por seção. Nada foi reescrito nem acrescentado.`,
-  );
+  lines.push(`> **${L.aboutTitle}** ${L.about(selectedSentences, sentences.length)}`);
   progress(1, "composing");
   return {
     title,
