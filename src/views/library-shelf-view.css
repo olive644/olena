@@ -1007,3 +1007,22 @@ html:has(.notebooks-showcase)::view-transition-old(library-folder-view) {
     height: calc(100dvh - 11rem);
   }
 }
+
+.library-flashcard-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.library-flashcard-list .library-summary-card {
+  display: block;
+}
+.library-flashcard-list .library-summary-card summary {
+  min-height: 44px;
+}
+.library-flashcard-list .library-summary-card p {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}

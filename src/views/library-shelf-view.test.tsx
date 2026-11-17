@@ -434,4 +434,32 @@ describe("resumo automático no aparelho", () => {
     expect(await screen.findByRole("alert")).toBeTruthy();
     expect(dispatch).not.toHaveBeenCalled();
   });
+
+  it("lista na pasta os flashcards do baralho dela, com a resposta ao abrir", () => {
+    render(
+      <LibraryFolderContents
+        folder={folder}
+        materials={[source]}
+        subjectId="materia-1"
+        flashcards={[
+          {
+            id: "c1",
+            subjectId: "materia-1",
+            deck: folder.title,
+            front: "O que é o ENIAC?",
+            back: "Um dos primeiros computadores eletrônicos.",
+            intervalDays: 0,
+            nextReview: "2026-11-17",
+          },
+        ]}
+        dispatch={vi.fn()}
+        onBack={() => undefined}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Flashcards" }));
+    const list = screen.getByRole("list", { name: "Flashcards desta pasta" });
+    expect(within(list).getByText("O que é o ENIAC?")).toBeTruthy();
+    expect(within(list).getByText("Um dos primeiros computadores eletrônicos.")).toBeTruthy();
+    expect(screen.queryByText("Ainda não há flashcards")).toBeNull();
+  });
 });

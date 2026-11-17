@@ -14,6 +14,7 @@ import { useRef, useState, type Dispatch, type ReactNode } from "react";
 import {
   createWorkspaceId,
   toDateKey,
+  type Flashcard,
   type LibraryFolderStyle,
   type WorkspaceAction,
   type WorkspaceState,
@@ -356,9 +357,11 @@ export function LibraryFolderContents({
   folder,
   materials: folderMaterials,
   subjectId,
+  flashcards = [],
   dispatch,
   onBack,
 }: {
+  flashcards?: readonly Flashcard[];
   folder: NonNullable<WorkspaceState["libraryCollections"]>[number];
   materials: WorkspaceState["materials"];
   subjectId: string;
@@ -915,6 +918,18 @@ export function LibraryFolderContents({
                 <span className="library-summary-loading-track" aria-hidden="true" />
               </div>
             )}
+            {section === "Flashcards" && !cardsBusy && flashcards.length > 0 && (
+              <ul className="library-flashcard-list" aria-label={uiText("Flashcards desta pasta")}>
+                {flashcards.map((card) => (
+                  <li key={card.id}>
+                    <details className="library-summary-card">
+                      <summary>{card.front}</summary>
+                      <p>{card.back}</p>
+                    </details>
+                  </li>
+                ))}
+              </ul>
+            )}
             {section === "Flashcards" && cardsMessage && (
               <p role={cardsMessage.error ? "alert" : "status"}>{cardsMessage.text}</p>
             )}
@@ -1010,7 +1025,10 @@ export function LibraryFolderContents({
                 </article>
               ))}
             {(section !== "Resumo" || (!summaryBusy && summaries.length === 0)) &&
-              !(section === "Flashcards" && (cardsBusy || cardsMessage)) && (
+              !(
+                section === "Flashcards" &&
+                (cardsBusy || cardsMessage || flashcards.length > 0)
+              ) && (
                 <div className="library-folder-study-empty">
                   <img
                     src={"/room-icons/" + studySections[section].icon + ".svg"}
