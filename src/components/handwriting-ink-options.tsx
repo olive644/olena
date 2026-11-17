@@ -70,6 +70,7 @@ export function HandwritingInkOptions({
               onEraserWholeStrokeChange(false);
             }}
           >
+            <img className="eraser-instrument" src="/erasers/segment.svg" alt="" />
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 21h5m4 0h4" stroke="#218b73" stroke-width="2" />
               <path d="m6 13 10-10 7 7-10 10Z" fill="#218b73" />
@@ -87,6 +88,7 @@ export function HandwritingInkOptions({
               onEraserWholeStrokeChange(true);
             }}
           >
+            <img className="eraser-instrument" src="/erasers/stroke.svg" alt="" />
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
               <path d="m2 18 4 3 4-3 4 3 5-4" fill="none" stroke="#c33466" stroke-width="2" />
               <path d="m6 13 10-10 7 7-10 10Z" fill="#c33466" />
@@ -104,6 +106,7 @@ export function HandwritingInkOptions({
               disabled={!backgroundAvailable}
               onClick={() => onEraserBackgroundChange(true)}
             >
+              <img className="eraser-instrument" src="/erasers/background.svg" alt="" />
               <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M2 3h13v17H2Z" fill="#d9e7ff" />
                 <path d="M4 7h8M4 11h5" stroke="#365dba" />

@@ -440,11 +440,7 @@ export function renderPage(
           ? nightPaper
             ? "#352d42"
             : "#fff"
-          : sticky.kind === "table"
-            ? nightPaper
-              ? "#33293f"
-              : stickyColor(sticky.color)
-            : stickyColor(sticky.color, nightPaper);
+          : stickyColor(sticky.color, nightPaper);
         context.fillRect(sticky.x, sticky.y, width, height);
       }
       context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? noteInk) : noteInk;

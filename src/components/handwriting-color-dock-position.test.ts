@@ -52,3 +52,32 @@ describe("encaixe da paleta", () => {
     expect(point.y).toBe(obstacle.y + obstacle.height + 8);
   });
 });
+
+it("desvia da seta direita quando a paleta ocupa quase toda a altura", () => {
+  const area = { x: 0, y: 0, width: 900, height: 500 };
+  const arrow = { x: 872, y: 225, width: 28, height: 44 };
+  const point = placeColorDock(area, { width: 52, height: 420 }, "right", 0.5, [arrow]);
+  expect(point.x + 52 + 8).toBeLessThanOrEqual(arrow.x);
+});
+it("considera as duas setas e o folheamento juntos", () => {
+  const area = { x: 0, y: 0, width: 900, height: 700 };
+  const arrows = [
+    { x: 0, y: 300, width: 28, height: 44 },
+    { x: 872, y: 300, width: 28, height: 44 },
+    { x: 420, y: 650, width: 44, height: 44 },
+  ];
+  for (const edge of ["left", "right", "top", "bottom"] as const) {
+    const size =
+      edge === "top" || edge === "bottom" ? { width: 420, height: 52 } : { width: 52, height: 420 };
+    const point = placeColorDock(area, size, edge, 0.5, arrows);
+    expect(
+      arrows.some(
+        (a) =>
+          point.x < a.x + a.width &&
+          point.x + size.width > a.x &&
+          point.y < a.y + a.height &&
+          point.y + size.height > a.y,
+      ),
+    ).toBe(false);
+  }
+});

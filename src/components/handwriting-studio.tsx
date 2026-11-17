@@ -121,6 +121,7 @@ import {
 import { HandwritingStickyNote } from "./handwriting-sticky-note";
 import {
   HandwritingBrushPanel,
+  HandwritingToolCase,
   HandwritingCoordinatePanel,
   HandwritingLayerPanel,
   HandwritingRulerPanel,
@@ -3356,13 +3357,36 @@ export function HandwritingStudio({
     .filter((layer) => layerAvailability[layer])
     .reverse();
   const optionsOpen = toolPresses === 2 && !textMode;
+  const inkOptions = (
+    <HandwritingInkOptions
+      tool={tool}
+      color={color}
+      onColorChange={setColor}
+      width={tool === "eraser" ? eraserWidth : width}
+      onWidthChange={tool === "eraser" ? setEraserWidth : setWidth}
+      eraserWholeStroke={eraserWholeStroke}
+      onEraserWholeStrokeChange={setEraserWholeStroke}
+      eraserBackground={eraserBackground}
+      onEraserBackgroundChange={setEraserBackground}
+      backgroundAvailable={backgroundAvailable}
+      highlighterOpacity={highlighterOpacity}
+      onHighlighterOpacityChange={setHighlighterOpacity}
+      dash={dash}
+      onDashChange={setDash}
+    />
+  );
   const showBrushPanel = tool === "pen" && optionsOpen && !writingWindowOpen;
   const showRulerPanel = tool === "ruler" && optionsOpen;
   const showCoordinatePanel = tool === "coordinates" && optionsOpen;
+  const showToolCase =
+    !phoneLayout &&
+    optionsOpen &&
+    ["eraser", "highlighter", "ruler", "curve", "coordinates"].includes(tool);
   const rightPanelCount =
     Number(showBrushPanel) +
-    Number(showRulerPanel) +
-    Number(showCoordinatePanel) +
+    Number(showToolCase) +
+    Number(phoneLayout && showRulerPanel) +
+    Number(phoneLayout && showCoordinatePanel) +
     Number(layersOpen);
 
   return (
@@ -3560,24 +3584,7 @@ export function HandwritingStudio({
           />
         )}
 
-        {optionsOpen && (
-          <HandwritingInkOptions
-            tool={tool}
-            color={color}
-            onColorChange={setColor}
-            width={tool === "eraser" ? eraserWidth : width}
-            onWidthChange={tool === "eraser" ? setEraserWidth : setWidth}
-            eraserWholeStroke={eraserWholeStroke}
-            onEraserWholeStrokeChange={setEraserWholeStroke}
-            eraserBackground={eraserBackground}
-            onEraserBackgroundChange={setEraserBackground}
-            backgroundAvailable={backgroundAvailable}
-            highlighterOpacity={highlighterOpacity}
-            onHighlighterOpacityChange={setHighlighterOpacity}
-            dash={dash}
-            onDashChange={setDash}
-          />
-        )}
+        {optionsOpen && !(showBrushPanel && !phoneLayout) && !showToolCase && inkOptions}
 
         <HandwritingHistoryBar
           textMode={textMode}
@@ -4806,10 +4813,56 @@ export function HandwritingStudio({
             )}
           </div>
         </div>
-        {showBrushPanel && (
-          <HandwritingBrushPanel brush={brush} color={color} onBrushChange={setBrush} />
+        {showToolCase && (
+          <HandwritingToolCase
+            key={tool}
+            title={uiText(
+              (
+                {
+                  eraser: "Borracha",
+                  highlighter: "Marca-texto",
+                  ruler: "Réguas",
+                  curve: "Curva",
+                  coordinates: "Sistema de coordenadas",
+                } as Record<string, string>
+              )[tool] ?? "Ferramentas",
+            )}
+          >
+            {inkOptions}
+            {showRulerPanel && (
+              <div className="handwriting-tool-case-variants">
+                {" "}
+                <HandwritingRulerPanel
+                  rulerUnit={rulerUnit}
+                  rulerKind={rulerKind}
+                  onRulerUnitChange={setRulerUnit}
+                  onRulerKindChange={setRulerKind}
+                />
+              </div>
+            )}
+            {showCoordinatePanel && (
+              <div className="handwriting-tool-case-variants">
+                {" "}
+                <HandwritingCoordinatePanel
+                  coordinateStep={coordinateStep}
+                  onStepChange={setCoordinateStep}
+                  coordinateMeasurements={coordinateMeasurements}
+                  onMeasurementsChange={setCoordinateMeasurements}
+                  equalCoordinateAxes={equalCoordinateAxes}
+                  onEqualAxesChange={setEqualCoordinateAxes}
+                  inspectedCoordinateStats={inspectedCoordinateStats}
+                  isLivePreview={Boolean(liveCoordinateStats)}
+                />
+              </div>
+            )}
+          </HandwritingToolCase>
         )}
-        {showRulerPanel && (
+        {showBrushPanel && (
+          <HandwritingBrushPanel brush={brush} color={color} onBrushChange={setBrush}>
+            {!phoneLayout && inkOptions}
+          </HandwritingBrushPanel>
+        )}
+        {phoneLayout && showRulerPanel && (
           <HandwritingRulerPanel
             rulerUnit={rulerUnit}
             rulerKind={rulerKind}
@@ -4817,7 +4870,7 @@ export function HandwritingStudio({
             onRulerKindChange={setRulerKind}
           />
         )}
-        {showCoordinatePanel && (
+        {phoneLayout && showCoordinatePanel && (
           <HandwritingCoordinatePanel
             coordinateStep={coordinateStep}
             onStepChange={setCoordinateStep}

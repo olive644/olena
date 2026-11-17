@@ -519,3 +519,15 @@
 :root[data-theme] body .social-share-card[data-profile-background] {
   --muted: #352c40;
 }
+
+.profile-customizer-topic {
+  display: contents;
+}
+.profile-customizer-topic > h3 {
+  grid-column: 1 / -1;
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border-left: 3px solid var(--accent, #8033ff);
+  color: var(--text);
+  font-size: 15px;
+}

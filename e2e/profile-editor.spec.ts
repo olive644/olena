@@ -27,7 +27,6 @@ for (const theme of ["light", "dark"]) {
     const dialog = page.getByRole("dialog", { name: "Editar perfil", exact: true });
     await expect(dialog.getByLabel("Nome", { exact: true })).toHaveAttribute("readonly", "");
     await expect(dialog.getByLabel("Nome de usuário", { exact: true })).toBeDisabled();
-    await dialog.getByLabel("Bio", { exact: true }).fill("Uma descoberta de cada vez.");
     await dialog.getByRole("button", { name: "Pronomes", exact: true }).click();
     await page.getByRole("option", { name: "Personalizado", exact: true }).click();
     await dialog.getByLabel("Pronomes personalizados").fill("ele/dela");
@@ -76,14 +75,19 @@ for (const theme of ["light", "dark"]) {
     await page.reload();
     await page.evaluate(() => window.scrollTo(0, 0));
     await expect(page.locator(".profile-chrome")).toHaveAttribute("data-compact", "false");
-    await expect(page.getByText("Uma descoberta de cada vez.", { exact: true })).toBeVisible();
+    // O campo Bio saiu do editor: o texto salvo que sobrevive ao recarregar são os pronomes.
+    await expect(
+      page.locator(".profile-cover__handle").getByText("ele/dela", { exact: true }),
+    ).toBeVisible();
     await edit.click();
-    await dialog.getByLabel("Bio", { exact: true }).fill("Não salvar");
+    await dialog.getByLabel("Pronomes personalizados").fill("não salvar");
     await dialog.getByLabel("Rede social 1", { exact: true }).fill("javascript:alert(1)");
     await dialog.getByRole("button", { name: "Salvar perfil" }).click();
     await expect(dialog.getByRole("alert")).toBeVisible();
     await dialog.getByRole("button", { name: "Cancelar", exact: true }).click();
-    await expect(page.getByText("Uma descoberta de cada vez.", { exact: true })).toBeVisible();
+    await expect(
+      page.locator(".profile-cover__handle").getByText("ele/dela", { exact: true }),
+    ).toBeVisible();
     await page.evaluate(() => window.scrollTo(0, 0));
     await expect(page.locator(".profile-chrome")).toHaveAttribute("data-compact", "false");
     await edit.click();

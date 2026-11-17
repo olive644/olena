@@ -1,3 +1,4 @@
+import { HandwritingColorPicker } from "./handwriting-color-picker";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { useEffect, useRef, useState } from "react";
 import { uiText } from "../i18n/runtime";
@@ -29,6 +30,8 @@ const FIXED_HEX: readonly string[] = FIXED_COLORS.map(([hex]) => hex);
 // por último (guardadas só neste aparelho), seletor livre e conta-gotas que lê a cor da própria folha.
 export function HandwritingQuickColors({ color, onColorChange }: HandwritingQuickColorsProps) {
   const [recent, setRecent] = useState<string[]>(readRecentColors);
+  const [customOpen, setCustomOpen] = useState(false);
+  const customButton = useRef<HTMLButtonElement>(null);
   const [picking, setPicking] = useState(false);
   const [message, setMessage] = useState("");
   const current = normalizeHex(color) ?? color;
@@ -114,15 +117,22 @@ export function HandwritingQuickColors({ color, onColorChange }: HandwritingQuic
           {current === hex && <PaperCheckIcon />}
         </button>
       ))}
-      <label className="quick-color ink-swatch quick-color--custom" title={uiText(184)}>
-        <span className="visually-hidden">{uiText(184)}</span>
-        <input
-          type="color"
-          aria-label={uiText(184)}
-          value={normalizeHex(color) ?? "#17151c"}
-          onChange={(event) => onColorChange(event.target.value)}
+      <button
+        ref={customButton}
+        type="button"
+        className="quick-color ink-swatch quick-color--custom"
+        aria-label={uiText(184)}
+        aria-expanded={customOpen}
+        onClick={() => setCustomOpen((open) => !open)}
+      />
+      {customOpen && (
+        <HandwritingColorPicker
+          anchor={customButton}
+          color={normalizeHex(color) ?? "#17151c"}
+          onChange={onColorChange}
+          onClose={() => setCustomOpen(false)}
         />
-      </label>
+      )}
       <button
         type="button"
         className="quick-color quick-color--dropper"

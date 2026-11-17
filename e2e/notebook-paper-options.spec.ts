@@ -33,7 +33,7 @@ for (const theme of ["light", "dark"]) {
     await pen.click();
     await expect(inkOptions).toHaveCount(0);
     for (const name of ["Marca-texto", "Borracha", "Régua", "Sistema de coordenadas", "Curva"]) {
-      const control = editor.getByRole("button", { name, exact: true });
+      const control = editor.getByRole("button", { name, exact: true }).first();
       const studio = editor.locator(".handwriting-studio");
       await control.click();
       await expect(control.locator(".handwriting-tool-disclosure")).toBeVisible();

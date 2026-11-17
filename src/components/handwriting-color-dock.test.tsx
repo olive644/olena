@@ -96,3 +96,11 @@ it.each([
   expect(node.dataset["dragging"]).toBeUndefined();
   expect(node.style.transform).not.toBe("translate(0px, 0px)");
 });
+
+it("minimiza em estojo e reabre a paleta", () => {
+  render(<HandwritingColorDock active color="#17151c" onColorChange={vi.fn()} />);
+  fireEvent.click(screen.getByRole("button", { name: "Minimizar paleta de cores" }));
+  expect(screen.queryByText("cores")).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Abrir estojo de cores" }));
+  expect(screen.getByText("cores")).toBeTruthy();
+});

@@ -5440,3 +5440,11 @@ Pedido: riscar a escrita em zigue-zague com o pincel apaga o que está por baixo
 - Preferência nova `scribbleErase` (ligada por padrão) em Configurações do editor, com texto nos dois idiomas.
 - **Prova.** Testes de unidade (rabisco horizontal, vertical e inclinado aceitos; cursiva, onda, reta, círculo, traço curto e três passadas recusados; alcance; quais traços saem). e2e novo: escrever, rabiscar e a palavra some; desfazer a devolve; rabisco em lugar vazio fica; cursiva por cima não apaga; interruptor desligado deixa o rabisco.
 - **Não verificado.** Os limiares (4 voltas, 3 vezes, metade, 60%) são meus: o Goodnotes reconhece cursiva emendada como rabisco, e aqui isso foi testado só com laços regulares. Zigue-zague rápido sobre desenho próprio apaga o desenho (o interruptor serve para isso). Não testei com caneta nem com dedo.
+
+## 2026-11-16 — Estojos laterais e seletor Olena
+
+- PC: controles de caneta, borracha, marca-texto, réguas, curva e coordenadas na lateral direita. Novas artes SVG para seis pincéis, seis réguas e três borrachas. Seleção ilumina e avança o instrumento. Camadas permanece na lateral com estojo aberto ou recolhido.
+- Paleta desvia das setas de papéis, estojo e folheamento. Minimização abaixo do conta-gotas transforma a paleta em estojo arrastável; expansão não mostra barra de rolagem. Seletor circular próprio com matiz/saturação, brilho e HEX/RGB, sem seletor nativo do navegador.
+- Tabelas respeitam amarelo/azul/lilás na folha escura, inclusive na renderização exportada. Perfil: campo Bio removido do editor, lixeira atual sem fundo e cosméticos separados em Padrões, Orgulho gay e Matérias.
+- Provas: conferência na prévia desktop em tema escuro, seleção dos instrumentos, painel de camadas combinado, arrastar/minimizar/reabrir paleta, seletor circular e troca da tabela de lilás para azul na folha noite. Testes direcionados e TypeScript passaram antes da atualização com main.
+- Limites: visual mobile e tema claro deste conjunto não reconferidos; compatibilidade entre navegadores não medida. CI será acompanhado pelo Claude a pedido do proprietário.
