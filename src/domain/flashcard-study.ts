@@ -6,7 +6,7 @@ import {
   State,
   type Card as FsrsCard,
 } from "ts-fsrs";
-import { CARD_ORIGINS } from "./flashcard-feedback";
+import { CARD_ORIGINS } from "./flashcard-feedback.js";
 import type { Flashcard, FlashcardRating } from "./workspace";
 
 // Agendamento FSRS (biblioteca ts-fsrs, licença MIT). Sem fuzz e sem passos curtos: o app agenda
