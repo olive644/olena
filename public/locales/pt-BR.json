@@ -3921,5 +3921,7 @@
   "Não foi possível gerar o resumo.",
   "Resumo automático: grátis, feito no seu aparelho, sem IA. Escolhe as frases mais importantes do próprio arquivo.",
   "Ao gerar com a Olena, o texto das fontes selecionadas é enviado a ela.",
-  "Não encontrei texto em {0}, nem lendo as imagens. Se a foto estiver torta ou borrada, tente outra ou use a Olena."
+  "Não encontrei texto em {0}, nem lendo as imagens. Se a foto estiver torta ou borrada, tente outra ou use a Olena.",
+  "Rabiscar para apagar",
+  "Risque a escrita em zigue-zague com a caneta para apagar os traços que ficam por baixo. Se apagar sem querer, desfaça."
 ]

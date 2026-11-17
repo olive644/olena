@@ -17,7 +17,7 @@ describe("configurações do editor", () => {
     fireEvent.click(screen.getByRole("button", { name: "Configurações do editor" }));
     expect(screen.getAllByRole("group")).toHaveLength(7);
     const switches = screen.getAllByRole("checkbox");
-    expect(switches).toHaveLength(11);
+    expect(switches).toHaveLength(12);
     switches.forEach((input) => fireEvent.click(input));
     for (const [key, value] of Object.entries(DEFAULT_NOTEBOOK_PREFERENCES)) {
       if (["writingWindowAutoFollow", "penBarrelErases", "penTailErases"].includes(key)) continue;

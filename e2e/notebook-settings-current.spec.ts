@@ -17,7 +17,7 @@ for (const theme of ["light", "dark"]) {
       .getByRole("button", { name: "Cadernos", exact: true })
       .click();
     const fields = page.locator(".profile-notebook-fields");
-    await expect(fields.getByRole("checkbox")).toHaveCount(11);
+    await expect(fields.getByRole("checkbox")).toHaveCount(12);
     await fields.getByRole("checkbox", { name: /^Encaixar objetos/ }).uncheck();
     await fields.getByRole("checkbox", { name: /^Guias de alinhamento/ }).uncheck();
     await fields.locator("summary").filter({ hasText: "Atalhos de teclado" }).click();

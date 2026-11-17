@@ -1,6 +1,11 @@
 import type { HandwritingPoint } from "../domain/handwriting";
 import type { Stroke } from "./handwriting-types";
-import { simulatedPressures, taperFactors, usesSimulatedWidth } from "./handwriting-ink-dynamics";
+import {
+  simulatedPressureRange,
+  simulatedPressures,
+  taperFactors,
+  usesSimulatedWidth,
+} from "./handwriting-ink-dynamics";
 
 // Motor de traço: transforma os pontos da caneta em um contorno de largura
 // variável desenhado com um único preenchimento. Desenhar cada segmento com seu
@@ -74,7 +79,11 @@ export function strokeRadii(
   // pressão real e as canetas de escrever (Fineliner, Esferográfica) ficam como sempre foram. Ao
   // vivo só a ponta do começo afina: a do fim é a posição atual da caneta, não o fim do traço.
   const simulated = usesSimulatedWidth({ ...stroke, points })
-    ? simulatedPressures(points, Math.max(6, stroke.width * 2.2))
+    ? simulatedPressures(
+        points,
+        Math.max(6, stroke.width * 2.2),
+        simulatedPressureRange(stroke.brush),
+      )
     : undefined;
   const taper = simulated
     ? taperFactors(points, Math.max(12, stroke.width * 4), { end: !options.live })

@@ -1,4 +1,4 @@
-import { createEvent, fireEvent, render } from "@testing-library/react";
+import { cleanup, createEvent, fireEvent, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const spies = vi.hoisted(() => ({ predictedTail: vi.fn(), withPredictedTail: vi.fn() }));
@@ -40,7 +40,10 @@ afterEach(() => {
   localStorage.clear();
 });
 
-function draw(predicted: { clientX: number; clientY: number }[]) {
+function draw(
+  predicted: { clientX: number; clientY: number }[],
+  pointerType: "pen" | "mouse" | "touch" = "pen",
+) {
   const view = render(<HandwritingStudio onClose={vi.fn()} onSave={vi.fn()} draftKey="pred" />);
   const canvas = view.container.querySelector<HTMLCanvasElement>("canvas.handwriting-canvas")!;
   vi.spyOn(canvas, "getBoundingClientRect").mockReturnValue({
@@ -54,8 +57,19 @@ function draw(predicted: { clientX: number; clientY: number }[]) {
     y: 0,
     toJSON: () => ({}),
   });
-  fireEvent.pointerDown(canvas, { clientX: 100, clientY: 100, button: 0, pointerId: 1 });
-  const move = createEvent.pointerMove(canvas, { clientX: 130, clientY: 100, pointerId: 1 });
+  fireEvent.pointerDown(canvas, {
+    clientX: 100,
+    clientY: 100,
+    button: 0,
+    pointerId: 1,
+    pointerType,
+  });
+  const move = createEvent.pointerMove(canvas, {
+    clientX: 130,
+    clientY: 100,
+    pointerId: 1,
+    pointerType,
+  });
   Object.defineProperty(move, "getPredictedEvents", {
     value: () => predicted.map((point) => ({ ...point, pressure: 0.5 })),
   });
@@ -86,6 +100,15 @@ describe("previsão da ponta da caneta na tela", () => {
     // A ponta escolhida existe (o desenho em si depende do canvas, que o jsdom não tem).
     const tail = spies.predictedTail.mock.results.at(-1)!.value as unknown[];
     expect(tail.length).toBeGreaterThan(0);
+  });
+
+  it("com mouse ou dedo não prevê: a previsão errava a direção e virava um toco duro", () => {
+    localStorage.setItem(NOTEBOOK_PREFERENCES_KEY, JSON.stringify({ stabilization: false }));
+    draw([{ clientX: 140, clientY: 100 }], "mouse");
+    expect(spies.predictedTail).not.toHaveBeenCalled();
+    cleanup();
+    draw([{ clientX: 140, clientY: 100 }], "touch");
+    expect(spies.predictedTail).not.toHaveBeenCalled();
   });
 
   it("com a preferência desligada não prevê nada", () => {
