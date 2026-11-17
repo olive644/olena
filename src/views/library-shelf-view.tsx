@@ -9,7 +9,7 @@ import { PaperArrow } from "../components/paper-arrow";
 import { ShelfToolIcon } from "../components/shelf-tool-icon";
 import { PaperDigits } from "../components/paper-digits";
 import { LibraryDialog } from "../components/library-dialog";
-import { FlashcardViewer } from "../components/flashcard-viewer";
+import { FlashcardStudy } from "../components/flashcard-study";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useRef, useState, type Dispatch, type ReactNode } from "react";
 import {
@@ -796,6 +796,18 @@ export function LibraryFolderContents({
     </div>
   );
 
+  if (openDeck)
+    return (
+      <FlashcardStudy
+        key={openDeck.id}
+        title={openDeck.title}
+        cards={openDeck.cards}
+        onReview={(id, rating, reviewedOn) =>
+          dispatch({ type: "flashcard/reviewed", id, rating, reviewedOn })
+        }
+        onClose={() => setOpenDeckId(undefined)}
+      />
+    );
   return (
     <section className="library-folder-contents" aria-label={folder.title}>
       <header>
@@ -1165,13 +1177,6 @@ export function LibraryFolderContents({
               <img src="/room-icons/add.svg" alt="" /> {studySections[section].action}
             </button>
           </>
-        )}
-        {openDeck && (
-          <FlashcardViewer
-            title={openDeck.title}
-            cards={openDeck.cards}
-            onClose={() => setOpenDeckId(undefined)}
-          />
         )}
         {sourceType && (
           <LibraryDialog
