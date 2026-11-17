@@ -11,6 +11,7 @@ import { PaperDigits } from "../components/paper-digits";
 import { LibraryDialog } from "../components/library-dialog";
 import { FlashcardStudy } from "../components/flashcard-study";
 import { noteFeedback, type CardOrigin } from "../domain/flashcard-feedback";
+import { cardFeatures, learnFromSignal, loadModel, shouldHide } from "../domain/flashcard-quality";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useRef, useState, type Dispatch, type ReactNode } from "react";
 import {
@@ -604,6 +605,7 @@ export function LibraryFolderContents({
     setCardsBusy(true);
     try {
       const { flashcardsFromPdf, flashcardsFromPlainText } = await import("../domain/pdf-summary");
+      let hidden = 0;
       const made: {
         sourceId: string;
         deck: string;
@@ -626,7 +628,15 @@ export function LibraryFolderContents({
           );
         }
         const deck = fileTitle.replace(/[-_]+/g, " ").trim() || source.title;
-        for (const card of cards) {
+        // O filtro aprendido neste aparelho deixa de fora cartões parecidos com os que o usuário
+        // já descartou. Só age depois de avaliações suficientes e nunca esvazia o baralho.
+        const model = loadModel();
+        const strong = cards.filter(
+          (card) => !shouldHide(model, cardFeatures(card.front, card.back, card.kind)),
+        );
+        const usable = strong.length >= 4 ? strong : cards;
+        hidden += cards.length - usable.length;
+        for (const card of usable) {
           const repeated = flashcards.some(
             (item) => item.materialId === source.id && item.front === card.front,
           );
@@ -657,7 +667,10 @@ export function LibraryFolderContents({
       }
       setCardsMessage({
         text: made.length
-          ? uiText("{0} flashcards criados. Toque no baralho para estudar.", [String(made.length)])
+          ? uiText("{0} flashcards criados. Toque no baralho para estudar.", [
+              String(made.length),
+            ]) +
+            (hidden ? " " + uiText("{0} cartões fracos ficaram de fora.", [String(hidden)]) : "")
           : uiText("Esses flashcards já estavam criados."),
         error: false,
       });
@@ -812,9 +825,11 @@ export function LibraryFolderContents({
         title={openDeck.title}
         cards={openDeck.cards}
         sourceTitle={openDeck.sourceTitle}
-        onFeedback={(id, event) =>
-          noteFeedback(openDeck.cards.find((item) => item.id === id)?.origin, event)
-        }
+        onFeedback={(id, event) => {
+          const card = openDeck.cards.find((item) => item.id === id);
+          noteFeedback(card?.origin, event);
+          if (card) learnFromSignal(card, event.type !== "kept");
+        }}
         onDiscard={(id) => dispatch({ type: "flashcard/removed", id })}
         onEdit={(id, front, back) => {
           const card = openDeck.cards.find((item) => item.id === id);
