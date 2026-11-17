@@ -30,7 +30,7 @@ export type PdfDocumentLike = {
   getPage(pageNumber: number): Promise<PdfPageLike>;
 };
 
-export type ReadPdfOptions = Pick<SummaryOptions, "onProgress" | "signal"> & {
+export type ReadPdfOptions = Pick<SummaryOptions, "detail" | "onProgress" | "signal"> & {
   title?: string;
   /** Lê o texto de uma página que é só imagem (OCR). Devolve o texto, com linha em branco entre parágrafos. */
   ocr?: (pageNumber: number) => Promise<string>;

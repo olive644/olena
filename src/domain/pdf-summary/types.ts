@@ -73,7 +73,11 @@ export type SummaryResult = {
   stats: SummaryStats;
 };
 
+/** Quanto do arquivo o resumo mostra: curto, médio (padrão) ou longo. */
+export type SummaryDetail = "short" | "medium" | "long";
+
 export type SummaryOptions = {
+  detail?: SummaryDetail;
   /** Chamado de vez em quando com o que já foi feito (0 a 1) e a etapa em curso. */
   onProgress?: (fraction: number, stage: SummaryStage) => void;
   signal?: AbortSignal;

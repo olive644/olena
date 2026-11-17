@@ -154,8 +154,11 @@ function lowerArticle(term: string): string {
   return parts.join(" ");
 }
 
-export function definitionQuestion(definition: Definition): string {
+export function definitionQuestion(definition: Definition, language: Language = "pt"): string {
   const term = lowerArticle(definition.term);
+  if (language === "en") {
+    return /^significa/.test(definition.verb) ? `What does ${term} mean?` : `What is ${term}?`;
+  }
   if (/^significa/.test(definition.verb)) return `O que significa ${term}?`;
   if (/^consiste/.test(definition.verb)) return `Em que consiste ${term}?`;
   if (/^(chama|denomina)/.test(definition.verb)) return `Como se chama ${term}?`;
@@ -255,6 +258,27 @@ const MISCONCEPTION =
 /** Frase que corrige uma confusão comum ("e não do gás carbônico", "não confunda..."). */
 export function isMisconception(sentence: string): boolean {
   return MISCONCEPTION.test(sentence);
+}
+
+const EXAMPLE =
+  /^(?:por exemplo|exemplo\b|ex\.\s*:|suponha\b|considere\b|imagine\b|digamos\b|for example|for instance|example\b|e\.g\.|suppose\b|consider\b|imagine\b)/i;
+
+/** Frase que dá um exemplo ("Por exemplo, ...", "Suponha que ..."). */
+export function isExample(sentence: string): boolean {
+  return EXAMPLE.test(sentence.trim());
+}
+
+const FORMULA_SIGN = /[=≈≠≤≥→⇒√∑∫∝]|\^\s*[\d({]|[²³]/u;
+
+/** Linha curta de fórmula ou equação ("F = m · a", "v = Δs / Δt"), que não é frase de texto. */
+export function isFormula(text: string): boolean {
+  const value = text.trim();
+  if (value.length < 5 || value.length > 110) return false;
+  if (!FORMULA_SIGN.test(value)) return false;
+  // Texto corrido tem várias palavras longas; fórmula tem símbolos, letras soltas e números.
+  const longWords = value.split(/\s+/).filter((word) => /\p{L}{5,}/u.test(word)).length;
+  if (longWords > 3) return false;
+  return /[\p{L}\d²³)\]][\s]*[=≈≠≤≥→⇒∝]/u.test(value) || /[√∑∫]/u.test(value);
 }
 
 const ANAPHORA =
@@ -373,6 +397,9 @@ export function keyTerms(
   const documentFrequency = new Map<string, number>();
   const frequency = new Map<string, number>();
   const surface = new Map<string, Map<string, number>>();
+  // Formas escritas com maiúscula no meio da frase (nomes próprios e siglas): vencem a forma em
+  // minúscula que só aparece porque a palavra abre uma frase ("John" não vira "john").
+  const capitalForms = new Map<string, Map<string, number>>();
   const properCount = new Map<string, number>();
   const remember = (key: string, shown: string) => {
     const forms = surface.get(key) ?? new Map<string, number>();
@@ -398,7 +425,12 @@ export function keyTerms(
       const shown = startsSentence && !isAcronym ? token.toLowerCase() : token;
       const key = stem(token, language);
       frequency.set(key, (frequency.get(key) ?? 0) + 1);
-      if (capitalized || isAcronym) properCount.set(key, (properCount.get(key) ?? 0) + 1);
+      if (capitalized || isAcronym) {
+        properCount.set(key, (properCount.get(key) ?? 0) + 1);
+        const forms = capitalForms.get(key) ?? new Map<string, number>();
+        forms.set(token, (forms.get(token) ?? 0) + 1);
+        capitalForms.set(key, forms);
+      }
       if (!seen.has(key)) {
         documentFrequency.set(key, (documentFrequency.get(key) ?? 0) + 1);
         seen.add(key);
@@ -409,7 +441,12 @@ export function keyTerms(
         const nextProper = /^\p{Lu}/u.test(next) || next === next.toUpperCase();
         const pair = `${key} ${stem(next, language)}`;
         frequency.set(pair, (frequency.get(pair) ?? 0) + 1);
-        if (capitalized && nextProper) properCount.set(pair, (properCount.get(pair) ?? 0) + 1);
+        if (capitalized && nextProper) {
+          properCount.set(pair, (properCount.get(pair) ?? 0) + 1);
+          const forms = capitalForms.get(pair) ?? new Map<string, number>();
+          forms.set(`${token} ${next}`, (forms.get(`${token} ${next}`) ?? 0) + 1);
+          capitalForms.set(pair, forms);
+        }
         remember(pair, `${shown} ${startsSentence && !isAcronym ? next : next}`);
       }
     }
@@ -430,7 +467,8 @@ export function keyTerms(
     const forms = [...(surface.get(key) ?? [])].sort(
       (a, b) => b[1] - a[1] || a[0].length - b[0].length,
     );
-    const shown = forms[0]?.[0] ?? key;
+    const capital = [...(capitalForms.get(key) ?? [])].sort((a, b) => b[1] - a[1]);
+    const shown = capital[0]?.[0] ?? forms[0]?.[0] ?? key;
     const proper = (properCount.get(key) ?? 0) >= 1 ? 1.6 : 1;
     scored.push({ key, score: count * idf * (isPair ? 1.3 : 1) * proper, shown });
   }

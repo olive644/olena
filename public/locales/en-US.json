@@ -3924,5 +3924,8 @@
   "I found no text in {0}, even reading the images. If the photo is crooked or blurry, try another one or use Olena.",
   "Scribble to erase",
   "Scribble back and forth over your writing with the pen to erase the strokes underneath. If you erase by mistake, undo.",
-  "HEX"
+  "HEX",
+  "Automatic summary size",
+  "Short",
+  "Long"
 ]

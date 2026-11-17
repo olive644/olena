@@ -775,6 +775,34 @@ html:has(.notebooks-showcase)::view-transition-old(library-folder-view) {
 .library-study-confirm .library-source-selection li > label {
   order: -1;
 }
+.library-summary-detail {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 16px;
+  margin: 10px 0 0;
+  padding: 0;
+  border: 0;
+}
+.library-summary-detail legend {
+  width: 100%;
+  padding: 0;
+  margin-bottom: 6px;
+  text-align: center;
+  font-size: 0.82rem;
+}
+.library-summary-detail label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-size: 0.9rem;
+}
+.library-summary-detail input {
+  width: 20px;
+  height: 20px;
+  accent-color: #c89863;
+}
 :root body .library-study-confirm .library-study-confirm-generate {
   width: min(244px, 100%);
   justify-content: center;
