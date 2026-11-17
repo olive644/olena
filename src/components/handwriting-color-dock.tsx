@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type PointerEvent,
-} from "react";
+import { useCallback, useLayoutEffect, useRef, useState, type PointerEvent } from "react";
 import { HandwritingQuickColors } from "./handwriting-quick-colors";
 import { uiText } from "../i18n/runtime";
 import {

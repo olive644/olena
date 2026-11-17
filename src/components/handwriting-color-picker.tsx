@@ -38,13 +38,14 @@ export function HandwritingColorPicker({
   const [hsv, setHsv] = useState(() => hexToHsv(color));
   const [hex, setHex] = useState(color);
   const [position, setPosition] = useState({ left: 8, top: 8 });
-  useEffect(() => {
+  // Ajusta o estado durante a renderização quando a cor de fora muda (sem efeito).
+  const [syncedColor, setSyncedColor] = useState(color);
+  if (syncedColor !== color) {
+    const next = hexToHsv(color);
+    setSyncedColor(color);
     setHex(color);
-    setHsv((old) => {
-      const next = hexToHsv(color);
-      return next.s === 0 ? { ...next, h: old.h } : next;
-    });
-  }, [color]);
+    setHsv(next.s === 0 ? { ...next, h: hsv.h } : next);
+  }
   useEffect(() => {
     const place = () => {
       const a = anchor.current?.getBoundingClientRect();
@@ -179,9 +180,9 @@ export function HandwritingColorPicker({
           aria-hidden="true"
         />
         <label>
-          HEX
+          {uiText("HEX")}
           <input
-            aria-label="HEX"
+            aria-label={uiText("HEX")}
             value={hex}
             maxLength={7}
             spellCheck={false}
