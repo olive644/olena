@@ -1,3 +1,11 @@
+import { SourceExamStudy } from "../components/source-exam-study";
+import { SourceQuizStudy } from "../components/source-quiz-study";
+import {
+  buildSourceQuiz,
+  parseSourceQuiz,
+  type QuizDifficulty,
+  type QuizLength,
+} from "../domain/source-quiz";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { dataUrlBytes } from "../data/data-url";
 import { streamHelena } from "../data/helena-client";
@@ -369,8 +377,20 @@ export function LibraryFolderContents({
   dispatch: Dispatch<WorkspaceAction>;
   onBack: () => void;
 }) {
+  const quizzes = folderMaterials.filter((item) =>
+    ["folder-quiz", "folder-exam"].includes(item.tags?.[0] ?? ""),
+  );
+  const [openQuizId, setOpenQuizId] = useState<string>();
+  const [quizBusy, setQuizBusy] = useState(false);
+  const [quizError, setQuizError] = useState("");
+  const [difficulty, setDifficulty] = useState<QuizDifficulty>("medium");
+  const [quizLength, setQuizLength] = useState<QuizLength>("medium");
+  const openQuizMaterial = quizzes.find((item) => item.id === openQuizId);
+  const openQuiz = openQuizMaterial && parseSourceQuiz(openQuizMaterial.content);
   const summaries = folderMaterials.filter((item) => item.tags?.[0] === "folder-summary");
-  const materials = folderMaterials.filter((item) => item.tags?.[0] !== "folder-summary");
+  const materials = folderMaterials.filter(
+    (item) => !["folder-summary", "folder-quiz", "folder-exam"].includes(item.tags?.[0] ?? ""),
+  );
   const [openDeckId, setOpenDeckId] = useState<string>();
   const [renamingDeckId, setRenamingDeckId] = useState<string>();
   const decks = flashcards.reduce<
@@ -489,7 +509,7 @@ export function LibraryFolderContents({
                 ].join("\n[… ]\n");
           sources.push({
             id: source.id,
-            kind: "material",
+            kind: "material" as const,
             title: source.title.slice(0, 200),
             content: excerpt,
           });
@@ -593,6 +613,59 @@ export function LibraryFolderContents({
       }
     }
     return result;
+  }
+  async function generateQuiz() {
+    const exam = creating === "Simulados";
+    if (quizBusy || !selectedSources.length) return;
+    setCreating(undefined);
+    setSection(exam ? "Simulados" : "Quizzes");
+    setQuizBusy(true);
+    setQuizError("");
+    try {
+      const { flashcardsFromPdf, flashcardsFromPlainText } = await import("../domain/pdf-summary");
+      const facts: {
+        front: string;
+        back: string;
+        page: number;
+        sourceId: string;
+        sourceTitle: string;
+      }[] = [];
+      for (const source of selectedSources) {
+        const cards = await readSource(source, source.title, {
+          text: flashcardsFromPlainText,
+          pdf: flashcardsFromPdf,
+        });
+        facts.push(
+          ...cards.map((card) => ({ ...card, sourceId: source.id, sourceTitle: source.title })),
+        );
+      }
+      const quiz = buildSourceQuiz(facts, difficulty, quizLength);
+      if (!quiz.questions.length)
+        throw new Error(
+          uiText(
+            "Não encontrei fatos suficientes para criar alternativas confiáveis. Tente uma fonte com mais conteúdo.",
+          ),
+        );
+      dispatch({
+        type: "material/added",
+        collectionId: folder.id,
+        subjectId,
+        title: selectedSources
+          .map((s) => s.title.replace(/\.[^.]+$/, ""))
+          .join(" + ")
+          .slice(0, 80),
+        kind: "text",
+        content: JSON.stringify(quiz),
+        tags: [exam ? "folder-exam" : "folder-quiz", ...selectedSources.map((s) => s.title)],
+        createdAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      setQuizError(
+        error instanceof Error ? error.message : uiText("Não foi possível gerar o quiz."),
+      );
+    } finally {
+      setQuizBusy(false);
+    }
   }
   /** Flashcards automáticos: no aparelho, sem IA, o máximo que o texto sustenta. */
   async function generateAutomaticFlashcards() {
@@ -796,6 +869,25 @@ export function LibraryFolderContents({
     </div>
   );
 
+  const StudySession =
+    openQuizMaterial?.tags?.[0] === "folder-exam" ? SourceExamStudy : SourceQuizStudy;
+  if (openQuiz && openQuizMaterial)
+    return (
+      <StudySession
+        title={openQuizMaterial.title}
+        quiz={openQuiz}
+        onClose={() => setOpenQuizId(undefined)}
+        onComplete={(correct, total) =>
+          dispatch({
+            type: "quiz/recorded",
+            subjectId,
+            correct,
+            total,
+            completedAt: new Date().toISOString(),
+          })
+        }
+      />
+    );
   if (openDeck)
     return (
       <FlashcardStudy
@@ -1157,8 +1249,135 @@ export function LibraryFolderContents({
                   </details>
                 </article>
               ))}
+            {(section === "Quizzes" || section === "Simulados") && (
+              <>
+                {quizBusy && (
+                  <div className="library-summary-loading" role="status">
+                    <img src="/room-icons/quiz.svg" alt="" width="30" height="30" />
+                    {uiText(section === "Simulados" ? "Criando simulado…" : "Criando quiz…")}
+                  </div>
+                )}
+                {quizError && <p role="alert">{quizError}</p>}
+                {quizzes
+                  .filter(
+                    (item) =>
+                      item.tags?.[0] === (section === "Simulados" ? "folder-exam" : "folder-quiz"),
+                  )
+                  .map((quiz) => (
+                    <article
+                      key={quiz.id}
+                      className={
+                        removingIds.includes(quiz.id)
+                          ? "library-summary-card library-source-removing"
+                          : "library-summary-card"
+                      }
+                    >
+                      {renamingId === quiz.id ? (
+                        <form
+                          className="library-summary-rename"
+                          onSubmit={(event) => {
+                            event.preventDefault();
+                            const title = String(
+                              new FormData(event.currentTarget).get("title") ?? "",
+                            ).trim();
+                            if (title) {
+                              dispatch({
+                                type: "material/updated",
+                                id: quiz.id,
+                                changes: { title },
+                              });
+                              setRenamingId(undefined);
+                            }
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === "Escape") setRenamingId(undefined);
+                          }}
+                        >
+                          <input
+                            name="title"
+                            required
+                            maxLength={80}
+                            defaultValue={quiz.title}
+                            aria-label={uiText(
+                              section === "Simulados" ? "Nome do simulado" : "Nome do quiz",
+                            )}
+                            ref={(field) => {
+                              if (field && field !== document.activeElement) {
+                                field.focus();
+                                field.select();
+                              }
+                            }}
+                          />
+                          <button
+                            type="submit"
+                            className="shelf-wood-button"
+                            aria-label={uiText("Salvar nome")}
+                          >
+                            <ShelfToolIcon name="save" />
+                          </button>
+                        </form>
+                      ) : (
+                        <button
+                          type="button"
+                          className="library-summary-open"
+                          onClick={() => {
+                            if (parseSourceQuiz(quiz.content)) setOpenQuizId(quiz.id);
+                            else setQuizError(uiText("Este quiz está incompleto. Gere novamente."));
+                          }}
+                        >
+                          <img
+                            src={
+                              section === "Simulados"
+                                ? "/room-icons/mock-exam.svg"
+                                : "/room-icons/quiz.svg"
+                            }
+                            width="28"
+                            height="28"
+                            alt=""
+                          />
+                          {quiz.title}
+                        </button>
+                      )}
+                      <details className="library-summary-actions">
+                        <summary
+                          className="shelf-wood-button"
+                          aria-label={uiText(
+                            section === "Simulados" ? "Opções do simulado" : "Opções do quiz",
+                          )}
+                        >
+                          <PaperEditorIcon name="more" />
+                        </summary>
+                        <div className="library-summary-popover">
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              setRenamingId(quiz.id);
+                              event.currentTarget.closest("details")?.removeAttribute("open");
+                            }}
+                          >
+                            <ShelfToolIcon name="pen" />
+                            {uiText("Renomear")}
+                          </button>
+                          <button type="button" onClick={() => removeMaterial(quiz.id)}>
+                            <ShelfToolIcon name="trash" />
+                            {uiText("Excluir")}
+                          </button>
+                        </div>
+                      </details>
+                    </article>
+                  ))}
+              </>
+            )}
             {(section !== "Resumo" || (!summaryBusy && summaries.length === 0)) &&
-              !(section === "Flashcards" && (cardsBusy || cardsMessage || decks.length > 0)) && (
+              !(section === "Flashcards" && (cardsBusy || cardsMessage || decks.length > 0)) &&
+              !(
+                (section === "Quizzes" || section === "Simulados") &&
+                (quizBusy ||
+                  quizzes.some(
+                    (item) =>
+                      item.tags?.[0] === (section === "Simulados" ? "folder-exam" : "folder-quiz"),
+                  ))
+              ) && (
                 <div className="library-folder-study-empty">
                   <img
                     src={"/room-icons/" + studySections[section].icon + ".svg"}
@@ -1354,10 +1573,74 @@ export function LibraryFolderContents({
                 )}
               </p>
             )}
-            {creating !== "Resumo" && creating !== "Flashcards" && (
-              <p>{uiText("A geração deste tipo de material ainda não está disponível.")}</p>
-            )}
-            {creating === "Flashcards" ? (
+            {creating !== "Resumo" &&
+              creating !== "Flashcards" &&
+              creating !== "Quizzes" &&
+              creating !== "Simulados" && (
+                <p>{uiText("A geração deste tipo de material ainda não está disponível.")}</p>
+              )}
+            {creating === "Quizzes" || creating === "Simulados" ? (
+              <>
+                <div className="library-quiz-settings">
+                  {(
+                    [
+                      [
+                        "Dificuldade",
+                        [
+                          ["easy", "Fácil"],
+                          ["medium", "Médio"],
+                          ["hard", "Difícil"],
+                        ],
+                      ],
+                      [
+                        "Tamanho",
+                        [
+                          ["short", "Curto"],
+                          ["medium", "Médio"],
+                          ["long", "Longo"],
+                        ],
+                      ],
+                    ] as const
+                  ).map(([label, choices]) => (
+                    <fieldset key={label}>
+                      <legend>{uiText(label)}</legend>
+                      {choices.map(([value, name]) => (
+                        <button
+                          type="button"
+                          key={value}
+                          className="shelf-wood-button"
+                          aria-pressed={
+                            (label === "Dificuldade" ? difficulty : quizLength) === value
+                          }
+                          onClick={() =>
+                            label === "Dificuldade"
+                              ? setDifficulty(value as QuizDifficulty)
+                              : setQuizLength(value as QuizLength)
+                          }
+                        >
+                          {uiText(name)}
+                        </button>
+                      ))}
+                    </fieldset>
+                  ))}
+                </div>
+                <p>
+                  {uiText(
+                    creating === "Simulados"
+                      ? "Simulado automático no aparelho. Até 5, 10 ou 15 questões conforme as fontes, com 1 ponto e 2 minutos por questão. Fácil tem 3 alternativas; Médio e Difícil têm 4."
+                      : "Quiz automático no aparelho. Até 5, 10 ou 15 questões, conforme o conteúdo das fontes. Fácil tem 3 alternativas; Médio e Difícil têm 4, priorizando números próximos no Difícil.",
+                  )}
+                </p>
+                <button
+                  type="button"
+                  className="shelf-wood-button library-study-confirm-generate"
+                  disabled={!selectedSources.length || quizBusy}
+                  onClick={() => void generateQuiz()}
+                >
+                  {uiText(creating === "Simulados" ? "Gerar simulado" : "Quiz automático")}
+                </button>
+              </>
+            ) : creating === "Flashcards" ? (
               <button
                 type="button"
                 className="shelf-wood-button library-study-confirm-generate"

@@ -1,3 +1,9 @@
+## Quizzes, simulados e revisão única, 17/11/2026
+
+Biblioteca gera quizzes e simulados a partir das fontes, reaproveitando extração PDF/OCR e lacunas locais. Sem IA nem dependências novas. Simulados têm capa, cronômetro, entrega manual ou automática, correção com fonte, assinatura e carimbo da Olena. Nome usa username do perfil; download direto em PDF paginado reutiliza notebook-export com nome de arquivo opcional. Quizzes e flashcards revisam erros somente uma vez.
+
+Provas: testes focados de geração, revisão, cronômetro, branco, apelido e download; TypeScript e lint dos arquivos passaram. Fluxo desktop escuro e geometria mobile conferidos na prévia; PDF real baixado e página inspecionada. Claro, teclado completo e E2E amplo não verificados. Geração heurística por lacunas, sem perguntas interpretativas. Verificação completa iniciada, publicação antecipada solicitada pelo proprietário; CI fica para Claude.
+
 ## Teto diário e aviso de cota da Olena, 17/11/2026
 
 O resumo com a Olena ganhou teto próprio (5 por dia por conta e 100 por dia no total), separado do teto geral de 300 pedidos, para não esgotar a cota gratuita da Cloudflare e deixar a conversa sem resposta. Cada limite devolve sua mensagem, com a hora em que volta e o cabeçalho `Retry-After`. A cota esgotada no próprio provedor (HTTP 429 ou código 4006) também vira aviso claro, no fluxo e fora dele. O cliente (`helena-client.ts`) passou a mostrar a mensagem do servidor quando o código é `rate_limited` (texto curto e nosso), em vez de "Serviço indisponível"; textos de proxy ou de outros erros continuam sendo trocados pelo texto padrão. Contas e números detalhados em `docs/OPERACAO_E_CUSTOS.md`.

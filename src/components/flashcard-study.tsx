@@ -3,10 +3,24 @@ import { createPortal } from "react-dom";
 import { uiText } from "../i18n/runtime";
 import type { Flashcard, FlashcardRating } from "../domain/workspace";
 import { toDateKey } from "../domain/workspace";
-import { PaperArrow } from "./paper-arrow";
+import { createMathSound } from "../data/math-sound";
 import { PaperCloseIcon } from "./paper-close-icon";
-import { PaperEditorIcon } from "./paper-editor-icon";
 import "./flashcard-study.css";
+
+function StudyArrow({ back = false }: { back?: boolean }) {
+  return (
+    <svg
+      className="flashcard-study__arrow"
+      viewBox="0 0 48 48"
+      aria-hidden="true"
+      style={back ? { transform: "scaleX(-1)" } : undefined}
+    >
+      <path d="m5 18 21-2-3-10 20 18-20 18 3-11-21 2Z" fill="var(--arrow-face)" />
+      <path d="m5 18 21-2-3-10 20 18-17-1Z" fill="var(--arrow-light)" />
+      <path d="m5 27 21-4 17 1-20 18 3-11-21 2Z" fill="var(--arrow-depth)" />
+    </svg>
+  );
+}
 
 /** Um cartão com intervalo de 21 dias ou mais já está firme na memória. */
 export const MASTERED_INTERVAL_DAYS = 21;
@@ -29,7 +43,7 @@ function clock(milliseconds: number): string {
 /**
  * Tela de estudo de um baralho. Seta esquerda (vermelha) = errei, seta direita (verde) = acertei.
  * Na primeira rodada cada resposta vira uma revisão espaçada na conta (errei = de novo, acertei =
- * fácil). Depois da rodada, os cartões errados voltam até todos serem acertados; essas repetições
+ * fácil). Depois da rodada, os cartões errados voltam em uma única rodada; essas revisões
  * não contam de novo na agenda de revisão. Ao sair no meio, as respostas dadas já ficam salvas.
  */
 export function FlashcardStudy({
@@ -56,6 +70,16 @@ export function FlashcardStudy({
   const [startedAt, setStartedAt] = useState(() => Date.now());
   const [elapsed, setElapsed] = useState(0);
   const saved = useRef(new Set<string>());
+  const sound = useRef<ReturnType<typeof createMathSound> | null>(null);
+  const [effect, setEffect] = useState<{ right: boolean; serial: number }>();
+  useEffect(() => {
+    const player = createMathSound();
+    sound.current = player;
+    return () => {
+      player.dispose();
+      sound.current = null;
+    };
+  }, []);
   const [feedback, setFeedback] = useState<{ right: boolean }>();
   const heading = useRef<HTMLHeadingElement>(null);
   const proceedButton = useRef<HTMLButtonElement>(null);
@@ -92,7 +116,7 @@ export function FlashcardStudy({
       setFirstRound(next);
     }
     const wrong = next.filter((item) => !item.right).map((item) => item.id);
-    if (wrong.length) {
+    if (round === 1 && wrong.length) {
       setQueue(wrong);
       setPhase("retry");
     } else {
@@ -105,6 +129,9 @@ export function FlashcardStudy({
     if (phase !== "study" || !current || feedback) return;
     const truth = truthOf(current.back);
     const right = truth === undefined ? choice : choice === truth;
+    sound.current?.unlock();
+    sound.current?.play(right ? "correct" : "wrong");
+    setEffect((old) => ({ right, serial: (old?.serial ?? 0) + 1 }));
     const next = [...answers, { id: current.id, right }];
     setAnswers(next);
     if (truth === undefined) {
@@ -206,7 +233,18 @@ export function FlashcardStudy({
           <h2 ref={heading} tabIndex={-1} className="flashcard-study__title">
             {title}
           </h2>
-          <div className="flashcard-study__stage">
+          <div
+            className="flashcard-study__stage"
+            data-effect={effect ? (effect.right ? "right" : "wrong") : undefined}
+            key={effect?.serial ?? 0}
+          >
+            {effect && (
+              <div className="flashcard-study__particles" aria-hidden="true">
+                {Array.from({ length: 12 }, (_, i) => (
+                  <i key={i} style={{ "--particle": i } as React.CSSProperties} />
+                ))}
+              </div>
+            )}
             <button
               type="button"
               className="flashcard-study__verdict is-wrong"
@@ -214,7 +252,7 @@ export function FlashcardStudy({
               disabled={feedback !== undefined}
               onClick={() => answer(false)}
             >
-              <PaperArrow back />
+              <StudyArrow back />
               <small>{judged ? uiText("Falso") : uiText("Errei")}</small>
             </button>
             <button
@@ -251,7 +289,7 @@ export function FlashcardStudy({
               disabled={feedback !== undefined}
               onClick={() => answer(true)}
             >
-              <PaperArrow />
+              <StudyArrow />
               <small>{judged ? uiText("Verdadeiro") : uiText("Acertei")}</small>
             </button>
           </div>
@@ -259,7 +297,7 @@ export function FlashcardStudy({
             <button
               type="button"
               ref={proceedButton}
-              className="flashcard-study__primary"
+              className="flashcard-study__primary shelf-wood-button"
               onClick={proceed}
             >
               {uiText("Continuar")}
@@ -279,12 +317,12 @@ export function FlashcardStudy({
               disabled={answers.length === 0}
               onClick={undo}
             >
-              <PaperEditorIcon name="undo" />
+              <StudyArrow back />
             </button>
-            <span className="flashcard-study__count is-wrong">
+            <span key={`wrong-${wrongNow}`} className="flashcard-study__count is-wrong">
               {uiText("Errei")} {wrongNow}
             </span>
-            <span className="flashcard-study__count is-right">
+            <span key={`right-${rightNow}`} className="flashcard-study__count is-right">
               {uiText("Acertei")} {rightNow}
             </span>
           </footer>
@@ -299,7 +337,7 @@ export function FlashcardStudy({
           </h2>
           <button
             type="button"
-            className="flashcard-study__primary"
+            className="flashcard-study__primary shelf-wood-button"
             onClick={() => begin(queue, round + 1)}
           >
             {uiText("Continuar")}
@@ -340,7 +378,11 @@ export function FlashcardStudy({
               ])}
             </small>
           )}
-          <button type="button" className="flashcard-study__primary" onClick={onClose}>
+          <button
+            type="button"
+            className="flashcard-study__primary shelf-wood-button"
+            onClick={onClose}
+          >
             {uiText("Continuar")}
           </button>
           <div className="flashcard-study__again">

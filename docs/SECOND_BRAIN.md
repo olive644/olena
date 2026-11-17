@@ -1,3 +1,9 @@
+## Quizzes, simulados e revisão única, 17/11/2026
+
+Biblioteca gera quizzes e simulados a partir das fontes, reaproveitando extração PDF/OCR e lacunas locais. Sem IA nem dependências novas. Simulados têm capa, cronômetro, entrega manual ou automática, correção com fonte, assinatura e carimbo da Olena. Nome usa username do perfil; download direto em PDF paginado reutiliza notebook-export com nome de arquivo opcional. Quizzes e flashcards revisam erros somente uma vez.
+
+Provas: testes focados de geração, revisão, cronômetro, branco, apelido e download; TypeScript e lint dos arquivos passaram. Fluxo desktop escuro e geometria mobile conferidos na prévia; PDF real baixado e página inspecionada. Claro, teclado completo e E2E amplo não verificados. Geração heurística por lacunas, sem perguntas interpretativas. Verificação completa iniciada, publicação antecipada solicitada pelo proprietário; CI fica para Claude.
+
 ## Seta de próxima folha visível, 14/11/2026
 
 O botão à direita da navegação usa a mesma seta original tanto para avançar quanto para criar a próxima folha na última página, preservando os respectivos rótulos e ações. Cores recebem prioridade suficiente para permanecer visíveis nos dois temas. Dois testes verificam ícone e callbacks; PNGs reais claro/escuro e cores computadas confirmam a seta visível.

@@ -1,5 +1,9 @@
 import { brandedExportCanvas, loadPaperExportMascot } from "./paper-export-art";
-export async function downloadNotebookPdf(images: string[], branded = true) {
+export async function downloadNotebookPdf(
+  images: string[],
+  branded = true,
+  filename = "folhas-do-caderno.pdf",
+) {
   const mascot = branded ? await loadPaperExportMascot() : undefined;
   const encoder = new TextEncoder();
   const chunks: Uint8Array[] = [];
@@ -59,7 +63,7 @@ export async function downloadNotebookPdf(images: string[], branded = true) {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = "folhas-do-caderno.pdf";
+  anchor.download = filename;
   anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
