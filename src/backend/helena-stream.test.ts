@@ -199,6 +199,31 @@ it("decodes fragmented UTF-8 and CRLF SSE without duplicating text", async () =>
   expect(text).toEqual(["Olá ⭐"]);
 });
 
+it("aceita pedaço numérico da Cloudflare (o 1 de um título numerado) sem interromper", async () => {
+  const response = new Response(
+    'data: {"response":"## "}\n\ndata: {"response":1}\n\ndata: {"response":". Origem"}\n\ndata: {"response":2026}\n\ndata: [DONE]\n\n',
+    { headers: { "Content-Type": "text/event-stream" } },
+  );
+  const text: string[] = [];
+  for await (const value of readModelStream(response)) text.push(value);
+  expect(text.join("")).toBe("## 1. Origem2026");
+});
+
+it.each([
+  'data: {"response":{"a":1}}\n\ndata: [DONE]\n\n',
+  'data: {"response":true}\n\ndata: [DONE]\n\n',
+  'data: {"response":["x"]}\n\ndata: [DONE]\n\n',
+])("continua recusando pedaço que não é texto nem número", async (content) => {
+  const response = new Response(content, { headers: { "Content-Type": "text/event-stream" } });
+  await expect(
+    (async () => {
+      for await (const chunk of readModelStream(response)) {
+        void chunk;
+      }
+    })(),
+  ).rejects.toThrow("Invalid model delta");
+});
+
 it.each(["data: broken\n\n", 'data: {"response":"partial"}\n\n', `data: ${"x".repeat(32001)}\n\n`])(
   "rejects malformed, incomplete or oversized streams",
   async (content) => {
