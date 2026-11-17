@@ -101,9 +101,17 @@ describe("post-it e tabela na folha noite", () => {
 
   it("desenha a tabela escura com grade clara na folha noite", () => {
     const night = fillsFor("night", tableSticky);
-    expect(night.fills).toContain("#33293f");
+    expect(night.fills).toContain("#5d4f22");
     expect(night.strokes).toContain("#c9bfd6");
     const light = fillsFor("light", tableSticky);
     expect(light.strokes).not.toContain("#c9bfd6");
+  });
+  it.each([
+    ["yellow", "#5d4f22", "#fff0b5"],
+    ["blue", "#2f4a58", "#d9ecf4"],
+    ["lilac", "#4a3a6b", "#e9ddfb"],
+  ] as const)("respeita a cor %s da tabela nas duas folhas", (color, dark, light) => {
+    expect(fillsFor("night", { ...tableSticky, color }).fills).toContain(dark);
+    expect(fillsFor("light", { ...tableSticky, color }).fills).toContain(light);
   });
 });

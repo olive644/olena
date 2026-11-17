@@ -22,7 +22,7 @@ it("salva campos juntos, normaliza nome e rede, preserva foto e dados existentes
   fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "Oliver" } });
   fireEvent.change(screen.getByLabelText("Nome de usuário"), { target: { value: "OLI_ESTUDA" } });
   expect((screen.getByLabelText("Nome de usuário") as HTMLInputElement).value).toBe("oli_estuda");
-  fireEvent.change(screen.getByLabelText("Bio"), { target: { value: "Estudando matemática" } });
+  expect(screen.queryByLabelText("Bio")).toBeNull();
   fireEvent.change(screen.getByLabelText("Rede social 1"), { target: { value: "github.com/oli" } });
   expect(screen.getByText("GitHub")).toBeTruthy();
   localStorage.setItem("helena.profile.v1", JSON.stringify({ name: "Oli", photoUrl: "/new.webp" }));
@@ -31,7 +31,7 @@ it("salva campos juntos, normaliza nome e rede, preserva foto e dados existentes
   expect(readStoredProfile()).toMatchObject({
     name: "Oliver",
     username: "oli_estuda",
-    bio: "Estudando matemática",
+    bio: "",
     photoUrl: "/new.webp",
     socialLinks: ["https://github.com/oli"],
   });

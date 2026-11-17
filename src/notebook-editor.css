@@ -2059,3 +2059,842 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
       crosshair;
   }
 }
+
+/* Desktop pen case shares the paper panel disclosure artwork. */
+.handwriting-pen-case > .handwriting-brush-disclosure {
+  display: none;
+}
+@media (min-width: 681px) {
+  :root .handwriting-pen-case {
+    position: relative;
+    padding: 18px 0;
+    overflow: hidden;
+    scrollbar-width: none;
+  }
+  :root .handwriting-pen-case > header {
+    padding: 0 16px 12px;
+  }
+  :root .handwriting-pen-case > header small {
+    color: var(--text);
+    font-size: 12px;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+  :root .handwriting-pen-case > button:has(.brush-instrument) {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    min-height: 60px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  :root .handwriting-pen-case > button::before,
+  :root .handwriting-pen-case > button::after,
+  :root .handwriting-pen-case button :is(.brush-card-title, .brush-sample) {
+    display: none;
+  }
+  :root .handwriting-pen-case button .brush-instrument {
+    display: block;
+    flex: 0 0 220px;
+    width: 220px;
+    max-width: none;
+    height: 64px;
+    margin: 0 -16px 0 0;
+    object-fit: contain;
+    transform: scaleX(-1);
+    filter: brightness(0.58) saturate(0.55);
+    transition: filter 180ms ease;
+  }
+  :root .handwriting-pen-case button[aria-pressed="true"] .brush-instrument {
+    filter: none;
+    transform: scaleX(-1);
+  }
+  :root .handwriting-pen-case > .handwriting-brush-disclosure {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 6;
+    width: 28px;
+    min-height: 44px;
+    margin: 0;
+    padding: 4px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .handwriting-brush-disclosure .focus-paper-arrow {
+    width: 20px;
+    height: 20px;
+    transform: rotate(180deg);
+  }
+  .handwriting-brush-disclosure[aria-expanded="false"] .focus-paper-arrow {
+    transform: none;
+  }
+  :root .handwriting-pen-case[data-expanded="false"] > :not(.handwriting-brush-disclosure) {
+    display: none;
+  }
+  :root .handwriting-workspace--brushes:has(.handwriting-pen-case[data-expanded="false"]) {
+    grid-template-columns: 146px minmax(0, 1fr) 0px;
+  }
+  :root
+    .handwriting-workspace--brushes:has(.handwriting-paper-disclosure[aria-expanded="false"]):has(
+      .handwriting-pen-case[data-expanded="false"]
+    ) {
+    grid-template-columns: 0px minmax(0, 1fr) 0px;
+  }
+  :root .handwriting-workspace--brushes > .handwriting-viewport {
+    scrollbar-width: none;
+  }
+  .handwriting-workspace--brushes > .handwriting-viewport::-webkit-scrollbar {
+    display: none;
+  }
+}
+@media (max-width: 680px) {
+  :root .handwriting-studio .handwriting-pen-case > .handwriting-brush-disclosure {
+    display: none;
+  }
+}
+
+.handwriting-brush-disclosure {
+  display: none;
+}
+@media (min-width: 681px) {
+  :root .handwriting-workspace > .handwriting-brush-disclosure {
+    position: absolute;
+    top: 50%;
+    right: 224px;
+    z-index: 6;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 44px;
+    padding: 4px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    transform: translateY(-50%);
+  }
+  :root .handwriting-workspace > .handwriting-brush-disclosure::before,
+  :root .handwriting-workspace > .handwriting-brush-disclosure::after {
+    display: none;
+  }
+  :root .handwriting-workspace > .handwriting-brush-disclosure[aria-expanded="false"] {
+    right: 0;
+  }
+  :root .handwriting-pen-case {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-content: start;
+    overflow-y: auto;
+    padding-top: 14px;
+  }
+  :root .handwriting-pen-case > header {
+    grid-column: 1 / -1;
+    order: 0;
+    padding-bottom: 2px;
+  }
+  :root .handwriting-pen-case > .handwriting-ink-options,
+  :root .handwriting-pen-case .handwriting-ink-options > .stroke-palette:not(.dash-palette) {
+    display: contents;
+  }
+  :root .handwriting-pen-case .ink-size-control {
+    grid-column: 1 / -1;
+    order: 1;
+    min-width: 0;
+    margin: 4px 16px 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  :root .handwriting-pen-case > button:has(.brush-instrument) {
+    grid-column: 1 / -1;
+    order: 2;
+    min-height: 50px;
+  }
+  :root .handwriting-pen-case button .brush-instrument {
+    height: 54px;
+    transition:
+      transform 180ms ease,
+      filter 180ms ease;
+  }
+  :root .handwriting-pen-case button[aria-pressed="true"] .brush-instrument {
+    transform: translateX(-12px) scaleX(-1);
+  }
+  :root .handwriting-pen-case .handwriting-ink-options > .dash-palette {
+    grid-column: 1 / -1;
+    order: 3;
+    display: flex;
+    gap: 4px;
+    min-width: 0;
+    margin: 12px 8px 8px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  :root .handwriting-pen-case .stroke-palette > button {
+    min-width: 0;
+    width: auto;
+    padding: 5px 3px;
+    font-size: 9px;
+  }
+  :root .handwriting-pen-case .dash-palette > button {
+    flex: 1;
+  }
+  :root .handwriting-pen-case .stroke-palette:not(.dash-palette) > button {
+    order: 4;
+    margin: 0 3px 12px;
+  }
+  :root .handwriting-pen-case .stroke-palette button svg {
+    width: 100%;
+    height: 22px;
+  }
+  :root .handwriting-pen-case .stroke-palette button .ink-selection-mark svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .handwriting-pen-case button .brush-instrument {
+    transition: none;
+  }
+}
+
+@media (min-width: 681px) {
+  :root .handwriting-pen-case .handwriting-ink-options > .dash-palette {
+    display: contents;
+  }
+  :root .handwriting-pen-case .dash-palette > button {
+    order: 3;
+    margin: 12px 3px 8px;
+  }
+  :root .handwriting-pen-case .stroke-palette > button {
+    width: auto;
+    min-width: 0;
+  }
+}
+
+@media (min-width: 681px) {
+  :root
+    .handwriting-tool-case
+    :is(.eraser-mode, .highlighter-opacity, .handwriting-tool-case-variants) {
+    grid-column: 1 / -1;
+    order: 2;
+    min-width: 0;
+    margin: 8px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  :root .handwriting-tool-case .eraser-mode {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+  :root .handwriting-tool-case .eraser-mode button {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 8px;
+    filter: brightness(0.58) saturate(0.55);
+  }
+  :root .handwriting-tool-case .eraser-mode button[aria-pressed="true"] {
+    filter: none;
+    transform: translateX(-4px);
+  }
+  :root .handwriting-tool-case .eraser-mode svg {
+    width: 34px;
+    height: 34px;
+  }
+  :root .handwriting-tool-case-variants > .handwriting-brush-panel {
+    padding: 0;
+    border: 0;
+    overflow: visible;
+  }
+  :root .handwriting-tool-case-variants > .handwriting-brush-panel > header {
+    display: none;
+  }
+  :root .handwriting-tool-case .ruler-case {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  :root .handwriting-tool-case .ruler-case button {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    filter: brightness(0.58) saturate(0.55);
+    min-width: 0;
+    padding: 6px;
+    transform: none;
+  }
+  :root .handwriting-tool-case .ruler-case button[aria-pressed="true"] {
+    filter: none;
+    transform: translateX(-6px);
+  }
+  :root .handwriting-tool-case .ruler-case button small {
+    display: none;
+  }
+  :root .handwriting-tool-case .ruler-case button strong {
+    font-size: 10px;
+  }
+  :root .handwriting-tool-case .ruler-card-art {
+    height: 36px;
+  }
+}
+.handwriting-studio
+  :is(
+    .handwriting-paper-disclosure,
+    .handwriting-brush-disclosure,
+    .handwriting-page-navigation__toggle
+  ) {
+  z-index: 30;
+}
+
+@media (min-width: 681px) {
+  :root body .handwriting-studio .handwriting-tool-case .eraser-mode button,
+  :root body .handwriting-studio .handwriting-tool-case .ruler-case button {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  :root body .handwriting-tool-case .eraser-mode button::before,
+  :root body .handwriting-tool-case .eraser-mode button::after,
+  :root body .handwriting-tool-case .ruler-case button::before,
+  :root body .handwriting-tool-case .ruler-case button::after {
+    display: none;
+  }
+  :root .handwriting-tool-case .ruler-case button {
+    display: grid;
+    gap: 2px;
+    min-height: 58px;
+    margin: 0;
+    padding: 4px;
+  }
+  :root .handwriting-tool-case .ruler-case button strong {
+    visibility: hidden;
+    line-height: 12px;
+  }
+  :root .handwriting-tool-case .ruler-case button[aria-pressed="true"] strong {
+    visibility: visible;
+  }
+  :root .handwriting-tool-case .ruler-card-art {
+    margin: 0 auto;
+    height: 32px;
+  }
+  :root .handwriting-tool-case-variants > aside > p {
+    display: none;
+  }
+  :root .handwriting-tool-case .ruler-unit-picker {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 0 0 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  :root .handwriting-tool-case .ruler-unit-picker legend,
+  :root .handwriting-tool-case .ruler-unit-picker i {
+    display: none;
+  }
+  :root .handwriting-tool-case .ruler-unit-picker button {
+    width: 44px;
+    min-width: 44px;
+    min-height: 36px;
+    height: 36px;
+  }
+  :root .handwriting-tool-case .ruler-unit-picker button span {
+    position: static;
+  }
+  :root .handwriting-tool-case-variants > aside:not(.handwriting-ruler-panel) > button {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    filter: brightness(0.58) saturate(0.55);
+    min-height: 60px;
+    margin: 0;
+    padding: 8px;
+  }
+  :root
+    .handwriting-tool-case-variants
+    > aside:not(.handwriting-ruler-panel)
+    > button[aria-pressed="true"] {
+    filter: none;
+    transform: translateX(-6px);
+  }
+}
+
+@media (min-width: 681px) {
+  :root .handwriting-tool-case .handwriting-tool-case-variants :is(aside, button, fieldset)::before,
+  :root .handwriting-tool-case .handwriting-tool-case-variants :is(aside, button, fieldset)::after {
+    display: none;
+  }
+  :root
+    .handwriting-tool-case-variants
+    > aside:not(.handwriting-ruler-panel)
+    > button
+    .brush-card-title {
+    display: block;
+    visibility: hidden;
+    font-size: 10px;
+  }
+  :root
+    .handwriting-tool-case-variants
+    > aside:not(.handwriting-ruler-panel)
+    > button[aria-pressed="true"]
+    .brush-card-title {
+    visibility: visible;
+  }
+}
+:root .handwriting-studio .handwriting-workspace > button.handwriting-brush-disclosure {
+  z-index: 30;
+}
+
+@media (min-width: 681px) {
+  :root .handwriting-pen-case[data-expanded="false"] {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    visibility: hidden;
+  }
+}
+
+@media (min-width: 681px) {
+  :root .handwriting-workspace--panels-two:has(.handwriting-pen-case[data-expanded="false"]) {
+    grid-template-columns: 146px minmax(0, 1fr) 0px 224px;
+  }
+  :root
+    .handwriting-workspace--panels-two:has(
+      .handwriting-paper-disclosure[aria-expanded="false"]
+    ):has(.handwriting-pen-case[data-expanded="false"]) {
+    grid-template-columns: 0px minmax(0, 1fr) 0px 224px;
+  }
+  :root .handwriting-workspace--panels-two > .handwriting-brush-disclosure {
+    right: 448px;
+  }
+  :root .handwriting-workspace--panels-two > .handwriting-brush-disclosure[aria-expanded="false"] {
+    right: 224px;
+  }
+  :root .handwriting-workspace > .handwriting-layer-panel {
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
+.ruler-instrument {
+  display: none;
+}
+@media (min-width: 681px) {
+  :root .handwriting-tool-case:has(.handwriting-ruler-panel) .handwriting-tool-case-variants,
+  :root
+    .handwriting-tool-case:has(.handwriting-ruler-panel)
+    .handwriting-tool-case-variants
+    > aside,
+  :root .handwriting-tool-case .ruler-case {
+    display: contents;
+  }
+  :root .handwriting-tool-case .ruler-unit-picker {
+    grid-column: 1 / -1;
+    order: 5;
+    margin: 4px 8px 14px;
+  }
+  :root .handwriting-tool-case .ruler-case > button {
+    grid-column: 1 / -1;
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-height: 58px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    gap: 0;
+    filter: brightness(0.58) saturate(0.55);
+  }
+  :root .handwriting-tool-case .ruler-case > button[aria-pressed="true"] {
+    transform: none;
+    filter: none;
+  }
+  :root .handwriting-tool-case .ruler-case > button .ruler-card-art {
+    display: none;
+  }
+  :root .handwriting-tool-case .ruler-instrument {
+    display: block;
+    flex: 0 0 64px;
+    width: 220px;
+    max-width: none;
+    height: 64px;
+    margin-right: -14px;
+    object-fit: contain;
+    transition: transform 180ms ease;
+  }
+  :root .handwriting-tool-case .ruler-case > button[aria-pressed="true"] .ruler-instrument {
+    transform: translateX(-12px);
+  }
+  :root .handwriting-tool-case .ruler-case button strong {
+    align-self: center;
+    font-size: 10px;
+    height: 12px;
+    margin-bottom: 4px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ruler-instrument {
+    transition: none !important;
+  }
+}
+
+.eraser-instrument {
+  display: none;
+}
+@media (min-width: 681px) {
+  :root .handwriting-tool-case .eraser-mode {
+    display: contents;
+  }
+  :root body .handwriting-studio .handwriting-tool-case .eraser-mode > button {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    grid-column: 1 / -1;
+    order: 2;
+    width: 100%;
+    min-height: 72px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    filter: brightness(0.58) saturate(0.55);
+    transform: none;
+  }
+  :root .handwriting-tool-case .eraser-mode > button > svg {
+    display: none;
+  }
+  :root .handwriting-tool-case .eraser-instrument {
+    display: block;
+    width: 220px;
+    height: 64px;
+    max-width: none;
+    flex: 0 0 220px;
+    margin-right: -14px;
+    object-fit: contain;
+    transition: transform 180ms ease;
+  }
+  :root body .handwriting-studio .handwriting-tool-case .eraser-mode > button[aria-pressed="true"] {
+    filter: none;
+  }
+  :root .handwriting-tool-case .eraser-mode > button[aria-pressed="true"] .eraser-instrument {
+    transform: translateX(-12px);
+  }
+  :root .handwriting-tool-case .eraser-mode > button:disabled {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eraser-instrument {
+    transition: none !important;
+  }
+}
+
+.handwriting-sticky--table[data-sticky-color="yellow"] {
+  --table-background: #fff0b5;
+}
+.handwriting-sticky--table[data-sticky-color="blue"] {
+  --table-background: #d9ecf4;
+}
+.handwriting-sticky--table[data-sticky-color="lilac"] {
+  --table-background: #e9ddfb;
+}
+.handwriting-page-shell[data-paper-color="night"]
+  .handwriting-sticky--table[data-sticky-color="yellow"] {
+  --table-background: #5d4f22;
+}
+.handwriting-page-shell[data-paper-color="night"]
+  .handwriting-sticky--table[data-sticky-color="blue"] {
+  --table-background: #2f4a58;
+}
+.handwriting-page-shell[data-paper-color="night"]
+  .handwriting-sticky--table[data-sticky-color="lilac"] {
+  --table-background: #4a3a6b;
+}
+:root .handwriting-page-shell .handwriting-sticky--table[data-sticky-color],
+:root
+  .handwriting-page-shell
+  .handwriting-sticky--table[data-sticky-color]
+  .handwriting-sticky__table-grid {
+  background: var(--table-background);
+}
+
+:root body .olena-color-picker {
+  position: fixed;
+  z-index: 200;
+  width: min(264px, calc(100vw - 16px));
+  max-height: calc(100dvh - 16px);
+  overflow-y: auto;
+  padding: 14px;
+  border: 1px solid var(--line, #d8cbb2);
+  border-radius: 5px 18px 6px 14px;
+  color: var(--text);
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(135deg, var(--soft) 0 18px, transparent 18px),
+    linear-gradient(315deg, var(--soft) 0 20px, transparent 20px);
+  box-shadow: 0 5px 0 var(--line);
+  animation: olena-color-picker-in 150ms ease-out;
+  box-sizing: border-box;
+}
+.olena-color-picker > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.olena-color-picker > header strong {
+  font-size: 13px;
+}
+:root body .olena-color-picker > header button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  min-height: 28px;
+  padding: 3px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.olena-color-picker > header img {
+  width: 22px;
+  height: 22px;
+}
+.olena-color-picker__plane {
+  position: relative;
+  height: 154px;
+  margin: 0 3px 12px;
+  border: 1px solid var(--line);
+  border-radius: 3px 12px 3px 8px;
+  background-image:
+    linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent);
+  cursor: crosshair;
+  touch-action: none;
+}
+.olena-color-picker__plane i {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #fff9ef;
+  outline: 1px solid #292432;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.olena-color-picker__hue {
+  display: block;
+  margin-bottom: 12px;
+}
+.olena-color-picker__hue input {
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+.olena-color-picker__hue input::-webkit-slider-runnable-track {
+  height: 12px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+.olena-color-picker__hue input::-webkit-slider-thumb {
+  appearance: none;
+  width: 17px;
+  height: 22px;
+  margin-top: -5px;
+  border: 2px solid #fff9ef;
+  border-radius: 3px 6px 3px 5px;
+  background: #facc15;
+  box-shadow: 0 2px #a88708;
+}
+.olena-color-picker__hue input::-moz-range-track {
+  height: 12px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+.olena-color-picker__hue input::-moz-range-thumb {
+  width: 14px;
+  height: 20px;
+  border: 2px solid #fff9ef;
+  border-radius: 3px 6px;
+  background: #facc15;
+}
+.olena-color-picker__values {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  align-items: end;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.olena-color-picker__sample {
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 3px 10px 3px 8px;
+  box-shadow: 0 3px var(--line);
+}
+.olena-color-picker label {
+  font-size: 10px;
+}
+:root body .olena-color-picker input:not([type="range"]) {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 34px;
+  margin-top: 3px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 3px 9px 3px 7px;
+  background: var(--soft);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  box-shadow: 0 2px var(--line);
+}
+.olena-color-picker__rgb {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.olena-color-picker :is(input, button, [role="slider"]):focus-visible {
+  outline: 2px solid #facc15;
+  outline-offset: 3px;
+}
+@keyframes olena-color-picker-in {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .olena-color-picker {
+    animation: none !important;
+  }
+}
+
+:root body .olena-color-picker__plane {
+  width: 204px;
+  max-width: calc(100% - 12px);
+  height: auto;
+  aspect-ratio: 1;
+  margin: 4px auto 16px;
+  border: 3px solid var(--line);
+  border-radius: 50%;
+  box-shadow: 0 3px 0 var(--line);
+}
+.olena-color-picker__brightness {
+  border-radius: 3px 7px 3px 5px;
+}
+.olena-color-picker__brightness input {
+  background: transparent !important;
+}
+.olena-color-picker__brightness:has(input) {
+  background: linear-gradient(to right, #000, #fff);
+}
+.olena-color-picker__brightness input::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, #000, #fff);
+}
+.olena-color-picker__brightness input::-moz-range-track {
+  background: linear-gradient(to right, #000, #fff);
+}
+
+:root .handwriting-color-dock-minimize {
+  position: static;
+  display: grid;
+  place-items: center;
+  flex: 0 0 34px;
+  align-self: stretch;
+  width: auto;
+  min-height: 34px;
+  height: 34px;
+  margin: 0 4px 4px;
+  padding: 3px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.handwriting-color-dock-minimize svg {
+  width: 26px;
+  height: 26px;
+}
+.handwriting-color-dock-minimize::before,
+.handwriting-color-dock-minimize::after {
+  display: none;
+}
+:root .handwriting-color-dock[data-minimized] {
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+:root .handwriting-color-dock[data-minimized] .handwriting-color-dock-grip {
+  inset: 0;
+  width: 52px;
+  height: 52px;
+  padding: 2px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.handwriting-color-dock-grip img {
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+}
+.handwriting-color-dock {
+  overflow: hidden;
+}
+@keyframes color-case-appear {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"])
+    .handwriting-color-dock[data-minimized]
+    .handwriting-color-dock-grip
+    img {
+    animation: color-case-appear 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* Keep the palette scrollable without flashing browser scrollbars during the case morph. */
+.handwriting-color-dock .handwriting-quick-colors {
+  scrollbar-width: none;
+}
+.handwriting-color-dock .handwriting-quick-colors::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}

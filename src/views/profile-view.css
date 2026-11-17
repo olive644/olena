@@ -1312,3 +1312,21 @@ html[data-reduce-motion="true"]
 .onboarding-initial-subject select {
   min-height: 44px;
 }
+
+:root body .profile-editor .profile-editor__remove-social {
+  display: grid;
+  place-items: center;
+  height: 44px;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.profile-editor__remove-social::before,
+.profile-editor__remove-social::after {
+  display: none;
+}
+.profile-editor__remove-social .shelf-tool-icon {
+  width: 26px;
+  height: 26px;
+}

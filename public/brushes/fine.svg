@@ -1,9 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 64">
-<path d="M8 30H157L206 38 157 47H8Z" fill="#17151c" opacity=".15"/>
-<path d="M8 23H153L169 28V40L153 45H8Z" fill="#292432" />
-                      <path d="M8 23H153L160 28H8Z" fill="#615a69" />
-                      <path d="M25 23H31V45H25ZM139 23H145V45H139Z" fill="#eadfc8" />
-                      <path d="M169 28H188V40H169Z" fill="#c2bec6" />
-                      <path d="M188 31H204V37H188Z" fill="#292432" />
-                      <path d="M50 31H116V34H50Z" fill="#fff9ef" />
+  <path d="M9 22h133l18 5v16l-18 5H9l-5-6V28Z" fill="#51465d" />
+  <path d="M9 22h133l18 5H9Z" fill="#9b90ae" />
+  <path d="M9 40h151v3l-18 5H9Z" fill="#302838" />
+  <path d="M19 22h7v26h-7Zm111 0h7v26h-7Z" fill="#eadfc8" />
+  <path d="M35 29h77v3H35Z" fill="#fff9ef" />
+  <path d="m49 36 5-4 5 4-5 4Z" fill="#a98bea" />
+  <path d="M142 27h24v16h-24Z" fill="#c0b5cf" />
+  <path d="M146 27h20v5h-20Z" fill="#eee6f7" />
+  <path d="M166 30h23v10h-23Z" fill="#51465d" />
+  <path d="M189 32h16v6h-16Z" fill="#d5ccdf" />
+  <path d="M205 33h8v4h-8Z" fill="#302838" />
 </svg>

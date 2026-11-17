@@ -9,6 +9,7 @@ import type { WorkspaceState } from "../domain/workspace";
 import { profileAvatarSource } from "../domain/profile-avatars";
 import { PROFILE_COVERS, profileCover } from "../domain/profile-covers";
 import {
+  PRIDE_THEMES,
   PROFILE_FRAMES,
   PROFILE_BACKGROUNDS,
   profileFrame,
@@ -124,52 +125,70 @@ export function ProfileAvatarDialog({
                 : "Fundo do perfil",
           )}
         >
-          {entries.map((item) => {
-            const unlocked = cosmeticUnlocked(category, item.id, earned);
-            const selected = chosen[category] === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                className="secondary-button"
-                aria-pressed={selected}
-                aria-disabled={!unlocked}
-                onClick={() => {
-                  if (unlocked) {
-                    dirty.current.add(category);
-                    setChosen({ ...chosen, [category]: item.id });
-                  }
-                }}
-              >
-                {category === "cover" ? (
-                  <ProfileCoverArt theme={profileCover(item.id)} />
-                ) : category === "frame" ? (
-                  <div className="profile-customizer-frame">
-                    <img src={chosen.photoUrl} alt="" width="70" height="70" />
-                    <ProfileFrameArt frame={item.id} />
-                  </div>
-                ) : (
-                  <div className="profile-background-swatch" data-profile-background={item.id} />
-                )}
-                <span>
-                  {uiText(item.name)} {selected && <PaperCheckIcon size={16} />}
-                </span>
-                {!unlocked && (
-                  <small>
-                    {uiText(
-                      item.id === "english"
-                        ? category === "frame"
-                          ? "Complete a ilha de Inglês."
-                          : "Acerte 100 atividades de Inglês."
-                        : category === "frame"
-                          ? "Complete uma ilha de Matemática."
-                          : "Acerte 100 contas em Matemática.",
-                    )}
-                  </small>
-                )}
-              </button>
-            );
-          })}
+          {(["Padrões", "Orgulho gay", "Matérias"] as const).map((topic) => (
+            <section className="profile-customizer-topic" key={topic} aria-label={uiText(topic)}>
+              <h3>{uiText(topic)}</h3>
+              {entries
+                .filter((item) => {
+                  const pride = PRIDE_THEMES.some((theme) => theme.id === item.id);
+                  const subject = item.id === "mathematics" || item.id === "english";
+                  return topic === "Orgulho gay"
+                    ? pride
+                    : topic === "Matérias"
+                      ? subject
+                      : !pride && !subject;
+                })
+                .map((item) => {
+                  const unlocked = cosmeticUnlocked(category, item.id, earned);
+                  const selected = chosen[category] === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      className="secondary-button"
+                      aria-pressed={selected}
+                      aria-disabled={!unlocked}
+                      onClick={() => {
+                        if (unlocked) {
+                          dirty.current.add(category);
+                          setChosen({ ...chosen, [category]: item.id });
+                        }
+                      }}
+                    >
+                      {category === "cover" ? (
+                        <ProfileCoverArt theme={profileCover(item.id)} />
+                      ) : category === "frame" ? (
+                        <div className="profile-customizer-frame">
+                          <img src={chosen.photoUrl} alt="" width="70" height="70" />
+                          <ProfileFrameArt frame={item.id} />
+                        </div>
+                      ) : (
+                        <div
+                          className="profile-background-swatch"
+                          data-profile-background={item.id}
+                        />
+                      )}
+                      <span>
+                        {uiText(item.name)} {selected && <PaperCheckIcon size={16} />}
+                      </span>
+                      {!unlocked && (
+                        <small>
+                          {uiText(
+                            item.id === "english"
+                              ? category === "frame"
+                                ? "Complete a ilha de Inglês."
+                                : "Acerte 100 atividades de Inglês."
+                              : category === "frame"
+                                ? "Complete uma ilha de Matemática."
+                                : "Acerte 100 contas em Matemática.",
+                          )}
+                        </small>
+                      )}
+                    </button>
+                  );
+                })}
+            </section>
+          ))}
         </div>
       )}
       {error && <p role="alert">{uiText(error)}</p>}

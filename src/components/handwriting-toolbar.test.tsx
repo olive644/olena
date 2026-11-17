@@ -340,7 +340,8 @@ describe("opções de tinta", () => {
   it("aceita uma cor personalizada", () => {
     const props = inkProps();
     render(<HandwritingQuickColors color={props.color} onColorChange={props.onColorChange} />);
-    fireEvent.change(document.querySelector('input[type="color"]')!, {
+    fireEvent.click(screen.getByRole("button", { name: "Escolher outra cor" }));
+    fireEvent.change(screen.getByRole("textbox", { name: "HEX" }), {
       target: { value: "#123456" },
     });
     expect(props.onColorChange).toHaveBeenCalledWith("#123456");

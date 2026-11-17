@@ -89,6 +89,7 @@ export function HandwritingStickyNote({
           : {}),
         ...(sticky.kind === "text" ? { color: sticky.ink ?? "#17151c" } : {}),
       }}
+      data-sticky-color={sticky.color}
       data-sticky-id={sticky.id}
       data-selection-managed={selectionManaged || undefined}
       key={sticky.id}

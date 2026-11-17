@@ -1,3 +1,4 @@
+import { ShelfToolIcon } from "./shelf-tool-icon";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { PROFILE_PRONOUN_PRESETS, profilePronounsLabel } from "../i18n/profile-pronouns";
 import { useEffect, useRef, useState } from "react";
@@ -150,17 +151,6 @@ export function ProfileEditor({
             />
             <small id="profile-username-help">{guest ? uiText(840) : uiText(841)}</small>
           </label>
-          <label className="field profile-editor__wide">
-            <span id="profile-bio-label">{uiText(842)}</span>
-            <textarea
-              maxLength={240}
-              rows={3}
-              aria-labelledby="profile-bio-label"
-              value={draft.bio}
-              onChange={(event) => change("bio", event.target.value)}
-            />
-            <small>{draft.bio.length}/240</small>
-          </label>
           <div className="profile-editor__wide">
             <PaperChoice
               label={uiText(843)}
@@ -227,7 +217,7 @@ export function ProfileEditor({
                   )}
                 </label>
                 <button
-                  className="secondary-button"
+                  className="profile-editor__remove-social"
                   type="button"
                   aria-label={uiText(1892, [index + 1])}
                   onClick={() =>
@@ -237,7 +227,7 @@ export function ProfileEditor({
                     }))
                   }
                 >
-                  <PaperEditorIcon name="trash" />
+                  <ShelfToolIcon name="trash" />
                 </button>
               </div>
             );

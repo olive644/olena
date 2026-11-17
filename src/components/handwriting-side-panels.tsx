@@ -1,3 +1,5 @@
+import { useState, type ReactNode } from "react";
+import { FocusPaperArrow } from "./focus-paper-arrow";
 import { PaperArrow } from "./paper-arrow";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { formatCoordinateNumber, type CoordinateStats } from "../domain/coordinate-math";
@@ -12,13 +14,20 @@ type Brush = NonNullable<HandwritingStroke["brush"]>;
 type CoordinateStep = 1 | 2 | 5 | 10;
 
 type HandwritingBrushPanelProps = {
+  children?: ReactNode;
   brush: Brush;
   color: string;
   onBrushChange: (brush: Brush) => void;
 };
 
-export function HandwritingBrushPanel({ brush, color, onBrushChange }: HandwritingBrushPanelProps) {
+export function HandwritingBrushPanel({
+  brush,
+  color,
+  onBrushChange,
+  children,
+}: HandwritingBrushPanelProps) {
   const language = useLanguage();
+  const [expanded, setExpanded] = useState(true);
   const instruments = [
     ["fine", uiText(1667), 2],
     ["ink", uiText(1668), 7],
@@ -29,37 +38,81 @@ export function HandwritingBrushPanel({ brush, color, onBrushChange }: Handwriti
   ] as const;
 
   return (
-    <aside className="handwriting-brush-panel" aria-label={uiText(233)}>
-      <header>
-        <div>
-          <small>{uiText(234)}</small>
+    <>
+      <button
+        type="button"
+        className="handwriting-brush-disclosure"
+        aria-label={uiText(233)}
+        aria-expanded={expanded}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <FocusPaperArrow />
+      </button>
+      <aside
+        data-expanded={expanded}
+        className="handwriting-brush-panel handwriting-pen-case"
+        aria-label={uiText(233)}
+      >
+        <header>
+          <div>
+            <small>{instruments.find(([value]) => value === brush)?.[1]}</small>
+          </div>
+        </header>
+        <div className="mobile-instrument-title">
+          {instruments.find(([value]) => value === brush)?.[1]}
         </div>
-      </header>
-      <div className="mobile-instrument-title">
-        {instruments.find(([value]) => value === brush)?.[1]}
-      </div>
-      {instruments.map(([value, title, size]) => (
-        <button
-          type="button"
-          key={value}
-          aria-pressed={brush === value}
-          onClick={() => onBrushChange(value)}
-        >
-          <span className="brush-card-title">{title}</span>
-          <img className="brush-instrument" src={`/brushes/${value}.svg`} alt="" />
-          <svg className="brush-sample" viewBox="0 0 180 46" aria-hidden="true">
-            <path
-              d="M10 31C36 32 39 9 66 19S104 39 130 24 158 15 170 19"
-              fill="none"
-              stroke={color}
-              strokeWidth={size}
-              strokeLinecap="round"
-              opacity={value === "soft" ? 0.3 : value === "pencil" ? 0.65 : 1}
-            />
-          </svg>
-        </button>
-      ))}
-    </aside>
+        {children}
+        {instruments.map(([value, title, size]) => (
+          <button
+            type="button"
+            key={value}
+            aria-label={title}
+            aria-pressed={brush === value}
+            onClick={() => onBrushChange(value)}
+          >
+            <span className="brush-card-title">{title}</span>
+            <img className="brush-instrument" src={`/brushes/${value}.svg?v=3`} alt="" />
+            <svg className="brush-sample" viewBox="0 0 180 46" aria-hidden="true">
+              <path
+                d="M10 31C36 32 39 9 66 19S104 39 130 24 158 15 170 19"
+                fill="none"
+                stroke={color}
+                strokeWidth={size}
+                strokeLinecap="round"
+                opacity={value === "soft" ? 0.3 : value === "pencil" ? 0.65 : 1}
+              />
+            </svg>
+          </button>
+        ))}
+      </aside>
+    </>
+  );
+}
+
+export function HandwritingToolCase({ title, children }: { title: string; children: ReactNode }) {
+  const [expanded, setExpanded] = useState(true);
+  return (
+    <>
+      <button
+        type="button"
+        className="handwriting-brush-disclosure"
+        aria-label={title}
+        aria-expanded={expanded}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <FocusPaperArrow />
+      </button>
+      <aside
+        className="handwriting-brush-panel handwriting-pen-case handwriting-tool-case"
+        data-expanded={expanded}
+        aria-label={title}
+      >
+        <header>
+          <small>{title}</small>
+        </header>
+        {children}
+      </aside>
+    </>
   );
 }
 
@@ -116,12 +169,14 @@ export function HandwritingRulerPanel({
           <button
             type="button"
             key={kind}
+            aria-label={title}
             aria-pressed={rulerKind === kind}
             onClick={() => onRulerKindChange(kind)}
           >
             <span className="ruler-card-art" data-ruler={drawing} aria-hidden="true">
               <i />
             </span>
+            <img className="ruler-instrument" src={`/rulers/${drawing}.svg`} alt="" />
             <strong>{title}</strong>
             <small>{description}</small>
           </button>
@@ -163,6 +218,7 @@ export function HandwritingCoordinatePanel({
         <button
           type="button"
           key={step}
+          aria-label={`${uiText(251)} ${step}`}
           aria-pressed={coordinateStep === step}
           onClick={() => onStepChange(step)}
         >
