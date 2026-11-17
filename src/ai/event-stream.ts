@@ -75,6 +75,9 @@ export async function* readModelStream(response: Response, signal?: AbortSignal)
         if (chunk && typeof chunk === "object" && "content" in chunk) delta = chunk.content;
       }
     }
+    // A Cloudflare entrega como número o pedaço que é só dígitos (o "1" de "## 1. Título"). Antes
+    // isso derrubava o resumo no primeiro título numerado, com "Invalid model delta".
+    if (typeof delta === "number" && Number.isFinite(delta)) delta = String(delta);
     if (delta === undefined || delta === null || delta === "") continue;
     if (typeof delta !== "string" || (length += delta.length) > 12_000)
       throw new Error("Invalid model delta");
