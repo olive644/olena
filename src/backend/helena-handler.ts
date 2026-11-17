@@ -9,6 +9,8 @@ import {
 import { ModelProviderQuotaError } from "../ai/event-stream.js";
 import {
   DAY_SECONDS,
+  ASSISTANT_OFF_MESSAGE,
+  noticeLanguage,
   quotaMessage,
   secondsUntilReset,
   type RateLimitDenial,
@@ -50,6 +52,8 @@ export type HelenaHandlerDependencies = {
   identifyClient(request: Request): Promise<string> | string;
   provider: HelenaProvider;
   rateLimiter: HelenaRateLimiter;
+  /** Conversa, plano de estudo e explicação. Desligado na produção para guardar a cota do resumo. */
+  chatEnabled?: boolean;
   createRequestId?: () => string;
   now?: () => Date;
 };
@@ -127,12 +131,19 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
       return errorResponse(400, code, parsed.message);
     }
 
+    const language = noticeLanguage(request.headers.get("X-App-Language"));
+    // A conversa, o plano de estudo e a explicação foram desligados: a cota gratuita é do resumo.
+    if (dependencies.chatEnabled === false && parsed.value.capability !== "summarize")
+      return errorResponse(410, "provider_unavailable", ASSISTANT_OFF_MESSAGE[language]);
+
     const clientId = await dependencies.identifyClient(request);
     if (!clientId)
       return errorResponse(
         401,
         "invalid_request",
-        "Entre na sua conta para conversar com a Olena.",
+        language === "en"
+          ? "Sign in to your account to use Olena."
+          : "Entre na sua conta para usar a Olena.",
       );
     const decision = await dependencies.rateLimiter.consume(
       clientId,
@@ -144,7 +155,7 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
       return errorResponse(
         429,
         "rate_limited",
-        quotaMessage(denial?.limit, parsed.value.capability),
+        quotaMessage(denial?.limit, parsed.value.capability, language),
         denial ? { "Retry-After": String(denial.retryAfterSeconds) } : undefined,
       );
     }
@@ -217,11 +228,18 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
                           ? {
                               type: "error",
                               code: "rate_limited",
-                              message: quotaMessage("provider-quota", parsed.value.capability),
+                              message: quotaMessage(
+                                "provider-quota",
+                                parsed.value.capability,
+                                language,
+                              ),
                             }
                           : {
                               type: "error",
-                              message: "A resposta foi interrompida. Tente novamente.",
+                              message:
+                                language === "en"
+                                  ? "The answer was interrupted. Try again."
+                                  : "A resposta foi interrompida. Tente novamente.",
                             },
                       ),
                     );
@@ -270,7 +288,7 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
         return errorResponse(
           429,
           "rate_limited",
-          quotaMessage("provider-quota", parsed.value.capability),
+          quotaMessage("provider-quota", parsed.value.capability, language),
           { "Retry-After": String(secondsUntilReset(DAY_SECONDS)) },
         );
       return errorResponse(503, "provider_unavailable", "A Olena está indisponível no momento.");

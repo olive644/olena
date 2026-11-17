@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
+// Estes testes exercitam a conversa, desligada por padrão na produção.
+process.env["HELENA_CHAT_ENABLED"] = "true";
+
 const mocks = vi.hoisted(() => ({
   identify: vi.fn(),
   quota: vi.fn(),

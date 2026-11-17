@@ -39,6 +39,36 @@ function post(body: unknown, requestOrigin = origin): Request {
 }
 
 describe("handler da Helena", () => {
+  it("com a conversa desligada, só o resumo passa; o resto recebe 410 sem gastar cota", async () => {
+    const deps = dependencies({ chatEnabled: false });
+    const handler = createHelenaHandler(deps);
+    const chat = await handler(post({ ...validRequest, capability: "tutor" }));
+    expect(chat.status).toBe(410);
+    expect((await chat.json()).error.message).toContain("desligada");
+    expect(deps.rateLimiter.consume).not.toHaveBeenCalled();
+    expect(deps.provider.generate).not.toHaveBeenCalled();
+    expect((await handler(post(validRequest))).status).toBe(200);
+  });
+  it("responde os avisos em inglês quando o app manda X-App-Language: en-US", async () => {
+    const deps = dependencies({
+      chatEnabled: false,
+      rateLimiter: {
+        consume: vi.fn().mockResolvedValue({ limit: "summary-user-day", retryAfterSeconds: 60 }),
+      },
+    });
+    const handler = createHelenaHandler(deps);
+    const withLanguage = (body: unknown) =>
+      new Request(`${origin}/api/helena`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Origin: origin, "X-App-Language": "en-US" },
+        body: JSON.stringify(body),
+      });
+    const limited = await handler(withLanguage(validRequest));
+    expect(limited.status).toBe(429);
+    expect((await limited.json()).error.message).toMatch(/summaries with Olena today.*9 pm/);
+    const off = await handler(withLanguage({ ...validRequest, capability: "explain" }));
+    expect((await off.json()).error.message).toMatch(/turned off/);
+  });
   it("não gera para usuário sem autenticação", async () => {
     const deps = dependencies({ identifyClient: () => "" });
     expect((await createHelenaHandler(deps)(post(validRequest))).status).toBe(401);

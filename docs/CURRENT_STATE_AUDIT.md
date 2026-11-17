@@ -5466,3 +5466,11 @@ Tudo local, sem IA e sem rede, na mesma PR do teto diário da Olena.
 - Imagens (foto de página) agora passam pelo OCR em português no aparelho, em vez de pedir a Olena. Se nem o OCR achar texto, o aviso de erro aparece e nada é criado.
 - Prova: `npm run verify` com 2944 testes passando e só as 8 falhas ambientais de `listening-audio` (`object.stream is not a function`, também na main limpa); e2e dos três fluxos de resumo em desktop e celular, claro e escuro (12 passaram).
 - Limites: qualidade não validada em PDFs reais de aula; precisão do OCR em foto torta ou borrada não medida; seletor de tamanho sem captura de tela dedicada nesta rodada.
+
+## Voz e conversa da Olena desligadas, avisos em inglês, 17/11/2026
+
+- Decisão do proprietário: economizar a cota gratuita da Cloudflare para o resumo. Voz natural responde 410 (cai na voz do aparelho), o chat saiu do app (componente e página de preview continuam no código) e o servidor só aceita `summarize`.
+- Avisos de limite, cota, login e interrupção do servidor agora seguem o idioma do app (`X-App-Language`), com testes em `helena-quota.test.ts` e `helena-handler.test.ts`.
+- Removido `e2e/helena-app.spec.ts` (testava o botão flutuante que não existe mais). Mantido `e2e/helena-chat-preview.spec.ts`.
+- Limite: o app do celular com versão antiga ainda mostra o chat e receberá o aviso de conversa desligada; validação visual em claro e escuro não se aplica porque nenhuma tela nova foi criada.
+

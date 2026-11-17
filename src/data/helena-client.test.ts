@@ -46,6 +46,7 @@ describe("cliente da Helena", () => {
     expect(init?.headers).toEqual({
       Accept: "application/json",
       "Content-Type": "application/json",
+      "X-App-Language": "pt-BR",
     });
   });
 

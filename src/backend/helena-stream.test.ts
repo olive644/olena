@@ -10,6 +10,9 @@ import type { HelenaRequest } from "../ai/helena-contract";
 import { createMathGroundedProvider } from "./helena-math-provider";
 import evaluations from "./math/existing-evaluations.test-data.json";
 
+// Estes testes exercitam a conversa, desligada por padrão na produção.
+process.env["HELENA_CHAT_ENABLED"] = "true";
+
 const payload: HelenaRequest = {
   version: 1,
   capability: "tutor",

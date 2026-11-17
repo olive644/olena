@@ -175,3 +175,11 @@ Medição com a retomada: aplicação 1719,8 KiB de 1720 e entrada 220,7 KiB. O 
 ## Teto de JavaScript autorizado, 10/11/2026
 
 Proprietário pediu explicitamente subir o teto após a medição de 1761,1 KiB. Orçamento total e teto rígido passam de 1748 para 1764 KiB, com 2,9 KiB de margem na medição atual. Entrada, dependências, outros orçamentos, workflows e tempos permanecem iguais. Ampliação cobre a entrada visual e a associação/retorno de contas; não foi alegada redução de tamanho nem de custo.
+
+### Voz e conversa desligadas para guardar a cota do resumo, 17/11/2026
+
+- A cota gratuita da Cloudflare (10.000 neurons por dia) agora é só do Resumo com a Olena. A voz natural (`api/speech.ts`, MeloTTS) responde 410 sem chamar a Cloudflare e o app usa a voz do aparelho. Para religar, restaure o handler anterior do histórico do git.
+- A conversa, o plano de estudo e a explicação da Olena foram desligados: o botão flutuante saiu do app e `/api/helena` devolve 410 para qualquer pedido que não seja `summarize` (sem gastar cota). A variável `HELENA_CHAT_ENABLED=true` na Vercel religa o servidor (a interface precisaria voltar em `src/app.tsx`).
+- Os avisos de cota e de erro do servidor saem em inglês quando o app está em inglês (cabeçalho `X-App-Language`).
+- Efeito sobre os limites da seção anterior: o teto de 300 pedidos por dia e os limites de conversa agora só valem para o resumo. Não verificado: quantos neurons por dia sobram; conferir no painel da Cloudflare depois de alguns dias.
+

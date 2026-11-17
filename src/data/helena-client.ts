@@ -1,3 +1,4 @@
+import { uiLocale } from "../i18n/runtime";
 import {
   parseHelenaResponse,
   type HelenaErrorCode,
@@ -63,6 +64,7 @@ export async function streamHelena(
     headers: {
       Accept: "text/event-stream",
       "Content-Type": "application/json",
+      "X-App-Language": uiLocale(),
       ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
     },
     body: JSON.stringify(request),
@@ -135,7 +137,11 @@ export async function requestHelena(
   const init: RequestInit = {
     method: "POST",
     credentials: "same-origin",
-    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-App-Language": uiLocale(),
+    },
     body: JSON.stringify(request),
   };
   if (options.token)

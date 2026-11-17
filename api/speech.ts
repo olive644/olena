@@ -1,41 +1,21 @@
-import { createCloudflareTtsProvider } from "../src/backend/cloudflare-tts-provider.js";
-import { createFirebaseRealtimeStore } from "../src/backend/firebase-realtime-store.js";
-import { checkRateLimit } from "../src/backend/rate-limit.js";
-import { clientAddress } from "../src/backend/client-address.js";
-import { createSharedSpeechProvider } from "../src/backend/shared-speech-provider.js";
-import { createSpeechGenerationQuota } from "../src/backend/speech-quota.js";
-import { createSpeechHandler } from "../src/backend/speech-handler.js";
-import { createVercelHandler } from "../src/backend/vercel-adapter.js";
-
-const rateLimitStore = createFirebaseRealtimeStore({
-  databaseUrl: process.env["FIREBASE_DATABASE_URL"] ?? "",
-  serviceAccount: {
-    clientEmail: process.env["FIREBASE_CLIENT_EMAIL"] ?? "",
-    privateKey: (process.env["FIREBASE_PRIVATE_KEY"] ?? "").replace(/\\n/g, "\n"),
+// A voz natural (Cloudflare MeloTTS) foi desligada para guardar a cota gratuita da Cloudflare
+// para o resumo. O app cai sozinho na voz do aparelho. Para religar, restaure o handler anterior
+// (createSpeechHandler com createCloudflareTtsProvider) a partir do histórico do git.
+export default function handler(
+  _request: unknown,
+  response: {
+    statusCode: number;
+    setHeader(name: string, value: string): void;
+    end(body: string): void;
   },
-});
-
-const handler = createSpeechHandler({
-  observe: (event) => console.info(JSON.stringify({ event: "speech_request", ...event })),
-  identifyClient(request) {
-    return clientAddress(request) ?? "anonymous";
-  },
-  rateLimiter: {
-    // Store compartilhado (Firebase) em vez de Map em memória: o limite vale
-    // pra todas as instâncias serverless, não só pra que atendeu a requisição.
-    consume(clientId) {
-      return checkRateLimit(rateLimitStore, "speech-rate-limit", clientId, 240, 60);
-    },
-  },
-  provider: createSharedSpeechProvider(
-    createCloudflareTtsProvider(
-      process.env["CLOUDFLARE_ACCOUNT_ID"] ?? "",
-      process.env["CLOUDFLARE_API_TOKEN"] ?? "",
-      Number(process.env["TTS_TIMEOUT_MS"] ?? "8000"),
-    ),
-    rateLimitStore,
-    createSpeechGenerationQuota(rateLimitStore),
-  ),
-});
-
-export default createVercelHandler("/api/speech", handler);
+): void {
+  response.statusCode = 410;
+  response.setHeader("Content-Type", "application/json; charset=utf-8");
+  response.setHeader("Cache-Control", "no-store");
+  response.end(
+    JSON.stringify({
+      error: "voice_disabled",
+      message: "A voz natural foi desligada. Use a voz do aparelho.",
+    }),
+  );
+}

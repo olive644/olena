@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { DAY_SECONDS, quotaMessage, secondsUntilReset, type RateLimitName } from "./helena-quota";
+import {
+  DAY_SECONDS,
+  noticeLanguage,
+  quotaMessage,
+  secondsUntilReset,
+  type RateLimitName,
+} from "./helena-quota";
 
 describe("cota diária da Olena", () => {
   it("diz quanto falta para a janela do dia (00:00 UTC) terminar", () => {
@@ -30,5 +36,19 @@ describe("cota diária da Olena", () => {
     expect(quotaMessage("global-day", "tutor")).not.toContain("Resumo automático");
     expect(quotaMessage("summary-day", "summarize")).toContain("21h");
     expect(quotaMessage(undefined, "tutor")).toContain("Limite de uso atingido");
+  });
+
+  it("traduz todos os avisos para inglês e escolhe o idioma pelo cabeçalho", () => {
+    expect(noticeLanguage("en-US")).toBe("en");
+    expect(noticeLanguage("pt-BR")).toBe("pt");
+    expect(noticeLanguage(null)).toBe("pt");
+    for (const name of names) {
+      const english = quotaMessage(name, "summarize", "en");
+      expect(english).not.toMatch(/Olena atingiu|voltam|Você|às 21h/);
+      expect(english).toMatch(/Olena|You|requests|Usage/);
+    }
+    expect(quotaMessage("global-day", "summarize", "en")).toContain(
+      "Automatic summary still works",
+    );
   });
 });

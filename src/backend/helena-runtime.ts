@@ -25,6 +25,10 @@ const store = createFirebaseRealtimeStore({
 });
 const identity = createFirebaseAccountIdentity(process.env["VITE_FIREBASE_PROJECT_ID"] ?? "");
 const handler = createHelenaHandler({
+  // Desligada por padrão: só o resumo usa a cota gratuita. HELENA_CHAT_ENABLED=true religa.
+  get chatEnabled() {
+    return process.env["HELENA_CHAT_ENABLED"] === "true";
+  },
   allowedOrigins: parseAllowedOrigins(process.env["HELENA_ALLOWED_ORIGINS"]),
   async identifyClient(request) {
     // Contas anônimas são baratas de criar: com elas a cota por usuário não protegeria a cota

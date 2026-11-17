@@ -91,20 +91,12 @@ describe("App", () => {
     expect(screen.queryByLabelText("Perfil de Ana")).toBeNull();
   });
 
-  it("mantém a estrela da Olena montada ao trocar de aba", async () => {
+  it("não monta mais a conversa com a Olena (cota gratuita é do resumo)", async () => {
     render(<App />);
-    // A primeira abertura inclui a importação fria da assistente.
-    const star = await screen.findByRole(
-      "button",
-      { name: "Conversar com Olena" },
-      { timeout: 5000 },
-    );
-    expect(screen.getByRole("complementary", { name: "Assistente Olena" })).toBeTruthy();
     navigate("Agenda");
-    expect(screen.getByRole("button", { name: "Conversar com Olena" })).toBe(star);
-    navigate("Foco");
-    expect(screen.getByRole("button", { name: "Conversar com Olena" })).toBe(star);
-  }, 10000);
+    expect(screen.queryByRole("button", { name: "Conversar com Olena" })).toBeNull();
+    expect(screen.queryByRole("complementary", { name: "Assistente Olena" })).toBeNull();
+  });
 
   // Inclui importação fria da rota e seleção no diálogo, como os fluxos de caderno.
   it("permite escolher um avatar oficial diretamente no perfil", async () => {
