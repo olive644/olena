@@ -60,9 +60,6 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("button", { name: "Voltar ao perfil" }).click();
     await expect(toggle).toBeFocused();
     await expect(page.getByRole("navigation", { name: "Seções do Perfil" })).toHaveCount(0);
-    await expect(page.locator(".helena-virtual-mascot > img")).toHaveAttribute(
-      "src",
-      "/helena-assistant/star-rive.png",
-    );
+    await expect(page.locator(".helena-virtual-mascot")).toHaveCount(0);
   });
 }

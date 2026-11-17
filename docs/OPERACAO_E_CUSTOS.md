@@ -182,4 +182,3 @@ Proprietário pediu explicitamente subir o teto após a medição de 1761,1 KiB.
 - A conversa, o plano de estudo e a explicação da Olena foram desligados: o botão flutuante saiu do app e `/api/helena` devolve 410 para qualquer pedido que não seja `summarize` (sem gastar cota). A variável `HELENA_CHAT_ENABLED=true` na Vercel religa o servidor (a interface precisaria voltar em `src/app.tsx`).
 - Os avisos de cota e de erro do servidor saem em inglês quando o app está em inglês (cabeçalho `X-App-Language`).
 - Efeito sobre os limites da seção anterior: o teto de 300 pedidos por dia e os limites de conversa agora só valem para o resumo. Não verificado: quantos neurons por dia sobram; conferir no painel da Cloudflare depois de alguns dias.
-

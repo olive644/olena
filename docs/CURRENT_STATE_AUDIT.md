@@ -5471,6 +5471,5 @@ Tudo local, sem IA e sem rede, na mesma PR do teto diário da Olena.
 
 - Decisão do proprietário: economizar a cota gratuita da Cloudflare para o resumo. Voz natural responde 410 (cai na voz do aparelho), o chat saiu do app (componente e página de preview continuam no código) e o servidor só aceita `summarize`.
 - Avisos de limite, cota, login e interrupção do servidor agora seguem o idioma do app (`X-App-Language`), com testes em `helena-quota.test.ts` e `helena-handler.test.ts`.
-- Removido `e2e/helena-app.spec.ts` (testava o botão flutuante que não existe mais). Mantido `e2e/helena-chat-preview.spec.ts`.
+- Removidos `e2e/helena-app.spec.ts`, `e2e/helena-first-frame.spec.ts` e `e2e/helena-mascot.spec.ts` (testavam o botão e a estrela flutuantes que não existem mais no app). Mantido `e2e/helena-chat-preview.spec.ts`.
 - Limite: o app do celular com versão antiga ainda mostra o chat e receberá o aviso de conversa desligada; validação visual em claro e escuro não se aplica porque nenhuma tela nova foi criada.
-
