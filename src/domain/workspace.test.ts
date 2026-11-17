@@ -233,11 +233,15 @@ describe("workspaceReducer", () => {
     const reviewed = workspaceReducer(withCard, {
       type: "flashcard/reviewed",
       id: card.id,
-      rating: "easy",
+      rating: "good",
       reviewedOn: "2026-08-30",
     });
-    expect(reviewed.flashcards[0]?.intervalDays).toBe(3);
-    expect(reviewed.flashcards[0]?.nextReview).toBe("2026-09-02");
+    // FSRS: primeira resposta "bom" agenda em poucos dias, e guarda a memória do cartão
+    expect(reviewed.flashcards[0]?.intervalDays).toBeGreaterThanOrEqual(2);
+    expect(reviewed.flashcards[0]?.intervalDays).toBeLessThanOrEqual(4);
+    expect(reviewed.flashcards[0]?.stability).toBeGreaterThan(0);
+    expect(reviewed.flashcards[0]?.difficulty).toBeGreaterThanOrEqual(1);
+    expect((reviewed.flashcards[0]?.nextReview ?? "") > "2026-08-30").toBe(true);
     expect(dueFlashcards(reviewed, "2026-08-30")).toHaveLength(0);
   });
 

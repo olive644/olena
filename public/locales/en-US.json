@@ -3959,5 +3959,14 @@
   "True",
   "Not this time.",
   "Statement",
-  "Left is false, right is true."
+  "Left is false, right is true.",
+  "Edit card",
+  "Bad statement",
+  "Bad card",
+  "Card front",
+  "Card back",
+  "Explanation",
+  "Save",
+  "Source: {0}, page {1}",
+  "Page {0}"
 ]

@@ -160,12 +160,15 @@ type LibraryCollection = {
   createdAt?: string;
 };
 
-export type FlashcardRating = "again" | "hard" | "easy";
+export type FlashcardRating = "again" | "hard" | "good" | "easy";
 
 export type Flashcard = {
   deck?: string;
   noteId?: string;
   ease?: number;
+  /** Memória FSRS: estabilidade em dias e dificuldade de 1 a 10. */
+  stability?: number;
+  difficulty?: number;
   repetitions?: number;
   reviews?: number;
   correct?: number;
@@ -1209,7 +1212,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         ...state,
         flashcards: state.flashcards.map((card) => {
           if (card.id !== action.id) return card;
-          const schedule = reviewSchedule(card, action.rating);
+          const schedule = reviewSchedule(card, action.rating, action.reviewedOn);
           return {
             ...card,
             ...schedule,

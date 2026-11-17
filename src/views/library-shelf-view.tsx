@@ -802,6 +802,22 @@ export function LibraryFolderContents({
         key={openDeck.id}
         title={openDeck.title}
         cards={openDeck.cards}
+        sourceTitle={openDeck.sourceTitle}
+        onDiscard={(id) => dispatch({ type: "flashcard/removed", id })}
+        onEdit={(id, front, back) => {
+          const card = openDeck.cards.find((item) => item.id === id);
+          if (!card) return;
+          dispatch({
+            type: "flashcard/updated",
+            id,
+            changes: {
+              front,
+              back,
+              subjectId: card.subjectId,
+              ...(card.deck ? { deck: card.deck } : {}),
+            },
+          });
+        }}
         onReview={(id, rating, reviewedOn) =>
           dispatch({ type: "flashcard/reviewed", id, rating, reviewedOn })
         }

@@ -13,7 +13,7 @@ import {
   keyTerms,
   type Definition,
 } from "./facts";
-import { falseVersion, numbersIn, type DefinitionParts } from "./true-false";
+import { falseVersion, looksLikeStatement, numbersIn, type DefinitionParts } from "./true-false";
 import {
   contentStems,
   countWords,
@@ -1099,18 +1099,12 @@ export async function flashcardsFromDocument(
         sentence.candidate &&
         !dependsOnPrevious(sentence.text) &&
         !isReferenceLike(sentence.text) &&
-        sentence.text.length <= 260,
+        sentence.text.length <= 260 &&
+        looksLikeStatement(sentence.text, language),
     )
     .sort((x, y) => y.score - x.score)
     .slice(0, MAX_AUTO_FLASHCARDS);
   const numbers = [...new Set(sentences.flatMap((sentence) => numbersIn(sentence.text)))];
-  const terms = keyTerms(
-    sentences.map((sentence) => sentence.text),
-    language,
-    60,
-  )
-    .map(({ term }) => term)
-    .filter((term) => term.length >= 3);
   const definitions = sentences
     .map((sentence) => (sentence.definition ? definitionParts(sentence.definition) : undefined))
     .filter((item): item is DefinitionParts => item !== undefined);
@@ -1126,12 +1120,17 @@ export async function flashcardsFromDocument(
             index: sentence.id,
             language,
             numbers,
-            terms,
             definitions,
             ...(own ? { own } : {}),
           })
         : undefined;
-    const usable = wrong && !known.has(squash(wrong)) && wrong.length <= 300 ? wrong : undefined;
+    const usable =
+      wrong &&
+      !known.has(squash(wrong)) &&
+      wrong.length <= 300 &&
+      looksLikeStatement(wrong, language)
+        ? wrong
+        : undefined;
     const front = usable ?? sentence.text;
     if (fronts.has(front)) continue;
     fronts.add(front);
