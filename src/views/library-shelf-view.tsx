@@ -1350,7 +1350,7 @@ export function LibraryFolderContents({
             {creating === "Flashcards" && (
               <p>
                 {uiText(
-                  "Flashcards automáticos: grátis, feitos no seu aparelho, sem IA. Cria o máximo de perguntas e respostas que o próprio arquivo permite.",
+                  "Flashcards automáticos: grátis, feitos no seu aparelho, sem IA. Cria o máximo de afirmações de verdadeiro ou falso que o próprio arquivo permite.",
                 )}
               </p>
             )}

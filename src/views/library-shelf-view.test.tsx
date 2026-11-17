@@ -425,8 +425,7 @@ describe("resumo automático no aparelho", () => {
     expect(action.subjectId).toBe("materia-1");
     expect(action.materialId).toBe(source.id);
     expect(action.deck).toBe("ENIAC");
-    expect(action.front.endsWith("?")).toBe(true);
-    expect(action.front).not.toContain("_____");
+    expect(/^(Verdadeiro|Falso)./.test(action.back)).toBe(true);
     expect(await screen.findByRole("status")).toBeTruthy();
   });
 

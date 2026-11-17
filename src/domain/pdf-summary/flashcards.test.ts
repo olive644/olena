@@ -1,43 +1,61 @@
 import { describe, expect, it } from "vitest";
 import { flashcardsFromPlainText, MAX_AUTO_FLASHCARDS } from "./index";
-import { computingHistory, fixtureAsText, photosynthesis, shortNote } from "./fixtures.test-data";
+import { falseVersion, numbersIn } from "./true-false";
+import {
+  computingHistory,
+  fixtureAsText,
+  photosynthesis,
+  shortNote,
+  statesOfMatter,
+} from "./fixtures.test-data";
 import { stripAccents } from "./portuguese";
 
-const squash = (text: string) => stripAccents(text).toLowerCase().replace(/\s+/g, " ");
+const squash = (text: string) =>
+  stripAccents(text)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+const isFalse = (back: string) => back.startsWith("Falso.");
+const isTrue = (back: string) => back.startsWith("Verdadeiro.");
 
-describe("flashcards automáticos", () => {
-  it("gera muitos cartões de um texto de aula, todos com pergunta e resposta", async () => {
+describe("flashcards automáticos de verdadeiro ou falso", () => {
+  it("todo cartão é uma afirmação com o gabarito no verso", async () => {
+    for (const fixture of [computingHistory, photosynthesis, statesOfMatter]) {
+      const cards = await flashcardsFromPlainText(fixtureAsText(fixture), fixture.title);
+      expect(cards.length).toBeGreaterThanOrEqual(4);
+      expect(cards.length).toBeLessThanOrEqual(MAX_AUTO_FLASHCARDS);
+      for (const card of cards) {
+        expect(card.front.trim().length).toBeGreaterThan(20);
+        expect(isTrue(card.back) || isFalse(card.back)).toBe(true);
+      }
+      expect(new Set(cards.map((card) => card.front)).size).toBe(cards.length);
+    }
+  });
+
+  it("mistura verdadeiros e falsos, sem deixar o baralho ser só de um lado", async () => {
     const cards = await flashcardsFromPlainText(
       fixtureAsText(computingHistory),
       computingHistory.title,
     );
-    expect(cards.length).toBeGreaterThanOrEqual(8);
-    expect(cards.length).toBeLessThanOrEqual(MAX_AUTO_FLASHCARDS);
-    for (const card of cards) {
-      expect(card.front.trim().length).toBeGreaterThan(5);
-      expect(card.back.trim().length).toBeGreaterThan(1);
-    }
-    expect(new Set(cards.map((card) => card.front)).size).toBe(cards.length);
+    const falses = cards.filter((card) => isFalse(card.back)).length;
+    const trues = cards.filter((card) => isTrue(card.back)).length;
+    expect(falses).toBeGreaterThanOrEqual(cards.length * 0.3);
+    expect(trues).toBeGreaterThanOrEqual(cards.length * 0.3);
   });
 
-  it("não inventa nada: a resposta de cada cartão está no texto do arquivo", async () => {
+  it("verdadeiro é a frase do arquivo; falso é diferente e o verso traz a frase certa", async () => {
     const source = squash(fixtureAsText(photosynthesis));
     const cards = await flashcardsFromPlainText(
       fixtureAsText(photosynthesis),
       photosynthesis.title,
     );
-    expect(cards.length).toBeGreaterThan(0);
-    for (const card of cards) expect(source).toContain(squash(card.back).replace(/[.]$/, ""));
-  });
-
-  it("todo cartão é uma pergunta de verdade, nunca uma lacuna para completar", async () => {
-    for (const fixture of [computingHistory, photosynthesis]) {
-      const cards = await flashcardsFromPlainText(fixtureAsText(fixture), fixture.title);
-      expect(cards.length).toBeGreaterThan(0);
-      for (const card of cards) {
-        expect(card.front.endsWith("?")).toBe(true);
-        expect(card.front).not.toContain("_____");
-        expect(card.front.startsWith("Complete")).toBe(false);
+    for (const card of cards) {
+      if (isTrue(card.back)) expect(source).toContain(squash(card.front));
+      else {
+        expect(source).not.toContain(squash(card.front));
+        const original = card.back.replace(/^Falso\. O texto diz: /, "");
+        expect(source).toContain(squash(original));
+        expect(squash(original)).not.toBe(squash(card.front));
       }
     }
   });
@@ -46,5 +64,56 @@ describe("flashcards automáticos", () => {
     await expect(flashcardsFromPlainText("", "vazio")).resolves.toEqual([]);
     const few = await flashcardsFromPlainText(fixtureAsText(shortNote), shortNote.title);
     expect(few.length).toBeLessThanOrEqual(MAX_AUTO_FLASHCARDS);
+  });
+});
+
+describe("afirmações falsas", () => {
+  const base = { index: 0, language: "pt" as const, numbers: [], terms: [], definitions: [] };
+
+  it("troca um ano por outro, sem mexer em quantidades nem em décadas inteiras", () => {
+    expect(falseVersion("Em 1945, o ENIAC foi concluído nos Estados Unidos.", base)).toMatch(
+      /^Em \d{4}, o ENIAC/,
+    );
+    expect(falseVersion("O ábaco é usado há mais de 2000 anos na China.", base)).not.toContain(
+      "mais de 2000",
+    );
+    const decade = falseVersion("Na década de 1970, os chips ficaram baratos.", base)!;
+    expect(decade).toMatch(/década de \d{3}0,/);
+    expect(decade).not.toContain("1970");
+  });
+
+  it("nega o que era afirmado e afirma o que era negado", () => {
+    expect(falseVersion("O ENIAC foi concluído pela universidade.", { ...base, index: 2 })).toBe(
+      "O ENIAC não foi concluído pela universidade.",
+    );
+    expect(falseVersion("O ENIAC não guardava o programa na memória.", { ...base, index: 2 })).toBe(
+      "O ENIAC guardava o programa na memória.",
+    );
+  });
+
+  it("não nega frase que já tem outra negação nem inventa quando não há como mudar", () => {
+    expect(falseVersion("Ele não fez nem isso.", { ...base, index: 2 })).toBeUndefined();
+    expect(falseVersion("Texto sem nada para trocar aqui.", base)).toBeUndefined();
+  });
+
+  it("troca por antônimo e por definição de outro termo", () => {
+    expect(
+      falseVersion("Ela foi a primeira programadora da história.", { ...base, index: 3 }),
+    ).toBe("Ela foi a última programadora da história.");
+    const swapped = falseVersion("O ábaco é um instrumento de cálculo.", {
+      ...base,
+      index: 0,
+      own: { term: "O ábaco", verb: "é", rest: "um instrumento de cálculo." },
+      definitions: [{ term: "O algoritmo", verb: "é", rest: "uma sequência finita de passos." }],
+    });
+    expect(swapped).toBe("O ábaco é uma sequência finita de passos.");
+  });
+
+  it("lê os números do texto", () => {
+    expect(numbersIn("Em 1945 havia 18 mil válvulas e 2.300 transistores.")).toEqual([
+      "1945",
+      "18",
+      "2.300",
+    ]);
   });
 });

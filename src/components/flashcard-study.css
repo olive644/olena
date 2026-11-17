@@ -214,3 +214,13 @@
     gap: 6px;
   }
 }
+.flashcard-study__verdict:disabled {
+  opacity: 0.45;
+}
+.flashcard-study__card[aria-disabled="true"] {
+  cursor: default;
+}
+.flashcard-study__card[data-result="wrong"] {
+  background: linear-gradient(152deg, #c2665a 0 7%, #9b4a42 7% 63%, #6f3430 63%);
+  border-color: #d98a7f;
+}

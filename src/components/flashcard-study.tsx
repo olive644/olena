@@ -12,6 +12,13 @@ import "./flashcard-study.css";
 export const MASTERED_INTERVAL_DAYS = 21;
 
 type Answer = { id: string; right: boolean };
+
+/** Cartão de verdadeiro ou falso traz o gabarito no começo do verso; outros cartões não têm. */
+export function truthOf(back: string): boolean | undefined {
+  if (/^(?:Verdadeiro|True)\./.test(back)) return true;
+  if (/^(?:Falso|False)\./.test(back)) return false;
+  return undefined;
+}
 type Phase = "study" | "retry" | "done";
 
 function clock(milliseconds: number): string {
@@ -49,9 +56,14 @@ export function FlashcardStudy({
   const [startedAt, setStartedAt] = useState(() => Date.now());
   const [endedAt, setEndedAt] = useState<number>();
   const saved = useRef(new Set<string>());
+  const [feedback, setFeedback] = useState<{ right: boolean }>();
   const heading = useRef<HTMLHeadingElement>(null);
+  const proceedButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => heading.current?.focus({ preventScroll: true }), [phase]);
+  useEffect(() => {
+    if (feedback) proceedButton.current?.focus({ preventScroll: true });
+  }, [feedback]);
 
   const current = byId.get(queue[position] ?? "");
   const wrongNow = answers.filter(({ right }) => !right).length;
@@ -69,12 +81,9 @@ export function FlashcardStudy({
     if (round === 1 && phase === "study") saveFirstRound(answers);
     onClose();
   }
-  function answer(right: boolean) {
-    if (phase !== "study" || !current) return;
-    const next = [...answers, { id: current.id, right }];
+  function advance(next: Answer[]) {
     setFlipped(false);
     if (position + 1 < queue.length) {
-      setAnswers(next);
       setPosition(position + 1);
       return;
     }
@@ -82,7 +91,6 @@ export function FlashcardStudy({
       saveFirstRound(next);
       setFirstRound(next);
     }
-    setAnswers(next);
     const wrong = next.filter((item) => !item.right).map((item) => item.id);
     if (wrong.length) {
       setQueue(wrong);
@@ -92,17 +100,39 @@ export function FlashcardStudy({
       setPhase("done");
     }
   }
+  /** `choice` é o lado da seta: direita (verdadeiro ou acertei) ou esquerda (falso ou errei). */
+  function answer(choice: boolean) {
+    if (phase !== "study" || !current || feedback) return;
+    const truth = truthOf(current.back);
+    const right = truth === undefined ? choice : choice === truth;
+    const next = [...answers, { id: current.id, right }];
+    setAnswers(next);
+    if (truth === undefined) {
+      advance(next);
+      return;
+    }
+    // Verdadeiro ou falso: mostra o gabarito e a frase do arquivo antes de seguir.
+    setFeedback({ right });
+    setFlipped(true);
+  }
+  function proceed() {
+    if (!feedback) return;
+    setFeedback(undefined);
+    advance(answers);
+  }
   function undo() {
     if (phase !== "study" || answers.length === 0) return;
     setAnswers(answers.slice(0, -1));
-    setPosition(Math.max(0, position - 1));
     setFlipped(false);
+    if (feedback) setFeedback(undefined);
+    else setPosition(Math.max(0, position - 1));
   }
   function begin(ids: string[], nextRound: number) {
     setQueue(ids);
     setPosition(0);
     setAnswers([]);
     setFlipped(false);
+    setFeedback(undefined);
     setRound(nextRound);
     setPhase("study");
   }
@@ -148,6 +178,7 @@ export function FlashcardStudy({
       : phase === "retry"
         ? 0.5
         : (position + (flipped ? 0.5 : 0)) / queue.length;
+  const judged = current !== undefined && truthOf(current.back) !== undefined;
 
   return createPortal(
     <section className="flashcard-study" aria-label={title}>
@@ -181,20 +212,35 @@ export function FlashcardStudy({
             <button
               type="button"
               className="flashcard-study__verdict is-wrong"
-              aria-label={uiText("Errei")}
+              aria-label={judged ? uiText("Falso") : uiText("Errei")}
+              disabled={feedback !== undefined}
               onClick={() => answer(false)}
             >
               <PaperArrow back />
-              <small>{uiText("Errei")}</small>
+              <small>{judged ? uiText("Falso") : uiText("Errei")}</small>
             </button>
             <button
               type="button"
               className="flashcard-study__card"
               data-side={flipped ? "back" : "front"}
+              data-result={feedback ? (feedback.right ? "right" : "wrong") : undefined}
               aria-label={uiText("Virar cartão")}
-              onClick={() => setFlipped((value) => !value)}
+              aria-disabled={judged}
+              onClick={() => {
+                if (!judged) setFlipped((value) => !value);
+              }}
             >
-              <small>{flipped ? uiText("Resposta") : uiText("Pergunta")}</small>
+              <small>
+                {feedback
+                  ? feedback.right
+                    ? uiText("Correto!")
+                    : uiText("Não foi dessa vez.")
+                  : flipped
+                    ? uiText("Resposta")
+                    : judged
+                      ? uiText("Afirmação")
+                      : uiText("Pergunta")}
+              </small>
               <strong aria-live="polite">{flipped ? current.back : current.front}</strong>
               <span>
                 {position + 1} {uiText("de")} {queue.length}
@@ -203,14 +249,30 @@ export function FlashcardStudy({
             <button
               type="button"
               className="flashcard-study__verdict is-right"
-              aria-label={uiText("Acertei")}
+              aria-label={judged ? uiText("Verdadeiro") : uiText("Acertei")}
+              disabled={feedback !== undefined}
               onClick={() => answer(true)}
             >
               <PaperArrow />
-              <small>{uiText("Acertei")}</small>
+              <small>{judged ? uiText("Verdadeiro") : uiText("Acertei")}</small>
             </button>
           </div>
-          <p className="flashcard-study__hint">{uiText("Toque no cartão para virar")}</p>
+          {feedback ? (
+            <button
+              type="button"
+              ref={proceedButton}
+              className="flashcard-study__primary"
+              onClick={proceed}
+            >
+              {uiText("Continuar")}
+            </button>
+          ) : (
+            <p className="flashcard-study__hint">
+              {judged
+                ? uiText("Esquerda é falso, direita é verdadeiro.")
+                : uiText("Toque no cartão para virar")}
+            </p>
+          )}
           <footer className="flashcard-study__foot">
             <button
               type="button"

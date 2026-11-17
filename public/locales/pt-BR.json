@@ -3932,7 +3932,7 @@
   "{0} flashcards criados. Toque no baralho para estudar.",
   "Não foi possível criar os flashcards.",
   "Criando flashcards…",
-  "Flashcards automáticos: grátis, feitos no seu aparelho, sem IA. Cria o máximo de perguntas e respostas que o próprio arquivo permite.",
+  "Flashcards automáticos: grátis, feitos no seu aparelho, sem IA. Cria o máximo de afirmações de verdadeiro ou falso que o próprio arquivo permite.",
   "Flashcards automáticos",
   "Esses flashcards já estavam criados.",
   "{0} cartões",
@@ -3954,5 +3954,10 @@
   "Não estudados: {0}",
   "Último estudo: {0}",
   "Repetir cartões de estudo",
-  "Repetir as erradas"
+  "Repetir as erradas",
+  "Falso",
+  "Verdadeiro",
+  "Não foi dessa vez.",
+  "Afirmação",
+  "Esquerda é falso, direita é verdadeiro."
 ]

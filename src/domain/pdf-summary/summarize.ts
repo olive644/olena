@@ -13,6 +13,7 @@ import {
   keyTerms,
   type Definition,
 } from "./facts";
+import { falseVersion, numbersIn, type DefinitionParts } from "./true-false";
 import {
   contentStems,
   countWords,
@@ -1044,25 +1045,41 @@ export async function summarizeDocument(
   };
 }
 
+/** Frente: uma afirmação. Verso: "Verdadeiro." ou "Falso." e a frase do arquivo que explica. */
 export type AutoFlashcard = { front: string; back: string; page: number };
 
 /** Teto de cartões por arquivo: o baralho precisa continuar revisável. */
 export const MAX_AUTO_FLASHCARDS = 200;
 
-/** Troca a primeira ocorrência do termo (palavra inteira) por uma lacuna; undefined se não achar. */
-function blankOut(sentence: string, term: string): string | undefined {
-  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const pattern = new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, "iu");
-  const hit = pattern.exec(sentence);
-  if (!hit) return undefined;
-  return sentence.replace(pattern, "_____");
+const TRUE_LABEL = { pt: "Verdadeiro.", en: "True." } as const;
+const FALSE_LABEL = { pt: "Falso. O texto diz:", en: "False. The text says:" } as const;
+
+function definitionParts(definition: Definition): DefinitionParts | undefined {
+  const text = definition.sentence;
+  if (text.startsWith(definition.term + ":"))
+    return {
+      term: definition.term,
+      verb: "é",
+      rest: text.slice(definition.term.length + 1).trim(),
+    };
+  const at = text.toLowerCase().indexOf(definition.verb.toLowerCase(), definition.term.length);
+  if (at < 0) return undefined;
+  const rest = text.slice(at + definition.verb.length).trim();
+  return rest ? { term: definition.term, verb: definition.verb, rest } : undefined;
 }
 
+const squash = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+
 /**
- * Flashcards automáticos, feitos no aparelho e sem IA, sempre como pergunta e resposta: definições
- * viram "O que é X?", datas viram "O que aconteceu em Y?", cada seção ganha uma pergunta central e
- * as demais frases importantes viram "O que o texto diz sobre X?". A resposta é sempre a frase do
- * próprio arquivo, então nada é inventado. Sempre o máximo que o texto sustenta.
+ * Flashcards automáticos de verdadeiro ou falso, feitos no aparelho e sem IA. Metade das frases
+ * importantes do arquivo vira cartão verdadeiro, do jeito que está no texto. A outra metade vira
+ * uma afirmação falsa: um número, uma negação, um antônimo, um termo ou a definição trocados. O
+ * verso diz se é verdadeiro ou falso e mostra a frase do arquivo, então nada é inventado como
+ * fato. Sempre o máximo que o texto sustenta.
  */
 export async function flashcardsFromDocument(
   doc: StructuredDocument,
@@ -1075,60 +1092,55 @@ export async function flashcardsFromDocument(
     scoreSection(prepared, sections[index]!);
     if (index % 4 === 3) await tick();
   }
-  const made: { id: number; card: AutoFlashcard }[] = [];
-  const fronts = new Set<string>();
-  const usedSentences = new Set<number>();
-  const add = (sentence: Sentence, front: string, back: string) => {
-    if (made.length >= MAX_AUTO_FLASHCARDS || fronts.has(front)) return false;
-    fronts.add(front);
-    usedSentences.add(sentence.id);
-    made.push({ id: sentence.id, card: { front, back, page: sentence.page } });
-    return true;
-  };
-  const standalone = (sentence: Sentence) =>
-    sentence.candidate && !dependsOnPrevious(sentence.text);
-  const byScore = [...sentences].sort((a, b) => b.score - a.score);
-  for (const sentence of byScore) {
-    if (sentence.definition)
-      add(sentence, definitionQuestion(sentence.definition, doc.language), sentence.text);
-  }
-  for (const sentence of byScore) {
-    const when = sentence.dates[0];
-    if (when && standalone(sentence))
-      add(sentence, whenQuestion(when.label, doc.language), sentence.text);
-  }
-  // Uma pergunta central por seção, como no resumo.
-  if (sections.length >= 2) {
-    const labels = LABELS[doc.language];
-    for (const section of sections) {
-      const central = [...section.sentences]
-        .filter((sentence) => standalone(sentence) && !usedSentences.has(sentence.id))
-        .sort((x, y) => y.score - x.score)[0];
-      if (central)
-        add(
-          central,
-          labels.centralQuestion(plainTitle(section.title)),
-          withContext(central, sentences),
-        );
-    }
-  }
-  // O que sobrou de importante vira "O que o texto diz sobre X?", com X o termo-chave da frase.
+  const known = new Set(sentences.map((sentence) => squash(sentence.text)));
+  const candidates = sentences
+    .filter(
+      (sentence) =>
+        sentence.candidate &&
+        !dependsOnPrevious(sentence.text) &&
+        !isReferenceLike(sentence.text) &&
+        sentence.text.length <= 260,
+    )
+    .sort((x, y) => y.score - x.score)
+    .slice(0, MAX_AUTO_FLASHCARDS);
+  const numbers = [...new Set(sentences.flatMap((sentence) => numbersIn(sentence.text)))];
   const terms = keyTerms(
     sentences.map((sentence) => sentence.text),
     language,
-    80,
-  ).filter(({ term }) => term.length >= 3);
-  const ask = (term: string) =>
-    language === "en"
-      ? `What does the text say about ${term}?`
-      : `O que o texto diz sobre ${term}?`;
-  for (const sentence of byScore) {
-    if (usedSentences.has(sentence.id) || !standalone(sentence)) continue;
-    if (isReferenceLike(sentence.text) || sentence.text.length > 320) continue;
-    for (const { term } of terms) {
-      if (blankOut(sentence.text, term) === undefined) continue;
-      if (add(sentence, ask(term), sentence.text)) break;
-    }
+    60,
+  )
+    .map(({ term }) => term)
+    .filter((term) => term.length >= 3);
+  const definitions = sentences
+    .map((sentence) => (sentence.definition ? definitionParts(sentence.definition) : undefined))
+    .filter((item): item is DefinitionParts => item !== undefined);
+  const made: { id: number; card: AutoFlashcard }[] = [];
+  const fronts = new Set<string>();
+  let falses = 0;
+  let trues = 0;
+  for (const sentence of candidates) {
+    const own = sentence.definition ? definitionParts(sentence.definition) : undefined;
+    const wrong =
+      falses <= trues
+        ? falseVersion(sentence.text, {
+            index: sentence.id,
+            language,
+            numbers,
+            terms,
+            definitions,
+            ...(own ? { own } : {}),
+          })
+        : undefined;
+    const usable = wrong && !known.has(squash(wrong)) && wrong.length <= 300 ? wrong : undefined;
+    const front = usable ?? sentence.text;
+    if (fronts.has(front)) continue;
+    fronts.add(front);
+    const back = usable
+      ? `${FALSE_LABEL[language]} ${sentence.text}`
+      : `${TRUE_LABEL[language]} ${sentence.text}`;
+    if (usable) falses += 1;
+    else trues += 1;
+    made.push({ id: sentence.id, card: { front, back, page: sentence.page } });
   }
-  return made.sort((a, b) => a.id - b.id).map(({ card }) => card);
+  return made.sort((x, y) => x.id - y.id).map(({ card }) => card);
 }

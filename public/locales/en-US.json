@@ -3932,7 +3932,7 @@
   "{0} flashcards created. Tap the deck to study.",
   "Could not create the flashcards.",
   "Creating flashcards…",
-  "Automatic flashcards: free, made on your device, no AI. Creates as many questions and answers as the file allows.",
+  "Automatic flashcards: free, made on your device, no AI. Creates as many true or false statements as the file allows.",
   "Automatic flashcards",
   "Those flashcards were already created.",
   "{0} cards",
@@ -3954,5 +3954,10 @@
   "Not studied: {0}",
   "Last studied: {0}",
   "Repeat study cards",
-  "Repeat the wrong ones"
+  "Repeat the wrong ones",
+  "False",
+  "True",
+  "Not this time.",
+  "Statement",
+  "Left is false, right is true."
 ]
