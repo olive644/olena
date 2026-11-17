@@ -48,6 +48,9 @@ function buildBack(truth: boolean, explanation: string, previousBack: string): s
   return `${truth ? TRUE_LABELS[language] : FALSE_LABELS[language]} ${explanation.trim()}`;
 }
 
+/** Relógio lido só dentro de ações do usuário, nunca na renderização. */
+const nowMs = () => Date.now();
+
 function clock(milliseconds: number): string {
   const total = Math.max(0, Math.round(milliseconds / 1000));
   return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
@@ -137,7 +140,7 @@ export function FlashcardStudy({
       setQueue(wrong);
       setPhase("retry");
     } else {
-      setElapsed(Date.now() - startedAt);
+      setElapsed(nowMs() - startedAt);
       setPhase("done");
     }
   }
@@ -226,7 +229,7 @@ export function FlashcardStudy({
   function restart(ids: string[]) {
     saved.current.clear();
     setFirstRound([]);
-    setStartedAt(Date.now());
+    setStartedAt(nowMs());
     setElapsed(0);
     begin(ids, 1);
   }
