@@ -6,6 +6,13 @@ import {
   type HelenaRequest,
   type HelenaResponse,
 } from "../ai/helena-contract.js";
+import { ModelProviderQuotaError } from "../ai/event-stream.js";
+import {
+  DAY_SECONDS,
+  quotaMessage,
+  secondsUntilReset,
+  type RateLimitDenial,
+} from "./helena-quota.js";
 
 const MAX_BODY_BYTES = 64_000;
 // A função da Vercel tem 60 s (`maxDuration`). O resumo, que gera um texto longo, ganha mais tempo
@@ -30,7 +37,12 @@ export type HelenaProvider = {
 };
 
 type HelenaRateLimiter = {
-  consume(clientId: string, request: Request): Promise<boolean>;
+  /** `true` libera; um motivo (ou `false`) nega o pedido. */
+  consume(
+    clientId: string,
+    request: Request,
+    capability: HelenaRequest["capability"],
+  ): Promise<boolean | RateLimitDenial>;
 };
 
 export type HelenaHandlerDependencies = {
@@ -42,10 +54,15 @@ export type HelenaHandlerDependencies = {
   now?: () => Date;
 };
 
-function jsonResponse(status: number, body: unknown): Response {
+function jsonResponse(
+  status: number,
+  body: unknown,
+  extraHeaders: Record<string, string> = {},
+): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
+      ...extraHeaders,
       "Cache-Control": "no-store",
       "Content-Type": "application/json; charset=utf-8",
       "Referrer-Policy": "no-referrer",
@@ -54,8 +71,17 @@ function jsonResponse(status: number, body: unknown): Response {
   });
 }
 
-function errorResponse(status: number, code: HelenaErrorCode, message: string): Response {
-  return jsonResponse(status, { version: HELENA_API_VERSION, error: { code, message } });
+function errorResponse(
+  status: number,
+  code: HelenaErrorCode,
+  message: string,
+  extraHeaders?: Record<string, string>,
+): Response {
+  return jsonResponse(
+    status,
+    { version: HELENA_API_VERSION, error: { code, message } },
+    extraHeaders,
+  );
 }
 
 function byteLength(value: string): number {
@@ -108,11 +134,18 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
         "invalid_request",
         "Entre na sua conta para conversar com a Olena.",
       );
-    if (!(await dependencies.rateLimiter.consume(clientId, request))) {
+    const decision = await dependencies.rateLimiter.consume(
+      clientId,
+      request,
+      parsed.value.capability,
+    );
+    if (decision !== true) {
+      const denial = typeof decision === "object" ? decision : undefined;
       return errorResponse(
         429,
         "rate_limited",
-        "Limite de uso atingido. Tente novamente mais tarde.",
+        quotaMessage(denial?.limit, parsed.value.capability),
+        denial ? { "Retry-After": String(denial.retryAfterSeconds) } : undefined,
       );
     }
 
@@ -177,11 +210,20 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
                   await iterator.return?.().catch(() => {});
                   if (cancelled) controller.error(new Error("Aborted"));
                   else {
+                    // Cota gratuita do provedor esgotada: a pessoa precisa saber o que houve.
                     controller.enqueue(
-                      event({
-                        type: "error",
-                        message: "A resposta foi interrompida. Tente novamente.",
-                      }),
+                      event(
+                        error instanceof ModelProviderQuotaError
+                          ? {
+                              type: "error",
+                              code: "rate_limited",
+                              message: quotaMessage("provider-quota", parsed.value.capability),
+                            }
+                          : {
+                              type: "error",
+                              message: "A resposta foi interrompida. Tente novamente.",
+                            },
+                      ),
                     );
                     controller.close();
                   }
@@ -224,6 +266,13 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
           motivo: error instanceof Error ? error.message.slice(0, 120) : "desconhecido",
         }),
       );
+      if (error instanceof ModelProviderQuotaError)
+        return errorResponse(
+          429,
+          "rate_limited",
+          quotaMessage("provider-quota", parsed.value.capability),
+          { "Retry-After": String(secondsUntilReset(DAY_SECONDS)) },
+        );
       return errorResponse(503, "provider_unavailable", "A Olena está indisponível no momento.");
     }
   };

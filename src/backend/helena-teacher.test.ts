@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createCloudflareTeacher } from "./helena-teacher";
+import { ModelProviderQuotaError } from "../ai/event-stream";
 import type { HelenaRequest } from "../ai/helena-contract";
 
 const request: HelenaRequest = {
@@ -59,8 +60,9 @@ describe("professor Cloudflare", () => {
       const fetcher = vi
         .fn<typeof fetch>()
         .mockResolvedValue(new Response("secret upstream detail", { status }));
+      // 429 vira o aviso de cota (sem os detalhes do provedor); os demais seguem como falha comum.
       await expect(createCloudflareTeacher(config, fetcher).generate(request)).rejects.toThrow(
-        "Professor indisponível.",
+        status === 429 ? "Provider quota exhausted" : "Professor indisponível.",
       );
       expect(fetcher).toHaveBeenCalledTimes(1);
     },
@@ -96,14 +98,14 @@ describe("professor Cloudflare", () => {
     expect(JSON.parse(String(streamFetcher.mock.calls[0]![1]?.body)).max_tokens).toBe(1600);
   });
 
-  it("diz o status da Cloudflare quando o fluxo do modelo é recusado", async () => {
+  it("trata o 429 do fluxo do modelo como cota esgotada", async () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(new Response("{}", { status: 429 }));
     const teacher = createCloudflareTeacher(config, fetcher);
     await expect(
       (async () => {
         for await (const text of teacher.stream!(request, new AbortController().signal)) void text;
       })(),
-    ).rejects.toThrow("Streaming provider unavailable (429)");
+    ).rejects.toBeInstanceOf(ModelProviderQuotaError);
   });
 });
 
@@ -130,5 +132,44 @@ it("grounds arithmetic in both generation and streaming without an extra API cal
   expect(inputs[0]).toEqual(inputs[1]);
   expect(inputs[0]).toMatchObject({
     math: { calculator: { status: "checked", exact: "1/2" }, references: [{ id: "fractions" }] },
+  });
+});
+
+describe("cota gratuita da Cloudflare", () => {
+  const quota = [
+    new Response("{}", { status: 429 }),
+    new Response('{"errors":[{"code":4006,"message":"daily free allocation used"}]}', {
+      status: 400,
+    }),
+  ];
+
+  it.each(quota.map((response, index) => [index, response] as const))(
+    "avisa que a cota acabou, fora do fluxo (caso %s)",
+    async (_index, response) => {
+      const fetcher = vi.fn<typeof fetch>().mockResolvedValue(response.clone());
+      await expect(
+        createCloudflareTeacher(config, fetcher).generate(request),
+      ).rejects.toBeInstanceOf(ModelProviderQuotaError);
+    },
+  );
+
+  it("avisa que a cota acabou, no fluxo", async () => {
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(new Response("{}", { status: 429 }));
+    await expect(
+      (async () => {
+        for await (const piece of createCloudflareTeacher(config, fetcher).stream!(
+          request,
+          new AbortController().signal,
+        ))
+          void piece;
+      })(),
+    ).rejects.toBeInstanceOf(ModelProviderQuotaError);
+  });
+
+  it("uma falha comum do provedor continua sendo falha comum", async () => {
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(new Response("erro", { status: 500 }));
+    const failure = createCloudflareTeacher(config, fetcher).generate(request);
+    await expect(failure).rejects.toThrow("Professor indisponível.");
+    await expect(failure).rejects.not.toBeInstanceOf(ModelProviderQuotaError);
   });
 });

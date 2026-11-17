@@ -1,3 +1,4 @@
+import { ModelProviderQuotaError } from "../ai/event-stream";
 import { describe, expect, it, vi } from "vitest";
 import { HELENA_API_VERSION, type HelenaRequest } from "../ai/helena-contract";
 import { createHelenaHandler, type HelenaHandlerDependencies } from "./helena-handler";
@@ -60,6 +61,7 @@ describe("handler da Helena", () => {
     expect(deps.rateLimiter.consume).toHaveBeenCalledWith(
       "anonymous:test-client",
       expect.any(Request),
+      "summarize",
     );
     expect(deps.provider.generate).toHaveBeenCalledWith(validRequest, expect.any(AbortSignal));
   });
@@ -81,6 +83,34 @@ describe("handler da Helena", () => {
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toMatchObject({ error: { code: "consent_required" } });
     expect(deps.provider.generate).not.toHaveBeenCalled();
+  });
+
+  it("explica qual limite acabou e quando volta, com Retry-After", async () => {
+    const limited = dependencies({
+      rateLimiter: {
+        consume: vi.fn().mockResolvedValue({ limit: "summary-day", retryAfterSeconds: 3600 }),
+      },
+    });
+    const response = await createHelenaHandler(limited)(post(validRequest));
+    expect(response.status).toBe(429);
+    expect(response.headers.get("Retry-After")).toBe("3600");
+    const body = (await response.json()) as { error: { code: string; message: string } };
+    expect(body.error.code).toBe("rate_limited");
+    expect(body.error.message).toContain("limite gratuito de hoje");
+    expect(body.error.message).toContain("21h");
+    expect(body.error.message).toContain("Resumo automático");
+    expect(limited.provider.generate).not.toHaveBeenCalled();
+  });
+
+  it("avisa que a cota do provedor acabou, em vez de erro genérico", async () => {
+    const exhausted = dependencies({
+      provider: { generate: vi.fn().mockRejectedValue(new ModelProviderQuotaError()) },
+    });
+    const response = await createHelenaHandler(exhausted)(post(validRequest));
+    expect(response.status).toBe(429);
+    expect(((await response.json()) as { error: { message: string } }).error.message).toContain(
+      "limite gratuito de hoje",
+    );
   });
 
   it("aplica limite de uso e esconde falhas internas do provedor", async () => {

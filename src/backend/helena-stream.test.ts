@@ -5,7 +5,7 @@ import { createCloudflareTeacher } from "./helena-teacher";
 import { createProgressiveProvider } from "./olena-student";
 import { createVercelHandler } from "./vercel-adapter";
 import { streamHelena } from "../data/helena-client";
-import { readEventStream, readModelStream } from "../ai/event-stream";
+import { ModelProviderQuotaError, readEventStream, readModelStream } from "../ai/event-stream";
 import type { HelenaRequest } from "../ai/helena-contract";
 import { createMathGroundedProvider } from "./helena-math-provider";
 import evaluations from "./math/existing-evaluations.test-data.json";
@@ -364,4 +364,17 @@ it("registra no servidor por que o fluxo foi interrompido, sem o conteúdo do al
   expect(lines.join("\n")).not.toContain("TEXTO PRIVADO DO ALUNO");
   expect(lines.join("\n")).not.toContain("Segredo.pdf");
   log.mockRestore();
+});
+
+it.each([
+  [429, "{}", true],
+  [400, '{"errors":[{"code":4006,"message":"you have used up your daily free allocation"}]}', true],
+  [500, "erro interno", false],
+])("reconhece cota esgotada do provedor (status %s)", async (status, body, quota) => {
+  const response = new Response(body, { status });
+  const failure = (async () => {
+    for await (const chunk of readModelStream(response)) void chunk;
+  })();
+  if (quota) await expect(failure).rejects.toBeInstanceOf(ModelProviderQuotaError);
+  else await expect(failure).rejects.toThrow("Streaming provider unavailable (500)");
 });
