@@ -3927,5 +3927,11 @@
   "HEX",
   "Tamanho do resumo automático",
   "Curto",
-  "Longo"
+  "Longo",
+  "Não consegui criar flashcards de {0}: o texto tem poucas definições e fatos.",
+  "{0} flashcards criados no baralho {1}. Revise em Flashcards, na Biblioteca.",
+  "Não foi possível criar os flashcards.",
+  "Criando flashcards…",
+  "Flashcards automáticos: grátis, feitos no seu aparelho, sem IA. Cria o máximo de cartões que o próprio arquivo permite: definições, datas e lacunas.",
+  "Flashcards automáticos"
 ]

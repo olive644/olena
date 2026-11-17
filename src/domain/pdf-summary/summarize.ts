@@ -1043,3 +1043,72 @@ export async function summarizeDocument(
     },
   };
 }
+
+export type AutoFlashcard = { front: string; back: string; page: number };
+
+/** Teto de cartões por arquivo: o baralho precisa continuar revisável. */
+export const MAX_AUTO_FLASHCARDS = 200;
+
+/** Troca a primeira ocorrência do termo (palavra inteira) por uma lacuna; undefined se não achar. */
+function blankOut(sentence: string, term: string): string | undefined {
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, "iu");
+  const hit = pattern.exec(sentence);
+  if (!hit) return undefined;
+  return sentence.replace(pattern, "_____");
+}
+
+/**
+ * Flashcards automáticos, feitos no aparelho e sem IA: definições viram "O que é X?", datas viram
+ * "O que aconteceu em Y?" e as demais frases importantes viram lacunas com o termo-chave. Usa só
+ * o texto do próprio arquivo, então não inventa nada. Sempre o máximo que o texto sustenta.
+ */
+export async function flashcardsFromDocument(
+  doc: StructuredDocument,
+  options: Pick<SummaryOptions, "signal"> = {},
+): Promise<AutoFlashcard[]> {
+  const prepared = prepare(doc);
+  const { sections, sentences, language } = prepared;
+  for (let index = 0; index < sections.length; index += 1) {
+    options.signal?.throwIfAborted();
+    scoreSection(prepared, sections[index]!);
+    if (index % 4 === 3) await tick();
+  }
+  const made: { id: number; card: AutoFlashcard }[] = [];
+  const fronts = new Set<string>();
+  const usedSentences = new Set<number>();
+  const add = (sentence: Sentence, front: string, back: string) => {
+    if (made.length >= MAX_AUTO_FLASHCARDS || fronts.has(front)) return false;
+    fronts.add(front);
+    usedSentences.add(sentence.id);
+    made.push({ id: sentence.id, card: { front, back, page: sentence.page } });
+    return true;
+  };
+  const standalone = (sentence: Sentence) =>
+    sentence.candidate && !dependsOnPrevious(sentence.text);
+  const byScore = [...sentences].sort((a, b) => b.score - a.score);
+  for (const sentence of byScore) {
+    if (sentence.definition)
+      add(sentence, definitionQuestion(sentence.definition, doc.language), sentence.text);
+  }
+  for (const sentence of byScore) {
+    const when = sentence.dates[0];
+    if (when && standalone(sentence))
+      add(sentence, whenQuestion(when.label, doc.language), sentence.text);
+  }
+  const terms = keyTerms(
+    sentences.map((sentence) => sentence.text),
+    language,
+    80,
+  ).filter(({ term }) => term.length >= 3);
+  const lead = language === "en" ? "Fill in the blank: " : "Complete: ";
+  for (const sentence of byScore) {
+    if (usedSentences.has(sentence.id) || !standalone(sentence)) continue;
+    if (isReferenceLike(sentence.text) || sentence.text.length > 320) continue;
+    for (const { term } of terms) {
+      const masked = blankOut(sentence.text, term);
+      if (masked && masked.indexOf("_____") > 0 && add(sentence, lead + masked, term)) break;
+    }
+  }
+  return made.sort((a, b) => a.id - b.id).map(({ card }) => card);
+}

@@ -13,6 +13,7 @@ import { uiText, useLanguage } from "../i18n/runtime";
 import { useRef, useState, type Dispatch, type ReactNode } from "react";
 import {
   createWorkspaceId,
+  toDateKey,
   type LibraryFolderStyle,
   type WorkspaceAction,
   type WorkspaceState,
@@ -267,6 +268,14 @@ type FolderSection = "Fontes" | keyof typeof studySections;
 const folderSections = ["Fontes", ...Object.keys(studySections)] as FolderSection[];
 // O resumo automático é grátis e roda no aparelho: sempre o maior que o texto comporta.
 const SUMMARY_DETAIL = "long" as const;
+type SummaryModule = typeof import("../domain/pdf-summary");
+type SourceEngine<T> = {
+  text: (text: string, title: string) => Promise<T>;
+  pdf: (
+    pdf: Parameters<SummaryModule["summarizePdf"]>[0],
+    options: NonNullable<Parameters<SummaryModule["summarizePdf"]>[1]>,
+  ) => Promise<T>;
+};
 const summaryInline = (value: string) =>
   value
     .split(/\*\*([^*]+)\*\*/)
@@ -362,6 +371,8 @@ export function LibraryFolderContents({
   const readingSummary = summaries.find(({ id }) => id === readingSummaryId);
   const [summaryBusy, setSummaryBusy] = useState(false);
   const [summaryError, setSummaryError] = useState("");
+  const [cardsBusy, setCardsBusy] = useState(false);
+  const [cardsMessage, setCardsMessage] = useState<{ text: string; error: boolean }>();
   const [section, setSection] = useState<FolderSection>("Fontes");
   const [renamingId, setRenamingId] = useState<string>();
   const [removingIds, setRemovingIds] = useState<string[]>([]);
@@ -495,6 +506,121 @@ export function LibraryFolderContents({
       setSummaryBusy(false);
     }
   }
+  /** Lê uma fonte (texto, imagem por OCR ou PDF) no aparelho e entrega ao gerador escolhido. */
+  async function readSource<T>(
+    source: (typeof selectedSources)[number],
+    fileTitle: string,
+    engine: SourceEngine<T>,
+  ): Promise<T> {
+    let result: T;
+    if (source.kind === "image") {
+      // Foto ou imagem de página: o OCR em português lê o texto, no aparelho.
+      const { createWorker } = await import("tesseract.js");
+      const scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
+      try {
+        const text = (await scanner.recognize(source.content)).data.text;
+        result = await engine.text(text, fileTitle);
+      } finally {
+        await scanner.terminate();
+      }
+    } else if (source.kind === "text") {
+      result = await engine.text(source.content, fileTitle);
+    } else {
+      const [pdfjs, worker] = await Promise.all([
+        import("pdfjs-dist"),
+        import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
+      ]);
+      pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
+      const bytes = dataUrlBytes(source.content);
+      if (!bytes) throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
+      const loading = pdfjs.getDocument({ data: bytes });
+      try {
+        const pdf = await loading.promise.catch(() => {
+          throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
+        });
+        // Páginas que são só imagem (PDF escaneado) passam pelo OCR em português, no aparelho.
+        let scanner: Awaited<ReturnType<typeof import("tesseract.js").createWorker>> | undefined;
+        try {
+          result = await engine.pdf(pdf, {
+            title: fileTitle,
+            ocr: async (pageNumber) => {
+              const page = await pdf.getPage(pageNumber);
+              const viewport = page.getViewport({ scale: 1 });
+              const scaled = page.getViewport({
+                scale: 2000 / Math.max(viewport.width, viewport.height),
+              });
+              const canvas = document.createElement("canvas");
+              canvas.width = Math.ceil(scaled.width);
+              canvas.height = Math.ceil(scaled.height);
+              await page.render({ canvas, viewport: scaled }).promise;
+              if (!scanner) {
+                const { createWorker } = await import("tesseract.js");
+                scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
+              }
+              const text = (await scanner.recognize(canvas)).data.text;
+              canvas.width = 0;
+              canvas.height = 0;
+              return text;
+            },
+          });
+        } finally {
+          await scanner?.terminate();
+        }
+      } finally {
+        await loading.destroy();
+      }
+    }
+    return result;
+  }
+  /** Flashcards automáticos: no aparelho, sem IA, o máximo que o texto sustenta. */
+  async function generateAutomaticFlashcards() {
+    if (cardsBusy || !selectedSources.length) return;
+    setCreating(undefined);
+    setSection("Flashcards");
+    setCardsMessage(undefined);
+    setCardsBusy(true);
+    try {
+      const { flashcardsFromPdf, flashcardsFromPlainText } = await import("../domain/pdf-summary");
+      const made: { front: string; back: string; deck: string }[] = [];
+      for (const source of selectedSources) {
+        const fileTitle = source.title.replace(/.[^.]+$/, "");
+        const cards = await readSource(source, fileTitle, {
+          text: (text, title) => flashcardsFromPlainText(text, title),
+          pdf: (pdf, options) => flashcardsFromPdf(pdf, options),
+        });
+        if (cards.length === 0) {
+          throw new Error(
+            uiText("Não consegui criar flashcards de {0}: o texto tem poucas definições e fatos.", [
+              source.title,
+            ]),
+          );
+        }
+        for (const card of cards)
+          made.push({ front: card.front, back: card.back, deck: folder.title });
+      }
+      dispatch({
+        type: "flashcards/imported",
+        cards: made,
+        subjectId,
+        createdOn: toDateKey(new Date()),
+      });
+      setCardsMessage({
+        text: uiText(
+          "{0} flashcards criados no baralho {1}. Revise em Flashcards, na Biblioteca.",
+          [String(made.length), folder.title],
+        ),
+        error: false,
+      });
+    } catch (error) {
+      setCardsMessage({
+        text:
+          error instanceof Error ? error.message : uiText("Não foi possível criar os flashcards."),
+        error: true,
+      });
+    } finally {
+      setCardsBusy(false);
+    }
+  }
   /** Resumo automático: feito no aparelho, sem IA e sem enviar nada para fora. */
   async function generateAutomaticSummary() {
     if (summaryBusy || !selectedSources.length) return;
@@ -507,66 +633,10 @@ export function LibraryFolderContents({
       const made: { title: string; sourceTitle: string; markdown: string }[] = [];
       for (const source of selectedSources) {
         const fileTitle = source.title.replace(/\.[^.]+$/, "");
-        let result: Awaited<ReturnType<typeof summarizePlainText>>;
-        if (source.kind === "image") {
-          // Foto ou imagem de página: o OCR em português lê o texto, no aparelho.
-          const { createWorker } = await import("tesseract.js");
-          const scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
-          try {
-            const text = (await scanner.recognize(source.content)).data.text;
-            result = await summarizePlainText(text, fileTitle, { detail: SUMMARY_DETAIL });
-          } finally {
-            await scanner.terminate();
-          }
-        } else if (source.kind === "text") {
-          result = await summarizePlainText(source.content, fileTitle, { detail: SUMMARY_DETAIL });
-        } else {
-          const [pdfjs, worker] = await Promise.all([
-            import("pdfjs-dist"),
-            import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
-          ]);
-          pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-          const bytes = dataUrlBytes(source.content);
-          if (!bytes) throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
-          const loading = pdfjs.getDocument({ data: bytes });
-          try {
-            const pdf = await loading.promise.catch(() => {
-              throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
-            });
-            // Páginas que são só imagem (PDF escaneado) passam pelo OCR em português, no aparelho.
-            let scanner:
-              Awaited<ReturnType<typeof import("tesseract.js").createWorker>> | undefined;
-            try {
-              result = await summarizePdf(pdf, {
-                title: fileTitle,
-                detail: SUMMARY_DETAIL,
-                ocr: async (pageNumber) => {
-                  const page = await pdf.getPage(pageNumber);
-                  const viewport = page.getViewport({ scale: 1 });
-                  const scaled = page.getViewport({
-                    scale: 2000 / Math.max(viewport.width, viewport.height),
-                  });
-                  const canvas = document.createElement("canvas");
-                  canvas.width = Math.ceil(scaled.width);
-                  canvas.height = Math.ceil(scaled.height);
-                  await page.render({ canvas, viewport: scaled }).promise;
-                  if (!scanner) {
-                    const { createWorker } = await import("tesseract.js");
-                    scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
-                  }
-                  const text = (await scanner.recognize(canvas)).data.text;
-                  canvas.width = 0;
-                  canvas.height = 0;
-                  return text;
-                },
-              });
-            } finally {
-              await scanner?.terminate();
-            }
-          } finally {
-            await loading.destroy();
-          }
-        }
+        const result = await readSource(source, fileTitle, {
+          text: (text, title) => summarizePlainText(text, title, { detail: SUMMARY_DETAIL }),
+          pdf: (pdf, options) => summarizePdf(pdf, { ...options, detail: SUMMARY_DETAIL }),
+        });
         if (result.stats.sentences === 0) {
           throw new Error(
             uiText(
@@ -836,6 +906,18 @@ export function LibraryFolderContents({
               </div>
             )}
             {section === "Resumo" && summaryError && <p role="alert">{summaryError}</p>}
+            {section === "Flashcards" && cardsBusy && (
+              <div role="status" className="library-summary-card library-summary-loading">
+                <span>
+                  <img src="/room-icons/flashcards.svg" alt="" width="26" height="26" />
+                  {uiText("Criando flashcards…")}
+                </span>
+                <span className="library-summary-loading-track" aria-hidden="true" />
+              </div>
+            )}
+            {section === "Flashcards" && cardsMessage && (
+              <p role={cardsMessage.error ? "alert" : "status"}>{cardsMessage.text}</p>
+            )}
             {section === "Resumo" &&
               summaries.map((summary) => (
                 <article
@@ -927,17 +1009,18 @@ export function LibraryFolderContents({
                   </details>
                 </article>
               ))}
-            {(section !== "Resumo" || (!summaryBusy && summaries.length === 0)) && (
-              <div className="library-folder-study-empty">
-                <img
-                  src={"/room-icons/" + studySections[section].icon + ".svg"}
-                  alt=""
-                  width="72"
-                  height="72"
-                />
-                <h2>{studySections[section].empty}</h2>
-              </div>
-            )}
+            {(section !== "Resumo" || (!summaryBusy && summaries.length === 0)) &&
+              !(section === "Flashcards" && (cardsBusy || cardsMessage)) && (
+                <div className="library-folder-study-empty">
+                  <img
+                    src={"/room-icons/" + studySections[section].icon + ".svg"}
+                    alt=""
+                    width="72"
+                    height="72"
+                  />
+                  <h2>{studySections[section].empty}</h2>
+                </div>
+              )}
             <button
               type="button"
               className="shelf-wood-button library-folder-generate"
@@ -1116,25 +1199,45 @@ export function LibraryFolderContents({
                 {uiText("Ao gerar com a Olena, o texto das fontes selecionadas é enviado a ela.")}
               </p>
             )}
-            {creating !== "Resumo" && (
+            {creating === "Flashcards" && (
+              <p>
+                {uiText(
+                  "Flashcards automáticos: grátis, feitos no seu aparelho, sem IA. Cria o máximo de cartões que o próprio arquivo permite: definições, datas e lacunas.",
+                )}
+              </p>
+            )}
+            {creating !== "Resumo" && creating !== "Flashcards" && (
               <p>{uiText("A geração deste tipo de material ainda não está disponível.")}</p>
             )}
-            <button
-              type="button"
-              className="shelf-wood-button library-study-confirm-generate"
-              disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
-              onClick={() => void generateSummary()}
-            >
-              {uiText("Gerar com a Olena")}
-            </button>
-            <button
-              type="button"
-              className="shelf-wood-button library-study-confirm-generate"
-              disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
-              onClick={() => void generateAutomaticSummary()}
-            >
-              {uiText("Resumo automático")}
-            </button>
+            {creating === "Flashcards" ? (
+              <button
+                type="button"
+                className="shelf-wood-button library-study-confirm-generate"
+                disabled={!selectedSources.length || cardsBusy}
+                onClick={() => void generateAutomaticFlashcards()}
+              >
+                {uiText("Flashcards automáticos")}
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="shelf-wood-button library-study-confirm-generate"
+                  disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
+                  onClick={() => void generateSummary()}
+                >
+                  {uiText("Gerar com a Olena")}
+                </button>
+                <button
+                  type="button"
+                  className="shelf-wood-button library-study-confirm-generate"
+                  disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
+                  onClick={() => void generateAutomaticSummary()}
+                >
+                  {uiText("Resumo automático")}
+                </button>
+              </>
+            )}
           </LibraryDialog>
         )}
         <input

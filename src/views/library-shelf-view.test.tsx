@@ -393,4 +393,45 @@ describe("resumo automático no aparelho", () => {
     ).toBeNull();
     expect(within(dialog).queryByRole("radio", { name: "Curto" })).toBeNull();
   });
+
+  function openFlashcards(content: string) {
+    const dispatch = vi.fn<(action: WorkspaceAction) => void>();
+    render(
+      <LibraryFolderContents
+        folder={folder}
+        materials={[{ ...source, content }]}
+        subjectId="materia-1"
+        dispatch={dispatch}
+        onBack={() => undefined}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Flashcards" }));
+    fireEvent.click(screen.getByRole("button", { name: "Criar flashcards" }));
+    const dialog = screen.getByRole("dialog");
+    fireEvent.click(within(dialog).getByRole("checkbox", { name: `Selecionar ${source.title}` }));
+    return { dispatch, dialog };
+  }
+
+  it("cria flashcards no aparelho, sem login, sem rede e sem a Olena, sem escolher tamanho", async () => {
+    const { dispatch, dialog } = openFlashcards(longText);
+    expect(within(dialog).queryByRole("radio")).toBeNull();
+    expect(within(dialog).queryByRole("button", { name: "Gerar com a Olena" })).toBeNull();
+    fireEvent.click(within(dialog).getByRole("button", { name: "Flashcards automáticos" }));
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(services).not.toHaveBeenCalled();
+    expect(stream).not.toHaveBeenCalled();
+    const action = dispatch.mock.calls[0]![0];
+    if (action.type !== "flashcards/imported") throw new Error("ação inesperada");
+    expect(action.subjectId).toBe("materia-1");
+    expect(action.cards.length).toBeGreaterThan(0);
+    expect(action.cards.every((card) => card.deck === folder.title)).toBe(true);
+    expect(await screen.findByRole("status")).toBeTruthy();
+  });
+
+  it("avisa quando o texto não rende nenhum flashcard", async () => {
+    const { dispatch, dialog } = openFlashcards("Oi.");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Flashcards automáticos" }));
+    expect(await screen.findByRole("alert")).toBeTruthy();
+    expect(dispatch).not.toHaveBeenCalled();
+  });
 });

@@ -5485,3 +5485,10 @@ Tudo local, sem IA e sem rede, na mesma PR do teto diário da Olena.
 - Decisão do proprietário: o resumo é grátis e roda no aparelho, então não há motivo para escolher Curto ou Médio. O seletor de tamanho saiu do diálogo de criação e a Biblioteca sempre pede `detail: "long"` (o maior que o texto comporta). O padrão do domínio (`summarize.ts`) não mudou.
 - Substitui a linha "Tamanho do resumo: Curto, Médio e Longo" da seção anterior. Entradas de catálogo de "Tamanho do resumo automático", "Curto" e "Longo" ficaram sem uso (índices preservados, `i18n:check` passa).
 - Prova: teste da Biblioteca confirma que o grupo de rádios não existe mais; interface só perdeu um controle, sem tela nova.
+
+## Flashcards automáticos na Biblioteca, 17/11/2026
+
+- Mesmas regras do resumo automático: grátis, no aparelho, sem IA, sem login, sem rede e sem seletor de tamanho (sempre o máximo que o texto sustenta, teto de 200 cartões por arquivo). Código em `flashcardsFromDocument` (`src/domain/pdf-summary/summarize.ts`), reaproveitando a leitura de TXT, imagem (OCR) e PDF do resumo (`readSource` em `library-shelf-view.tsx`).
+- Três tipos de cartão, todos tirados do próprio arquivo: definição ("O que é X?"), data ("O que aconteceu em Y?") e lacuna ("Complete: ... _____ ...", resposta com o termo-chave). Nada é inventado, e os testes conferem que a resposta está no texto.
+- Os cartões entram no baralho com o nome da pasta, pela ação `flashcards/imported` (ignora duplicados e sincroniza com a conta como os demais). A seção Flashcards da pasta mostra o status e quantos cartões foram criados.
+- Limites: lacunas com termo genérico ("Máquina") podem ficar ambíguas; textos com poucas definições e datas rendem poucos cartões; qualidade não validada em PDFs reais de aula e sem captura de tela em claro e escuro nesta rodada (só um controle e um aviso, mesmo estilo do resumo).

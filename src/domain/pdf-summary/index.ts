@@ -1,6 +1,6 @@
 import { structureText } from "./layout";
 import { readPdf, type PdfDocumentLike, type ReadPdfOptions } from "./pdf-source";
-import { summarizeDocument } from "./summarize";
+import { flashcardsFromDocument, summarizeDocument, type AutoFlashcard } from "./summarize";
 import type { SummaryOptions, SummaryResult } from "./types";
 
 export type { SummaryResult, SummaryStage } from "./types";
@@ -25,4 +25,24 @@ export async function summarizePlainText(
   options: SummaryOptions = {},
 ): Promise<SummaryResult> {
   return summarizeDocument(structureText(text, title), options);
+}
+
+export type { AutoFlashcard } from "./summarize";
+export { MAX_AUTO_FLASHCARDS } from "./summarize";
+
+/** Flashcards automáticos de um PDF já aberto (grátis, no aparelho, sem IA). */
+export async function flashcardsFromPdf(
+  pdf: PdfDocumentLike,
+  options: ReadPdfOptions = {},
+): Promise<AutoFlashcard[]> {
+  const document = await readPdf(pdf, options);
+  return flashcardsFromDocument(document, options.signal ? { signal: options.signal } : {});
+}
+
+/** Flashcards automáticos de um texto (TXT, Markdown ou nota). */
+export async function flashcardsFromPlainText(
+  text: string,
+  title: string,
+): Promise<AutoFlashcard[]> {
+  return flashcardsFromDocument(structureText(text, title));
 }
