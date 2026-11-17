@@ -1,6 +1,11 @@
 import type { HandwritingPoint } from "../domain/handwriting";
 import type { Stroke } from "./handwriting-types";
-import { simulatedPressures, taperFactors, usesSimulatedWidth } from "./handwriting-ink-dynamics";
+import {
+  simulatedPressureRange,
+  simulatedPressures,
+  taperFactors,
+  usesSimulatedWidth,
+} from "./handwriting-ink-dynamics";
 
 // Motor de traço: transforma os pontos da caneta em um contorno de largura
 // variável desenhado com um único preenchimento. Desenhar cada segmento com seu
@@ -44,9 +49,6 @@ function targetDiameter(
   simulated?: number,
 ): number {
   const pressure = stroke.tool === "pen" ? (simulated ?? point.pressure) : 0.7;
-  // Fineliner de mouse ou dedo: a mesma largura média de sempre (0,65), que varia com a velocidade.
-  if (simulated !== undefined && stroke.brush === "fine")
-    return stroke.width * 0.65 * (0.55 + 0.9 * pressure);
   if (stroke.brush === "ballpoint") return stroke.width * (0.45 + pressure * 0.35);
   if (stroke.brush === "pencil") return stroke.width * (0.3 + pressure * 0.9);
   if (stroke.brush === "calligraphy") {
@@ -66,15 +68,26 @@ function targetDiameter(
 
 // Raio em cada ponto. Só depende dos pontos até o vizinho seguinte, então a ponta
 // do traço ao vivo e o traço já pronto usam exatamente a mesma conta.
-export function strokeRadii(stroke: InkStroke, points: readonly HandwritingPoint[]): number[] {
+export function strokeRadii(
+  stroke: InkStroke,
+  points: readonly HandwritingPoint[],
+  options: { live?: boolean } = {},
+): number[] {
   const radii: number[] = [];
   let previous = 0;
-  // Mouse e dedo: a pressão sai da velocidade e as pontas afinam. Caneta com pressão real fica
-  // como sempre foi.
+  // Mouse e dedo nos pincéis de desenho: a pressão sai da velocidade e as pontas afinam. Caneta com
+  // pressão real e as canetas de escrever (Fineliner, Esferográfica) ficam como sempre foram. Ao
+  // vivo só a ponta do começo afina: a do fim é a posição atual da caneta, não o fim do traço.
   const simulated = usesSimulatedWidth({ ...stroke, points })
-    ? simulatedPressures(points, Math.max(6, stroke.width * 2.2))
+    ? simulatedPressures(
+        points,
+        Math.max(6, stroke.width * 2.2),
+        simulatedPressureRange(stroke.brush),
+      )
     : undefined;
-  const taper = simulated ? taperFactors(points, Math.max(12, stroke.width * 4)) : undefined;
+  const taper = simulated
+    ? taperFactors(points, Math.max(12, stroke.width * 4), { end: !options.live })
+    : undefined;
   for (let index = 0; index < points.length; index += 1) {
     const point = points[index]!;
     const before = points[index - 1] ?? point;

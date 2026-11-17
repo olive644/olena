@@ -4656,6 +4656,7 @@ body.local-room-active {
 
 .handwriting-page-shell::after {
   position: absolute;
+  z-index: 9;
   top: 0;
   right: 0;
   width: 34px;
@@ -4665,9 +4666,14 @@ body.local-room-active {
   pointer-events: none;
 }
 
-/* O canto de cima à direita é cortado (a dobra desenhada acima). As camadas da folha seguem a mesma
-   forma: sem isso dava para escrever no triângulo cortado, que não faz parte do papel. */
-.handwriting-page-shell canvas {
+/* O canto de cima à direita é cortado (a dobra desenhada acima). O canvas que recebe o toque segue essa
+   forma, para não dar para começar um traço no triângulo cortado. A tinta que já estiver ali, ou que
+   passar por ali, é escondida pela própria dobra (o ::after), que fica acima de todas as camadas de escrita
+   (z-index 9; sem isso a tinta, com z-index de 1 a 5, aparecia por cima da dobra). Um clip-path nas camadas
+   de tinta custava ~7 a 12 ms por quadro ao escrever e um elemento extra de cobertura ~3 a 4 ms (medidos);
+   subir o ::after que já existia é o mais barato. Pontos dentro do triângulo nem entram no traço
+   (handwriting-fold.ts, mesmo tamanho de 34px). */
+.handwriting-page-shell > .handwriting-canvas {
   clip-path: polygon(0 0, calc(100% - 34px) 0, 100% 34px, 100% 100%, 0 100%);
 }
 

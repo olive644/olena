@@ -1,3 +1,4 @@
+import { openNotebooksView } from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 
 test("recarregar uma aba mantém a aba, e voltar retorna à anterior", async ({ page }, testInfo) => {
@@ -6,10 +7,7 @@ test("recarregar uma aba mantém a aba, e voltar retorna à anterior", async ({ 
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await expect(page).toHaveURL(/\/cadernos$/);
   await page.reload();
   await expect(page).toHaveURL(/\/cadernos$/);

@@ -74,6 +74,37 @@ describe("professor Cloudflare", () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(payload)));
     await expect(createCloudflareTeacher(config, fetcher).generate(request)).rejects.toThrow();
   });
+  it("limita o guia de estudo a 1600 tokens, no fluxo e fora dele", async () => {
+    const summary: HelenaRequest = { ...request, capability: "summarize", prompt: "Resuma" };
+    const generateFetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(
+        new Response(JSON.stringify({ success: true, result: { response: "Guia." } })),
+      );
+    await createCloudflareTeacher(config, generateFetcher).generate(summary);
+    expect(JSON.parse(String(generateFetcher.mock.calls[0]![1]?.body)).max_tokens).toBe(1600);
+
+    const streamFetcher = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response('data: {"response":"Guia."}\n\ndata: [DONE]\n\n', {
+        headers: { "Content-Type": "text/event-stream" },
+      }),
+    );
+    const teacher = createCloudflareTeacher(config, streamFetcher);
+    for await (const text of teacher.stream!(summary, new AbortController().signal)) {
+      expect(text).toBe("Guia.");
+    }
+    expect(JSON.parse(String(streamFetcher.mock.calls[0]![1]?.body)).max_tokens).toBe(1600);
+  });
+
+  it("diz o status da Cloudflare quando o fluxo do modelo é recusado", async () => {
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(new Response("{}", { status: 429 }));
+    const teacher = createCloudflareTeacher(config, fetcher);
+    await expect(
+      (async () => {
+        for await (const text of teacher.stream!(request, new AbortController().signal)) void text;
+      })(),
+    ).rejects.toThrow("Streaming provider unavailable (429)");
+  });
 });
 
 it("grounds arithmetic in both generation and streaming without an extra API call", async () => {

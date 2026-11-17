@@ -25,6 +25,18 @@ export function hasRealPressure(points: readonly HandwritingPoint[]): boolean {
 // faixa larga deixaria o traço do mouse irregular demais. O meio (0,5) é a pressão antiga.
 const SIMULATED_LOW = 0.3;
 const SIMULATED_HIGH = 0.8;
+/**
+ * Faixa da pressão simulada por pincel. Nos pincéis cuja largura cresce muito com a pressão (a
+ * Caneta-tinteiro triplica), a faixa larga fazia o traço empoçar em gota onde a mão desacelera
+ * (pontas de laço, começo do traço). Eles ganham uma faixa estreita em torno do 0,5 de sempre.
+ */
+export function simulatedPressureRange(brush: string | undefined): readonly [number, number] {
+  if (brush === "ink") return [0.45, 0.58];
+  if (brush === "soft") return [0.4, 0.65];
+  if (brush === "pencil") return [0.4, 0.7];
+  return [SIMULATED_LOW, SIMULATED_HIGH];
+}
+
 // Fração do caminho até a pressão-alvo percorrida a cada ponto, escalada pela velocidade.
 const PRESSURE_RATE = 0.275;
 
@@ -33,7 +45,11 @@ const PRESSURE_RATE = 0.275;
  * então a ponta do traço ao vivo e o traço já pronto recebem os mesmos números. `size` é a
  * distância (em unidades da folha) entre pontos a partir da qual o traço conta como rápido.
  */
-export function simulatedPressures(points: readonly HandwritingPoint[], size: number): number[] {
+export function simulatedPressures(
+  points: readonly HandwritingPoint[],
+  size: number,
+  range: readonly [low: number, high: number] = [SIMULATED_LOW, SIMULATED_HIGH],
+): number[] {
   const reference = Math.max(1, size);
   const result: number[] = [];
   let pressure = 0.5;
@@ -43,7 +59,7 @@ export function simulatedPressures(points: readonly HandwritingPoint[], size: nu
       const point = points[index]!;
       const speed = Math.min(1, Math.hypot(point.x - before.x, point.y - before.y) / reference);
       // Parado ou devagar (speed perto de 0): vai para a pressão alta. Rápido: vai para a baixa.
-      const target = SIMULATED_LOW + (SIMULATED_HIGH - SIMULATED_LOW) * (1 - speed);
+      const target = range[0] + (range[1] - range[0]) * (1 - speed);
       pressure += (target - pressure) * Math.min(1, speed * PRESSURE_RATE + 0.05);
     }
     result.push(pressure);
@@ -61,9 +77,15 @@ const smooth = (t: number) => t * t * (3 - 2 * t);
 /**
  * Multiplicador da largura em cada ponto: a ponta do começo e a do fim afinam ao longo de
  * `taperLength` (unidades da folha, medidas pelo caminho). Traço mais curto que dois tapers
- * divide o comprimento ao meio.
+ * divide o comprimento ao meio. `ends` liga ou desliga cada ponta: o traço em andamento não pode
+ * afinar a ponta, porque ela é a posição atual da caneta e não o fim do traço.
  */
-export function taperFactors(points: readonly HandwritingPoint[], taperLength: number): number[] {
+export function taperFactors(
+  points: readonly HandwritingPoint[],
+  taperLength: number,
+  ends: { start?: boolean; end?: boolean } = {},
+): number[] {
+  const { start = true, end = true } = ends;
   const count = points.length;
   if (count < 2 || taperLength <= 0) return points.map(() => 1);
   const along: number[] = [0];
@@ -76,7 +98,7 @@ export function taperFactors(points: readonly HandwritingPoint[], taperLength: n
   if (total <= 0) return points.map(() => 1);
   const length = Math.min(taperLength, total / 2);
   return along.map((distance) => {
-    const edge = Math.min(distance, total - distance);
+    const edge = Math.min(start ? distance : Infinity, end ? total - distance : Infinity);
     const t = Math.min(1, edge / length);
     return TAPER_FLOOR + (1 - TAPER_FLOOR) * smooth(t);
   });
@@ -85,9 +107,12 @@ export function taperFactors(points: readonly HandwritingPoint[], taperLength: n
 /**
  * O traço é de mouse ou dedo (marcado ao criar), é de caneta e não é tracejado: a largura variável
  * vale. Se o dispositivo mandou pressão real mesmo assim (alguns toques informam força), vale a real.
+ * Fineliner e Esferográfica são as canetas de escrever e ficam sempre com largura constante: a
+ * largura que muda com a velocidade e as pontas finas dão cara de pincelada, que atrapalha a letra.
  */
 export function usesSimulatedWidth(stroke: {
   tool: "pen" | "highlighter";
+  brush?: string;
   dash?: "dashed" | "dotted";
   cover?: true;
   dynamics?: "simulated";
@@ -96,6 +121,8 @@ export function usesSimulatedWidth(stroke: {
   return (
     stroke.dynamics === "simulated" &&
     stroke.tool === "pen" &&
+    stroke.brush !== "fine" &&
+    stroke.brush !== "ballpoint" &&
     !stroke.cover &&
     !stroke.dash &&
     stroke.points.length >= 2 &&

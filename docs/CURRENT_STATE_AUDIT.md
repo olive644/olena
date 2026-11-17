@@ -1,3 +1,41 @@
+## Tabelas do PDF no Resumo automático, 16/11/2026
+
+O leitor de PDF agora reconhece tabelas pelo alinhamento do texto, sem dependência nova. Cada linha guarda as células (pedaços separados por vãos maiores que 1,6 vez o tamanho da letra, ou 14 pt). Uma tabela é uma sequência de 3 ou mais linhas seguidas na mesma página, com o mesmo número de células em pelo menos 70% delas, cada coluna alinhada à esquerda, à direita ou ao centro (tolerância de 10 pt), células curtas (média até 70 caracteres) e com letras. A primeira linha é o cabeçalho, mesmo quando está em negrito e seria lido como título. A tabela entra no resumo na seção onde estava, em Markdown (até 3 tabelas por seção, 15 linhas e 6 colunas), e o texto dela não vira frase solta. Arquivos TXT e Markdown com tabelas em barras (`| a | b |`) também funcionam.
+
+Provas: `tables.test.ts` (6 testes) lê um PDF real com tabela e confere células e cabeçalho; confere que textos corridos de uma e de duas colunas (com hifenização) não geram tabela, que o texto da tabela não vira frases e que o separador do Markdown é ignorado. E2E `library-pdf-table-summary.spec.ts` gera um PDF com tabela, resume no navegador e confere cabeçalho, células e linhas em desktop e celular, claro e escuro, sem rolagem horizontal.
+
+Limites, sem esconder: só tabelas com texto alinhado (a maioria das tabelas de apostila). Tabelas desenhadas só com linhas e células mescladas não são tratadas; células com texto em várias linhas quebram a tabela em linhas separadas; página de duas colunas com tabela larga pode ser lida como duas colunas e perder a tabela; tabela em PDF escaneado (OCR) não é detectada, pois o OCR devolve texto sem posição. Não verificado em PDFs reais de aula: conferir com apostilas de verdade.
+
+## OCR em português para PDF escaneado, 16/11/2026
+
+O Resumo automático agora lê PDF escaneado (páginas só com imagem): a página é renderizada em canvas (lado maior de 2000 px), lida pelo tesseract.js com o idioma `por` e o texto entra no mesmo pipeline do PDF com texto. O OCR só roda nas páginas sem camada de texto (menos de 25 caracteres), carrega o tesseract.js sob demanda e é encerrado ao fim. Tudo roda no aparelho: worker, núcleo WASM e idioma saem de `/ocr` no mesmo domínio, sem CDN e sem chamar a Olena. O mesmo OCR em português passou a valer para o caminho "Gerar com a Olena" (leitura de imagens e PDFs escaneados antes de enviar o texto).
+
+Dependência nova, com justificativa: `@tesseract.js-data/por` (MIT, devDependency, só fonte do arquivo copiado no build por `scripts/copy-ocr-assets.mjs`). Usa a variante `4.0.0_best_int`, a mesma do inglês: 1,39 MB compactado (o inglês tem 2,95 MB). Não entra no JavaScript da aplicação nem no orçamento de desempenho; é baixado só quando uma página precisa de OCR e fica em cache do navegador (cabeçalho de 7 dias em `/ocr/*`).
+
+Provas: dois testes de tela com o tesseract simulado (PDF escaneado resumido, PDF sem texto nem para o OCR) e e2e `library-scanned-summary.spec.ts` com OCR real sobre um PDF escaneado de verdade (`e2e/fixtures/escaneado-fotossintese.pdf`, 88 KB, só imagem), em desktop e celular, claro e escuro: o texto lido tem os acentos corretos, nenhuma requisição sai do domínio nem chama a Olena e a página não ganha rolagem horizontal.
+
+Limites, sem esconder: a precisão foi medida só em texto impresso limpo gerado para o teste, não em fotos reais de caderno ou páginas tortas e borradas (não verificado, conferir com amostras reais). Não há velocidade medida em celular: cada página é lida em série e pode levar vários segundos. Manuscrito não é suportado de forma confiável. O título de um PDF escaneado cai no nome do arquivo, porque o OCR não distingue tamanho de fonte para detectar títulos.
+
+## Resumo automático em formato de guia de estudo, 16/11/2026
+
+O Resumo automático agora monta o resumo como um guia de estudo, qualquer que seja o tamanho do arquivo. Cada seção é numerada e traz: parágrafo de abertura, a lista do próprio arquivo (inteira, com a frase que a anuncia), pontos de apoio, caixa "Definição: termo", caixa "Erro frequente" (frases que corrigem confusões, como "não confunda" ou "e não do"), "Atenção" e "Ponto essencial". No fim entram a Linha do tempo em tabela (Quando, O que aconteceu), dados e números, termos-chave e perguntas de revisão. A linha do tempo é reservada antes das seções para que as datas não se percam, e essas frases não se repetem nas seções.
+
+Limite importante e honesto: o resumo continua extrativo, então não escreve explicações novas como uma IA (por exemplo, "A importância do seu trabalho ultrapassava..."). A arquitetura e os rótulos seguem o modelo de guia; o texto de cada bloco é sempre frase do arquivo. Listas só aparecem quando o arquivo tem marcadores (PDF com marcadores, TXT/Markdown com "- "). Em arquivos pequenos o resumo chega perto de 90% das palavras, porque a estrutura repete frases (visão geral, ponto essencial); o limite é 80% das palavras do arquivo para as partes opcionais.
+
+Leitor (`SummaryMarkdown` em `library-shelf-view.tsx`): ganhou lista `ul`, tabela com rolagem horizontal focável pelo teclado e rótulo das caixas em linha própria. A sintaxe continua compatível com os resumos da Olena. Provas: testes de domínio das listas, do erro frequente e da numeração; e2e `library-auto-summary.spec.ts` confere lista, tabela e Ponto essencial em claro e escuro, desktop e celular, com capturas da tabela.
+
+## Resumo automático de PDF e texto, 16/11/2026
+
+A pasta da Biblioteca ganhou o "Resumo automático": grátis, feito no aparelho, sem IA e sem enviar nada para fora. O botão "Gerar com a Olena" continua sendo o caminho com IA (exige login e envia o texto das fontes). O motor fica em `src/domain/pdf-summary/` e é extrativo: toda frase do resumo vem do próprio arquivo, nada é reescrito ou inventado (o ponto final pode ser acrescentado). Por isso o rodapé do resumo diz "Resumo automático feito no seu aparelho, sem IA".
+
+Pipeline: pdf.js entrega itens de texto com posição e tamanho; `layout.ts` monta linhas, separa colunas pelo vazio entre elas, remove cabeçalhos e rodapés que se repetem nas páginas, detecta títulos (tamanho, numeração, caixa alta, fonte minoritária), parágrafos e junta palavras hifenizadas. `summarize.ts` divide em seções, frases (separador próprio para português), pesa por TF-IDF e TextRank, e escolhe por MMR para não repetir ideias, levando a frase anterior junto quando a escolhida depende dela ("Isso", "Nesse processo"). A saída usa só a sintaxe que o leitor já entende: visão geral, roteiro, ideia central, pontos, caixas de Definição e Atenção, linha do tempo, perguntas de revisão, números importantes e termos-chave. O tamanho cresce com o arquivo, mas devagar (`10,5 * caracteres^0,62`, entre 500 e 30 mil caracteres, no máximo 60% do original), e as partes opcionais ficam limitadas a 75% das palavras do arquivo, então um texto curto nunca vira um resumo maior que ele.
+
+Provas: 20 testes de domínio (`portuguese.test.ts`, `summarize.test.ts`) com textos originais escritos para a validação. Cobertura das ideias-ouro de 12 trechos no texto estruturado (11 de 12, mínimo exigido 90%) e 6 de 8 no texto corrido sem títulos (mínimo 75%); mesma cobertura mínima em PDFs reais gerados com uma coluna, duas colunas, hifenização, cabeçalho e rodapé; nenhuma frase fora do arquivo; cabeçalho, rodapé e referências ausentes; resultado determinístico; livro sintético de cerca de 300 páginas em menos de 15 s. Testes de tela em `library-shelf-view.test.tsx` conferem que o resumo automático não chama login nem a Olena. E2E `library-auto-summary.spec.ts` gera o resumo em claro e escuro, no desktop e no celular emulado, e confere que nenhuma chamada à Olena sai e que a página não ganha rolagem horizontal.
+
+Limites conhecidos, sem esconder: PDF escaneado (só imagem) não tem texto para ler, então a tela avisa e indica a Olena (OCR em português não foi incluído: só existe o idioma inglês em `/ocr/lang`, e acrescentar o idioma é uma decisão de peso do pacote). Imagens não são lidas pelo resumo automático. O resumo escolhe frases, então não explica com palavras novas como uma IA faria; a cobertura medida é de textos de teste, não de uma amostra ampla de PDFs reais, o que segue "não verificado" (conferir com PDFs de aula reais de cada matéria). O arquivo continua limitado a 1 MB na prateleira porque os PDFs são guardados no espaço de trabalho; resumir arquivos maiores sem guardá-los exige um seletor direto, ainda não feito. Os rótulos do resumo gerado (Visão geral, Ideia central etc.) são gravados em português, como o resto do conteúdo gerado. Sem dependência nova: usa o pdf.js já presente, carregado só ao gerar.
+
+Validação visual: capturas em claro e escuro, desktop e celular, geradas pelo e2e acima (diálogo com as duas opções e leitor do resumo). Foco de teclado segue a regra compartilhada; os botões novos reutilizam `shelf-wood-button`.
+
 ## Seta de próxima folha visível, 14/11/2026
 
 O botão à direita da navegação usa a mesma seta original tanto para avançar quanto para criar a próxima folha na última página, preservando os respectivos rótulos e ações. Cores recebem prioridade suficiente para permanecer visíveis nos dois temas. Dois testes verificam ícone e callbacks; PNGs reais claro/escuro e cores computadas confirmam a seta visível.
@@ -5147,3 +5185,266 @@ Defeito relatado pelo proprietário: o anel que mostra a área da borracha (feit
 - Correção: `eraserCursorRef` guarda a posição da borracha durante o gesto (no toque inicial e a cada movimento) e `paintLive()` desenha o anel nela. Ao soltar, mouse e caneta continuam com o anel onde a borracha parou (voltam ao estado de pairar); o dedo não paira, então o anel some. O anel durante o gesto respeita a preferência "prévia ao pairar", como o anel de pairar. No `pointerup` evita-se um quadro intermediário com o anel.
 - Provas: `e2e/handwriting-eraser-ring.spec.ts` agora aperta e arrasta o mouse e confere que o anel continua desenhado e centrado onde a borracha está (e não parado no ponto inicial); sem a correção ele falha (0 pixels). `handwriting-studio-hover.test.tsx`: o teste antigo afirmava o comportamento com defeito ("o anel some ao começar a apagar") e foi trocado por três (anel ao apertar e ao mover, e depois de soltar com a caneta; dedo some ao soltar; preferência desligada não mostra).
 - Limites: não verificado com S Pen real nem em aparelho de toque. Janela de escrita ampliada não tem anel (apaga em outra área, fora deste ajuste).
+
+## Investigação do lag da caneta e menos camadas na composição, 15/11/2026
+
+Ponto 1 do feedback ("a caneta parece atrasada"). Em vez de supor, medi o caminho do traço no app real: um traço senoidal longo (900 amostras, 2 por quadro como uma caneta de 120 Hz, disparado de dentro da página) e o intervalo entre quadros.
+
+**O que a medição mostrou**
+
+- O JavaScript por quadro de pintura da camada ao vivo custa ~0,2 ms e não cresce com o comprimento do traço (primeiro terço 0,23 ms, último 0,25 ms). Redesenhar o traço inteiro a cada quadro, o filtro de suavização e a previsão da ponta não são o gargalo. Também descartei o tamanho do bitmap por si só (uma página limpa com quatro canvases do tamanho da folha roda a 16,7 ms por quadro, com limpeza total ou parcial, `will-change`, bitmap menor ou `desynchronized`) e o `border-radius`.
+- O custo estava em quantos canvases do tamanho da folha ficam empilhados na composição. A folha tem seis (base, coordenadas, texto, tinta confirmada, seleção e camada ao vivo); cada um custou ~4 a 6 ms por quadro. Isolando: só base e camada ao vivo deram 18,1 ms (60 fps); com tudo, 42 a 48 ms.
+- O `clip-path` do canto dobrado, que eu pus em todos os canvases na PR #641, custava sozinho ~9 a 12 ms por quadro. Foi uma regressão minha.
+
+**O que mudou**
+
+- `clip-path` só no canvas que recebe o toque (`.handwriting-page-shell > .handwriting-canvas`): é nele que o triângulo cortado precisa recusar o toque. As outras camadas não recebem toque e o canto delas já é coberto pela dobra.
+- Camadas sem nada para mostrar saem da composição (`display: none`): coordenadas sem sistemas, texto sem texto e seleção sem seleção, caixa, laço nem guias. A tinta confirmada fica sempre visível porque o traço é desenhado direto nela ao soltar a caneta; esconder poderia piscar um quadro sem tinta.
+- Resultado no mesmo teste: intervalo médio de 42,6 a 47,9 ms para 19,5 a 21,2 ms (mediana 41 a 43 para 18,4 a 19,5; quadros acima de 33 ms de 449 em 449 para 6 a 9).
+- Prova: `e2e/handwriting-layer-cost.spec.ts` (folha em branco tem só 3 canvases visíveis, escrever não acorda camadas, selecionar traz a camada de seleção, `clip-path` só no canvas de toque; falha sem a correção com 3 camadas extras). Os e2e da dobra seguem verdes.
+
+**Limites (importante)**
+
+- O navegador desta máquina renderiza por software, então os milissegundos absolutos são piores que os de um tablet com GPU; vale a comparação antes e depois, não o valor. **Não medi em aparelho real nem com S Pen.** A confirmação real é abrir uma folha no tablet e comparar a sensação de escrever.
+- Eventos sintéticos não trazem pontos previstos nem amostras agrupadas, então a previsão da ponta não entrou na medição.
+- Ainda há ~20 ms contra o ideal de 16,7 ms, e a camada de tinta confirmada continua sendo um canvas de folha inteira. Ideias que não medi e não implementei: `desynchronized` no canvas ao vivo (ajuda em Chrome com caneta, sem efeito em Safari e Firefox), reduzir a resolução das camadas de cena e juntar camadas.
+
+## Tinta por cima da dobra do canto, 16/11/2026
+
+Defeito relatado pelo proprietário com captura do celular: riscos continuavam aparecendo no canto de cima à direita, em cima da dobra. Causa: na #649 tirei o `clip-path` das camadas de tinta achando que o `::after` da dobra já cobria o triângulo. Não cobre: as camadas de escrita têm `z-index` de 1 a 5 e o `::after` tinha `z-index: auto`, então a tinta ficava por cima da dobra. Reproduzido no navegador: 259 pixels de tinta dentro do triângulo depois de arrastar um traço para dentro dele.
+
+- Correção em duas partes. (1) Pontos dentro do triângulo nem entram no traço (`isInFoldCorner`, em `handwriting-fold.ts`, 34px como o `::after`): o traço para na borda da dobra e não deixa tinta nova ali. (2) O `::after` da dobra sobe para `z-index: 9`, acima de todas as camadas de escrita, e esconde a tinta que já estivesse no triângulo (por exemplo, riscos feitos antes desta correção; os dados continuam guardados, só ficam sem aparecer).
+- O que foi descartado, com medição (intervalo médio por quadro ao escrever um traço longo): `clip-path` também na camada da tinta confirmada, 27,5 a 28,5 ms; um elemento extra de cobertura, 24 a 24,6 ms; subir o `::after` existente, 23,7 a 25,1 ms. A `main` na mesma hora deu 24,4 a 24,6 ms, então a solução escolhida não custa nada por quadro. (A máquina de teste oscila ~4 ms entre dias, por isso a comparação é sempre na mesma hora.)
+- Efeito colateral aceito: a metade de baixo do `::after` é a aba da dobra (papel) e agora também fica acima da tinta; um triângulo de uns 17px a 34px sob a aba não mostra tinta.
+- Provas: `handwriting-fold.test.ts` (geometria do triângulo), `e2e/handwriting-fold.spec.ts` (um traço arrastado para dentro da dobra não deixa tinta no triângulo, 252 pixels sem a correção; o `::after` fica acima das camadas e não pega toque) e `e2e/handwriting-layer-cost.spec.ts` (clip-path continua só no canvas de toque).
+- Limites: não verificado no celular real; o teste usa mouse no navegador de teste. O corte vale para a dobra de 34px em tela; ao dar zoom a dobra desenhada tem sempre 34px e o triângulo de bloqueio acompanha.
+
+## Cadernos dentro da Biblioteca, ajuste dos testes, 16/11/2026
+
+Decisão do proprietário: a aba Cadernos saiu do menu e os cadernos passaram a viver na prateleira da Biblioteca, junto com as pastas. A rota `/cadernos` continua abrindo essa prateleira.
+
+**O que mudou nos testes**
+
+- Os testes unitários e e2e que clicavam no item "Cadernos" do menu passam a abrir a prateleira pela rota (`openNotebooksView` nos e2e, `openNotebooks` em `src/app.test.tsx`). Contagens do menu (6 itens no PC, 1 item extra em "Mais ferramentas" no celular) atualizadas.
+- O lápis que pula sobre cada caderno no modo de edição da prateleira voltou a aparecer na estante de cadernos.
+- O e2e de imagem local agora cria uma pasta, entra nela e envia a imagem por "Enviar documento", conferindo que persiste ao recarregar.
+- O e2e da nota com fonte mantém: criar flashcard do trecho e vincular material da Biblioteca. Saiu dele a parte de abrir o material por `/biblioteca?material=...` e a busca por "algebra".
+
+**Funções da tela antiga da Biblioteca que não existem na prateleira nova (testes removidos)**
+
+- Criar flashcard manual (frente e verso) e a lista de flashcards criados à mão.
+- "Adicionar material" com título e tipo, e a busca "Buscar no acervo".
+- Abrir um material pelo link `/biblioteca?material=...` e o botão "Ver fonte" na folha.
+
+Decisão do proprietário (opção A, 16/11/2026): essas funções foram removidas de propósito junto com a tela antiga. Por isso saíram os e2e `library.spec.ts` (Biblioteca integrada com revisão e Discord; leitor de PDF local com pesquisa, marcador e anotações), `library-review.spec.ts` (baralhos, edição, TSV e limite diário de revisão) e `library-study.spec.ts` ("Trecho" mantém fonte no caderno e no flashcard e vincula o Pomodoro). Todos dependiam de "Adicionar material" da tela antiga.
+
+`src/views/library-view.tsx` continua no repositório, com seus testes unitários, mas nada o renderiza. Foi removido o teste unitário e o e2e que dependiam dele para criar flashcard. Se alguma dessas funções precisar voltar, deve entrar na pasta da nova Biblioteca, com teste novo.
+
+**Limites**
+
+- Os e2e foram rodados localmente nos arquivos afetados (app, shelf-edit, shelf-edit-hint, showcase, library-connections), com resultado verde; a suíte inteira roda no CI.
+- Os 8 testes de `src/data/listening-audio.test.ts` falham neste ambiente sem relação com esta mudança (`object.stream is not a function`).
+
+## Medidor da caneta, 16/11/2026
+
+Pedido do proprietário depois de um vídeo da escrita no aparelho: a tinta aparecia em blocos, com 89 atualizações em 2,5 s, mediana de 22 ms entre elas, 25 intervalos acima de 33 ms e o maior com 100 ms. Sem uma medida no próprio aparelho, não dá para saber se o gargalo é a entrada da caneta ou o desenho.
+
+**O que mudou**
+
+- Nova opção em Configurações do editor, Caneta: "Medidor da caneta" (`penDiagnostics`, desligada por padrão). Com ela ligada, um painel fixo mostra, para o último traço: eventos e pontos por segundo, fila da entrada (tempo entre o carimbo do navegador e o app tratar o evento), maior pausa sem entrada, quadros (mediana, p95, pior e quantos passaram de 33 ms), tempo de desenho da camada ao vivo e o tamanho da folha com o número de camadas e a densidade da tela.
+- Os números ficam na tela depois de soltar a caneta, para dar tempo de tirar uma captura. Nada é enviado para fora do aparelho e nada é guardado: o painel só lê contadores em memória.
+- Com a opção desligada nenhum código de medição roda (sem laço de quadros e sem leitura de relógio por evento).
+- Código: `handwriting-pen-meter.ts` (contadores puros), `use-handwriting-pen-meter.ts` (liga ao editor), `handwriting-pen-meter-panel.tsx` (painel). Testes: `handwriting-pen-meter.test.ts`, `handwriting-pen-meter-panel.test.tsx`, `e2e/handwriting-pen-meter.spec.ts` (claro e escuro, PC e celular).
+
+**Como ler**
+
+- Muita fila da entrada ou pausas grandes sem entrada: o aparelho ou o navegador entrega pouco, e o app não é o gargalo.
+- Entrada boa (60 a 240 pontos/s, sem pausas) com quadros lentos e desenho ao vivo alto: o gargalo é o desenho, e o próximo passo é reduzir camadas ou resolução delas.
+- Desenho ao vivo baixo e quadros lentos: o custo está na composição das camadas (GPU), não no JavaScript.
+
+**Limites (importante)**
+
+- Validado no navegador desta máquina, que renderiza por software; os números absolutos de um tablet serão outros. Só a captura no aparelho do proprietário responde à pergunta.
+- O desenho com o ponteiro só é verificado no PC pelo e2e; no celular o e2e confere que o painel aparece e cabe na tela, nos dois temas.
+- O painel cobre uma parte da folha enquanto está ligado, e foi pensado para ficar ligado só durante o diagnóstico.
+- Os 8 testes de `src/data/listening-audio.test.ts` falham neste ambiente (`object.stream is not a function`) também sem as mudanças desta PR, então não vêm dela. O CI é a referência para eles.
+
+## Prateleira de cadernos e pastas no celular, 16/11/2026
+
+Relato do proprietário com captura do celular: depois de unificar cadernos e pastas, a prateleira dupla não cabia na tela, a de baixo ficava sob a navegação e o vaso do canto direito saía cortado.
+
+**Causas (reproduzidas em 360x800)**
+
+- O caderno da prateleira usa `clamp(218px, 32vh, 300px)` de altura, e a prateleira dupla somava 524 px; a área útil entre cabeçalho e navegação tinha cerca de 460 px. O conteúdo rolava dentro da própria área (`.notebooks-showcase` com 628 de altura para 712 de conteúdo).
+- A hera da direita é espelhada com `transform: scaleX(-1)`. A regra de celular mudou `transform-origin` para `top right`, e espelhar em torno da borda direita jogou a hera e o vaso para fora da prateleira (40 px além, cortados pela tela).
+
+**O que mudou** (`src/views/library-shelf-view.css`, só até 680 px de largura; PC e tablet largo ficam como estavam)
+
+- Altura do caderno na prateleira dupla: `clamp(128px, calc(100dvh - 610px), 300px)`, acompanhando a altura útil. A fileira de pastas passa de 172 para 150 px e o espaço acima dos cadernos de 60 para 40 px.
+- A hera da direita espelha em torno do centro (`transform-origin: top center`), e o vaso fica dentro da tela.
+- Em 360x800 a prateleira termina em 698 px com a navegação em 721 px, sem rolagem interna.
+
+**Prova:** `e2e/library-shelf-mobile.spec.ts` (celular, claro e escuro, 360x800, 390x844 e 412x915): sem rolagem interna, sem rolagem horizontal, prateleira acima da navegação e hera dentro da largura. Os 6 casos falham sem a correção e passam com ela. Capturas conferidas em 360x800 e 360x700.
+
+**Limites**
+
+- Em telas muito baixas (cerca de 640 px de altura ou menos) o mínimo de 128 px vale e a área rola, como antes. Não verificado em aparelho real; o teste usa o emulador do navegador.
+- O desconto de 610 px assume as alturas atuais de cabeçalho, ferramentas e navegação. No tema escuro o conjunto fica 16 px mais baixo que no claro, e o desconto cobre os dois. Se esses elementos mudarem, o teste acusa.
+
+## Resumo estruturado com a Olena na pasta da Biblioteca, 16/11/2026
+
+Relato do proprietário: o resumo estruturado com a Olena não estava funcionando. A geração é a da aba Resumo da pasta ("Criar resumo", "Gerar") e do botão "Gerar resumo estruturado com a Olena" de um resumo antigo.
+
+**Causa provável (lida no código; não reproduzida contra o serviço de produção)**
+
+- O resumo pedia a resposta sem fluxo (`requestHelena`). No servidor, essa rota (`createCloudflareTeacher.generate`) cancela a chamada ao modelo em 20 s (`AbortSignal.timeout(20_000)`), mas o guia pede até 2400 tokens (`max_tokens` do `summarize`) a partir de até 3 fontes de cerca de 8 mil caracteres. Um modelo de 8 bilhões de parâmetros leva em geral mais de 20 s nisso. O cancelamento vira erro 503 e o aluno via "Serviço indisponível. Tente mais tarde." (o chat não sofre disso porque usa a transmissão em fluxo, que tem 45 s no servidor e 55 s no cliente).
+- Não havia nenhum teste da geração do resumo.
+
+**O que mudou** (`src/views/library-shelf-view.tsx`)
+
+- O resumo passa a usar `streamHelena`, o mesmo caminho do chat: limite de 45 s no servidor e 55 s no cliente em vez de 20 s. O pedido, o consentimento, a política de privacidade (`retention: "none"`) e o texto enviado são os mesmos de antes.
+- Provas: `src/views/library-shelf-view.test.tsx` (4 testes): o pedido sai com `capability: "summarize"`, consentimento e fontes certos e o resumo é guardado na pasta com o título do `#`; sem login a pessoa é orientada a entrar e a Olena não é chamada; erro do serviço aparece sem guardar nada; o botão "Gerar resumo estruturado com a Olena" de um resumo antigo marca as mesmas fontes e gera o guia. Sem a correção, 2 dos testes falham.
+
+**Limites (importante)**
+
+- Não verifiquei contra a Olena em produção: gerar exige uma conta logada e o consumo é pago. Os logs de produção do Vercel (plano Hobby, 1 hora de retenção) e os agrupamentos de erro das últimas 24 h não mostram falhas de `/api/helena`, então não há registro do erro do relato para confirmar a causa. Para conferir: entrar na conta, gerar um resumo de um PDF com 3 fontes e ver se termina.
+- A transmissão em fluxo tem teto de 12 000 caracteres de resposta e 45 s no servidor. Um guia de 2400 tokens cabe nos dois em condições normais; se o modelo estiver lento, o resumo ainda pode ser interrompido com "A resposta foi interrompida. Tente novamente.".
+- O texto parcial que chega pelo fluxo não é mostrado; a tela segue com o indicador de espera até terminar.
+
+## Abas da pasta da Biblioteca no celular, 16/11/2026
+
+Relato do proprietário com captura do celular: dentro de uma pasta da Biblioteca, a fileira de abas (Fontes, Resumo, Flashcards, Quizzes e Simulados) passava da largura da tela e "Simulados" ficava cortado.
+
+**Causa (reproduzida em 360x800):** a seta de voltar e as cinco abas dividiam a mesma linha. As abas têm `flex: none` e `white-space: nowrap`, então a fileira media 340 px de conteúdo para 256 px disponíveis, e a última aba terminava em 420 px numa tela de 360.
+
+**O que mudou** (`src/views/library-shelf-view.css`, só até 560 px de largura)
+
+- A seta de voltar fica numa linha própria e as cinco abas dividem a largura inteira em cinco colunas iguais, com o ícone acima do nome e fonte de `clamp(0.56rem, 2.7vw, 0.75rem)`.
+- Em 360x800 as abas ocupam de 24 a 336 px, sem rolagem de lado; em 320x568 e 412x915 também cabem.
+
+**Prova:** `e2e/library-folder-mobile.spec.ts` (celular, claro e escuro, 320x568, 360x800 e 412x915): cinco abas, nenhuma passando da largura, sem rolagem horizontal. Os 6 casos falham sem a correção e passam com ela. Captura conferida em 360x800.
+
+**Limites**
+
+- Em 320 px de largura o nome "Flashcards" fica pequeno (cerca de 9 px); cabe, mas é o limite do layout em cinco colunas.
+- Só as abas foram reorganizadas. O conteúdo das abas Resumo, Flashcards, Quizzes e Simulados não foi revisto em outras larguras além do que o e2e acima exercita.
+- Não verificado em aparelho real; o teste usa o emulador do navegador.
+
+## Botões das abas da pasta e PDF no resumo, 16/11/2026
+
+Relato do proprietário com captura do celular, na aba Resumo de uma pasta da Biblioteca: (1) o erro "Unexpected server response (0) while retrieving PDF "data:application/pdf;base64,..."" ao gerar o resumo; (2) o botão de baixo de todas as abas não aparecia.
+
+**Causas (reproduzidas em 360x800)**
+
+- O PDF enviado fica guardado como endereço `data:application/pdf;base64,...`, e a geração do resumo o entregava ao leitor de PDF como `{ url }`. O leitor faz uma requisição interna para esse endereço, que falha em alguns celulares com "Unexpected server response (0)"; a mensagem em inglês ia crua para a tela.
+- A tela da Biblioteca não rola (`main.notebooks-main` com `overflow: hidden`, a prateleira cabe inteira), e o conteúdo da pasta tinha `min-height: calc(100dvh - 6rem)`. Em 360x800 ele terminava em 788 px e o botão ("Criar resumo", "Adicionar fontes", "Criar flashcards"...) ficava em 724 px, atrás da navegação do celular, que começa em 721 px. Conteúdo mais longo (lista de fontes, vários resumos) simplesmente era cortado, sem como rolar.
+
+**O que mudou**
+
+- `src/data/data-url.ts`: `dataUrlBytes` decodifica o endereço `data:` e a geração passa os bytes ao leitor (`getDocument({ data })`), como os outros leitores de PDF do app já faziam. Se o PDF não abre, a mensagem é "Não consegui abrir o PDF {nome}." em português.
+- `src/views/library-shelf-view.css`: o conteúdo da pasta passa a rolar dentro da própria área (`overflow-y: auto`). No celular (até 680 px) a altura é `calc(100dvh - 11rem)`, o que deixa o botão de baixo acima da navegação; no PC o teto é o mesmo de antes (`100dvh - 6rem`).
+
+**Provas**
+
+- `src/data/data-url.test.ts` (3) e `src/views/library-shelf-view.test.tsx` (mais 2: o PDF é aberto pelos bytes, sem `url`, e o PDF que não abre mostra a mensagem em português sem chamar a Olena).
+- `e2e/library-folder-mobile.spec.ts`: em 360x800 e 390x844, o botão de cada uma das cinco abas não está coberto por nada (`elementFromPoint`). Falha sem a correção ("Criar resumo ficou coberto") e passa com ela. Captura conferida em 360x800.
+
+**Limites**
+
+- Não verificado em aparelho real nem com o PDF do proprietário. O erro do PDF vem de `pdfjs` pedindo o endereço `data:`; troquei para os bytes, que é o caminho que o leitor de PDF da Biblioteca já usa, mas não consegui reproduzir a falha do aparelho em si no navegador de teste (lá o endereço `data:` funciona).
+- Em telas muito baixas a área da pasta rola em vez de mostrar tudo de uma vez.
+
+## Resumo com a Olena interrompido no celular, diagnóstico e ajuste, 16/11/2026
+
+Relato do proprietário com captura do celular, depois do #655 e do #656: o PDF passou a abrir, mas a geração terminava com "A resposta foi interrompida. Tente novamente." Eu não tinha validado a geração de ponta a ponta (ela exige conta logada e gasta o modelo pago); a captura mostrou que o #655 não bastava.
+
+**O que ficou confirmado**
+
+- O erro anterior do PDF ("Unexpected server response (0) while retrieving PDF data:application/pdf...") tem causa confirmada no `vercel.json`: a política de segurança (`connect-src`) não lista `data:`, então o leitor de PDF não consegue buscar o endereço `data:`. Abrir o PDF pelos bytes (#656) contorna isso, e a captura nova prova: o erro do PDF sumiu.
+- "A resposta foi interrompida" é a mensagem fixa que o servidor envia no fluxo quando o modelo falha no meio, e que o cliente mostra quando o fluxo quebra (tempo, formato ou texto acima de 12 000 caracteres).
+
+**O que não está confirmado:** o motivo da interrupção. Os logs de produção do Vercel (Hobby, 1 hora) mostram a chamada e nenhum erro, porque o servidor engolia a causa sem registrar. Hipótese principal: o guia pede até 2400 tokens e o fluxo do servidor cortava em 45 s; um modelo de 8 bilhões de parâmetros pode não terminar nesse tempo. Outras possibilidades: a Cloudflare recusar o fluxo (cota do dia, erro de token, status diferente de 200) ou o texto passar de 12 000 caracteres.
+
+**O que mudou**
+
+- O servidor passa a registrar, em `console.error`, cada fluxo interrompido: capacidade, milissegundos, caracteres recebidos e o motivo (`tempo esgotado`, `Streaming provider unavailable (429)`, etc.). Só mensagens nossas ou de rede, nunca o texto das fontes ou das respostas (há teste para isso). Quando o modelo recusa o fluxo, o erro agora traz o status HTTP da Cloudflare.
+- O resumo gera no máximo 1600 tokens em vez de 2400 (cerca de 600 palavras; o pedido também diz "no máximo 600 palavras"), e o limite do fluxo do resumo sobe de 45 para 55 s no servidor (a função da Vercel tem 60 s) e de 55 para 58 s no cliente. A conversa não muda.
+- Provas: `helena-teacher.test.ts` (1600 tokens no fluxo e fora dele; status da Cloudflare no erro) e `helena-stream.test.ts` (o registro traz capacidade, motivo e número de caracteres e não contém o conteúdo do aluno).
+
+**Limites (importante)**
+
+- Continua sem validação ponta a ponta contra a Olena em produção. A mudança reduz a chance de corte por tempo e passa a registrar a causa real; se ainda falhar, o registro do servidor diz o motivo, e é preciso olhar o log logo depois da tentativa, porque o plano atual guarda só 1 hora.
+- Um resumo mais curto é uma troca deliberada de tamanho por confiabilidade.
+
+### Escrita: Fineliner e Esferográfica voltam a largura constante e a ponta ao vivo não afina, 2026-11-16
+
+Relato da dona, escrevendo com mouse: a linha "vai saindo dura e depois se constrói como pincelada". Reproduzido com eventos de mouse no ritmo real e com ponta prevista (uma amostra a cada ~3 px, duas por quadro, ampliado 3x): o quadro ao vivo mostrava a ponta do traço terminando em agulha fina, com o que já estava escrito na espessura normal.
+
+- **Causa (minha, PR 645).** O afinamento de ponta tratava o ponto atual da caneta como o fim do traço, então a ponta ao vivo afinava o tempo todo (a ponta prevista aumentava o efeito). Além disso, a largura pela velocidade valia para o Fineliner, a caneta padrão de escrever, e dava cara de pincelada à letra.
+- **Correção.** Fineliner e Esferográfica, as canetas de escrever, voltam a ter largura constante (como antes da PR 645). Nos pincéis de desenho (Caneta-tinteiro, Pincel macio, Caligrafia e Lápis) a ponta do começo continua afinando, mas o fim só afina quando o traço termina: ao vivo ele fica na espessura normal (`drawStroke(context, stroke, true)`). O traço ao vivo e o pronto continuam com a mesma conta.
+- **Prova.** Teste novo: ao vivo o fim fica na espessura do meio e o traço pronto afina; Fineliner e Esferográfica têm largura constante com ou sem a marca `dynamics`. Capturas ampliadas do traço ao vivo antes e depois da correção (a agulha some).
+- **Não verificado.** Escrita real com mouse do começo ao fim em uma palavra longa; os eventos foram sintéticos (ponta prevista simulada). O pior atraso do medidor da caneta (32 ms) e o tamanho das camadas (3464 x 2598 px, 6 camadas) seguem como hipótese de causa das batidas perdidas, sem teste A/B ainda.
+
+### Reta feita à mão fica reta de verdade, 2026-11-16
+
+Relato da dona, com mouse: "fazer linhas retas faz a linha não ficar perfeita, ela tem falhas e fica meio torta". A dona esclareceu depois que a mão não tremia: a pincelada saía tremida sozinha. Minha primeira reprodução inventou um tremor de mão (errado). A reprodução fiel usa mão firme, com caminho liso e quase reto, mas com as posições **inteiras em pixels**, como o mouse informa de verdade: a linha saía com **degraus** (trechos retos e pulinhos de um pixel). A folha é maior que a tela (3200 x 2400 px no medidor), então cada pixel do mouse vale vários da folha e o pulinho aparece.
+
+- **Causa.** O mouse informa posições inteiras e a folha amplia cada pixel, então um caminho liso vira degraus. Nada no app removia isso: `straightenStroke` só atuava em traço quase horizontal (até 12° de inclinação), girava só 88% do ângulo e não removia o tremor: só corrigia a inclinação média. Reta vertical ou em diagonal nunca era corrigida.
+- **Correção.** Um traço de corda de pelo menos 100 unidades da folha que quase não sai da reta (caminho até 3% maior que a corda e afastamento de no máximo 2% dela, com piso de 3 unidades de tremor) vira uma reta perfeita, em qualquer direção. A horizontal encaixa exatamente até 12° de inclinação (como já valia) e a vertical até 3°; mais inclinado que isso mantém o ângulo. A reta passa pelo meio da corda, então os extremos se mexem pouco. Cada ponto é projetado na reta: a quantidade de pontos, a ordem e a pressão ficam como estavam, e a borracha continua apagando só o trecho tocado. Letras e riscos curtos (corda menor que 100), curvas e arcos passam intactos.
+- **Onde vale.** Ao soltar o traço, com a estabilização ligada, para pen e marca-texto (o mesmo ponto em que antes se endireitava). Ao vivo a linha continua como a mão faz; a correção aparece ao soltar. Régua e "segurar para encaixar" não mudaram.
+- **Prova.** Testes novos (horizontal, vertical, inclinada, encaixe no eixo, pontos e pressão preservados, curvas e letras intactas, mão que volta). Captura do editor com as mesmas três retas antes e depois: ondulada e torta contra perfeita.
+- **Não resolvido.** A linha **ao vivo**, enquanto se arrasta, ainda mostra os degraus (a reta perfeita aparece ao soltar), e traços que não são retos (curvas, letras) continuam com degraus de pixel. Atacar isso pede suavizar a posição por quantização, o que arredonda cantos de letra: não foi feito.
+- **Não verificado.** O limiar de 100 unidades pode endireitar um traço longo e reto de letra grande (por exemplo, um "l" muito alto); os limites de 3%, 2% e 3° foram escolhidos por conta e merecem uso real. Não medi o efeito com caneta de verdade nem com dedo.
+
+## Correções do CI da PR 664, 16/11/2026
+
+- O helper de escrita ainda procurava as cores em .handwriting-ink-options. A paleta foi movida para um dock e essa busca passava a alternar as opções sem reconhecer que já estavam abertas. Agora o helper observa o grupo Cores rápidas, garante que ele está visível e usa o encaixe por teclado à direita para liberar a região de desenho dos testes.
+- O teste unitário de restauração de cor e largura e o cenário móvel usam a paleta única. O teste do conta-gotas desativa explicitamente a API nativa para exercitar a leitura das camadas da folha; o contraste esperado acompanha a borda atual da paleta escura.
+- A prova de abertura do caderno espera as animações e mede o delay da folha transformada, sem procurar a propriedade herdada --cover-angle removida pela otimização. A ordem entre abertura do fecho e giro da capa continua sendo verificada.
+- O cenário de escrita ampliada exige a ausência da antiga seta Próxima linha e preserva a prova de escrita, salvamento e recuperação.
+- A remoção do bloco legado dos cadernos também retirou as ações de flashcard e fontes das notas de texto. Essas ações voltam apenas para notas de texto, sem reaparecer na tela dos cadernos manuscritos. Um teste de regressão cobre os dois tipos e a criação do cartão.
+- Evidência inicial: no commit 73fb168, 2881 testes unitários passaram e um falhou; os cenários de navegador falharam nos seletores antigos, na animação antiga e nas ações removidas de notas.
+- Não verificado localmente: npm run verify, e2e e validação visual, pois o executor e o navegador deste chat estão indisponíveis. A atualização foi solicitada explicitamente pelo proprietário após a comunicação desse limite. A validação fica pendente no CI do novo commit; não foi declarado resultado verde.
+
+## Segunda execução do CI da PR 664, 16/11/2026
+
+- O commit a0c95fd parou no lint por cinco diferenças de formatação: quatro cadeias de seletores no teste móvel e uma chamada render no teste de notas. Aplicadas as quebras de linha indicadas pelo próprio Prettier.
+- Os quatro shards de navegador não chegaram a executar os cenários: o comando npm run build do webServer terminou com código 1. O log capturado mostrou apenas a falha de inicialização, sem a saída do processo filho. Configurado stdout e stderr como pipe no Playwright para que o próximo CI exponha o diagnóstico do build; a causa dessa falha ainda não foi confirmada.
+- Não verificado localmente: formatação, compilação e testes, pois o executor continua indisponível. Nenhum check foi desativado e nenhum resultado verde foi declarado.
+
+### Escrita lenta com mouse: sem serrilhado, sem toco na ponta e menos gota, 2026-11-16
+
+Relato da dona, com gravação de tela: ao escrever devagar com o Fineliner "a ponta vai se construindo: ela nasce dura para um lado aleatório e só depois vira pincelada", e retas rápidas e lentas saíam com degraus e bordas caroçudas. Três causas, todas reproduzidas antes de corrigir.
+
+- **Degraus de pixel (A).** O mouse informa posições inteiras e a folha amplia cada pixel. Medido com uma diagonal perfeita arredondada: o filtro de tempo do estabilizador ao vivo cortava o erro médio pela metade, mas o pior erro ficava de 0,6 a 1,0 unidade (cerca de 30% da espessura do Fineliner). Novo `handwriting-denoise.ts` (`denoiseMousePath`): ao soltar, cada ponto vai para a reta ajustada aos vizinhos ao longo do traço, com janela adaptativa (a maior até 12 pixels de tela em que os vizinhos ficam a no máximo 1,1 pixel da reta: reta alonga, curva encolhe). Extremos e cantos (mudança de direção acima de 55°, medida em cordas de 4,5 pixels) ficam fixos e nenhuma janela atravessa um canto. Mantém quantidade de pontos, ordem e todos os campos além de x e y. Só vale para mouse e dedo (`dynamics: "simulated"`), na folha e na janela de escrita, antes do endireitar. Medido com o novo alisamento: pior erro de 0,5 a 0,97 para 0,1 a 0,3 unidade entre 60 e 400 px/s.
+- **Toco duro na ponta (C).** A ponta prevista (`getPredictedEvents`) é desenhada à frente do traço só na tela e some no quadro seguinte. Com mouse devagar e posições inteiras o navegador erra a direção e o toco aparece virado para um lado qualquer: no vídeo, o primeiro de 14 quadros seguidos tem um gancho duro na ponta e dois quadros depois ele some. Agora a previsão vale só para caneta (`pointerType pen`) e, mesmo nela, `predictedTail` descarta o ponto que desvia mais de uns 45° da direção do traço (antes só descartava o que voltava).
+- **Gota nos pincéis grossos (B).** A pressão simulada (devagar engrossa) empoçava a Caneta-tinteiro nas pontas de laço e no começo do traço. A faixa da pressão simulada passou a ser por pincel: Caneta-tinteiro 0,45 a 0,58, Pincel macio 0,4 a 0,65, Lápis 0,4 a 0,7; os outros seguem em 0,3 a 0,8. Fineliner e Esferográfica já eram constantes.
+- **Prova.** Testes novos (alisamento: retas em três ângulos e três ritmos, pontos e campos preservados, extremos e canto de um L intactos, laço pequeno sem achatar; previsão que desvia; faixa por pincel; com mouse ou dedo não prevê). Capturas do editor com a escrita lenta de cada pincel antes e depois (serrilhado e bordas caroçudas somem) e da ponta ao vivo com previsão errada (gancho duro some).
+- **Não resolvido e não verificado.** A linha ao vivo ainda mostra o degrau enquanto se arrasta: o alisamento acontece ao soltar. As gotas no topo dos laços da Caneta de caligrafia ficam: ali a largura vem do ângulo da ponta chata, não da velocidade, e na Caneta-tinteiro só diminuíram. A janela de 12 pixels e a tolerância de 1,1 pixel foram escolhidas por conta; uma letra de traço muito pequeno pode encolher um pouco. Só mouse; caneta e dedo não foram testados.
+
+### Rabiscar para apagar, 2026-11-16
+
+Pedido: riscar a escrita em zigue-zague com o pincel apaga o que está por baixo, como em outros apps. Antes de fazer, pesquisei o que eles fazem.
+
+**Pesquisa (o que é fonte e o que não é).**
+
+- Apple Notes (Scribble): rabiscar em zigue-zague sobre a palavra, com a caneta ainda no papel, apaga (fonte: guias de uso do Scribble no iPad).
+- Goodnotes ("Scribble to Erase") e Notewise: apagam todos os traços sob a área rabiscada, os traços inteiros, e têm interruptor nas configurações da caneta ("Pen Gestures"). A queixa mais comum no fórum do Goodnotes é cursiva emendada tomada por rabisco. As páginas de suporte do Goodnotes e do Notion dele não carregaram (403 e página vazia): do Goodnotes tenho só o que está em relatos e na busca.
+- Patente da Microsoft (US 7.551.779): o rabisco precisa cruzar a tinta já escrita, cobrir boa parte da largura do alvo (80% a 120%, conforme o tamanho da palavra) e passar do meio dele; traços rápidos e próximos (até cerca de 1 s) contam como um gesto só. Uma patente anterior (US 5.602.570) conta mudanças de direção do zigue-zague. Os números que não vieram do trecho lido literalmente não foram conferidos.
+
+**O que foi feito** (`handwriting-scribble.ts`, funções puras):
+
+- `recognizeScribble`: zigue-zague com pelo menos 4 voltas de direção ao longo do eixo principal, caixa de diagonal mínima de 36 unidades, caminho de pelo menos 3 vezes a diagonal, e passada mediana de pelo menos metade da extensão (e 10 unidades). A última regra é a que recusa cursiva emendada: laço de letra volta pouco enquanto o traço anda para a frente.
+- `scribbleTargets`: apaga os traços inteiros em que pelo menos 60% do comprimento fica a até 7 a 22 unidades da linha do rabisco (alcance conforme o espaçamento entre passadas). Traço de fundo apagado nunca é alvo. Se o rabisco não cobre tinta nenhuma, ele fica como traço comum (sombreado, hachura).
+- Só com a caneta (não o marca-texto), sem traçado ou pontilhado, na folha e na janela de escrita. Um passo de desfazer devolve tudo (o editor já guarda o estado antes do traço).
+- Preferência nova `scribbleErase` (ligada por padrão) em Configurações do editor, com texto nos dois idiomas.
+- **Prova.** Testes de unidade (rabisco horizontal, vertical e inclinado aceitos; cursiva, onda, reta, círculo, traço curto e três passadas recusados; alcance; quais traços saem). e2e novo: escrever, rabiscar e a palavra some; desfazer a devolve; rabisco em lugar vazio fica; cursiva por cima não apaga; interruptor desligado deixa o rabisco.
+- **Não verificado.** Os limiares (4 voltas, 3 vezes, metade, 60%) são meus: o Goodnotes reconhece cursiva emendada como rabisco, e aqui isso foi testado só com laços regulares. Zigue-zague rápido sobre desenho próprio apaga o desenho (o interruptor serve para isso). Não testei com caneta nem com dedo.
+
+## 2026-11-16 — Estojos laterais e seletor Olena
+
+- PC: controles de caneta, borracha, marca-texto, réguas, curva e coordenadas na lateral direita. Novas artes SVG para seis pincéis, seis réguas e três borrachas. Seleção ilumina e avança o instrumento. Camadas permanece na lateral com estojo aberto ou recolhido.
+- Paleta desvia das setas de papéis, estojo e folheamento. Minimização abaixo do conta-gotas transforma a paleta em estojo arrastável; expansão não mostra barra de rolagem. Seletor circular próprio com matiz/saturação, brilho e HEX/RGB, sem seletor nativo do navegador.
+- Tabelas respeitam amarelo/azul/lilás na folha escura, inclusive na renderização exportada. Perfil: campo Bio removido do editor, lixeira atual sem fundo e cosméticos separados em Padrões, Orgulho gay e Matérias.
+- Provas: conferência na prévia desktop em tema escuro, seleção dos instrumentos, painel de camadas combinado, arrastar/minimizar/reabrir paleta, seletor circular e troca da tabela de lilás para azul na folha noite. Testes direcionados e TypeScript passaram antes da atualização com main.
+- Limites: visual mobile e tema claro deste conjunto não reconferidos; compatibilidade entre navegadores não medida. CI será acompanhado pelo Claude a pedido do proprietário.

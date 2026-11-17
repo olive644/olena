@@ -2,22 +2,6 @@ import type { HandwritingPoint } from "../domain/handwriting";
 
 export type { HandwritingPoint } from "../domain/handwriting";
 
-function rotatePoint(
-  point: HandwritingPoint,
-  center: HandwritingPoint,
-  angle: number,
-): HandwritingPoint {
-  const cosine = Math.cos(angle);
-  const sine = Math.sin(angle);
-  const offsetX = point.x - center.x;
-  const offsetY = point.y - center.y;
-  return {
-    ...point,
-    x: center.x + offsetX * cosine - offsetY * sine,
-    y: center.y + offsetX * sine + offsetY * cosine,
-  };
-}
-
 function smoothPass(points: readonly HandwritingPoint[]): HandwritingPoint[] {
   return points.map((point, index) => {
     if (index === 0 || index === points.length - 1) return { ...point };
@@ -37,29 +21,69 @@ export function stabilizeHandwriting(points: readonly HandwritingPoint[]): Handw
   return straightenStroke(smoothPass(smoothPass(points)));
 }
 
-// Endireita traços quase retos (uma linha feita à mão livre, quase horizontal),
-// sem suavizar o desenho. Curvas e traços curtos passam intactos.
+// Reta de verdade. Um traço feito à mão que quase não sai da corda entre o começo e o fim vira uma
+// reta perfeita, em qualquer direção. Antes só se corrigia a inclinação de traços quase horizontais
+// (88% do ângulo) e o tremor ficava: a linha saía torta e com falhas. Cada ponto é projetado na
+// reta, então a quantidade de pontos, a ordem e a pressão ficam como estavam (e a borracha continua
+// apagando só o trecho tocado). Letras e riscos curtos, curvas e arcos passam intactos.
+/** Corda mínima (unidades da folha, que tem 1200 de largura): abaixo disso é letra, não reta. */
+const MIN_STRAIGHT_LENGTH = 100;
+/** O caminho percorrido não pode passar de 3% da corda (senão há curva ou vai e volta). */
+const MAX_PATH_RATIO = 1.03;
+/** Maior afastamento da corda aceito: 2% dela, mas nunca menos que 3 unidades de tremor. */
+const MAX_SAG_FRACTION = 0.02;
+const MIN_SAG = 3;
+/**
+ * Perto de um eixo a reta vira exatamente horizontal ou vertical. A horizontal vale até 12 graus,
+ * como já valia (sublinhado, barra de fração e linha de tabela saem tortos e a pessoa quer plano).
+ * A vertical vale até 3 graus: ela antes nunca era corrigida, e uma reta inclinada de propósito
+ * não pode ficar em pé.
+ */
+const HORIZONTAL_SNAP = (12 * Math.PI) / 180;
+const VERTICAL_SNAP = (3 * Math.PI) / 180;
+
 export function straightenStroke(points: readonly HandwritingPoint[]): HandwritingPoint[] {
   if (points.length < 3) return [...points];
-  const smoothed = [...points];
-  const first = smoothed[0];
-  const last = smoothed.at(-1);
-  if (!first || !last) return smoothed;
-  const width = Math.abs(last.x - first.x);
-  const angle = Math.atan2(last.y - first.y, last.x - first.x);
-  const maxCorrection = (12 * Math.PI) / 180;
-  if (width < 80 || Math.abs(angle) > maxCorrection) return smoothed;
-  const height = last.y - first.y;
-  const length = Math.hypot(width, height);
-  const maxDeviation = smoothed.reduce((max, point) => {
-    const deviation = Math.abs(
-      (height * (point.x - first.x) - (last.x - first.x) * (point.y - first.y)) / length,
-    );
-    return Math.max(max, deviation);
-  }, 0);
-  if (maxDeviation > 10) return smoothed;
-  const center = smoothed[Math.floor(smoothed.length / 2)] ?? first;
-  return smoothed.map((point) => rotatePoint(point, center, -angle * 0.88));
+  const first = points[0]!;
+  const last = points.at(-1)!;
+  const chord = Math.hypot(last.x - first.x, last.y - first.y);
+  if (chord < MIN_STRAIGHT_LENGTH) return [...points];
+  const ux = (last.x - first.x) / chord;
+  const uy = (last.y - first.y) / chord;
+  let pathLength = 0;
+  let sag = 0;
+  for (let index = 1; index < points.length; index += 1) {
+    const point = points[index]!;
+    const before = points[index - 1]!;
+    pathLength += Math.hypot(point.x - before.x, point.y - before.y);
+    sag = Math.max(sag, Math.abs(uy * (point.x - first.x) - ux * (point.y - first.y)));
+  }
+  if (pathLength > chord * MAX_PATH_RATIO || sag > Math.max(MIN_SAG, chord * MAX_SAG_FRACTION))
+    return [...points];
+
+  let dirX = ux;
+  let dirY = uy;
+  const angle = Math.atan2(uy, ux);
+  const axis = Math.round(angle / (Math.PI / 2)) * (Math.PI / 2);
+  const horizontal = axis === 0 || Math.abs(axis) === Math.PI;
+  if (Math.abs(angle - axis) <= (horizontal ? HORIZONTAL_SNAP : VERTICAL_SNAP)) {
+    dirX = Math.cos(axis);
+    dirY = Math.sin(axis);
+  }
+  // A reta passa pelo meio da corda: os extremos se mexem o mínimo possível.
+  const startX = (first.x + last.x) / 2 - (dirX * chord) / 2;
+  const startY = (first.y + last.y) / 2 - (dirY * chord) / 2;
+  let along = 0;
+  return points.map((point, index) => {
+    if (index === 0) along = 0;
+    else if (index === points.length - 1) along = chord;
+    else {
+      const t = (point.x - startX) * dirX + (point.y - startY) * dirY;
+      // nunca volta: o tremor não pode dobrar a reta sobre si mesma
+      along = Math.min(chord, Math.max(along, t));
+    }
+    return { ...point, x: startX + dirX * along, y: startY + dirY * along };
+  });
 }
 
 export type LiveStabilizerOptions = {

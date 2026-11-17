@@ -102,19 +102,15 @@ it("Ctrl+Z desfaz e Ctrl+Shift+Z refaz", () => {
 it("restaura a cor e a largura ao alternar entre caneta e marca-texto", () => {
   renderStudio();
   const tool = (name: string) => screen.getByRole("button", { name });
-  // As cores aparecem no painel de opções e na barra de cores rápidas: o painel é o alvo aqui.
+  // As cores ficam apenas na paleta encaixável, separada das opções de espessura.
   const ink = (name: string) =>
-    within(document.querySelector<HTMLElement>(".handwriting-ink-options")!).getByRole("button", {
-      name,
-    });
-  const quick = (name: string) =>
     within(screen.getByRole("group", { name: "Cores rápidas" })).getByRole("button", { name });
   const width = () =>
     screen.getByRole("slider", { name: "Espessura do pincel" }) as HTMLInputElement;
   fireEvent.click(tool("Caneta"));
   fireEvent.click(tool("Caneta"));
   fireEvent.click(ink("Tinta Roxo"));
-  expect(quick("Tinta Roxo").getAttribute("aria-pressed")).toBe("true");
+  expect(ink("Tinta Roxo").getAttribute("aria-pressed")).toBe("true");
   fireEvent.change(width(), { target: { value: "31" } });
   fireEvent.click(tool("Marca-texto"));
   fireEvent.click(tool("Marca-texto"));

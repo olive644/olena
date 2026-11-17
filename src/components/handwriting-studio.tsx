@@ -69,6 +69,8 @@ import { HandwritingHistoryBar } from "./handwriting-history-bar";
 import { HandwritingPaperPicker } from "./handwriting-paper-picker";
 import { HandwritingWritingWindow } from "./handwriting-writing-window";
 import { HandwritingColorDock } from "./handwriting-color-dock";
+import { HandwritingPenMeterPanel } from "./handwriting-pen-meter-panel";
+import { useHandwritingPenMeter } from "./use-handwriting-pen-meter";
 import { HandwritingInkOptions } from "./handwriting-ink-options";
 import { HandwritingSelectionActions } from "./handwriting-selection-actions";
 import { OCR_WORKER_OPTIONS } from "./handwriting-ocr";
@@ -79,6 +81,9 @@ import { cursorColor } from "./handwriting-cursor";
 import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
 import { HandwritingShapeInsert, type InsertKind } from "./handwriting-shape-insert";
 import { predictedTail, withPredictedTail } from "./handwriting-prediction";
+import { denoiseMousePath } from "./handwriting-denoise";
+import { recognizeScribble, scribbleTargets } from "./handwriting-scribble";
+import { isInFoldCorner } from "./handwriting-fold";
 import { compactPoints } from "./handwriting-precision";
 import { useSelectionActions } from "../hooks/use-selection-actions";
 import { useSelectionGesture } from "../hooks/use-selection-gesture";
@@ -306,13 +311,16 @@ export function HandwritingStudio({
   const {
     stabilization,
     shapeSnap,
+    scribbleErase,
     inkPrediction,
     penHoverPreview,
+    penDiagnostics,
     penOnly,
     textAutoCorrect,
     coordinateMeasurements,
     equalCoordinateAxes,
   } = preferences;
+  const penMeter = useHandwritingPenMeter(penDiagnostics);
   const setCoordinateMeasurements = (value: boolean) =>
     changePreference("coordinateMeasurements", value);
   const setEqualCoordinateAxes = (value: boolean) => changePreference("equalCoordinateAxes", value);
@@ -1195,6 +1203,16 @@ export function HandwritingStudio({
         pageText: visibleText,
       });
     }
+    // Camadas vazias não entram na composição: cada canvas do tamanho da folha custa uns milissegundos
+    // por quadro enquanto se escreve. A tinta confirmada fica sempre visível porque o traço é
+    // desenhado direto nela ao soltar a caneta.
+    const emptyLayer = {
+      coordinates: !pageScene.layers.coordinates || pageScene.coordinateSystems.length === 0,
+      text: !pageScene.layers.text || visibleText === "",
+      strokes: false,
+    };
+    for (const [layer, overlay] of canvases)
+      if (overlay) overlay.style.display = emptyLayer[layer] ? "none" : "";
     paintedPageRef.current = {
       scene: pageScene,
       scale: renderScale,
@@ -1238,6 +1256,15 @@ export function HandwritingStudio({
     if (!canvas) return;
     sizePageCanvas(canvas, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
     clearPageCanvas(canvas);
+    // Sem seleção, caixa, laço nem guias a camada não tem o que mostrar: sai da composição.
+    canvas.style.display =
+      !textMode &&
+      (selectedIds.length > 0 ||
+        Boolean(selectionBox) ||
+        Boolean(selectionPath?.length) ||
+        guides.length > 0)
+        ? ""
+        : "none";
     const context = pageContext(canvas);
     if (context && !textMode)
       drawSelectionOverlay(
@@ -1506,13 +1533,16 @@ export function HandwritingStudio({
     liveFrameRef.current = null;
     const overlay = liveCanvasRef.current;
     if (!overlay) return;
+    // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
+    const paintStartedAt = penDiagnostics ? performance.now() : 0;
     clearPageCanvas(overlay);
     const context = pageContext(overlay);
     if (!context) return;
     const stroke = liveStrokeRef.current;
     if (stroke) {
-      drawStroke(context, withPredictedTail(stroke, predictedRef.current));
+      drawStroke(context, withPredictedTail(stroke, predictedRef.current), true);
       if (writingWindowOpen) paintWritingWindowLive(stroke);
+      penMeter.recordPaint(paintStartedAt);
     } else if (eraserCursorRef.current && penHoverPreview) {
       // Apagando: o anel acompanha a borracha até soltar, em vez de sumir ao apertar.
       drawEraserPreview(context, eraserCursorRef.current, eraserRadius());
@@ -1612,7 +1642,7 @@ export function HandwritingStudio({
     context.save();
     context.scale(target.width / writingSize.width, target.height / writingSize.height);
     context.translate(-writingWindowX, -writingWindowY);
-    drawStroke(context, stroke);
+    drawStroke(context, stroke, true);
     context.restore();
   }
 
@@ -1786,6 +1816,7 @@ export function HandwritingStudio({
     if (effectiveTool !== "ruler") liveStrokeRef.current = nextStroke;
     if (effectiveTool === "pen" && event.pointerType === "mouse")
       event.currentTarget.style.cursor = pencilCursor(nextStroke.color, true);
+    if (effectiveTool === "pen" || effectiveTool === "highlighter") penMeter.begin();
     liveStabilizerRef.current =
       stabilization && effectiveTool !== "ruler"
         ? createLiveStabilizer(point, {
@@ -1861,6 +1892,8 @@ export function HandwritingStudio({
       return point;
     });
     const sampleTimes = sampleEvents.map((sample) => sample.timeStamp);
+    if (activeToolRef.current === "pen" || activeToolRef.current === "highlighter")
+      penMeter.recordEvent(event.nativeEvent.timeStamp, sampleEvents.length);
     if (activeToolRef.current === "ruler") {
       const end = points.at(-1);
       if (end)
@@ -1923,8 +1956,15 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     if (!liveStroke) return;
     if (shapeSnappedRef.current) return;
+    // Na dobra do canto não há papel: pontos ali nem entram no traço.
+    const onPaper = sampleEvents.map(
+      (sample) => !isInFoldCorner(bounds, sample.clientX, sample.clientY),
+    );
+    const paperPoints = points.filter((_, index) => onPaper[index]);
+    if (paperPoints.length === 0) return;
+    const paperTimes = sampleTimes.filter((_, index) => onPaper[index]);
     const previous = liveStroke.points.at(-1);
-    const added = (liveStabilizerRef.current?.push(points, sampleTimes) ?? points).reduce<
+    const added = (liveStabilizerRef.current?.push(paperPoints, paperTimes) ?? paperPoints).reduce<
       HandwritingPoint[]
     >((accepted, point) => {
       const lastPoint = accepted.at(-1) ?? previous;
@@ -1939,7 +1979,11 @@ export function HandwritingStudio({
     if (added.length === 0) return;
     liveStroke.points.push(...added);
     predictedRef.current =
-      inkPrediction && (liveStroke.tool === "pen" || liveStroke.tool === "highlighter")
+      // Só a caneta: com mouse e dedo a previsão do navegador erra a direção (posições inteiras,
+      // pouca história) e a ponta desenhada vira um toco duro que some no quadro seguinte.
+      inkPrediction &&
+      event.nativeEvent.pointerType === "pen" &&
+      (liveStroke.tool === "pen" || liveStroke.tool === "highlighter")
         ? predictedTail(
             liveStroke.points,
             (event.nativeEvent.getPredictedEvents?.() ?? []).map((sample) =>
@@ -2084,7 +2128,38 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     liveStrokeRef.current = null;
     if (!liveStroke) return;
-    const settledPoints = settleLiveStroke(liveStroke.points);
+    penMeter.end();
+    const sheet = canvasRef.current;
+    const unitsPerPixel = sheet
+      ? Number(sheet.dataset["pageWidth"] || PAGE_WIDTH) /
+        Math.max(1, sheet.getBoundingClientRect().width)
+      : 1;
+    const settledRaw = settleLiveStroke(liveStroke.points);
+    // Rabiscar sobre a escrita com a caneta apaga os traços de baixo. Só vale se o zigue-zague
+    // cobre tinta que já existe; em lugar vazio ele fica como um traço comum.
+    if (
+      scribbleErase &&
+      liveStroke.tool === "pen" &&
+      !liveStroke.dash &&
+      !shapeSnappedRef.current
+    ) {
+      const scribble = recognizeScribble(settledRaw);
+      const erased = scribble
+        ? scribbleTargets(settledRaw, strokes, scribble.reach, liveStroke.id)
+        : [];
+      if (erased.length > 0) {
+        clearLive();
+        recentLinesRef.current = [];
+        const gone = new Set(erased);
+        setStrokes((current) => current.filter((stroke) => !gone.has(stroke.id)));
+        return;
+      }
+    }
+    // Mouse e dedo informam pixels inteiros: o degrau é alisado ao soltar (a caneta não precisa).
+    const settledPoints =
+      liveStroke.dynamics === "simulated" && !shapeSnappedRef.current
+        ? denoiseMousePath(settledRaw, unitsPerPixel)
+        : settledRaw;
     const points = compactPoints(
       (stabilization && !shapeSnappedRef.current
         ? straightenStroke(settledPoints)
@@ -2709,7 +2784,27 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     liveStrokeRef.current = null;
     if (liveStroke) {
-      const points = stabilization ? straightenStroke(liveStroke.points) : liveStroke.points;
+      penMeter.end();
+      if (scribbleErase && liveStroke.tool === "pen" && !liveStroke.dash) {
+        const scribble = recognizeScribble(liveStroke.points);
+        const erased = scribble
+          ? scribbleTargets(liveStroke.points, strokes, scribble.reach, liveStroke.id)
+          : [];
+        if (erased.length > 0) {
+          clearLive();
+          const gone = new Set(erased);
+          setStrokes((current) => current.filter((stroke) => !gone.has(stroke.id)));
+          return;
+        }
+      }
+      const smoothed =
+        liveStroke.dynamics === "simulated"
+          ? denoiseMousePath(
+              liveStroke.points,
+              writingSize.width / Math.max(1, event.currentTarget.getBoundingClientRect().width),
+            )
+          : liveStroke.points;
+      const points = stabilization ? straightenStroke(smoothed) : smoothed;
       commitLiveStroke({ ...liveStroke, points });
       setStrokes((current) => [...current, { ...liveStroke, points }]);
     }
@@ -3812,6 +3907,7 @@ export function HandwritingStudio({
               {tool === "hand" ? uiText(316) : tool === "zoom-in" ? uiText(317) : uiText(318)}
             </span>
           )}
+          {penDiagnostics && <HandwritingPenMeterPanel meter={penMeter.meter} sheet={canvasRef} />}
           <div
             data-page-turn={pageTurn ?? undefined}
             data-paper-color={paperColor}

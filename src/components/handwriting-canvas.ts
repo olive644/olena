@@ -238,7 +238,8 @@ export function drawCoverMask(context: CanvasRenderingContext2D, stroke: Stroke)
   context.restore();
 }
 
-export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
+/** `live`: o traço ainda está sendo feito (a ponta dele é a posição atual da caneta). */
+export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke, live = false) {
   const first = stroke.points[0];
   if (!first) return;
   context.save();
@@ -285,12 +286,12 @@ export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
   }
   if (stroke.points.length === 1) {
     context.beginPath();
-    context.arc(first.x, first.y, strokeRadii(stroke, stroke.points)[0]!, 0, Math.PI * 2);
+    context.arc(first.x, first.y, strokeRadii(stroke, stroke.points, { live })[0]!, 0, Math.PI * 2);
     context.fill();
     context.restore();
     return;
   }
-  const outline = strokeOutline(stroke.points, strokeRadii(stroke, stroke.points));
+  const outline = strokeOutline(stroke.points, strokeRadii(stroke, stroke.points, { live }));
   traceOutline(context, outline);
   context.fill("nonzero");
   if (stroke.brush === "soft") {

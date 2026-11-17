@@ -32,9 +32,11 @@ export async function streamHelena(
 ): Promise<HelenaResponse> {
   if (request.privacy?.consent !== true || request.privacy.retention !== "none")
     throw new HelenaClientError("invalid_request", "Autorize o envio primeiro.");
+  // O resumo tem 55 s no servidor; o cliente espera um pouco mais para ver a resposta final.
+  const limit = request.capability === "summarize" ? 58_000 : 55_000;
   const signal = options.signal
-    ? AbortSignal.any([options.signal, AbortSignal.timeout(55_000)])
-    : AbortSignal.timeout(55_000);
+    ? AbortSignal.any([options.signal, AbortSignal.timeout(limit)])
+    : AbortSignal.timeout(limit);
   const response = await (options.fetcher ?? fetch)(HELENA_ENDPOINT, {
     method: "POST",
     credentials: "same-origin",

@@ -18,6 +18,12 @@ describe("ponta prevista do traço", () => {
     expect(predictedTail([], [pt(1, 1)])).toEqual([]);
   });
 
+  it("descarta a previsão que desvia mais de uns 45 graus da direção do traço", () => {
+    // um toco duro virado para um lado qualquer: era o que aparecia na ponta ao escrever devagar
+    expect(predictedTail(line, [pt(126, 112)])).toEqual([]);
+    expect(predictedTail(line, [pt(125, 100), pt(129, 119)])).toHaveLength(1);
+  });
+
   it("mantém os pontos que seguem a direção do traço, com a pressão do último ponto", () => {
     const tail = predictedTail(line, [pt(126, 100, 0.9), pt(132, 100, 0.9)]);
     expect(tail).toHaveLength(2);

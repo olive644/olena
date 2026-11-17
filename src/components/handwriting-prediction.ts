@@ -40,8 +40,13 @@ export function predictedTail(
     const step = { x: point.x - anchor.x, y: point.y - anchor.y };
     const stepLength = Math.hypot(step.x, step.y);
     if (stepLength === 0) continue;
-    // Um ponto que volta contra a direção do traço é ruído da previsão.
-    if (headingLength > 0.5 && heading.x * step.x + heading.y * step.y < 0) break;
+    // Um ponto que não segue a direção do traço (volta, ou desvia mais de ~45 graus) é ruído da
+    // previsão: desenhado, vira um toco duro virado para um lado qualquer.
+    if (
+      headingLength > 0.5 &&
+      heading.x * step.x + heading.y * step.y < headingLength * stepLength * 0.7
+    )
+      break;
     length += stepLength;
     if (length > MAX_PREDICTED_LENGTH) break;
     tail.push({ ...point, pressure: last.pressure });

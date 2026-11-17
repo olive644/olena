@@ -1899,7 +1899,8 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
 .handwriting-color-dock {
   position: absolute;
   inset: 0 auto auto 0;
-  z-index: 7;
+  /* Acima do painel de opções: no celular ele cobria as últimas cores e o conta-gotas. */
+  z-index: 40;
   display: flex;
   flex-direction: column;
   width: 52px;
@@ -2897,4 +2898,33 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
   display: none;
   width: 0;
   height: 0;
+}
+
+/* Medidor da caneta (diagnóstico opcional): fixo na tela, sem ocupar lugar na folha nem receber toques. */
+.handwriting-pen-meter {
+  position: fixed;
+  top: 96px;
+  left: 8px;
+  z-index: 60;
+  display: grid;
+  gap: 2px;
+  max-width: min(320px, calc(100vw - 16px));
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font:
+    600 11px/1.35 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.handwriting-pen-meter strong {
+  font-size: 12px;
+}
+.handwriting-pen-meter [data-slow] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
 }

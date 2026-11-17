@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { activateHandwritingPen } from "./notebook-helpers";
+import { activateHandwritingPen, openNotebooksView } from "./notebook-helpers";
 
 test("exportar PDF permanece disponível dentro da folha", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Fluxo de desenho verificado no desktop.");
@@ -9,10 +9,7 @@ test("exportar PDF permanece disponível dentro da folha", async ({ page }, test
     window.addEventListener("beforeprint", () => undefined);
   });
   await page.goto("/");
-  await page
-    .getByRole("navigation", { name: "Navegação principal" })
-    .getByRole("button", { name: "Cadernos", exact: true })
-    .click();
+  await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByLabel("Nome", { exact: true }).fill("Caderno de teste");
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();

@@ -50,7 +50,7 @@ export async function* readModelStream(response: Response, signal?: AbortSignal)
     !response.headers.get("Content-Type")?.includes("text/event-stream")
   ) {
     await response.body?.cancel();
-    throw new Error("Streaming provider unavailable");
+    throw new Error(`Streaming provider unavailable (${response.status})`);
   }
   let length = 0;
   for await (const data of readEventStream(response.body, signal)) {

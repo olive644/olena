@@ -1209,6 +1209,7 @@ produto.
 4. Criar e marcar Hábitos diários.
 5. Escrever, desenhar ou anexar uma digitalização nos Cadernos.
 6. Guardar links, textos e flashcards por matéria na Biblioteca.
+   Na aba Resumo da pasta, o "Resumo automático" (`src/domain/pdf-summary/`) resume PDF e texto no aparelho, sem IA e sem rede; "Gerar com a Olena" é o caminho com IA.
 7. Revisar flashcards, responder Quizzes, completar Bingos e acompanhar metas em Praticar.
 8. Praticar escuta em rodadas curtas com voz natural (Cloudflare Workers AI) e fallback do dispositivo.
 9. Criar uma Sala online e sincronizar lobby e rodada entre dispositivos.
