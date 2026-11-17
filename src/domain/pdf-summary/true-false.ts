@@ -162,16 +162,34 @@ function definitionSwap(text: string, context: FalseContext): string | undefined
   return `${own.term} ${own.verb} ${rest}.`;
 }
 
-const MAKERS = [definitionSwap, numberSwap, negate, opposite] as const;
+export type FalseKind = "definition" | "number" | "negation" | "opposite";
 
-/** Uma versão falsa da frase, ou undefined se nenhum gerador conseguiu mudá-la com segurança. */
-export function falseVersion(text: string, context: FalseContext): string | undefined {
+const MAKERS: readonly (readonly [
+  FalseKind,
+  (text: string, context: FalseContext) => string | undefined,
+])[] = [
+  ["definition", definitionSwap],
+  ["number", numberSwap],
+  ["negation", negate],
+  ["opposite", opposite],
+];
+
+/** Uma versão falsa da frase e o tipo de troca usado, ou undefined se nenhuma foi segura. */
+export function falseVariant(
+  text: string,
+  context: FalseContext,
+): { text: string; kind: FalseKind } | undefined {
   for (let step = 0; step < MAKERS.length; step += 1) {
-    const maker = MAKERS[(context.index + step) % MAKERS.length]!;
+    const [kind, maker] = MAKERS[(context.index + step) % MAKERS.length]!;
     const result = maker(text, context);
-    if (result && result !== text) return result;
+    if (result && result !== text) return { text: result, kind };
   }
   return undefined;
+}
+
+/** Só o texto da versão falsa. */
+export function falseVersion(text: string, context: FalseContext): string | undefined {
+  return falseVariant(text, context)?.text;
 }
 
 const FUNCTION_WORDS_PT = new Set([

@@ -3,6 +3,11 @@ import { createPortal } from "react-dom";
 import { uiText } from "../i18n/runtime";
 import type { Flashcard, FlashcardRating } from "../domain/workspace";
 import { toDateKey } from "../domain/workspace";
+import {
+  FEEDBACK_REASONS,
+  type FeedbackEvent,
+  type FeedbackReason,
+} from "../domain/flashcard-feedback";
 import { PaperArrow } from "./paper-arrow";
 import { PaperCloseIcon } from "./paper-close-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
@@ -20,6 +25,14 @@ export function truthOf(back: string): boolean | undefined {
   return undefined;
 }
 type Phase = "study" | "retry" | "done";
+
+const REASON_LABELS: Record<FeedbackReason, () => string> = {
+  nonsense: () => uiText("Sem sentido"),
+  obvious: () => uiText("Óbvia demais"),
+  "actually-true": () => uiText("Na verdade é verdadeira"),
+  grammar: () => uiText("Erro de gramática"),
+  loose: () => uiText("Frase solta"),
+};
 
 const TRUE_LABELS = { pt: "Verdadeiro.", en: "True." } as const;
 const FALSE_LABELS = { pt: "Falso. O texto diz:", en: "False. The text says:" } as const;
@@ -52,6 +65,7 @@ export function FlashcardStudy({
   sourceTitle,
   onReview,
   onDiscard,
+  onFeedback,
   onEdit,
   onClose,
 }: {
@@ -62,6 +76,8 @@ export function FlashcardStudy({
   onReview: (id: string, rating: FlashcardRating, reviewedOn: string) => void;
   /** Exclui o cartão do baralho (afirmação ruim). */
   onDiscard: (id: string) => void;
+  /** Sinal de qualidade do cartão (aceito, editado ou descartado com motivo). */
+  onFeedback?: (id: string, event: FeedbackEvent) => void;
   onEdit: (id: string, front: string, back: string) => void;
   onClose: () => void;
 }) {
@@ -84,6 +100,7 @@ export function FlashcardStudy({
   const [discarded, setDiscarded] = useState<string[]>([]);
   const [edits, setEdits] = useState<Record<string, { front: string; back: string }>>({});
   const [editing, setEditing] = useState(false);
+  const [reporting, setReporting] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const proceedButton = useRef<HTMLButtonElement>(null);
 
@@ -103,6 +120,7 @@ export function FlashcardStudy({
       if (saved.current.has(answer.id)) continue;
       saved.current.add(answer.id);
       onReview(answer.id, answer.right ? "good" : "again", today);
+      onFeedback?.(answer.id, { type: "kept" });
     }
   }
   function leave() {
@@ -125,6 +143,7 @@ export function FlashcardStudy({
   }
   function advance(next: Answer[]) {
     setFlipped(false);
+    setReporting(false);
     if (position + 1 < queue.length) {
       setPosition(position + 1);
       return;
@@ -132,8 +151,10 @@ export function FlashcardStudy({
     finishPass(next);
   }
   /** Afirmação ruim: sai do baralho para sempre e a sessão segue sem ela. */
-  function discard() {
+  function discard(reason?: FeedbackReason) {
     if (phase !== "study" || !current) return;
+    onFeedback?.(current.id, reason ? { type: "discarded", reason } : { type: "discarded" });
+    setReporting(false);
     onDiscard(current.id);
     setDiscarded([...discarded, current.id]);
     // se o cartão já tinha sido respondido nesta tela (gabarito aberto), essa resposta some
@@ -161,6 +182,7 @@ export function FlashcardStudy({
       back = String(data.get("back") ?? "").trim();
       if (!back) return;
     }
+    onFeedback?.(current.id, { type: "edited" });
     onEdit(current.id, front, back);
     setEdits({ ...edits, [current.id]: { front, back } });
     setEditing(false);
@@ -416,13 +438,32 @@ export function FlashcardStudy({
                 : uiText("Toque no cartão para virar")}
             </p>
           )}
-          {!editing && (
+          {!editing && !reporting && (
             <div className="flashcard-study__tools">
               <button type="button" onClick={() => setEditing(true)}>
                 {uiText("Editar cartão")}
               </button>
-              <button type="button" onClick={discard}>
+              <button type="button" onClick={() => setReporting(true)}>
                 {judged ? uiText("Afirmação ruim") : uiText("Cartão ruim")}
+              </button>
+            </div>
+          )}
+          {!editing && reporting && (
+            <div
+              className="flashcard-study__tools"
+              role="group"
+              aria-label={uiText("Por que está ruim?")}
+            >
+              {FEEDBACK_REASONS.map((reason) => (
+                <button key={reason} type="button" onClick={() => discard(reason)}>
+                  {REASON_LABELS[reason]()}
+                </button>
+              ))}
+              <button type="button" onClick={() => discard()}>
+                {uiText("Sem motivo")}
+              </button>
+              <button type="button" onClick={() => setReporting(false)}>
+                {uiText("Cancelar")}
               </button>
             </div>
           )}

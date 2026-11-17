@@ -6,6 +6,7 @@ import {
   State,
   type Card as FsrsCard,
 } from "ts-fsrs";
+import { CARD_ORIGINS } from "./flashcard-feedback";
 import type { Flashcard, FlashcardRating } from "./workspace";
 
 // Agendamento FSRS (biblioteca ts-fsrs, licença MIT). Sem fuzz e sem passos curtos: o app agenda
@@ -101,6 +102,8 @@ export function validFlashcardStudy(value: Record<string, unknown>) {
     ) &&
     (value["ease"] === undefined ||
       (typeof value["ease"] === "number" && value["ease"] >= 1.3 && value["ease"] <= 3.5)) &&
+    (value["origin"] === undefined ||
+      (CARD_ORIGINS as readonly unknown[]).includes(value["origin"])) &&
     (value["stability"] === undefined ||
       (typeof value["stability"] === "number" &&
         Number.isFinite(value["stability"]) &&

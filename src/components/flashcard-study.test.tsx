@@ -30,6 +30,7 @@ function setup(cards: Flashcard[] = deck) {
   const handlers = {
     onReview: vi.fn(),
     onDiscard: vi.fn(),
+    onFeedback: vi.fn(),
     onEdit: vi.fn(),
     onClose: vi.fn(),
   };
@@ -97,6 +98,7 @@ describe("afirmação ruim e edição", () => {
   it("exclui a afirmação do baralho e a sessão segue sem ela", () => {
     const { onDiscard, onReview } = setup();
     fireEvent.click(screen.getByRole("button", { name: "Afirmação ruim" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sem motivo" }));
     expect(onDiscard).toHaveBeenCalledWith("a");
     // o cartão 2 passa a ser o único
     expect(screen.getByText("O ENIAC foi concluído em 1952.")).toBeTruthy();
@@ -111,6 +113,7 @@ describe("afirmação ruim e edição", () => {
   it("excluir o último cartão encerra a rodada sem quebrar", () => {
     const { onDiscard } = setup([deck[0]!]);
     fireEvent.click(screen.getByRole("button", { name: "Afirmação ruim" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sem motivo" }));
     expect(onDiscard).toHaveBeenCalledWith("a");
     expect(screen.getByText(/Excelente trabalho|Bom estudo/)).toBeTruthy();
   });
@@ -119,6 +122,7 @@ describe("afirmação ruim e edição", () => {
     const { onReview } = setup();
     fireEvent.click(screen.getByRole("button", { name: "Falso" }));
     fireEvent.click(screen.getByRole("button", { name: "Afirmação ruim" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sem motivo" }));
     fireEvent.click(screen.getByRole("button", { name: "Verdadeiro" }));
     fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
     // sobrou só o cartão 2 (falso), respondido verdadeiro: errou
@@ -155,5 +159,36 @@ describe("afirmação ruim e edição", () => {
     fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
     expect(onEdit).not.toHaveBeenCalled();
     expect(screen.getByText("O ENIAC foi concluído em 1945.")).toBeTruthy();
+  });
+
+  it("pergunta o motivo antes de excluir e registra o sinal", () => {
+    const { onFeedback, onDiscard } = setup();
+    fireEvent.click(screen.getByRole("button", { name: "Afirmação ruim" }));
+    expect(onDiscard).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Na verdade é verdadeira" }));
+    expect(onFeedback).toHaveBeenCalledWith("a", { type: "discarded", reason: "actually-true" });
+    expect(onDiscard).toHaveBeenCalledWith("a");
+  });
+
+  it("dá para excluir sem motivo ou desistir", () => {
+    const { onFeedback, onDiscard } = setup();
+    fireEvent.click(screen.getByRole("button", { name: "Afirmação ruim" }));
+    fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
+    expect(onDiscard).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Afirmação ruim" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sem motivo" }));
+    expect(onFeedback).toHaveBeenCalledWith("a", { type: "discarded" });
+  });
+
+  it("registra edição e cartão aceito", () => {
+    const { onFeedback } = setup();
+    fireEvent.click(screen.getByRole("button", { name: "Editar cartão" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar" }));
+    expect(onFeedback).toHaveBeenCalledWith("a", { type: "edited" });
+    fireEvent.click(screen.getByRole("button", { name: "Verdadeiro" }));
+    fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Falso" }));
+    fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+    expect(onFeedback).toHaveBeenCalledWith("b", { type: "kept" });
   });
 });

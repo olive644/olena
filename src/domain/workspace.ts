@@ -1,3 +1,4 @@
+import type { CardOrigin } from "./flashcard-feedback.js";
 import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences.js";
 import { validLanguageAttempt, type LanguageAttempt } from "./language-progress.js";
 import type { OnboardingConfiguration } from "./onboarding-configuration.js";
@@ -166,6 +167,8 @@ export type Flashcard = {
   deck?: string;
   noteId?: string;
   ease?: number;
+  /** Como o cartão automático foi feito (para saber qual gerador erra mais). */
+  origin?: CardOrigin;
   /** Memória FSRS: estabilidade em dias e dificuldade de 1 a 10. */
   stability?: number;
   difficulty?: number;
@@ -422,6 +425,7 @@ export type WorkspaceAction =
       noteId?: string;
       materialId?: string;
       sourcePage?: number;
+      origin?: CardOrigin;
       subjectId: string;
       front: string;
       back: string;
@@ -1199,6 +1203,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             ...(action.noteId ? { noteId: action.noteId } : {}),
             ...(action.materialId ? { materialId: action.materialId } : {}),
             ...(action.sourcePage ? { sourcePage: action.sourcePage } : {}),
+            ...(action.origin ? { origin: action.origin } : {}),
             subjectId: action.subjectId,
             front: action.front,
             back: action.back,

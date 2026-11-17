@@ -10,6 +10,7 @@ import { ShelfToolIcon } from "../components/shelf-tool-icon";
 import { PaperDigits } from "../components/paper-digits";
 import { LibraryDialog } from "../components/library-dialog";
 import { FlashcardStudy } from "../components/flashcard-study";
+import { noteFeedback, type CardOrigin } from "../domain/flashcard-feedback";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useRef, useState, type Dispatch, type ReactNode } from "react";
 import {
@@ -603,8 +604,14 @@ export function LibraryFolderContents({
     setCardsBusy(true);
     try {
       const { flashcardsFromPdf, flashcardsFromPlainText } = await import("../domain/pdf-summary");
-      const made: { sourceId: string; deck: string; front: string; back: string; page: number }[] =
-        [];
+      const made: {
+        sourceId: string;
+        deck: string;
+        front: string;
+        back: string;
+        page: number;
+        kind: CardOrigin;
+      }[] = [];
       for (const source of selectedSources) {
         const fileTitle = source.title.replace(/\.[^.]+$/, "");
         const cards = await readSource(source, fileTitle, {
@@ -630,6 +637,7 @@ export function LibraryFolderContents({
               front: card.front,
               back: card.back,
               page: card.page,
+              kind: card.kind,
             });
         }
       }
@@ -640,6 +648,7 @@ export function LibraryFolderContents({
           deck: card.deck,
           materialId: card.sourceId,
           sourcePage: card.page,
+          origin: card.kind,
           subjectId,
           front: card.front,
           back: card.back,
@@ -803,6 +812,9 @@ export function LibraryFolderContents({
         title={openDeck.title}
         cards={openDeck.cards}
         sourceTitle={openDeck.sourceTitle}
+        onFeedback={(id, event) =>
+          noteFeedback(openDeck.cards.find((item) => item.id === id)?.origin, event)
+        }
         onDiscard={(id) => dispatch({ type: "flashcard/removed", id })}
         onEdit={(id, front, back) => {
           const card = openDeck.cards.find((item) => item.id === id);

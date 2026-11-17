@@ -3968,5 +3968,12 @@
   "Explanation",
   "Save",
   "Source: {0}, page {1}",
-  "Page {0}"
+  "Page {0}",
+  "Why is it bad?",
+  "No reason",
+  "Makes no sense",
+  "Too obvious",
+  "Actually true",
+  "Grammar mistake",
+  "Loose sentence"
 ]
