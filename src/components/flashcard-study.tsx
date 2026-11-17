@@ -54,7 +54,7 @@ export function FlashcardStudy({
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [firstRound, setFirstRound] = useState<Answer[]>([]);
   const [startedAt, setStartedAt] = useState(() => Date.now());
-  const [endedAt, setEndedAt] = useState<number>();
+  const [elapsed, setElapsed] = useState(0);
   const saved = useRef(new Set<string>());
   const [feedback, setFeedback] = useState<{ right: boolean }>();
   const heading = useRef<HTMLHeadingElement>(null);
@@ -96,7 +96,7 @@ export function FlashcardStudy({
       setQueue(wrong);
       setPhase("retry");
     } else {
-      setEndedAt(Date.now());
+      setElapsed(Date.now() - startedAt);
       setPhase("done");
     }
   }
@@ -140,12 +140,10 @@ export function FlashcardStudy({
     saved.current.clear();
     setFirstRound([]);
     setStartedAt(Date.now());
-    setEndedAt(undefined);
+    setElapsed(0);
     begin(ids, 1);
   }
 
-  const answerRef = useRef(answer);
-  answerRef.current = answer;
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
       if (
@@ -153,12 +151,12 @@ export function FlashcardStudy({
         /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName)
       )
         return;
-      if (event.key === "ArrowLeft") answerRef.current(false);
-      if (event.key === "ArrowRight") answerRef.current(true);
+      if (event.key === "ArrowLeft") answer(false);
+      if (event.key === "ArrowRight") answer(true);
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  });
 
   const total = deck.length;
   const scored = firstRound.length || total;
@@ -327,7 +325,7 @@ export function FlashcardStudy({
             </div>
             <div>
               <dt>{uiText("Tempo")}</dt>
-              <dd>{clock((endedAt ?? Date.now()) - startedAt)}</dd>
+              <dd>{clock(elapsed)}</dd>
             </div>
           </dl>
           <ul className="flashcard-study__levels">
