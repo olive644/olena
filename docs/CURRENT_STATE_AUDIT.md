@@ -5421,3 +5421,22 @@ Relato da dona, com gravação de tela: ao escrever devagar com o Fineliner "a p
 - **Gota nos pincéis grossos (B).** A pressão simulada (devagar engrossa) empoçava a Caneta-tinteiro nas pontas de laço e no começo do traço. A faixa da pressão simulada passou a ser por pincel: Caneta-tinteiro 0,45 a 0,58, Pincel macio 0,4 a 0,65, Lápis 0,4 a 0,7; os outros seguem em 0,3 a 0,8. Fineliner e Esferográfica já eram constantes.
 - **Prova.** Testes novos (alisamento: retas em três ângulos e três ritmos, pontos e campos preservados, extremos e canto de um L intactos, laço pequeno sem achatar; previsão que desvia; faixa por pincel; com mouse ou dedo não prevê). Capturas do editor com a escrita lenta de cada pincel antes e depois (serrilhado e bordas caroçudas somem) e da ponta ao vivo com previsão errada (gancho duro some).
 - **Não resolvido e não verificado.** A linha ao vivo ainda mostra o degrau enquanto se arrasta: o alisamento acontece ao soltar. As gotas no topo dos laços da Caneta de caligrafia ficam: ali a largura vem do ângulo da ponta chata, não da velocidade, e na Caneta-tinteiro só diminuíram. A janela de 12 pixels e a tolerância de 1,1 pixel foram escolhidas por conta; uma letra de traço muito pequeno pode encolher um pouco. Só mouse; caneta e dedo não foram testados.
+
+### Rabiscar para apagar, 2026-11-16
+
+Pedido: riscar a escrita em zigue-zague com o pincel apaga o que está por baixo, como em outros apps. Antes de fazer, pesquisei o que eles fazem.
+
+**Pesquisa (o que é fonte e o que não é).**
+
+- Apple Notes (Scribble): rabiscar em zigue-zague sobre a palavra, com a caneta ainda no papel, apaga (fonte: guias de uso do Scribble no iPad).
+- Goodnotes ("Scribble to Erase") e Notewise: apagam todos os traços sob a área rabiscada, os traços inteiros, e têm interruptor nas configurações da caneta ("Pen Gestures"). A queixa mais comum no fórum do Goodnotes é cursiva emendada tomada por rabisco. As páginas de suporte do Goodnotes e do Notion dele não carregaram (403 e página vazia): do Goodnotes tenho só o que está em relatos e na busca.
+- Patente da Microsoft (US 7.551.779): o rabisco precisa cruzar a tinta já escrita, cobrir boa parte da largura do alvo (80% a 120%, conforme o tamanho da palavra) e passar do meio dele; traços rápidos e próximos (até cerca de 1 s) contam como um gesto só. Uma patente anterior (US 5.602.570) conta mudanças de direção do zigue-zague. Os números que não vieram do trecho lido literalmente não foram conferidos.
+
+**O que foi feito** (`handwriting-scribble.ts`, funções puras):
+
+- `recognizeScribble`: zigue-zague com pelo menos 4 voltas de direção ao longo do eixo principal, caixa de diagonal mínima de 36 unidades, caminho de pelo menos 3 vezes a diagonal, e passada mediana de pelo menos metade da extensão (e 10 unidades). A última regra é a que recusa cursiva emendada: laço de letra volta pouco enquanto o traço anda para a frente.
+- `scribbleTargets`: apaga os traços inteiros em que pelo menos 60% do comprimento fica a até 7 a 22 unidades da linha do rabisco (alcance conforme o espaçamento entre passadas). Traço de fundo apagado nunca é alvo. Se o rabisco não cobre tinta nenhuma, ele fica como traço comum (sombreado, hachura).
+- Só com a caneta (não o marca-texto), sem traçado ou pontilhado, na folha e na janela de escrita. Um passo de desfazer devolve tudo (o editor já guarda o estado antes do traço).
+- Preferência nova `scribbleErase` (ligada por padrão) em Configurações do editor, com texto nos dois idiomas.
+- **Prova.** Testes de unidade (rabisco horizontal, vertical e inclinado aceitos; cursiva, onda, reta, círculo, traço curto e três passadas recusados; alcance; quais traços saem). e2e novo: escrever, rabiscar e a palavra some; desfazer a devolve; rabisco em lugar vazio fica; cursiva por cima não apaga; interruptor desligado deixa o rabisco.
+- **Não verificado.** Os limiares (4 voltas, 3 vezes, metade, 60%) são meus: o Goodnotes reconhece cursiva emendada como rabisco, e aqui isso foi testado só com laços regulares. Zigue-zague rápido sobre desenho próprio apaga o desenho (o interruptor serve para isso). Não testei com caneta nem com dedo.

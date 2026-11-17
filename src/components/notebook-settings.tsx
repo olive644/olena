@@ -31,6 +31,13 @@ export function NotebookPreferenceFields({
       [
         ["stabilization", uiText(1843), uiText(1844)],
         ["shapeSnap", uiText(1845), uiText(722)],
+        [
+          "scribbleErase",
+          uiText("Rabiscar para apagar"),
+          uiText(
+            "Risque a escrita em zigue-zague com a caneta para apagar os traços que ficam por baixo. Se apagar sem querer, desfaça.",
+          ),
+        ],
         ["inkPrediction", uiText(1846), uiText(723)],
         ["penHoverPreview", uiText(724), uiText(1847)],
         [

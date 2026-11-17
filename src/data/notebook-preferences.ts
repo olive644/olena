@@ -9,6 +9,7 @@ export const NOTEBOOK_PREFERENCES_KEY = "helena.notebookPreferences.v1";
 export const DEFAULT_NOTEBOOK_PREFERENCES = {
   stabilization: true,
   shapeSnap: true,
+  scribbleErase: true,
   inkPrediction: true,
   penHoverPreview: true,
   penDiagnostics: false,
