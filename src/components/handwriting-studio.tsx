@@ -81,6 +81,7 @@ import { cursorColor } from "./handwriting-cursor";
 import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
 import { HandwritingShapeInsert, type InsertKind } from "./handwriting-shape-insert";
 import { predictedTail, withPredictedTail } from "./handwriting-prediction";
+import { denoiseMousePath } from "./handwriting-denoise";
 import { isInFoldCorner } from "./handwriting-fold";
 import { compactPoints } from "./handwriting-precision";
 import { useSelectionActions } from "../hooks/use-selection-actions";
@@ -1975,7 +1976,11 @@ export function HandwritingStudio({
     if (added.length === 0) return;
     liveStroke.points.push(...added);
     predictedRef.current =
-      inkPrediction && (liveStroke.tool === "pen" || liveStroke.tool === "highlighter")
+      // Só a caneta: com mouse e dedo a previsão do navegador erra a direção (posições inteiras,
+      // pouca história) e a ponta desenhada vira um toco duro que some no quadro seguinte.
+      inkPrediction &&
+      event.nativeEvent.pointerType === "pen" &&
+      (liveStroke.tool === "pen" || liveStroke.tool === "highlighter")
         ? predictedTail(
             liveStroke.points,
             (event.nativeEvent.getPredictedEvents?.() ?? []).map((sample) =>
@@ -2121,7 +2126,17 @@ export function HandwritingStudio({
     liveStrokeRef.current = null;
     if (!liveStroke) return;
     penMeter.end();
-    const settledPoints = settleLiveStroke(liveStroke.points);
+    const sheet = canvasRef.current;
+    const unitsPerPixel = sheet
+      ? Number(sheet.dataset["pageWidth"] || PAGE_WIDTH) /
+        Math.max(1, sheet.getBoundingClientRect().width)
+      : 1;
+    const settledRaw = settleLiveStroke(liveStroke.points);
+    // Mouse e dedo informam pixels inteiros: o degrau é alisado ao soltar (a caneta não precisa).
+    const settledPoints =
+      liveStroke.dynamics === "simulated" && !shapeSnappedRef.current
+        ? denoiseMousePath(settledRaw, unitsPerPixel)
+        : settledRaw;
     const points = compactPoints(
       (stabilization && !shapeSnappedRef.current
         ? straightenStroke(settledPoints)
@@ -2747,7 +2762,14 @@ export function HandwritingStudio({
     liveStrokeRef.current = null;
     if (liveStroke) {
       penMeter.end();
-      const points = stabilization ? straightenStroke(liveStroke.points) : liveStroke.points;
+      const smoothed =
+        liveStroke.dynamics === "simulated"
+          ? denoiseMousePath(
+              liveStroke.points,
+              writingSize.width / Math.max(1, event.currentTarget.getBoundingClientRect().width),
+            )
+          : liveStroke.points;
+      const points = stabilization ? straightenStroke(smoothed) : smoothed;
       commitLiveStroke({ ...liveStroke, points });
       setStrokes((current) => [...current, { ...liveStroke, points }]);
     }

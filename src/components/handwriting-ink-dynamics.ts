@@ -25,6 +25,18 @@ export function hasRealPressure(points: readonly HandwritingPoint[]): boolean {
 // faixa larga deixaria o traço do mouse irregular demais. O meio (0,5) é a pressão antiga.
 const SIMULATED_LOW = 0.3;
 const SIMULATED_HIGH = 0.8;
+/**
+ * Faixa da pressão simulada por pincel. Nos pincéis cuja largura cresce muito com a pressão (a
+ * Caneta-tinteiro triplica), a faixa larga fazia o traço empoçar em gota onde a mão desacelera
+ * (pontas de laço, começo do traço). Eles ganham uma faixa estreita em torno do 0,5 de sempre.
+ */
+export function simulatedPressureRange(brush: string | undefined): readonly [number, number] {
+  if (brush === "ink") return [0.45, 0.58];
+  if (brush === "soft") return [0.4, 0.65];
+  if (brush === "pencil") return [0.4, 0.7];
+  return [SIMULATED_LOW, SIMULATED_HIGH];
+}
+
 // Fração do caminho até a pressão-alvo percorrida a cada ponto, escalada pela velocidade.
 const PRESSURE_RATE = 0.275;
 
@@ -33,7 +45,11 @@ const PRESSURE_RATE = 0.275;
  * então a ponta do traço ao vivo e o traço já pronto recebem os mesmos números. `size` é a
  * distância (em unidades da folha) entre pontos a partir da qual o traço conta como rápido.
  */
-export function simulatedPressures(points: readonly HandwritingPoint[], size: number): number[] {
+export function simulatedPressures(
+  points: readonly HandwritingPoint[],
+  size: number,
+  range: readonly [low: number, high: number] = [SIMULATED_LOW, SIMULATED_HIGH],
+): number[] {
   const reference = Math.max(1, size);
   const result: number[] = [];
   let pressure = 0.5;
@@ -43,7 +59,7 @@ export function simulatedPressures(points: readonly HandwritingPoint[], size: nu
       const point = points[index]!;
       const speed = Math.min(1, Math.hypot(point.x - before.x, point.y - before.y) / reference);
       // Parado ou devagar (speed perto de 0): vai para a pressão alta. Rápido: vai para a baixa.
-      const target = SIMULATED_LOW + (SIMULATED_HIGH - SIMULATED_LOW) * (1 - speed);
+      const target = range[0] + (range[1] - range[0]) * (1 - speed);
       pressure += (target - pressure) * Math.min(1, speed * PRESSURE_RATE + 0.05);
     }
     result.push(pressure);

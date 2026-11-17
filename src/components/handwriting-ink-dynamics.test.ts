@@ -3,6 +3,7 @@ import type { HandwritingPoint } from "../domain/handwriting";
 import { strokeRadii } from "./handwriting-ink";
 import {
   hasRealPressure,
+  simulatedPressureRange,
   simulatedPressures,
   taperFactors,
   usesSimulatedWidth,
@@ -60,6 +61,38 @@ describe("pressão simulada pela velocidade", () => {
     expect(simulatedPressures([point(1, 1)], 10)).toEqual([0.5]);
     const still = simulatedPressures([point(1, 1), point(1, 1), point(1, 1)], 0);
     expect(still.every(Number.isFinite)).toBe(true);
+  });
+});
+
+describe("faixa da pressão simulada por pincel", () => {
+  it("a Caneta-tinteiro tem faixa estreita para não empoçar em gota ao desacelerar", () => {
+    const [low, high] = simulatedPressureRange("ink");
+    expect(high - low).toBeLessThan(0.2);
+    expect(low).toBeLessThanOrEqual(0.5);
+    expect(high).toBeGreaterThanOrEqual(0.5);
+    const [defaultLow, defaultHigh] = simulatedPressureRange("calligraphy");
+    expect(defaultHigh - defaultLow).toBeCloseTo(0.5, 5);
+  });
+
+  it("a faixa limita a pressão, devagar e rápido", () => {
+    const range = simulatedPressureRange("ink");
+    for (const step of [0.2, 3, 30]) {
+      for (const value of simulatedPressures(line(80, step), 10, range)) {
+        expect(value).toBeGreaterThanOrEqual(range[0] - 1e-9);
+        expect(value).toBeLessThanOrEqual(range[1] + 1e-9);
+      }
+    }
+  });
+
+  it("com a faixa estreita o traço engorda menos ao desacelerar que antes", () => {
+    const slow = line(60, 0.5);
+    const ink = { tool: "pen", brush: "ink", width: 5, dynamics: "simulated" } as const;
+    const calligraphy = { ...ink, brush: "calligraphy" } as const;
+    const slowInk = strokeRadii(ink, slow)[40]!;
+    const fastInk = strokeRadii(ink, line(60, 12))[40]!;
+    // a razão devagar/rápido da tinteiro é bem menor que a de uma faixa larga (0,8 contra 0,3)
+    expect(slowInk / fastInk).toBeLessThan((0.5 + 0.8 * 3) / (0.5 + 0.3 * 3));
+    expect(strokeRadii(calligraphy, slow)).toHaveLength(60);
   });
 });
 
