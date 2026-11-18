@@ -3995,5 +3995,8 @@
   "Confirmar: zerar contadores e filtro",
   "Zerar contadores e filtro",
   "{0} cartões fracos ficaram de fora.",
-  "Assinatura Olena"
+  "Assinatura Olena",
+  "Questão da prova",
+  "As questões dessa prova dependem de figuras ou gráficos que o texto do PDF não traz.",
+  "Essa prova não traz o gabarito, então não dá para saber as respostas. Envie o gabarito no mesmo arquivo ou como outra fonte selecionada junto."
 ]

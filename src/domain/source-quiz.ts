@@ -131,7 +131,7 @@ export function parseSourceQuiz(content: string): SourceQuiz | undefined {
       !("questions" in value) ||
       !Array.isArray(value.questions) ||
       value.questions.length === 0 ||
-      value.questions.length > 15
+      value.questions.length > 100
     )
       return;
     if (!("difficulty" in value) || !["easy", "medium", "hard"].includes(String(value.difficulty)))
@@ -145,7 +145,7 @@ export function parseSourceQuiz(content: string): SourceQuiz | undefined {
         "options" in q &&
         Array.isArray(q.options) &&
         q.options.length >= 3 &&
-        q.options.length <= 4 &&
+        q.options.length <= 5 &&
         q.options.every((o: unknown) => typeof o === "string") &&
         new Set(q.options).size === q.options.length &&
         "answer" in q &&

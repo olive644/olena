@@ -3,8 +3,15 @@ import type { FalseKind } from "./pdf-summary/true-false";
 // Fase A do ciclo de qualidade: contadores por tipo de cartão, só neste aparelho e sem nenhum texto.
 // Servem para saber qual gerador de afirmação falha mais (descartes e motivos) e ajustar as regras.
 
-export const CARD_ORIGINS = ["true", "definition", "number", "negation", "opposite"] as const;
-export type CardOrigin = "true" | FalseKind;
+export const CARD_ORIGINS = [
+  "true",
+  "definition",
+  "number",
+  "negation",
+  "opposite",
+  "exam",
+] as const;
+export type CardOrigin = "true" | FalseKind | "exam";
 
 export const FEEDBACK_REASONS = [
   "nonsense",

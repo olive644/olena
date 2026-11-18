@@ -496,4 +496,71 @@ describe("resumo automático no aparelho", () => {
     fireEvent.click(within(study).getByRole("button", { name: "Continuar" }));
     expect(screen.queryByRole("region", { name: "ENIAC" })).toBeNull();
   });
+
+  const PROVA = [
+    "Prova de Ciências",
+    "QUESTÃO 1\nQual é o processo pelo qual as plantas produzem glicose usando luz?\nA) Respiração celular\nB) Fotossíntese\nC) Fermentação\nD) Digestão",
+    "QUESTÃO 2\nO ENIAC foi concluído em qual ano?\nA) 1939\nB) 1945\nC) 1957\nD) 1969",
+    "QUESTÃO 3\nQual gás as plantas liberam na fotossíntese?\nA) Oxigênio\nB) Nitrogênio\nC) Hélio\nD) Metano",
+    "QUESTÃO 4\nQual é o estado da água a 25 graus Celsius ao nível do mar?\nA) Sólido\nB) Líquido\nC) Gasoso\nD) Plasma",
+  ].join("\n\n");
+  const GABARITO = "\n\nGABARITO\n1-B 2-B 3-A 4-B";
+
+  it("transforma uma prova com gabarito em flashcards de verdadeiro ou falso", async () => {
+    const { dispatch, dialog } = openFlashcards(PROVA + GABARITO);
+    fireEvent.click(within(dialog).getByRole("button", { name: "Flashcards automáticos" }));
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    const added = dispatch.mock.calls
+      .map(([action]) => action)
+      .filter((action) => action.type === "flashcard/added");
+    expect(added).toHaveLength(8);
+    expect(
+      added.every((action) => action.type === "flashcard/added" && action.origin === "exam"),
+    ).toBe(true);
+    expect(
+      added.some(
+        (action) =>
+          action.type === "flashcard/added" &&
+          action.back === "Verdadeiro. Gabarito: B) Fotossíntese",
+      ),
+    ).toBe(true);
+  });
+
+  it("explica quando a prova não traz o gabarito, sem inventar respostas", async () => {
+    const { dispatch, dialog } = openFlashcards(PROVA);
+    fireEvent.click(within(dialog).getByRole("button", { name: "Flashcards automáticos" }));
+    expect(await screen.findByRole("alert")).toHaveProperty(
+      "textContent",
+      "Essa prova não traz o gabarito, então não dá para saber as respostas. Envie o gabarito no mesmo arquivo ou como outra fonte selecionada junto.",
+    );
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it("cria o quiz com as questões e o gabarito reais da prova", async () => {
+    const dispatch = vi.fn<(action: WorkspaceAction) => void>();
+    render(
+      <LibraryFolderContents
+        folder={folder}
+        materials={[{ ...source, content: PROVA + GABARITO }]}
+        subjectId="materia-1"
+        dispatch={dispatch}
+        onBack={() => undefined}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Quizzes" }));
+    fireEvent.click(screen.getByRole("button", { name: "Criar quiz" }));
+    const dialog = screen.getByRole("dialog");
+    fireEvent.click(within(dialog).getByRole("checkbox", { name: `Selecionar ${source.title}` }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Quiz automático" }));
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    const action = dispatch.mock.calls[0]![0];
+    if (action.type !== "material/added") throw new Error("ação inesperada");
+    const quiz = JSON.parse(action.content) as {
+      questions: { prompt: string; options: string[]; answer: number; explanation: string }[];
+    };
+    expect(quiz.questions).toHaveLength(4);
+    expect(quiz.questions[0]!.prompt).toContain("glicose usando luz");
+    expect(quiz.questions[0]!.options[quiz.questions[0]!.answer]).toBe("Fotossíntese");
+    expect(quiz.questions[0]!.explanation).toBe("Gabarito: B) Fotossíntese");
+  });
 });

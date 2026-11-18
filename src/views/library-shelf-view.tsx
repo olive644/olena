@@ -5,7 +5,9 @@ import {
   parseSourceQuiz,
   type QuizDifficulty,
   type QuizLength,
+  type SourceQuiz,
 } from "../domain/source-quiz";
+import type { StructuredDocument } from "../domain/pdf-summary/types";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { dataUrlBytes } from "../data/data-url";
 import { streamHelena } from "../data/helena-client";
@@ -364,6 +366,16 @@ function SummaryMarkdown({ content }: { content: string }) {
   return <>{blocks}</>;
 }
 
+/** Mensagem para o erro de uma prova sem gabarito ou só com figuras, ou undefined para outros erros. */
+function examErrorText(error: unknown): string | undefined {
+  if (!(error instanceof Error) || error.name !== "ExamError") return undefined;
+  return (error as Error & { reason?: string }).reason === "needs-figures"
+    ? uiText("As questões dessa prova dependem de figuras ou gráficos que o texto do PDF não traz.")
+    : uiText(
+        "Essa prova não traz o gabarito, então não dá para saber as respostas. Envie o gabarito no mesmo arquivo ou como outra fonte selecionada junto.",
+      );
+}
+
 export function LibraryFolderContents({
   folder,
   materials: folderMaterials,
@@ -624,7 +636,29 @@ export function LibraryFolderContents({
     setQuizBusy(true);
     setQuizError("");
     try {
-      const { flashcardsFromPdf, flashcardsFromPlainText } = await import("../domain/pdf-summary");
+      const { examProblem, examQuizQuestions, flashcardsFromDocument, splitExams } =
+        await import("../domain/pdf-summary");
+      const documents = await readDocuments();
+      const { exams, others } = splitExams(documents);
+      // Prova do usuário: as questões e o gabarito do arquivo, sem reescrever nada.
+      const examLimit = quizLength === "short" ? 10 : quizLength === "long" ? 50 : 20;
+      const fromExams: SourceQuiz["questions"] = [];
+      let problem: Error | undefined;
+      for (const item of exams) {
+        const found = examProblem(item.exam);
+        if (found) {
+          problem ??= found;
+          continue;
+        }
+        const all = examQuizQuestions(item.exam);
+        const step = all.length / Math.min(examLimit, all.length);
+        for (let index = 0; index < Math.min(examLimit, all.length); index += 1)
+          fromExams.push({
+            ...all[Math.floor(index * step)]!,
+            sourceId: item.source.id,
+            sourceTitle: item.source.title,
+          });
+      }
       const facts: {
         front: string;
         back: string;
@@ -632,16 +666,23 @@ export function LibraryFolderContents({
         sourceId: string;
         sourceTitle: string;
       }[] = [];
-      for (const source of selectedSources) {
-        const cards = await readSource(source, source.title, {
-          text: flashcardsFromPlainText,
-          pdf: flashcardsFromPdf,
-        });
+      for (const item of others) {
+        const cards = await flashcardsFromDocument(item.doc);
         facts.push(
-          ...cards.map((card) => ({ ...card, sourceId: source.id, sourceTitle: source.title })),
+          ...cards.map((card) => ({
+            ...card,
+            sourceId: item.source.id,
+            sourceTitle: item.source.title,
+          })),
         );
       }
-      const quiz = buildSourceQuiz(facts, difficulty, quizLength);
+      const generated = facts.length ? buildSourceQuiz(facts, difficulty, quizLength) : undefined;
+      if (problem && fromExams.length === 0 && !generated?.questions.length) throw problem;
+      const quiz: SourceQuiz = {
+        version: 1,
+        difficulty,
+        questions: [...fromExams, ...(generated?.questions ?? [])].slice(0, 100),
+      };
       if (!quiz.questions.length)
         throw new Error(
           uiText(
@@ -663,13 +704,32 @@ export function LibraryFolderContents({
       });
     } catch (error) {
       setQuizError(
-        error instanceof Error ? error.message : uiText("Não foi possível gerar o quiz."),
+        examErrorText(error) ??
+          (error instanceof Error ? error.message : uiText("Não foi possível gerar o quiz.")),
       );
     } finally {
       setQuizBusy(false);
     }
   }
   /** Flashcards automáticos: no aparelho, sem IA, o máximo que o texto sustenta. */
+  /** Lê as fontes selecionadas como documentos, no aparelho (texto, OCR ou PDF). */
+  async function readDocuments() {
+    const { documentFromPdf, documentFromText } = await import("../domain/pdf-summary");
+    const read: {
+      source: (typeof selectedSources)[number];
+      fileTitle: string;
+      doc: StructuredDocument;
+    }[] = [];
+    for (const source of selectedSources) {
+      const fileTitle = source.title.replace(/\.[^.]+$/, "");
+      const doc = await readSource(source, fileTitle, {
+        text: async (text, title) => documentFromText(text, title),
+        pdf: (pdf, options) => documentFromPdf(pdf, options),
+      });
+      read.push({ source, fileTitle, doc });
+    }
+    return read;
+  }
   async function generateAutomaticFlashcards() {
     if (cardsBusy || !selectedSources.length) return;
     setCreating(undefined);
@@ -677,7 +737,8 @@ export function LibraryFolderContents({
     setCardsMessage(undefined);
     setCardsBusy(true);
     try {
-      const { flashcardsFromPdf, flashcardsFromPlainText } = await import("../domain/pdf-summary");
+      const { examFlashcards, examProblem, flashcardsFromDocument, splitExams } =
+        await import("../domain/pdf-summary");
       let hidden = 0;
       const made: {
         sourceId: string;
@@ -687,12 +748,32 @@ export function LibraryFolderContents({
         page: number;
         kind: CardOrigin;
       }[] = [];
-      for (const source of selectedSources) {
-        const fileTitle = source.title.replace(/\.[^.]+$/, "");
-        const cards = await readSource(source, fileTitle, {
-          text: (text, title) => flashcardsFromPlainText(text, title),
-          pdf: (pdf, options) => flashcardsFromPdf(pdf, options),
+      const documents = await readDocuments();
+      const { exams, others } = splitExams(documents);
+      const sets: {
+        source: (typeof selectedSources)[number];
+        fileTitle: string;
+        cards: Awaited<ReturnType<typeof flashcardsFromDocument>>;
+      }[] = [];
+      let problem: Error | undefined;
+      for (const item of exams) {
+        const found = examProblem(item.exam);
+        if (found) problem ??= found;
+        else
+          sets.push({
+            source: item.source,
+            fileTitle: item.fileTitle,
+            cards: examFlashcards(item.exam),
+          });
+      }
+      for (const item of others)
+        sets.push({
+          source: item.source,
+          fileTitle: item.fileTitle,
+          cards: await flashcardsFromDocument(item.doc),
         });
+      if (problem && !sets.some((set) => set.cards.length > 0)) throw problem;
+      for (const { source, fileTitle, cards } of sets) {
         if (cards.length === 0) {
           throw new Error(
             uiText("Não consegui criar flashcards de {0}: o texto tem poucas definições e fatos.", [
@@ -750,7 +831,10 @@ export function LibraryFolderContents({
     } catch (error) {
       setCardsMessage({
         text:
-          error instanceof Error ? error.message : uiText("Não foi possível criar os flashcards."),
+          examErrorText(error) ??
+          (error instanceof Error
+            ? error.message
+            : uiText("Não foi possível criar os flashcards.")),
         error: true,
       });
     } finally {

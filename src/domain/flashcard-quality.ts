@@ -5,7 +5,7 @@ import { CARD_ORIGINS } from "./flashcard-feedback";
 // o usuário costuma descartar ou editar e passa a deixar de fora os parecidos. Não é um modelo de
 // linguagem: usa 14 números por cartão (tipo, tamanho, pontuação...) e nunca guarda o texto.
 
-export const FEATURE_COUNT = 5 + 9;
+export const FEATURE_COUNT = CARD_ORIGINS.length + 9;
 /** Avaliações mínimas antes de o filtro agir. Antes disso ele não esconde nada. */
 export const MIN_SAMPLES = 30;
 /** Chance de rejeição a partir da qual o cartão fica de fora. */
