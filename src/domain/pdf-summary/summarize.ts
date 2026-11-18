@@ -13,6 +13,8 @@ import {
   keyTerms,
   type Definition,
 } from "./facts";
+import type { CardOrigin } from "../flashcard-feedback";
+import { falseVariant, looksLikeStatement, numbersIn, type DefinitionParts } from "./true-false";
 import {
   contentStems,
   countWords,
@@ -1042,4 +1044,106 @@ export async function summarizeDocument(
       ratio,
     },
   };
+}
+
+/** Frente: uma afirmação. Verso: "Verdadeiro." ou "Falso." e a frase do arquivo que explica. */
+export type AutoFlashcard = { front: string; back: string; page: number; kind: CardOrigin };
+
+/** Teto de cartões por arquivo: o baralho precisa continuar revisável. */
+export const MAX_AUTO_FLASHCARDS = 200;
+
+const TRUE_LABEL = { pt: "Verdadeiro.", en: "True." } as const;
+const FALSE_LABEL = { pt: "Falso. O texto diz:", en: "False. The text says:" } as const;
+
+function definitionParts(definition: Definition): DefinitionParts | undefined {
+  const text = definition.sentence;
+  if (text.startsWith(definition.term + ":"))
+    return {
+      term: definition.term,
+      verb: "é",
+      rest: text.slice(definition.term.length + 1).trim(),
+    };
+  const at = text.toLowerCase().indexOf(definition.verb.toLowerCase(), definition.term.length);
+  if (at < 0) return undefined;
+  const rest = text.slice(at + definition.verb.length).trim();
+  return rest ? { term: definition.term, verb: definition.verb, rest } : undefined;
+}
+
+const squash = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+
+/**
+ * Flashcards automáticos de verdadeiro ou falso, feitos no aparelho e sem IA. Metade das frases
+ * importantes do arquivo vira cartão verdadeiro, do jeito que está no texto. A outra metade vira
+ * uma afirmação falsa: um número, uma negação, um antônimo, um termo ou a definição trocados. O
+ * verso diz se é verdadeiro ou falso e mostra a frase do arquivo, então nada é inventado como
+ * fato. Sempre o máximo que o texto sustenta.
+ */
+export async function flashcardsFromDocument(
+  doc: StructuredDocument,
+  options: Pick<SummaryOptions, "signal"> = {},
+): Promise<AutoFlashcard[]> {
+  const prepared = prepare(doc);
+  const { sections, sentences, language } = prepared;
+  for (let index = 0; index < sections.length; index += 1) {
+    options.signal?.throwIfAborted();
+    scoreSection(prepared, sections[index]!);
+    if (index % 4 === 3) await tick();
+  }
+  const known = new Set(sentences.map((sentence) => squash(sentence.text)));
+  const candidates = sentences
+    .filter(
+      (sentence) =>
+        sentence.candidate &&
+        !dependsOnPrevious(sentence.text) &&
+        !isReferenceLike(sentence.text) &&
+        sentence.text.length <= 260 &&
+        looksLikeStatement(sentence.text, language),
+    )
+    .sort((x, y) => y.score - x.score)
+    .slice(0, MAX_AUTO_FLASHCARDS);
+  const numbers = [...new Set(sentences.flatMap((sentence) => numbersIn(sentence.text)))];
+  const definitions = sentences
+    .map((sentence) => (sentence.definition ? definitionParts(sentence.definition) : undefined))
+    .filter((item): item is DefinitionParts => item !== undefined);
+  const made: { id: number; card: AutoFlashcard }[] = [];
+  const fronts = new Set<string>();
+  let falses = 0;
+  let trues = 0;
+  for (const sentence of candidates) {
+    const own = sentence.definition ? definitionParts(sentence.definition) : undefined;
+    const wrong =
+      falses <= trues
+        ? falseVariant(sentence.text, {
+            index: sentence.id,
+            language,
+            numbers,
+            definitions,
+            ...(own ? { own } : {}),
+          })
+        : undefined;
+    const usable =
+      wrong &&
+      !known.has(squash(wrong.text)) &&
+      wrong.text.length <= 300 &&
+      looksLikeStatement(wrong.text, language)
+        ? wrong
+        : undefined;
+    const front = usable?.text ?? sentence.text;
+    if (fronts.has(front)) continue;
+    fronts.add(front);
+    const back = usable
+      ? `${FALSE_LABEL[language]} ${sentence.text}`
+      : `${TRUE_LABEL[language]} ${sentence.text}`;
+    if (usable) falses += 1;
+    else trues += 1;
+    made.push({
+      id: sentence.id,
+      card: { front, back, page: sentence.page, kind: usable ? usable.kind : "true" },
+    });
+  }
+  return made.sort((x, y) => x.id - y.id).map(({ card }) => card);
 }

@@ -9,10 +9,15 @@ import { PaperArrow } from "../components/paper-arrow";
 import { ShelfToolIcon } from "../components/shelf-tool-icon";
 import { PaperDigits } from "../components/paper-digits";
 import { LibraryDialog } from "../components/library-dialog";
+import { FlashcardStudy } from "../components/flashcard-study";
+import { noteFeedback, type CardOrigin } from "../domain/flashcard-feedback";
+import { cardFeatures, learnFromSignal, loadModel, shouldHide } from "../domain/flashcard-quality";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useRef, useState, type Dispatch, type ReactNode } from "react";
 import {
   createWorkspaceId,
+  toDateKey,
+  type Flashcard,
   type LibraryFolderStyle,
   type WorkspaceAction,
   type WorkspaceState,
@@ -265,6 +270,16 @@ const studySections = {
 
 type FolderSection = "Fontes" | keyof typeof studySections;
 const folderSections = ["Fontes", ...Object.keys(studySections)] as FolderSection[];
+// O resumo automático é grátis e roda no aparelho: sempre o maior que o texto comporta.
+const SUMMARY_DETAIL = "long" as const;
+type SummaryModule = typeof import("../domain/pdf-summary");
+type SourceEngine<T> = {
+  text: (text: string, title: string) => Promise<T>;
+  pdf: (
+    pdf: Parameters<SummaryModule["summarizePdf"]>[0],
+    options: NonNullable<Parameters<SummaryModule["summarizePdf"]>[1]>,
+  ) => Promise<T>;
+};
 const summaryInline = (value: string) =>
   value
     .split(/\*\*([^*]+)\*\*/)
@@ -345,9 +360,11 @@ export function LibraryFolderContents({
   folder,
   materials: folderMaterials,
   subjectId,
+  flashcards = [],
   dispatch,
   onBack,
 }: {
+  flashcards?: readonly Flashcard[];
   folder: NonNullable<WorkspaceState["libraryCollections"]>[number];
   materials: WorkspaceState["materials"];
   subjectId: string;
@@ -356,11 +373,30 @@ export function LibraryFolderContents({
 }) {
   const summaries = folderMaterials.filter((item) => item.tags?.[0] === "folder-summary");
   const materials = folderMaterials.filter((item) => item.tags?.[0] !== "folder-summary");
+  const [openDeckId, setOpenDeckId] = useState<string>();
+  const [renamingDeckId, setRenamingDeckId] = useState<string>();
+  const decks = flashcards.reduce<
+    { id: string; title: string; sourceTitle: string; cards: Flashcard[] }[]
+  >((groups, card) => {
+    const id = card.materialId ?? card.deck ?? "";
+    const group = groups.find((item) => item.id === id);
+    if (group) group.cards.push(card);
+    else
+      groups.push({
+        id,
+        title: card.deck || uiText("Sem baralho"),
+        sourceTitle: folderMaterials.find((item) => item.id === card.materialId)?.title ?? "",
+        cards: [card],
+      });
+    return groups;
+  }, []);
+  const openDeck = decks.find(({ id }) => id === openDeckId);
   const [readingSummaryId, setReadingSummaryId] = useState<string>();
   const readingSummary = summaries.find(({ id }) => id === readingSummaryId);
   const [summaryBusy, setSummaryBusy] = useState(false);
   const [summaryError, setSummaryError] = useState("");
-  const [summaryDetail, setSummaryDetail] = useState<"short" | "medium" | "long">("medium");
+  const [cardsBusy, setCardsBusy] = useState(false);
+  const [cardsMessage, setCardsMessage] = useState<{ text: string; error: boolean }>();
   const [section, setSection] = useState<FolderSection>("Fontes");
   const [renamingId, setRenamingId] = useState<string>();
   const [removingIds, setRemovingIds] = useState<string[]>([]);
@@ -494,6 +530,160 @@ export function LibraryFolderContents({
       setSummaryBusy(false);
     }
   }
+  /** Lê uma fonte (texto, imagem por OCR ou PDF) no aparelho e entrega ao gerador escolhido. */
+  async function readSource<T>(
+    source: (typeof selectedSources)[number],
+    fileTitle: string,
+    engine: SourceEngine<T>,
+  ): Promise<T> {
+    let result: T;
+    if (source.kind === "image") {
+      // Foto ou imagem de página: o OCR em português lê o texto, no aparelho.
+      const { createWorker } = await import("tesseract.js");
+      const scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
+      try {
+        const text = (await scanner.recognize(source.content)).data.text;
+        result = await engine.text(text, fileTitle);
+      } finally {
+        await scanner.terminate();
+      }
+    } else if (source.kind === "text") {
+      result = await engine.text(source.content, fileTitle);
+    } else {
+      const [pdfjs, worker] = await Promise.all([
+        import("pdfjs-dist"),
+        import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
+      ]);
+      pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
+      const bytes = dataUrlBytes(source.content);
+      if (!bytes) throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
+      const loading = pdfjs.getDocument({ data: bytes });
+      try {
+        const pdf = await loading.promise.catch(() => {
+          throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
+        });
+        // Páginas que são só imagem (PDF escaneado) passam pelo OCR em português, no aparelho.
+        let scanner: Awaited<ReturnType<typeof import("tesseract.js").createWorker>> | undefined;
+        try {
+          result = await engine.pdf(pdf, {
+            title: fileTitle,
+            ocr: async (pageNumber) => {
+              const page = await pdf.getPage(pageNumber);
+              const viewport = page.getViewport({ scale: 1 });
+              const scaled = page.getViewport({
+                scale: 2000 / Math.max(viewport.width, viewport.height),
+              });
+              const canvas = document.createElement("canvas");
+              canvas.width = Math.ceil(scaled.width);
+              canvas.height = Math.ceil(scaled.height);
+              await page.render({ canvas, viewport: scaled }).promise;
+              if (!scanner) {
+                const { createWorker } = await import("tesseract.js");
+                scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
+              }
+              const text = (await scanner.recognize(canvas)).data.text;
+              canvas.width = 0;
+              canvas.height = 0;
+              return text;
+            },
+          });
+        } finally {
+          await scanner?.terminate();
+        }
+      } finally {
+        await loading.destroy();
+      }
+    }
+    return result;
+  }
+  /** Flashcards automáticos: no aparelho, sem IA, o máximo que o texto sustenta. */
+  async function generateAutomaticFlashcards() {
+    if (cardsBusy || !selectedSources.length) return;
+    setCreating(undefined);
+    setSection("Flashcards");
+    setCardsMessage(undefined);
+    setCardsBusy(true);
+    try {
+      const { flashcardsFromPdf, flashcardsFromPlainText } = await import("../domain/pdf-summary");
+      let hidden = 0;
+      const made: {
+        sourceId: string;
+        deck: string;
+        front: string;
+        back: string;
+        page: number;
+        kind: CardOrigin;
+      }[] = [];
+      for (const source of selectedSources) {
+        const fileTitle = source.title.replace(/\.[^.]+$/, "");
+        const cards = await readSource(source, fileTitle, {
+          text: (text, title) => flashcardsFromPlainText(text, title),
+          pdf: (pdf, options) => flashcardsFromPdf(pdf, options),
+        });
+        if (cards.length === 0) {
+          throw new Error(
+            uiText("Não consegui criar flashcards de {0}: o texto tem poucas definições e fatos.", [
+              source.title,
+            ]),
+          );
+        }
+        const deck = fileTitle.replace(/[-_]+/g, " ").trim() || source.title;
+        // O filtro aprendido neste aparelho deixa de fora cartões parecidos com os que o usuário
+        // já descartou. Só age depois de avaliações suficientes e nunca esvazia o baralho.
+        const model = loadModel();
+        const strong = cards.filter(
+          (card) => !shouldHide(model, cardFeatures(card.front, card.back, card.kind)),
+        );
+        const usable = strong.length >= 4 ? strong : cards;
+        hidden += cards.length - usable.length;
+        for (const card of usable) {
+          const repeated = flashcards.some(
+            (item) => item.materialId === source.id && item.front === card.front,
+          );
+          if (!repeated)
+            made.push({
+              sourceId: source.id,
+              deck,
+              front: card.front,
+              back: card.back,
+              page: card.page,
+              kind: card.kind,
+            });
+        }
+      }
+      const today = toDateKey(new Date());
+      for (const card of made) {
+        dispatch({
+          type: "flashcard/added",
+          deck: card.deck,
+          materialId: card.sourceId,
+          sourcePage: card.page,
+          origin: card.kind,
+          subjectId,
+          front: card.front,
+          back: card.back,
+          createdOn: today,
+        });
+      }
+      setCardsMessage({
+        text: made.length
+          ? uiText("{0} flashcards criados. Toque no baralho para estudar.", [
+              String(made.length),
+            ]) +
+            (hidden ? " " + uiText("{0} cartões fracos ficaram de fora.", [String(hidden)]) : "")
+          : uiText("Esses flashcards já estavam criados."),
+        error: false,
+      });
+    } catch (error) {
+      setCardsMessage({
+        text:
+          error instanceof Error ? error.message : uiText("Não foi possível criar os flashcards."),
+        error: true,
+      });
+    } finally {
+      setCardsBusy(false);
+    }
+  }
   /** Resumo automático: feito no aparelho, sem IA e sem enviar nada para fora. */
   async function generateAutomaticSummary() {
     if (summaryBusy || !selectedSources.length) return;
@@ -506,66 +696,10 @@ export function LibraryFolderContents({
       const made: { title: string; sourceTitle: string; markdown: string }[] = [];
       for (const source of selectedSources) {
         const fileTitle = source.title.replace(/\.[^.]+$/, "");
-        let result: Awaited<ReturnType<typeof summarizePlainText>>;
-        if (source.kind === "image") {
-          // Foto ou imagem de página: o OCR em português lê o texto, no aparelho.
-          const { createWorker } = await import("tesseract.js");
-          const scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
-          try {
-            const text = (await scanner.recognize(source.content)).data.text;
-            result = await summarizePlainText(text, fileTitle, { detail: summaryDetail });
-          } finally {
-            await scanner.terminate();
-          }
-        } else if (source.kind === "text") {
-          result = await summarizePlainText(source.content, fileTitle, { detail: summaryDetail });
-        } else {
-          const [pdfjs, worker] = await Promise.all([
-            import("pdfjs-dist"),
-            import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
-          ]);
-          pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-          const bytes = dataUrlBytes(source.content);
-          if (!bytes) throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
-          const loading = pdfjs.getDocument({ data: bytes });
-          try {
-            const pdf = await loading.promise.catch(() => {
-              throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
-            });
-            // Páginas que são só imagem (PDF escaneado) passam pelo OCR em português, no aparelho.
-            let scanner:
-              Awaited<ReturnType<typeof import("tesseract.js").createWorker>> | undefined;
-            try {
-              result = await summarizePdf(pdf, {
-                title: fileTitle,
-                detail: summaryDetail,
-                ocr: async (pageNumber) => {
-                  const page = await pdf.getPage(pageNumber);
-                  const viewport = page.getViewport({ scale: 1 });
-                  const scaled = page.getViewport({
-                    scale: 2000 / Math.max(viewport.width, viewport.height),
-                  });
-                  const canvas = document.createElement("canvas");
-                  canvas.width = Math.ceil(scaled.width);
-                  canvas.height = Math.ceil(scaled.height);
-                  await page.render({ canvas, viewport: scaled }).promise;
-                  if (!scanner) {
-                    const { createWorker } = await import("tesseract.js");
-                    scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
-                  }
-                  const text = (await scanner.recognize(canvas)).data.text;
-                  canvas.width = 0;
-                  canvas.height = 0;
-                  return text;
-                },
-              });
-            } finally {
-              await scanner?.terminate();
-            }
-          } finally {
-            await loading.destroy();
-          }
-        }
+        const result = await readSource(source, fileTitle, {
+          text: (text, title) => summarizePlainText(text, title, { detail: SUMMARY_DETAIL }),
+          pdf: (pdf, options) => summarizePdf(pdf, { ...options, detail: SUMMARY_DETAIL }),
+        });
         if (result.stats.sentences === 0) {
           throw new Error(
             uiText(
@@ -684,6 +818,39 @@ export function LibraryFolderContents({
     </div>
   );
 
+  if (openDeck)
+    return (
+      <FlashcardStudy
+        key={openDeck.id}
+        title={openDeck.title}
+        cards={openDeck.cards}
+        sourceTitle={openDeck.sourceTitle}
+        onFeedback={(id, event) => {
+          const card = openDeck.cards.find((item) => item.id === id);
+          noteFeedback(card?.origin, event);
+          if (card) learnFromSignal(card, event.type !== "kept");
+        }}
+        onDiscard={(id) => dispatch({ type: "flashcard/removed", id })}
+        onEdit={(id, front, back) => {
+          const card = openDeck.cards.find((item) => item.id === id);
+          if (!card) return;
+          dispatch({
+            type: "flashcard/updated",
+            id,
+            changes: {
+              front,
+              back,
+              subjectId: card.subjectId,
+              ...(card.deck ? { deck: card.deck } : {}),
+            },
+          });
+        }}
+        onReview={(id, rating, reviewedOn) =>
+          dispatch({ type: "flashcard/reviewed", id, rating, reviewedOn })
+        }
+        onClose={() => setOpenDeckId(undefined)}
+      />
+    );
   return (
     <section className="library-folder-contents" aria-label={folder.title}>
       <header>
@@ -835,6 +1002,113 @@ export function LibraryFolderContents({
               </div>
             )}
             {section === "Resumo" && summaryError && <p role="alert">{summaryError}</p>}
+            {section === "Flashcards" && cardsBusy && (
+              <div role="status" className="library-summary-card library-summary-loading">
+                <span>
+                  <img src="/room-icons/flashcards.svg" alt="" width="26" height="26" />
+                  {uiText("Criando flashcards…")}
+                </span>
+                <span className="library-summary-loading-track" aria-hidden="true" />
+              </div>
+            )}
+            {section === "Flashcards" &&
+              decks.map((deck) => (
+                <article key={deck.id} className="library-summary-card">
+                  {renamingDeckId === deck.id ? (
+                    <form
+                      className="library-summary-rename"
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        const title = String(
+                          new FormData(event.currentTarget).get("title") ?? "",
+                        ).trim();
+                        if (!title) return;
+                        for (const card of deck.cards)
+                          dispatch({
+                            type: "flashcard/updated",
+                            id: card.id,
+                            changes: {
+                              front: card.front,
+                              back: card.back,
+                              subjectId: card.subjectId,
+                              deck: title,
+                            },
+                          });
+                        setRenamingDeckId(undefined);
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === "Escape") setRenamingDeckId(undefined);
+                      }}
+                    >
+                      <input
+                        name="title"
+                        aria-label={uiText("Nome do baralho")}
+                        required
+                        maxLength={80}
+                        defaultValue={deck.title}
+                        ref={(field) => {
+                          if (field && field !== document.activeElement) {
+                            field.focus();
+                            field.select();
+                          }
+                        }}
+                      />
+                      <button
+                        type="submit"
+                        className="shelf-wood-button"
+                        aria-label={uiText("Salvar nome")}
+                      >
+                        <ShelfToolIcon name="save" />
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      type="button"
+                      className="library-summary-open"
+                      onClick={() => setOpenDeckId(deck.id)}
+                    >
+                      <img src="/room-icons/flashcards.svg" alt="" width="26" height="26" />
+                      <span>
+                        <strong>{deck.title}</strong>
+                        <small>
+                          {[deck.sourceTitle, uiText("{0} cartões", [String(deck.cards.length)])]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </small>
+                      </span>
+                    </button>
+                  )}
+                  <details className="library-summary-actions">
+                    <summary className="shelf-wood-button" aria-label={"Opções de " + deck.title}>
+                      <PaperEditorIcon name="more" />
+                    </summary>
+                    <div className="library-summary-popover">
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.currentTarget.closest("details")?.removeAttribute("open");
+                          setRenamingDeckId(deck.id);
+                        }}
+                      >
+                        <ShelfToolIcon name="pen" /> {uiText("Renomear")}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.currentTarget.closest("details")?.removeAttribute("open");
+                          for (const card of deck.cards)
+                            dispatch({ type: "flashcard/removed", id: card.id });
+                        }}
+                      >
+                        <ShelfToolIcon name="trash" /> {uiText("Excluir")}
+                      </button>
+                    </div>
+                  </details>
+                </article>
+              ))}
+            {section === "Flashcards" && cardsMessage && (
+              <p role={cardsMessage.error ? "alert" : "status"}>{cardsMessage.text}</p>
+            )}
             {section === "Resumo" &&
               summaries.map((summary) => (
                 <article
@@ -926,17 +1200,18 @@ export function LibraryFolderContents({
                   </details>
                 </article>
               ))}
-            {(section !== "Resumo" || (!summaryBusy && summaries.length === 0)) && (
-              <div className="library-folder-study-empty">
-                <img
-                  src={"/room-icons/" + studySections[section].icon + ".svg"}
-                  alt=""
-                  width="72"
-                  height="72"
-                />
-                <h2>{studySections[section].empty}</h2>
-              </div>
-            )}
+            {(section !== "Resumo" || (!summaryBusy && summaries.length === 0)) &&
+              !(section === "Flashcards" && (cardsBusy || cardsMessage || decks.length > 0)) && (
+                <div className="library-folder-study-empty">
+                  <img
+                    src={"/room-icons/" + studySections[section].icon + ".svg"}
+                    alt=""
+                    width="72"
+                    height="72"
+                  />
+                  <h2>{studySections[section].empty}</h2>
+                </div>
+              )}
             <button
               type="button"
               className="shelf-wood-button library-folder-generate"
@@ -1111,51 +1386,49 @@ export function LibraryFolderContents({
               </p>
             )}
             {creating === "Resumo" && (
-              <fieldset className="library-summary-detail">
-                <legend>{uiText("Tamanho do resumo automático")}</legend>
-                {(
-                  [
-                    ["short", "Curto"],
-                    ["medium", "Médio"],
-                    ["long", "Longo"],
-                  ] as const
-                ).map(([value, label]) => (
-                  <label key={value}>
-                    <input
-                      type="radio"
-                      name="library-summary-detail"
-                      checked={summaryDetail === value}
-                      onChange={() => setSummaryDetail(value)}
-                    />
-                    {uiText(label)}
-                  </label>
-                ))}
-              </fieldset>
-            )}
-            {creating === "Resumo" && (
               <p>
                 {uiText("Ao gerar com a Olena, o texto das fontes selecionadas é enviado a ela.")}
               </p>
             )}
-            {creating !== "Resumo" && (
+            {creating === "Flashcards" && (
+              <p>
+                {uiText(
+                  "Flashcards automáticos: grátis, feitos no seu aparelho, sem IA. Cria o máximo de afirmações de verdadeiro ou falso que o próprio arquivo permite.",
+                )}
+              </p>
+            )}
+            {creating !== "Resumo" && creating !== "Flashcards" && (
               <p>{uiText("A geração deste tipo de material ainda não está disponível.")}</p>
             )}
-            <button
-              type="button"
-              className="shelf-wood-button library-study-confirm-generate"
-              disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
-              onClick={() => void generateSummary()}
-            >
-              {uiText("Gerar com a Olena")}
-            </button>
-            <button
-              type="button"
-              className="shelf-wood-button library-study-confirm-generate"
-              disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
-              onClick={() => void generateAutomaticSummary()}
-            >
-              {uiText("Resumo automático")}
-            </button>
+            {creating === "Flashcards" ? (
+              <button
+                type="button"
+                className="shelf-wood-button library-study-confirm-generate"
+                disabled={!selectedSources.length || cardsBusy}
+                onClick={() => void generateAutomaticFlashcards()}
+              >
+                {uiText("Flashcards automáticos")}
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="shelf-wood-button library-study-confirm-generate"
+                  disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
+                  onClick={() => void generateSummary()}
+                >
+                  {uiText("Gerar com a Olena")}
+                </button>
+                <button
+                  type="button"
+                  className="shelf-wood-button library-study-confirm-generate"
+                  disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
+                  onClick={() => void generateAutomaticSummary()}
+                >
+                  {uiText("Resumo automático")}
+                </button>
+              </>
+            )}
           </LibraryDialog>
         )}
         <input

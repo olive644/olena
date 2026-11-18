@@ -386,11 +386,114 @@ describe("resumo automático no aparelho", () => {
     expect(dispatch).not.toHaveBeenCalled();
   });
 
-  it("oferece Curto, Médio e Longo e começa em Médio", () => {
+  it("não oferece escolher o tamanho: o resumo grátis já sai no máximo", () => {
     const { dialog } = renderWith(source);
-    const group = within(dialog).getByRole("group", { name: "Tamanho do resumo automático" });
-    expect(within(group).getByRole("radio", { name: "Médio" })).toHaveProperty("checked", true);
-    fireEvent.click(within(group).getByRole("radio", { name: "Curto" }));
-    expect(within(group).getByRole("radio", { name: "Curto" })).toHaveProperty("checked", true);
+    expect(
+      within(dialog).queryByRole("group", { name: "Tamanho do resumo automático" }),
+    ).toBeNull();
+    expect(within(dialog).queryByRole("radio", { name: "Curto" })).toBeNull();
+  });
+
+  function openFlashcards(content: string) {
+    const dispatch = vi.fn<(action: WorkspaceAction) => void>();
+    render(
+      <LibraryFolderContents
+        folder={folder}
+        materials={[{ ...source, content }]}
+        subjectId="materia-1"
+        dispatch={dispatch}
+        onBack={() => undefined}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Flashcards" }));
+    fireEvent.click(screen.getByRole("button", { name: "Criar flashcards" }));
+    const dialog = screen.getByRole("dialog");
+    fireEvent.click(within(dialog).getByRole("checkbox", { name: `Selecionar ${source.title}` }));
+    return { dispatch, dialog };
+  }
+
+  it("cria flashcards no aparelho, sem login, sem rede e sem a Olena, sem escolher tamanho", async () => {
+    const { dispatch, dialog } = openFlashcards(longText);
+    expect(within(dialog).queryByRole("radio")).toBeNull();
+    expect(within(dialog).queryByRole("button", { name: "Gerar com a Olena" })).toBeNull();
+    fireEvent.click(within(dialog).getByRole("button", { name: "Flashcards automáticos" }));
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(services).not.toHaveBeenCalled();
+    expect(stream).not.toHaveBeenCalled();
+    const action = dispatch.mock.calls[0]![0];
+    if (action.type !== "flashcard/added") throw new Error("ação inesperada");
+    expect(action.subjectId).toBe("materia-1");
+    expect(action.materialId).toBe(source.id);
+    expect(action.deck).toBe("ENIAC");
+    expect(/^(Verdadeiro|Falso)./.test(action.back)).toBe(true);
+    expect(await screen.findByRole("status")).toBeTruthy();
+  });
+
+  it("avisa quando o texto não rende nenhum flashcard", async () => {
+    const { dispatch, dialog } = openFlashcards("Oi.");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Flashcards automáticos" }));
+    expect(await screen.findByRole("alert")).toBeTruthy();
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it("mostra o baralho como uma linha e estuda em outra tela: esquerda errei, direita acertei", () => {
+    const card = (id: string, front: string, back: string) => ({
+      id,
+      subjectId: "materia-1",
+      deck: "ENIAC",
+      materialId: source.id,
+      front,
+      back,
+      intervalDays: 0,
+      nextReview: "2026-11-17",
+    });
+    const dispatch = vi.fn<(action: WorkspaceAction) => void>();
+    render(
+      <LibraryFolderContents
+        folder={folder}
+        materials={[source]}
+        subjectId="materia-1"
+        flashcards={[
+          card("c1", "O que é o ENIAC?", "Um dos primeiros computadores eletrônicos."),
+          card("c2", "O que aconteceu em 1945?", "O ENIAC foi concluído."),
+        ]}
+        dispatch={dispatch}
+        onBack={() => undefined}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Flashcards" }));
+    expect(screen.getByText("ENIAC.txt · 2 cartões")).toBeTruthy();
+    expect(screen.queryByText("Ainda não há flashcards")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /^ENIAC/ }));
+    // abre outra tela, não um modal
+    expect(screen.queryByRole("dialog")).toBeNull();
+    const study = screen.getByRole("region", { name: "ENIAC" });
+    expect(within(study).getByText("O que é o ENIAC?")).toBeTruthy();
+    expect(within(study).getByText("1 de 2")).toBeTruthy();
+    fireEvent.click(within(study).getByRole("button", { name: "Virar cartão" }));
+    expect(within(study).getByText("Um dos primeiros computadores eletrônicos.")).toBeTruthy();
+    // seta direita (verde) = acertei
+    fireEvent.click(within(study).getByRole("button", { name: "Acertei" }));
+    expect(within(study).getByText("O que aconteceu em 1945?")).toBeTruthy();
+    expect(within(study).getByText("2 de 2")).toBeTruthy();
+    // seta esquerda (vermelha) = errei, o último cartão volta para uma rodada de revisão
+    fireEvent.keyDown(window, { key: "ArrowLeft" });
+    expect(within(study).getByText("Vamos rever as perguntas que você errou.")).toBeTruthy();
+    expect(dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({ type: "flashcard/reviewed", id: "c1", rating: "good" }),
+    );
+    expect(dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({ type: "flashcard/reviewed", id: "c2", rating: "again" }),
+    );
+    fireEvent.click(within(study).getByRole("button", { name: "Continuar" }));
+    expect(within(study).getByText("O que aconteceu em 1945?")).toBeTruthy();
+    expect(within(study).getByText("1 de 1")).toBeTruthy();
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+    expect(within(study).getByText("1/2")).toBeTruthy();
+    expect(within(study).getByRole("button", { name: "Repetir as erradas" })).toBeTruthy();
+    // repetições da revisão não geram novas revisões na agenda
+    expect(dispatch).toHaveBeenCalledTimes(2);
+    fireEvent.click(within(study).getByRole("button", { name: "Continuar" }));
+    expect(screen.queryByRole("region", { name: "ENIAC" })).toBeNull();
   });
 });

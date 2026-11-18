@@ -1,30 +1,73 @@
+import {
+  createEmptyCard,
+  fsrs,
+  generatorParameters,
+  Rating,
+  State,
+  type Card as FsrsCard,
+} from "ts-fsrs";
+import { CARD_ORIGINS } from "./flashcard-feedback.js";
 import type { Flashcard, FlashcardRating } from "./workspace";
 
-// Three-grade SM-2 adaptation: preserve the app's initial three-day success interval.
-export function reviewSchedule(card: Flashcard, rating: FlashcardRating) {
-  const ease = Math.max(
-    1.3,
-    Math.min(
-      3.5,
-      (card.ease ?? 2.5) + (rating === "easy" ? 0.1 : rating === "hard" ? -0.15 : -0.2),
-    ),
-  );
-  const repetitions =
-    rating === "again" ? 0 : (card.repetitions ?? (card.intervalDays > 0 ? 1 : 0)) + 1;
-  const intervalDays =
-    rating === "again"
-      ? 1
-      : rating === "hard"
-        ? Math.max(1, Math.ceil(card.intervalDays * 1.2))
-        : repetitions === 1
-          ? 3
-          : repetitions === 2
-            ? Math.max(6, card.intervalDays)
-            : Math.max(card.intervalDays, Math.round(card.intervalDays * ease));
+// Agendamento FSRS (biblioteca ts-fsrs, licença MIT). Sem fuzz e sem passos curtos: o app agenda
+// por dia, e o mesmo cartão respondido do mesmo jeito sempre cai na mesma data em todos os aparelhos.
+const scheduler = fsrs(generatorParameters({ enable_fuzz: false, enable_short_term: false }));
+const GRADES = {
+  again: Rating.Again,
+  hard: Rating.Hard,
+  good: Rating.Good,
+  easy: Rating.Easy,
+} as const;
+const DAY = 86_400_000;
+
+function atNoon(dateKey: string): Date {
+  return new Date(`${dateKey}T12:00:00Z`);
+}
+
+const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
+/** Facilidade antiga (1,3 a 3,5) vira dificuldade FSRS (10 a 1), para cartões já estudados. */
+const difficultyFromEase = (ease: number) => clamp(10 - ((ease - 1.3) / 2.2) * 9, 1, 10);
+/** E o contrário, mantendo o campo antigo preenchido para quem ainda lê. */
+const easeFromDifficulty = (difficulty: number) =>
+  clamp(3.5 - ((difficulty - 1) / 9) * 2.2, 1.3, 3.5);
+
+/** Reconstrói o cartão FSRS a partir dos campos salvos, inclusive de cartões de antes do FSRS. */
+function toFsrsCard(card: Flashcard, reviewedOn: string): FsrsCard {
+  const studied = Boolean(card.reviews || card.intervalDays > 0 || card.firstReviewedOn);
+  if (!studied) return createEmptyCard(atNoon(reviewedOn));
+  const scheduled = Math.max(1, card.intervalDays);
+  const due = atNoon(card.nextReview);
+  const last = card.lastReviewedOn
+    ? atNoon(card.lastReviewedOn)
+    : new Date(due.getTime() - scheduled * DAY);
   return {
-    ease,
-    repetitions,
-    intervalDays: Math.min(36500, intervalDays),
+    due,
+    stability: card.stability ?? scheduled,
+    difficulty: card.difficulty ?? difficultyFromEase(card.ease ?? 2.5),
+    elapsed_days: Math.max(0, Math.round((atNoon(reviewedOn).getTime() - last.getTime()) / DAY)),
+    scheduled_days: scheduled,
+    learning_steps: 0,
+    reps: card.reviews ?? card.repetitions ?? 1,
+    lapses: card.lapses ?? 0,
+    state: State.Review,
+    last_review: last,
+  };
+}
+
+/** Próximo estado de um cartão depois de uma resposta, dado o dia em que foi respondido. */
+export function reviewSchedule(card: Flashcard, rating: FlashcardRating, reviewedOn: string) {
+  const { card: next } = scheduler.next(
+    toFsrsCard(card, reviewedOn),
+    atNoon(reviewedOn),
+    GRADES[rating],
+  );
+  return {
+    ease: easeFromDifficulty(next.difficulty),
+    stability: next.stability,
+    difficulty: next.difficulty,
+    repetitions: rating === "again" ? 0 : (card.repetitions ?? (card.intervalDays > 0 ? 1 : 0)) + 1,
+    // Errou: volta amanhã. O resto segue o intervalo do FSRS.
+    intervalDays: rating === "again" ? 1 : clamp(Math.round(next.scheduled_days), 1, 36500),
     reviews: (card.reviews ?? 0) + 1,
     correct: (card.correct ?? 0) + (rating === "again" ? 0 : 1),
     lapses: (card.lapses ?? 0) + (rating === "again" ? 1 : 0),
@@ -58,7 +101,18 @@ export function validFlashcardStudy(value: Record<string, unknown>) {
         value[key] === undefined || (Number.isSafeInteger(value[key]) && Number(value[key]) >= 0),
     ) &&
     (value["ease"] === undefined ||
-      (typeof value["ease"] === "number" && value["ease"] >= 1.3 && value["ease"] <= 3.5))
+      (typeof value["ease"] === "number" && value["ease"] >= 1.3 && value["ease"] <= 3.5)) &&
+    (value["origin"] === undefined ||
+      (CARD_ORIGINS as readonly unknown[]).includes(value["origin"])) &&
+    (value["stability"] === undefined ||
+      (typeof value["stability"] === "number" &&
+        Number.isFinite(value["stability"]) &&
+        value["stability"] >= 0 &&
+        value["stability"] <= 100000)) &&
+    (value["difficulty"] === undefined ||
+      (typeof value["difficulty"] === "number" &&
+        value["difficulty"] >= 1 &&
+        value["difficulty"] <= 10))
   );
 }
 

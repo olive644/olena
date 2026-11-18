@@ -128,6 +128,12 @@ export function NotebookShelf({
           (material) => material.collectionId === openFolder.id && !material.archived,
         )}
         subjectId={workspace.subjects[0]?.id ?? ""}
+        flashcards={workspace.flashcards.filter((card) =>
+          workspace.materials.some(
+            (material) =>
+              material.id === card.materialId && material.collectionId === openFolder.id,
+          ),
+        )}
         dispatch={dispatch}
         onBack={() => navigateFolder()}
       />
