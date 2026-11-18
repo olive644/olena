@@ -29,7 +29,8 @@ export function SourceQuizStudy({
     [checked, setChecked] = useState(false),
     [correct, setCorrect] = useState(0);
   const done = phase === "done";
-  const progress = phase !== "study" ? 100 : Math.round(((index + (checked ? 1 : 0)) / queue.length) * 100);
+  const progress =
+    phase !== "study" ? 100 : Math.round(((index + (checked ? 1 : 0)) / queue.length) * 100);
   const sound = useRef<ReturnType<typeof createMathSound> | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {

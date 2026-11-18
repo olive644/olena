@@ -573,7 +573,9 @@
   --stat-depth: #194b3d;
   color: #fff9e8;
   border-color: var(--stat-light);
-  background: linear-gradient(135deg, var(--stat-light) 0 15px, transparent 15px), linear-gradient(160deg, var(--stat-face) 0 65%, var(--stat-depth) 65%);
+  background:
+    linear-gradient(135deg, var(--stat-light) 0 15px, transparent 15px),
+    linear-gradient(160deg, var(--stat-face) 0 65%, var(--stat-depth) 65%);
   box-shadow: 0 4px var(--stat-depth);
   padding: 14px 18px;
 }
@@ -582,13 +584,16 @@
   --stat-light: #c2a0f2;
   --stat-depth: #432c70;
 }
-.flashcard-study__stats dt { opacity: 1; font-weight: 700; }
+.flashcard-study__stats dt {
+  opacity: 1;
+  font-weight: 700;
+}
 .flashcard-study__stats dd {
   font-family: var(--font-display);
   font-size: clamp(1.4rem, 4vw, 1.75rem);
   font-weight: 900;
   font-variant-numeric: tabular-nums;
-  letter-spacing: .025em;
+  letter-spacing: 0.025em;
   text-shadow: 1px 2px var(--stat-depth);
 }
 .flashcard-study__progress {
@@ -599,10 +604,76 @@
   box-shadow: 0 3px #593631;
 }
 .flashcard-study__progress span {
-  background: linear-gradient(135deg, #fff0ad 0 12px, transparent 12px), linear-gradient(166deg, #facc15 0 60%, #c58a25 60%);
+  background:
+    linear-gradient(135deg, #fff0ad 0 12px, transparent 12px),
+    linear-gradient(166deg, #facc15 0 60%, #c58a25 60%);
   border-right: 3px solid #ffe597;
   box-sizing: border-box;
 }
 @media (prefers-reduced-motion: reduce) {
-  .flashcard-study__progress span { transition: none; }
+  .flashcard-study__progress span {
+    transition: none;
+  }
+}
+.flashcard-study__tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.flashcard-study__tools button {
+  min-height: 44px;
+  padding: 0 14px;
+  color: #fff4df;
+  font-size: 0.85rem;
+  background: transparent;
+  border: 1px solid #5a4240;
+  border-radius: 5px 12px 5px 8px;
+}
+.flashcard-study__edit {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+}
+.flashcard-study__edit label,
+.flashcard-study__edit legend {
+  display: grid;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+.flashcard-study__edit fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.flashcard-study__edit fieldset label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 6px;
+}
+.flashcard-study__edit textarea {
+  width: 100%;
+  padding: 10px;
+  color: #fff4df;
+  font: inherit;
+  background: #2a1c1b;
+  border: 1px solid #ac8059;
+  border-radius: 5px 12px 5px 8px;
+}
+.flashcard-study__edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.flashcard-study__edit-actions button:not(.flashcard-study__primary) {
+  min-height: 48px;
+  padding: 0 18px;
+  color: #fff4df;
+  background: #3a2b2a;
+  border: 1px solid #5a4240;
+  border-radius: 5px 16px 5px 10px;
 }

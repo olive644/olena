@@ -13,7 +13,8 @@ import {
   keyTerms,
   type Definition,
 } from "./facts";
-import { falseVersion, numbersIn, type DefinitionParts } from "./true-false";
+import type { CardOrigin } from "../flashcard-feedback";
+import { falseVariant, looksLikeStatement, numbersIn, type DefinitionParts } from "./true-false";
 import {
   contentStems,
   countWords,
@@ -1046,7 +1047,7 @@ export async function summarizeDocument(
 }
 
 /** Frente: uma afirmação. Verso: "Verdadeiro." ou "Falso." e a frase do arquivo que explica. */
-export type AutoFlashcard = { front: string; back: string; page: number };
+export type AutoFlashcard = { front: string; back: string; page: number; kind: CardOrigin };
 
 /** Teto de cartões por arquivo: o baralho precisa continuar revisável. */
 export const MAX_AUTO_FLASHCARDS = 200;
@@ -1099,18 +1100,12 @@ export async function flashcardsFromDocument(
         sentence.candidate &&
         !dependsOnPrevious(sentence.text) &&
         !isReferenceLike(sentence.text) &&
-        sentence.text.length <= 260,
+        sentence.text.length <= 260 &&
+        looksLikeStatement(sentence.text, language),
     )
     .sort((x, y) => y.score - x.score)
     .slice(0, MAX_AUTO_FLASHCARDS);
   const numbers = [...new Set(sentences.flatMap((sentence) => numbersIn(sentence.text)))];
-  const terms = keyTerms(
-    sentences.map((sentence) => sentence.text),
-    language,
-    60,
-  )
-    .map(({ term }) => term)
-    .filter((term) => term.length >= 3);
   const definitions = sentences
     .map((sentence) => (sentence.definition ? definitionParts(sentence.definition) : undefined))
     .filter((item): item is DefinitionParts => item !== undefined);
@@ -1122,17 +1117,22 @@ export async function flashcardsFromDocument(
     const own = sentence.definition ? definitionParts(sentence.definition) : undefined;
     const wrong =
       falses <= trues
-        ? falseVersion(sentence.text, {
+        ? falseVariant(sentence.text, {
             index: sentence.id,
             language,
             numbers,
-            terms,
             definitions,
             ...(own ? { own } : {}),
           })
         : undefined;
-    const usable = wrong && !known.has(squash(wrong)) && wrong.length <= 300 ? wrong : undefined;
-    const front = usable ?? sentence.text;
+    const usable =
+      wrong &&
+      !known.has(squash(wrong.text)) &&
+      wrong.text.length <= 300 &&
+      looksLikeStatement(wrong.text, language)
+        ? wrong
+        : undefined;
+    const front = usable?.text ?? sentence.text;
     if (fronts.has(front)) continue;
     fronts.add(front);
     const back = usable
@@ -1140,7 +1140,10 @@ export async function flashcardsFromDocument(
       : `${TRUE_LABEL[language]} ${sentence.text}`;
     if (usable) falses += 1;
     else trues += 1;
-    made.push({ id: sentence.id, card: { front, back, page: sentence.page } });
+    made.push({
+      id: sentence.id,
+      card: { front, back, page: sentence.page, kind: usable ? usable.kind : "true" },
+    });
   }
   return made.sort((x, y) => x.id - y.id).map(({ card }) => card);
 }

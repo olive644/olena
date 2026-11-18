@@ -32,6 +32,7 @@ import { SettingsIcon, type SettingsIconName } from "../components/settings-icon
 import { SettingsFooter } from "../components/settings-footer";
 import { LanguageSwitch } from "../components/language-switch";
 import { SecuritySettings } from "../components/security-settings";
+import { FlashcardQualityPanel } from "../components/flashcard-quality-panel";
 import { HelenaLoading } from "../components/helena-loading";
 const SupportChat = lazy(() =>
   import("../components/support-chat").then((module) => ({ default: module.SupportChat })),
@@ -556,6 +557,7 @@ export function ProfileView({
               ))}
             </section>
 
+            {section === "study" && <FlashcardQualityPanel />}
             {section === "account" && cloud.authenticated === true && (
               <AccountAccessPanel
                 {...(cloud.signOut ? { onSignOut: () => cloud.signOut!() } : {})}

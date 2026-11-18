@@ -152,7 +152,7 @@ export function SourceExamStudy({
       {downloadError && <p role="alert">{downloadError}</p>}
       <article className="source-exam-paper">
         <div className="source-exam-brand">
-          <img src="/olena-favicon-192.png" width="48" height="48" alt="Olena" />
+          <img src="/olena-favicon-192.png" width="48" height="48" alt={uiText("Olena")} />
           <span>{uiText("Simulado Olena")}</span>
         </div>
         <h1>{title}</h1>
@@ -182,7 +182,7 @@ export function SourceExamStudy({
           >
             <div className="source-exam-signature">
               <small>{uiText("Corrigido pela professora")}</small>
-              <svg viewBox="0 0 260 90" role="img" aria-label="Assinatura Olena">
+              <svg viewBox="0 0 260 90" role="img" aria-label={uiText("Assinatura Olena")}>
                 <path
                   pathLength="1"
                   d="M65 59C14 83 23 9 64 17C101 24 54 91 44 58C34 28 82 46 91 36C110 16 115 2 104 7C89 13 78 74 96 60L114 43C101 68 116 70 133 45C149 23 151 52 128 54C124 76 153 56 163 42L153 63C177 28 184 39 174 60C184 69 193 40 205 43C187 28 180 70 201 61L220 45M37 77C83 69 158 75 230 70"

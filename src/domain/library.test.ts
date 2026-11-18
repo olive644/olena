@@ -114,11 +114,11 @@ describe("library", () => {
     state = workspaceReducer(state, {
       type: "flashcard/reviewed",
       id,
-      rating: "easy",
+      rating: "good",
       reviewedOn: "2026-10-24",
     });
+    expect(state.flashcards[0]?.nextReview).toBe("2026-10-27");
     expect(state.flashcards[0]).toMatchObject({
-      nextReview: "2026-10-27",
       materialId: item.id,
       sourcePage: 2,
     });
