@@ -8,6 +8,16 @@ import {
   type ColorDockBox,
 } from "./handwriting-color-dock-position";
 
+const MINIMIZED_KEY = "olena.notebook.colorDock.minimized";
+
+function readMinimized(): boolean {
+  try {
+    return localStorage.getItem(MINIMIZED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
 export function HandwritingColorDock({
   active,
   color,
@@ -18,13 +28,19 @@ export function HandwritingColorDock({
   onColorChange: (color: string) => void;
 }) {
   const root = useRef<HTMLDivElement>(null);
-  const [minimized, setMinimized] = useState(false);
+  // A paleta fica sempre à vista; só sai quando a pessoa a minimiza, e lembra dessa escolha.
+  const [minimized, setMinimized] = useState(readMinimized);
   const moved = useRef(false);
   const morphFrom = useRef<{ width: number; height: number } | null>(null);
   function toggleMinimized(next: boolean) {
     const r = root.current?.getBoundingClientRect();
     if (r) morphFrom.current = { width: r.width, height: r.height };
     setMinimized(next);
+    try {
+      localStorage.setItem(MINIMIZED_KEY, next ? "1" : "0");
+    } catch {
+      // Sem armazenamento (janela privada): a escolha vale só nesta sessão.
+    }
   }
   useLayoutEffect(() => {
     const node = root.current,
@@ -49,7 +65,7 @@ export function HandwritingColorDock({
     );
   }, [minimized]);
   const [dock, setDock] = useState<{ edge: ColorDockEdge; fraction: number }>({
-    edge: "left",
+    edge: "right",
     fraction: 0,
   });
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -79,7 +95,7 @@ export function HandwritingColorDock({
     });
     const arrows = [
       ...(parent.closest(".handwriting-studio") ?? parent).querySelectorAll<HTMLElement>(
-        ".handwriting-paper-disclosure, .handwriting-brush-disclosure, .handwriting-page-navigation__toggle",
+        ".handwriting-paper-disclosure, .handwriting-brush-disclosure, .handwriting-page-navigation__toggle, .notebook-file-tools, .notebook-upload-grid",
       ),
     ];
     return {
@@ -139,14 +155,21 @@ export function HandwritingColorDock({
     const studio = parent?.closest(".handwriting-studio") ?? parent;
     studio
       ?.querySelectorAll(
-        ".handwriting-paper-disclosure, .handwriting-brush-disclosure, .handwriting-page-navigation__toggle",
+        ".handwriting-paper-disclosure, .handwriting-brush-disclosure, .handwriting-page-navigation__toggle, .notebook-file-tools, .notebook-upload-grid",
       )
       .forEach((arrow) => observer?.observe(arrow));
+    // Painéis que entram ou saem (lista de imagens importadas, por exemplo) também mudam o espaço livre.
+    let pending = 0;
+    const placeSoon = () => {
+      cancelAnimationFrame(pending);
+      pending = requestAnimationFrame(place);
+    };
     const changes =
-      typeof MutationObserver === "undefined" ? undefined : new MutationObserver(place);
+      typeof MutationObserver === "undefined" ? undefined : new MutationObserver(placeSoon);
     if (studio)
       changes?.observe(studio, {
         subtree: true,
+        childList: true,
         attributes: true,
         attributeFilter: ["aria-expanded", "data-expanded", "data-tool"],
       });
@@ -154,6 +177,7 @@ export function HandwritingColorDock({
     return () => {
       observer?.disconnect();
       changes?.disconnect();
+      cancelAnimationFrame(pending);
       window.removeEventListener("resize", place);
       cancelAnimationFrame(frame.current);
       drag.current = null;

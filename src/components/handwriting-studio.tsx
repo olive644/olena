@@ -79,6 +79,7 @@ import { restoreStrokes } from "./handwriting-undo";
 import type { RemoteCursor } from "../hooks/use-notebook-collaboration";
 import { cursorColor } from "./handwriting-cursor";
 import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
+import { createShapeAdjuster, type ShapeAdjuster } from "./handwriting-shape-adjust";
 import { HandwritingShapeInsert, type InsertKind } from "./handwriting-shape-insert";
 import { predictedTail, withPredictedTail } from "./handwriting-prediction";
 import { denoiseMousePath } from "./handwriting-denoise";
@@ -191,6 +192,8 @@ type HandwritingStudioProps = {
 
 // Pausa, em milissegundos, para a forma desenhada ser acertada.
 const SHAPE_HOLD_MS = 600;
+// Tremor da mão parada: até esta distância (em pixels da tela) a pausa continua valendo.
+const SHAPE_HOLD_JITTER_PX = 3;
 
 export function HandwritingStudio({
   captureActions,
@@ -567,6 +570,10 @@ export function HandwritingStudio({
   // Tipo da forma em que o "segurar para acertar" transformou o traço de agora, e as retas
   // acertadas há pouco: uma nova reta pode fechar com elas um triângulo ou um retângulo.
   const shapeKindRef = useRef<ShapeKind | null>(null);
+  // Depois de acertar, arrastar de novo refaz a forma (tamanho, giro, ângulo) sem levantar a caneta.
+  const shapeAdjusterRef = useRef<ShapeAdjuster | null>(null);
+  const holdAnchorRef = useRef<HandwritingPoint | null>(null);
+  const [shapeBadge, setShapeBadge] = useState<{ kind: ShapeKind; detail: string } | null>(null);
   const recentLinesRef = useRef<RecentLine[]>([]);
   // Ponta prevista pelo navegador: só é desenhada na tela, nunca entra no traço.
   const predictedRef = useRef<HandwritingPoint[]>([]);
@@ -1827,6 +1834,9 @@ export function HandwritingStudio({
     clearTimeout(holdTimerRef.current);
     shapeSnappedRef.current = false;
     shapeKindRef.current = null;
+    shapeAdjusterRef.current = null;
+    holdAnchorRef.current = null;
+    setShapeBadge(null);
     // O traço em andamento fica só na camada ao vivo; a folha o recebe ao soltar a caneta.
     if (effectiveTool !== "ruler") {
       paintLive();
@@ -1955,7 +1965,18 @@ export function HandwritingStudio({
     }
     const liveStroke = liveStrokeRef.current;
     if (!liveStroke) return;
-    if (shapeSnappedRef.current) return;
+    if (shapeSnappedRef.current) {
+      const adjust = shapeAdjusterRef.current;
+      if (adjust) {
+        const result = adjust(canvasPoint(canvas, event));
+        liveStroke.points = result.points;
+        setShapeBadge((badge) =>
+          badge && badge.detail !== result.detail ? { ...badge, detail: result.detail } : badge,
+        );
+        scheduleLivePaint();
+      }
+      return;
+    }
     // Na dobra do canto não há papel: pontos ali nem entram no traço.
     const onPaper = sampleEvents.map(
       (sample) => !isInFoldCorner(bounds, sample.clientX, sample.clientY),
@@ -1992,10 +2013,17 @@ export function HandwritingStudio({
           )
         : [];
     scheduleLivePaint();
-    clearTimeout(holdTimerRef.current);
     if (shapeSnap && (activeToolRef.current === "pen" || activeToolRef.current === "highlighter")) {
-      holdTimerRef.current = setTimeout(snapHeldStroke, SHAPE_HOLD_MS);
-    }
+      const tip = liveStroke.points.at(-1);
+      const anchor = holdAnchorRef.current;
+      const tolerance = SHAPE_HOLD_JITTER_PX * (PAGE_WIDTH / Math.max(1, bounds.width));
+      // O tremor de uma mão parada não reinicia a contagem: só um movimento de verdade.
+      if (tip && (!anchor || Math.hypot(tip.x - anchor.x, tip.y - anchor.y) > tolerance)) {
+        clearTimeout(holdTimerRef.current);
+        holdAnchorRef.current = tip;
+        holdTimerRef.current = setTimeout(snapHeldStroke, SHAPE_HOLD_MS);
+      }
+    } else clearTimeout(holdTimerRef.current);
   }
 
   function snapHeldStroke() {
@@ -2003,11 +2031,16 @@ export function HandwritingStudio({
     if (!live || !drawingRef.current || shapeSnappedRef.current) return;
     const shape = recognizeShape(live.points);
     if (!shape) return;
+    const tip = live.points.at(-1);
+    shapeAdjusterRef.current = tip ? createShapeAdjuster(shape, tip) : null;
     live.points = shape.points;
     liveStabilizerRef.current = null;
     predictedRef.current = [];
     shapeSnappedRef.current = true;
     shapeKindRef.current = shape.kind;
+    setShapeBadge({ kind: shape.kind, detail: "" });
+    // Um toque de vibração confirma o encaixe, onde o aparelho tem.
+    navigator.vibrate?.(12);
     scheduleLivePaint();
   }
 
@@ -2021,6 +2054,9 @@ export function HandwritingStudio({
     )
       move(event);
     clearTimeout(holdTimerRef.current);
+    holdAnchorRef.current = null;
+    shapeAdjusterRef.current = null;
+    setShapeBadge(null);
     if (event.pointerType === "pen") {
       // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
       palmRef.current = { penDown: false, lastPenAt: performance.now() };
@@ -3841,12 +3877,31 @@ export function HandwritingStudio({
         inert={fileAction === "import"}
       >
         <HandwritingColorDock
-          active={
-            optionsOpen && ["pen", "highlighter", "ruler", "curve", "coordinates"].includes(tool)
-          }
+          active
           color={color}
-          onColorChange={setColor}
+          onColorChange={(next) => {
+            setColor(next);
+            // Escolher uma cor com a borracha na mão volta para a caneta, como nos outros apps.
+            if (tool === "eraser") setTool("pen");
+          }}
         />
+        <div className="handwriting-shape-badge" role="status" aria-live="polite">
+          {shapeBadge
+            ? [
+                {
+                  line: uiText("Reta"),
+                  ellipse: uiText(1665),
+                  rectangle: uiText(197),
+                  triangle: uiText(227),
+                  arrow: uiText(1666),
+                  polygon: uiText(228),
+                }[shapeBadge.kind],
+                shapeBadge.detail,
+              ]
+                .filter(Boolean)
+                .join(" ")
+            : null}
+        </div>
         <HandwritingPaperPicker
           paper={paper}
           paperColor={paperColor}

@@ -6,6 +6,7 @@ vi.mock("./handwriting-quick-colors", () => ({
   HandwritingQuickColors: () => <div className="handwriting-quick-colors">cores</div>,
 }));
 afterEach(() => {
+  localStorage.clear();
   cleanup();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
@@ -64,7 +65,7 @@ it("o teclado encaixa nas quatro bordas sem deixar a paleta no centro", () => {
 
 it.each([
   ["pointerup", "bottom"],
-  ["pointercancel", "left"],
+  ["pointercancel", "right"],
 ] as const)("arrastar e terminar com %s mantém a paleta encaixada", (endEvent, edge) => {
   vi.stubGlobal(
     "PointerEvent",
@@ -102,5 +103,19 @@ it("minimiza em estojo e reabre a paleta", () => {
   fireEvent.click(screen.getByRole("button", { name: "Minimizar paleta de cores" }));
   expect(screen.queryByText("cores")).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: "Abrir estojo de cores" }));
+  expect(screen.getByText("cores")).toBeTruthy();
+});
+
+it("a paleta minimizada continua minimizada depois de reabrir o editor", () => {
+  const dock = () => <HandwritingColorDock active color="#17151c" onColorChange={vi.fn()} />;
+  const first = render(dock());
+  expect(screen.getByText("cores")).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Minimizar paleta de cores" }));
+  first.unmount();
+  const second = render(dock());
+  expect(screen.queryByText("cores")).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Abrir estojo de cores" }));
+  second.unmount();
+  render(dock());
   expect(screen.getByText("cores")).toBeTruthy();
 });

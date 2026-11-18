@@ -2928,3 +2928,25 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
   text-decoration: underline;
   text-decoration-thickness: 2px;
 }
+
+/* Selo da forma acertada: nome e ângulo ou tamanho enquanto a caneta ajusta. Só informa. */
+.handwriting-shape-badge {
+  position: absolute;
+  inset: 12px auto auto 50%;
+  z-index: 41;
+  transform: translateX(-50%);
+  max-width: calc(100% - 32px);
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px 12px 6px 10px;
+  background: var(--surface);
+  box-shadow: 0 3px var(--soft);
+  color: var(--ink, currentColor);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.handwriting-shape-badge:empty {
+  display: none;
+}

@@ -5557,3 +5557,11 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Flashcards de prova: enunciado que fica no meio da frase ("atender o público com") se completa com a alternativa; pergunta ou ordem ("Assinale...") ganha "Resposta:".
 - PDF com fonte sem mapa de caracteres (o texto sai como símbolos): `isGarbled` reconhece e a página passa pelo OCR no lugar. Testado com um PDF falso; o OCR de uma prova real desse tipo (a prova de neonatologia enviada) não foi rodado nesta máquina e deve ser mais lento e menos preciso com alternativas.
 - Limite conhecido: gabarito com várias tabelas lado a lado por cargo e versão (o arquivo "todos os cargos") é lido em pedaços; o filtro de cobertura impede usar um pedaço no lugar do gabarito inteiro, então o resultado é o aviso de gabarito ambíguo, não resposta errada. Ler essas tabelas por posição na página ficou para depois.
+
+## Formas profissionais e paleta sempre à vista, 18/11/2026
+
+- Segurar a caneta parada acerta reta, seta, elipse, retângulo, triângulo e polígono (já existia). Novo: a pausa tolera 3 px de tremor sem reiniciar a contagem; círculo e quadrado perfeitos quando a mão quase os fez (diferença de até 10% e 8%); retas encaixam a cada 15 graus (eixos com 5 graus de tolerância, demais com 2,5); vibração curta ao acertar.
+- Novo: depois de acertar, continuar arrastando refaz a forma sem levantar a caneta (`handwriting-shape-adjust.ts`). Reta e seta seguem a caneta com ímã de 15 graus; formas fechadas giram e mudam de tamanho em torno do centro, com ímã no tamanho original e no giro zero. Um selo na tela mostra o nome e o ângulo ou o tamanho (`role="status"`).
+- A paleta de cores agora aparece em qualquer ferramenta, sem abrir as opções, e só sai quando a pessoa a minimiza (vira o estojo; a escolha é lembrada no aparelho, com `localStorage` protegido). Escolher cor com a borracha volta para a caneta.
+- Prova: testes unitários de reconhecimento, ajuste, paleta e minimizar; e2e `handwriting-shape-adjust.spec.ts` (claro e escuro, desktop e celular) e `notebook-quick-colors.spec.ts`.
+- Limites: ajuste ao vivo validado com mouse no e2e; com S Pen e dedo no aparelho real, não verificado. Foco de teclado: o selo é só informativo. Formas de vários traços (fechar com retas) seguem como antes.
