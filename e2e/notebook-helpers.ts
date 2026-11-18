@@ -7,10 +7,11 @@ export async function activateHandwritingPen(page: Page) {
   const options = editor.getByRole("button", { name: "Opções", exact: true });
   if ((await options.isVisible()) && (await options.getAttribute("aria-expanded")) !== "true")
     await options.click();
-  // A paleta única só existe com as opções abertas, fora do painel de espessura.
+  // A paleta fica sempre à vista; os testes de tinta precisam também do painel de opções aberto.
   const palette = editor.getByRole("group", { name: "Cores rápidas", exact: true });
-  for (let attempt = 0; attempt < 2 && !(await palette.isVisible()); attempt += 1)
-    await pen.click();
+  const panel = editor.locator(".handwriting-brush-panel, .handwriting-ink-options").first();
+  for (let attempt = 0; attempt < 2 && !(await panel.isVisible()); attempt += 1) await pen.click();
+  await expect(panel).toBeVisible();
   await expect(palette).toBeVisible();
   // Encaixar à direita deixa livre a região esquerda usada pelos testes de escrita.
   const grip = editor.getByRole("button", { name: "Mover paleta de cores", exact: true });

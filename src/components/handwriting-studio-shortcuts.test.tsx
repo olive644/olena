@@ -126,3 +126,26 @@ it("restaura a cor e a largura ao alternar entre caneta e marca-texto", () => {
   expect(width().value).toBe("76");
   expect(ink("Tinta Roxo").getAttribute("aria-pressed")).toBe("true");
 });
+
+it("a paleta de cores fica à vista em qualquer ferramenta, sem abrir as opções", () => {
+  renderStudio();
+  const palette = () => screen.getByRole("group", { name: "Cores rápidas" });
+  for (const key of ["KeyP", "KeyE", "KeyH", "KeyV"]) {
+    fireEvent.keyDown(window, { key: key.slice(3).toLowerCase(), code: key });
+    expect(palette().closest(".handwriting-color-dock")?.hasAttribute("hidden")).toBe(false);
+  }
+});
+
+it("escolher uma cor com a borracha na mão volta para a caneta", () => {
+  renderStudio();
+  fireEvent.keyDown(window, { key: "e", code: "KeyE" });
+  expect(screen.getByRole("button", { name: "Borracha" }).getAttribute("aria-pressed")).toBe(
+    "true",
+  );
+  fireEvent.click(
+    within(screen.getByRole("group", { name: "Cores rápidas" })).getByRole("button", {
+      name: "Tinta Roxo",
+    }),
+  );
+  expect(screen.getByRole("button", { name: "Caneta" }).getAttribute("aria-pressed")).toBe("true");
+});

@@ -28,6 +28,7 @@ import {
 import { notebookPaperTabs } from "../components/notebook-paper-tools";
 import type { ImportedPage } from "../components/page-import";
 import type { HandwritingDocument } from "../domain/handwriting";
+import type { NotebookPaperChange } from "../components/handwriting-paper-picker";
 import { openPrintWindow } from "../data/print-window";
 import { brandedExportCanvas, loadPaperExportMascot } from "../data/paper-export-art";
 import "./notebook-shelf.css";
@@ -448,6 +449,40 @@ export function NotesView({
     return assetId;
   }
 
+  // Segurar um tipo ou cor de folha no editor troca o caderno inteiro. As miniaturas novas são
+  // desenhadas aqui, uma folha por vez, para a prateleira e o caderno 3D mostrarem o papel certo.
+  async function applyPaperToNotebook(change: NotebookPaperChange): Promise<number> {
+    if (!activeNotebook) return 0;
+    const { renderPageWithPaper } = await import("../components/notebook-page-preview");
+    const previews: Record<string, string> = {};
+    let count = 0;
+    for (const page of notebookPages) {
+      let counted = false;
+      for (const asset of page.assets) {
+        if (!asset.handwriting) continue;
+        counted = true;
+        // A folha aberta é salva pelo próprio editor, já com o papel novo.
+        if (page.id === activePage?.id) continue;
+        try {
+          const preview = await renderPageWithPaper(asset, change);
+          if (preview) previews[asset.id] = preview;
+        } catch {
+          // Sem miniatura nova, a folha ainda assim ganha o papel; a miniatura se atualiza ao abri-la.
+        }
+      }
+      if (counted) count += 1;
+    }
+    dispatch({
+      type: "notebook/paper-applied",
+      notebookId: activeNotebook.id,
+      ...(change.paper ? { paper: change.paper } : {}),
+      ...(change.paperColor ? { paperColor: change.paperColor } : {}),
+      previews,
+      updatedAt: new Date().toISOString(),
+    });
+    return count;
+  }
+
   function importPages(pages: ImportedPage[]) {
     if (!activeNotebook || pages.length === 0) return;
     let lastPageId: string | null = null;
@@ -761,6 +796,7 @@ export function NotesView({
                   key={activePage.id}
                   {...(cloud ? { cloud } : {})}
                   notebookPages={notebookPages}
+                  onApplyPaperToNotebook={applyPaperToNotebook}
                   sharedCollaboration={collaboration}
                   {...(sharedDocument?.pageId === activePage.id
                     ? {

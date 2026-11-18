@@ -4001,5 +4001,10 @@
   "This exam has no answer key, so the answers are unknown. Send the answer key in the same file or as another source selected together.",
   "Choose the correct option.",
   "This file is only an answer key. Select the exam it belongs to together with it.",
-  "The answer key has several exams or versions and it was not possible to tell which one is this exam's. Select an answer key for this exam only."
+  "The answer key has several exams or versions and it was not possible to tell which one is this exam's. Select an answer key for this exam only.",
+  "Line",
+  "Sheets changed: {0}.",
+  "Hold to change the whole notebook",
+  "Apply to the whole notebook",
+  "Whole notebook"
 ]

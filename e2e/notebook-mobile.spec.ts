@@ -46,11 +46,12 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   expect(await editor.evaluate((node) => node.scrollTop)).toBe(0);
   await page.screenshot({ path: info.outputPath("caneta-mobile.png") });
   await editor.getByRole("button", { name: "Borracha", exact: true }).click();
+  // A paleta fica à vista em qualquer ferramenta; só some quando a pessoa a minimiza.
   await expect(
     editor
       .getByRole("group", { name: "Cores rápidas" })
       .getByRole("button", { name: "Tinta Roxo" }),
-  ).toBeHidden();
+  ).toBeVisible();
   await editor.getByRole("button", { name: "Histórico e zoom", exact: true }).click();
   await expect(editor.getByLabel("Zoom atual")).toBeVisible();
   await editor.getByRole("button", { name: "Recolher opções" }).click();
