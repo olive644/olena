@@ -15,7 +15,7 @@ test("configurações móveis começam no menu e voltam sem rolagem herdada", as
   ).toBeVisible();
   await expect(menu.getByRole("link", { name: "Instagram", exact: true })).toHaveAttribute(
     "href",
-    "https://www.instagram.com/olenastudy.app/",
+    "https://www.instagram.com/olenastudy.com.br/",
   );
   await expect(menu.getByRole("link", { name: "TikTok", exact: true })).toHaveAttribute(
     "rel",

@@ -1,9 +1,12 @@
 import type { HandwritingPoint } from "../domain/handwriting";
 import type { Stroke } from "./handwriting-types";
 import {
+  PEN_TAPER_FLOOR,
+  penPressures,
   simulatedPressureRange,
   simulatedPressures,
   taperFactors,
+  usesPenDynamics,
   usesSimulatedWidth,
 } from "./handwriting-ink-dynamics";
 
@@ -50,7 +53,11 @@ function targetDiameter(
 ): number {
   const pressure = stroke.tool === "pen" ? (simulated ?? point.pressure) : 0.7;
   if (stroke.brush === "ballpoint") return stroke.width * (0.45 + pressure * 0.35);
-  if (stroke.brush === "pencil") return stroke.width * (0.3 + pressure * 0.9);
+  // Lápis de caneta com inclinação: deitado, o grafite pega mais papel e o traço engrossa.
+  if (stroke.brush === "pencil")
+    return (
+      stroke.width * (0.3 + pressure * 0.9) * (stroke.dynamics === "pen" ? tiltShading(point) : 1)
+    );
   if (stroke.brush === "calligraphy") {
     return stroke.width * (0.35 + 2 * Math.abs(Math.sin(direction - nibAngle(point))));
   }
@@ -85,9 +92,17 @@ export function strokeRadii(
         simulatedPressureRange(stroke.brush),
       )
     : undefined;
+  const penMode = !simulated && usesPenDynamics({ ...stroke, points });
+  const pressures =
+    simulated ?? (penMode ? penPressures(points, Math.max(6, stroke.width * 2.2)) : undefined);
   const taper = simulated
     ? taperFactors(points, Math.max(12, stroke.width * 4), { end: !options.live })
-    : undefined;
+    : penMode
+      ? taperFactors(points, Math.max(10, stroke.width * 3), {
+          end: !options.live,
+          floor: PEN_TAPER_FLOOR,
+        })
+      : undefined;
   for (let index = 0; index < points.length; index += 1) {
     const point = points[index]!;
     const before = points[index - 1] ?? point;
@@ -96,7 +111,7 @@ export function strokeRadii(
     const dy = after.y - before.y;
     const direction = dx === 0 && dy === 0 ? Math.PI / 4 : Math.atan2(dy, dx);
     const target =
-      (targetDiameter(stroke, point, direction, simulated?.[index]) * (taper?.[index] ?? 1)) / 2;
+      (targetDiameter(stroke, point, direction, pressures?.[index]) * (taper?.[index] ?? 1)) / 2;
     let radius = target;
     if (index > 0) {
       const gap = Math.hypot(point.x - before.x, point.y - before.y);
