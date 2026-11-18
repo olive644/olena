@@ -418,7 +418,15 @@ export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedS
     candidates.push({ kind: "ellipse", vertices: ring, score: ellipseError * 0.6 });
   }
 
-  const best = candidates.sort((a, b) => a.score - b.score)[0];
+  // Uma forma simples ganha da complicada: um triângulo ou retângulo feito à mão, com cantos
+  // arredondados ou gancho na ponta, também cabe num polígono de 5 a 8 lados com folga ainda
+  // menor (mais vértices sempre ajustam melhor), mas a pessoa quis a forma simples. Um polígono
+  // de verdade não cabe num triângulo (erro grande), então só some quando o simples já serve.
+  const simple = candidates.some(
+    (candidate) => candidate.kind === "triangle" || candidate.kind === "rectangle",
+  );
+  const pool = simple ? candidates.filter((candidate) => candidate.kind !== "polygon") : candidates;
+  const best = pool.sort((a, b) => a.score - b.score)[0];
   if (!best) return null;
   return { kind: best.kind, points: densify(best.vertices, pressure, true) };
 }

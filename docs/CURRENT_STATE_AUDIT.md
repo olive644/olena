@@ -5574,3 +5574,15 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Sons sintetizados na hora (`notebook-paper-sound.ts`), mudos com os efeitos sonoros desligados. Com movimento reduzido não há varredura nem brilho animado.
 - Prova: testes de reducer, do seletor (tempo, soltar cedo, clique que sobra, botão alternativo) e e2e `notebook-paper-hold.spec.ts` (claro e escuro, desktop e celular).
 - Limites: o desenho das miniaturas de cadernos muito grandes (dezenas de folhas) não foi medido; a troca do caderno compartilhado em colaboração não propaga para outros participantes além do fluxo normal de salvamento; o som não foi ouvido em aparelho real.
+
+## Chiado preso depois de trocar o caderno inteiro, 18/11/2026
+
+- Sintoma: depois do acorde de conclusão ficava um apito contínuo. Causa: ao completar a pressão, o código descartava a função que parava o tom de subida em vez de chamá-la, e o oscilador nunca recebia `stop`.
+- Correção: a subida agora nasce com parada agendada (duração mais 150 ms), então nunca passa do tempo; ao completar, a função de parar é chamada antes do acorde. Testes em `notebook-paper-sound.test.ts` (parada agendada na criação, parar duas vezes é seguro, cada nota do acorde tem fim).
+- Limite: o som real não foi ouvido em aparelho; a prova é pelo agendamento de `start` e `stop` do Web Audio.
+
+## Triângulo reconhecido como polígono, 18/11/2026
+
+- Sintoma: um triângulo claramente desenhado virava "Polígono" no segurar para acertar. Causa: o polígono de 5 a 8 lados usa uma tolerância bem mais apertada e, com mais vértices, sempre ajusta melhor um traço com cantos arredondados ou gancho na ponta, então vencia o triângulo na comparação de erro.
+- Correção: se um triângulo ou retângulo já serve, o polígono sai da disputa (um polígono de verdade não cabe num triângulo, o erro é grande). Teste novo reproduz o bug (falha sem a correção): triângulo com cantos arredondados, gancho e tremor de 0, 2 e 4; e um hexágono de verdade continua polígono.
+- Limite: verificado com traços sintéticos, não com a mão de várias pessoas; se outra forma for confundida, o caminho é o mesmo (a simples ganha da complicada).
