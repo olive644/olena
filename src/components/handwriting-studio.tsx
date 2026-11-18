@@ -66,7 +66,7 @@ import { HelenaLoading } from "./helena-loading";
 import type { ImportedPage } from "./page-import";
 import { NotebookPageBook } from "./notebook-page-book";
 import { HandwritingHistoryBar } from "./handwriting-history-bar";
-import { HandwritingPaperPicker } from "./handwriting-paper-picker";
+import { HandwritingPaperPicker, type NotebookPaperChange } from "./handwriting-paper-picker";
 import { HandwritingWritingWindow } from "./handwriting-writing-window";
 import { HandwritingColorDock } from "./handwriting-color-dock";
 import { HandwritingPenMeterPanel } from "./handwriting-pen-meter-panel";
@@ -167,6 +167,8 @@ type HandwritingStudioProps = {
   captureActions?: import("react").ReactNode;
   cloud?: CloudSyncState;
   notebookPages?: StudyNote[];
+  /** Troca o papel e/ou a cor de todas as folhas do caderno; devolve quantas folhas mudaram. */
+  onApplyPaperToNotebook?: (change: NotebookPaperChange) => Promise<number> | number;
   currentPageId?: string;
   onSelectPage?: (id: string) => void;
   onCreatePage?: () => void;
@@ -198,6 +200,7 @@ const SHAPE_HOLD_JITTER_PX = 3;
 export function HandwritingStudio({
   captureActions,
   notebookPages = [],
+  onApplyPaperToNotebook,
   currentPageId,
   onSelectPage,
   onCreatePage,
@@ -767,6 +770,37 @@ export function HandwritingStudio({
     const timer = window.setTimeout(() => setSaveConfirmation(0), 4000);
     return () => window.clearTimeout(timer);
   }, [saveConfirmation]);
+
+  // Varredura de brilho sobre a folha quando o caderno inteiro é trocado.
+  function sweepNotebook() {
+    const sheet = canvasRef.current?.closest(".handwriting-page-shell");
+    if (!sheet || isMotionReduced()) return;
+    const overlay = document.createElement("div");
+    overlay.className = "handwriting-notebook-sweep";
+    overlay.setAttribute("aria-hidden", "true");
+    for (let index = 0; index < 3; index += 1) {
+      const band = document.createElement("span");
+      band.style.setProperty("--i", String(index));
+      overlay.append(band);
+    }
+    for (let index = 0; index < 8; index += 1) {
+      const spark = document.createElement("i");
+      spark.style.setProperty("--i", String(index));
+      spark.style.setProperty("--x", `${8 + ((index * 37) % 84)}%`);
+      spark.style.setProperty("--y", `${10 + ((index * 53) % 76)}%`);
+      overlay.append(spark);
+    }
+    sheet.append(overlay);
+    window.setTimeout(() => overlay.remove(), 1700);
+  }
+
+  async function applyPaperToNotebook(change: NotebookPaperChange): Promise<number> {
+    if (change.paper) selectPaper(change.paper);
+    if (change.paperColor) selectPaperColor(change.paperColor);
+    // As opções ficam abertas: o brilho do botão e o aviso mostram o que aconteceu.
+    sweepNotebook();
+    return (await onApplyPaperToNotebook?.(change)) ?? 0;
+  }
 
   function selectPaperColor(nextColor: HandwritingPaperColor) {
     if (nextColor !== paperColor) animatePaperChange();
@@ -3921,6 +3955,7 @@ export function HandwritingStudio({
             selectPaperColor(next);
             setPaperSectionsOpen({ paper: false, color: false });
           }}
+          {...(onApplyPaperToNotebook ? { onApplyToNotebook: applyPaperToNotebook } : {})}
         />
 
         <div

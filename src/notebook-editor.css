@@ -2950,3 +2950,158 @@ html[data-reduce-motion="true"] .handwriting-selection-float__menu {
 .handwriting-shape-badge:empty {
   display: none;
 }
+
+/* Segurar um tipo ou cor de folha troca o caderno inteiro: a barra enche, depois brilha. */
+.handwriting-paper-options button {
+  position: relative;
+  isolation: isolate;
+}
+.handwriting-paper-options button.is-holding::after {
+  content: "";
+  position: absolute;
+  inset: auto 4px 3px 4px;
+  height: 5px;
+  z-index: 2;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #facc15, #fff1a8);
+  transform-origin: left center;
+  animation: paper-hold-fill var(--hold-ms, 700ms) linear forwards;
+  pointer-events: none;
+}
+.handwriting-paper-options button.is-holding {
+  animation: paper-hold-press var(--hold-ms, 700ms) ease-in forwards;
+}
+.handwriting-paper-options button.is-applied::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  z-index: -1;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 12% 18%, #facc15 0 3px, transparent 4px),
+    radial-gradient(circle at 88% 14%, #fff1a8 0 2.5px, transparent 3.5px),
+    radial-gradient(circle at 92% 82%, #c8a2ff 0 3px, transparent 4px),
+    radial-gradient(circle at 10% 86%, #8bd1f0 0 2.5px, transparent 3.5px),
+    radial-gradient(circle, rgb(250 204 21 / 0.5), transparent 70%);
+  animation: paper-applied-burst 1000ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  pointer-events: none;
+}
+.handwriting-paper-options .handwriting-paper-notebook-all {
+  width: auto;
+  min-width: 48px;
+  padding-inline: 10px;
+}
+.handwriting-paper-picker .handwriting-paper-notebook-all .paper-picker-label {
+  display: inline;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+.handwriting-paper-notice {
+  flex: 1 0 100%;
+  text-align: center;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--ink, currentColor);
+}
+.handwriting-paper-notice:empty {
+  display: none;
+}
+@keyframes paper-hold-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes paper-hold-press {
+  to {
+    transform: scale(1.08);
+  }
+}
+@keyframes paper-applied-burst {
+  from {
+    opacity: 1;
+    transform: scale(0.6);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+/* Varredura na folha: as páginas do caderno passam e brilham. */
+.handwriting-notebook-sweep {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  overflow: hidden;
+  pointer-events: none;
+}
+.handwriting-notebook-sweep > span {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(100deg, transparent 38%, rgb(255 255 255 / 0.75) 50%, transparent 62%),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.06) 0 2px, transparent 2px 14px);
+  transform: translateX(-110%);
+  animation: notebook-sweep 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 110ms);
+}
+.handwriting-notebook-sweep > i {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 10px;
+  height: 10px;
+  background: #facc15;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  opacity: 0;
+  animation: notebook-sparkle 900ms ease-out forwards;
+  animation-delay: calc(var(--i, 0) * 70ms + 250ms);
+}
+@keyframes notebook-sweep {
+  to {
+    transform: translateX(110%);
+  }
+}
+@keyframes notebook-sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(0deg);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.8) rotate(45deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.4) rotate(90deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .handwriting-paper-options button.is-holding,
+  .handwriting-paper-options button.is-applied::before,
+  .handwriting-notebook-sweep {
+    animation: none;
+  }
+  .handwriting-notebook-sweep {
+    display: none;
+  }
+}
+.handwriting-paper-options .handwriting-paper-notebook-all {
+  flex: 1 0 100%;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 6px 12px 6px 10px;
+  background: var(--surface);
+  color: var(--ink, currentColor);
+  box-shadow: 0 3px var(--soft);
+}
+.handwriting-paper-options .handwriting-paper-notebook-all:is(:hover, :focus-visible) {
+  background: var(--notebook-purple);
+  color: #fff9ef;
+}

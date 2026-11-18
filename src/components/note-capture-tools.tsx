@@ -11,6 +11,7 @@ import type { HandwritingDocument } from "../domain/handwriting";
 import type { NoteAsset, StudyNote } from "../domain/workspace";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import { HandwritingStudio } from "./handwriting-studio";
+import type { NotebookPaperChange } from "./handwriting-paper-picker";
 import { PaperActionIcon } from "./paper-action-icon";
 import type { ImportedPage } from "./page-import";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
@@ -22,6 +23,7 @@ type NoteCaptureToolsProps = {
   sharedAuthor?: string;
   cloud?: CloudSyncState;
   notebookPages?: StudyNote[];
+  onApplyPaperToNotebook?: (change: NotebookPaperChange) => Promise<number> | number;
   autoOpen?: boolean;
   onSelectPage?: (id: string) => void;
   onCreatePage?: () => void;
@@ -206,6 +208,7 @@ function NoteCaptureTools({
   sharedAuthor,
   cloud,
   notebookPages = [],
+  onApplyPaperToNotebook,
   autoOpen = false,
   onSelectPage,
   onCreatePage,
@@ -620,6 +623,7 @@ function NoteCaptureTools({
                   captureActions={captureActions}
                   {...(cloud ? { cloud } : {})}
                   notebookPages={notebookPages}
+                  {...(onApplyPaperToNotebook ? { onApplyPaperToNotebook } : {})}
                   currentPageId={draftPageKey}
                   {...(onSelectPage ? { onSelectPage } : {})}
                   {...(onCreatePage ? { onCreatePage } : {})}
