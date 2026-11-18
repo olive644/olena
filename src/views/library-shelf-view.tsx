@@ -368,11 +368,22 @@ function SummaryMarkdown({ content }: { content: string }) {
 /** Mensagem para o erro de uma prova sem gabarito ou só com figuras, ou undefined para outros erros. */
 function examErrorText(error: unknown): string | undefined {
   if (!(error instanceof Error) || error.name !== "ExamError") return undefined;
-  return (error as Error & { reason?: string }).reason === "needs-figures"
-    ? uiText("As questões dessa prova dependem de figuras ou gráficos que o texto do PDF não traz.")
-    : uiText(
+  switch ((error as Error & { reason?: string }).reason) {
+    case "needs-figures":
+      return uiText(
+        "As questões dessa prova dependem de figuras ou gráficos que o texto do PDF não traz.",
+      );
+    case "only-answer-key":
+      return uiText("Esse arquivo é só um gabarito. Selecione junto a prova a que ele pertence.");
+    case "ambiguous-key":
+      return uiText(
+        "O gabarito tem várias provas ou versões e não deu para saber qual é a desta prova. Selecione um gabarito só dela.",
+      );
+    default:
+      return uiText(
         "Essa prova não traz o gabarito, então não dá para saber as respostas. Envie o gabarito no mesmo arquivo ou como outra fonte selecionada junto.",
       );
+  }
 }
 
 export function LibraryFolderContents({
@@ -638,7 +649,12 @@ export function LibraryFolderContents({
       const { examProblem, examQuizQuestions, quizQuestionsFromDocument, splitExams } =
         await import("../domain/pdf-summary");
       const documents = await readDocuments();
-      const { exams, others } = splitExams(documents);
+      const { exams, others, keyFiles } = splitExams(documents);
+      if (exams.length === 0 && others.length === 0 && keyFiles.length > 0)
+        throw Object.assign(new Error("ExamError"), {
+          name: "ExamError",
+          reason: "only-answer-key",
+        });
       // Prova do usuário: as questões e o gabarito do arquivo, sem reescrever nada.
       const examLimit = quizLength === "short" ? 10 : quizLength === "long" ? 50 : 20;
       const fromExams: SourceQuiz["questions"] = [];
@@ -747,7 +763,12 @@ export function LibraryFolderContents({
         kind: CardOrigin;
       }[] = [];
       const documents = await readDocuments();
-      const { exams, others } = splitExams(documents);
+      const { exams, others, keyFiles } = splitExams(documents);
+      if (exams.length === 0 && others.length === 0 && keyFiles.length > 0)
+        throw Object.assign(new Error("ExamError"), {
+          name: "ExamError",
+          reason: "only-answer-key",
+        });
       const sets: {
         source: (typeof selectedSources)[number];
         fileTitle: string;

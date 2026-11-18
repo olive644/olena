@@ -1,3 +1,4 @@
+import { readKeyLines } from "./exam-key";
 import type { StructuredDocument } from "./types";
 
 // Leitor de prova: reconhece questões numeradas com alternativas (A, B, C...) e o gabarito, nos
@@ -21,9 +22,18 @@ export type ExamQuestion = {
   needsFigure: boolean;
 };
 
+/** Um gabarito com o título da prova a que pertence (arquivo com várias provas ou versões). */
+export type KeySection = { title: string; key: Record<number, number> };
+
 export type ParsedExam = {
   questions: ExamQuestion[];
+  /** Começo do texto do arquivo, para casar a prova com o gabarito certo. */
+  head: string;
+  /** Gabaritos que estão só em linhas de resposta (sem a prova), um por título. */
+  keys: KeySection[];
   hasAnswerKey: boolean;
+  /** Havia vários gabaritos e nenhum combinou melhor com esta prova. */
+  keyAmbiguous?: boolean;
   /** Gabarito lido no arquivo: número da questão para índice da alternativa. */
   key: Record<number, number>;
   answered: number;
@@ -32,7 +42,7 @@ export type ParsedExam = {
 
 const LETTERS = ["A", "B", "C", "D", "E"];
 const MARKER =
-  /(?<![\p{L}\p{N}])(?:(?<q>quest[ãa]o\s*(?:n[º°o.]*\s*)?(?<qn>\d{1,3})\s*[.)\-–:]?)|(?<n>(?<nn>\d{1,3})\s*[.)\-–]\s+(?=\p{Lu}))|(?<o>\(?(?<ol>[A-Ea-e])\)\s*)|(?<k>(?:gabarito|respostas?(?:\s+correta)?|alternativa\s+correta|chave\s+de\s+corre[çc][ãa]o|answer\s+key)(?![\p{L}])\s*[:\-–]?\s*))/giu;
+  /(?<![\p{L}\p{N}])(?:(?<q>quest[ãa]o\s*(?:n[º°o.]*\s*)?(?<qn>\d{1,3})\s*[.)\-–:]?)|(?<n>(?<nn>\d{1,3})\s*[.)\-–]\s+(?=[\p{L}"“.…(]))|(?<o>\(?(?<ol>[A-Ea-e])\)+\s*)|(?<k>(?:gabarito|respostas?(?:\s+correta)?|alternativa\s+correta|chave\s+de\s+corre[çc][ãa]o|answer\s+key)(?![\p{L}])\s*[:\-–]?\s*))/giu;
 const DOT_OPTION = /^([A-Ea-e])\.\s+(?=\S)/u;
 const INLINE_ANSWER =
   /(?:gabarito|resposta(?:\s+correta)?|alternativa\s+correta)\s*[:\-–]\s*\(?([A-Ea-e])\)?(?![\p{L}])/iu;
@@ -49,6 +59,9 @@ type Draft = {
   page: number;
 };
 
+const SHARED =
+  /quest[õo]es\s+(?:de\s+)?n[úu]meros?\s+(\d{1,3})\s*(?:a|à|ao|e)\s*(\d{1,3})\s+(?:baseiam|referem|relacionam)/i;
+const SUPPORT_LEAD = /^(?:aten[çc][ãa]o|leia|texto|observe|considere)\b/i;
 const endsSentence = (text: string) => /[.?!;:]$/.test(text);
 const clean = (text: string) => text.replace(/\s+/g, " ").trim();
 
@@ -59,6 +72,9 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
   let current: Draft | undefined;
   let lastNumber = 0;
   let support = "";
+  /** Depois de começar o texto de apoio, as linhas seguintes são dele até a próxima questão. */
+  let supportOpen = false;
+  let shared: { from: number; to: number; text: string } | undefined;
   let inKey = false;
   let keyNumber: number | undefined;
   /** Lê pares "número letra" do gabarito, inclusive quando o número já veio como marcador. */
@@ -77,7 +93,16 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
   /** Texto solto: continua o enunciado, a última alternativa ou vira apoio da próxima questão. */
   function continueWith(text: string, startOfBlock: boolean) {
     const piece = clean(text);
-    if (!piece || !current) return;
+    if (!piece) return;
+    if (/^aten[çc][ãa]o\b/i.test(piece) && SHARED.test(piece)) {
+      support = piece;
+      supportOpen = true;
+      return;
+    }
+    if (!current) {
+      support = clean(`${support} ${piece}`);
+      return;
+    }
     const inline = INLINE_ANSWER.exec(piece);
     if (inline) {
       current.answer = LETTERS.indexOf(inline[1]!.toUpperCase());
@@ -92,18 +117,25 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
     const last = current.options.length - 1;
     const previous = current.options[last]!;
     const looksLikeSupport =
-      startOfBlock &&
-      current.options.length >= 3 &&
-      endsSentence(previous) &&
-      /^\p{Lu}/u.test(piece) &&
-      piece.length > 60;
-    if (looksLikeSupport) support = clean(`${support} ${piece}`);
-    else current.options[last] = clean(`${previous} ${piece}`);
+      supportOpen ||
+      (startOfBlock &&
+        current.options.length >= 3 &&
+        endsSentence(previous) &&
+        /^\p{Lu}/u.test(piece) &&
+        (piece.length > 60 || SUPPORT_LEAD.test(piece)));
+    if (looksLikeSupport) {
+      supportOpen = true;
+      support = clean(`${support} ${piece}`);
+    } else current.options[last] = clean(`${previous} ${piece}`);
   }
 
   // As linhas cruas do PDF não passam pela classificação de títulos e ruído da montagem de parágrafos.
-  for (const block of doc.lines ?? doc.blocks) {
+  const source = doc.lines ?? doc.blocks;
+  const { sections: keySections, consumed } = readKeyLines(source);
+  for (const [lineIndex, block] of source.entries()) {
+    if (consumed.has(lineIndex)) continue;
     const text = block.text;
+    if (/^[\s_\-=*.\u2022\u2014\u2013]{5,}$/.test(text)) continue;
     const markers = [...text.matchAll(MARKER)];
     const dot = DOT_OPTION.exec(text.trimStart());
     let cursor = 0;
@@ -162,7 +194,7 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
       if (item.kind === "q" || item.kind === "n") {
         const number = Number(item.value);
         // "1. item" (minúscula) é lista, e só "1. Item" abre questão
-        const capital = item.kind === "q" || /^\p{Lu}/u.test(text.charAt(item.end));
+        const capital = item.kind === "q" || !/^\p{Ll}/u.test(text.charAt(item.end));
         const accepts =
           capital &&
           number >= 1 &&
@@ -170,14 +202,35 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
         if (accepts) {
           if (current) drafts.push(current);
           lastNumber = number;
+          const range = SHARED.exec(support);
+          if (range) {
+            shared = {
+              from: Number(range[1]),
+              to: Number(range[2]),
+              text: clean(
+                support.replace(
+                  /^\s*aten[çc][ãa]o:?[^.]*?(?:baseiam|referem|relacionam)\S*\s+(?:no|ao|aos|nos)\s+\S+(?:\s+(?:apresentado\s+abaixo|abaixo|a\s+seguir|seguinte))?\.?\s*/i,
+                  "",
+                ),
+              ),
+            };
+          }
+          const covered = shared && number >= shared.from && number <= shared.to;
+          // Antes da primeira questão só vale como apoio o que parece texto-base, não as instruções.
+          const firstQuestion = drafts.length === 0 && current === undefined;
+          const looksLikeBase =
+            SUPPORT_LEAD.test(support) ||
+            /\((?:adaptado|fonte|dispon[ií]vel|extra[ií]do)/i.test(support);
+          const own = range || (firstQuestion && !looksLikeBase) ? "" : support;
           current = {
             number,
-            context: support,
+            context: covered ? shared!.text : own,
             stem: "",
             options: [],
             page: block.page,
           };
           support = "";
+          supportOpen = false;
         } else {
           // Número de lista dentro do enunciado ou da alternativa: é texto.
           cursor = item.index;
@@ -193,9 +246,11 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
     const tail = text.slice(cursor);
     if (inKey) {
       readKey(tail);
-    } else if (current) {
-      if (current.options.length === 0 && pending.length === 0) continueWith(tail, true);
-      else continueWith(tail, first);
+    } else if (current && current.options.length === 0 && pending.length === 0) {
+      continueWith(tail, true);
+    } else {
+      // sem questão aberta, o texto solto é apoio da próxima (instruções e texto-base)
+      continueWith(tail, first);
     }
   }
   if (current) drafts.push(current);
@@ -203,7 +258,8 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
   const questions: ExamQuestion[] = drafts
     .filter((draft) => draft.options.filter(Boolean).length >= 3 && draft.stem.length >= 8)
     .map((draft) => {
-      const keyed = key.get(draft.number);
+      const own = keySections.length === 1 ? keySections[0]!.key[draft.number] : undefined;
+      const keyed = key.get(draft.number) ?? own;
       const answer = draft.answer ?? keyed;
       const options = draft.options.map(clean);
       return {
@@ -219,8 +275,15 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
   const answered = questions.filter((question) => question.answer !== undefined).length;
   return {
     questions,
-    hasAnswerKey: key.size > 0 || answered > 0,
-    key: Object.fromEntries(key),
+    head: clean(
+      source
+        .slice(0, 40)
+        .map((line) => line.text)
+        .join(" "),
+    ).slice(0, 900),
+    keys: keySections,
+    hasAnswerKey: key.size > 0 || answered > 0 || keySections.length > 0,
+    key: { ...(keySections.length === 1 ? keySections[0]!.key : {}), ...Object.fromEntries(key) },
     answered,
     figureQuestions: questions.filter((question) => question.needsFigure).length,
   };

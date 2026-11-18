@@ -229,9 +229,12 @@ export function SourceExamStudy({
             )}
             {quiz.questions.map((q, index) => (
               <section className="source-exam-question" key={index}>
+                {q.prompt.includes("\n\n") && (
+                  <p className="source-exam-context">{q.prompt.split("\n\n")[0]}</p>
+                )}
                 <h2>
                   <span>{index + 1}</span>
-                  {q.prompt}
+                  {q.prompt.includes("\n\n") ? q.prompt.split("\n\n").slice(1).join(" ") : q.prompt}
                   <small>{uiText("1 ponto")}</small>
                 </h2>
                 <div

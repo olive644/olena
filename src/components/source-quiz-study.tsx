@@ -165,7 +165,7 @@ export function SourceQuizStudy({
                     {index + 1} {uiText("de")} {queue.length}
                   </small>
                   <h3>{uiText("Escolha a alternativa correta.")}</h3>
-                  <p>{q.prompt}</p>
+                  <p style={{ whiteSpace: "pre-line" }}>{q.prompt}</p>
                 </div>
               </div>
               <div className="source-quiz-answers" role="group" aria-label={uiText("Alternativas")}>

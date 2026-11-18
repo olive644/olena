@@ -83,7 +83,7 @@ describe("prova em PDF de verdade", () => {
       expect(exam.questions[0]!.options[1]).toBe("Fotossíntese");
       expect(exam.questions[3]!.options[1]).toContain("Toma a forma do recipiente");
       // cabeçalho do colégio não entra em nenhuma alternativa
-      expect(JSON.stringify(exam)).not.toContain("Colégio Exemplo");
+      expect(JSON.stringify(exam.questions)).not.toContain("Colégio Exemplo");
       expect(studyableQuestions(exam)).toHaveLength(5);
       expect(examQuizQuestions(exam)).toHaveLength(5);
     });

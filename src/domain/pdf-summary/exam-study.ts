@@ -7,8 +7,8 @@ import type { AutoFlashcard } from "./summarize";
 // é inventado: o erro avisa o que falta.
 
 export class ExamError extends Error {
-  readonly reason: "no-answer-key" | "needs-figures";
-  constructor(reason: "no-answer-key" | "needs-figures") {
+  readonly reason: "no-answer-key" | "needs-figures" | "only-answer-key" | "ambiguous-key";
+  constructor(reason: ExamError["reason"]) {
     super(reason);
     this.name = "ExamError";
     this.reason = reason;
@@ -17,15 +17,20 @@ export class ExamError extends Error {
 
 const letter = (index: number) => String.fromCharCode(65 + index);
 
+/** Texto de apoio que ainda cabe num cartão, e num enunciado de quiz ou simulado. */
+const MAX_CARD_CONTEXT = 400;
+const MAX_QUIZ_CONTEXT = 2500;
+
 /** Por que uma prova não rende material, ou undefined se rende. */
 export function examProblem(exam: ParsedExam): ExamError | undefined {
   if (studyableQuestions(exam).length > 0) return undefined;
+  if (exam.keyAmbiguous) return new ExamError("ambiguous-key");
   return new ExamError(exam.hasAnswerKey ? "needs-figures" : "no-answer-key");
 }
 
 /** Enunciado completo, com o texto de apoio quando é curto. */
 export function fullStem(question: ExamQuestion): string {
-  return question.context && question.context.length <= 400
+  return question.context && question.context.length <= MAX_CARD_CONTEXT
     ? `${question.context} ${question.stem}`
     : question.stem;
 }
@@ -37,19 +42,26 @@ export function fullStem(question: ExamQuestion): string {
 export function examFlashcards(exam: ParsedExam): AutoFlashcard[] {
   const cards: AutoFlashcard[] = [];
   for (const question of studyableQuestions(exam)) {
+    // "Segundo o texto..." sem o texto não dá para responder, e texto longo não cabe no cartão.
+    if (question.context.length > MAX_CARD_CONTEXT) continue;
     const right = question.answer!;
     const correct = question.options[right]!;
     const wrongs = question.options.map((_, index) => index).filter((index) => index !== right);
     const wrong = wrongs[question.number % wrongs.length]!;
     const stem = fullStem(question);
+    // Enunciado que fica no meio da frase ("... atender o público com") se completa com a alternativa;
+    // pergunta ou ordem ("Assinale...") ganha "Resposta:".
+    const completes = !/[?.!]$/.test(stem.trim());
+    const statement = (option: string) =>
+      completes ? `${stem} ${option}` : `${stem} Resposta: ${option}`;
     cards.push({
-      front: `${stem} Resposta: ${correct}`,
+      front: statement(correct),
       back: `Verdadeiro. Gabarito: ${letter(right)}) ${correct}`,
       page: question.page,
       kind: "exam",
     });
     cards.push({
-      front: `${stem} Resposta: ${question.options[wrong]!}`,
+      front: statement(question.options[wrong]!),
       back: `Falso. O gabarito é ${letter(right)}) ${correct}`,
       page: question.page,
       kind: "exam",
@@ -71,12 +83,13 @@ export function examQuizQuestions(exam: ParsedExam): ExamQuizQuestion[] {
   return studyableQuestions(exam)
     .filter(
       (question) =>
+        question.context.length <= MAX_QUIZ_CONTEXT &&
         question.options.length <= 5 &&
         new Set(question.options.map((option) => option.toLowerCase())).size ===
           question.options.length,
     )
     .map((question) => ({
-      prompt: fullStem(question),
+      prompt: question.context ? `${question.context}\n\n${question.stem}` : question.stem,
       options: question.options,
       answer: question.answer!,
       explanation: `Gabarito: ${letter(question.answer!)}) ${question.options[question.answer!]!}`,

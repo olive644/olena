@@ -46,7 +46,9 @@ describe("quiz de verdade a partir de texto", () => {
   it("a alternativa certa de 'de acordo' está no texto e a de 'NÃO de acordo' não está", async () => {
     const source = squash(fixtureAsText(computingHistory));
     const questions = await questionsOf(computingHistory, "medium");
-    const agree = questions.filter((q) => q.prompt.startsWith("Qual das afirmações está de acordo"));
+    const agree = questions.filter((q) =>
+      q.prompt.startsWith("Qual das afirmações está de acordo"),
+    );
     const disagree = questions.filter((q) => q.prompt.includes("NÃO está de acordo"));
     expect(agree.length + disagree.length).toBeGreaterThan(0);
     for (const question of agree) {

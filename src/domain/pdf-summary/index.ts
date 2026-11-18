@@ -1,4 +1,5 @@
 import { applyAnswerKey, isExam, parseExam, type ParsedExam } from "./exam";
+import { pickKeySection } from "./exam-key";
 import { structureText } from "./layout";
 import { readPdf, type PdfDocumentLike, type ReadPdfOptions } from "./pdf-source";
 import {
@@ -85,28 +86,37 @@ export function documentFromText(text: string, title: string): StructuredDocumen
 }
 
 /**
- * Separa as provas dos demais arquivos. O gabarito que vem num arquivo só dele é aplicado à prova
- * sem gabarito quando há uma prova e um gabarito sem ambiguidade; senão cada prova usa o seu.
+ * Separa as provas, os arquivos só de gabarito e os demais. O gabarito de um arquivo só dele é
+ * escolhido para cada prova sem gabarito pelo título (tipo, versão, cargo): com um só gabarito usa
+ * esse, com vários exige que um deles combine melhor que os outros, senão a prova fica sem gabarito
+ * (`keyAmbiguous`) em vez de arriscar o errado.
  */
 export function splitExams<T extends { doc: StructuredDocument }>(
   items: readonly T[],
-): { exams: (T & { exam: ParsedExam })[]; others: T[] } {
+): { exams: (T & { exam: ParsedExam })[]; others: T[]; keyFiles: T[] } {
   const parsed = items.map((item) => ({ item, exam: parseExam(item.doc) }));
   const exams = parsed.filter(({ exam }) => isExam(exam));
   const keyOnly = parsed.filter(
-    ({ exam }) => !isExam(exam) && Object.keys(exam.key).length > 0 && exam.questions.length < 2,
+    ({ exam }) => !isExam(exam) && exam.keys.length > 0 && exam.questions.length < 2,
   );
-  const unanswered = exams.filter(({ exam }) => exam.answered === 0);
-  const merged = keyOnly.length === 1 && unanswered.length === 1 ? keyOnly[0]!.exam.key : undefined;
-  const usedKey = merged !== undefined ? keyOnly[0] : undefined;
+  const pool = keyOnly.flatMap(({ exam }) => exam.keys);
   return {
-    exams: exams.map(({ item, exam }) => ({
-      ...item,
-      exam: merged !== undefined && exam.answered === 0 ? applyAnswerKey(exam, merged) : exam,
-    })),
+    exams: exams.map(({ item, exam }) => {
+      if (exam.answered > 0 || pool.length === 0) return { ...item, exam };
+      const section = pickKeySection(
+        exam.head,
+        pool,
+        exam.questions.map((question) => question.number),
+      );
+      return {
+        ...item,
+        exam: section ? applyAnswerKey(exam, section.key) : { ...exam, keyAmbiguous: true },
+      };
+    }),
     others: parsed
-      .filter(({ exam }) => !isExam(exam) && (usedKey === undefined || exam !== usedKey.exam))
+      .filter(({ exam }) => !isExam(exam) && !keyOnly.some((entry) => entry.exam === exam))
       .map(({ item }) => item),
+    keyFiles: keyOnly.map(({ item }) => item),
   };
 }
 
