@@ -15,6 +15,8 @@ import {
 } from "./facts";
 import type { CardOrigin } from "../flashcard-feedback";
 import { falseVariant, looksLikeStatement, numbersIn, type DefinitionParts } from "./true-false";
+import { isExam, parseExam } from "./exam";
+import { examFlashcards, examProblem, examSummary } from "./exam-study";
 import {
   contentStems,
   countWords,
@@ -696,6 +698,25 @@ export async function summarizeDocument(
 ): Promise<SummaryResult> {
   const progress = (fraction: number, stage: SummaryStage) => options.onProgress?.(fraction, stage);
   progress(0, "structuring");
+  // Prova inteira: o resumo mostra as questões e o gabarito do arquivo, não frases soltas.
+  const exam = parseExam(doc);
+  if (isExam(exam)) {
+    const markdown = examSummary(exam, doc.title);
+    const words = countWords(markdown);
+    return {
+      title: doc.title,
+      markdown,
+      stats: {
+        pages: doc.pages,
+        sections: 1,
+        sentences: exam.questions.length,
+        selectedSentences: exam.questions.length,
+        wordsIn: words,
+        wordsOut: words,
+        ratio: 1,
+      },
+    };
+  }
   const prepared = prepare(doc);
   const { sections, sentences, language } = prepared;
   const wordsIn = sentences.reduce((sum, sentence) => sum + countWords(sentence.text), 0);
@@ -1086,6 +1107,12 @@ export async function flashcardsFromDocument(
   doc: StructuredDocument,
   options: Pick<SummaryOptions, "signal"> = {},
 ): Promise<AutoFlashcard[]> {
+  const exam = parseExam(doc);
+  if (isExam(exam)) {
+    const problem = examProblem(exam);
+    if (problem) throw problem;
+    return examFlashcards(exam).slice(0, MAX_AUTO_FLASHCARDS);
+  }
   const prepared = prepare(doc);
   const { sections, sentences, language } = prepared;
   for (let index = 0; index < sections.length; index += 1) {
@@ -1146,4 +1173,59 @@ export async function flashcardsFromDocument(
     });
   }
   return made.sort((x, y) => x.id - y.id).map(({ card }) => card);
+}
+
+/** Frase do arquivo com o que o gerador de quiz precisa saber dela. */
+export type Fact = {
+  id: number;
+  text: string;
+  page: number;
+  score: number;
+  /** Anos de quatro dígitos citados na frase. */
+  years: string[];
+  definition?: { term: string; verb: string; plural: boolean; rest: string };
+};
+
+/** Frases importantes e autossuficientes do documento, com definição e anos já identificados. */
+export async function extractFacts(
+  doc: StructuredDocument,
+  options: Pick<SummaryOptions, "signal"> = {},
+): Promise<{ language: Language; facts: Fact[] }> {
+  const prepared = prepare(doc);
+  const { sections, sentences, language } = prepared;
+  for (let index = 0; index < sections.length; index += 1) {
+    options.signal?.throwIfAborted();
+    scoreSection(prepared, sections[index]!);
+    if (index % 4 === 3) await tick();
+  }
+  const facts: Fact[] = sentences
+    .filter(
+      (sentence) =>
+        sentence.candidate &&
+        !dependsOnPrevious(sentence.text) &&
+        !isReferenceLike(sentence.text) &&
+        sentence.text.length <= 320 &&
+        looksLikeStatement(sentence.text, language),
+    )
+    .map((sentence) => {
+      const parts = sentence.definition ? definitionParts(sentence.definition) : undefined;
+      return {
+        id: sentence.id,
+        text: sentence.text,
+        page: sentence.page,
+        score: sentence.score,
+        years: sentence.dates.map((date) => date.label).filter((label) => /^\d{4}$/.test(label)),
+        ...(parts && sentence.definition
+          ? {
+              definition: {
+                term: parts.term,
+                verb: parts.verb,
+                plural: sentence.definition.plural,
+                rest: parts.rest,
+              },
+            }
+          : {}),
+      };
+    });
+  return { language, facts };
 }

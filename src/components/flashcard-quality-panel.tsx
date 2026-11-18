@@ -18,6 +18,7 @@ const ORIGIN_LABELS: Record<CardOrigin, () => string> = {
   number: () => uiText("Número ou data trocado"),
   negation: () => uiText("Negação"),
   opposite: () => uiText("Antônimo"),
+  exam: () => uiText("Questão da prova"),
 };
 const REASON_LABELS: Record<FeedbackReason, () => string> = {
   nonsense: () => uiText("Sem sentido"),

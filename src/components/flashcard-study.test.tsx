@@ -192,3 +192,26 @@ describe("afirmação ruim e edição", () => {
     expect(onFeedback).toHaveBeenCalledWith("b", { type: "kept" });
   });
 });
+
+it("encerra depois de uma revisão mesmo quando o usuário erra novamente", () => {
+  const onReview = vi.fn();
+  render(
+    <FlashcardStudy
+      title="Revisão única"
+      cards={[deck[0]!]}
+      onReview={onReview}
+      onDiscard={() => {}}
+      onEdit={() => {}}
+      onClose={() => {}}
+    />,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Falso" }));
+  fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+  expect(screen.getByText("Vamos rever as perguntas que você errou.")).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+  fireEvent.click(screen.getByRole("button", { name: "Falso" }));
+  fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+  expect(screen.queryByText("Vamos rever as perguntas que você errou.")).toBeNull();
+  expect(screen.getByText("0/1")).toBeTruthy();
+  expect(onReview).toHaveBeenCalledTimes(1);
+});

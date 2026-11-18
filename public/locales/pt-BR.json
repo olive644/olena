@@ -3994,5 +3994,12 @@
   "Filtro aprendendo: {0} de {1} avaliações para começar a agir.",
   "Confirmar: zerar contadores e filtro",
   "Zerar contadores e filtro",
-  "{0} cartões fracos ficaram de fora."
+  "{0} cartões fracos ficaram de fora.",
+  "Assinatura Olena",
+  "Questão da prova",
+  "As questões dessa prova dependem de figuras ou gráficos que o texto do PDF não traz.",
+  "Essa prova não traz o gabarito, então não dá para saber as respostas. Envie o gabarito no mesmo arquivo ou como outra fonte selecionada junto.",
+  "Escolha a alternativa correta.",
+  "Esse arquivo é só um gabarito. Selecione junto a prova a que ele pertence.",
+  "O gabarito tem várias provas ou versões e não deu para saber qual é a desta prova. Selecione um gabarito só dela."
 ]

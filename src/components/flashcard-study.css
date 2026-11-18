@@ -224,6 +224,397 @@
   background: linear-gradient(152deg, #c2665a 0 7%, #9b4a42 7% 63%, #6f3430 63%);
   border-color: #d98a7f;
 }
+
+/* Reuse the library shelf's wood, folded paper, and faceted controls. */
+.flashcard-study {
+  color: var(--text);
+  background-color: var(--background, var(--surface));
+  background-image: url("/paper-sky-pattern-light.svg");
+  background-size: 650px auto;
+}
+:root[data-theme="dark"] .flashcard-study {
+  background-color: #17151c;
+  background-image: url("/paper-sky-pattern.svg");
+}
+.flashcard-study__progress {
+  height: 12px;
+  border: 1px solid #593631;
+  border-radius: 3px 7px 3px 5px;
+  background: #4e302c;
+  box-shadow: 0 3px #352329;
+}
+.flashcard-study__progress span {
+  background:
+    linear-gradient(135deg, #ffe597 0 14px, transparent 14px),
+    linear-gradient(170deg, #facc15 0 60%, #c89832 60%);
+}
+.flashcard-study__title {
+  color: var(--text);
+  font-size: 1.2rem;
+}
+:root body .flashcard-study__card {
+  position: relative;
+  color: #352a38;
+  border: 1px solid #d5c19e;
+  border-radius: 5px 18px 5px 12px;
+  background:
+    linear-gradient(135deg, #f5e7c9 0 25px, transparent 25px),
+    linear-gradient(315deg, #eadfc8 0 24px, transparent 24px), #fff9ef;
+  box-shadow:
+    0 5px #c6b69a,
+    0 9px #593631;
+}
+:root body .flashcard-study__card[data-side="back"] {
+  background:
+    linear-gradient(135deg, #e3d1a8 0 25px, transparent 25px),
+    linear-gradient(315deg, #dfd0b1 0 24px, transparent 24px), #f6edda;
+}
+.flashcard-study__card small {
+  justify-self: center;
+  padding: 6px 14px;
+  color: #86573f;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+.flashcard-study__card > span {
+  justify-self: center;
+  min-width: 70px;
+  border-top: 2px solid #d8c8aa;
+  padding: 8px 14px 0;
+  color: #654237;
+  font-weight: 700;
+}
+:root body .flashcard-study__card[data-result="wrong"] {
+  border-color: #c45878;
+  background: linear-gradient(135deg, #f7c3cf 0 25px, transparent 25px), #fff0f1;
+}
+:root body .flashcard-study__card[data-result="right"] {
+  border-color: #399078;
+  background: linear-gradient(135deg, #b9e2cb 0 25px, transparent 25px), #eff9ec;
+}
+:root body .flashcard-study__verdict {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 12px 4px;
+}
+.flashcard-study__verdict img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+.flashcard-study__verdict small {
+  font-size: 11px;
+}
+:root body .flashcard-study__undo {
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  height: 44px;
+  padding: 9px;
+}
+.flashcard-study__undo .paper-editor-icon {
+  width: 26px;
+  height: 26px;
+}
+.flashcard-study__count {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border: 1px solid #593631;
+  border-radius: 4px 10px 4px 7px;
+  color: #fff3d4;
+  background:
+    linear-gradient(135deg, #c89863 0 10px, transparent 10px),
+    linear-gradient(168deg, #86573f 0 55%, #654237 55% 85%, #593631 85%);
+  box-shadow: 0 3px #4e302c;
+}
+.flashcard-study__count::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  background: #f27e92;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.flashcard-study__count.is-right::before {
+  background: #80d8bb;
+}
+.flashcard-study__count:is(.is-right, .is-wrong) {
+  color: #fff3d4;
+  border-color: #593631;
+}
+:root body .flashcard-study__again button {
+  color: #fff3d4;
+  border: 1px solid #593631;
+  border-radius: 5px 13px 4px 5px;
+  background:
+    linear-gradient(135deg, #c89863 0 14%, transparent 14%),
+    linear-gradient(168deg, #86573f 0 55%, #654237 55% 85%, #593631 85%);
+  box-shadow: 0 4px #4e302c;
+}
+.flashcard-study__stats div,
+.flashcard-study__levels li {
+  color: #352a38;
+  border: 1px solid #d5c19e;
+  border-radius: 4px 13px 4px 8px;
+  background: linear-gradient(135deg, #eadfc8 0 14px, transparent 14px), #fff9ef;
+  box-shadow: 0 3px #c6b69a;
+}
+.flashcard-study__hint {
+  color: var(--muted, var(--text));
+}
+@media (max-width: 520px) {
+  .flashcard-study {
+    padding-inline: 8px;
+  }
+  :root body .flashcard-study__verdict {
+    padding: 10px 2px;
+  }
+  .flashcard-study__verdict img {
+    width: 32px;
+    height: 32px;
+  }
+  .flashcard-study__verdict small {
+    font-size: 9px;
+  }
+  .flashcard-study__card strong {
+    font-size: 1rem;
+  }
+}
+
+:root body .flashcard-study__card,
+:root body .flashcard-study__card[data-side="back"],
+:root body .flashcard-study__card[data-result="wrong"],
+:root body .flashcard-study__card[data-result="right"] {
+  color: #fff9e8;
+  border: 9px solid #86573f;
+  border-radius: 5px 14px 5px 9px;
+  background: linear-gradient(135deg, rgb(152 199 149 / 8%), transparent 45%), #214e3e;
+  box-shadow:
+    inset 0 0 0 2px #15392f,
+    0 4px #593631,
+    0 7px #422b29;
+}
+.flashcard-study__card small,
+.flashcard-study__card > span {
+  color: #dce9cf;
+}
+.flashcard-study__card > span {
+  border-color: #7b9a7e;
+}
+.flashcard-study__card strong {
+  text-shadow: 0.5px 0.5px #c5dbbe;
+}
+:root body .flashcard-study__verdict {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 10px 2px;
+}
+.flashcard-study__verdict::before,
+.flashcard-study__verdict::after {
+  display: none;
+}
+.flashcard-study__arrow {
+  width: 44px;
+  height: 44px;
+}
+.flashcard-study__verdict.is-wrong {
+  --arrow-face: #ed526d;
+  --arrow-light: #ffa0ad;
+  --arrow-depth: #b82f55;
+  color: #ed526d;
+}
+.flashcard-study__verdict.is-right {
+  --arrow-face: #2cbd8e;
+  --arrow-light: #8ae4b9;
+  --arrow-depth: #188365;
+  color: #2cbd8e;
+}
+:root body .flashcard-study__undo {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 5px;
+  --arrow-face: #d8a43d;
+  --arrow-light: #ffe19a;
+  --arrow-depth: #986322;
+}
+.flashcard-study__undo .flashcard-study__arrow {
+  width: 30px;
+  height: 30px;
+}
+.flashcard-study__count.is-wrong {
+  background:
+    linear-gradient(135deg, #fa9daf 0 12px, transparent 12px),
+    linear-gradient(168deg, #bf4765 0 60%, #8d304e 60%);
+  border-color: #84283f;
+  box-shadow: 0 3px #64253b;
+}
+.flashcard-study__count.is-right {
+  background:
+    linear-gradient(135deg, #8edbbb 0 12px, transparent 12px),
+    linear-gradient(168deg, #278f70 0 60%, #1d6654 60%);
+  border-color: #1a594b;
+  box-shadow: 0 3px #153f37;
+}
+.flashcard-study__stage {
+  position: relative;
+}
+.flashcard-study__particles {
+  position: absolute;
+  inset: 15%;
+  pointer-events: none;
+  z-index: 2;
+}
+.flashcard-study__particles i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 13px;
+  opacity: 0;
+  background: #facc15;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.flashcard-study__stage[data-effect="wrong"] .flashcard-study__particles i {
+  background: #ed718c;
+  width: 6px;
+  height: 6px;
+}
+@keyframes study-spark {
+  0% {
+    opacity: 0;
+    transform: rotate(calc(var(--particle) * 30deg)) translateY(0) scale(0.2);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(calc(var(--particle) * 30deg)) translateY(-180px) rotate(110deg) scale(0.5);
+  }
+}
+@keyframes study-shake {
+  0%,
+  100% {
+    translate: 0;
+  }
+  20%,
+  60% {
+    translate: -5px;
+  }
+  40%,
+  80% {
+    translate: 5px;
+  }
+}
+@keyframes study-correct {
+  0%,
+  100% {
+    scale: 1;
+  }
+  45% {
+    scale: 1.025;
+    box-shadow:
+      inset 0 0 0 2px #80d8bb,
+      0 4px #593631,
+      0 0 25px rgb(44 189 142 / 25%);
+  }
+}
+@keyframes study-count {
+  from {
+    scale: 0.85;
+  }
+  to {
+    scale: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"])
+    .flashcard-study__stage[data-effect="right"]
+    .flashcard-study__card {
+    animation: study-correct 500ms ease;
+  }
+  html:not([data-reduce-motion="true"])
+    .flashcard-study__stage[data-effect="wrong"]
+    .flashcard-study__card {
+    animation: study-shake 330ms ease;
+  }
+  html:not([data-reduce-motion="true"])
+    .flashcard-study__stage[data-effect]
+    .flashcard-study__particles
+    i {
+    animation: study-spark 700ms ease-out calc(var(--particle) * 12ms);
+  }
+  html:not([data-reduce-motion="true"]) .flashcard-study__count {
+    animation: study-count 200ms ease-out;
+  }
+}
+@media (max-width: 520px) {
+  .flashcard-study__arrow {
+    width: 34px;
+    height: 34px;
+  }
+  :root body .flashcard-study__card {
+    border-width: 6px;
+  }
+}
+.flashcard-study__verdict svg.flashcard-study__arrow {
+  width: 44px;
+  height: 44px;
+}
+
+/* Shared faceted score tiles for quizzes and flashcards. */
+.flashcard-study__stats > div {
+  --stat-face: #246c58;
+  --stat-light: #87d6b0;
+  --stat-depth: #194b3d;
+  color: #fff9e8;
+  border-color: var(--stat-light);
+  background:
+    linear-gradient(135deg, var(--stat-light) 0 15px, transparent 15px),
+    linear-gradient(160deg, var(--stat-face) 0 65%, var(--stat-depth) 65%);
+  box-shadow: 0 4px var(--stat-depth);
+  padding: 14px 18px;
+}
+.flashcard-study__stats > div:nth-child(2) {
+  --stat-face: #6942a5;
+  --stat-light: #c2a0f2;
+  --stat-depth: #432c70;
+}
+.flashcard-study__stats dt {
+  opacity: 1;
+  font-weight: 700;
+}
+.flashcard-study__stats dd {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 1.75rem);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.025em;
+  text-shadow: 1px 2px var(--stat-depth);
+}
+.flashcard-study__progress {
+  height: 14px;
+  border: 2px solid #a97c51;
+  border-radius: 2px 8px 2px 5px;
+  background: linear-gradient(135deg, #674332 0 12px, transparent 12px), #352329;
+  box-shadow: 0 3px #593631;
+}
+.flashcard-study__progress span {
+  background:
+    linear-gradient(135deg, #fff0ad 0 12px, transparent 12px),
+    linear-gradient(166deg, #facc15 0 60%, #c58a25 60%);
+  border-right: 3px solid #ffe597;
+  box-sizing: border-box;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flashcard-study__progress span {
+    transition: none;
+  }
+}
 .flashcard-study__tools {
   display: flex;
   flex-wrap: wrap;

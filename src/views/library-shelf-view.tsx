@@ -1,3 +1,12 @@
+import { SourceExamStudy } from "../components/source-exam-study";
+import { SourceQuizStudy } from "../components/source-quiz-study";
+import {
+  parseSourceQuiz,
+  type QuizDifficulty,
+  type QuizLength,
+  type SourceQuiz,
+} from "../domain/source-quiz";
+import type { StructuredDocument } from "../domain/pdf-summary/types";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { dataUrlBytes } from "../data/data-url";
 import { streamHelena } from "../data/helena-client";
@@ -356,6 +365,27 @@ function SummaryMarkdown({ content }: { content: string }) {
   return <>{blocks}</>;
 }
 
+/** Mensagem para o erro de uma prova sem gabarito ou só com figuras, ou undefined para outros erros. */
+function examErrorText(error: unknown): string | undefined {
+  if (!(error instanceof Error) || error.name !== "ExamError") return undefined;
+  switch ((error as Error & { reason?: string }).reason) {
+    case "needs-figures":
+      return uiText(
+        "As questões dessa prova dependem de figuras ou gráficos que o texto do PDF não traz.",
+      );
+    case "only-answer-key":
+      return uiText("Esse arquivo é só um gabarito. Selecione junto a prova a que ele pertence.");
+    case "ambiguous-key":
+      return uiText(
+        "O gabarito tem várias provas ou versões e não deu para saber qual é a desta prova. Selecione um gabarito só dela.",
+      );
+    default:
+      return uiText(
+        "Essa prova não traz o gabarito, então não dá para saber as respostas. Envie o gabarito no mesmo arquivo ou como outra fonte selecionada junto.",
+      );
+  }
+}
+
 export function LibraryFolderContents({
   folder,
   materials: folderMaterials,
@@ -371,8 +401,20 @@ export function LibraryFolderContents({
   dispatch: Dispatch<WorkspaceAction>;
   onBack: () => void;
 }) {
+  const quizzes = folderMaterials.filter((item) =>
+    ["folder-quiz", "folder-exam"].includes(item.tags?.[0] ?? ""),
+  );
+  const [openQuizId, setOpenQuizId] = useState<string>();
+  const [quizBusy, setQuizBusy] = useState(false);
+  const [quizError, setQuizError] = useState("");
+  const [difficulty, setDifficulty] = useState<QuizDifficulty>("medium");
+  const [quizLength, setQuizLength] = useState<QuizLength>("medium");
+  const openQuizMaterial = quizzes.find((item) => item.id === openQuizId);
+  const openQuiz = openQuizMaterial && parseSourceQuiz(openQuizMaterial.content);
   const summaries = folderMaterials.filter((item) => item.tags?.[0] === "folder-summary");
-  const materials = folderMaterials.filter((item) => item.tags?.[0] !== "folder-summary");
+  const materials = folderMaterials.filter(
+    (item) => !["folder-summary", "folder-quiz", "folder-exam"].includes(item.tags?.[0] ?? ""),
+  );
   const [openDeckId, setOpenDeckId] = useState<string>();
   const [renamingDeckId, setRenamingDeckId] = useState<string>();
   const decks = flashcards.reduce<
@@ -491,7 +533,7 @@ export function LibraryFolderContents({
                 ].join("\n[… ]\n");
           sources.push({
             id: source.id,
-            kind: "material",
+            kind: "material" as const,
             title: source.title.slice(0, 200),
             content: excerpt,
           });
@@ -596,7 +638,112 @@ export function LibraryFolderContents({
     }
     return result;
   }
+  async function generateQuiz() {
+    const exam = creating === "Simulados";
+    if (quizBusy || !selectedSources.length) return;
+    setCreating(undefined);
+    setSection(exam ? "Simulados" : "Quizzes");
+    setQuizBusy(true);
+    setQuizError("");
+    try {
+      const { examProblem, examQuizQuestions, quizQuestionsFromDocument, splitExams } =
+        await import("../domain/pdf-summary");
+      const documents = await readDocuments();
+      const { exams, others, keyFiles } = splitExams(documents);
+      if (exams.length === 0 && others.length === 0 && keyFiles.length > 0)
+        throw Object.assign(new Error("ExamError"), {
+          name: "ExamError",
+          reason: "only-answer-key",
+        });
+      // Prova do usuário: as questões e o gabarito do arquivo, sem reescrever nada.
+      const examLimit = quizLength === "short" ? 10 : quizLength === "long" ? 50 : 20;
+      const fromExams: SourceQuiz["questions"] = [];
+      let problem: Error | undefined;
+      for (const item of exams) {
+        const found = examProblem(item.exam);
+        if (found) {
+          problem ??= found;
+          continue;
+        }
+        const all = examQuizQuestions(item.exam);
+        const step = all.length / Math.min(examLimit, all.length);
+        for (let index = 0; index < Math.min(examLimit, all.length); index += 1)
+          fromExams.push({
+            ...all[Math.floor(index * step)]!,
+            sourceId: item.source.id,
+            sourceTitle: item.source.title,
+          });
+      }
+      // Texto comum: perguntas de definição, ano, valor e afirmação, com alternativas do mesmo tipo.
+      const textLimit = quizLength === "short" ? 5 : quizLength === "long" ? 15 : 10;
+      const generated: SourceQuiz["questions"] = [];
+      for (const item of others) {
+        const made = await quizQuestionsFromDocument(
+          item.doc,
+          difficulty,
+          Math.ceil(textLimit / Math.max(1, others.length)),
+        );
+        generated.push(
+          ...made.map((question) => ({
+            ...question,
+            sourceId: item.source.id,
+            sourceTitle: item.source.title,
+          })),
+        );
+      }
+      if (problem && fromExams.length === 0 && generated.length === 0) throw problem;
+      const quiz: SourceQuiz = {
+        version: 1,
+        difficulty,
+        questions: [...fromExams, ...generated].slice(0, 100),
+      };
+      if (!quiz.questions.length)
+        throw new Error(
+          uiText(
+            "Não encontrei fatos suficientes para criar alternativas confiáveis. Tente uma fonte com mais conteúdo.",
+          ),
+        );
+      dispatch({
+        type: "material/added",
+        collectionId: folder.id,
+        subjectId,
+        title: selectedSources
+          .map((s) => s.title.replace(/\.[^.]+$/, ""))
+          .join(" + ")
+          .slice(0, 80),
+        kind: "text",
+        content: JSON.stringify(quiz),
+        tags: [exam ? "folder-exam" : "folder-quiz", ...selectedSources.map((s) => s.title)],
+        createdAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      setQuizError(
+        examErrorText(error) ??
+          (error instanceof Error ? error.message : uiText("Não foi possível gerar o quiz.")),
+      );
+    } finally {
+      setQuizBusy(false);
+    }
+  }
   /** Flashcards automáticos: no aparelho, sem IA, o máximo que o texto sustenta. */
+  /** Lê as fontes selecionadas como documentos, no aparelho (texto, OCR ou PDF). */
+  async function readDocuments() {
+    const { documentFromPdf, documentFromText } = await import("../domain/pdf-summary");
+    const read: {
+      source: (typeof selectedSources)[number];
+      fileTitle: string;
+      doc: StructuredDocument;
+    }[] = [];
+    for (const source of selectedSources) {
+      const fileTitle = source.title.replace(/\.[^.]+$/, "");
+      const doc = await readSource(source, fileTitle, {
+        text: async (text, title) => documentFromText(text, title),
+        pdf: (pdf, options) => documentFromPdf(pdf, options),
+      });
+      read.push({ source, fileTitle, doc });
+    }
+    return read;
+  }
   async function generateAutomaticFlashcards() {
     if (cardsBusy || !selectedSources.length) return;
     setCreating(undefined);
@@ -604,7 +751,8 @@ export function LibraryFolderContents({
     setCardsMessage(undefined);
     setCardsBusy(true);
     try {
-      const { flashcardsFromPdf, flashcardsFromPlainText } = await import("../domain/pdf-summary");
+      const { examFlashcards, examProblem, flashcardsFromDocument, splitExams } =
+        await import("../domain/pdf-summary");
       let hidden = 0;
       const made: {
         sourceId: string;
@@ -614,12 +762,37 @@ export function LibraryFolderContents({
         page: number;
         kind: CardOrigin;
       }[] = [];
-      for (const source of selectedSources) {
-        const fileTitle = source.title.replace(/\.[^.]+$/, "");
-        const cards = await readSource(source, fileTitle, {
-          text: (text, title) => flashcardsFromPlainText(text, title),
-          pdf: (pdf, options) => flashcardsFromPdf(pdf, options),
+      const documents = await readDocuments();
+      const { exams, others, keyFiles } = splitExams(documents);
+      if (exams.length === 0 && others.length === 0 && keyFiles.length > 0)
+        throw Object.assign(new Error("ExamError"), {
+          name: "ExamError",
+          reason: "only-answer-key",
         });
+      const sets: {
+        source: (typeof selectedSources)[number];
+        fileTitle: string;
+        cards: Awaited<ReturnType<typeof flashcardsFromDocument>>;
+      }[] = [];
+      let problem: Error | undefined;
+      for (const item of exams) {
+        const found = examProblem(item.exam);
+        if (found) problem ??= found;
+        else
+          sets.push({
+            source: item.source,
+            fileTitle: item.fileTitle,
+            cards: examFlashcards(item.exam),
+          });
+      }
+      for (const item of others)
+        sets.push({
+          source: item.source,
+          fileTitle: item.fileTitle,
+          cards: await flashcardsFromDocument(item.doc),
+        });
+      if (problem && !sets.some((set) => set.cards.length > 0)) throw problem;
+      for (const { source, fileTitle, cards } of sets) {
         if (cards.length === 0) {
           throw new Error(
             uiText("Não consegui criar flashcards de {0}: o texto tem poucas definições e fatos.", [
@@ -677,7 +850,10 @@ export function LibraryFolderContents({
     } catch (error) {
       setCardsMessage({
         text:
-          error instanceof Error ? error.message : uiText("Não foi possível criar os flashcards."),
+          examErrorText(error) ??
+          (error instanceof Error
+            ? error.message
+            : uiText("Não foi possível criar os flashcards.")),
         error: true,
       });
     } finally {
@@ -818,6 +994,25 @@ export function LibraryFolderContents({
     </div>
   );
 
+  const StudySession =
+    openQuizMaterial?.tags?.[0] === "folder-exam" ? SourceExamStudy : SourceQuizStudy;
+  if (openQuiz && openQuizMaterial)
+    return (
+      <StudySession
+        title={openQuizMaterial.title}
+        quiz={openQuiz}
+        onClose={() => setOpenQuizId(undefined)}
+        onComplete={(correct, total) =>
+          dispatch({
+            type: "quiz/recorded",
+            subjectId,
+            correct,
+            total,
+            completedAt: new Date().toISOString(),
+          })
+        }
+      />
+    );
   if (openDeck)
     return (
       <FlashcardStudy
@@ -1200,8 +1395,135 @@ export function LibraryFolderContents({
                   </details>
                 </article>
               ))}
+            {(section === "Quizzes" || section === "Simulados") && (
+              <>
+                {quizBusy && (
+                  <div className="library-summary-loading" role="status">
+                    <img src="/room-icons/quiz.svg" alt="" width="30" height="30" />
+                    {uiText(section === "Simulados" ? "Criando simulado…" : "Criando quiz…")}
+                  </div>
+                )}
+                {quizError && <p role="alert">{quizError}</p>}
+                {quizzes
+                  .filter(
+                    (item) =>
+                      item.tags?.[0] === (section === "Simulados" ? "folder-exam" : "folder-quiz"),
+                  )
+                  .map((quiz) => (
+                    <article
+                      key={quiz.id}
+                      className={
+                        removingIds.includes(quiz.id)
+                          ? "library-summary-card library-source-removing"
+                          : "library-summary-card"
+                      }
+                    >
+                      {renamingId === quiz.id ? (
+                        <form
+                          className="library-summary-rename"
+                          onSubmit={(event) => {
+                            event.preventDefault();
+                            const title = String(
+                              new FormData(event.currentTarget).get("title") ?? "",
+                            ).trim();
+                            if (title) {
+                              dispatch({
+                                type: "material/updated",
+                                id: quiz.id,
+                                changes: { title },
+                              });
+                              setRenamingId(undefined);
+                            }
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === "Escape") setRenamingId(undefined);
+                          }}
+                        >
+                          <input
+                            name="title"
+                            required
+                            maxLength={80}
+                            defaultValue={quiz.title}
+                            aria-label={uiText(
+                              section === "Simulados" ? "Nome do simulado" : "Nome do quiz",
+                            )}
+                            ref={(field) => {
+                              if (field && field !== document.activeElement) {
+                                field.focus();
+                                field.select();
+                              }
+                            }}
+                          />
+                          <button
+                            type="submit"
+                            className="shelf-wood-button"
+                            aria-label={uiText("Salvar nome")}
+                          >
+                            <ShelfToolIcon name="save" />
+                          </button>
+                        </form>
+                      ) : (
+                        <button
+                          type="button"
+                          className="library-summary-open"
+                          onClick={() => {
+                            if (parseSourceQuiz(quiz.content)) setOpenQuizId(quiz.id);
+                            else setQuizError(uiText("Este quiz está incompleto. Gere novamente."));
+                          }}
+                        >
+                          <img
+                            src={
+                              section === "Simulados"
+                                ? "/room-icons/mock-exam.svg"
+                                : "/room-icons/quiz.svg"
+                            }
+                            width="28"
+                            height="28"
+                            alt=""
+                          />
+                          {quiz.title}
+                        </button>
+                      )}
+                      <details className="library-summary-actions">
+                        <summary
+                          className="shelf-wood-button"
+                          aria-label={uiText(
+                            section === "Simulados" ? "Opções do simulado" : "Opções do quiz",
+                          )}
+                        >
+                          <PaperEditorIcon name="more" />
+                        </summary>
+                        <div className="library-summary-popover">
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              setRenamingId(quiz.id);
+                              event.currentTarget.closest("details")?.removeAttribute("open");
+                            }}
+                          >
+                            <ShelfToolIcon name="pen" />
+                            {uiText("Renomear")}
+                          </button>
+                          <button type="button" onClick={() => removeMaterial(quiz.id)}>
+                            <ShelfToolIcon name="trash" />
+                            {uiText("Excluir")}
+                          </button>
+                        </div>
+                      </details>
+                    </article>
+                  ))}
+              </>
+            )}
             {(section !== "Resumo" || (!summaryBusy && summaries.length === 0)) &&
-              !(section === "Flashcards" && (cardsBusy || cardsMessage || decks.length > 0)) && (
+              !(section === "Flashcards" && (cardsBusy || cardsMessage || decks.length > 0)) &&
+              !(
+                (section === "Quizzes" || section === "Simulados") &&
+                (quizBusy ||
+                  quizzes.some(
+                    (item) =>
+                      item.tags?.[0] === (section === "Simulados" ? "folder-exam" : "folder-quiz"),
+                  ))
+              ) && (
                 <div className="library-folder-study-empty">
                   <img
                     src={"/room-icons/" + studySections[section].icon + ".svg"}
@@ -1397,10 +1719,74 @@ export function LibraryFolderContents({
                 )}
               </p>
             )}
-            {creating !== "Resumo" && creating !== "Flashcards" && (
-              <p>{uiText("A geração deste tipo de material ainda não está disponível.")}</p>
-            )}
-            {creating === "Flashcards" ? (
+            {creating !== "Resumo" &&
+              creating !== "Flashcards" &&
+              creating !== "Quizzes" &&
+              creating !== "Simulados" && (
+                <p>{uiText("A geração deste tipo de material ainda não está disponível.")}</p>
+              )}
+            {creating === "Quizzes" || creating === "Simulados" ? (
+              <>
+                <div className="library-quiz-settings">
+                  {(
+                    [
+                      [
+                        "Dificuldade",
+                        [
+                          ["easy", "Fácil"],
+                          ["medium", "Médio"],
+                          ["hard", "Difícil"],
+                        ],
+                      ],
+                      [
+                        "Tamanho",
+                        [
+                          ["short", "Curto"],
+                          ["medium", "Médio"],
+                          ["long", "Longo"],
+                        ],
+                      ],
+                    ] as const
+                  ).map(([label, choices]) => (
+                    <fieldset key={label}>
+                      <legend>{uiText(label)}</legend>
+                      {choices.map(([value, name]) => (
+                        <button
+                          type="button"
+                          key={value}
+                          className="shelf-wood-button"
+                          aria-pressed={
+                            (label === "Dificuldade" ? difficulty : quizLength) === value
+                          }
+                          onClick={() =>
+                            label === "Dificuldade"
+                              ? setDifficulty(value as QuizDifficulty)
+                              : setQuizLength(value as QuizLength)
+                          }
+                        >
+                          {uiText(name)}
+                        </button>
+                      ))}
+                    </fieldset>
+                  ))}
+                </div>
+                <p>
+                  {uiText(
+                    creating === "Simulados"
+                      ? "Simulado automático no aparelho. Até 5, 10 ou 15 questões conforme as fontes, com 1 ponto e 2 minutos por questão. Fácil tem 3 alternativas; Médio e Difícil têm 4."
+                      : "Quiz automático no aparelho. Até 5, 10 ou 15 questões, conforme o conteúdo das fontes. Fácil tem 3 alternativas; Médio e Difícil têm 4, priorizando números próximos no Difícil.",
+                  )}
+                </p>
+                <button
+                  type="button"
+                  className="shelf-wood-button library-study-confirm-generate"
+                  disabled={!selectedSources.length || quizBusy}
+                  onClick={() => void generateQuiz()}
+                >
+                  {uiText(creating === "Simulados" ? "Gerar simulado" : "Quiz automático")}
+                </button>
+              </>
+            ) : creating === "Flashcards" ? (
               <button
                 type="button"
                 className="shelf-wood-button library-study-confirm-generate"
