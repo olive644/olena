@@ -732,6 +732,9 @@ export async function summarizeDocument(
   const totalChars = sections.reduce((sum, section) => sum + section.chars, 0);
   const detail = options.detail ?? "medium";
   const L = LABELS[doc.language];
+  // Texto puro, nota e imagem lida por OCR não têm páginas: citar "pág. 1" seria inventar.
+  const pageSuffix = (section: Section) =>
+    doc.paged === false ? "" : ` (${pageLabel(section.startPage, section.endPage, L)})`;
   const target = targetCharacters(totalChars, detail);
   const used = new Set<number>();
   const lines: string[] = [];
@@ -796,7 +799,7 @@ export async function summarizeDocument(
   if (sections.length >= 3) {
     lines.push(`## ${L.route}`);
     for (const section of sections) {
-      lines.push(`- **${section.title}** (${pageLabel(section.startPage, section.endPage, L)})`);
+      lines.push(`- **${section.title}**${pageSuffix(section)}`);
     }
   }
 
@@ -841,7 +844,7 @@ export async function summarizeDocument(
     const plain = plainTitle(section.title);
     const heading = sections.length === 1 && section.title === L.mainPoints ? L.mainPoints : plain;
     const label = sections.length === 1 ? heading : `${sectionNumber}. ${heading}`;
-    lines.push(`## ${label} (${pageLabel(section.startPage, section.endPage, L)})`);
+    lines.push(`## ${label}${pageSuffix(section)}`);
     if (section.subtopics.length > 0) {
       lines.push(`**${L.subtopics}:** ${section.subtopics.join("; ")}`);
     }

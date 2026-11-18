@@ -31,6 +31,12 @@ import {
   type WorkspaceAction,
   type WorkspaceState,
 } from "../domain/workspace";
+import {
+  MAX_IMAGE_INPUT_BYTES,
+  MAX_SOURCE_BYTES,
+  decodeText,
+  imageDataUrl,
+} from "./library-source-files";
 import "./library-shelf-view.css";
 
 const folderStyles = [
@@ -448,8 +454,10 @@ export function LibraryFolderContents({
   const [showStudyTypes, setShowStudyTypes] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const selectedSources = materials.filter(({ id }) => selectedIds.includes(id));
+  // Link (YouTube) é só referência: o app não lê vídeos, então não entra nos geradores.
+  const readableMaterials = materials.filter(({ kind }) => kind !== "link");
   const maxSelectedSources = 3;
-  const allSelected = selectedSources.length === materials.length;
+  const allSelected = selectedSources.length === readableMaterials.length;
   const [error, setError] = useState("");
   const input = useRef<HTMLInputElement>(null);
 
@@ -477,6 +485,12 @@ export function LibraryFolderContents({
       }
       try {
         for (const source of selectedSources) {
+          if (source.kind === "link")
+            throw new Error(
+              uiText("{0} é um link e não pode ser lido. Use uma nota em branco com o texto.", [
+                source.title,
+              ]),
+            );
           let content = source.kind === "text" ? source.content : "";
           if (source.kind === "image") content = await recognize(source.content);
           if (source.kind === "pdf") {
@@ -579,6 +593,12 @@ export function LibraryFolderContents({
     engine: SourceEngine<T>,
   ): Promise<T> {
     let result: T;
+    if (source.kind === "link")
+      throw new Error(
+        uiText("{0} é um link e não pode ser lido. Use uma nota em branco com o texto.", [
+          source.title,
+        ]),
+      );
     if (source.kind === "image") {
       // Foto ou imagem de página: o OCR em português lê o texto, no aparelho.
       const { createWorker } = await import("tesseract.js");
@@ -929,11 +949,24 @@ export function LibraryFolderContents({
   const sourceSelection = (canRemove: boolean) => (
     <div className="library-source-selection">
       <ul>
-        {materials.map(({ id, title }) => (
+        {materials.map(({ id, title, kind, content }) => (
           <li key={id} className={removingIds.includes(id) ? "is-pulverizing" : undefined}>
             <div className="library-source-name">
               <img src="/room-icons/manual-words.svg" alt="" width="20" height="20" />
-              <span>{title}</span>
+              {kind === "link" ? (
+                <span>
+                  <a href={content} target="_blank" rel="noopener noreferrer">
+                    {title}
+                  </a>
+                  <small id={"link-note-" + id}>
+                    {uiText(
+                      "Só referência: o OlenaStudy não lê vídeos. Cole a transcrição ou suas anotações em uma nota em branco.",
+                    )}
+                  </small>
+                </span>
+              ) : (
+                <span>{title}</span>
+              )}
             </div>
             {canRemove && (
               <button
@@ -953,7 +986,11 @@ export function LibraryFolderContents({
                 type="checkbox"
                 aria-label={"Selecionar " + title}
                 checked={selectedIds.includes(id)}
-                disabled={!selectedIds.includes(id) && selectedSources.length >= maxSelectedSources}
+                aria-describedby={kind === "link" ? "link-note-" + id : undefined}
+                disabled={
+                  kind === "link" ||
+                  (!selectedIds.includes(id) && selectedSources.length >= maxSelectedSources)
+                }
                 onChange={({ currentTarget }) => {
                   setSelectedIds(
                     currentTarget.checked
@@ -968,21 +1005,22 @@ export function LibraryFolderContents({
       </ul>
       <label>
         <span>
-          {materials.length > maxSelectedSources
+          {readableMaterials.length > maxSelectedSources
             ? "Selecionar 3 fontes"
             : "Selecionar todas as fontes"}
         </span>
         <input
           type="checkbox"
+          disabled={readableMaterials.length === 0}
           checked={
-            materials.length > maxSelectedSources
+            readableMaterials.length > maxSelectedSources
               ? selectedSources.length === maxSelectedSources
-              : allSelected
+              : readableMaterials.length > 0 && allSelected
           }
           onChange={({ currentTarget }) =>
             setSelectedIds(
               currentTarget.checked
-                ? materials.slice(0, maxSelectedSources).map(({ id }) => id)
+                ? readableMaterials.slice(0, maxSelectedSources).map(({ id }) => id)
                 : [],
             )
           }
@@ -1066,6 +1104,8 @@ export function LibraryFolderContents({
               aria-pressed={section === label}
               onClick={() => {
                 setSection(label);
+                // Um erro de outra aba não fica grudado na tela.
+                setError("");
                 setShowSources(false);
                 setShowStudyTypes(false);
               }}
@@ -1834,20 +1874,27 @@ export function LibraryFolderContents({
                 : /\.(txt|md)$/i.test(file.name)
                   ? "text"
                   : undefined;
-            if (!kind || file.size > 1024 * 1024) {
-              setError("Escolha um PDF, imagem, TXT ou Markdown de até 1 MB.");
+            if (
+              !kind ||
+              file.size > (kind === "image" ? MAX_IMAGE_INPUT_BYTES : MAX_SOURCE_BYTES)
+            ) {
+              setError(
+                uiText("Escolha um PDF, TXT ou Markdown de até 1 MB, ou uma imagem de até 25 MB."),
+              );
               return;
             }
             try {
               const content =
                 kind === "text"
-                  ? await file.text()
-                  : await new Promise<string>((resolve, reject) => {
-                      const reader = new FileReader();
-                      reader.onload = () => resolve(String(reader.result));
-                      reader.onerror = () => reject(reader.error);
-                      reader.readAsDataURL(file);
-                    });
+                  ? decodeText(new Uint8Array(await file.arrayBuffer()))
+                  : kind === "image"
+                    ? await imageDataUrl(file)
+                    : await new Promise<string>((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(String(reader.result));
+                        reader.onerror = () => reject(reader.error);
+                        reader.readAsDataURL(file);
+                      });
               dispatch({
                 type: "material/added",
                 collectionId: folder.id,
@@ -1857,8 +1904,14 @@ export function LibraryFolderContents({
                 content,
                 createdAt: new Date().toISOString(),
               });
-            } catch {
-              setError("Não foi possível abrir o arquivo.");
+            } catch (failure) {
+              setError(
+                failure instanceof Error && failure.message === "image-too-large"
+                  ? uiText(
+                      "A imagem continua grande demais mesmo reduzida. Tire a foto mais de perto ou envie um PDF.",
+                    )
+                  : uiText("Não foi possível abrir o arquivo."),
+              );
             }
           }}
         />
