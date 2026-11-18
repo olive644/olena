@@ -38,6 +38,9 @@ for (const theme of ["light", "dark"] as const) {
     );
     await page.screenshot({ path: testInfo.outputPath(`paleta-${theme}.png`) });
 
+    // No celular o seletor de papel abre aberto e cobre a folha: fecha para desenhar.
+    const paperPicker = dialog.getByRole("button", { name: "Tipo de papel", exact: true });
+    if ((await paperPicker.getAttribute("aria-expanded")) === "true") await paperPicker.click();
     // Reta: segura, arrasta e o selo mostra o ângulo encaixado.
     const sheet = dialog.locator(".handwriting-committed-ink");
     await sheet.scrollIntoViewIfNeeded();
