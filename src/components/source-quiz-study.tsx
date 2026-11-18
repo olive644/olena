@@ -164,7 +164,7 @@ export function SourceQuizStudy({
                   <small>
                     {index + 1} {uiText("de")} {queue.length}
                   </small>
-                  <h3>{uiText("Complete a afirmação com a alternativa correta.")}</h3>
+                  <h3>{uiText("Escolha a alternativa correta.")}</h3>
                   <p>{q.prompt}</p>
                 </div>
               </div>
