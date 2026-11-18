@@ -619,17 +619,17 @@ export default function OnboardingView({
               <div className="olena-cover__social">
                 {(
                   [
-                    ["Instagram", "https://www.instagram.com/olenastudy.com.br/", "profile-instagram"],
+                    [
+                      "Instagram",
+                      "https://www.instagram.com/olenastudy.com.br/",
+                      "profile-instagram",
+                    ],
                     [
                       "LinkedIn",
                       "https://www.linkedin.com/company/olenastudy/",
                       "profile-linkedin",
                     ],
-                    [
-                      "TikTok",
-                      "https://www.tiktok.com/@olenastudy.app",
-                      "footer-tiktok",
-                    ],
+                    ["TikTok", "https://www.tiktok.com/@olenastudy.app", "footer-tiktok"],
                     ["Discord", "https://discord.gg/VVba3Tbvq", "discord-access"],
                   ] as const
                 ).map(([name, href, icon]) => (
