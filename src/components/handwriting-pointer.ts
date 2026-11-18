@@ -26,6 +26,12 @@ export function isPenBarrelButton(event: PenButtonInput): boolean {
   return event.pointerType === "pen" && (event.button === 2 || (event.buttons & 2) !== 0);
 }
 
+// Segundo botão lateral das canetas de mesa digitalizadora (Wacom, Huion). O navegador o conta como
+// botão do meio: `button 1` quando muda neste evento e bit 4 de `buttons` enquanto está apertado.
+export function isPenSecondButton(event: PenButtonInput): boolean {
+  return event.pointerType === "pen" && (event.button === 1 || (event.buttons & 4) !== 0);
+}
+
 export function isPenEraserTip(event: PenButtonInput): boolean {
   return event.pointerType === "pen" && (event.button === 5 || (event.buttons & 32) !== 0);
 }

@@ -30,6 +30,9 @@ for (const theme of ["light", "dark"]) {
     await fields
       .getByRole("combobox", { name: "Botão lateral", exact: true })
       .selectOption("highlighter");
+    await fields
+      .getByRole("combobox", { name: "Segundo botão", exact: true })
+      .selectOption("eraser");
     await fields.locator("summary").filter({ hasText: "Atalhos de teclado" }).click();
     await fields.locator("summary").filter({ hasText: "Atalhos de caneta e mesa" }).click();
     expect(await fields.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
@@ -64,6 +67,15 @@ for (const theme of ["light", "dark"]) {
     await expect(dialog.getByRole("combobox", { name: "Botão lateral", exact: true })).toHaveValue(
       "highlighter",
     );
+    await expect(dialog.getByRole("combobox", { name: "Segundo botão", exact: true })).toHaveValue(
+      "eraser",
+    );
+    await expect(dialog.getByText("Testar caneta e mesa", { exact: true })).toBeVisible();
+    const tester = dialog.locator(".notebook-pen-test");
+    await tester.scrollIntoViewIfNeeded();
+    await expect(tester.getByText("Aguardando a caneta", { exact: true })).toBeVisible();
+    expect(await tester.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+    await tester.screenshot({ path: info.outputPath(`pen-test-${theme}.png`) });
     await dialog
       .locator(".notebook-shortcut-section")
       .last()
@@ -103,6 +115,9 @@ for (const theme of ["light", "dark"]) {
     await fields.locator("summary").filter({ hasText: "Atalhos de caneta e mesa" }).click();
     await expect(fields.getByRole("combobox", { name: "Botão lateral", exact: true })).toHaveValue(
       "hand",
+    );
+    await expect(fields.getByRole("combobox", { name: "Segundo botão", exact: true })).toHaveValue(
+      "selected",
     );
     await expect(fields.getByRole("combobox", { name: "Ponta traseira", exact: true })).toHaveValue(
       "eraser",

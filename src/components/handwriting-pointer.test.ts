@@ -39,3 +39,16 @@ it("mouse e toque nunca contam como botões da caneta", () => {
     expect(isPenEraserTip({ pointerType, button: 5, buttons: 32 })).toBe(false);
   }
 });
+
+import { isPenSecondButton } from "./handwriting-pointer";
+
+it("o segundo botão da caneta é o do meio: button 1 ou bit 4 de buttons, só em caneta", () => {
+  expect(isPenSecondButton({ pointerType: "pen", button: 0, buttons: 5 })).toBe(true);
+  expect(isPenSecondButton({ pointerType: "pen", button: 1, buttons: 4 })).toBe(true);
+  expect(isPenSecondButton({ pointerType: "pen", button: 0, buttons: 1 })).toBe(false);
+  // O botão lateral (bit 2) e a ponta traseira (bit 32) não contam como segundo botão.
+  expect(isPenSecondButton({ pointerType: "pen", button: 2, buttons: 3 })).toBe(false);
+  expect(isPenSecondButton({ pointerType: "pen", button: 5, buttons: 33 })).toBe(false);
+  // O botão do meio do mouse não é do segundo botão da caneta.
+  expect(isPenSecondButton({ pointerType: "mouse", button: 1, buttons: 4 })).toBe(false);
+});

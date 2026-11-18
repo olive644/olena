@@ -109,7 +109,12 @@ import { MAX_CONTROL_POINTS, dedupeControls, splinePoints } from "./handwriting-
 import { clampSpaceShift, itemsBelowLine } from "./handwriting-vertical-space";
 import { hitSelectionHandle } from "./handwriting-selection-ops";
 import { eraseInkArea, eraseWholeStrokes } from "./handwriting-eraser";
-import { isPenBarrelButton, isPenEraserTip, pointerSamples } from "./handwriting-pointer";
+import {
+  isPenBarrelButton,
+  isPenEraserTip,
+  isPenSecondButton,
+  pointerSamples,
+} from "./handwriting-pointer";
 import {
   newRemoteStrokes,
   partialStroke,
@@ -1715,16 +1720,21 @@ export function HandwritingStudio({
     // Também vale o botão apertado ANTES de encostar (button 0 com buttons 3), comum na S Pen.
     const isEraserTip = isPenEraserTip(event);
     const isBarrelButton = isPenBarrelButton(event);
-    if (event.button !== 0 && !isEraserTip && !isBarrelButton) return;
+    const isSecondButton = isPenSecondButton(event);
+    const penButton = isEraserTip || isBarrelButton || isSecondButton;
+    if (event.button !== 0 && !penButton) return;
     if (event.pointerType === "pen" && !penDetectedRef.current) {
       penDetectedRef.current = true;
       changePreference("penOnly", true);
     }
-    const penAction = isEraserTip ? shortcutSettings.penTail : shortcutSettings.penSide;
-    if ((isEraserTip || isBarrelButton) && penAction === "select" && tool !== "select")
-      setTool("select");
-    const rawTool: HandwritingTool =
-      (isEraserTip || isBarrelButton) && penAction !== "selected" ? penAction : tool;
+    // A ponta traseira vale mais que o botão lateral, que vale mais que o segundo botão.
+    const penAction = isEraserTip
+      ? shortcutSettings.penTail
+      : isBarrelButton
+        ? shortcutSettings.penSide
+        : shortcutSettings.penSecond;
+    if (penButton && penAction === "select" && tool !== "select") setTool("select");
+    const rawTool: HandwritingTool = penButton && penAction !== "selected" ? penAction : tool;
     // Borracha de fundo: em vez de apagar tinta, desenha um traço de cobertura que fura o fundo
     // importado ao ser solto. Daí em diante o gesto é o de um traço comum.
     const coverErase = rawTool === "eraser" && eraserBackground && backgroundAvailable;
@@ -2768,7 +2778,9 @@ export function HandwritingStudio({
       ? shortcutSettings.penTail
       : isPenBarrelButton(event)
         ? shortcutSettings.penSide
-        : "selected";
+        : isPenSecondButton(event)
+          ? shortcutSettings.penSecond
+          : "selected";
     if (shortcut !== "selected" && shortcut !== "eraser") return;
     const writingTool = shortcut === "eraser" ? "eraser" : tool;
     writingToolRef.current = writingTool;

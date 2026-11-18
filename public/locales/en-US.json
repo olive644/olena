@@ -4006,5 +4006,17 @@
   "Sheets changed: {0}.",
   "Hold to change the whole notebook",
   "Apply to the whole notebook",
-  "Whole notebook"
+  "Whole notebook",
+  "Second button",
+  "Test pen and tablet",
+  "Touch the pen here and press its buttons. It shows what the browser really receives.",
+  "Device: {0}",
+  "Pressure: {0}",
+  "Tilt: {0}°",
+  "Buttons: {0}",
+  "none",
+  "Mouse",
+  "Touch",
+  "Waiting for the pen",
+  "Second side button, common on graphics tablet pens. Some devices send it as the middle button."
 ]
