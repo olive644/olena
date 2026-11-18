@@ -6,7 +6,7 @@ describe("rodapé das Configurações", () => {
   it("aponta para os perfis oficiais do OlenaStudy", () => {
     render(<SettingsFooter />);
     expect(screen.getByRole("link", { name: "Instagram" }).getAttribute("href")).toBe(
-      "https://www.instagram.com/olenastudy.app/",
+      "https://www.instagram.com/olenastudy.com.br/",
     );
     // O perfil @olena.app não existe: o do OlenaStudy é @olenastudy.app.
     expect(screen.getByRole("link", { name: "TikTok" }).getAttribute("href")).toBe(

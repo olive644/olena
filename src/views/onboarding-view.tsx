@@ -619,7 +619,7 @@ export default function OnboardingView({
               <div className="olena-cover__social">
                 {(
                   [
-                    ["Instagram", "https://www.instagram.com/olenastudy.app/", "profile-instagram"],
+                    ["Instagram", "https://www.instagram.com/olenastudy.com.br/", "profile-instagram"],
                     [
                       "LinkedIn",
                       "https://www.linkedin.com/company/olenastudy/",
@@ -627,7 +627,7 @@ export default function OnboardingView({
                     ],
                     [
                       "TikTok",
-                      "https://www.tiktok.com/@olenastudy.app?lang=pt-BR",
+                      "https://www.tiktok.com/@olenastudy.app",
                       "footer-tiktok",
                     ],
                     ["Discord", "https://discord.gg/VVba3Tbvq", "discord-access"],

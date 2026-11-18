@@ -10,7 +10,7 @@ export function SettingsFooter() {
       {/* Dicas inspiradas em david-mohseni, Uiverse.io; arte e tipografia do app. */}
       <div className="settings-social-links">
         {[
-          [uiText(1946), "https://www.instagram.com/olenastudy.app/", "instagram"],
+          [uiText(1946), "https://www.instagram.com/olenastudy.com.br/", "instagram"],
           [uiText(1947), "https://www.tiktok.com/@olenastudy.app", "tiktok"],
           ["Discord", "https://discord.gg/EHh6VpGUd", "discord"],
         ].map(([label, href, icon]) => (
