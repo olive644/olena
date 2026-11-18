@@ -53,6 +53,8 @@ export type StructuredDocument = {
   language: Language;
   pages: number;
   blocks: DocumentBlock[];
+  /** Linhas do PDF na ordem de leitura, sem cabeçalho e rodapé e antes de virarem parágrafos e títulos. Prova usa estas. */
+  lines?: { text: string; page: number }[];
   characters: number;
 };
 

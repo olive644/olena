@@ -1,7 +1,6 @@
 import { SourceExamStudy } from "../components/source-exam-study";
 import { SourceQuizStudy } from "../components/source-quiz-study";
 import {
-  buildSourceQuiz,
   parseSourceQuiz,
   type QuizDifficulty,
   type QuizLength,
@@ -636,7 +635,7 @@ export function LibraryFolderContents({
     setQuizBusy(true);
     setQuizError("");
     try {
-      const { examProblem, examQuizQuestions, flashcardsFromDocument, splitExams } =
+      const { examProblem, examQuizQuestions, quizQuestionsFromDocument, splitExams } =
         await import("../domain/pdf-summary");
       const documents = await readDocuments();
       const { exams, others } = splitExams(documents);
@@ -659,29 +658,28 @@ export function LibraryFolderContents({
             sourceTitle: item.source.title,
           });
       }
-      const facts: {
-        front: string;
-        back: string;
-        page: number;
-        sourceId: string;
-        sourceTitle: string;
-      }[] = [];
+      // Texto comum: perguntas de definição, ano, valor e afirmação, com alternativas do mesmo tipo.
+      const textLimit = quizLength === "short" ? 5 : quizLength === "long" ? 15 : 10;
+      const generated: SourceQuiz["questions"] = [];
       for (const item of others) {
-        const cards = await flashcardsFromDocument(item.doc);
-        facts.push(
-          ...cards.map((card) => ({
-            ...card,
+        const made = await quizQuestionsFromDocument(
+          item.doc,
+          difficulty,
+          Math.ceil(textLimit / Math.max(1, others.length)),
+        );
+        generated.push(
+          ...made.map((question) => ({
+            ...question,
             sourceId: item.source.id,
             sourceTitle: item.source.title,
           })),
         );
       }
-      const generated = facts.length ? buildSourceQuiz(facts, difficulty, quizLength) : undefined;
-      if (problem && fromExams.length === 0 && !generated?.questions.length) throw problem;
+      if (problem && fromExams.length === 0 && generated.length === 0) throw problem;
       const quiz: SourceQuiz = {
         version: 1,
         difficulty,
-        questions: [...fromExams, ...(generated?.questions ?? [])].slice(0, 100),
+        questions: [...fromExams, ...generated].slice(0, 100),
       };
       if (!quiz.questions.length)
         throw new Error(

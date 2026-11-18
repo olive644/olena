@@ -101,7 +101,8 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
     else current.options[last] = clean(`${previous} ${piece}`);
   }
 
-  for (const block of doc.blocks) {
+  // As linhas cruas do PDF não passam pela classificação de títulos e ruído da montagem de parágrafos.
+  for (const block of doc.lines ?? doc.blocks) {
     const text = block.text;
     const markers = [...text.matchAll(MARKER)];
     const dot = DOT_OPTION.exec(text.trimStart());

@@ -18,6 +18,8 @@ const NUMBERED =
   /^((?:\d{1,2}(?:\.\d{1,2})+)|(?:\d{1,2}[.)])|(?:[IVXLC]{1,6}[.)])|(?:[A-Z][.)]))\s+\p{L}/u;
 const REFERENCES =
   /^(?:refer[êe]ncias(?:\s+bibliogr[áa]ficas)?|bibliografia|references|bibliography|sum[áa]rio|[íi]ndice|contents|table of contents)$/i;
+const EXAM_LINE =
+  /^(?:quest[ãa]o\s*(?:n[º°o.]*\s*)?\d{1,3}\b|\d{1,3}\s*[.)–-]\s+\p{L}|\(?[A-Ea-e]\)\s*\S)/iu;
 const CAPTION =
   /^(?:figura|fig\.|tabela|quadro|gr[áa]fico|fonte|figure|table|chart|source)\s*\d*\s*[:.\-\u2013]/i;
 
@@ -206,6 +208,8 @@ function removeRunningText(pages: TextLine[][]): TextLine[][] {
     lines.filter((line) => {
       const border = inBorder(line);
       if (!border) return true;
+      // "QUESTÃO 12" e "12) Texto" no topo de várias páginas de uma prova não são cabeçalho.
+      if (EXAM_LINE.test(line.text.trim())) return true;
       if (PAGE_NUMBER.test(line.text.trim())) return false;
       const seen = counts.get(`${border}|${lineKey(line)}`)?.size ?? 0;
       return !(total >= 2 && seen >= needed);
@@ -308,6 +312,8 @@ function joinLines(previous: string, next: string): string {
 }
 
 function isNoise(text: string): boolean {
+  // Alternativa de prova ("A) 1945", "(B) 2x + 3") e assertiva ("II) ...") podem ser só número.
+  if (/^\(?[A-Ea-e]\)\s*\S|^\(?[IVX]{1,4}\)\s*\S/.test(text)) return false;
   const letters = text.replace(/[^\p{L}]/gu, "").length;
   if (text.length < 60 && letters / Math.max(text.length, 1) < 0.4) return true;
   if (/^\[\d+\]/.test(text)) return true;
@@ -507,7 +513,11 @@ export function assembleDocument(
     }
   }
   flush();
-  return finalizeDocument(blocks, pages, fileTitle);
+  const document = finalizeDocument(blocks, pages, fileTitle);
+  document.lines = lines
+    .map((line) => ({ text: line.text.trim(), page: line.page }))
+    .filter((line) => line.text);
+  return document;
 }
 
 /** Escolhe o título do arquivo e a língua, e retira o título da lista de seções. */

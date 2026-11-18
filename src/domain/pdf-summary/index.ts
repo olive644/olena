@@ -1,8 +1,14 @@
 import { applyAnswerKey, isExam, parseExam, type ParsedExam } from "./exam";
 import { structureText } from "./layout";
 import { readPdf, type PdfDocumentLike, type ReadPdfOptions } from "./pdf-source";
-import { flashcardsFromDocument, summarizeDocument, type AutoFlashcard } from "./summarize";
+import {
+  extractFacts,
+  flashcardsFromDocument,
+  summarizeDocument,
+  type AutoFlashcard,
+} from "./summarize";
 import type { StructuredDocument, SummaryOptions, SummaryResult } from "./types";
+import { questionsFromFacts, type GeneratedQuestion, type QuizDifficulty } from "./quiz-questions";
 
 export type { SummaryResult, SummaryStage } from "./types";
 
@@ -102,4 +108,17 @@ export function splitExams<T extends { doc: StructuredDocument }>(
       .filter(({ exam }) => !isExam(exam) && (usedKey === undefined || exam !== usedKey.exam))
       .map(({ item }) => item),
   };
+}
+
+export type { GeneratedQuestion, QuizDifficulty } from "./quiz-questions";
+
+/** Perguntas de múltipla escolha de um texto comum (definição, ano, valor e afirmação), no aparelho. */
+export async function quizQuestionsFromDocument(
+  doc: StructuredDocument,
+  difficulty: QuizDifficulty,
+  limit: number,
+  options: Pick<SummaryOptions, "signal"> = {},
+): Promise<GeneratedQuestion[]> {
+  const { language, facts } = await extractFacts(doc, options);
+  return questionsFromFacts(facts, language, difficulty, limit);
 }
