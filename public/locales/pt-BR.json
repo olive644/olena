@@ -4006,5 +4006,17 @@
   "Folhas trocadas: {0}.",
   "Segure para trocar o caderno inteiro",
   "Aplicar ao caderno inteiro",
-  "Caderno inteiro"
+  "Caderno inteiro",
+  "Segundo botão",
+  "Testar caneta e mesa",
+  "Encoste a caneta aqui e aperte os botões. Mostra o que o navegador recebe de verdade.",
+  "Dispositivo: {0}",
+  "Pressão: {0}",
+  "Inclinação: {0}°",
+  "Botões: {0}",
+  "nenhum",
+  "Mouse",
+  "Toque",
+  "Aguardando a caneta",
+  "Segundo botão lateral, comum em canetas de mesa digitalizadora. Alguns aparelhos o enviam como botão do meio."
 ]

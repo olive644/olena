@@ -14,6 +14,7 @@ import type { NotebookPreferences } from "../data/notebook-preferences";
 import "./notebook-settings.css";
 import { FocusPaperArrow } from "./focus-paper-arrow";
 import { NOTEBOOK_SHORTCUTS, type NotebookShortcutId } from "./notebook-shortcut-catalog";
+import { PenInputTest } from "./pen-input-test";
 
 export function NotebookPreferenceFields({
   preferences,
@@ -183,12 +184,13 @@ function NotebookShortcutGuide() {
           <FocusPaperArrow />
         </summary>
         <dl className="notebook-shortcut-list notebook-shortcut-list--pen">
-          {(["penSide", "penTail"] as const).map((key) => (
+          {(["penSide", "penSecond", "penTail"] as const).map((key) => (
             <div key={key}>
               <dt>
                 <label htmlFor={"notebook-shortcut-" + key}>
-                  {uiText(key === "penSide" ? 3814 : 3817)}
+                  {uiText(key === "penSide" ? 3814 : key === "penSecond" ? 4008 : 3817)}
                 </label>
+                {key === "penSecond" && <small>{uiText(4019)}</small>}
               </dt>
               <dd>
                 <span className="notebook-pen-select">
@@ -221,6 +223,7 @@ function NotebookShortcutGuide() {
             <dd>{uiText(3820)}</dd>
           </div>
         </dl>
+        <PenInputTest />
       </details>
       <div className="notebook-shortcut-reset">
         <button
