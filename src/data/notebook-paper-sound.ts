@@ -32,6 +32,8 @@ export function startPaperHoldSound(durationMs: number): () => void {
     tone.frequency.exponentialRampToValueAtTime(660, now + seconds);
     tone.connect(gain);
     tone.start(now);
+    // Rede de segurança: o tom nunca passa do tempo da subida, mesmo que ninguém o interrompa.
+    tone.stop(now + seconds + 0.15);
     let stopped = false;
     return () => {
       if (stopped) return;
@@ -40,7 +42,11 @@ export function startPaperHoldSound(durationMs: number): () => void {
       gain.gain.cancelScheduledValues(end);
       gain.gain.setValueAtTime(Math.max(0.0001, gain.gain.value), end);
       gain.gain.exponentialRampToValueAtTime(0.0001, end + 0.06);
-      tone.stop(end + 0.08);
+      try {
+        tone.stop(end + 0.08);
+      } catch {
+        // Já parou sozinho pela rede de segurança.
+      }
     };
   } catch {
     return () => undefined;

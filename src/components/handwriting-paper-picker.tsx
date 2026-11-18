@@ -77,6 +77,8 @@ export function HandwritingPaperPicker({
         stopSound.current = startPaperHoldSound(PAPER_HOLD_MS);
         timer.current = setTimeout(() => {
           fired.current = true;
+          // A subida do carregamento termina aqui: o acorde de conclusão toca no lugar dela.
+          stopSound.current?.();
           stopSound.current = undefined;
           setHolding(null);
           void applyToNotebook(key, change);

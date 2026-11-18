@@ -5574,3 +5574,9 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Sons sintetizados na hora (`notebook-paper-sound.ts`), mudos com os efeitos sonoros desligados. Com movimento reduzido não há varredura nem brilho animado.
 - Prova: testes de reducer, do seletor (tempo, soltar cedo, clique que sobra, botão alternativo) e e2e `notebook-paper-hold.spec.ts` (claro e escuro, desktop e celular).
 - Limites: o desenho das miniaturas de cadernos muito grandes (dezenas de folhas) não foi medido; a troca do caderno compartilhado em colaboração não propaga para outros participantes além do fluxo normal de salvamento; o som não foi ouvido em aparelho real.
+
+## Chiado preso depois de trocar o caderno inteiro, 18/11/2026
+
+- Sintoma: depois do acorde de conclusão ficava um apito contínuo. Causa: ao completar a pressão, o código descartava a função que parava o tom de subida em vez de chamá-la, e o oscilador nunca recebia `stop`.
+- Correção: a subida agora nasce com parada agendada (duração mais 150 ms), então nunca passa do tempo; ao completar, a função de parar é chamada antes do acorde. Testes em `notebook-paper-sound.test.ts` (parada agendada na criação, parar duas vezes é seguro, cada nota do acorde tem fim).
+- Limite: o som real não foi ouvido em aparelho; a prova é pelo agendamento de `start` e `stop` do Web Audio.
