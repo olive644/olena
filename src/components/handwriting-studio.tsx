@@ -1846,8 +1846,8 @@ export function HandwritingStudio({
           tool: effectiveTool === "ruler" ? "pen" : effectiveTool,
           ...(effectiveTool === "pen" ? { brush } : {}),
           ...(effectiveTool === "pen" && dash ? { dash } : {}),
-          ...(effectiveTool === "pen" && event.pointerType !== "pen"
-            ? { dynamics: "simulated" as const }
+          ...(effectiveTool === "pen"
+            ? { dynamics: event.pointerType === "pen" ? ("pen" as const) : ("simulated" as const) }
             : {}),
           ...(effectiveTool === "highlighter" ? { opacity: highlighterOpacity } : {}),
           color,
@@ -2789,7 +2789,8 @@ export function HandwritingStudio({
         ? {
             brush,
             ...(dash ? { dash } : {}),
-            ...(event.nativeEvent.pointerType !== "pen" ? { dynamics: "simulated" as const } : {}),
+            dynamics:
+              event.nativeEvent.pointerType === "pen" ? ("pen" as const) : ("simulated" as const),
           }
         : { opacity: highlighterOpacity }),
       color,
