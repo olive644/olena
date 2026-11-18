@@ -130,7 +130,9 @@ for (const theme of ["light", "dark"]) {
     ]) {
       await editor.getByRole("button", { name: "Tipo de papel", exact: true }).click();
       const options = editor.locator(".handwriting-paper-options");
-      await expect(options.getByRole("button")).toHaveCount(6);
+      // Seis tipos de papel, mais o botão "Caderno inteiro" (trocar todas as folhas).
+      await expect(options.getByRole("button")).toHaveCount(7);
+      await expect(options.locator("button:not(.handwriting-paper-notebook-all)")).toHaveCount(6);
       for (const removed of ["Pontilhado", "Plano semanal", "Pauta musical"])
         await expect(options.getByRole("button", { name: removed, exact: true })).toHaveCount(0);
       const sizes = await options.locator(".paper-preview").evaluateAll((nodes) =>
