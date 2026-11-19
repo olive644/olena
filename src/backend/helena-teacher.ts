@@ -68,11 +68,19 @@ export async function runCloudflareText(
     payload && typeof payload === "object" && "success" in payload && payload.success === true
       ? (payload as { result?: unknown }).result
       : undefined;
-  const text =
+  const output =
     result && typeof result === "object" && "response" in result
       ? (result as { response: unknown }).response
       : undefined;
-  if (typeof text !== "string" || !text.trim()) throw new Error("Resposta inválida.");
+  // Quando o modelo responde JSON, a Cloudflare entrega `response` já interpretado (objeto ou
+  // lista), não texto. Volta a ser texto aqui para a mesma validação servir aos dois casos.
+  const text =
+    typeof output === "string"
+      ? output
+      : output !== null && typeof output === "object"
+        ? JSON.stringify(output)
+        : undefined;
+  if (!text || !text.trim()) throw new Error("Resposta inválida.");
   return text;
 }
 
