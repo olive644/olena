@@ -53,7 +53,7 @@ describe("handler da Helena", () => {
     const deps = dependencies({
       chatEnabled: false,
       rateLimiter: {
-        consume: vi.fn().mockResolvedValue({ limit: "summary-user-day", retryAfterSeconds: 60 }),
+        consume: vi.fn().mockResolvedValue({ limit: "study-user-day", retryAfterSeconds: 60 }),
       },
     });
     const handler = createHelenaHandler(deps);
@@ -65,7 +65,7 @@ describe("handler da Helena", () => {
       });
     const limited = await handler(withLanguage(validRequest));
     expect(limited.status).toBe(429);
-    expect((await limited.json()).error.message).toMatch(/summaries with Olena today.*9 pm/);
+    expect((await limited.json()).error.message).toMatch(/2 summaries with Olena today.*9 pm/);
     const off = await handler(withLanguage({ ...validRequest, capability: "explain" }));
     expect((await off.json()).error.message).toMatch(/turned off/);
   });
@@ -118,7 +118,7 @@ describe("handler da Helena", () => {
   it("explica qual limite acabou e quando volta, com Retry-After", async () => {
     const limited = dependencies({
       rateLimiter: {
-        consume: vi.fn().mockResolvedValue({ limit: "summary-day", retryAfterSeconds: 3600 }),
+        consume: vi.fn().mockResolvedValue({ limit: "study-day", retryAfterSeconds: 3600 }),
       },
     });
     const response = await createHelenaHandler(limited)(post(validRequest));
@@ -128,7 +128,7 @@ describe("handler da Helena", () => {
     expect(body.error.code).toBe("rate_limited");
     expect(body.error.message).toContain("limite gratuito de hoje");
     expect(body.error.message).toContain("21h");
-    expect(body.error.message).toContain("Resumo automático");
+    expect(body.error.message).not.toContain("automático");
     expect(limited.provider.generate).not.toHaveBeenCalled();
   });
 

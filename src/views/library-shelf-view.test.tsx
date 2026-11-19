@@ -1,11 +1,12 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
 import { LibraryFolderContents } from "./library-shelf-view";
 
 const stream = vi.hoisted(() => vi.fn());
 const services = vi.hoisted(() => vi.fn());
-vi.mock("../data/helena-client", () => ({ streamHelena: stream }));
+const request = vi.hoisted(() => vi.fn());
+vi.mock("../data/helena-client", () => ({ streamHelena: stream, requestHelena: request }));
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: services }));
 const pdfOpen = vi.hoisted(() => vi.fn());
 vi.mock("pdfjs-dist", () => ({ GlobalWorkerOptions: {}, getDocument: pdfOpen }));
@@ -251,155 +252,209 @@ describe("resumo estruturado com a Olena", () => {
   });
 });
 
-describe("resumo automático no aparelho", () => {
-  const longText = [
-    "# O ENIAC",
-    "O ENIAC foi concluído em 1945 na Universidade da Pensilvânia, nos Estados Unidos. Ele foi um dos primeiros computadores eletrônicos de uso geral e foi construído para calcular tabelas de tiro da artilharia.",
-    "Usava cerca de 18 mil válvulas e pesava aproximadamente 30 toneladas. A programação era feita por cabos e chaves, que precisavam ser reconectados a cada nova tarefa.",
-    "A ideia do programa armazenado foi descrita em 1945 por John von Neumann. Os computadores seguintes passaram a usar essa arquitetura, que continua sendo a base das máquinas atuais.",
-  ].join("\n\n");
-
+describe("flashcards, quiz e simulado com a Olena", () => {
   beforeEach(() => {
     stream.mockReset();
+    request.mockReset();
     services.mockReset();
     pdfOpen.mockReset();
-    recognized.mockReset();
-    createWorker.mockClear();
-    terminate.mockClear();
   });
 
-  function renderWith(material: WorkspaceState["materials"][number]) {
+  const reply = (answer: string) => ({
+    version: 1,
+    requestId: "r",
+    answer,
+    suggestions: [],
+    generatedAt: "2026-11-19T12:00:00.000Z",
+  });
+  const questions = JSON.stringify({
+    questions: [
+      {
+        prompt: "x",
+        question: "Em que ano o ENIAC foi concluído?",
+        options: ["1939", "1945", "1957", "1969"],
+        answer: 1,
+        explanation: "Concluído em 1945.",
+      },
+      {
+        question: "Quantas válvulas o ENIAC usava?",
+        options: ["18 mil", "2 mil", "100", "1 milhão"],
+        answer: 0,
+        explanation: "Cerca de 18 mil.",
+      },
+    ],
+  });
+  const cards = JSON.stringify({
+    cards: [1, 2, 3, 4].map((n) => ({ front: `Pergunta ${n}?`, back: `Resposta ${n}` })),
+  });
+
+  function open(tab: string, action: string, materials: WorkspaceState["materials"] = [source]) {
     const dispatch = vi.fn<(action: WorkspaceAction) => void>();
     render(
       <LibraryFolderContents
         folder={folder}
-        materials={[material]}
+        materials={materials}
         subjectId="materia-1"
         dispatch={dispatch}
         onBack={() => undefined}
       />,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Resumo" }));
-    fireEvent.click(screen.getByRole("button", { name: "Criar resumo" }));
+    fireEvent.click(screen.getByRole("button", { name: tab }));
+    fireEvent.click(screen.getByRole("button", { name: action }));
     const dialog = screen.getByRole("dialog");
-    fireEvent.click(within(dialog).getByRole("checkbox", { name: `Selecionar ${material.title}` }));
+    fireEvent.click(within(dialog).getByRole("checkbox", { name: "Selecionar ENIAC.txt" }));
     return { dispatch, dialog };
   }
 
-  it("resume um texto sem login, sem rede e sem chamar a Olena", async () => {
-    const { dispatch, dialog } = renderWith({ ...source, content: longText });
-    fireEvent.click(within(dialog).getByRole("button", { name: "Resumo automático" }));
-    await waitFor(() => expect(dispatch).toHaveBeenCalled());
-    expect(services).not.toHaveBeenCalled();
-    expect(stream).not.toHaveBeenCalled();
-    const action = dispatch.mock.calls[0]![0];
-    expect(action).toEqual(
-      expect.objectContaining({
-        type: "material/added",
-        kind: "text",
-        collectionId: "pasta-1",
-        tags: ["folder-summary", "ENIAC.txt"],
-      }),
-    );
-    if (action.type !== "material/added") throw new Error("ação inesperada");
-    expect(action.content).toContain("Sobre este resumo");
-    expect(action.content).not.toMatch(/[\u2013\u2014]/);
+  it("não há mais caminho gratuito no aparelho: só 'Gerar com a Olena', com aviso de envio e do limite", () => {
+    signedIn();
+    for (const [tab, action] of [
+      ["Resumo", "Criar resumo"],
+      ["Flashcards", "Criar flashcards"],
+      ["Quizzes", "Criar quiz"],
+      ["Simulados", "Criar simulado"],
+    ] as const) {
+      const { dialog } = open(tab, action);
+      const buttons = within(dialog)
+        .getAllByRole("button")
+        .map((button) => button.textContent);
+      expect(buttons).toContain("Gerar com a Olena");
+      for (const free of [
+        "Resumo automático",
+        "Flashcards automáticos",
+        "Quiz automático",
+        "Gerar simulado",
+      ])
+        expect(buttons).not.toContain(free);
+      expect(dialog.textContent).toContain("o texto das fontes selecionadas é enviado a ela");
+      expect(dialog.textContent).toContain("2 vezes por dia");
+      cleanup();
+    }
   });
 
-  const scannedPdf = () => {
-    const page = {
-      getViewport: () => ({ width: 600, height: 800 }),
-      getTextContent: async () => ({ items: [] }),
-      render: () => ({ promise: Promise.resolve() }),
-      cleanup: () => undefined,
+  it("flashcards: pede à Olena só números, manda o texto e guarda o baralho", async () => {
+    signedIn();
+    request.mockResolvedValue(reply(cards));
+    const { dispatch, dialog } = open("Flashcards", "Criar flashcards");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    const [sent, options] = request.mock.calls[0]!;
+    expect(sent.capability).toBe("flashcards");
+    expect(sent.prompt).toBe("count=12");
+    expect(sent.privacy).toEqual({ consent: true, retention: "none" });
+    expect(sent.sources[0]).toMatchObject({ id: "fonte-1", title: "ENIAC.txt" });
+    expect(options.token).toBe("token-da-conta");
+    const added = dispatch.mock.calls.map(([a]) => a).filter((a) => a.type === "flashcard/added");
+    expect(added).toHaveLength(4);
+    expect(added[0]).toMatchObject({ deck: "ENIAC", materialId: "fonte-1", front: "Pergunta 1?" });
+  });
+
+  it("quiz: guarda as questões no formato do estudo, com a dificuldade escolhida", async () => {
+    signedIn();
+    request.mockResolvedValue(reply(questions));
+    const { dispatch, dialog } = open("Quizzes", "Criar quiz");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Difícil" }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Longo" }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(request.mock.calls[0]![0]).toMatchObject({
+      capability: "quiz",
+      prompt: "count=15;options=4;difficulty=hard",
+    });
+    const action = dispatch.mock.calls[0]![0];
+    if (action.type !== "material/added") throw new Error("ação inesperada");
+    expect(action.tags).toEqual(["folder-quiz", "ENIAC.txt"]);
+    const quiz = JSON.parse(action.content) as {
+      difficulty: string;
+      questions: { options: string[]; answer: number; page: number }[];
     };
-    pdfOpen.mockReturnValue({
-      promise: Promise.resolve({ numPages: 1, getPage: async () => page }),
-      destroy: async () => undefined,
-    });
-    return renderWith({
-      ...source,
-      id: "pdf-3",
-      title: "escaneado.pdf",
-      kind: "pdf",
-      content: "data:application/pdf;base64,JVBERi0xLjQK",
-    });
-  };
-
-  it("lê PDF escaneado com OCR em português e resume o texto", async () => {
-    recognized.mockReturnValue(
-      "A fotossíntese é o processo pelo qual as plantas transformam energia luminosa em energia química.\n\nNesse processo, a planta usa gás carbônico, água e luz para produzir glicose e liberar oxigênio.\n\nO cloroplasto é a organela que contém a clorofila, pigmento verde que absorve a luz do sol.",
-    );
-    const { dispatch, dialog } = scannedPdf();
-    fireEvent.click(within(dialog).getByRole("button", { name: "Resumo automático" }));
-    await waitFor(() => expect(dispatch).toHaveBeenCalled());
-    expect(createWorker).toHaveBeenCalledWith("por", 1, expect.anything());
-    expect(terminate).toHaveBeenCalled();
-    const action = dispatch.mock.calls[0]![0];
-    if (action.type !== "material/added") throw new Error("ação inesperada");
-    expect(action.content).toContain("fotossíntese");
-    expect(stream).not.toHaveBeenCalled();
+    expect(quiz.difficulty).toBe("hard");
+    expect(quiz.questions).toHaveLength(2);
+    expect(quiz.questions[0]!.options[quiz.questions[0]!.answer]).toBe("1945");
+    expect(quiz.questions[0]!.page).toBe(0);
   });
 
-  it("explica quando nem o OCR encontra texto", async () => {
-    recognized.mockReturnValue("");
-    const { dispatch, dialog } = scannedPdf();
-    fireEvent.click(within(dialog).getByRole("button", { name: "Resumo automático" }));
+  it("simulado: usa o pedido de simulado e guarda como prova", async () => {
+    signedIn();
+    request.mockResolvedValue(reply(questions));
+    const { dispatch, dialog } = open("Simulados", "Criar simulado");
+    expect(dialog.textContent).toContain("podem estar erradas");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(request.mock.calls[0]![0]).toMatchObject({
+      capability: "exam",
+      prompt: "count=15;options=4;difficulty=medium",
+    });
+    const action = dispatch.mock.calls[0]![0];
+    if (action.type !== "material/added") throw new Error("ação inesperada");
+    expect(action.tags?.[0]).toBe("folder-exam");
+  });
+
+  it("fácil pede 3 alternativas e a resposta com 4 é recusada", async () => {
+    signedIn();
+    request.mockResolvedValue(reply(questions));
+    const { dispatch, dialog } = open("Quizzes", "Criar quiz");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Fácil" }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
     expect(await screen.findByRole("alert")).toHaveProperty(
       "textContent",
-      "Não encontrei texto em escaneado.pdf, nem lendo as imagens. Se a foto estiver torta ou borrada, tente outra ou use a Olena.",
+      "A Olena respondeu em um formato inesperado. Tente de novo.",
     );
+    expect(request.mock.calls[0]![0].prompt).toBe("count=10;options=3;difficulty=easy");
     expect(dispatch).not.toHaveBeenCalled();
   });
 
-  it("lê o texto de uma imagem no aparelho e resume sem a Olena", async () => {
-    recognized.mockReturnValue(
-      "A fotossíntese é o processo pelo qual as plantas produzem energia a partir da luz. " +
-        "A clorofila absorve a luz do sol dentro dos cloroplastos. " +
-        "Sem luz, a planta não consegue produzir o açúcar de que precisa para crescer.",
-    );
-    const { dispatch, dialog } = renderWith({
-      ...source,
-      id: "img-1",
-      title: "foto.png",
-      kind: "image",
-      content: "data:image/png;base64,AAAA",
-    });
-    fireEvent.click(within(dialog).getByRole("button", { name: "Resumo automático" }));
-    await waitFor(() => expect(dispatch).toHaveBeenCalled());
-    expect(createWorker).toHaveBeenCalledWith("por", 1, expect.anything());
-    expect(terminate).toHaveBeenCalled();
-    expect(stream).not.toHaveBeenCalled();
-  });
-
-  it("avisa quando nem o OCR acha texto na imagem", async () => {
-    recognized.mockReturnValue("");
-    const { dispatch, dialog } = renderWith({
-      ...source,
-      id: "img-2",
-      title: "foto.png",
-      kind: "image",
-      content: "data:image/png;base64,AAAA",
-    });
-    fireEvent.click(within(dialog).getByRole("button", { name: "Resumo automático" }));
+  it("resposta fora do formato não guarda nada", async () => {
+    signedIn();
+    request.mockResolvedValue(reply("não é JSON"));
+    const { dispatch, dialog } = open("Flashcards", "Criar flashcards");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
     expect(await screen.findByRole("alert")).toBeTruthy();
     expect(dispatch).not.toHaveBeenCalled();
   });
 
-  it("não oferece escolher o tamanho: o resumo grátis já sai no máximo", () => {
-    const { dialog } = renderWith(source);
-    expect(
-      within(dialog).queryByRole("group", { name: "Tamanho do resumo automático" }),
-    ).toBeNull();
-    expect(within(dialog).queryByRole("radio", { name: "Curto" })).toBeNull();
+  it("sem conta, orienta a entrar e não chama a Olena nem lê o arquivo", async () => {
+    services.mockResolvedValue({ auth: { currentUser: null } });
+    for (const [tab, action] of [
+      ["Flashcards", "Criar flashcards"],
+      ["Quizzes", "Criar quiz"],
+      ["Simulados", "Criar simulado"],
+    ] as const) {
+      const { dispatch, dialog } = open(tab, action);
+      fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
+      expect(await screen.findByRole("alert")).toHaveProperty(
+        "textContent",
+        "Entre na sua conta para gerar com a Olena.",
+      );
+      expect(dispatch).not.toHaveBeenCalled();
+      cleanup();
+    }
+    expect(request).not.toHaveBeenCalled();
   });
 
-  function openFlashcards(content: string) {
+  it("limite diário: mostra o aviso do servidor e não guarda nada", async () => {
+    signedIn();
+    request.mockRejectedValue(
+      new Error(
+        "Você já fez 2 quizzes com a Olena hoje. Eles voltam às 21h (horário de Brasília).",
+      ),
+    );
+    const { dispatch, dialog } = open("Quizzes", "Criar quiz");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
+    expect(await screen.findByRole("alert")).toHaveProperty(
+      "textContent",
+      "Você já fez 2 quizzes com a Olena hoje. Eles voltam às 21h (horário de Brasília).",
+    );
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  // O que cada tipo de fonte entrega à Olena: o texto sai do arquivo no aparelho, de cada jeito.
+  function openMany(materials: WorkspaceState["materials"]) {
     const dispatch = vi.fn<(action: WorkspaceAction) => void>();
     render(
       <LibraryFolderContents
         folder={folder}
-        materials={[{ ...source, content }]}
+        materials={materials}
         subjectId="materia-1"
         dispatch={dispatch}
         onBack={() => undefined}
@@ -408,32 +463,153 @@ describe("resumo automático no aparelho", () => {
     fireEvent.click(screen.getByRole("button", { name: "Flashcards" }));
     fireEvent.click(screen.getByRole("button", { name: "Criar flashcards" }));
     const dialog = screen.getByRole("dialog");
-    fireEvent.click(within(dialog).getByRole("checkbox", { name: `Selecionar ${source.title}` }));
-    return { dispatch, dialog };
+    for (const item of materials)
+      fireEvent.click(within(dialog).getByRole("checkbox", { name: `Selecionar ${item.title}` }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
+    return { dispatch };
   }
+  const sent = () =>
+    request.mock.calls[0]![0].sources as { id: string; title: string; content: string }[];
 
-  it("cria flashcards no aparelho, sem login, sem rede e sem a Olena, sem escolher tamanho", async () => {
-    const { dispatch, dialog } = openFlashcards(longText);
-    expect(within(dialog).queryByRole("radio")).toBeNull();
-    expect(within(dialog).queryByRole("button", { name: "Gerar com a Olena" })).toBeNull();
-    fireEvent.click(within(dialog).getByRole("button", { name: "Flashcards automáticos" }));
+  it("Markdown e nota em branco vão como texto, com o título de cada uma", async () => {
+    signedIn();
+    request.mockResolvedValue(reply(cards));
+    const { dispatch } = openMany([
+      { ...source, id: "md", title: "aula.md", content: "# Aula\n\nA célula é a unidade da vida." },
+      { ...source, id: "nota", title: "Minha nota", content: "Mitocôndria produz energia." },
+    ]);
     await waitFor(() => expect(dispatch).toHaveBeenCalled());
-    expect(services).not.toHaveBeenCalled();
-    expect(stream).not.toHaveBeenCalled();
-    const action = dispatch.mock.calls[0]![0];
-    if (action.type !== "flashcard/added") throw new Error("ação inesperada");
-    expect(action.subjectId).toBe("materia-1");
-    expect(action.materialId).toBe(source.id);
-    expect(action.deck).toBe("ENIAC");
-    expect(/^(Verdadeiro|Falso)./.test(action.back)).toBe(true);
-    expect(await screen.findByRole("status")).toBeTruthy();
+    expect(sent().map((item) => item.title)).toEqual(["aula.md", "Minha nota"]);
+    expect(sent()[0]!.content).toContain("A célula é a unidade da vida.");
+    expect(sent()[1]!.content).toBe("Mitocôndria produz energia.");
   });
 
-  it("avisa quando o texto não rende nenhum flashcard", async () => {
-    const { dispatch, dialog } = openFlashcards("Oi.");
-    fireEvent.click(within(dialog).getByRole("button", { name: "Flashcards automáticos" }));
-    expect(await screen.findByRole("alert")).toBeTruthy();
-    expect(dispatch).not.toHaveBeenCalled();
+  it("imagem: o texto vem do OCR em português, no aparelho", async () => {
+    signedIn();
+    recognized.mockReturnValue("O ENIAC foi concluído em 1945.");
+    request.mockResolvedValue(reply(cards));
+    const { dispatch } = openMany([
+      {
+        ...source,
+        id: "foto",
+        title: "foto.png",
+        kind: "image",
+        content: "data:image/png;base64,AAAA",
+      },
+    ]);
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(createWorker).toHaveBeenCalledWith("por", 1, expect.anything());
+    expect(sent()[0]!.content).toBe("O ENIAC foi concluído em 1945.");
+    expect(terminate).toHaveBeenCalled();
+  });
+
+  it("imagem sem texto legível: avisa e não chama a Olena", async () => {
+    signedIn();
+    recognized.mockReturnValue("   ");
+    openMany([
+      {
+        ...source,
+        id: "foto",
+        title: "foto.png",
+        kind: "image",
+        content: "data:image/png;base64,AAAA",
+      },
+    ]);
+    expect(await screen.findByRole("alert")).toHaveProperty(
+      "textContent",
+      "Não consegui extrair texto de foto.png.",
+    );
+    expect(request).not.toHaveBeenCalled();
+  });
+
+  it("PDF digital: texto de cada página, com o número da página", async () => {
+    signedIn();
+    const pages = ["Primeira página sobre o ENIAC.", "Segunda página sobre a válvula."];
+    pdfOpen.mockReturnValue({
+      promise: Promise.resolve({
+        numPages: 2,
+        getPage: async (n: number) => ({
+          getTextContent: async () => ({ items: [{ str: pages[n - 1] }] }),
+          cleanup: () => undefined,
+        }),
+      }),
+      destroy: async () => undefined,
+    });
+    request.mockResolvedValue(reply(cards));
+    const { dispatch } = openMany([
+      {
+        ...source,
+        id: "pdf",
+        title: "aula.pdf",
+        kind: "pdf",
+        content: "data:application/pdf;base64,JVBERi0xLjQK",
+      },
+    ]);
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(sent()[0]!.content).toContain("Página 1: Primeira página sobre o ENIAC.");
+    expect(sent()[0]!.content).toContain("Página 2: Segunda página sobre a válvula.");
+  });
+
+  it("PDF escaneado: a página sem texto passa pelo OCR em português", async () => {
+    signedIn();
+    recognized.mockReturnValue("Fotossíntese lida da imagem da página.");
+    pdfOpen.mockReturnValue({
+      promise: Promise.resolve({
+        numPages: 1,
+        getPage: async () => ({
+          getTextContent: async () => ({ items: [] }),
+          getViewport: () => ({ width: 600, height: 800 }),
+          render: () => ({ promise: Promise.resolve() }),
+          cleanup: () => undefined,
+        }),
+      }),
+      destroy: async () => undefined,
+    });
+    request.mockResolvedValue(reply(cards));
+    const { dispatch } = openMany([
+      {
+        ...source,
+        id: "scan",
+        title: "scan.pdf",
+        kind: "pdf",
+        content: "data:application/pdf;base64,JVBERi0xLjQK",
+      },
+    ]);
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(sent()[0]!.content).toContain("Página 1: Fotossíntese lida da imagem da página.");
+  });
+
+  it("três fontes de tipos diferentes dividem o texto enviado, sem passar de 30.000", async () => {
+    signedIn();
+    recognized.mockReturnValue("Texto da foto. ".repeat(3_000));
+    request.mockResolvedValue(reply(cards));
+    const { dispatch } = openMany([
+      { ...source, id: "a", title: "a.txt", content: "Texto longo. ".repeat(6_000) },
+      { ...source, id: "b", title: "b.png", kind: "image", content: "data:image/png;base64,AAAA" },
+      { ...source, id: "c", title: "c.txt", content: "Curto." },
+    ]);
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    const total = sent().reduce((sum, item) => sum + item.content.length, 0);
+    expect(total).toBeLessThanOrEqual(30_000);
+    expect(sent().length).toBeLessThanOrEqual(12);
+    expect(sent().every((item) => item.content.length <= 8_000)).toBe(true);
+    for (const id of ["a", "b", "c"])
+      expect(sent().some((item) => item.id.startsWith(id))).toBe(true);
+  });
+
+  it("link do YouTube nunca é enviado: fica só como referência", () => {
+    signedIn();
+    const link = {
+      ...source,
+      id: "yt",
+      title: "https://youtu.be/x",
+      kind: "link" as const,
+      content: "https://youtu.be/x",
+    };
+    const { dialog } = open("Quizzes", "Criar quiz", [source, link]);
+    expect(
+      within(dialog).getByRole("checkbox", { name: "Selecionar https://youtu.be/x" }),
+    ).toHaveProperty("disabled", true);
   });
 
   it("mostra o baralho como uma linha e estuda em outra tela: esquerda errei, direita acertei", () => {
@@ -495,72 +671,5 @@ describe("resumo automático no aparelho", () => {
     expect(dispatch).toHaveBeenCalledTimes(2);
     fireEvent.click(within(study).getByRole("button", { name: "Continuar" }));
     expect(screen.queryByRole("region", { name: "ENIAC" })).toBeNull();
-  });
-
-  const PROVA = [
-    "Prova de Ciências",
-    "QUESTÃO 1\nQual é o processo pelo qual as plantas produzem glicose usando luz?\nA) Respiração celular\nB) Fotossíntese\nC) Fermentação\nD) Digestão",
-    "QUESTÃO 2\nO ENIAC foi concluído em qual ano?\nA) 1939\nB) 1945\nC) 1957\nD) 1969",
-    "QUESTÃO 3\nQual gás as plantas liberam na fotossíntese?\nA) Oxigênio\nB) Nitrogênio\nC) Hélio\nD) Metano",
-    "QUESTÃO 4\nQual é o estado da água a 25 graus Celsius ao nível do mar?\nA) Sólido\nB) Líquido\nC) Gasoso\nD) Plasma",
-  ].join("\n\n");
-  const GABARITO = "\n\nGABARITO\n1-B 2-B 3-A 4-B";
-
-  it("transforma uma prova com gabarito em flashcards de verdadeiro ou falso", async () => {
-    const { dispatch, dialog } = openFlashcards(PROVA + GABARITO);
-    fireEvent.click(within(dialog).getByRole("button", { name: "Flashcards automáticos" }));
-    await waitFor(() => expect(dispatch).toHaveBeenCalled());
-    const added = dispatch.mock.calls
-      .map(([action]) => action)
-      .filter((action) => action.type === "flashcard/added");
-    expect(added).toHaveLength(8);
-    expect(
-      added.every((action) => action.type === "flashcard/added" && action.origin === "exam"),
-    ).toBe(true);
-    expect(
-      added.some(
-        (action) =>
-          action.type === "flashcard/added" &&
-          action.back === "Verdadeiro. Gabarito: B) Fotossíntese",
-      ),
-    ).toBe(true);
-  });
-
-  it("explica quando a prova não traz o gabarito, sem inventar respostas", async () => {
-    const { dispatch, dialog } = openFlashcards(PROVA);
-    fireEvent.click(within(dialog).getByRole("button", { name: "Flashcards automáticos" }));
-    expect(await screen.findByRole("alert")).toHaveProperty(
-      "textContent",
-      "Essa prova não traz o gabarito, então não dá para saber as respostas. Envie o gabarito no mesmo arquivo ou como outra fonte selecionada junto.",
-    );
-    expect(dispatch).not.toHaveBeenCalled();
-  });
-
-  it("cria o quiz com as questões e o gabarito reais da prova", async () => {
-    const dispatch = vi.fn<(action: WorkspaceAction) => void>();
-    render(
-      <LibraryFolderContents
-        folder={folder}
-        materials={[{ ...source, content: PROVA + GABARITO }]}
-        subjectId="materia-1"
-        dispatch={dispatch}
-        onBack={() => undefined}
-      />,
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Quizzes" }));
-    fireEvent.click(screen.getByRole("button", { name: "Criar quiz" }));
-    const dialog = screen.getByRole("dialog");
-    fireEvent.click(within(dialog).getByRole("checkbox", { name: `Selecionar ${source.title}` }));
-    fireEvent.click(within(dialog).getByRole("button", { name: "Quiz automático" }));
-    await waitFor(() => expect(dispatch).toHaveBeenCalled());
-    const action = dispatch.mock.calls[0]![0];
-    if (action.type !== "material/added") throw new Error("ação inesperada");
-    const quiz = JSON.parse(action.content) as {
-      questions: { prompt: string; options: string[]; answer: number; explanation: string }[];
-    };
-    expect(quiz.questions).toHaveLength(4);
-    expect(quiz.questions[0]!.prompt).toContain("glicose usando luz");
-    expect(quiz.questions[0]!.options[quiz.questions[0]!.answer]).toBe("Fotossíntese");
-    expect(quiz.questions[0]!.explanation).toBe("Gabarito: B) Fotossíntese");
   });
 });

@@ -8,14 +8,17 @@ const mocks = vi.hoisted(() => ({
   quota: vi.fn(),
   teacher: vi.fn(),
   student: vi.fn(),
+  refund: vi.fn(),
+  text: vi.fn(),
 }));
 vi.mock("./firebase-account-identity", () => ({
   createFirebaseAccountIdentity: () => mocks.identify,
 }));
 vi.mock("./firebase-realtime-store", () => ({ createFirebaseRealtimeStore: () => ({}) }));
-vi.mock("./rate-limit", () => ({ checkRateLimit: mocks.quota }));
+vi.mock("./rate-limit", () => ({ checkRateLimit: mocks.quota, refundRateLimit: mocks.refund }));
 vi.mock("./helena-teacher", () => ({
   createCloudflareTeacher: () => ({ generate: mocks.teacher }),
+  runCloudflareText: mocks.text,
 }));
 vi.mock("./olena-student", () => ({
   createOlenaStudent: mocks.student,
@@ -32,6 +35,7 @@ beforeEach(() => {
   vi.stubEnv("OLENA_STUDENT_CAPABILITIES", "tutor");
   mocks.identify.mockResolvedValue({ uid: "account" });
   mocks.quota.mockResolvedValue(true);
+  mocks.refund.mockResolvedValue(undefined);
   mocks.teacher.mockResolvedValue({ answer: "Explicação do professor.", suggestions: [] });
   mocks.student.mockReturnValue({ generate: async () => ({ answer: "999", suggestions: [] }) });
 });
@@ -52,9 +56,9 @@ async function send(prompt: string, address?: string, capability = "tutor") {
         capability,
         prompt,
         sources:
-          capability === "summarize"
-            ? [{ id: "fonte", kind: "material", title: "Aula", content: "Texto da aula." }]
-            : [],
+          capability === "tutor"
+            ? []
+            : [{ id: "fonte", kind: "material", title: "Aula", content: "Texto da aula." }],
         privacy: { consent: true, retention: "none" },
       }),
     }),
@@ -127,29 +131,79 @@ it("sem endereço identificável, o teto por endereço é ignorado e o global co
   expect(buckets).toEqual(["helena-user-minute", "helena-user-day", "helena-global-day"]);
 });
 
-it("o resumo tem teto próprio por pessoa e geral, e o chat segue livre quando ele acaba", async () => {
+it("cada tipo da Biblioteca tem 2 usos por dia por pessoa e teto global próprio", async () => {
   const blocked = new Set<string>();
   mocks.quota.mockImplementation(
     async (_store: unknown, namespace: string) => !blocked.has(namespace),
   );
+  for (const [capability, plural] of [
+    ["summarize", "resumos"],
+    ["flashcards", "flashcards"],
+    ["quiz", "quizzes"],
+    ["exam", "simulados"],
+  ] as const) {
+    blocked.clear();
+    blocked.add(`helena-${capability}-day`);
+    const global = await send("count=5", undefined, capability);
+    expect(global.status).toBe(429);
+    expect(((await global.json()) as { error: { message: string } }).error.message).toContain(
+      "limite gratuito de hoje",
+    );
+    expect(global.headers.get("Retry-After")).toMatch(/^\d+$/);
 
-  blocked.add("helena-summary-day");
-  const global = await send("Resuma a aula", undefined, "summarize");
-  expect(global.status).toBe(429);
-  expect(((await global.json()) as { error: { message: string } }).error.message).toContain(
-    "limite gratuito de hoje",
+    blocked.clear();
+    blocked.add(`helena-${capability}-user-day`);
+    const personal = await send("count=5", undefined, capability);
+    expect(personal.status).toBe(429);
+    expect(((await personal.json()) as { error: { message: string } }).error.message).toContain(
+      `2 ${plural} com a Olena hoje`,
+    );
+  }
+});
+
+it("o teto de um tipo não bloqueia os outros", async () => {
+  const blocked = new Set(["helena-quiz-user-day"]);
+  mocks.quota.mockImplementation(
+    async (_store: unknown, namespace: string) => !blocked.has(namespace),
   );
-  expect(global.headers.get("Retry-After")).toMatch(/^\d+$/);
+  expect((await send("count=5", undefined, "quiz")).status).toBe(429);
+  expect((await send("Resuma a aula", undefined, "summarize")).status).not.toBe(429);
+});
 
-  blocked.clear();
-  blocked.add("helena-summary-user-day");
-  const personal = await send("Resuma a aula", undefined, "summarize");
-  expect(personal.status).toBe(429);
-  expect(((await personal.json()) as { error: { message: string } }).error.message).toContain(
-    "resumos com a Olena hoje",
+it("falha do modelo devolve o uso do dia (a pessoa não perde um dos 2)", async () => {
+  mocks.text.mockResolvedValue("isto não é JSON");
+  const response = await send("count=5;options=4;difficulty=medium", undefined, "quiz");
+  expect(response.status).toBe(503);
+  // Duas tentativas, e depois devolve os contadores que o pedido gastou.
+  expect(mocks.text).toHaveBeenCalledTimes(2);
+  const returned = mocks.refund.mock.calls.map((call) => String(call[1]));
+  expect(returned).toEqual(
+    expect.arrayContaining(["helena-quiz-user-day", "helena-quiz-day", "helena-global-day"]),
   );
+});
 
-  // Com os dois tetos do resumo cheios, a conversa continua respondendo.
-  blocked.add("helena-summary-day");
-  expect((await send("Explique frações")).status).toBe(200);
+it("quiz válido da IA volta pronto, sem devolver o uso", async () => {
+  mocks.text.mockResolvedValue(
+    JSON.stringify({
+      questions: [
+        {
+          question: "Qual gás as plantas liberam?",
+          options: ["Oxigênio", "Hélio", "Metano", "Neônio"],
+          answer: 0,
+          explanation: "Fotossíntese.",
+        },
+        {
+          question: "Onde ocorre a fotossíntese?",
+          options: ["Cloroplasto", "Núcleo", "Ribossomo", "Vacúolo"],
+          answer: 0,
+          explanation: "Nos cloroplastos.",
+        },
+      ],
+    }),
+  );
+  const response = await send("count=5;options=4;difficulty=medium", undefined, "quiz");
+  expect(response.status).toBe(200);
+  const body = (await response.json()) as { answer: string };
+  expect(JSON.parse(body.answer).questions).toHaveLength(2);
+  expect(mocks.refund).not.toHaveBeenCalled();
 });

@@ -1,15 +1,10 @@
 import { SourceExamStudy } from "../components/source-exam-study";
 import { SourceQuizStudy } from "../components/source-quiz-study";
-import {
-  parseSourceQuiz,
-  type QuizDifficulty,
-  type QuizLength,
-  type SourceQuiz,
-} from "../domain/source-quiz";
-import type { StructuredDocument } from "../domain/pdf-summary/types";
+import { parseSourceQuiz, type QuizDifficulty, type QuizLength } from "../domain/source-quiz";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { dataUrlBytes } from "../data/data-url";
-import { streamHelena } from "../data/helena-client";
+import { requestHelena, streamHelena } from "../data/helena-client";
+import { parseStudyCards, parseStudyQuestions } from "../ai/study-output";
 import { OCR_WORKER_OPTIONS } from "../components/handwriting-ocr";
 import type { HelenaRequest } from "../ai/helena-contract";
 import { PaperEditorIcon } from "../components/paper-editor-icon";
@@ -19,8 +14,8 @@ import { ShelfToolIcon } from "../components/shelf-tool-icon";
 import { PaperDigits } from "../components/paper-digits";
 import { LibraryDialog } from "../components/library-dialog";
 import { FlashcardStudy } from "../components/flashcard-study";
-import { noteFeedback, type CardOrigin } from "../domain/flashcard-feedback";
-import { cardFeatures, learnFromSignal, loadModel, shouldHide } from "../domain/flashcard-quality";
+import { noteFeedback } from "../domain/flashcard-feedback";
+import { learnFromSignal } from "../domain/flashcard-quality";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useRef, useState, type Dispatch, type ReactNode } from "react";
 import {
@@ -31,6 +26,15 @@ import {
   type WorkspaceAction,
   type WorkspaceState,
 } from "../domain/workspace";
+import {
+  OLENA_CAPABILITY,
+  SUMMARY_PROMPT,
+  budgetSources,
+  studyPrompt,
+  toSourceQuiz,
+  type OlenaKind,
+  type SourceText,
+} from "./library-ai";
 import {
   MAX_IMAGE_INPUT_BYTES,
   MAX_PDF_BYTES,
@@ -287,16 +291,6 @@ const studySections = {
 
 type FolderSection = "Fontes" | keyof typeof studySections;
 const folderSections = ["Fontes", ...Object.keys(studySections)] as FolderSection[];
-// O resumo automático é grátis e roda no aparelho: sempre o maior que o texto comporta.
-const SUMMARY_DETAIL = "long" as const;
-type SummaryModule = typeof import("../domain/pdf-summary");
-type SourceEngine<T> = {
-  text: (text: string, title: string) => Promise<T>;
-  pdf: (
-    pdf: Parameters<SummaryModule["summarizePdf"]>[0],
-    options: NonNullable<Parameters<SummaryModule["summarizePdf"]>[1]>,
-  ) => Promise<T>;
-};
 const summaryInline = (value: string) =>
   value
     .split(/\*\*([^*]+)\*\*/)
@@ -373,27 +367,6 @@ function SummaryMarkdown({ content }: { content: string }) {
   return <>{blocks}</>;
 }
 
-/** Mensagem para o erro de uma prova sem gabarito ou só com figuras, ou undefined para outros erros. */
-function examErrorText(error: unknown): string | undefined {
-  if (!(error instanceof Error) || error.name !== "ExamError") return undefined;
-  switch ((error as Error & { reason?: string }).reason) {
-    case "needs-figures":
-      return uiText(
-        "As questões dessa prova dependem de figuras ou gráficos que o texto do PDF não traz.",
-      );
-    case "only-answer-key":
-      return uiText("Esse arquivo é só um gabarito. Selecione junto a prova a que ele pertence.");
-    case "ambiguous-key":
-      return uiText(
-        "O gabarito tem várias provas ou versões e não deu para saber qual é a desta prova. Selecione um gabarito só dela.",
-      );
-    default:
-      return uiText(
-        "Essa prova não traz o gabarito, então não dá para saber as respostas. Envie o gabarito no mesmo arquivo ou como outra fonte selecionada junto.",
-      );
-  }
-}
-
 export function LibraryFolderContents({
   folder,
   materials: folderMaterials,
@@ -466,473 +439,197 @@ export function LibraryFolderContents({
   const [error, setError] = useState("");
   const input = useRef<HTMLInputElement>(null);
 
-  async function generateSummary() {
-    if (summaryBusy || !selectedSources.length) return;
-    setCreating(undefined);
-    setSection("Resumo");
-    setSummaryError("");
-    setSummaryBusy(true);
+  /** Lê o texto das fontes no aparelho: texto direto, imagem por OCR, PDF (OCR nas páginas só imagem). */
+  async function extractSourceTexts(): Promise<SourceText[]> {
+    const texts: SourceText[] = [];
+    let scanner: Awaited<ReturnType<typeof import("tesseract.js").createWorker>> | undefined;
+    async function recognize(image: HTMLCanvasElement | string) {
+      if (!scanner) {
+        const { createWorker } = await import("tesseract.js");
+        scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
+      }
+      return (await scanner.recognize(image)).data.text;
+    }
     try {
-      const services = await getFirebaseAccountServices().catch(() => undefined);
-      if (!services) throw new Error("A autenticação da Olena não está configurada nesta prévia.");
-      const { auth } = services;
-      const user = auth.currentUser;
-      if (!user || user.isAnonymous) throw new Error("Entre na sua conta para gerar com a Olena.");
-      const token = await user.getIdToken();
-      const sources: HelenaRequest["sources"] = [];
-      let scanner: Awaited<ReturnType<typeof import("tesseract.js").createWorker>> | undefined;
-      async function recognize(image: HTMLCanvasElement | string) {
-        if (!scanner) {
-          const { createWorker } = await import("tesseract.js");
-          scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
-        }
-        return (await scanner.recognize(image)).data.text;
-      }
-      try {
-        for (const source of selectedSources) {
-          if (source.kind === "link")
-            throw new Error(
-              uiText("{0} é um link e não pode ser lido. Use uma nota em branco com o texto.", [
-                source.title,
-              ]),
-            );
-          let content = source.kind === "text" ? source.content : "";
-          if (source.kind === "image") content = await recognize(source.content);
-          if (source.kind === "pdf") {
-            const [pdfjs, worker] = await Promise.all([
-              import("pdfjs-dist"),
-              import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
-            ]);
-            pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-            const bytes = dataUrlBytes(source.content);
-            if (!bytes) throw new Error("Não consegui abrir o PDF " + source.title + ".");
-            const loading = pdfjs.getDocument({ data: bytes });
-            try {
-              const pdf = await loading.promise.catch(() => {
-                throw new Error("Não consegui abrir o PDF " + source.title + ".");
-              });
-              for (let index = 1; index <= pdf.numPages; index++) {
-                const page = await pdf.getPage(index);
-                const text = await page.getTextContent();
-                let pageText = text.items
-                  .map((item) => ("str" in item ? item.str : ""))
-                  .join(" ")
-                  .trim();
-                if (!pageText) {
-                  const viewport = page.getViewport({ scale: 1 });
-                  const scaled = page.getViewport({
-                    scale: 1600 / Math.max(viewport.width, viewport.height),
-                  });
-                  const canvas = document.createElement("canvas");
-                  canvas.width = Math.ceil(scaled.width);
-                  canvas.height = Math.ceil(scaled.height);
-                  await page.render({ canvas, viewport: scaled }).promise;
-                  pageText = await recognize(canvas);
-                }
-                if (pageText.trim()) content += "\nPágina " + index + ": " + pageText.trim();
-                page.cleanup();
-              }
-            } finally {
-              await loading.destroy();
-            }
-          }
-          if (!content.trim())
-            throw new Error("Não consegui extrair texto de " + source.title + ".");
-          // Distribui o orçamento pelo início, meio e fim de documentos longos.
-          const excerpt =
-            content.length <= 8000
-              ? content
-              : [
-                  content.slice(0, 2650),
-                  content.slice(
-                    Math.floor(content.length / 2) - 1325,
-                    Math.floor(content.length / 2) + 1325,
-                  ),
-                  content.slice(-2650),
-                ].join("\n[… ]\n");
-          sources.push({
-            id: source.id,
-            kind: "material" as const,
-            title: source.title.slice(0, 200),
-            content: excerpt,
-          });
-        }
-      } finally {
-        await scanner?.terminate();
-      }
-      // Pela transmissão em fluxo: a resposta sem fluxo tem 20 s de limite no servidor, e um guia de
-      // de muitos tokens costuma passar disso, o que chegava ao aluno como "Serviço indisponível".
-      const result = await streamHelena(
-        {
-          version: 1,
-          capability: "summarize",
-          prompt:
-            "Escreva um guia de estudo em português brasileiro usando apenas as fontes fornecidas. Sintetize em palavras próprias e organize por assunto. Comece com # e um título curto. Use de 4 a 7 seções com títulos ## numerados, parágrafos curtos, - para listas e **negrito** para termos-chave. Intercale pelo menos três caixas com uma linha inteira começando por > e um rótulo em negrito, por exemplo Definição, Atenção, Cronologia ou Ponto essencial. Inclua datas, exemplos ou cálculos quando sustentados pelas fontes. Preserve números e fatos. Indique lacunas quando os trechos forem incompletos. Seja conciso: no máximo 600 palavras no total. Entregue somente o guia, sem bloco de código.",
-          sources,
-          privacy: { consent: true, retention: "none" },
-        },
-        { token, onText: () => {} },
-      );
-      const heading = result.answer.match(/^#\s+(.+)/m)?.[1]?.trim();
-      dispatch({
-        type: "material/added",
-        collectionId: folder.id,
-        subjectId,
-        title:
-          heading?.slice(0, 80) || selectedSources[0]?.title.replace(/\.[^.]+$/, "") || "Resumo",
-        kind: "text",
-        content: result.answer.replace(/^# [^\n]+\n*/, "").trim() || result.answer,
-        tags: ["folder-summary", ...selectedSources.map(({ title }) => title)],
-        createdAt: new Date().toISOString(),
-      });
-    } catch (error) {
-      setSummaryError(error instanceof Error ? error.message : "Não foi possível gerar o resumo.");
-    } finally {
-      setSummaryBusy(false);
-    }
-  }
-  /** Lê uma fonte (texto, imagem por OCR ou PDF) no aparelho e entrega ao gerador escolhido. */
-  async function readSource<T>(
-    source: (typeof selectedSources)[number],
-    fileTitle: string,
-    engine: SourceEngine<T>,
-  ): Promise<T> {
-    let result: T;
-    if (source.kind === "link")
-      throw new Error(
-        uiText("{0} é um link e não pode ser lido. Use uma nota em branco com o texto.", [
-          source.title,
-        ]),
-      );
-    if (source.kind === "image") {
-      // Foto ou imagem de página: o OCR em português lê o texto, no aparelho.
-      const { createWorker } = await import("tesseract.js");
-      const scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
-      try {
-        const text = (await scanner.recognize(source.content)).data.text;
-        result = await engine.text(text, fileTitle);
-      } finally {
-        await scanner.terminate();
-      }
-    } else if (source.kind === "text") {
-      result = await engine.text(source.content, fileTitle);
-    } else {
-      const [pdfjs, worker] = await Promise.all([
-        import("pdfjs-dist"),
-        import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
-      ]);
-      pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-      const bytes = dataUrlBytes(source.content);
-      if (!bytes) throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
-      const loading = pdfjs.getDocument({ data: bytes });
-      try {
-        const pdf = await loading.promise.catch(() => {
-          throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
-        });
-        // Páginas que são só imagem (PDF escaneado) passam pelo OCR em português, no aparelho.
-        let scanner: Awaited<ReturnType<typeof import("tesseract.js").createWorker>> | undefined;
-        try {
-          result = await engine.pdf(pdf, {
-            title: fileTitle,
-            ocr: async (pageNumber) => {
-              const page = await pdf.getPage(pageNumber);
-              const viewport = page.getViewport({ scale: 1 });
-              const scaled = page.getViewport({
-                scale: 2000 / Math.max(viewport.width, viewport.height),
-              });
-              const canvas = document.createElement("canvas");
-              canvas.width = Math.ceil(scaled.width);
-              canvas.height = Math.ceil(scaled.height);
-              await page.render({ canvas, viewport: scaled }).promise;
-              if (!scanner) {
-                const { createWorker } = await import("tesseract.js");
-                scanner = await createWorker("por", 1, OCR_WORKER_OPTIONS);
-              }
-              const text = (await scanner.recognize(canvas)).data.text;
-              canvas.width = 0;
-              canvas.height = 0;
-              return text;
-            },
-          });
-        } finally {
-          await scanner?.terminate();
-        }
-      } finally {
-        await loading.destroy();
-      }
-    }
-    return result;
-  }
-  async function generateQuiz() {
-    const exam = creating === "Simulados";
-    if (quizBusy || !selectedSources.length) return;
-    setCreating(undefined);
-    setSection(exam ? "Simulados" : "Quizzes");
-    setQuizBusy(true);
-    setQuizError("");
-    try {
-      const { examProblem, examQuizQuestions, quizQuestionsFromDocument, splitExams } =
-        await import("../domain/pdf-summary");
-      const documents = await readDocuments();
-      const { exams, others, keyFiles } = splitExams(documents);
-      if (exams.length === 0 && others.length === 0 && keyFiles.length > 0)
-        throw Object.assign(new Error("ExamError"), {
-          name: "ExamError",
-          reason: "only-answer-key",
-        });
-      // Prova do usuário: as questões e o gabarito do arquivo, sem reescrever nada.
-      const examLimit = quizLength === "short" ? 10 : quizLength === "long" ? 50 : 20;
-      const fromExams: SourceQuiz["questions"] = [];
-      let problem: Error | undefined;
-      for (const item of exams) {
-        const found = examProblem(item.exam);
-        if (found) {
-          problem ??= found;
-          continue;
-        }
-        const all = examQuizQuestions(item.exam);
-        const step = all.length / Math.min(examLimit, all.length);
-        for (let index = 0; index < Math.min(examLimit, all.length); index += 1)
-          fromExams.push({
-            ...all[Math.floor(index * step)]!,
-            sourceId: item.source.id,
-            sourceTitle: item.source.title,
-          });
-      }
-      // Texto comum: perguntas de definição, ano, valor e afirmação, com alternativas do mesmo tipo.
-      const textLimit = quizLength === "short" ? 5 : quizLength === "long" ? 15 : 10;
-      const generated: SourceQuiz["questions"] = [];
-      for (const item of others) {
-        const made = await quizQuestionsFromDocument(
-          item.doc,
-          difficulty,
-          Math.ceil(textLimit / Math.max(1, others.length)),
-        );
-        generated.push(
-          ...made.map((question) => ({
-            ...question,
-            sourceId: item.source.id,
-            sourceTitle: item.source.title,
-          })),
-        );
-      }
-      if (problem && fromExams.length === 0 && generated.length === 0) throw problem;
-      const quiz: SourceQuiz = {
-        version: 1,
-        difficulty,
-        questions: [...fromExams, ...generated].slice(0, 100),
-      };
-      if (!quiz.questions.length)
-        throw new Error(
-          uiText(
-            "Não encontrei fatos suficientes para criar alternativas confiáveis. Tente uma fonte com mais conteúdo.",
-          ),
-        );
-      dispatch({
-        type: "material/added",
-        collectionId: folder.id,
-        subjectId,
-        title: selectedSources
-          .map((s) => s.title.replace(/\.[^.]+$/, ""))
-          .join(" + ")
-          .slice(0, 80),
-        kind: "text",
-        content: JSON.stringify(quiz),
-        tags: [exam ? "folder-exam" : "folder-quiz", ...selectedSources.map((s) => s.title)],
-        createdAt: new Date().toISOString(),
-      });
-    } catch (error) {
-      setQuizError(
-        examErrorText(error) ??
-          (error instanceof Error ? error.message : uiText("Não foi possível gerar o quiz.")),
-      );
-    } finally {
-      setQuizBusy(false);
-    }
-  }
-  /** Flashcards automáticos: no aparelho, sem IA, o máximo que o texto sustenta. */
-  /** Lê as fontes selecionadas como documentos, no aparelho (texto, OCR ou PDF). */
-  async function readDocuments() {
-    const { documentFromPdf, documentFromText } = await import("../domain/pdf-summary");
-    const read: {
-      source: (typeof selectedSources)[number];
-      fileTitle: string;
-      doc: StructuredDocument;
-    }[] = [];
-    for (const source of selectedSources) {
-      const fileTitle = source.title.replace(/\.[^.]+$/, "");
-      const doc = await readSource(source, fileTitle, {
-        text: async (text, title) => documentFromText(text, title),
-        pdf: (pdf, options) => documentFromPdf(pdf, options),
-      });
-      read.push({ source, fileTitle, doc });
-    }
-    return read;
-  }
-  async function generateAutomaticFlashcards() {
-    if (cardsBusy || !selectedSources.length) return;
-    setCreating(undefined);
-    setSection("Flashcards");
-    setCardsMessage(undefined);
-    setCardsBusy(true);
-    try {
-      const { examFlashcards, examProblem, flashcardsFromDocument, splitExams } =
-        await import("../domain/pdf-summary");
-      let hidden = 0;
-      const made: {
-        sourceId: string;
-        deck: string;
-        front: string;
-        back: string;
-        page: number;
-        kind: CardOrigin;
-      }[] = [];
-      const documents = await readDocuments();
-      const { exams, others, keyFiles } = splitExams(documents);
-      if (exams.length === 0 && others.length === 0 && keyFiles.length > 0)
-        throw Object.assign(new Error("ExamError"), {
-          name: "ExamError",
-          reason: "only-answer-key",
-        });
-      const sets: {
-        source: (typeof selectedSources)[number];
-        fileTitle: string;
-        cards: Awaited<ReturnType<typeof flashcardsFromDocument>>;
-      }[] = [];
-      let problem: Error | undefined;
-      for (const item of exams) {
-        const found = examProblem(item.exam);
-        if (found) problem ??= found;
-        else
-          sets.push({
-            source: item.source,
-            fileTitle: item.fileTitle,
-            cards: examFlashcards(item.exam),
-          });
-      }
-      for (const item of others)
-        sets.push({
-          source: item.source,
-          fileTitle: item.fileTitle,
-          cards: await flashcardsFromDocument(item.doc),
-        });
-      if (problem && !sets.some((set) => set.cards.length > 0)) throw problem;
-      for (const { source, fileTitle, cards } of sets) {
-        if (cards.length === 0) {
+      for (const source of selectedSources) {
+        if (source.kind === "link")
           throw new Error(
-            uiText("Não consegui criar flashcards de {0}: o texto tem poucas definições e fatos.", [
+            uiText("{0} é um link e não pode ser lido. Use uma nota em branco com o texto.", [
               source.title,
             ]),
           );
-        }
-        const deck = fileTitle.replace(/[-_]+/g, " ").trim() || source.title;
-        // O filtro aprendido neste aparelho deixa de fora cartões parecidos com os que o usuário
-        // já descartou. Só age depois de avaliações suficientes e nunca esvazia o baralho.
-        const model = loadModel();
-        const strong = cards.filter(
-          (card) => !shouldHide(model, cardFeatures(card.front, card.back, card.kind)),
-        );
-        const usable = strong.length >= 4 ? strong : cards;
-        hidden += cards.length - usable.length;
-        for (const card of usable) {
-          const repeated = flashcards.some(
-            (item) => item.materialId === source.id && item.front === card.front,
-          );
-          if (!repeated)
-            made.push({
-              sourceId: source.id,
-              deck,
-              front: card.front,
-              back: card.back,
-              page: card.page,
-              kind: card.kind,
+        let content = source.kind === "text" ? source.content : "";
+        if (source.kind === "image") content = await recognize(source.content);
+        if (source.kind === "pdf") {
+          const [pdfjs, worker] = await Promise.all([
+            import("pdfjs-dist"),
+            import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
+          ]);
+          pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
+          const bytes = dataUrlBytes(source.content);
+          if (!bytes) throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
+          const loading = pdfjs.getDocument({ data: bytes });
+          try {
+            const pdf = await loading.promise.catch(() => {
+              throw new Error(uiText("Não consegui abrir o PDF {0}.", [source.title]));
             });
+            for (let index = 1; index <= pdf.numPages; index++) {
+              const page = await pdf.getPage(index);
+              const text = await page.getTextContent();
+              let pageText = text.items
+                .map((item) => ("str" in item ? item.str : ""))
+                .join(" ")
+                .trim();
+              if (!pageText) {
+                const viewport = page.getViewport({ scale: 1 });
+                const scaled = page.getViewport({
+                  scale: 1600 / Math.max(viewport.width, viewport.height),
+                });
+                const canvas = document.createElement("canvas");
+                canvas.width = Math.ceil(scaled.width);
+                canvas.height = Math.ceil(scaled.height);
+                await page.render({ canvas, viewport: scaled }).promise;
+                pageText = await recognize(canvas);
+              }
+              if (pageText.trim()) content += "\nPágina " + index + ": " + pageText.trim();
+              page.cleanup();
+            }
+          } finally {
+            await loading.destroy();
+          }
         }
+        if (!content.trim())
+          throw new Error(uiText("Não consegui extrair texto de {0}.", [source.title]));
+        texts.push({ id: source.id, title: source.title, content });
       }
-      const today = toDateKey(new Date());
-      for (const card of made) {
-        dispatch({
-          type: "flashcard/added",
-          deck: card.deck,
-          materialId: card.sourceId,
-          sourcePage: card.page,
-          origin: card.kind,
-          subjectId,
-          front: card.front,
-          back: card.back,
-          createdOn: today,
-        });
-      }
-      setCardsMessage({
-        text: made.length
-          ? uiText("{0} flashcards criados. Toque no baralho para estudar.", [
-              String(made.length),
-            ]) +
-            (hidden ? " " + uiText("{0} cartões fracos ficaram de fora.", [String(hidden)]) : "")
-          : uiText("Esses flashcards já estavam criados."),
-        error: false,
-      });
-    } catch (error) {
-      setCardsMessage({
-        text:
-          examErrorText(error) ??
-          (error instanceof Error
-            ? error.message
-            : uiText("Não foi possível criar os flashcards.")),
-        error: true,
-      });
     } finally {
-      setCardsBusy(false);
+      await scanner?.terminate();
     }
+    return texts;
   }
-  /** Resumo automático: feito no aparelho, sem IA e sem enviar nada para fora. */
-  async function generateAutomaticSummary() {
-    if (summaryBusy || !selectedSources.length) return;
+
+  /**
+   * Resumo, flashcards, quiz e simulado, todos pela Olena (IA). O texto das fontes sai do aparelho
+   * só depois do clique em "Gerar com a Olena", com a conta de verdade e com limite diário.
+   */
+  async function generateWithOlena(kind: OlenaKind) {
+    const busy = kind === "Resumo" ? summaryBusy : kind === "Flashcards" ? cardsBusy : quizBusy;
+    if (busy || !selectedSources.length) return;
+    const setBusy =
+      kind === "Resumo" ? setSummaryBusy : kind === "Flashcards" ? setCardsBusy : setQuizBusy;
+    const fail = (message: string) =>
+      kind === "Resumo"
+        ? setSummaryError(message)
+        : kind === "Flashcards"
+          ? setCardsMessage({ text: message, error: true })
+          : setQuizError(message);
     setCreating(undefined);
-    setSection("Resumo");
+    setSection(kind);
     setSummaryError("");
-    setSummaryBusy(true);
+    setQuizError("");
+    setCardsMessage(undefined);
+    setBusy(true);
     try {
-      const { summarizePdf, summarizePlainText } = await import("../domain/pdf-summary");
-      const made: { title: string; sourceTitle: string; markdown: string }[] = [];
-      for (const source of selectedSources) {
-        const fileTitle = source.title.replace(/\.[^.]+$/, "");
-        const result = await readSource(source, fileTitle, {
-          text: (text, title) => summarizePlainText(text, title, { detail: SUMMARY_DETAIL }),
-          pdf: (pdf, options) => summarizePdf(pdf, { ...options, detail: SUMMARY_DETAIL }),
-        });
-        if (result.stats.sentences === 0) {
-          throw new Error(
-            uiText(
-              "Não encontrei texto em {0}, nem lendo as imagens. Se a foto estiver torta ou borrada, tente outra ou use a Olena.",
-              [source.title],
-            ),
-          );
-        }
-        made.push({
-          title: result.title.slice(0, 80) || fileTitle || "Resumo",
-          sourceTitle: source.title,
-          markdown: result.markdown.replace(/^# [^\n]+\n*/, "").trim(),
-        });
-      }
-      for (const item of made) {
+      const services = await getFirebaseAccountServices().catch(() => undefined);
+      if (!services)
+        throw new Error(uiText("A autenticação da Olena não está configurada nesta prévia."));
+      const user = services.auth.currentUser;
+      if (!user || user.isAnonymous)
+        throw new Error(uiText("Entre na sua conta para gerar com a Olena."));
+      const token = await user.getIdToken();
+      const sources = budgetSources(await extractSourceTexts());
+      const titles = selectedSources.map((item) => item.title);
+      const request: HelenaRequest = {
+        version: 1,
+        capability: OLENA_CAPABILITY[kind],
+        prompt: kind === "Resumo" ? SUMMARY_PROMPT : studyPrompt(kind, difficulty, quizLength),
+        sources,
+        privacy: { consent: true, retention: "none" },
+      };
+      if (kind === "Resumo") {
+        // Pela transmissão em fluxo: a resposta sem fluxo tem 20 s de limite no servidor, e um guia
+        // longo costuma passar disso.
+        const result = await streamHelena(request, { token, onText: () => {} });
+        const heading = result.answer.match(/^#\s+(.+)/m)?.[1]?.trim();
         dispatch({
           type: "material/added",
           collectionId: folder.id,
           subjectId,
-          title: item.title,
+          title: heading?.slice(0, 80) || titles[0]?.replace(/\.[^.]+$/, "") || "Resumo",
           kind: "text",
-          content: item.markdown,
-          tags: ["folder-summary", item.sourceTitle],
+          content: result.answer.replace(/^# [^\n]+\n*/, "").trim() || result.answer,
+          tags: ["folder-summary", ...titles],
           createdAt: new Date().toISOString(),
         });
+        return;
       }
+      const response = await requestHelena(request, {
+        token,
+        signal: AbortSignal.timeout(58_000),
+      });
+      const unexpected = uiText("A Olena respondeu em um formato inesperado. Tente de novo.");
+      if (kind === "Flashcards") {
+        const cards = parseStudyCards(response.answer);
+        if (!cards) throw new Error(unexpected);
+        const deck =
+          titles
+            .map((title) => title.replace(/\.[^.]+$/, ""))
+            .join(" + ")
+            .slice(0, 60) || uiText("Sem baralho");
+        const owner = selectedSources[0]!;
+        const today = toDateKey(new Date());
+        let added = 0;
+        for (const card of cards) {
+          if (flashcards.some((item) => item.materialId === owner.id && item.front === card.front))
+            continue;
+          dispatch({
+            type: "flashcard/added",
+            deck,
+            materialId: owner.id,
+            subjectId,
+            front: card.front,
+            back: card.back,
+            createdOn: today,
+          });
+          added += 1;
+        }
+        setCardsMessage({
+          text: added
+            ? uiText("{0} flashcards criados. Toque no baralho para estudar.", [String(added)])
+            : uiText("Esses flashcards já estavam criados."),
+          error: false,
+        });
+        return;
+      }
+      const questions = parseStudyQuestions(response.answer, difficulty === "easy" ? 3 : 4);
+      if (!questions) throw new Error(unexpected);
+      const exam = kind === "Simulados";
+      dispatch({
+        type: "material/added",
+        collectionId: folder.id,
+        subjectId,
+        title: titles
+          .map((title) => title.replace(/\.[^.]+$/, ""))
+          .join(" + ")
+          .slice(0, 80),
+        kind: "text",
+        content: JSON.stringify(
+          toSourceQuiz(questions, difficulty, {
+            id: selectedSources[0]!.id,
+            title: titles.join(" + ").slice(0, 120),
+          }),
+        ),
+        tags: [exam ? "folder-exam" : "folder-quiz", ...titles],
+        createdAt: new Date().toISOString(),
+      });
     } catch (error) {
-      setSummaryError(
-        error instanceof Error ? error.message : uiText("Não foi possível gerar o resumo."),
+      fail(
+        error instanceof Error
+          ? error.message
+          : uiText("Não foi possível gerar com a Olena. Tente de novo."),
       );
     } finally {
-      setSummaryBusy(false);
+      setBusy(false);
     }
   }
   function removeMaterial(id: string) {
@@ -1745,32 +1442,22 @@ export function LibraryFolderContents({
                 {uiText("Adicionar fontes")}
               </button>
             )}
-            {creating === "Resumo" && (
-              <p>
-                {uiText(
-                  "Resumo automático: grátis, feito no seu aparelho, sem IA. Escolhe as frases mais importantes do próprio arquivo.",
-                )}
-              </p>
-            )}
-            {creating === "Resumo" && (
-              <p>
-                {uiText("Ao gerar com a Olena, o texto das fontes selecionadas é enviado a ela.")}
-              </p>
-            )}
+            <p>
+              {uiText("Ao gerar com a Olena, o texto das fontes selecionadas é enviado a ela.")}
+            </p>
+            <p>
+              {uiText(
+                "A Olena usa IA e erra: confira o resultado. Você pode gerar cada tipo (resumo, flashcards, quiz e simulado) 2 vezes por dia, com a conta conectada.",
+              )}
+            </p>
             {creating === "Flashcards" && (
               <p>
                 {uiText(
-                  "Flashcards automáticos: grátis, feitos no seu aparelho, sem IA. Cria o máximo de afirmações de verdadeiro ou falso que o próprio arquivo permite.",
+                  "Flashcards com IA: cerca de 12 cartões de pergunta e resposta, feitos a partir das fontes.",
                 )}
               </p>
             )}
-            {creating !== "Resumo" &&
-              creating !== "Flashcards" &&
-              creating !== "Quizzes" &&
-              creating !== "Simulados" && (
-                <p>{uiText("A geração deste tipo de material ainda não está disponível.")}</p>
-              )}
-            {creating === "Quizzes" || creating === "Simulados" ? (
+            {(creating === "Quizzes" || creating === "Simulados") && (
               <>
                 <div className="library-quiz-settings">
                   {(
@@ -1818,48 +1505,27 @@ export function LibraryFolderContents({
                 <p>
                   {uiText(
                     creating === "Simulados"
-                      ? "Simulado automático no aparelho. Até 5, 10 ou 15 questões conforme as fontes, com 1 ponto e 2 minutos por questão. Fácil tem 3 alternativas; Médio e Difícil têm 4."
-                      : "Quiz automático no aparelho. Até 5, 10 ou 15 questões, conforme o conteúdo das fontes. Fácil tem 3 alternativas; Médio e Difícil têm 4, priorizando números próximos no Difícil.",
+                      ? "Simulado com IA: de 10 a 20 questões, com 1 ponto e 2 minutos por questão. Fácil tem 3 alternativas; Médio e Difícil têm 4. As respostas vêm da IA e podem estar erradas: confira com o gabarito oficial."
+                      : "Quiz com IA: de 5 a 15 questões, conforme o tamanho. Fácil tem 3 alternativas; Médio e Difícil têm 4.",
                   )}
                 </p>
-                <button
-                  type="button"
-                  className="shelf-wood-button library-study-confirm-generate"
-                  disabled={!selectedSources.length || quizBusy}
-                  onClick={() => void generateQuiz()}
-                >
-                  {uiText(creating === "Simulados" ? "Gerar simulado" : "Quiz automático")}
-                </button>
-              </>
-            ) : creating === "Flashcards" ? (
-              <button
-                type="button"
-                className="shelf-wood-button library-study-confirm-generate"
-                disabled={!selectedSources.length || cardsBusy}
-                onClick={() => void generateAutomaticFlashcards()}
-              >
-                {uiText("Flashcards automáticos")}
-              </button>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  className="shelf-wood-button library-study-confirm-generate"
-                  disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
-                  onClick={() => void generateSummary()}
-                >
-                  {uiText("Gerar com a Olena")}
-                </button>
-                <button
-                  type="button"
-                  className="shelf-wood-button library-study-confirm-generate"
-                  disabled={creating !== "Resumo" || !selectedSources.length || summaryBusy}
-                  onClick={() => void generateAutomaticSummary()}
-                >
-                  {uiText("Resumo automático")}
-                </button>
               </>
             )}
+            <button
+              type="button"
+              className="shelf-wood-button library-study-confirm-generate"
+              disabled={
+                !selectedSources.length ||
+                (creating === "Resumo"
+                  ? summaryBusy
+                  : creating === "Flashcards"
+                    ? cardsBusy
+                    : quizBusy)
+              }
+              onClick={() => void generateWithOlena(creating as OlenaKind)}
+            >
+              {uiText("Gerar com a Olena")}
+            </button>
           </LibraryDialog>
         )}
         <input

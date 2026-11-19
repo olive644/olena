@@ -19,8 +19,8 @@ describe("cota diária da Olena", () => {
     "user-minute",
     "user-day",
     "address-day",
-    "summary-user-day",
-    "summary-day",
+    "study-user-day",
+    "study-day",
     "global-day",
     "provider-quota",
   ];
@@ -31,11 +31,22 @@ describe("cota diária da Olena", () => {
     expect(message).not.toMatch(/[\u2013\u2014]/);
   });
 
-  it("lembra do Resumo automático só nos resumos e diz a hora em que volta", () => {
-    expect(quotaMessage("global-day", "summarize")).toContain("Resumo automático");
-    expect(quotaMessage("global-day", "tutor")).not.toContain("Resumo automático");
-    expect(quotaMessage("summary-day", "summarize")).toContain("21h");
+  it("diz o tipo e o limite de cada pedido da Biblioteca e a hora em que volta", () => {
+    expect(quotaMessage("study-user-day", "summarize")).toContain("2 resumos");
+    expect(quotaMessage("study-user-day", "flashcards")).toContain("2 flashcards");
+    expect(quotaMessage("study-user-day", "quiz")).toContain("2 quizzes");
+    expect(quotaMessage("study-user-day", "exam")).toContain("2 simulados");
+    expect(quotaMessage("study-day", "quiz")).toContain("21h");
     expect(quotaMessage(undefined, "tutor")).toContain("Limite de uso atingido");
+    // Não há mais caminho gratuito no aparelho: o aviso não promete um.
+    for (const name of names) expect(quotaMessage(name, "quiz")).not.toContain("automático");
+  });
+
+  it("cada pessoa tem 2 usos por dia por tipo e o teto global fica abaixo do da conta", async () => {
+    const { STUDY_USER_DAILY_LIMIT, STUDY_GLOBAL_DAILY_LIMIT, GLOBAL_DAILY_LIMIT } =
+      await import("./helena-quota");
+    expect(STUDY_USER_DAILY_LIMIT).toBe(2);
+    expect(STUDY_GLOBAL_DAILY_LIMIT).toBeLessThanOrEqual(GLOBAL_DAILY_LIMIT);
   });
 
   it("traduz todos os avisos para inglês e escolhe o idioma pelo cabeçalho", () => {
@@ -47,8 +58,6 @@ describe("cota diária da Olena", () => {
       expect(english).not.toMatch(/Olena atingiu|voltam|Você|às 21h/);
       expect(english).toMatch(/Olena|You|requests|Usage/);
     }
-    expect(quotaMessage("global-day", "summarize", "en")).toContain(
-      "Automatic summary still works",
-    );
+    expect(quotaMessage("study-user-day", "exam", "en")).toContain("2 mock exams");
   });
 });

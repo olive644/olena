@@ -27,6 +27,55 @@ const SUMMARY_MAX_TOKENS = 1600;
 
 export type TeacherConfig = { accountId: string; token: string; model: string };
 
+/** Uma chamada ao modelo, sem fluxo, que devolve só o texto. Usada pela geração em JSON. */
+export async function runCloudflareText(
+  config: TeacherConfig,
+  input: { system: string; user: string; maxTokens: number; timeoutMs: number },
+  fetcher: typeof fetch = fetch,
+  signal?: AbortSignal,
+): Promise<string> {
+  if (
+    !/^[a-f0-9]{32}$/i.test(config.accountId) ||
+    !config.token ||
+    !/^@cf\/[\w./-]+$/.test(config.model)
+  )
+    throw new Error("Professor não configurado.");
+  const timeout = AbortSignal.timeout(input.timeoutMs);
+  const response = await fetcher(
+    `https://api.cloudflare.com/client/v4/accounts/${config.accountId}/ai/run/${config.model}`,
+    {
+      method: "POST",
+      redirect: "error",
+      headers: { Authorization: `Bearer ${config.token}`, "Content-Type": "application/json" },
+      signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
+      body: JSON.stringify({
+        messages: [
+          { role: "system", content: input.system },
+          { role: "user", content: input.user },
+        ],
+        max_tokens: input.maxTokens,
+      }),
+    },
+  );
+  if (!response.ok) {
+    if (await isProviderQuotaFailure(response)) throw new ModelProviderQuotaError();
+    throw new Error("Professor indisponível.");
+  }
+  const raw = await response.text();
+  if (raw.length > 64_000) throw new Error("Resposta muito longa.");
+  const payload: unknown = JSON.parse(raw);
+  const result =
+    payload && typeof payload === "object" && "success" in payload && payload.success === true
+      ? (payload as { result?: unknown }).result
+      : undefined;
+  const text =
+    result && typeof result === "object" && "response" in result
+      ? (result as { response: unknown }).response
+      : undefined;
+  if (typeof text !== "string" || !text.trim()) throw new Error("Resposta inválida.");
+  return text;
+}
+
 export function createCloudflareTeacher(
   config: TeacherConfig,
   fetcher: typeof fetch = fetch,

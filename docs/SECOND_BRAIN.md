@@ -1,6 +1,6 @@
 ## Quizzes, simulados e revisão única, 17/11/2026
 
-Biblioteca gera quizzes e simulados a partir das fontes, reaproveitando extração PDF/OCR e lacunas locais. Sem IA nem dependências novas. Simulados têm capa, cronômetro, entrega manual ou automática, correção com fonte, assinatura e carimbo da Olena. Nome usa username do perfil; download direto em PDF paginado reutiliza notebook-export com nome de arquivo opcional. Quizzes e flashcards revisam erros somente uma vez.
+Biblioteca (pastas): resumo, flashcards, quiz e simulado são gerados SÓ pela Olena (IA, Cloudflare Workers AI) desde 19/11/2026, 2 usos por dia por pessoa em cada tipo, com conta de verdade; o texto vai ao servidor só depois do clique, com aviso. Fluxo, limites e modelo de ameaça em docs/BIBLIOTECA_IA.md. A extração de PDF/OCR continua no aparelho. Sem dependências novas. Simulados têm capa, cronômetro, entrega manual ou automática, correção com fonte, assinatura e carimbo da Olena. Nome usa username do perfil; download direto em PDF paginado reutiliza notebook-export com nome de arquivo opcional. Quizzes e flashcards revisam erros somente uma vez.
 
 Provas: testes focados de geração, revisão, cronômetro, branco, apelido e download; TypeScript e lint dos arquivos passaram. Fluxo desktop escuro e geometria mobile conferidos na prévia; PDF real baixado e página inspecionada. Claro, teclado completo e E2E amplo não verificados. Geração heurística por lacunas, sem perguntas interpretativas. Verificação completa iniciada, publicação antecipada solicitada pelo proprietário; CI fica para Claude.
 
@@ -1215,7 +1215,7 @@ produto.
 4. Criar e marcar Hábitos diários.
 5. Escrever, desenhar ou anexar uma digitalização nos Cadernos.
 6. Guardar links, textos e flashcards por matéria na Biblioteca.
-   Na aba Resumo da pasta, o "Resumo automático" (`src/domain/pdf-summary/`) resume PDF e texto no aparelho, sem IA e sem rede; "Gerar com a Olena" é o caminho com IA.
+   Na aba Resumo da pasta, "Gerar com a Olena" é o único caminho (IA); o "Resumo automático" no aparelho (`src/domain/pdf-summary/`) deixou de ser usado pela tela e está pendente de remoção.
 7. Revisar flashcards, responder Quizzes, completar Bingos e acompanhar metas em Praticar.
 8. Praticar escuta em rodadas curtas com voz natural (Cloudflare Workers AI) e fallback do dispositivo.
 9. Criar uma Sala online e sincronizar lobby e rodada entre dispositivos.
