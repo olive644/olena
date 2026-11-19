@@ -233,4 +233,38 @@ describe("prova de vestibular em duas colunas (número sozinho acima do enunciad
     const exam = parseExam(withFraction);
     expect(exam.questions.map((q) => q.number)).toEqual([1, 2, 3, 4]);
   });
+
+  it("alternativas só em figura contam como questão e ficam fora do estudo", () => {
+    const withFigure = doc();
+    const at = lines.indexOf("CIÊNCIAS DA NATUREZA");
+    withFigure.lines.splice(
+      at,
+      0,
+      { text: "5", page: 3 },
+      { text: "Qual figura representa o raio de luz quando a miragem se forma?", page: 3 },
+      ...["(A)", "(B)", "(C)", "(D)", "(E)"].map((text) => ({ text, page: 3 })),
+    );
+    const exam = parseExam(withFigure);
+    expect(exam.questions.map((q) => q.number)).toEqual([1, 2, 3, 4, 5]);
+    expect(exam.questions[4]!.needsFigure).toBe(true);
+    expect(exam.figureQuestions).toBe(1);
+  });
+
+  it("fração solta no meio da questão marca a questão como dependente de figura", () => {
+    const withFraction = doc();
+    withFraction.lines.splice(
+      lines.indexOf("(A) b = 0") + 1,
+      0,
+      { text: "2", page: 3 },
+      { text: "3", page: 3 },
+      { text: "4", page: 3 },
+    );
+    const exam = parseExam(withFraction);
+    expect(exam.questions[0]!.needsFigure).toBe(true);
+    expect(exam.questions[1]!.needsFigure).toBe(false);
+  });
+
+  it("conta as questões discursivas, que não viram alternativas", () => {
+    expect(parseExam(doc()).essays).toBe(1);
+  });
 });

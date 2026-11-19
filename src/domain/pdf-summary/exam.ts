@@ -38,6 +38,8 @@ export type ParsedExam = {
   key: Record<number, number>;
   answered: number;
   figureQuestions: number;
+  /** Questões discursivas ("Questão 1 (Valor: 1,5 ponto)"): sem alternativas, não viram quiz. */
+  essays: number;
 };
 
 const LETTERS = ["A", "B", "C", "D", "E"];
@@ -57,6 +59,8 @@ type Draft = {
   options: string[];
   answer?: number;
   page: number;
+  /** Pedaços de fórmula (fração, expoente) caíram soltos no texto: enunciado ou alternativas saem trocados. */
+  garbled?: boolean;
 };
 
 const SHARED =
@@ -171,6 +175,8 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
       const open = current !== undefined && current.options.length >= 3;
       if (startsStem && (open || current === undefined || current.options.length === 0))
         pending.push({ index: 0, end: text.length, kind: "n", value: bare[1]! });
+      // Número solto dentro da questão: resto de fração ou expoente que o PDF separou da conta.
+      else if (current && current.options.length > 0) current.garbled = true;
     }
     pending.sort((a, b) => a.index - b.index);
 
@@ -304,9 +310,8 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
   }
   if (current) drafts.push(current);
 
-  const kept = drafts.filter(
-    (draft) => draft.options.filter(Boolean).length >= 3 && draft.stem.length >= 8,
-  );
+  // Alternativas que são só figura (sem texto) continuam sendo a questão, marcada como figura.
+  const kept = drafts.filter((draft) => draft.options.length >= 3 && draft.stem.length >= 8);
   const questions: ExamQuestion[] = kept.map((draft) => {
     const own = keySections.length === 1 ? keySections[0]!.key[draft.number] : undefined;
     const keyed = key.get(draft.number) ?? own;
@@ -319,7 +324,10 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
       options,
       ...(answer !== undefined && answer < options.length ? { answer } : {}),
       page: draft.page,
-      needsFigure: FIGURE.test(`${draft.context} ${draft.stem}`),
+      needsFigure:
+        FIGURE.test(`${draft.context} ${draft.stem}`) ||
+        draft.garbled === true ||
+        options.some((option) => !option),
     };
   });
   const answered = questions.filter((question) => question.answer !== undefined).length;
@@ -336,6 +344,8 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
     key: { ...(keySections.length === 1 ? keySections[0]!.key : {}), ...Object.fromEntries(key) },
     answered,
     figureQuestions: questions.filter((question) => question.needsFigure).length,
+    essays: source.filter((line) => /^Quest[ãa]o\s*\d+\s*\(\s*valor/i.test(line.text.trim()))
+      .length,
   };
 }
 
