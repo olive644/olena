@@ -30,3 +30,24 @@ describe("tamanho da imagem", () => {
     expect(fitWithin(800, 600, 2000)).toEqual({ width: 800, height: 600 });
   });
 });
+
+import { MAX_LIBRARY_CHARS, MAX_PDF_BYTES, fitsLibrary } from "./library-source-files";
+
+describe("espaço da Biblioteca na conta", () => {
+  it("PDF pode passar de 1 MB, mas tem teto", () => {
+    expect(MAX_PDF_BYTES).toBeGreaterThanOrEqual(4 * 1024 * 1024);
+    expect(MAX_PDF_BYTES).toBeLessThanOrEqual(8 * 1024 * 1024);
+  });
+
+  it("deixa folga para o resto do espaço de trabalho sob o limite de 20 milhões das regras", () => {
+    expect(MAX_LIBRARY_CHARS).toBeLessThanOrEqual(12_000_000);
+    // O maior PDF permitido em base64 cabe sozinho no teto.
+    expect(fitsLibrary(0, Math.ceil((MAX_PDF_BYTES * 4) / 3))).toBe(true);
+  });
+
+  it("recusa o que passaria do teto e aceita o que cabe", () => {
+    expect(fitsLibrary(MAX_LIBRARY_CHARS - 100, 100)).toBe(true);
+    expect(fitsLibrary(MAX_LIBRARY_CHARS - 100, 101)).toBe(false);
+    expect(fitsLibrary(8_000_000, 5_000_000)).toBe(false);
+  });
+});

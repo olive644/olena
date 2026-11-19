@@ -4019,9 +4019,10 @@
   "Touch",
   "Waiting for the pen",
   "Second side button, common on graphics tablet pens. Some devices send it as the middle button.",
-  "Choose a PDF, TXT or Markdown file up to 1 MB, or an image up to 25 MB.",
+  "Choose a PDF up to 5 MB, a TXT or Markdown file up to 1 MB, or an image up to 25 MB.",
   "Could not open the file.",
   "Reference only: OlenaStudy does not read videos. Paste the transcript or your notes into a blank note.",
   "{0} is a link and cannot be read. Use a blank note with the text.",
-  "The image is still too large even after shrinking it. Take the photo closer up or send a PDF."
+  "The image is still too large even after shrinking it. Take the photo closer up or send a PDF.",
+  "The Library has reached the account storage limit. Remove a source to upload another."
 ]

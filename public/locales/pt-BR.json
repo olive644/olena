@@ -4019,9 +4019,10 @@
   "Toque",
   "Aguardando a caneta",
   "Segundo botão lateral, comum em canetas de mesa digitalizadora. Alguns aparelhos o enviam como botão do meio.",
-  "Escolha um PDF, TXT ou Markdown de até 1 MB, ou uma imagem de até 25 MB.",
+  "Escolha um PDF de até 5 MB, um TXT ou Markdown de até 1 MB, ou uma imagem de até 25 MB.",
   "Não foi possível abrir o arquivo.",
   "Só referência: o OlenaStudy não lê vídeos. Cole a transcrição ou suas anotações em uma nota em branco.",
   "{0} é um link e não pode ser lido. Use uma nota em branco com o texto.",
-  "A imagem continua grande demais mesmo reduzida. Tire a foto mais de perto ou envie um PDF."
+  "A imagem continua grande demais mesmo reduzida. Tire a foto mais de perto ou envie um PDF.",
+  "A Biblioteca chegou ao limite de espaço da conta. Remova uma fonte para enviar outra."
 ]

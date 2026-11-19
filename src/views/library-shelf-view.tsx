@@ -33,8 +33,10 @@ import {
 } from "../domain/workspace";
 import {
   MAX_IMAGE_INPUT_BYTES,
+  MAX_PDF_BYTES,
   MAX_SOURCE_BYTES,
   decodeText,
+  fitsLibrary,
   imageDataUrl,
 } from "./library-source-files";
 import "./library-shelf-view.css";
@@ -397,10 +399,13 @@ export function LibraryFolderContents({
   materials: folderMaterials,
   subjectId,
   flashcards = [],
+  libraryChars = 0,
   dispatch,
   onBack,
 }: {
   flashcards?: readonly Flashcard[];
+  /** Caracteres que a Biblioteca inteira já guarda na conta (todas as pastas). */
+  libraryChars?: number;
   folder: NonNullable<WorkspaceState["libraryCollections"]>[number];
   materials: WorkspaceState["materials"];
   subjectId: string;
@@ -1874,12 +1879,17 @@ export function LibraryFolderContents({
                 : /\.(txt|md)$/i.test(file.name)
                   ? "text"
                   : undefined;
-            if (
-              !kind ||
-              file.size > (kind === "image" ? MAX_IMAGE_INPUT_BYTES : MAX_SOURCE_BYTES)
-            ) {
+            const limit =
+              kind === "image"
+                ? MAX_IMAGE_INPUT_BYTES
+                : kind === "pdf"
+                  ? MAX_PDF_BYTES
+                  : MAX_SOURCE_BYTES;
+            if (!kind || file.size > limit) {
               setError(
-                uiText("Escolha um PDF, TXT ou Markdown de até 1 MB, ou uma imagem de até 25 MB."),
+                uiText(
+                  "Escolha um PDF de até 5 MB, um TXT ou Markdown de até 1 MB, ou uma imagem de até 25 MB.",
+                ),
               );
               return;
             }
@@ -1895,6 +1905,16 @@ export function LibraryFolderContents({
                         reader.onerror = () => reject(reader.error);
                         reader.readAsDataURL(file);
                       });
+              // Tudo isto vai para o espaço de trabalho sincronizado: passar do teto da conta
+              // pararia a sincronização, então a conta recusa antes de gravar.
+              if (!fitsLibrary(libraryChars, content.length)) {
+                setError(
+                  uiText(
+                    "A Biblioteca chegou ao limite de espaço da conta. Remova uma fonte para enviar outra.",
+                  ),
+                );
+                return;
+              }
               dispatch({
                 type: "material/added",
                 collectionId: folder.id,

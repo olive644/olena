@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { readFileSync } from "node:fs";
 
 // Fontes que não são PDF: TXT em ANSI, nota em branco, foto grande e link do YouTube.
 const texto =
@@ -143,3 +144,20 @@ for (const theme of ["light", "dark"]) {
     expect(external).toEqual([]);
   });
 }
+
+// PDF de 2 MB (acima do antigo teto de 1 MB) entra e vira resumo; PDF de 6 MB é recusado com aviso.
+test("teto de PDF: 2 MB entra, 6 MB é recusado", async ({ page }) => {
+  test.setTimeout(90_000);
+  const base = readFileSync(new URL("./fixtures/escaneado-fotossintese.pdf", import.meta.url));
+  // Bytes depois do %%EOF não mudam o PDF: só engordam o arquivo, sem material didático novo.
+  const padded = (megabytes: number) =>
+    Buffer.concat([base, Buffer.alloc(megabytes * 1024 * 1024 - base.length, "%padding\n")]);
+  await openFolder(page, "light");
+  const file = page.locator('input[type="file"]');
+  await file.setInputFiles({ name: "grande.pdf", mimeType: "application/pdf", buffer: padded(6) });
+  await expect(page.getByRole("alert")).toContainText("PDF de até 5 MB");
+  await expect(page.getByText("grande.pdf", { exact: true })).toHaveCount(0);
+  await file.setInputFiles({ name: "medio.pdf", mimeType: "application/pdf", buffer: padded(2) });
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  await expect(page.getByText("medio.pdf", { exact: true })).toBeVisible();
+});

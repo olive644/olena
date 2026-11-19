@@ -1,8 +1,24 @@
 // Leitura de arquivos enviados à pasta da Biblioteca. Tudo acontece no aparelho: nada é enviado.
 // Arquivos do usuário não são confiáveis, então só viram texto ou imagem, nunca código.
 
-/** Limite do que fica guardado na pasta (PDF, TXT, Markdown e a imagem já reduzida). */
+/** Limite de TXT, Markdown e da imagem já reduzida. */
 export const MAX_SOURCE_BYTES = 1024 * 1024;
+/**
+ * Limite de um PDF. Provas oficiais passam de 1 MB (a da PUC-Rio tem 3,4 MB). O PDF fica dentro do
+ * espaço de trabalho como texto em base64, cerca de 4/3 do tamanho do arquivo.
+ */
+export const MAX_PDF_BYTES = 5 * 1024 * 1024;
+/**
+ * Teto de tudo o que a Biblioteca guarda na conta, em caracteres. O espaço de trabalho inteiro é
+ * sincronizado e as regras do banco recusam mais de 20.000.000 caracteres, o que pararia a
+ * sincronização de tudo (agenda, progresso). Os 8.000.000 restantes ficam para o resto do espaço.
+ */
+export const MAX_LIBRARY_CHARS = 12_000_000;
+
+/** Cabe mais este conteúdo na Biblioteca sem passar do teto da conta? */
+export function fitsLibrary(usedChars: number, addedChars: number): boolean {
+  return usedChars + addedChars <= MAX_LIBRARY_CHARS;
+}
 /** Foto de celular costuma passar de 1 MB; ela é reduzida antes de guardar, até este tamanho. */
 export const MAX_IMAGE_INPUT_BYTES = 25 * 1024 * 1024;
 
