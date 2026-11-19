@@ -7,6 +7,7 @@ import {
   type HelenaResponse,
 } from "../ai/helena-contract.js";
 import { ModelProviderQuotaError } from "../ai/event-stream.js";
+import { isStudyCapability } from "../ai/helena-contract.js";
 import {
   DAY_SECONDS,
   ASSISTANT_OFF_MESSAGE,
@@ -45,6 +46,12 @@ type HelenaRateLimiter = {
     request: Request,
     capability: HelenaRequest["capability"],
   ): Promise<boolean | RateLimitDenial>;
+  /** Devolve o uso quando a geração falha por culpa do serviço (melhor esforço). */
+  refund?(
+    clientId: string,
+    request: Request,
+    capability: HelenaRequest["capability"],
+  ): Promise<void>;
 };
 
 export type HelenaHandlerDependencies = {
@@ -132,8 +139,9 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
     }
 
     const language = noticeLanguage(request.headers.get("X-App-Language"));
-    // A conversa, o plano de estudo e a explicação foram desligados: a cota gratuita é do resumo.
-    if (dependencies.chatEnabled === false && parsed.value.capability !== "summarize")
+    // A conversa, o plano de estudo e a explicação foram desligados: a cota gratuita é da Biblioteca
+    // (resumo, flashcards, quiz e simulado).
+    if (dependencies.chatEnabled === false && !isStudyCapability(parsed.value.capability))
       return errorResponse(410, "provider_unavailable", ASSISTANT_OFF_MESSAGE[language]);
 
     const clientId = await dependencies.identifyClient(request);
@@ -160,6 +168,13 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
       );
     }
 
+    // Falha nossa (modelo fora do ar, resposta inválida): a pessoa não perde um dos poucos usos do dia.
+    const refund = () => {
+      if (isStudyCapability(parsed.value.capability))
+        void Promise.resolve(
+          dependencies.rateLimiter.refund?.(clientId, request, parsed.value.capability),
+        ).catch(() => {});
+    };
     try {
       if (request.headers.get("Accept")?.includes("text/event-stream")) {
         if (!dependencies.provider.stream) throw new Error("Streaming unavailable");
@@ -219,6 +234,7 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
                     );
                   abort.abort();
                   await iterator.return?.().catch(() => {});
+                  if (!cancelled) refund();
                   if (cancelled) controller.error(new Error("Aborted"));
                   else {
                     // Cota gratuita do provedor esgotada: a pessoa precisa saber o que houve.
@@ -284,6 +300,7 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
           motivo: error instanceof Error ? error.message.slice(0, 120) : "desconhecido",
         }),
       );
+      refund();
       if (error instanceof ModelProviderQuotaError)
         return errorResponse(
           429,

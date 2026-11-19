@@ -276,7 +276,8 @@ export function SourceExamStudy({
                     </strong>
                     <p>{q.explanation}</p>
                     <small>
-                      {q.sourceTitle} · {uiText("Página")} {q.page}
+                      {q.sourceTitle}
+                      {q.page > 0 && ` · ${uiText("Página")} ${q.page}`}
                     </small>
                   </div>
                 )}

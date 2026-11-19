@@ -4024,5 +4024,14 @@
   "Reference only: OlenaStudy does not read videos. Paste the transcript or your notes into a blank note.",
   "{0} is a link and cannot be read. Use a blank note with the text.",
   "The image is still too large even after shrinking it. Take the photo closer up or send a PDF.",
-  "The Library has reached the account storage limit. Remove a source to upload another."
+  "The Library has reached the account storage limit. Remove a source to upload another.",
+  "Sign in to your account to generate with Olena.",
+  "Olena sign-in is not set up in this preview.",
+  "I could not extract text from {0}.",
+  "Olena answered in an unexpected format. Try again.",
+  "Could not generate with Olena. Try again.",
+  "Olena uses AI and makes mistakes: check the result. You can generate each type (summary, flashcards, quiz and mock exam) 2 times a day, signed in to your account.",
+  "Flashcards with AI: about 12 question and answer cards made from the sources.",
+  "Mock exam with AI: 10 to 20 questions, 1 point and 2 minutes per question. Easy has 3 options; Medium and Hard have 4. The answers come from the AI and may be wrong: check them against the official answer key.",
+  "Quiz with AI: 5 to 15 questions, depending on the size. Easy has 3 options; Medium and Hard have 4."
 ]

@@ -4,7 +4,14 @@ export const HELENA_MAX_SOURCE_COUNT = 12;
 const HELENA_MAX_SOURCE_LENGTH = 8_000;
 const HELENA_MAX_TOTAL_SOURCE_LENGTH = 30_000;
 
-export type HelenaCapability = "tutor" | "explain" | "summarize" | "study-plan";
+export type HelenaCapability =
+  "tutor" | "explain" | "summarize" | "study-plan" | "flashcards" | "quiz" | "exam";
+
+/** Os quatro pedidos da Biblioteca. São os únicos que a Olena atende e os que têm limite diário. */
+export const STUDY_CAPABILITIES = ["summarize", "flashcards", "quiz", "exam"] as const;
+export type StudyCapability = (typeof STUDY_CAPABILITIES)[number];
+export const isStudyCapability = (value: string): value is StudyCapability =>
+  (STUDY_CAPABILITIES as readonly string[]).includes(value);
 type HelenaSourceKind = "note" | "material" | "flashcard" | "task" | "goal";
 
 type HelenaSelectedSource = {
@@ -39,7 +46,15 @@ export type HelenaErrorCode =
 
 export type ParseResult<T> = { ok: true; value: T } | { ok: false; message: string };
 
-const capabilities: readonly HelenaCapability[] = ["tutor", "explain", "summarize", "study-plan"];
+const capabilities: readonly HelenaCapability[] = [
+  "tutor",
+  "explain",
+  "summarize",
+  "study-plan",
+  "flashcards",
+  "quiz",
+  "exam",
+];
 const sourceKinds: readonly HelenaSourceKind[] = ["note", "material", "flashcard", "task", "goal"];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
