@@ -5652,3 +5652,11 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Pergunta da proprietária: se as outras fontes foram validadas no caminho novo. Resposta honesta: no primeiro envio só uma fonte de texto passava por todos os fluxos. Fechado depois: testes de componente com cada tipo (Markdown, nota, imagem por OCR, imagem sem texto legível, PDF digital com página, PDF escaneado com OCR na página, três fontes de tipos diferentes juntas e link do YouTube), conferindo o que sai do aparelho para a Olena.
 - Achado com a prova real da PUC (17 páginas): o texto extraído tem 32.807 caracteres, acima do limite de 30.000 do contrato, e o orçamento antigo mandava 91%, com buracos entre os trechos e as regras do candidato ocupando o começo. Correção: limite de texto de 36.000 caracteres (`HELENA_MAX_TOTAL_SOURCE_LENGTH`) e colapso dos espaços duplos do PDF antes de repartir. Resultado: a prova inteira (31.090 caracteres) vai em 4 trechos seguidos, sem lacuna.
 - Continua não verificado: a resposta do modelo real para cada tipo de fonte e a qualidade do português. O e2e não chama a Olena (sem login no preview).
+
+## Correção: flashcards, quiz e simulado com a Olena não geravam em produção, 19/11/2026
+
+- Sintoma: depois da PR #683, os três tipos falhavam para a proprietária ("Serviço indisponível"). O resumo, que vai por fluxo, seguia funcionando.
+- Causa, vista nos logs de runtime da Vercel (função `/api/helena`, `motivo: "Resposta inválida."` nos três): quando o modelo responde JSON, a Cloudflare Workers AI entrega `result.response` já interpretado (objeto ou lista), não texto, e `runCloudflareText` só aceitava texto. Meus testes usavam uma resposta de texto, então não pegaram.
+- Correção: `runCloudflareText` aceita texto, objeto ou lista (objeto e lista voltam a texto com `JSON.stringify`) antes da mesma validação estrita. Vazio, nulo e número continuam recusados. Teste novo reproduz o erro de produção e falha sem a correção.
+- A falha devolveu o uso do dia (a devolução funcionou), então a cota de 2 por tipo não foi gasta pelos erros.
+- Lição registrada: o formato real da resposta da Cloudflare só apareceu em produção. Limite do que foi verificado: depois do deploy, a primeira geração real de cada tipo é a prova; a qualidade do português do modelo segue sem medição.

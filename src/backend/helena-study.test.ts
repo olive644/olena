@@ -145,4 +145,45 @@ describe("geração em JSON", () => {
     const provider = createStudyProvider(inner, config, reply("x") as unknown as typeof fetch);
     expect((await provider.generate(request("tutor", "Oi"))).answer).toBe("interno");
   });
+
+  it("a Cloudflare devolve JSON já interpretado (objeto) quando o modelo responde JSON", async () => {
+    // Era o erro de produção: `result.response` vinha como objeto e a resposta era recusada.
+    const asObject = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({ success: true, result: { response: JSON.parse(quiz) as unknown } }),
+          { status: 200 },
+        ),
+    );
+    const provider = createStudyProvider(inner, config, asObject as unknown as typeof fetch);
+    const result = await provider.generate(request("quiz", "count=5;options=4"));
+    expect(asObject).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(result.answer).questions).toHaveLength(2);
+
+    const asList = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            success: true,
+            result: { response: JSON.parse(quiz).questions as unknown },
+          }),
+          { status: 200 },
+        ),
+    );
+    const listProvider = createStudyProvider(inner, config, asList as unknown as typeof fetch);
+    expect(
+      JSON.parse((await listProvider.generate(request("exam", "count=5"))).answer).questions,
+    ).toHaveLength(2);
+  });
+
+  it("resposta vazia ou nula continua sendo recusada", async () => {
+    for (const response of [null, "", "   ", 5]) {
+      const fetcher = vi.fn(
+        async () =>
+          new Response(JSON.stringify({ success: true, result: { response } }), { status: 200 }),
+      );
+      const provider = createStudyProvider(inner, config, fetcher as unknown as typeof fetch);
+      await expect(provider.generate(request("quiz", "count=5"))).rejects.toThrow();
+    }
+  });
 });
