@@ -5,7 +5,7 @@ Decisão da proprietária em 19/11/2026: resumo, flashcards, quiz e simulado das
 ## Fluxo
 
 1. A pessoa seleciona até 3 fontes e clica em **Gerar com a Olena**. O aviso na tela diz que o texto das fontes é enviado a ela e que a IA erra.
-2. No aparelho, o app lê o texto (texto direto, OCR em português para imagem, PDF com OCR nas páginas só imagem) e escolhe o que enviar: até 30.000 caracteres, em trechos de até 8.000, espaçados do começo ao fim do documento.
+2. No aparelho, o app lê o texto (texto direto, OCR em português para imagem, PDF com OCR nas páginas só imagem) e escolhe o que enviar: até 36.000 caracteres, em trechos de até 8.000, espaçados do começo ao fim do documento.
 3. O pedido vai a `/api/helena` com o token da conta. O servidor exige conta de verdade (não anônima), confere a origem, o formato e o consentimento, e aplica os limites.
 4. O servidor chama o modelo na Cloudflare (Workers AI, `OLENA_TEACHER_MODEL`, padrão `@cf/meta/llama-3.1-8b-instruct-fp8-fast`). Resumo vai por fluxo; flashcards, quiz e simulado voltam em JSON.
 5. O servidor valida o JSON, refaz uma vez se vier fora do formato e devolve. A tela valida de novo antes de guardar. Se tudo falhar, o uso do dia é devolvido.
@@ -21,7 +21,7 @@ Decisão da proprietária em 19/11/2026: resumo, flashcards, quiz e simulado das
 | Por pessoa, por minuto               | 5                                           | Já existia.                                                                                                                                                                           |
 | Por pessoa, por dia, qualquer pedido | 30                                          | Já existia.                                                                                                                                                                           |
 | Por endereço, por dia                | 250                                         | Era 100; subiu porque uma turma atrás do mesmo endereço pode chegar a 8 pedidos por aluno.                                                                                            |
-| Texto enviado                        | 30.000 caracteres                           | Contrato `helena-contract.ts`.                                                                                                                                                        |
+| Texto enviado                        | 36.000 caracteres                           | Contrato `helena-contract.ts`. Subiu de 30.000 porque a prova da PUC (17 páginas) tem cerca de 31.000 e perdia trechos. Espaços duplos do PDF são colapsados antes.                   |
 | Resposta                             | 12.000 caracteres                           | Lista cortada para caber.                                                                                                                                                             |
 | Tokens de saída                      | 1.600 (flashcards), 2.600 (quiz e simulado) | Limita o custo de cada pedido.                                                                                                                                                        |
 

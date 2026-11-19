@@ -17,13 +17,13 @@ describe("o que vai à Olena", () => {
     });
   });
 
-  it("respeita os limites do contrato: 8.000 por trecho, 12 trechos e 30.000 no total", () => {
+  it("respeita os limites do contrato: 8.000 por trecho, 12 trechos e 36.000 no total", () => {
     for (const lengths of [[500], [20_000], [60_000, 60_000, 60_000], [100_000]]) {
       const sources = budgetSources(lengths.map((length, index) => text(String(index), length)));
       expect(sources.length).toBeLessThanOrEqual(12);
       expect(sources.every((source) => source.content.length <= 8_000)).toBe(true);
       expect(sources.reduce((sum, source) => sum + source.content.length, 0)).toBeLessThanOrEqual(
-        30_000,
+        36_000,
       );
       expect(sources.every((source) => source.title.length <= 200 && source.id.length <= 160)).toBe(
         true,
@@ -51,6 +51,19 @@ describe("o que vai à Olena", () => {
     const sources = budgetSources([text("a", 50_000), text("b", 50_000), text("c", 50_000)]);
     for (const id of ["a", "b", "c"])
       expect(sources.some((source) => source.id.startsWith(id))).toBe(true);
+  });
+
+  it("uma prova de 31.000 caracteres vai inteira, sem buracos entre os trechos", () => {
+    const body = Array.from({ length: 31 }, (_, i) => `[q${i}] ` + "y".repeat(993)).join("");
+    const sources = budgetSources([{ id: "p", title: "Prova", content: body }]);
+    const joined = sources.map((source) => source.content).join("");
+    expect(joined.length).toBe(body.length);
+    for (let i = 0; i < 31; i += 1) expect(joined).toContain(`[q${i}]`);
+  });
+
+  it("colapsa os espaços duplos que o PDF deixa", () => {
+    const [source] = budgetSources([{ id: "p", title: "Prova", content: "A  equação   x2  +  1" }]);
+    expect(source!.content).toBe("A equação x2 + 1");
   });
 
   it("não manda fonte vazia", () => {

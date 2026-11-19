@@ -2,7 +2,8 @@ export const HELENA_API_VERSION = 1 as const;
 const HELENA_MAX_PROMPT_LENGTH = 2_000;
 export const HELENA_MAX_SOURCE_COUNT = 12;
 const HELENA_MAX_SOURCE_LENGTH = 8_000;
-const HELENA_MAX_TOTAL_SOURCE_LENGTH = 30_000;
+// Uma prova de 17 páginas tem cerca de 31.000 caracteres: 36.000 a levam inteira ao modelo.
+export const HELENA_MAX_TOTAL_SOURCE_LENGTH = 36_000;
 
 export type HelenaCapability =
   "tutor" | "explain" | "summarize" | "study-plan" | "flashcards" | "quiz" | "exam";

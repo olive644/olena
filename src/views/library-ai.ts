@@ -1,4 +1,8 @@
-import type { HelenaRequest, StudyCapability } from "../ai/helena-contract";
+import {
+  HELENA_MAX_TOTAL_SOURCE_LENGTH,
+  type HelenaRequest,
+  type StudyCapability,
+} from "../ai/helena-contract";
 import type { StudyQuestion } from "../ai/study-output";
 import type { QuizDifficulty, QuizLength, SourceQuiz } from "../domain/source-quiz";
 
@@ -14,10 +18,10 @@ export const OLENA_CAPABILITY: Record<OlenaKind, StudyCapability> = {
   Simulados: "exam",
 };
 
-// Limites do contrato: 8.000 caracteres por trecho, 12 trechos, 30.000 no total.
+// Limites do contrato: 8.000 caracteres por trecho, 12 trechos, 36.000 no total.
 const CHUNK = 8_000;
 const MAX_CHUNKS = 12;
-const TOTAL = 30_000;
+const TOTAL = HELENA_MAX_TOTAL_SOURCE_LENGTH;
 
 export type SourceText = { id: string; title: string; content: string };
 
@@ -31,7 +35,8 @@ export function budgetSources(texts: readonly SourceText[]): HelenaRequest["sour
   const share = Math.floor(TOTAL / texts.length);
   const sources: HelenaRequest["sources"] = [];
   for (const text of texts) {
-    const content = text.content.trim();
+    // PDF deixa espaços duplos entre as peças de texto: colapsar poupa cerca de 5% do orçamento.
+    const content = text.content.replace(/[ \t]+/g, " ").trim();
     const allowed = Math.min(content.length, share);
     const chunks = Math.max(1, Math.ceil(allowed / CHUNK));
     const size = Math.ceil(allowed / chunks);

@@ -448,6 +448,155 @@ describe("flashcards, quiz e simulado com a Olena", () => {
     expect(dispatch).not.toHaveBeenCalled();
   });
 
+  // O que cada tipo de fonte entrega à Olena: o texto sai do arquivo no aparelho, de cada jeito.
+  function openMany(materials: WorkspaceState["materials"]) {
+    const dispatch = vi.fn<(action: WorkspaceAction) => void>();
+    render(
+      <LibraryFolderContents
+        folder={folder}
+        materials={materials}
+        subjectId="materia-1"
+        dispatch={dispatch}
+        onBack={() => undefined}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Flashcards" }));
+    fireEvent.click(screen.getByRole("button", { name: "Criar flashcards" }));
+    const dialog = screen.getByRole("dialog");
+    for (const item of materials)
+      fireEvent.click(within(dialog).getByRole("checkbox", { name: `Selecionar ${item.title}` }));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Gerar com a Olena" }));
+    return { dispatch };
+  }
+  const sent = () =>
+    request.mock.calls[0]![0].sources as { id: string; title: string; content: string }[];
+
+  it("Markdown e nota em branco vão como texto, com o título de cada uma", async () => {
+    signedIn();
+    request.mockResolvedValue(reply(cards));
+    const { dispatch } = openMany([
+      { ...source, id: "md", title: "aula.md", content: "# Aula\n\nA célula é a unidade da vida." },
+      { ...source, id: "nota", title: "Minha nota", content: "Mitocôndria produz energia." },
+    ]);
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(sent().map((item) => item.title)).toEqual(["aula.md", "Minha nota"]);
+    expect(sent()[0]!.content).toContain("A célula é a unidade da vida.");
+    expect(sent()[1]!.content).toBe("Mitocôndria produz energia.");
+  });
+
+  it("imagem: o texto vem do OCR em português, no aparelho", async () => {
+    signedIn();
+    recognized.mockReturnValue("O ENIAC foi concluído em 1945.");
+    request.mockResolvedValue(reply(cards));
+    const { dispatch } = openMany([
+      {
+        ...source,
+        id: "foto",
+        title: "foto.png",
+        kind: "image",
+        content: "data:image/png;base64,AAAA",
+      },
+    ]);
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(createWorker).toHaveBeenCalledWith("por", 1, expect.anything());
+    expect(sent()[0]!.content).toBe("O ENIAC foi concluído em 1945.");
+    expect(terminate).toHaveBeenCalled();
+  });
+
+  it("imagem sem texto legível: avisa e não chama a Olena", async () => {
+    signedIn();
+    recognized.mockReturnValue("   ");
+    openMany([
+      {
+        ...source,
+        id: "foto",
+        title: "foto.png",
+        kind: "image",
+        content: "data:image/png;base64,AAAA",
+      },
+    ]);
+    expect(await screen.findByRole("alert")).toHaveProperty(
+      "textContent",
+      "Não consegui extrair texto de foto.png.",
+    );
+    expect(request).not.toHaveBeenCalled();
+  });
+
+  it("PDF digital: texto de cada página, com o número da página", async () => {
+    signedIn();
+    const pages = ["Primeira página sobre o ENIAC.", "Segunda página sobre a válvula."];
+    pdfOpen.mockReturnValue({
+      promise: Promise.resolve({
+        numPages: 2,
+        getPage: async (n: number) => ({
+          getTextContent: async () => ({ items: [{ str: pages[n - 1] }] }),
+          cleanup: () => undefined,
+        }),
+      }),
+      destroy: async () => undefined,
+    });
+    request.mockResolvedValue(reply(cards));
+    const { dispatch } = openMany([
+      {
+        ...source,
+        id: "pdf",
+        title: "aula.pdf",
+        kind: "pdf",
+        content: "data:application/pdf;base64,JVBERi0xLjQK",
+      },
+    ]);
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(sent()[0]!.content).toContain("Página 1: Primeira página sobre o ENIAC.");
+    expect(sent()[0]!.content).toContain("Página 2: Segunda página sobre a válvula.");
+  });
+
+  it("PDF escaneado: a página sem texto passa pelo OCR em português", async () => {
+    signedIn();
+    recognized.mockReturnValue("Fotossíntese lida da imagem da página.");
+    pdfOpen.mockReturnValue({
+      promise: Promise.resolve({
+        numPages: 1,
+        getPage: async () => ({
+          getTextContent: async () => ({ items: [] }),
+          getViewport: () => ({ width: 600, height: 800 }),
+          render: () => ({ promise: Promise.resolve() }),
+          cleanup: () => undefined,
+        }),
+      }),
+      destroy: async () => undefined,
+    });
+    request.mockResolvedValue(reply(cards));
+    const { dispatch } = openMany([
+      {
+        ...source,
+        id: "scan",
+        title: "scan.pdf",
+        kind: "pdf",
+        content: "data:application/pdf;base64,JVBERi0xLjQK",
+      },
+    ]);
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    expect(sent()[0]!.content).toContain("Página 1: Fotossíntese lida da imagem da página.");
+  });
+
+  it("três fontes de tipos diferentes dividem o texto enviado, sem passar de 30.000", async () => {
+    signedIn();
+    recognized.mockReturnValue("Texto da foto. ".repeat(3_000));
+    request.mockResolvedValue(reply(cards));
+    const { dispatch } = openMany([
+      { ...source, id: "a", title: "a.txt", content: "Texto longo. ".repeat(6_000) },
+      { ...source, id: "b", title: "b.png", kind: "image", content: "data:image/png;base64,AAAA" },
+      { ...source, id: "c", title: "c.txt", content: "Curto." },
+    ]);
+    await waitFor(() => expect(dispatch).toHaveBeenCalled());
+    const total = sent().reduce((sum, item) => sum + item.content.length, 0);
+    expect(total).toBeLessThanOrEqual(30_000);
+    expect(sent().length).toBeLessThanOrEqual(12);
+    expect(sent().every((item) => item.content.length <= 8_000)).toBe(true);
+    for (const id of ["a", "b", "c"])
+      expect(sent().some((item) => item.id.startsWith(id))).toBe(true);
+  });
+
   it("link do YouTube nunca é enviado: fica só como referência", () => {
     signedIn();
     const link = {
