@@ -102,4 +102,29 @@ describe("questões da IA", () => {
     });
     expect(parseStudyQuestions(text, 4)).toHaveLength(2);
   });
+  it("aproveita as questões inteiras quando o modelo para no meio (resposta cortada)", () => {
+    const full = JSON.stringify({
+      questions: [
+        question(),
+        question({ question: "Segunda?" }),
+        question({ question: "Terceira?" }),
+      ],
+    });
+    const cut = full.slice(0, full.lastIndexOf('"question":"Terceira?"') + 25);
+    expect(() => JSON.parse(cut)).toThrow();
+    const parsed = parseStudyQuestions(cut, 4);
+    expect(parsed?.map((item) => item.prompt)).toEqual([question().question, "Segunda?"]);
+  });
+
+  it("resgata cartões inteiros de uma lista cortada, com chaves dentro do texto", () => {
+    const cards = [
+      { front: "Chave { aberta", back: 'Texto com } e \\" aspas' },
+      { front: "B?", back: "b" },
+      { front: "C?", back: "c" },
+      { front: "D?", back: "d" },
+    ];
+    const full = JSON.stringify({ cards });
+    const cut = full.slice(0, full.length - 12);
+    expect(parseStudyCards(cut)).toHaveLength(3);
+  });
 });

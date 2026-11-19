@@ -61,7 +61,7 @@ export function budgetSources(texts: readonly SourceText[]): HelenaRequest["sour
 
 const QUESTION_COUNT = { short: 5, medium: 10, long: 15 } as const;
 // Simulado: mais questões que o quiz, até o limite da resposta da Olena.
-const EXAM_COUNT = { short: 10, medium: 15, long: 20 } as const;
+const EXAM_COUNT = { short: 8, medium: 12, long: 16 } as const;
 const FLASHCARD_COUNT = 12;
 
 /** Só parâmetros numéricos: o servidor monta as instruções (texto livre daqui não é usado). */

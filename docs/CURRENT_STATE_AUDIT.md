@@ -5660,3 +5660,10 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Correção: `runCloudflareText` aceita texto, objeto ou lista (objeto e lista voltam a texto com `JSON.stringify`) antes da mesma validação estrita. Vazio, nulo e número continuam recusados. Teste novo reproduz o erro de produção e falha sem a correção.
 - A falha devolveu o uso do dia (a devolução funcionou), então a cota de 2 por tipo não foi gasta pelos erros.
 - Lição registrada: o formato real da resposta da Cloudflare só apareceu em produção. Limite do que foi verificado: depois do deploy, a primeira geração real de cada tipo é a prova; a qualidade do português do modelo segue sem medição.
+
+## Correção: simulado ainda falhava depois da PR #684, 19/11/2026
+
+- Sintoma: depois do deploy da #684, flashcards e quiz voltaram, mas o simulado seguia sem gerar. Os logs de runtime da Vercel guardam 1 hora no plano atual e já tinham expirado quando a falha foi relatada, então o motivo exato não foi visto: a causa abaixo é a hipótese mais forte pelo código, não uma confirmação (não verificado).
+- Hipótese: o simulado pedia até 20 questões com limite de 2600 tokens de saída, que não comporta 20 questões com 4 alternativas e explicação (uns 170 tokens cada). O JSON chegava cortado, a validação recusava tudo e a segunda tentativa repetia o corte.
+- Correção: (1) o limite de tokens acompanha a quantidade pedida (500 + 190 por questão, teto de 3800); (2) se a resposta mesmo assim vier cortada, as questões e cartões que chegaram inteiros são aproveitados (mínimo de 2 questões ou 3 cartões continua valendo); (3) o simulado pede 8, 12 ou 16 questões em vez de 10, 15 ou 20, para caber no tempo de 25 s por tentativa.
+- Como conferir em produção: gerar um simulado curto, médio e longo logo após o deploy e, se falhar, ler os logs de `/api/helena` na hora, antes de a hora de retenção passar.

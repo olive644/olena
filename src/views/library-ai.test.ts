@@ -76,7 +76,7 @@ describe("parâmetros do pedido", () => {
   it("são só números e palavras fixas, sem texto livre", () => {
     expect(studyPrompt("Quizzes", "hard", "long")).toBe("count=15;options=4;difficulty=hard");
     expect(studyPrompt("Quizzes", "easy", "short")).toBe("count=5;options=3;difficulty=easy");
-    expect(studyPrompt("Simulados", "medium", "long")).toBe("count=20;options=4;difficulty=medium");
+    expect(studyPrompt("Simulados", "medium", "long")).toBe("count=16;options=4;difficulty=medium");
     expect(studyPrompt("Flashcards", "medium", "medium")).toBe("count=12");
   });
 });

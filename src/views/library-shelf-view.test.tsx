@@ -383,7 +383,7 @@ describe("flashcards, quiz e simulado com a Olena", () => {
     await waitFor(() => expect(dispatch).toHaveBeenCalled());
     expect(request.mock.calls[0]![0]).toMatchObject({
       capability: "exam",
-      prompt: "count=15;options=4;difficulty=medium",
+      prompt: "count=12;options=4;difficulty=medium",
     });
     const action = dispatch.mock.calls[0]![0];
     if (action.type !== "material/added") throw new Error("ação inesperada");
