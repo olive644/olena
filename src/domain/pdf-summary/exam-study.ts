@@ -108,6 +108,11 @@ export function examSummary(exam: ParsedExam, title: string): string {
       `. ${study} podem virar flashcards, quiz e simulado.`,
     "",
   );
+  if (exam.essays > 0)
+    lines.push(
+      `> **Parte discursiva** ${exam.essays} questões discursivas, sem alternativas. Elas não viram flashcards, quiz nem simulado, porque não há resposta única para corrigir.`,
+      "",
+    );
   if (!exam.hasAnswerKey)
     lines.push(
       "> **Atenção** O arquivo não traz o gabarito. Sem ele não dá para saber as respostas, e nada foi inventado. Envie o gabarito junto para criar flashcards, quiz e simulado.",

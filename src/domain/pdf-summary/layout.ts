@@ -648,5 +648,5 @@ export function structureText(text: string, fileTitle = ""): StructuredDocument 
     );
     if (joined.split(/\s+/).length >= 3) blocks.push({ kind: "paragraph", text: joined, page: 1 });
   }
-  return finalizeDocument(blocks, 1, fileTitle);
+  return { ...finalizeDocument(blocks, 1, fileTitle), paged: false };
 }

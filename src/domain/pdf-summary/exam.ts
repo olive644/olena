@@ -38,6 +38,8 @@ export type ParsedExam = {
   key: Record<number, number>;
   answered: number;
   figureQuestions: number;
+  /** Questões discursivas ("Questão 1 (Valor: 1,5 ponto)"): sem alternativas, não viram quiz. */
+  essays: number;
 };
 
 const LETTERS = ["A", "B", "C", "D", "E"];
@@ -57,6 +59,8 @@ type Draft = {
   options: string[];
   answer?: number;
   page: number;
+  /** Pedaços de fórmula (fração, expoente) caíram soltos no texto: enunciado ou alternativas saem trocados. */
+  garbled?: boolean;
 };
 
 const SHARED =
@@ -136,6 +140,16 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
     if (consumed.has(lineIndex)) continue;
     const text = block.text;
     if (/^[\s_\-=*.\u2022\u2014\u2013]{5,}$/.test(text)) continue;
+    // Marca d'água de rascunho e título de seção ("CIÊNCIAS DA NATUREZA") no pé da questão não são
+    // parte da última alternativa.
+    if (/^\s*rascunho\s*$/i.test(text)) continue;
+    if (
+      current &&
+      current.options.length >= 3 &&
+      /^[\p{Lu}\s]{10,}$/u.test(text.trim()) &&
+      text.trim().split(/\s+/).length >= 2
+    )
+      continue;
     const markers = [...text.matchAll(MARKER)];
     const dot = DOT_OPTION.exec(text.trimStart());
     let cursor = 0;
@@ -149,6 +163,20 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
       const kind = g["q"] ? "q" : g["n"] ? "n" : g["o"] ? "o" : "k";
       const value = g["qn"] ?? g["nn"] ?? g["ol"] ?? "";
       pending.push({ index: m.index!, end: m.index! + m[0].length, kind, value });
+    }
+    // Número sozinho na linha (PUC-Rio e outras provas de duas colunas: o número fica acima do
+    // enunciado, sem ponto nem parêntese). Só abre questão se a linha seguinte começa o enunciado:
+    // restos de fração ("2", "3"), alternativas e números de página não têm enunciado depois.
+    const bare = inKey ? null : /^\s*(\d{1,3})\s*$/.exec(text);
+    if (bare) {
+      const next = source[lineIndex + 1]?.text.trim() ?? "";
+      const startsStem =
+        next.length >= 2 && !/^\(?[A-Ea-e]\)/.test(next) && !/^[\d\s]+$/.test(next);
+      const open = current !== undefined && current.options.length >= 3;
+      if (startsStem && (open || current === undefined || current.options.length === 0))
+        pending.push({ index: 0, end: text.length, kind: "n", value: bare[1]! });
+      // Número solto dentro da questão: resto de fração ou expoente que o PDF separou da conta.
+      else if (current && current.options.length > 0) current.garbled = true;
     }
     pending.sort((a, b) => a.index - b.index);
 
@@ -166,7 +194,11 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
       if (item.kind === "k") {
         const marker = text.slice(item.index, item.end);
         const hasSeparator = /[:\-–]\s*$/.test(marker);
-        const heading = /^(?:gabarito|respostas?|chave|answer)/i.test(marker);
+        // "CARTÃO-RESPOSTA" nas instruções da prova não é o começo do gabarito: a palavra vem colada
+        // a outra por hífen, ou no meio da frase.
+        const glued = /\p{L}-$/u.test(text.slice(0, item.index));
+        const startsLine = text.slice(0, item.index).trim() === "";
+        const heading = !glued && /^(?:gabarito|respostas?|chave|answer)/i.test(marker);
         const after = text.slice(item.end);
         // "Gabarito: B" dentro da questão é a resposta dela, não o começo do gabarito geral.
         const inlineLetter = /^\s*\(?([A-Ea-e])\)?(?![\p{L}\d])/u.exec(after);
@@ -174,7 +206,12 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
         if (current && inlineLetter && !wholeKey && hasSeparator) {
           current.answer = LETTERS.indexOf(inlineLetter[1]!.toUpperCase());
           cursor = item.end + inlineLetter[0].length;
-        } else if (heading && (wholeKey || drafts.length >= 3 || /^\s*$/.test(after.slice(0, 3)))) {
+        } else if (
+          heading &&
+          (wholeKey ||
+            (drafts.length >= 3 && (startsLine || hasSeparator)) ||
+            (startsLine && /^\s*$/.test(after.slice(0, 3))))
+        ) {
           if (current) {
             drafts.push(current);
             current = undefined;
@@ -194,7 +231,11 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
       if (item.kind === "q" || item.kind === "n") {
         const number = Number(item.value);
         // "1. item" (minúscula) é lista, e só "1. Item" abre questão
-        const capital = item.kind === "q" || !/^\p{Ll}/u.test(text.charAt(item.end));
+        // "01 - O candidato..." (zero à esquerda e traço) é item de instrução, não questão.
+        const instruction =
+          item.kind === "n" && /^0\d+\s*[-–]/.test(text.slice(item.index, item.end));
+        const capital =
+          !instruction && (item.kind === "q" || !/^\p{Ll}/u.test(text.charAt(item.end)));
         const accepts =
           capital &&
           number >= 1 &&
@@ -231,6 +272,20 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
           };
           support = "";
           supportOpen = false;
+        } else if (
+          item.kind === "q" &&
+          number <= lastNumber &&
+          current &&
+          current.options.length >= 3
+        ) {
+          // "Questão 1" depois da última objetiva: começa outra parte da prova (discursiva), e o
+          // texto dela não é continuação da última alternativa.
+          drafts.push(current);
+          current = undefined;
+          lastNumber = 0;
+          support = "";
+          supportOpen = false;
+          cursor = item.end;
         } else {
           // Número de lista dentro do enunciado ou da alternativa: é texto.
           cursor = item.index;
@@ -255,23 +310,26 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
   }
   if (current) drafts.push(current);
 
-  const questions: ExamQuestion[] = drafts
-    .filter((draft) => draft.options.filter(Boolean).length >= 3 && draft.stem.length >= 8)
-    .map((draft) => {
-      const own = keySections.length === 1 ? keySections[0]!.key[draft.number] : undefined;
-      const keyed = key.get(draft.number) ?? own;
-      const answer = draft.answer ?? keyed;
-      const options = draft.options.map(clean);
-      return {
-        number: draft.number,
-        context: draft.context,
-        stem: draft.stem,
-        options,
-        ...(answer !== undefined && answer < options.length ? { answer } : {}),
-        page: draft.page,
-        needsFigure: FIGURE.test(`${draft.context} ${draft.stem}`),
-      };
-    });
+  // Alternativas que são só figura (sem texto) continuam sendo a questão, marcada como figura.
+  const kept = drafts.filter((draft) => draft.options.length >= 3 && draft.stem.length >= 8);
+  const questions: ExamQuestion[] = kept.map((draft) => {
+    const own = keySections.length === 1 ? keySections[0]!.key[draft.number] : undefined;
+    const keyed = key.get(draft.number) ?? own;
+    const answer = draft.answer ?? keyed;
+    const options = draft.options.map((option) => clean(option.replace(/\brascunho\b/gi, "")));
+    return {
+      number: draft.number,
+      context: draft.context,
+      stem: draft.stem,
+      options,
+      ...(answer !== undefined && answer < options.length ? { answer } : {}),
+      page: draft.page,
+      needsFigure:
+        FIGURE.test(`${draft.context} ${draft.stem}`) ||
+        draft.garbled === true ||
+        options.some((option) => !option),
+    };
+  });
   const answered = questions.filter((question) => question.answer !== undefined).length;
   return {
     questions,
@@ -286,6 +344,8 @@ export function parseExam(doc: StructuredDocument): ParsedExam {
     key: { ...(keySections.length === 1 ? keySections[0]!.key : {}), ...Object.fromEntries(key) },
     answered,
     figureQuestions: questions.filter((question) => question.needsFigure).length,
+    essays: source.filter((line) => /^Quest[ãa]o\s*\d+\s*\(\s*valor/i.test(line.text.trim()))
+      .length,
   };
 }
 

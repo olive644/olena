@@ -145,3 +145,126 @@ C) talvez`;
     expect(exam.questions.map((q) => q.number)).toEqual([1, 2]);
   });
 });
+
+describe("prova de vestibular em duas colunas (número sozinho acima do enunciado)", () => {
+  // Como o PDF da PUC-Rio chega do leitor: cada linha separada, número da questão sozinho.
+  const lines = [
+    "PUC - Rio VESTIBULAR 2025 GRUPO 2",
+    "01 - O candidato recebeu do fiscal o seguinte material:",
+    "a) este Caderno, com o enunciado das questões objetivas;",
+    "b) um CARTÃO-RESPOSTA, com seu nome e número de inscrição, grampeado a um CADERNO DE RESPOSTAS, contendo espaço para as questões discursivas.",
+    "04 - Para cada uma das questões objetivas, são apresentadas 5 alternativas classificadas com as letras (A), (B), (C), (D) e (E); só uma responde ao quesito.",
+    "MATEMÁTICA",
+    "1",
+    "A equação x2 + bx + 49 = 0 tem uma única raiz real, ou seja, com multiplicidade 2.",
+    "Quais são os possíveis valores de b?",
+    "(A) b = 0",
+    "(B) b = 2 ou b = 3",
+    "(C) b = -7 ou b = 7",
+    "(D) b = - 14 ou b = 14",
+    "(E) b = 21 ou b = 35",
+    "2",
+    "Em uma feira, 1 kg de banana custa R$ 7,50. Ao pagar em dinheiro, há desconto de 12%.",
+    "Qual é o valor pago ao comprar 3 kg de banana?",
+    "(A) R$ 18,90",
+    "(B) R$ 19,80",
+    "(C) R$ 20,30",
+    "(D) R$ 21,00",
+    "(E) R$ 22,50",
+    "RASCUNHO",
+    "3",
+    "Quantos valores de θ satisfazem à equação sen(2θ) = cos(2θ)?",
+    "(A) 0",
+    "(B) 1",
+    "(C) 2",
+    "(D) 4",
+    "(E) 8",
+    "4",
+    "O número irracional pertence ao intervalo [n, n+1], onde n é inteiro.",
+    "Qual é o valor de n?",
+    "(A) 31",
+    "(B) 32",
+    "(C) 33",
+    "(D) 34",
+    "(E) 35",
+    "CIÊNCIAS DA NATUREZA",
+    "Questão 1 (Valor: 2,0 pontos)",
+    "Explique a diferença entre clima e tempo atmosférico em um parágrafo.",
+  ];
+  const doc = () => ({
+    title: "prova.pdf",
+    language: "pt" as const,
+    pages: 3,
+    blocks: [],
+    lines: lines.map((text) => ({ text, page: 3 })),
+    characters: 1000,
+  });
+
+  it("lê as questões numeradas por linha sozinha e ignora os itens de instrução", () => {
+    const exam = parseExam(doc());
+    expect(isExam(exam)).toBe(true);
+    expect(exam.questions.map((q) => q.number)).toEqual([1, 2, 3, 4]);
+    expect(exam.questions.every((q) => q.options.length === 5)).toBe(true);
+    expect(exam.questions[0]!.options[2]).toBe("b = -7 ou b = 7");
+  });
+
+  it("CARTÃO-RESPOSTA e CADERNO DE RESPOSTAS nas instruções não viram o gabarito", () => {
+    const exam = parseExam(doc());
+    expect(exam.hasAnswerKey).toBe(false);
+    expect(exam.answered).toBe(0);
+  });
+
+  it("rascunho, título de seção e a parte discursiva não entram na última alternativa", () => {
+    const exam = parseExam(doc());
+    expect(exam.questions[1]!.options[4]).toBe("R$ 22,50");
+    expect(exam.questions[3]!.options[4]).toBe("35");
+    expect(JSON.stringify(exam.questions)).not.toMatch(/RASCUNHO|CIÊNCIAS|Valor: 2/);
+  });
+
+  it("restos de fração e números soltos não viram questão", () => {
+    const withFraction = doc();
+    withFraction.lines.splice(
+      lines.indexOf("(A) b = 0") + 1,
+      0,
+      { text: "2", page: 3 },
+      { text: "3", page: 3 },
+      { text: "4", page: 3 },
+    );
+    const exam = parseExam(withFraction);
+    expect(exam.questions.map((q) => q.number)).toEqual([1, 2, 3, 4]);
+  });
+
+  it("alternativas só em figura contam como questão e ficam fora do estudo", () => {
+    const withFigure = doc();
+    const at = lines.indexOf("CIÊNCIAS DA NATUREZA");
+    withFigure.lines.splice(
+      at,
+      0,
+      { text: "5", page: 3 },
+      { text: "Qual figura representa o raio de luz quando a miragem se forma?", page: 3 },
+      ...["(A)", "(B)", "(C)", "(D)", "(E)"].map((text) => ({ text, page: 3 })),
+    );
+    const exam = parseExam(withFigure);
+    expect(exam.questions.map((q) => q.number)).toEqual([1, 2, 3, 4, 5]);
+    expect(exam.questions[4]!.needsFigure).toBe(true);
+    expect(exam.figureQuestions).toBe(1);
+  });
+
+  it("fração solta no meio da questão marca a questão como dependente de figura", () => {
+    const withFraction = doc();
+    withFraction.lines.splice(
+      lines.indexOf("(A) b = 0") + 1,
+      0,
+      { text: "2", page: 3 },
+      { text: "3", page: 3 },
+      { text: "4", page: 3 },
+    );
+    const exam = parseExam(withFraction);
+    expect(exam.questions[0]!.needsFigure).toBe(true);
+    expect(exam.questions[1]!.needsFigure).toBe(false);
+  });
+
+  it("conta as questões discursivas, que não viram alternativas", () => {
+    expect(parseExam(doc()).essays).toBe(1);
+  });
+});
