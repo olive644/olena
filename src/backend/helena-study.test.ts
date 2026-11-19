@@ -117,6 +117,16 @@ describe("geração em JSON", () => {
     expect(body.max_tokens).toBeLessThanOrEqual(2600);
   });
 
+  it("o limite de tokens acompanha a quantidade de questões pedida (simulado longo)", async () => {
+    const fetcher = reply(quiz);
+    const provider = createStudyProvider(inner, config, fetcher as unknown as typeof fetch);
+    await provider.generate(request("exam", "count=16;options=4;difficulty=medium"));
+    const [, init] = fetcher.mock.calls[0] as unknown as [string, RequestInit];
+    const body = JSON.parse(String(init.body)) as { max_tokens: number };
+    expect(body.max_tokens).toBeGreaterThan(2600);
+    expect(body.max_tokens).toBeLessThanOrEqual(3800);
+  });
+
   it("flashcards válidos voltam como cards", async () => {
     const cards = JSON.stringify({
       cards: [1, 2, 3, 4].map((n) => ({ front: `Pergunta ${n}?`, back: `Resposta ${n}` })),

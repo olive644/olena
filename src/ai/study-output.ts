@@ -19,6 +19,45 @@ const MAX_PROMPT = 600;
 const MAX_OPTION = 240;
 const MAX_EXPLANATION = 500;
 
+/**
+ * Objetos completos de uma lista JSON que pode ter sido cortada no meio (o modelo parou no limite
+ * de tokens). Percorre o texto respeitando textos entre aspas e devolve só os objetos fechados.
+ */
+function salvageObjects(text: string): unknown[] | undefined {
+  const start = text.indexOf("[");
+  if (start < 0) return undefined;
+  const items: unknown[] = [];
+  let depth = 0;
+  let begin = -1;
+  let inString = false;
+  let escaped = false;
+  for (let index = start + 1; index < text.length; index += 1) {
+    const char = text[index]!;
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (char === "\\") escaped = true;
+      else if (char === '"') inString = false;
+      continue;
+    }
+    if (char === '"') inString = true;
+    else if (char === "{") {
+      if (depth === 0) begin = index;
+      depth += 1;
+    } else if (char === "}" && depth > 0) {
+      depth -= 1;
+      if (depth === 0 && begin >= 0) {
+        try {
+          items.push(JSON.parse(text.slice(begin, index + 1)) as unknown);
+        } catch {
+          // objeto quebrado: segue para o próximo
+        }
+        begin = -1;
+      }
+    }
+  }
+  return items.length > 0 ? items : undefined;
+}
+
 /** Corpo JSON de uma resposta do modelo: tira cerca de código e texto antes e depois. */
 export function extractJson(text: string): unknown {
   const unfenced = text.replace(/```(?:json)?/gi, "");
@@ -26,12 +65,15 @@ export function extractJson(text: string): unknown {
   if (start < 0) return undefined;
   const open = unfenced[start]!;
   const end = unfenced.lastIndexOf(open === "{" ? "}" : "]");
-  if (end <= start) return undefined;
-  try {
-    return JSON.parse(unfenced.slice(start, end + 1)) as unknown;
-  } catch {
-    return undefined;
+  if (end > start) {
+    try {
+      return JSON.parse(unfenced.slice(start, end + 1)) as unknown;
+    } catch {
+      // cai para o resgate abaixo
+    }
   }
+  // Resposta cortada pelo limite de tokens: aproveita as questões ou cartões que vieram inteiros.
+  return salvageObjects(unfenced.slice(start));
 }
 
 const clean = (value: unknown, max: number): string | undefined => {

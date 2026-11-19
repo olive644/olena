@@ -91,7 +91,10 @@ export function createStudyProvider(
         tarefa: instructions(capability, params),
         fontes: request.sources.map(({ title, content }) => ({ titulo: title, conteudo: content })),
       });
-      const maxTokens = capability === "flashcards" ? 1600 : 2600;
+      // Cada questão com 4 alternativas e explicação usa uns 170 tokens: o limite acompanha a quantidade
+      // pedida, senão o JSON chega cortado.
+      const maxTokens =
+        capability === "flashcards" ? 1600 : Math.min(3800, 500 + params.count * 190);
       let reminder = "";
       for (let attempt = 0; attempt < 2; attempt += 1) {
         const text = await runCloudflareText(
