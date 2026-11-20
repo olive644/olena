@@ -1459,7 +1459,7 @@ export function LibraryFolderContents({
             {creating === "Flashcards" && (
               <p>
                 {uiText(
-                  "Flashcards com IA: cerca de 12 cartões de pergunta e resposta, feitos a partir das fontes.",
+                  "Flashcards com IA: cerca de 12 afirmações para julgar como verdadeiras ou falsas, feitas a partir das fontes.",
                 )}
               </p>
             )}
