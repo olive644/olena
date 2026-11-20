@@ -4,8 +4,9 @@ import { extractJson, parseStudyCards, parseStudyQuestions } from "./study-outpu
 const cards = (n: number) =>
   JSON.stringify({
     cards: Array.from({ length: n }, (_, i) => ({
-      front: `Pergunta ${i}?`,
-      back: `Resposta ${i}`,
+      statement: `Afirmação ${i}.`,
+      true: i % 2 === 0,
+      explanation: `Explicação ${i}.`,
     })),
   });
 
@@ -17,33 +18,82 @@ describe("JSON do modelo", () => {
   });
 });
 
-describe("flashcards da IA", () => {
-  it("aceita lista dentro de objeto ou solta e descarta lixo", () => {
-    expect(parseStudyCards(cards(5))).toHaveLength(5);
-    const loose = JSON.stringify([
-      { front: "A?", back: "a" },
-      { front: "B?", back: "b" },
-      { front: "C?", back: "c" },
-      { front: "", back: "vazio" },
-      { front: "D?" },
-      "texto",
-      { front: "A?", back: "repetida" },
-    ]);
-    expect(parseStudyCards(loose)).toHaveLength(3);
+describe("flashcards da IA (verdadeiro ou falso)", () => {
+  it("vira afirmação na frente e gabarito no começo do verso", () => {
+    const parsed = parseStudyCards(cards(4));
+    expect(parsed).toHaveLength(4);
+    expect(parsed?.[0]).toEqual({
+      front: "Afirmação 0.",
+      back: "Verdadeiro. Explicação 0.",
+    });
+    expect(parsed?.[1]).toEqual({
+      front: "Afirmação 1.",
+      back: "Falso. O texto diz: Explicação 1.",
+    });
   });
 
-  it("recusa resposta com menos de 3 cartões e a frente igual ao verso", () => {
-    expect(parseStudyCards(cards(2))).toBeUndefined();
-    const same = JSON.stringify({
-      cards: Array.from({ length: 5 }, () => ({ front: "x", back: "x" })),
+  it("aceita o verdadeiro ou falso como booleano, texto ou campo de resposta", () => {
+    const list = JSON.stringify({
+      cards: [
+        { statement: "A", true: "verdadeiro", explanation: "a" },
+        { statement: "B", truth: "false", explanation: "b" },
+        { statement: "C", answer: false, explanation: "c" },
+      ],
     });
-    expect(parseStudyCards(same)).toBeUndefined();
+    expect(parseStudyCards(list)?.map((card) => card.back.split(" ")[0])).toEqual([
+      "Verdadeiro.",
+      "Falso.",
+      "Falso.",
+    ]);
+  });
+
+  it("recusa pergunta aberta sem gabarito, que não é flashcard de verdadeiro ou falso", () => {
+    const open = JSON.stringify({
+      cards: Array.from({ length: 5 }, (_, i) => ({
+        front: `O que é o conceito ${i}?`,
+        back: `Resposta ${i}`,
+      })),
+    });
+    expect(parseStudyCards(open)).toBeUndefined();
+    const noTruth = JSON.stringify({
+      cards: Array.from({ length: 5 }, (_, i) => ({ statement: `Frase ${i}.`, explanation: "x" })),
+    });
+    expect(parseStudyCards(noTruth)).toBeUndefined();
+  });
+
+  it("aceita de volta o cartão já guardado, que é o que o servidor devolve à tela", () => {
+    const stored = JSON.stringify({
+      cards: [
+        { front: "A.", back: "Verdadeiro. a" },
+        { front: "B.", back: "Falso. O texto diz: b" },
+        { front: "C.", back: "True. c" },
+        { front: "D?", back: "Resposta sem gabarito" },
+        "texto",
+        { front: "A.", back: "Verdadeiro. repetida" },
+      ],
+    });
+    expect(parseStudyCards(stored)).toHaveLength(3);
+  });
+
+  it("recusa menos de 3 cartões, afirmação vazia e frente igual ao verso", () => {
+    expect(parseStudyCards(cards(2))).toBeUndefined();
+    const bad = JSON.stringify({
+      cards: [
+        { statement: "", true: true, explanation: "vazio" },
+        { statement: "Sem explicação", true: true },
+        ...JSON.parse(cards(2)).cards,
+      ],
+    });
+    expect(parseStudyCards(bad)).toBeUndefined();
   });
 
   it("respeita o limite e o tamanho dos textos", () => {
     expect(parseStudyCards(cards(30), 8)).toHaveLength(8);
     const long = JSON.stringify({
-      cards: [{ front: "x".repeat(400), back: "ok" }, ...JSON.parse(cards(4)).cards],
+      cards: [
+        { statement: "x".repeat(400), true: true, explanation: "ok" },
+        ...JSON.parse(cards(4)).cards,
+      ],
     });
     expect(parseStudyCards(long)).toHaveLength(4);
   });
@@ -118,10 +168,10 @@ describe("questões da IA", () => {
 
   it("resgata cartões inteiros de uma lista cortada, com chaves dentro do texto", () => {
     const cards = [
-      { front: "Chave { aberta", back: 'Texto com } e \\" aspas' },
-      { front: "B?", back: "b" },
-      { front: "C?", back: "c" },
-      { front: "D?", back: "d" },
+      { statement: "Chave { aberta", true: true, explanation: 'Texto com } e \\" aspas' },
+      { statement: "B", true: false, explanation: "b" },
+      { statement: "C", true: true, explanation: "c" },
+      { statement: "D", true: false, explanation: "d" },
     ];
     const full = JSON.stringify({ cards });
     const cut = full.slice(0, full.length - 12);

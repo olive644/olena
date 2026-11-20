@@ -290,7 +290,10 @@ describe("flashcards, quiz e simulado com a Olena", () => {
     ],
   });
   const cards = JSON.stringify({
-    cards: [1, 2, 3, 4].map((n) => ({ front: `Pergunta ${n}?`, back: `Resposta ${n}` })),
+    cards: [1, 2, 3, 4].map((n) => ({
+      front: `Afirmação ${n}.`,
+      back: n % 2 ? `Verdadeiro. Explicação ${n}.` : `Falso. O texto diz: Explicação ${n}.`,
+    })),
   });
 
   function open(tab: string, action: string, materials: WorkspaceState["materials"] = [source]) {
@@ -351,7 +354,12 @@ describe("flashcards, quiz e simulado com a Olena", () => {
     expect(options.token).toBe("token-da-conta");
     const added = dispatch.mock.calls.map(([a]) => a).filter((a) => a.type === "flashcard/added");
     expect(added).toHaveLength(4);
-    expect(added[0]).toMatchObject({ deck: "ENIAC", materialId: "fonte-1", front: "Pergunta 1?" });
+    expect(added[0]).toMatchObject({
+      deck: "ENIAC",
+      materialId: "fonte-1",
+      front: "Afirmação 1.",
+      back: "Verdadeiro. Explicação 1.",
+    });
   });
 
   it("quiz: guarda as questões no formato do estudo, com a dificuldade escolhida", async () => {

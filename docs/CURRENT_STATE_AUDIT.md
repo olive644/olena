@@ -5687,3 +5687,9 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - A janela "Gerar com a Olena" mostra "Custo estimado deste pedido: até N créditos", calculado com a mesma fórmula do servidor (`ai/helena-cost.ts`) pelo tamanho das fontes e pela quantidade de questões ou cartões. Texto de PDF e imagem só sai do OCR depois do clique, então essas fontes entram com a fatia inteira a que têm direito: é um teto, o gasto real costuma ser menor.
 - Saldo menor que a estimativa: aviso em texto, mas o botão fica ligado (a conta final costuma ser menor e o servidor decide). Saldo zero: botão desligado e o motivo escrito na tela, com a hora em que volta (o motivo não depende de hover).
 - Validado só por teste de componente. **Não** validado por captura em claro, escuro, PC e celular: são dois parágrafos de texto no mesmo bloco do aviso da janela. Sem saldo conhecido (sem conta ou sem rede), a janela mostra só o custo e deixa tentar; o servidor recusa se faltar crédito.
+
+## Flashcards da Olena voltam a ser verdadeiro ou falso (20/11/2026)
+
+- Problema: a #683 passou os flashcards para a IA com o prompt de "pergunta curta e resposta", e o baralho saía com pergunta aberta, que a tela de estudo (setas, gabarito, painel de qualidade) não trata como flashcard.
+- Correção: o servidor pede afirmações para julgar (metade verdadeiras, metade falsas, a falsa com um ponto plausível alterado, sem pistas como "sempre" e "nunca", uma ideia por frase, explicação com a frase correta). O modelo devolve `{statement, true, explanation}` e `parseStudyCards` converte para o cartão guardado: afirmação na frente e "Verdadeiro." ou "Falso. O texto diz:" no começo do verso. Cartão sem gabarito é recusado, a geração é refeita uma vez e, se vier de novo, vira erro.
+- Não verificado: a qualidade real das afirmações do modelo de 8 bilhões de parâmetros (só testado com respostas simuladas). Conferir gerando de uma fonte real e usando o botão de curadoria.
