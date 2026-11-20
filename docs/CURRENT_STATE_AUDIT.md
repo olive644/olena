@@ -5682,6 +5682,12 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Ao gastar: contagem regressiva do número, barra encolhendo, plaquinha "−N" subindo, faíscas em losango (papel recortado) e som de moedas, só se o gasto subiu entre duas leituras. Geração que falhou e foi devolvida não anima nem toca. O som usa o contexto de áudio criado no clique de gerar e respeita a preferência de sons. Movimento reduzido (sistema ou app): o número muda de uma vez e a faixa anuncia "Gastou N créditos." por leitor de tela.
 - Validado: testes de componente e do hook; no navegador, em claro e escuro, PC e celular (375 px), saldo normal, baixo, zerado e com a animação, por uma página temporária só com o componente e as folhas de estilo (já removida). **Não** validado dentro do app real logado nem o som no aparelho (depende de gesto e de volume). O custo estimado do pedido atual antes de gerar continua sem tela própria.
 
+## Custo estimado e saldo na janela de gerar (20/11/2026)
+
+- A janela "Gerar com a Olena" mostra "Custo estimado deste pedido: até N créditos", calculado com a mesma fórmula do servidor (`ai/helena-cost.ts`) pelo tamanho das fontes e pela quantidade de questões ou cartões. Texto de PDF e imagem só sai do OCR depois do clique, então essas fontes entram com a fatia inteira a que têm direito: é um teto, o gasto real costuma ser menor.
+- Saldo menor que a estimativa: aviso em texto, mas o botão fica ligado (a conta final costuma ser menor e o servidor decide). Saldo zero: botão desligado e o motivo escrito na tela, com a hora em que volta (o motivo não depende de hover).
+- Validado só por teste de componente. **Não** validado por captura em claro, escuro, PC e celular: são dois parágrafos de texto no mesmo bloco do aviso da janela. Sem saldo conhecido (sem conta ou sem rede), a janela mostra só o custo e deixa tentar; o servidor recusa se faltar crédito.
+
 ## Flashcards da Olena voltam a ser verdadeiro ou falso (20/11/2026)
 
 - Problema: a #683 passou os flashcards para a IA com o prompt de "pergunta curta e resposta", e o baralho saía com pergunta aberta, que a tela de estudo (setas, gabarito, painel de qualidade) não trata como flashcard.

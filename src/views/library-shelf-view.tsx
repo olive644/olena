@@ -32,6 +32,7 @@ import {
   OLENA_CAPABILITY,
   SUMMARY_PROMPT,
   budgetSources,
+  estimateOlenaCredits,
   studyPrompt,
   toSourceQuiz,
   type OlenaKind,
@@ -439,6 +440,14 @@ export function LibraryFolderContents({
   const readableMaterials = materials.filter(({ kind }) => kind !== "link");
   const maxSelectedSources = 3;
   const allSelected = selectedSources.length === readableMaterials.length;
+  const cost = creating
+    ? estimateOlenaCredits(creating as OlenaKind, selectedSources, quizLength)
+    : 0;
+  const balance = credits.usage?.remainingCredits;
+  const noCredits = balance !== undefined && balance <= 0;
+  const resetClock = credits.resetAt
+    ? new Date(credits.resetAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    : "";
   const [error, setError] = useState("");
   const input = useRef<HTMLInputElement>(null);
 
@@ -1517,10 +1526,27 @@ export function LibraryFolderContents({
                 </p>
               </>
             )}
+            {selectedSources.length > 0 && (
+              <p>{uiText("Custo estimado deste pedido: até {0} créditos.", [String(cost)])}</p>
+            )}
+            {balance !== undefined && balance > 0 && cost > balance && (
+              <p role="alert">
+                {uiText(
+                  "O saldo de hoje ({0} créditos) pode não cobrir este pedido. A conta final costuma ser menor.",
+                  [String(balance)],
+                )}
+              </p>
+            )}
+            {noCredits && (
+              <p role="alert">
+                {uiText("Sem créditos hoje. Você pode gerar de novo às {0}.", [resetClock])}
+              </p>
+            )}
             <button
               type="button"
               className="shelf-wood-button library-study-confirm-generate"
               disabled={
+                noCredits ||
                 !selectedSources.length ||
                 (creating === "Resumo"
                   ? summaryBusy

@@ -4041,5 +4041,8 @@
   "Os créditos de hoje acabaram. Renovam em {0}, às {1}.",
   "Pouco saldo para um pedido grande. Renova em {0}, às {1}.",
   "Renova em {0}, às {1}.",
-  "Gastou {0} créditos."
+  "Gastou {0} créditos.",
+  "Custo estimado deste pedido: até {0} créditos.",
+  "O saldo de hoje ({0} créditos) pode não cobrir este pedido. A conta final costuma ser menor.",
+  "Sem créditos hoje. Você pode gerar de novo às {0}."
 ]
