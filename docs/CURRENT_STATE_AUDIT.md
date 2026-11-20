@@ -5675,6 +5675,13 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - UI: a tela de gerar da Biblioteca mostra "Créditos de hoje" (consulta `GET /api/helena?usage=1`) e o texto antigo de 2 vezes por dia saiu. Validada em teste de componente; **não** revalidada por captura em claro, escuro, PC e celular nesta mudança (a linha nova é um parágrafo de texto no mesmo bloco do aviso).
 - Limites declarados: preços de neurons e o `usage` do provedor não foram verificados contra a Cloudflare; a cota gratuita real (10.000/dia) continua sendo o teto de todos. App Check em `/api/helena` e o parágrafo de privacidade são da dona do projeto.
 
+## Medidor de créditos da Olena na pasta da Biblioteca (20/11/2026)
+
+- O que é: faixa acima das abas da pasta (PC e celular) com o saldo de créditos do dia, uma barra de saldo, uma barra fina do tempo até renovar e o texto "Renova em X h Y min, às HH:MM". Fica escondida sem conta conectada ou sem rede, porque não há saldo para mostrar. Lê `GET /api/helena?usage=1` ao abrir a pasta, depois de cada geração e quando o dia renova.
+- Estados: "Pouco saldo para um pedido grande" quando o saldo é menor que o custo máximo de um pedido (300) e "Os créditos de hoje acabaram" com a hora de volta. O aviso é em texto, não só em cor.
+- Ao gastar: contagem regressiva do número, barra encolhendo, plaquinha "−N" subindo, faíscas em losango (papel recortado) e som de moedas, só se o gasto subiu entre duas leituras. Geração que falhou e foi devolvida não anima nem toca. O som usa o contexto de áudio criado no clique de gerar e respeita a preferência de sons. Movimento reduzido (sistema ou app): o número muda de uma vez e a faixa anuncia "Gastou N créditos." por leitor de tela.
+- Validado: testes de componente e do hook; no navegador, em claro e escuro, PC e celular (375 px), saldo normal, baixo, zerado e com a animação, por uma página temporária só com o componente e as folhas de estilo (já removida). **Não** validado dentro do app real logado nem o som no aparelho (depende de gesto e de volume). O custo estimado do pedido atual antes de gerar continua sem tela própria.
+
 ## Flashcards da Olena voltam a ser verdadeiro ou falso (20/11/2026)
 
 - Problema: a #683 passou os flashcards para a IA com o prompt de "pergunta curta e resposta", e o baralho saía com pergunta aberta, que a tela de estudo (setas, gabarito, painel de qualidade) não trata como flashcard.

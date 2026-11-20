@@ -4034,5 +4034,12 @@
   "Flashcards com IA: cerca de 12 afirmações para julgar como verdadeiras ou falsas, feitas a partir das fontes.",
   "Simulado com IA: de 10 a 20 questões, com 1 ponto e 2 minutos por questão. Fácil tem 3 alternativas; Médio e Difícil têm 4. As respostas vêm da IA e podem estar erradas: confira com o gabarito oficial.",
   "Quiz com IA: de 5 a 15 questões, conforme o tamanho. Fácil tem 3 alternativas; Médio e Difícil têm 4.",
-  "Créditos de hoje: {0} de {1} usados. Um pedido gasta até {2}."
+  "Créditos da Olena",
+  "menos de 1 min",
+  "{0} min",
+  "{0} h {1} min",
+  "Os créditos de hoje acabaram. Renovam em {0}, às {1}.",
+  "Pouco saldo para um pedido grande. Renova em {0}, às {1}.",
+  "Renova em {0}, às {1}.",
+  "Gastou {0} créditos."
 ]
