@@ -4034,5 +4034,12 @@
   "Flashcards with AI: about 12 question and answer cards made from the sources.",
   "Mock exam with AI: 10 to 20 questions, 1 point and 2 minutes per question. Easy has 3 options; Medium and Hard have 4. The answers come from the AI and may be wrong: check them against the official answer key.",
   "Quiz with AI: 5 to 15 questions, depending on the size. Easy has 3 options; Medium and Hard have 4.",
-  "Credits today: {0} of {1} used. One request spends up to {2}."
+  "Olena credits",
+  "less than 1 min",
+  "{0} min",
+  "{0} h {1} min",
+  "Today's credits are gone. They renew in {0}, at {1}.",
+  "Low balance for a large request. Renews in {0}, at {1}.",
+  "Renews in {0}, at {1}.",
+  "Spent {0} credits."
 ]

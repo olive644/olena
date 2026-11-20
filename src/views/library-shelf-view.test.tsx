@@ -6,7 +6,12 @@ import { LibraryFolderContents } from "./library-shelf-view";
 const stream = vi.hoisted(() => vi.fn());
 const services = vi.hoisted(() => vi.fn());
 const request = vi.hoisted(() => vi.fn());
-vi.mock("../data/helena-client", () => ({ streamHelena: stream, requestHelena: request }));
+const usageRead = vi.hoisted(() => vi.fn(async () => undefined));
+vi.mock("../data/helena-client", () => ({
+  streamHelena: stream,
+  requestHelena: request,
+  fetchHelenaUsage: usageRead,
+}));
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: services }));
 const pdfOpen = vi.hoisted(() => vi.fn());
 vi.mock("pdfjs-dist", () => ({ GlobalWorkerOptions: {}, getDocument: pdfOpen }));

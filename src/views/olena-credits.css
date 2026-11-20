@@ -1,0 +1,157 @@
+/* Medidor de créditos da Olena na barra da pasta. Papel recortado, sem moldura de foco. */
+.olena-credits {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px 8px;
+  text-align: left;
+}
+.olena-credits-gem {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  clip-path: polygon(50% 0, 100% 38%, 82% 100%, 18% 100%, 0 38%);
+  background: linear-gradient(135deg, #ffe7aa 0 20%, #ffbf45 20% 80%, #d88624 80%);
+}
+.olena-credits-main {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+  min-width: 0;
+}
+.olena-credits-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.85rem;
+}
+.olena-credits-count {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.olena-credits-count b {
+  display: inline-block;
+  font-size: 1.1rem;
+}
+.olena-credits-track,
+.olena-credits-clock {
+  display: block;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #452d29;
+}
+.olena-credits-track {
+  height: 8px;
+}
+.olena-credits-track > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(135deg, #ffe7aa 0 20%, #ffbf45 20% 80%, #d88624 80%);
+}
+.olena-credits[data-level="low"] .olena-credits-track > span {
+  background: linear-gradient(135deg, #ffd0c2 0 20%, #ee7a5a 20% 80%, #b5472c 80%);
+}
+.olena-credits[data-level="empty"] .olena-credits-gem {
+  background: #9b8f8b;
+}
+.olena-credits-reset {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+.olena-credits-clock {
+  flex: none;
+  width: 44px;
+  height: 4px;
+}
+.olena-credits-clock > span {
+  display: block;
+  height: 100%;
+  background: #8ab4f8;
+}
+.olena-credits-burst {
+  position: absolute;
+  top: 17px;
+  left: 17px;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.olena-credits-spent {
+  position: absolute;
+  top: -10px;
+  left: 18px;
+  padding: 1px 8px;
+  border-radius: 3px;
+  background: #452d29;
+  color: #ffd35c;
+  font-size: 0.95rem;
+  font-weight: 800;
+  white-space: nowrap;
+  opacity: 0;
+}
+.olena-credits-burst i {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 9px;
+  height: 9px;
+  opacity: 0;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  background: #ffcf35;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"]) .olena-credits-spent {
+    animation: olena-credits-spent 1500ms ease-out forwards;
+  }
+  html:not([data-reduce-motion="true"]) .olena-credits-burst i {
+    animation: olena-credits-spark 900ms ease-out forwards;
+    animation-delay: calc(var(--spark) * 25ms);
+    --angle: calc(var(--spark) * 51deg);
+  }
+  html:not([data-reduce-motion="true"]) .olena-credits-track > span {
+    transition: width 900ms ease-out;
+  }
+}
+@keyframes olena-credits-spent {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.8);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0) scale(1.1);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-14px) scale(1);
+  }
+}
+@keyframes olena-credits-spark {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--angle)) translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateX(34px) scale(0.3);
+  }
+}
+@media (max-width: 560px) {
+  .olena-credits-clock {
+    width: 28px;
+  }
+  .olena-credits-reset {
+    font-size: 0.68rem;
+  }
+}
