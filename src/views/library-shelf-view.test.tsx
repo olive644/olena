@@ -327,7 +327,7 @@ describe("flashcards, quiz e simulado com a Olena", () => {
       ])
         expect(buttons).not.toContain(free);
       expect(dialog.textContent).toContain("o texto das fontes selecionadas é enviado a ela");
-      expect(dialog.textContent).toContain("2 vezes por dia");
+      expect(dialog.textContent).toContain("Cada geração gasta créditos da Olena");
       cleanup();
     }
   });

@@ -30,7 +30,14 @@ export type TeacherConfig = { accountId: string; token: string; model: string };
 /** Uma chamada ao modelo, sem fluxo, que devolve só o texto. Usada pela geração em JSON. */
 export async function runCloudflareText(
   config: TeacherConfig,
-  input: { system: string; user: string; maxTokens: number; timeoutMs: number },
+  input: {
+    system: string;
+    user: string;
+    maxTokens: number;
+    timeoutMs: number;
+    /** Tokens que a Cloudflare contou, quando informa (acerta o gasto da cota). */
+    onUsage?: (usage: { inputTokens: number; outputTokens: number }) => void;
+  },
   fetcher: typeof fetch = fetch,
   signal?: AbortSignal,
 ): Promise<string> {
@@ -68,6 +75,22 @@ export async function runCloudflareText(
     payload && typeof payload === "object" && "success" in payload && payload.success === true
       ? (payload as { result?: unknown }).result
       : undefined;
+  const counted =
+    result && typeof result === "object" && "usage" in result
+      ? (result as { usage?: unknown }).usage
+      : undefined;
+  if (counted && typeof counted === "object") {
+    const tokens = counted as Record<string, unknown>;
+    const inputTokens = Number(tokens["prompt_tokens"]);
+    const outputTokens = Number(tokens["completion_tokens"]);
+    if (
+      Number.isFinite(inputTokens) &&
+      Number.isFinite(outputTokens) &&
+      inputTokens >= 0 &&
+      outputTokens >= 0
+    )
+      input.onUsage?.({ inputTokens, outputTokens });
+  }
   const output =
     result && typeof result === "object" && "response" in result
       ? (result as { response: unknown }).response

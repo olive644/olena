@@ -8,12 +8,20 @@ import {
 import { readEventStream } from "../ai/event-stream";
 
 const HELENA_ENDPOINT = "/api/helena";
+
+/** Uma chave por tentativa: repetir a mesma chave (um pedido capturado) o servidor recusa. */
+function attemptKey(): string {
+  return (
+    globalThis.crypto?.randomUUID?.() ??
+    Array.from({ length: 4 }, () => Math.random().toString(36).slice(2, 10)).join("-")
+  );
+}
 const MAX_RESPONSE_LENGTH = 32_000;
 const INVALID_RESPONSE = "Resposta inválida. Tente novamente.";
 
 /** Só o texto de limite de uso vem do servidor (é nosso e curto): é o que explica a falta de cota. */
 async function limitErrorFrom(response: Response): Promise<HelenaClientError | undefined> {
-  if (response.status !== 429) return undefined;
+  if (![400, 409, 413, 429].includes(response.status)) return undefined;
   try {
     const body: unknown = await response.json();
     const error =
@@ -22,8 +30,12 @@ async function limitErrorFrom(response: Response): Promise<HelenaClientError | u
         : undefined;
     if (error && typeof error === "object" && "code" in error && "message" in error) {
       const { code, message } = error as { code: unknown; message: unknown };
-      if (code === "rate_limited" && typeof message === "string" && message.length <= 300)
-        return new HelenaClientError("rate_limited", message);
+      if (
+        typeof message === "string" &&
+        message.length <= 300 &&
+        (code === "rate_limited" || (code === "invalid_request" && response.status !== 400))
+      )
+        return new HelenaClientError(code, message);
     }
   } catch {
     // Corpo que não é JSON nosso (um proxy, por exemplo): vale o texto padrão.
@@ -65,6 +77,7 @@ export async function streamHelena(
       Accept: "text/event-stream",
       "Content-Type": "application/json",
       "X-App-Language": uiLocale(),
+      "Idempotency-Key": attemptKey(),
       ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
     },
     body: JSON.stringify(request),
@@ -141,6 +154,7 @@ export async function requestHelena(
       Accept: "application/json",
       "Content-Type": "application/json",
       "X-App-Language": uiLocale(),
+      "Idempotency-Key": attemptKey(),
     },
     body: JSON.stringify(request),
   };
@@ -177,4 +191,54 @@ export async function requestHelena(
     throw new HelenaClientError("provider_unavailable", parsedResponse.message);
   }
   return parsedResponse.value;
+}
+
+export type HelenaUsage = {
+  /** Créditos já gastos hoje, o que a pessoa pode gastar hoje e o que ainda resta. */
+  usedCredits: number;
+  limitCredits: number;
+  remainingCredits: number;
+  /** O que um pedido máximo custa: acima disso o servidor recusa o texto. */
+  requestMaxCredits: number;
+  resetInSeconds: number;
+};
+
+/** O orçamento do dia da pessoa, para a tela mostrar antes de gerar. Undefined se não der. */
+export async function fetchHelenaUsage(
+  options: HelenaClientOptions = {},
+): Promise<HelenaUsage | undefined> {
+  if (!options.token) return undefined;
+  try {
+    const response = await (options.fetcher ?? globalThis.fetch)(`${HELENA_ENDPOINT}?usage=1`, {
+      credentials: "same-origin",
+      headers: { Authorization: `Bearer ${options.token}`, "X-App-Language": uiLocale() },
+      ...(options.signal ? { signal: options.signal } : {}),
+    });
+    if (!response.ok) return undefined;
+    const body: unknown = await response.json();
+    const usage =
+      body && typeof body === "object" && "usage" in body
+        ? (body as { usage: unknown }).usage
+        : undefined;
+    if (!usage || typeof usage !== "object") return undefined;
+    const value = usage as Record<string, unknown>;
+    const numbers = [
+      "usedCredits",
+      "limitCredits",
+      "remainingCredits",
+      "requestMaxCredits",
+      "resetInSeconds",
+    ].map((key) => value[key]);
+    if (!numbers.every((item) => typeof item === "number" && Number.isFinite(item) && item >= 0))
+      return undefined;
+    return {
+      usedCredits: numbers[0] as number,
+      limitCredits: numbers[1] as number,
+      remainingCredits: numbers[2] as number,
+      requestMaxCredits: numbers[3] as number,
+      resetInSeconds: numbers[4] as number,
+    };
+  } catch {
+    return undefined;
+  }
 }

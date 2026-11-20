@@ -3,7 +3,12 @@ import { SourceQuizStudy } from "../components/source-quiz-study";
 import { parseSourceQuiz, type QuizDifficulty, type QuizLength } from "../domain/source-quiz";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { dataUrlBytes } from "../data/data-url";
-import { requestHelena, streamHelena } from "../data/helena-client";
+import {
+  fetchHelenaUsage,
+  requestHelena,
+  streamHelena,
+  type HelenaUsage,
+} from "../data/helena-client";
 import { parseStudyCards, parseStudyQuestions } from "../ai/study-output";
 import { OCR_WORKER_OPTIONS } from "../components/handwriting-ocr";
 import type { HelenaRequest } from "../ai/helena-contract";
@@ -17,7 +22,7 @@ import { FlashcardStudy } from "../components/flashcard-study";
 import { noteFeedback } from "../domain/flashcard-feedback";
 import { learnFromSignal } from "../domain/flashcard-quality";
 import { uiText, useLanguage } from "../i18n/runtime";
-import { useRef, useState, type Dispatch, type ReactNode } from "react";
+import { useEffect, useRef, useState, type Dispatch, type ReactNode } from "react";
 import {
   createWorkspaceId,
   toDateKey,
@@ -430,6 +435,28 @@ export function LibraryFolderContents({
   const [sourceType, setSourceType] = useState<"YouTube" | "Nota em branco" | "Goodnotes">();
   const [creating, setCreating] = useState<keyof typeof studySections>();
   const [showStudyTypes, setShowStudyTypes] = useState(false);
+  const [usage, setUsage] = useState<HelenaUsage>();
+  // Saldo de créditos do dia, buscado ao abrir a tela de gerar e depois de cada geração.
+  const [usageTick, setUsageTick] = useState(0);
+  useEffect(() => {
+    if (!creating) return;
+    const controller = new AbortController();
+    void (async () => {
+      try {
+        const services = await getFirebaseAccountServices();
+        const user = services.auth.currentUser;
+        if (!user || user.isAnonymous) return;
+        const next = await fetchHelenaUsage({
+          token: await user.getIdToken(),
+          signal: controller.signal,
+        });
+        if (next && !controller.signal.aborted) setUsage(next);
+      } catch {
+        // sem conta ou sem rede: a tela só não mostra o saldo
+      }
+    })();
+    return () => controller.abort();
+  }, [creating, usageTick]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const selectedSources = materials.filter(({ id }) => selectedIds.includes(id));
   // Link (YouTube) é só referência: o app não lê vídeos, então não entra nos geradores.
@@ -629,6 +656,7 @@ export function LibraryFolderContents({
           : uiText("Não foi possível gerar com a Olena. Tente de novo."),
       );
     } finally {
+      setUsageTick((tick) => tick + 1);
       setBusy(false);
     }
   }
@@ -1447,9 +1475,18 @@ export function LibraryFolderContents({
             </p>
             <p>
               {uiText(
-                "A Olena usa IA e erra: confira o resultado. Você pode gerar cada tipo (resumo, flashcards, quiz e simulado) 2 vezes por dia, com a conta conectada.",
+                "A Olena usa IA e erra: confira o resultado. Cada geração gasta créditos da Olena, conforme o tamanho do texto, e o saldo do dia é dividido entre todos. Precisa da conta conectada.",
               )}
             </p>
+            {usage && (
+              <p role="status">
+                {uiText("Créditos de hoje: {0} de {1} usados. Um pedido gasta até {2}.", [
+                  String(usage.usedCredits),
+                  String(usage.limitCredits),
+                  String(usage.requestMaxCredits),
+                ])}
+              </p>
+            )}
             {creating === "Flashcards" && (
               <p>
                 {uiText(

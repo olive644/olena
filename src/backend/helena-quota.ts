@@ -1,29 +1,36 @@
 // Limites diários da Olena e o texto que a pessoa lê quando um deles acaba. A cota gratuita da
 // Cloudflare (10.000 neurons por dia, zerada à 00:00 UTC, que é 21h em Brasília) é da conta toda.
+// O que limita o uso é o gasto estimado de cada pedido (créditos), não o número de pedidos: veja
+// `helena-budget.ts`.
 
-/**
- * Resumo, flashcards, quiz e simulado da Biblioteca. Cada tipo pode ser gerado 2 vezes por dia por
- * pessoa. O teto global é o que protege a conta: as estimativas abaixo vêm da cota gratuita da
- * Cloudflare (10.000 neurons por dia para a conta toda) e de um pedido de cerca de 8.000 tokens de
- * entrada e 1.500 de saída. Valores NÃO verificados no painel: ajuste com o uso medido.
- */
-export const STUDY_USER_DAILY_LIMIT = 2;
-export const STUDY_GLOBAL_DAILY_LIMIT = 40;
-export const GLOBAL_DAILY_LIMIT = 100;
-// Uma turma atrás do mesmo endereço (30 alunos a até 8 pedidos cada) cabe em 250 por dia.
-export const ADDRESS_DAILY_LIMIT = 250;
+/** Pedidos por minuto e por dia por pessoa e por rede: proteção contra rajada, não de custo. */
+export const USER_MINUTE_LIMIT = 5;
+export const USER_DAILY_REQUEST_LIMIT = 60;
+export const ADDRESS_DAILY_LIMIT = 400;
 export const DAY_SECONDS = 86_400;
 
 export type RateLimitName =
   | "user-minute"
   | "user-day"
   | "address-day"
-  | "study-user-day"
-  | "study-day"
-  | "global-day"
+  | "user-budget"
+  | "address-budget"
+  | "global-budget"
+  | "busy"
+  | "duplicate"
+  | "request-too-big"
   | "provider-quota";
 
-export type RateLimitDenial = { limit: RateLimitName; retryAfterSeconds: number };
+export type RateLimitDenial = {
+  limit: RateLimitName;
+  retryAfterSeconds: number;
+  /** Créditos (neurons arredondados) do que a pessoa já gastou e do que pode gastar hoje. */
+  usedCredits?: number;
+  limitCredits?: number;
+  /** Quanto o pedido custaria, quando ele é grande demais para caber. */
+  requestCredits?: number;
+  requestMaxCredits?: number;
+};
 
 /** Segundos até a janela fixa atual terminar (as janelas começam à 00:00 UTC). */
 export function secondsUntilReset(windowSeconds: number, now = Date.now()): number {
@@ -42,25 +49,17 @@ export const ASSISTANT_OFF_MESSAGE = {
   en: "Chatting with Olena was turned off to save the free quota. She only makes summaries, flashcards, quizzes and mock exams in the Library.",
 } as const;
 
-const CAPABILITY_NAME = {
-  pt: { summarize: "resumos", flashcards: "flashcards", quiz: "quizzes", exam: "simulados" },
-  en: {
-    summarize: "summaries",
-    flashcards: "flashcards",
-    quiz: "quizzes",
-    exam: "mock exams",
-  },
-} as const;
-
 export function quotaMessage(
   limit: RateLimitName | undefined,
-  capability: string,
+  _capability: string,
   language: NoticeLanguage = "pt",
+  details: Pick<
+    RateLimitDenial,
+    "usedCredits" | "limitCredits" | "requestCredits" | "requestMaxCredits"
+  > = {},
 ): string {
   const en = language === "en";
   const reset = en ? "at 9 pm (Brasília time)" : "às 21h (horário de Brasília)";
-  const names = CAPABILITY_NAME[language] as Record<string, string>;
-  const name = names[capability] ?? (en ? "requests" : "pedidos");
   switch (limit) {
     case "user-minute":
       return en
@@ -70,16 +69,42 @@ export function quotaMessage(
       return en
         ? `You used all of today's requests to Olena. They come back ${reset}.`
         : `Você usou todos os pedidos de hoje à Olena. Eles voltam ${reset}.`;
-    case "study-user-day":
+    case "user-budget": {
+      const numbers =
+        details.usedCredits !== undefined && details.limitCredits !== undefined
+          ? en
+            ? ` (${details.usedCredits} of ${details.limitCredits})`
+            : ` (${details.usedCredits} de ${details.limitCredits})`
+          : "";
       return en
-        ? `You already made ${STUDY_USER_DAILY_LIMIT} ${name} with Olena today. They come back ${reset}.`
-        : `Você já fez ${STUDY_USER_DAILY_LIMIT} ${name} com a Olena hoje. Eles voltam ${reset}.`;
+        ? `You used your Olena credits for today${numbers}. Shorter texts cost less. They come back ${reset}.`
+        : `Você usou seus créditos de hoje na Olena${numbers}. Textos menores gastam menos. Eles voltam ${reset}.`;
+    }
+    case "request-too-big": {
+      const numbers =
+        details.requestCredits !== undefined && details.requestMaxCredits !== undefined
+          ? en
+            ? ` (it would cost ${details.requestCredits} credits, the limit is ${details.requestMaxCredits})`
+            : ` (custaria ${details.requestCredits} créditos e o limite é ${details.requestMaxCredits})`
+          : "";
+      return en
+        ? `This text is too big for a single request${numbers}. Select fewer sources or a shorter file.`
+        : `Esse texto é grande demais para um pedido só${numbers}. Selecione menos fontes ou um arquivo menor.`;
+    }
+    case "busy":
+      return en
+        ? "Olena is still working on your previous request. Wait for it to finish."
+        : "A Olena ainda está fazendo o seu pedido anterior. Espere terminar.";
+    case "duplicate":
+      return en
+        ? "This request was already sent. Start a new one."
+        : "Esse pedido já foi enviado. Faça um novo.";
     case "address-day":
+    case "address-budget":
       return en
         ? `Too many requests came from your network today. They come back ${reset}.`
         : `Muitos pedidos saíram da sua rede hoje. Eles voltam ${reset}.`;
-    case "study-day":
-    case "global-day":
+    case "global-budget":
     case "provider-quota":
       return en
         ? `Olena reached today's free limit. She is back ${reset}.`

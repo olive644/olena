@@ -5667,3 +5667,10 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Hipótese: o simulado pedia até 20 questões com limite de 2600 tokens de saída, que não comporta 20 questões com 4 alternativas e explicação (uns 170 tokens cada). O JSON chegava cortado, a validação recusava tudo e a segunda tentativa repetia o corte.
 - Correção: (1) o limite de tokens acompanha a quantidade pedida (500 + 190 por questão, teto de 3800); (2) se a resposta mesmo assim vier cortada, as questões e cartões que chegaram inteiros são aproveitados (mínimo de 2 questões ou 3 cartões continua valendo); (3) o simulado pede 8, 12 ou 16 questões em vez de 10, 15 ou 20, para caber no tempo de 25 s por tentativa.
 - Como conferir em produção: gerar um simulado curto, médio e longo logo após o deploy e, se falhar, ler os logs de `/api/helena` na hora, antes de a hora de retenção passar.
+
+## Olena: orçamento em créditos e segurança dos pedidos (19/11/2026)
+
+- Decisão: no lugar de "2 usos por dia por tipo e por pessoa", o servidor mede cada pedido em créditos (neurons da Cloudflare) pelo tamanho do texto e da resposta, reserva antes, acerta com o `usage` do provedor depois e devolve o que não foi gasto. Limites: global 8.000/dia, por pessoa 250 a 1.000 (parte justa de 12% do que resta), 300 por pedido, 2.500 por endereço. Detalhes em `docs/BIBLIOTECA_IA.md`.
+- Segurança: texto das fontes limpo e conferido no servidor, chave de idempotência por tentativa (409 em repetição), um pedido por vez por pessoa, identidade em hash nos contadores e nos registros.
+- UI: a tela de gerar da Biblioteca mostra "Créditos de hoje" (consulta `GET /api/helena?usage=1`) e o texto antigo de 2 vezes por dia saiu. Validada em teste de componente; **não** revalidada por captura em claro, escuro, PC e celular nesta mudança (a linha nova é um parágrafo de texto no mesmo bloco do aviso).
+- Limites declarados: preços de neurons e o `usage` do provedor não foram verificados contra a Cloudflare; a cota gratuita real (10.000/dia) continua sendo o teto de todos. App Check em `/api/helena` e o parágrafo de privacidade são da dona do projeto.

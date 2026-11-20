@@ -96,10 +96,23 @@ export function createStudyProvider(
       const maxTokens =
         capability === "flashcards" ? 1600 : Math.min(3800, 500 + params.count * 190);
       let reminder = "";
+      let inputTokens = 0;
+      let outputTokens = 0;
+      let counted = false;
       for (let attempt = 0; attempt < 2; attempt += 1) {
         const text = await runCloudflareText(
           config,
-          { system: STUDY_POLICY, user: user + reminder, maxTokens, timeoutMs: 25_000 },
+          {
+            system: STUDY_POLICY,
+            user: user + reminder,
+            maxTokens,
+            timeoutMs: 25_000,
+            onUsage: (usage) => {
+              counted = true;
+              inputTokens += usage.inputTokens;
+              outputTokens += usage.outputTokens;
+            },
+          },
           fetcher,
           signal,
         );
@@ -109,6 +122,7 @@ export function createStudyProvider(
             return {
               answer: fit(cards, (list) => JSON.stringify({ cards: list })),
               suggestions: [],
+              ...(counted ? { usage: { inputTokens, outputTokens } } : {}),
             };
         } else {
           const questions = parseStudyQuestions(text, params.options, params.count);
@@ -116,6 +130,7 @@ export function createStudyProvider(
             return {
               answer: fit(questions, (list) => JSON.stringify({ questions: list })),
               suggestions: [],
+              ...(counted ? { usage: { inputTokens, outputTokens } } : {}),
             };
         }
         reminder =
