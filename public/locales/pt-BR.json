@@ -4030,8 +4030,9 @@
   "Não consegui extrair texto de {0}.",
   "A Olena respondeu em um formato inesperado. Tente de novo.",
   "Não foi possível gerar com a Olena. Tente de novo.",
-  "A Olena usa IA e erra: confira o resultado. Você pode gerar cada tipo (resumo, flashcards, quiz e simulado) 2 vezes por dia, com a conta conectada.",
+  "A Olena usa IA e erra: confira o resultado. Cada geração gasta créditos da Olena, conforme o tamanho do texto, e o saldo do dia é dividido entre todos. Precisa da conta conectada.",
   "Flashcards com IA: cerca de 12 cartões de pergunta e resposta, feitos a partir das fontes.",
   "Simulado com IA: de 10 a 20 questões, com 1 ponto e 2 minutos por questão. Fácil tem 3 alternativas; Médio e Difícil têm 4. As respostas vêm da IA e podem estar erradas: confira com o gabarito oficial.",
-  "Quiz com IA: de 5 a 15 questões, conforme o tamanho. Fácil tem 3 alternativas; Médio e Difícil têm 4."
+  "Quiz com IA: de 5 a 15 questões, conforme o tamanho. Fácil tem 3 alternativas; Médio e Difícil têm 4.",
+  "Créditos de hoje: {0} de {1} usados. Um pedido gasta até {2}."
 ]

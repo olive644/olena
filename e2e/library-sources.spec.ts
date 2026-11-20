@@ -118,7 +118,7 @@ for (const theme of ["light", "dark"]) {
       ])
         await expect(dialog.getByRole("button", { name: free, exact: true })).toHaveCount(0);
       await expect(dialog).toContainText("o texto das fontes selecionadas é enviado a ela");
-      await expect(dialog).toContainText("2 vezes por dia");
+      await expect(dialog).toContainText("Cada geração gasta créditos da Olena");
       await page.waitForTimeout(600);
       await page.screenshot({ path: info.outputPath(`gerar-${tab}-${theme}.png`) });
       await dialog.getByRole("button", { name: "Gerar com a Olena", exact: true }).click();

@@ -37,7 +37,10 @@ async function serve(provider: HelenaProvider, authenticated = true, quota = tru
     createHelenaHandler({
       allowedOrigins: ["https://olena.test"],
       identifyClient: () => (authenticated ? "test-account" : ""),
-      rateLimiter: { consume: async () => quota },
+      rateLimiter: {
+        consume: async () =>
+          quota ? true : { limit: "user-minute" as const, retryAfterSeconds: 60 },
+      },
       provider,
     }),
   );

@@ -4030,8 +4030,9 @@
   "I could not extract text from {0}.",
   "Olena answered in an unexpected format. Try again.",
   "Could not generate with Olena. Try again.",
-  "Olena uses AI and makes mistakes: check the result. You can generate each type (summary, flashcards, quiz and mock exam) 2 times a day, signed in to your account.",
+  "Olena uses AI and makes mistakes: check the result. Each generation spends Olena credits, depending on the text size, and the daily balance is shared by everyone. A connected account is required.",
   "Flashcards with AI: about 12 question and answer cards made from the sources.",
   "Mock exam with AI: 10 to 20 questions, 1 point and 2 minutes per question. Easy has 3 options; Medium and Hard have 4. The answers come from the AI and may be wrong: check them against the official answer key.",
-  "Quiz with AI: 5 to 15 questions, depending on the size. Easy has 3 options; Medium and Hard have 4."
+  "Quiz with AI: 5 to 15 questions, depending on the size. Easy has 3 options; Medium and Hard have 4.",
+  "Credits today: {0} of {1} used. One request spends up to {2}."
 ]
