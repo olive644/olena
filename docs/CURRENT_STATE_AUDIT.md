@@ -5674,3 +5674,9 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Segurança: texto das fontes limpo e conferido no servidor, chave de idempotência por tentativa (409 em repetição), um pedido por vez por pessoa, identidade em hash nos contadores e nos registros.
 - UI: a tela de gerar da Biblioteca mostra "Créditos de hoje" (consulta `GET /api/helena?usage=1`) e o texto antigo de 2 vezes por dia saiu. Validada em teste de componente; **não** revalidada por captura em claro, escuro, PC e celular nesta mudança (a linha nova é um parágrafo de texto no mesmo bloco do aviso).
 - Limites declarados: preços de neurons e o `usage` do provedor não foram verificados contra a Cloudflare; a cota gratuita real (10.000/dia) continua sendo o teto de todos. App Check em `/api/helena` e o parágrafo de privacidade são da dona do projeto.
+
+## Flashcards da Olena voltam a ser verdadeiro ou falso (20/11/2026)
+
+- Problema: a #683 passou os flashcards para a IA com o prompt de "pergunta curta e resposta", e o baralho saía com pergunta aberta, que a tela de estudo (setas, gabarito, painel de qualidade) não trata como flashcard.
+- Correção: o servidor pede afirmações para julgar (metade verdadeiras, metade falsas, a falsa com um ponto plausível alterado, sem pistas como "sempre" e "nunca", uma ideia por frase, explicação com a frase correta). O modelo devolve `{statement, true, explanation}` e `parseStudyCards` converte para o cartão guardado: afirmação na frente e "Verdadeiro." ou "Falso. O texto diz:" no começo do verso. Cartão sem gabarito é recusado, a geração é refeita uma vez e, se vier de novo, vira erro.
+- Não verificado: a qualidade real das afirmações do modelo de 8 bilhões de parâmetros (só testado com respostas simuladas). Conferir gerando de uma fonte real e usando o botão de curadoria.
