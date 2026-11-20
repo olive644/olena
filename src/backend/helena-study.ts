@@ -45,9 +45,16 @@ const DIFFICULTY_TEXT = {
 function instructions(capability: StudyCapability, params: StudyParams): string {
   if (capability === "flashcards")
     return (
-      `Crie até ${params.count} flashcards de estudo. Cada um tem "front" (uma pergunta curta ou um termo) ` +
-      `e "back" (a resposta direta, em até 2 frases). Cubra os pontos mais importantes, sem repetir. ` +
-      `Formato: {"cards":[{"front":"...","back":"..."}]}`
+      `Crie até ${params.count} flashcards de VERDADEIRO ou FALSO. Cada flashcard é uma AFIRMAÇÃO completa e ` +
+      `independente (nunca uma pergunta), que o aluno julga como verdadeira ou falsa. Regras: ` +
+      `(1) cerca de metade verdadeiras e metade falsas, misturadas na lista; ` +
+      `(2) a afirmação verdadeira é um fato das fontes, reescrito com outras palavras; ` +
+      `(3) a falsa é um fato das fontes alterado em UM ponto plausível (um número, uma data, um nome, ` +
+      `uma causa ou uma relação trocados), nunca absurda nem óbvia, e sem pistas como "sempre", "nunca" ou "apenas"; ` +
+      `(4) uma ideia só por afirmação, em uma frase de até 30 palavras, que se entenda sem ver as fontes; ` +
+      `(5) "explanation": nas verdadeiras, 1 frase que confirma; nas falsas, a frase correta como as fontes dizem; ` +
+      `(6) cubra pontos diferentes, sem repetir. ` +
+      `Formato: {"cards":[{"statement":"...","true":true,"explanation":"..."}]}`
     );
   const kind =
     capability === "exam"

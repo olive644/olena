@@ -24,7 +24,7 @@ const request = (capability: HelenaRequest["capability"], prompt: string): Helen
 });
 
 const reply = (text: string) =>
-  vi.fn(
+  vi.fn<(url?: unknown, init?: { body?: unknown }) => Promise<Response>>(
     async () =>
       new Response(JSON.stringify({ success: true, result: { response: text } }), { status: 200 }),
   );
@@ -129,11 +129,44 @@ describe("geração em JSON", () => {
 
   it("flashcards válidos voltam como cards", async () => {
     const cards = JSON.stringify({
-      cards: [1, 2, 3, 4].map((n) => ({ front: `Pergunta ${n}?`, back: `Resposta ${n}` })),
+      cards: [1, 2, 3, 4].map((n) => ({
+        statement: `Afirmação ${n}.`,
+        true: n % 2 === 0,
+        explanation: `Explicação ${n}.`,
+      })),
     });
     const provider = createStudyProvider(inner, config, reply(cards) as unknown as typeof fetch);
     const result = await provider.generate(request("flashcards", "count=8"));
-    expect(JSON.parse(result.answer).cards).toHaveLength(4);
+    const out = JSON.parse(result.answer) as { cards: { front: string; back: string }[] };
+    expect(out.cards).toHaveLength(4);
+    expect(out.cards[0]!.back).toMatch(/^Falso\. O texto diz:/);
+    expect(out.cards[1]!.back).toMatch(/^Verdadeiro\./);
+  });
+
+  it("pergunta aberta é refeita uma vez e, se vier de novo, vira erro", async () => {
+    const open = JSON.stringify({
+      cards: [1, 2, 3, 4].map((n) => ({ front: `Pergunta ${n}?`, back: `Resposta ${n}` })),
+    });
+    const fetcher = reply(open);
+    const provider = createStudyProvider(inner, config, fetcher as unknown as typeof fetch);
+    await expect(provider.generate(request("flashcards", "count=8"))).rejects.toThrow();
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+
+  it("o pedido de flashcards pede afirmações de verdadeiro ou falso, não perguntas", async () => {
+    const fetcher = reply(
+      JSON.stringify({
+        cards: [1, 2, 3].map((n) => ({ statement: `F${n}.`, true: true, explanation: "e" })),
+      }),
+    );
+    const provider = createStudyProvider(inner, config, fetcher as unknown as typeof fetch);
+    await provider.generate(request("flashcards", "count=8"));
+    const body = JSON.parse(String(fetcher.mock.calls[0]![1]?.body)) as {
+      messages: { content: string }[];
+    };
+    const text = body.messages.map((message) => message.content).join(" ");
+    expect(text).toContain("VERDADEIRO ou FALSO");
+    expect(text).toContain("AFIRMAÇÃO");
   });
 
   it("a resposta cabe no limite de 12.000 caracteres do contrato", async () => {

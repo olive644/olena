@@ -97,7 +97,26 @@ function listFrom(value: unknown, key: string): unknown[] | undefined {
 const normalize = (text: string) =>
   text.toLocaleLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " ").trim();
 
-/** Flashcards válidos. Mínimo de 3: menos que isso é resposta ruim, não baralho. */
+const TRUE_BACK = /^(?:Verdadeiro|True)\./;
+const FALSE_BACK = /^(?:Falso|False)\./;
+
+/** Verdadeiro ou falso do modelo: o campo pode vir como booleano, "true"/"false" ou "verdadeiro"/"falso". */
+function truthFrom(value: unknown): boolean | undefined {
+  if (typeof value === "boolean") return value;
+  if (typeof value !== "string") return undefined;
+  const text = normalize(value);
+  if (text === "true" || text === "verdadeiro") return true;
+  if (text === "false" || text === "falso") return false;
+  return undefined;
+}
+
+/**
+ * Flashcards de verdadeiro ou falso. O modelo devolve {"statement","true","explanation"}; o cartão
+ * guardado tem a afirmação na frente e o gabarito no começo do verso ("Verdadeiro. ..." ou "Falso.
+ * O texto diz: ..."), que é o que a tela de estudo lê. Pergunta aberta, sem gabarito, é recusada:
+ * flashcard aqui é afirmação para julgar. Também aceita o cartão já no formato guardado
+ * ({"front","back"} com o gabarito no verso), que é o que o servidor devolve à tela. Mínimo de 3.
+ */
 export function parseStudyCards(text: string, limit = MAX_STUDY_CARDS): StudyCard[] | undefined {
   const list = listFrom(extractJson(text), "cards");
   if (!list) return undefined;
@@ -105,9 +124,20 @@ export function parseStudyCards(text: string, limit = MAX_STUDY_CARDS): StudyCar
   const cards: StudyCard[] = [];
   for (const item of list) {
     const record = asRecord(item);
-    const front = clean(record?.["front"], MAX_FRONT);
-    const back = clean(record?.["back"], MAX_BACK);
-    if (!front || !back || normalize(front) === normalize(back)) continue;
+    let front: string | undefined;
+    let back: string | undefined;
+    if (record && ("statement" in record || "truth" in record || "true" in record)) {
+      front = clean(record["statement"] ?? record["front"], MAX_FRONT);
+      const truth = truthFrom(record["truth"] ?? record["true"] ?? record["answer"]);
+      const explanation = clean(record["explanation"] ?? record["back"], MAX_BACK - 40);
+      if (!front || truth === undefined || !explanation) continue;
+      back = truth ? `Verdadeiro. ${explanation}` : `Falso. O texto diz: ${explanation}`;
+    } else {
+      front = clean(record?.["front"], MAX_FRONT);
+      back = clean(record?.["back"], MAX_BACK);
+      if (!front || !back || (!TRUE_BACK.test(back) && !FALSE_BACK.test(back))) continue;
+    }
+    if (normalize(front) === normalize(back)) continue;
     if (seen.has(normalize(front))) continue;
     seen.add(normalize(front));
     cards.push({ front, back });
