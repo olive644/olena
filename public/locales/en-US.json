@@ -4041,5 +4041,8 @@
   "Today's credits are gone. They renew in {0}, at {1}.",
   "Low balance for a large request. Renews in {0}, at {1}.",
   "Renews in {0}, at {1}.",
-  "Spent {0} credits."
+  "Spent {0} credits.",
+  "Estimated cost of this request: up to {0} credits.",
+  "Today's balance ({0} credits) may not cover this request. The final cost is usually lower.",
+  "No credits today. You can generate again at {0}."
 ]

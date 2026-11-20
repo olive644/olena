@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { OLENA_CAPABILITY, budgetSources, studyPrompt, toSourceQuiz } from "./library-ai";
+import {
+  OLENA_CAPABILITY,
+  budgetSources,
+  estimateOlenaCredits,
+  requestedCount,
+  studyPrompt,
+  toSourceQuiz,
+} from "./library-ai";
 
 const text = (id: string, length: number, filler = "palavra ") => ({
   id,
@@ -95,5 +102,32 @@ describe("questões da Olena na pasta", () => {
       page: 0,
       answer: 1,
     });
+  });
+});
+
+describe("custo estimado antes de gerar", () => {
+  const text = (chars: number) => ({ kind: "text", content: "a".repeat(chars) });
+
+  it("texto curto custa menos que texto longo e nunca passa do teto de um pedido", () => {
+    const small = estimateOlenaCredits("Resumo", [text(500)], "medium");
+    const big = estimateOlenaCredits("Resumo", [text(40_000)], "medium");
+    expect(small).toBeGreaterThan(0);
+    expect(small).toBeLessThan(big);
+    expect(estimateOlenaCredits("Simulados", [text(40_000)], "long")).toBeLessThanOrEqual(300);
+  });
+
+  it("PDF e imagem entram com a fatia inteira, porque o texto só sai do OCR depois do clique", () => {
+    const pdf = estimateOlenaCredits("Quizzes", [{ kind: "pdf", content: "data:..." }], "medium");
+    const short = estimateOlenaCredits("Quizzes", [text(500)], "medium");
+    expect(pdf).toBeGreaterThan(short);
+  });
+
+  it("mais questões custam mais, e sem fontes não há custo", () => {
+    expect(estimateOlenaCredits("Quizzes", [text(8000)], "long")).toBeGreaterThan(
+      estimateOlenaCredits("Quizzes", [text(8000)], "short"),
+    );
+    expect(estimateOlenaCredits("Resumo", [], "medium")).toBe(0);
+    expect(requestedCount("Flashcards", "short")).toBe(12);
+    expect(requestedCount("Simulados", "medium")).toBe(12);
   });
 });

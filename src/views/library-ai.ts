@@ -3,6 +3,7 @@ import {
   type HelenaRequest,
   type StudyCapability,
 } from "../ai/helena-contract";
+import { estimateCredits } from "../ai/helena-cost";
 import type { StudyQuestion } from "../ai/study-output";
 import type { QuizDifficulty, QuizLength, SourceQuiz } from "../domain/source-quiz";
 
@@ -63,6 +64,37 @@ const QUESTION_COUNT = { short: 5, medium: 10, long: 15 } as const;
 // Simulado: mais questões que o quiz, até o limite da resposta da Olena.
 const EXAM_COUNT = { short: 8, medium: 12, long: 16 } as const;
 const FLASHCARD_COUNT = 12;
+
+/** Quantas questões ou cartões o pedido leva, para a estimativa de custo. */
+export function requestedCount(kind: OlenaKind, length: QuizLength): number {
+  if (kind === "Flashcards") return FLASHCARD_COUNT;
+  if (kind === "Simulados") return EXAM_COUNT[length];
+  return QUESTION_COUNT[length];
+}
+
+/**
+ * Créditos que o pedido pode gastar, para avisar antes de gerar. O texto de PDF e de imagem só é
+ * lido (OCR) depois do clique, então essas fontes entram com a fatia inteira a que têm direito:
+ * a conta é um teto, e o gasto real costuma ser menor.
+ */
+export function estimateOlenaCredits(
+  kind: OlenaKind,
+  sources: readonly { kind: string; content: string }[],
+  length: QuizLength,
+): number {
+  if (sources.length === 0) return 0;
+  const share = Math.floor(TOTAL / sources.length);
+  const chars = sources.reduce(
+    (total, source) =>
+      total + (source.kind === "text" ? Math.min(source.content.length, share) : share),
+    0,
+  );
+  return estimateCredits(
+    OLENA_CAPABILITY[kind],
+    Math.min(TOTAL, chars),
+    requestedCount(kind, length),
+  );
+}
 
 /** Só parâmetros numéricos: o servidor monta as instruções (texto livre daqui não é usado). */
 export function studyPrompt(

@@ -1,12 +1,12 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
 import { LibraryFolderContents } from "./library-shelf-view";
 
 const stream = vi.hoisted(() => vi.fn());
 const services = vi.hoisted(() => vi.fn());
 const request = vi.hoisted(() => vi.fn());
-const usageRead = vi.hoisted(() => vi.fn(async () => undefined));
+const usageRead = vi.hoisted(() => vi.fn(async (): Promise<unknown> => undefined));
 vi.mock("../data/helena-client", () => ({
   streamHelena: stream,
   requestHelena: request,
@@ -600,6 +600,67 @@ describe("flashcards, quiz e simulado com a Olena", () => {
     expect(sent().every((item) => item.content.length <= 8_000)).toBe(true);
     for (const id of ["a", "b", "c"])
       expect(sent().some((item) => item.id.startsWith(id))).toBe(true);
+  });
+
+  describe("custo e saldo antes de gerar", () => {
+    afterEach(() => usageRead.mockResolvedValue(undefined));
+    const balance = (remaining: number) => ({
+      usedCredits: 480 - remaining,
+      limitCredits: 480,
+      remainingCredits: remaining,
+      requestMaxCredits: 300,
+      resetInSeconds: 3600,
+    });
+
+    it("mostra o custo estimado do pedido, que cresce com o número de questões", async () => {
+      signedIn();
+      usageRead.mockResolvedValue(balance(400));
+      const { dialog } = open("Quizzes", "Criar quiz");
+      const text = () => dialog.textContent ?? "";
+      expect(text()).toMatch(/Custo estimado deste pedido: até \d+ créditos\./);
+      const short = Number(/até (\d+) créditos/.exec(text())?.[1]);
+      fireEvent.click(within(dialog).getByRole("button", { name: "Longo" }));
+      const long = Number(/até (\d+) créditos/.exec(text())?.[1]);
+      expect(long).toBeGreaterThan(short);
+      // saldo folgado: sem aviso e com o botão ligado
+      expect(within(dialog).queryByRole("alert")).toBeNull();
+      expect(
+        (within(dialog).getByRole("button", { name: "Gerar com a Olena" }) as HTMLButtonElement)
+          .disabled,
+      ).toBe(false);
+    });
+
+    it("saldo menor que o custo avisa, mas deixa tentar (a conta final costuma ser menor)", async () => {
+      signedIn();
+      usageRead.mockResolvedValue(balance(5));
+      const { dialog } = open("Resumo", "Criar resumo");
+      await waitFor(() =>
+        expect(within(dialog).getByRole("alert").textContent).toContain(
+          "O saldo de hoje (5 créditos) pode não cobrir este pedido",
+        ),
+      );
+      expect(
+        (within(dialog).getByRole("button", { name: "Gerar com a Olena" }) as HTMLButtonElement)
+          .disabled,
+      ).toBe(false);
+    });
+
+    it("sem créditos: o botão fica desligado e o motivo está escrito na tela", async () => {
+      signedIn();
+      usageRead.mockResolvedValue(balance(0));
+      const { dialog } = open("Flashcards", "Criar flashcards");
+      await waitFor(() =>
+        expect(within(dialog).getByRole("alert").textContent).toMatch(
+          /Sem créditos hoje\. Você pode gerar de novo às /,
+        ),
+      );
+      const button = within(dialog).getByRole("button", {
+        name: "Gerar com a Olena",
+      }) as HTMLButtonElement;
+      expect(button.disabled).toBe(true);
+      fireEvent.click(button);
+      expect(request).not.toHaveBeenCalled();
+    });
   });
 
   it("link do YouTube nunca é enviado: fica só como referência", () => {
