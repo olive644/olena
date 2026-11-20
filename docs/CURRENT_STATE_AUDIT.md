@@ -1,3 +1,29 @@
+## Apoio visual nas propostas, 19/11/2026
+
+Todas as 60 propostas incluem Texto 4 com ilustração conceitual SVG autoral, legenda, texto alternativo e pergunta interpretativa. São seis cenas por categoria, sem estatísticas fictícias nem cópia de imagens da referência. Prévia desktop escura conferida com imagem e legenda. Nove testes cobrem presença visual nas categorias e integração ao editor.
+
+## Abas de redação e vestibular, 19/11/2026
+
+Catálogo ganhou abas acessíveis Redação/Vestibular, botões de madeira e oito ícones SVG recortados próprios (duas áreas e seis tópicos). Sessenta propostas autorais, dez por categoria, preservam ids dos trinta temas anteriores e seus rascunhos. Vestibular oferece links aos acervos oficiais Inep e Fuvest, sem simular provas internas. Navegação por setas/Home/End nas abas. Testes de abas, catálogo e recuperação de texto, prévia desktop escura conferida; claro e mobile específicos das abas não verificados.
+
+## Catálogo de redações por tópico, 19/11/2026
+
+TypewriterDesk passa a exibir seis categorias e trinta propostas autorais de treino, cinco por categoria. Não havia acervo de propostas no código; não se afirma que a lista contém todas as provas oficiais. Não foram copiadas coletâneas da referência. Proposta e três textos autorais aparecem ao lado da folha pautada no desktop, empilhados no mobile. Contagem de palavras, cronômetro e rascunho por id de proposta usam materiais existentes; debounce de 600ms e gravação ao voltar. Concluir marca treino concluído sem nota automática. Rascunhos legados são preservados no workspace.
+
+Testes verificam 30 ids únicos, seis tópicos, entrada, recuperação do texto e isolamento entre temas. Prévia escura desktop conferida, contraste da folha corrigido contra herança de campos escuros, mobile 390px sem overflow. Claro e teclado completo não verificados. Orientações oficiais consultadas: https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/outros-documentos .
+
+## Máquina de escrever na biblioteca, 17/11/2026
+
+O + abre escolha visual entre pasta e máquina recortada. kind opcional em libraryCollections distingue a máquina, limitada a uma, das três pastas. Campo validado e persistido pela estrutura existente. Biblioteca abre TypewriterDesk para rascunho manual, sem prometer correção ou geração de redação. Arte SVG original com animação de carro e teclas inspirada na referência Uiverse de Nawsome; movimento reduzido respeitado. Prévia desktop escura verificou criação, entrada própria e bloqueio da segunda máquina; demais temas e mobile desta composição ainda não verificados.
+
+## Fontes nas miniaturas das pastas, 17/11/2026
+
+LibraryFolderSources substitui papéis decorativos por miniaturas vetoriais de PDF, vídeo, Goodnotes, documento ou imagem presentes nas fontes, um por tipo. Ignora materiais gerados, arquivados e outras pastas; vazia não renderiza miniaturas. Estante e inspeção usam o mesmo componente. Novas importações Goodnotes recebem source-goodnotes; PDFs antigos sem essa marca continuam identificados como PDF, sem adivinhar a origem. Prévia desktop escura conferida com PDF real e duas pastas vazias.
+
+## Formatos distintos das pastas, 17/11/2026
+
+Seis silhuetas recortadas independentes da capa. libraryFolderShapes resolve legadas sem repetir; collection-saved fixa shape opcional no workspace, preserva formatos em edições e bloqueia a quarta criação sem apagar coleções legadas. Importação valida shape. Testes cobrem unicidade, ordem, edição, remoção/reposição e persistência. Prévia desktop escura conferida e geometria 390px sem overflow. Claro e inspeção visual individual das seis variantes ainda não verificados.
+
 ## Quizzes, simulados e revisão única, 17/11/2026
 
 Biblioteca gera quizzes e simulados a partir das fontes, reaproveitando extração PDF/OCR e lacunas locais. Sem IA nem dependências novas. Simulados têm capa, cronômetro, entrega manual ou automática, correção com fonte, assinatura e carimbo da Olena. Nome usa username do perfil; download direto em PDF paginado reutiliza notebook-export com nome de arquivo opcional. Quizzes e flashcards revisam erros somente uma vez.
@@ -5501,3 +5527,70 @@ Tudo local, sem IA e sem rede, na mesma PR do teto diário da Olena.
 - Terminada a rodada, os errados voltam ("Vamos rever as perguntas que você errou.") até todos serem acertados, e a tela final mostra acertos da primeira rodada, tempo, Dominados, A aprender, Não estudados, último estudo, Continuar, Repetir cartões de estudo e Repetir as erradas.
 - Persistência: as respostas da primeira rodada viram `flashcard/reviewed` (errei ou resposta errada = de novo, acertei = fácil), entram na agenda de revisão e sincronizam com a conta. As repetições dos errados não geram nova revisão. Sair no meio salva o que já foi respondido. Dominado = intervalo de 21 dias ou mais. Não há XP: o app não tem esse sistema e não foi inventado. Cartões ligados à fonte por `materialId`; gerar de novo não duplica frases iguais.
 - Validado na prévia local, modo escuro no PC, com um PDF real (16 afirmações, resposta errada mostrando gabarito). Não verificados: modo claro, celular, e a barra lateral do app segue na ordem de Tab por trás da tela de estudo.
+
+### 2026-11-19 - Imagens individuais das propostas
+
+- Substituídas as seis cenas por categoria por 60 infográficos conceituais autorais, um SVG exclusivo por proposta em public/essay-proposals. Cada proposta possui composição temática, texto alternativo, legenda e pergunta próprios; sem estatísticas inventadas.
+- Mapeamento por ID estável em src/data/essay-visuals.ts; geração reproduzível em scripts/generate-essay-visuals.mjs com briefs em scripts/data/essay-visual-briefs.json.
+- Validação: 64 testes passaram, TypeScript e ESLint passaram. Conferidos visualmente seis SVGs renderizados no Edge cobrindo exclusão digital, IA, vacinação, permanência escolar, desigualdade salarial e reciclagem. Demais arquivos verificados por cobertura dos 60 IDs e hashes exclusivos. Fluxo completo da interface, celular e tema claro não revalidados nesta alteração.
+- Prévia reiniciada diretamente com Vite em 127.0.0.1:4220; npm run dev encontra dependência OCR portuguesa ausente no predev.
+
+### 2026-11-20 - Imagens documentais por proposta de redação
+
+- Substituídos os 60 SVGs conceituais por 60 arquivos raster distintos selecionados no Commons: fotografias documentais, um infográfico publicado sobre inclusão escolar e uma peça de campanha sobre resíduos têxteis. A interface conserva o design Olena; as imagens conservam sua apresentação original, com ajuste de tamanho.
+- Cada registro possui legenda contextual, pergunta, texto alternativo, crédito, página de origem e licença. Os registros estrangeiros e históricos são identificados nas legendas. Imagens ilustrativas não são apresentadas como evidência de condições de saúde das pessoas retratadas.
+- Seleção persistida em scripts/data/essay-photo-selections.json; arquivos locais em public/essay-proposals. O uso da página não depende de chaves ou disponibilidade da API do Commons. O gerador respeita Retry-After nos downloads e usa as miniaturas fornecidas pela API. As ilustrações antigas e seus briefs foram removidos.
+- Falha de imagem mostra aviso e conserva os links de fonte e licença. Nova proposta recupera sua própria imagem sem herdar a falha da anterior.
+- Prova: 65 testes passaram, incluindo cobertura dos 60 IDs, arquivos e hashes distintos, créditos, licenças e recuperação após falha. TypeScript e ESLint dos arquivos envolvidos passaram. As 60 imagens foram decodificadas pelo Edge e conferidas em três folhas de contato. A conferência encontrou e substituiu uma digitalização do verso, uma vista de campus e um logotipo; as substituições foram renderizadas e conferidas novamente.
+- Uma proposta foi conferida no componente real em prévia isolada no PC escuro e em 390 px nos temas claro/escuro, sem erro de página ou rolagem horizontal. O catálogo abre no topo em /tmp/essay-photo-preview.html. O fluxo completo de autenticação e persistência na biblioteca não foi revalidado nesta alteração; CI completo não executado. Prévia Vite em 127.0.0.1:4220.
+
+### 2026-11-20 - Textos motivadores com infográficos por proposta
+
+- Substituídas as fotografias por 60 infográficos editoriais em SVG: 29 visuais quantitativos e 31 esquemas explicativos. Fundo branco, tipografia editorial e cores para informação, sem reproduzir o recorte visual da interface dentro das figuras. As imagens e textos são elaborações para treino, não peças oficiais de prova.
+- Cada proposta possui um Texto 2 adaptado da mesma fonte do infográfico e um Texto 3 autoral específico. O Texto 1 e o tema original foram preservados. Fontes, período, abrangência, unidades, notas e perguntas são registrados em scripts/data/essay-infographic-briefs.json. O gerador produz src/data/essay-visuals.ts e os arquivos de public/essay-proposals sem API, download ou chave. Os arquivos raster anteriores e a seleção de fotografias foram removidos.
+- Pesquisa em fontes institucionais: IBGE, Inep, Inaf/UNICEF, OMS, UNESCO, OIT, PNUMA, ministérios, Anvisa, ANPD, Iphan, Ipea, Banco Central, W3C e referências legislativas. Indicadores históricos preservam datas e populações. Estimativas, diagnósticos, denúncias e indicadores de domicílios são identificados por seus recortes. Esquemas não receberam percentuais inventados. O intervalo do plástico aparece como 19 a 23 milhões, não como uma estimativa pontual.
+- Verificação: 69 testes focados passaram, cobrindo todos os IDs, textos e fontes correspondentes, SVGs distintos e válidos, somas de distribuições, limites de percentuais, link de ampliação e recuperação após falha de imagem. TypeScript e ESLint dos arquivos envolvidos passaram.
+- Edge renderizou os 60 SVGs; todos os elementos de texto ficaram dentro do viewBox, e três folhas de contato foram conferidas visualmente. A navegação no componente real da redação, por prévia isolada, verificou as 60 propostas em 1366 px e 390 px, nos modos claro e escuro: 240 aberturas, sem erros de página ou rolagem horizontal, com correspondência entre Texto 2 e imagem. Capturas do esquema de resíduos foram conferidas nos tamanhos PC e celular. Não foi reexecutado o fluxo completo de autenticação e sincronização nem o CI completo.
+- Prévia direta de desenvolvimento continua em http://127.0.0.1:4220/tmp/essay-photo-preview.html. Os SVGs totalizam aproximadamente 202 KB e são carregados apenas quando a proposta é aberta, com opção de ampliação e acesso à fonte.
+
+### 2026-11-20 - Hierarquia editorial compacta da proposta
+
+- A área de apoio agora possui duas colunas com divisória central no PC: Texto I factual e seu infográfico à esquerda; Texto II contextual e Texto III de discussão à direita. Títulos em romanos, textos compactos, créditos menores. A imagem deixou de ser um bloco independente ocupando as duas colunas.
+- Figuras limitadas a 340 px de largura e 440 px de altura, preservando proporção e acesso à versão ampliada. Na captura de 1366 px, a imagem da proposta 1 passou a ocupar cerca de 315 px. No celular, uma coluna, sem divisória e com texto alinhado à esquerda em 13 px.
+- Validação inicial: capturas PC/celular em claro/escuro conferidas, sem rolagem horizontal; 69 testes e TypeScript passaram. O teste da redação verifica a presença dos títulos e a associação do infográfico ao texto factual da coluna.
+
+### 2026-11-20 - Ampliação dos textos motivadores das 60 propostas
+
+- Ampliados os 180 textos: cada Texto I, II e III possui dois parágrafos específicos. Texto I: contexto e leitura do indicador ou conceito; Texto II: contexto social autoral; Texto III: relações e perspectiva de discussão. Faixas observadas: 74 a 92 palavras no Texto I, 73 a 92 no Texto II e 67 a 82 no Texto III.
+- O Texto II usa authorText no brief editorial, com a contextualização da proposta e um desenvolvimento próprio. Foi removida a orientação genérica repetida sobre desenvolver uma posição. A renderização preserva os parágrafos, a hierarquia de duas colunas e os infográficos compactos. O gerador inclui authorText no catálogo. Nenhum valor, recorte numérico ou fonte do gráfico foi alterado; os acréscimos são leitura contextual e elaboração autoral, sem novas estatísticas.
+- Validação: 69 testes e TypeScript passaram. Conferidos todos os parágrafos e a imagem correspondente nas 60 propostas em 1366 px e 390 px, nos modos claro e escuro: 240 aberturas, sem erros de página ou rolagem horizontal. A captura completa dos textos de saúde mental foi conferida visualmente. Persistência de rascunho continua coberta pelo teste do componente. CI completo não executado.
+
+### 2026-11-20 - Ampliação dos infográficos em modal
+Removido o link de tamanho maior. Apenas os textos em imagem recebem ícone de tela cheia, reutilizando LibraryDialog e o ícone expand. Imagem ampliada preserva proporção e permite rolagem; X e Esc fecham e restauram o foco. Validado no Edge em 1366 e 390 px (tmp/essay-fullscreen-*.png), 69 testes, TypeScript e ESLint aprovados.
+
+### 2026-11-20 - Modal ajustado à imagem
+Ícone roxo sem fundo em espaço próprio, sem sobrepor texto. Modal sem título visual duplicado, dimensionado pela proporção do infográfico e pelo viewport; imagem inteira sem rolagem. Transições de entrada/saída, movimento reduzido e fechamento por X/Esc. Edge validado em 1366x768, 390x844 e 844x390, sem sobreposição ou overflow (tmp/essay-fit-*.png).
+
+### 2026-11-20 - Papel branco e leitura amarela
+As duas folhas iniciam em branco puro. Controles junto de Folha de redação reutilizam as miniaturas dobradas do seletor do caderno (branca e amarela de leitura), alterando ambas as folhas sem mudar o rascunho. Edge em 1366 e 390 px: troca e retorno ao branco, sem overflow; 3 testes do componente, TypeScript e ESLint aprovados.
+
+### 2026-11-20 - Recolher folha de redação
+Removidos os dois seletores de cor; folhas brancas fixas. Ícone lateral antes do título recolhe o editor e mantém controle para reabrir, com aria-expanded e aria-controls. Rascunho preservado. Validado no Edge desktop/mobile, TypeScript e 3 testes do componente.
+
+### 2026-11-20 - Folha no painel direito e histórico
+Folha branca ocupa o painel direito, sem margem lateral escura, altura ajustada à janela e rolagem própria. Desfazer/refazer reutiliza ícones do caderno e preserva autosave. Edge em 1366/390: posição, histórico, recolher/reabrir e rascunho validados. TypeScript e 3 testes aprovados.
+
+### 2026-11-20 - Folha até a borda inferior
+Workspace desktop ocupa a altura da janela com rolagens independentes da proposta e da escrita. Removida folga inferior e padding inferior do main somente nesta tela. Edge 1366x768 e 1366x900: borda inferior da folha coincide com viewport (tolerância 1px), antes e após rolar a proposta; capturas tmp/essay-bottom-*.png.
+
+### 2026-11-20 - Remoção da barra superior de redação
+Retirados a barra superior e o título repetido; X de saída fica no cabeçalho da proposta. Cronômetro movido antes do título da folha de escrita. Botão de recolher usa acabamento de madeira da prateleira. Edge desktop/mobile: histórico e recolhimento preservam rascunho; folha continua até a borda inferior em 768/900 px. TypeScript e 3 testes aprovados.
+
+### 2026-11-20 - Posições dos controles e ícone sem placa
+X no alto à esquerda do painel da proposta; cronômetro no alto à direita, próximo da divisão. Ícone de recolher antes do título da folha, sem fundo, borda ou sombra. Mantida área clicável e estado acessível. Validado recolher/reabrir e ausência de placa no Edge; layout até a borda inferior e histórico continuam aprovados.
+
+### 2026-11-20 - Ícone facetado e histórico por trechos
+Ícone de recolher redesenhado em papel recortado roxo, sem placa. Histórico agrupa digitação/deleção contínua (pausa máxima de 1s); colagem/substituição, perda de foco e undo/redo iniciam novas transações. Atalhos Ctrl/Cmd+Z e refazer suportados; nova edição descarta redo. Teste em Edge com digitação real confirma desfazer/refazer trecho inteiro; teste de componente cobre ramificação e atalhos.
+
+### 2026-11-20 - Linhas preservadas durante foco
+Causa: regra global focus-visible brightness(1.2) saturava linhas claras até branco. Exceção limitada ao textarea de redação mantém filter:none. Edge 1366/390 com digitação real, foco e rolagem: gradiente preservado e sem clareamento; capturas tmp/essay-lines-focused-*.png.

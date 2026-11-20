@@ -1,3 +1,4 @@
+import { TypewriterDesk } from "./typewriter-desk";
 import { flushSync } from "react-dom";
 import { LibraryFolderContents, LibraryShelfView } from "../views/library-shelf-view";
 import type { LibraryFolderStyle } from "../domain/workspace";
@@ -119,6 +120,16 @@ export function NotebookShelf({
     document.startViewTransition(() => flushSync(() => setOpenFolderId(id)));
   }
   const openFolder = workspace.libraryCollections?.find((folder) => folder.id === openFolderId);
+  if (openFolder?.kind === "typewriter")
+    return (
+      <TypewriterDesk
+        key={openFolder.id}
+        workspace={workspace}
+        collectionId={openFolder.id}
+        dispatch={dispatch}
+        onBack={() => navigateFolder()}
+      />
+    );
   if (openFolder) {
     return (
       <LibraryFolderContents
@@ -231,7 +242,8 @@ export function NotebookShelf({
             </button>
           )}
         </NotebookShelfFrame>
-        {(books.length >= 5 || folders.length >= 3) && (
+        {(books.length >= 5 ||
+          folders.filter((item) => item.kind !== "typewriter").length >= 3) && (
           <p className="notebook-shelf-pro">
             <PaperCardTitle value="EM BREVE OLENA PRO" />
           </p>

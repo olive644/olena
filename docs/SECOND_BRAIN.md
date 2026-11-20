@@ -1,3 +1,25 @@
+## Abas de redação e vestibular, 19/11/2026
+
+Catálogo ganhou abas acessíveis Redação/Vestibular, botões de madeira e oito ícones SVG recortados próprios (duas áreas e seis tópicos). Sessenta propostas autorais, dez por categoria, preservam ids dos trinta temas anteriores e seus rascunhos. Vestibular oferece links aos acervos oficiais Inep e Fuvest, sem simular provas internas. Navegação por setas/Home/End nas abas. Testes de abas, catálogo e recuperação de texto, prévia desktop escura conferida; claro e mobile específicos das abas não verificados.
+
+## Catálogo de redações por tópico, 19/11/2026
+
+TypewriterDesk passa a exibir seis categorias e trinta propostas autorais de treino, cinco por categoria. Não havia acervo de propostas no código; não se afirma que a lista contém todas as provas oficiais. Não foram copiadas coletâneas da referência. Proposta e três textos autorais aparecem ao lado da folha pautada no desktop, empilhados no mobile. Contagem de palavras, cronômetro e rascunho por id de proposta usam materiais existentes; debounce de 600ms e gravação ao voltar. Concluir marca treino concluído sem nota automática. Rascunhos legados são preservados no workspace.
+
+Testes verificam 30 ids únicos, seis tópicos, entrada, recuperação do texto e isolamento entre temas. Prévia escura desktop conferida, contraste da folha corrigido contra herança de campos escuros, mobile 390px sem overflow. Claro e teclado completo não verificados. Orientações oficiais consultadas: https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/outros-documentos .
+
+## Máquina de escrever na biblioteca, 17/11/2026
+
+O + abre escolha visual entre pasta e máquina recortada. kind opcional em libraryCollections distingue a máquina, limitada a uma, das três pastas. Campo validado e persistido pela estrutura existente. Biblioteca abre TypewriterDesk para rascunho manual, sem prometer correção ou geração de redação. Arte SVG original com animação de carro e teclas inspirada na referência Uiverse de Nawsome; movimento reduzido respeitado. Prévia desktop escura verificou criação, entrada própria e bloqueio da segunda máquina; demais temas e mobile desta composição ainda não verificados.
+
+## Fontes nas miniaturas das pastas, 17/11/2026
+
+LibraryFolderSources substitui papéis decorativos por miniaturas vetoriais de PDF, vídeo, Goodnotes, documento ou imagem presentes nas fontes, um por tipo. Ignora materiais gerados, arquivados e outras pastas; vazia não renderiza miniaturas. Estante e inspeção usam o mesmo componente. Novas importações Goodnotes recebem source-goodnotes; PDFs antigos sem essa marca continuam identificados como PDF, sem adivinhar a origem. Prévia desktop escura conferida com PDF real e duas pastas vazias.
+
+## Formatos distintos das pastas, 17/11/2026
+
+Seis silhuetas recortadas independentes da capa. libraryFolderShapes resolve legadas sem repetir; collection-saved fixa shape opcional no workspace, preserva formatos em edições e bloqueia a quarta criação sem apagar coleções legadas. Importação valida shape. Testes cobrem unicidade, ordem, edição, remoção/reposição e persistência. Prévia desktop escura conferida e geometria 390px sem overflow. Claro e inspeção visual individual das seis variantes ainda não verificados.
+
 ## Quizzes, simulados e revisão única, 17/11/2026
 
 Biblioteca gera quizzes e simulados a partir das fontes, reaproveitando extração PDF/OCR e lacunas locais. Sem IA nem dependências novas. Simulados têm capa, cronômetro, entrega manual ou automática, correção com fonte, assinatura e carimbo da Olena. Nome usa username do perfil; download direto em PDF paginado reutiliza notebook-export com nome de arquivo opcional. Quizzes e flashcards revisam erros somente uma vez.
@@ -2060,3 +2082,11 @@ O teste de encaixe reproduziu diferença de 2,88 px entre lacre animado e parado
 Prova local: quatro E2E Edge passaram, PC/mobile e claro/escuro, incluindo tolerância de encaixe de 2 px, modal contido no viewport, dimensões das duas prévias, texto reto, troca de cor/motivo antes da colocação, fechamento animado, duas marcações na folha em movimento e retorno à prateleira. Capturas dos dois modais e do fechamento conferidas. TypeScript passou. CI completo não executado nesta etapa.
 
 Encadernação, 13/11/2026: NotebookJourney mantém marcações em notebook-journey-marks, separadas do recorte do papel e da capa giratória. Não recolocar tabs na capa da viagem, pois duplica e faz aparecer no fim. book-cover__clasp-anchor cobre a espessura até a contracapa, com profundidade acima da folha frontal. Regressão: e2e/notebook-binding-continuity.spec.ts, quatro combinações PC/mobile claro/escuro.
+
+### Propostas: infográficos motivadores e textos associados
+
+As 60 propostas usam infográficos editoriais brancos com dados ou esquemas explicativos, seguindo as referências de textos motivadores, sem o estilo de papel recortado dentro do gráfico. Não voltar às fotografias genéricas nem aos pictogramas sem contexto. Cada proposal.id possui texto factual adaptado, discussão autoral, figura, fonte, período, abrangência, unidade e observação de leitura em scripts/data/essay-infographic-briefs.json. São 29 gráficos quantitativos e 31 esquemas qualitativos. Não atribuir estatísticas a esquemas nem transferir um indicador de domicílios para estudantes, de diagnóstico para prevalência total ou de denúncias para todas as ocorrências. As fontes são institucionais e os recortes históricos permanecem identificados. scripts/generate-essay-visuals.mjs gera os 60 SVGs locais e src/data/essay-visuals.ts sem consultas externas. O gerador usa o Prettier já instalado. O Texto 2 e seu crédito usam a mesma referência do gráfico; o Texto 3 contém a discussão autoral específica. A figura oferece link para ampliar e conserva a referência se o arquivo falhar. A leitura funciona sem API ou chave. Prévia temporária direta do catálogo: /tmp/essay-photo-preview.html, somente para desenvolvimento.
+
+Hierarquia editorial da proposta: Texto I (contexto da fonte + figura) na coluna esquerda; Textos II e III na direita. Não recolocar a figura ocupando as duas colunas. Em celular, a mesma ordem se empilha em uma coluna. Limites da figura: 340 px de largura, 440 px de altura; manter o acesso à ampliação.
+
+Textos motivadores ampliados: context (Texto I), authorText (Texto II) e discussion (Texto III) são textos de dois parágrafos separados por duas quebras de linha no brief editorial. Renderizar cada parágrafo separadamente. authorText substitui o uso direto de proposal.support na folha, removendo a orientação genérica repetida; o tema e o catálogo permanecem estáveis. Não gerar complementos genéricos por categoria nem acrescentar estatísticas sem nova verificação.

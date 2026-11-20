@@ -1007,3 +1007,343 @@ html:has(.notebooks-showcase)::view-transition-old(library-folder-view) {
     height: calc(100dvh - 11rem);
   }
 }
+
+/* Six paper-cut silhouettes, independent of the selected cover skin. */
+.library-paper-folder[data-folder-shape="pocket"] {
+  border-radius: 7px 16px 4px 4px;
+}
+.library-paper-folder[data-folder-shape="pocket"]::before {
+  width: 100%;
+  height: 16px;
+  top: -6px;
+  clip-path: polygon(0 0, 92% 0, 100% 50%, 100% 100%, 0 100%);
+}
+.library-paper-folder[data-folder-shape="pocket"] .library-paper-folder__front {
+  inset: 30% 0 0;
+  clip-path: polygon(0 0, 35% 0, 55% 14%, 100% 14%, 100% 100%, 0 100%);
+}
+.library-paper-folder[data-folder-shape="pocket"] .library-paper-folder__sheet {
+  inset: -2px 14px 5px;
+  rotate: -8deg;
+}
+.library-paper-folder[data-folder-shape="pocket"]
+  .library-paper-folder__sheet
+  + .library-paper-folder__sheet {
+  inset: 4px 9px 5px;
+  rotate: 7deg;
+}
+.library-paper-folder[data-folder-shape="envelope"] {
+  clip-path: polygon(0 28%, 50% 0, 100% 28%, 100% 100%, 0 100%);
+}
+.library-paper-folder[data-folder-shape="envelope"]::before {
+  display: none;
+}
+.library-paper-folder[data-folder-shape="envelope"] .library-paper-folder__sheet {
+  inset: 28% 8px 0;
+}
+.library-paper-folder[data-folder-shape="envelope"] .library-paper-folder__front {
+  inset: 28% 0 0;
+  clip-path: polygon(0 0, 50% 42%, 100% 0, 100% 100%, 0 100%);
+}
+.library-paper-folder[data-folder-shape="accordion"] {
+  border-radius: 3px 3px 5px 5px;
+  background: var(--folder-back, #865640);
+}
+.library-paper-folder[data-folder-shape="accordion"]::before {
+  top: -10px;
+  left: 35%;
+  width: 38%;
+  height: 12px;
+  clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+}
+.library-paper-folder[data-folder-shape="accordion"] .library-paper-folder__sheet {
+  inset: 1px 7px 0;
+  box-shadow:
+    0 -5px #cdbb9c,
+    0 -9px #eadfc8;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.library-paper-folder[data-folder-shape="accordion"]
+  .library-paper-folder__sheet
+  + .library-paper-folder__sheet {
+  inset: 12px 4px 0;
+}
+.library-paper-folder[data-folder-shape="accordion"] .library-paper-folder__front {
+  inset: 28px 0 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.library-paper-folder[data-folder-shape="folio"] {
+  clip-path: polygon(0 0, 80% 0, 100% 22%, 100% 100%, 0 100%);
+}
+.library-paper-folder[data-folder-shape="folio"]::before {
+  display: none;
+}
+.library-paper-folder[data-folder-shape="folio"] .library-paper-folder__sheet {
+  inset: 6px 6px 6px 14px;
+}
+.library-paper-folder[data-folder-shape="folio"] .library-paper-folder__front {
+  inset: 0;
+  clip-path: polygon(0 0, 60% 0, 72% 26%, 100% 26%, 100% 100%, 0 100%);
+  padding-left: 16px;
+  border-left: 7px solid #674332;
+}
+.library-paper-folder[data-folder-shape="angled"] {
+  clip-path: polygon(0 22%, 20% 0, 100% 0, 100% 82%, 81% 100%, 0 100%);
+}
+.library-paper-folder[data-folder-shape="angled"]::before {
+  display: none;
+}
+.library-paper-folder[data-folder-shape="angled"] .library-paper-folder__sheet {
+  inset: 7px 8px 0 28%;
+}
+.library-paper-folder[data-folder-shape="angled"] .library-paper-folder__front {
+  inset: 0;
+  clip-path: polygon(0 22%, 20% 0, 53% 0, 72% 32%, 100% 32%, 100% 82%, 81% 100%, 0 100%);
+}
+
+.has-lower-shelf
+  .library-paper-folder:is(
+    [data-folder-shape="envelope"],
+    [data-folder-shape="folio"],
+    [data-folder-shape="angled"]
+  ) {
+  clip-path: none;
+  background: transparent;
+}
+.library-paper-folder:is(
+    [data-folder-shape="envelope"],
+    [data-folder-shape="folio"],
+    [data-folder-shape="angled"]
+  )::before {
+  display: block;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--folder-back, #865640);
+}
+.library-paper-folder[data-folder-shape="envelope"]::before {
+  clip-path: polygon(0 28%, 50% 0, 100% 28%, 100% 100%, 0 100%);
+}
+.library-paper-folder[data-folder-shape="folio"]::before {
+  clip-path: polygon(0 0, 80% 0, 100% 22%, 100% 100%, 0 100%);
+}
+.library-paper-folder[data-folder-shape="angled"]::before {
+  clip-path: polygon(0 22%, 20% 0, 100% 0, 100% 82%, 81% 100%, 0 100%);
+}
+
+.library-paper-folder[data-folder-shape="angled"] .library-paper-folder__sheet,
+.library-paper-folder[data-folder-shape="angled"]
+  .library-paper-folder__sheet
+  + .library-paper-folder__sheet {
+  inset: 7px 8px 25% 28%;
+}
+
+.library-folder-sources {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  inset: -20px 8px auto;
+  height: 78px;
+  pointer-events: none;
+}
+.library-folder-source {
+  display: block;
+  flex: 0 1 40px;
+  min-width: 0;
+  transform-origin: bottom;
+  rotate: -6deg;
+  transition: translate 260ms ease;
+}
+.library-folder-source:nth-child(even) {
+  rotate: 7deg;
+  translate: 0 4px;
+}
+.library-folder-source svg {
+  display: block;
+  width: 100%;
+  height: 62px;
+  overflow: visible;
+}
+.library-paper-folder:is(:hover, :focus-visible) .library-folder-source {
+  translate: 0 -9px;
+}
+.library-folder-preview .library-folder-sources {
+  height: 100px;
+  inset: -16px 18px auto;
+}
+.library-folder-preview .library-folder-source {
+  flex-basis: 52px;
+}
+.library-folder-preview .library-folder-source svg {
+  height: 80px;
+}
+@media (max-width: 520px) {
+  .library-folder-sources {
+    inset: -17px 5px auto;
+    height: 55px;
+  }
+  .library-folder-source svg {
+    height: 45px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .library-folder-source {
+    transition: none;
+  }
+}
+:root[data-reduce-motion="true"] .library-folder-source {
+  transition: none;
+}
+
+/* Source documents use the former sheet proportions, tucked behind the cover. */
+.library-folder-sources {
+  inset: 4px 5px 0;
+  height: auto;
+}
+.library-folder-source {
+  position: absolute;
+  inset: 0;
+  rotate: 0deg;
+  translate: none;
+}
+.library-folder-source:nth-child(even) {
+  rotate: 0deg;
+  translate: 0 3px;
+}
+.library-folder-source svg {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.library-folder-source:nth-child(n + 2) {
+  inset: 3px 3px 0;
+}
+.library-folder-source:nth-child(n + 3) {
+  inset: 6px 6px 0;
+}
+.library-folder-preview .library-folder-sources {
+  inset: 4px 5px 0;
+  height: auto;
+}
+.library-folder-preview .library-folder-source svg {
+  height: 100%;
+}
+.library-paper-folder[data-folder-shape="angled"] .library-folder-sources {
+  inset: 7px 8px 25% 28%;
+}
+.library-paper-folder[data-folder-shape="envelope"] .library-folder-sources {
+  inset: 28% 8px 0;
+}
+.library-paper-folder[data-folder-shape="folio"] .library-folder-sources {
+  inset: 6px 6px 6px 14px;
+}
+.library-paper-folder[data-folder-shape="pocket"] .library-folder-sources {
+  inset: 0 10px 0;
+}
+@media (max-width: 520px) {
+  .library-folder-source svg {
+    height: 100%;
+  }
+}
+
+.library-folder-source {
+  background: #fff9ef;
+  clip-path: polygon(0 0, 84% 0, 100% 18%, 100% 100%, 0 100%);
+}
+.library-folder-source svg,
+.library-folder-preview .library-folder-source svg {
+  position: absolute;
+  top: 0;
+  left: 4px;
+  width: 30px;
+  height: 30px;
+}
+.library-folder-source:nth-child(n + 2) {
+  background: #f4e7ce;
+}
+
+.has-lower-shelf .library-shelf-typewriter {
+  position: relative;
+  flex: 0 0 clamp(72px, 18vw, 155px);
+  height: clamp(68px, 16vw, 132px);
+  border: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  align-self: flex-end;
+  border-radius: 0;
+}
+.library-create-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 20px 0;
+}
+:root body .library-create-choices > button {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 12px;
+  gap: 10px;
+  min-width: 0;
+}
+.library-create-choices .library-typewriter {
+  width: 150px;
+  max-width: 100%;
+  height: 125px;
+}
+.library-choice-folder {
+  display: block;
+  width: 125px;
+  max-width: 100%;
+  height: 94px;
+  margin-top: 31px;
+  background: linear-gradient(150deg, #bc885d 0 23%, #9a6246 23% 66%, #754737 66%);
+  clip-path: polygon(0 0, 38% 0, 50% 15%, 100% 15%, 100% 100%, 0 100%);
+}
+.library-create-choices small {
+  color: inherit;
+}
+.library-folder-row:has(.library-shelf-typewriter) {
+  gap: clamp(5px, 1vw, 12px);
+}
+
+.typewriter-desk {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+.typewriter-desk header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.typewriter-desk-art {
+  width: 180px;
+  margin: 20px auto;
+}
+.typewriter-desk label {
+  display: grid;
+  gap: 12px;
+  font-weight: 700;
+}
+.typewriter-desk textarea {
+  min-height: 360px;
+  padding: 24px;
+  line-height: 1.9;
+  color: #352a38;
+  border: 1px solid #c6ad87;
+  border-radius: 4px 16px 4px 8px;
+  background: linear-gradient(135deg, #ead6b5 0 20px, transparent 20px), #fff9ef;
+  box-shadow: 0 4px #c6ad87;
+  resize: vertical;
+}
+.typewriter-desk > button {
+  margin-top: 20px;
+}
+
+.library-create-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}

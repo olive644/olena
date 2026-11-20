@@ -1,0 +1,46 @@
+.library-typewriter {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.library-typewriter-carriage {
+  transform-origin: center;
+}
+@keyframes olena-carriage {
+  0%,
+  100% {
+    translate: 4px 0;
+  }
+  25% {
+    translate: 0 0;
+  }
+  55% {
+    translate: -5px 0;
+  }
+  80% {
+    translate: -9px 0;
+  }
+  90% {
+    translate: 4px 0;
+  }
+}
+@keyframes olena-type-key {
+  0%,
+  40%,
+  60%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"]) .library-typewriter-carriage {
+    animation: olena-carriage 4s steps(4, end) infinite;
+  }
+  html:not([data-reduce-motion="true"]) .library-typewriter-keys:nth-of-type(2) {
+    animation: olena-type-key 1s infinite;
+  }
+}

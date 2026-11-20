@@ -1,3 +1,4 @@
+import { LIBRARY_FOLDER_SHAPES } from "../domain/library-folder-shapes";
 import { ENGLISH_PART_COUNT } from "../domain/english-part-order.js";
 import { uiText } from "../i18n/runtime.js";
 import { validLanguageAttempt } from "../domain/language-progress.js";
@@ -846,9 +847,14 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
           isRecord(item) &&
           isString(item["id"]) &&
           isString(item["title"]) &&
+          (item["kind"] === undefined ||
+            item["kind"] === "folder" ||
+            item["kind"] === "typewriter") &&
           ["moon", "sun", "book"].includes(String(item["motif"])) &&
           (item["style"] === undefined ||
-            ["classic", "pride", "mathematics", "english"].includes(String(item["style"]))),
+            ["classic", "pride", "mathematics", "english"].includes(String(item["style"]))) &&
+          (item["shape"] === undefined ||
+            LIBRARY_FOLDER_SHAPES.some((shape) => shape === item["shape"])),
       ))
   )
     return false;

@@ -1,3 +1,6 @@
+import { LibraryTypewriter } from "../components/library-typewriter";
+import { LibraryFolderSources } from "../components/library-folder-sources";
+import { libraryFolderShapes } from "../domain/library-folder-shapes";
 import { SourceExamStudy } from "../components/source-exam-study";
 import { SourceQuizStudy } from "../components/source-quiz-study";
 import {
@@ -59,7 +62,11 @@ export function LibraryShelfView({
   const language = useLanguage();
   const dialog = useRef<HTMLDialogElement>(null);
 
-  const collections = workspace.libraryCollections ?? [];
+  const allCollections = workspace.libraryCollections ?? [];
+  const collections = allCollections.filter((item) => item.kind !== "typewriter");
+  const typewriter = allCollections.find((item) => item.kind === "typewriter");
+  const [createChoice, setCreateChoice] = useState<"folder" | "typewriter" | undefined>();
+  const shapes = libraryFolderShapes(collections);
   const visibleFolders = collections.filter((folder) => !removed.includes(folder.id));
   const canCreate = collections.length < 3;
   const [folderTab, setFolderTab] = useState<"details" | "covers">("details");
@@ -73,7 +80,7 @@ export function LibraryShelfView({
     <>
       <div
         className="notebook-display-shelf__books library-folder-row"
-        data-empty={visibleFolders.length === 0}
+        data-empty={visibleFolders.length === 0 && !typewriter}
       >
         <div className="library-shelf-candles" aria-hidden="true">
           <span />
@@ -84,6 +91,7 @@ export function LibraryShelfView({
           <button
             className="library-paper-folder"
             data-folder-style={styles[folder.id] ?? folder.style ?? "classic"}
+            data-folder-shape={shapes.get(folder.id)}
             key={folder.id}
             type="button"
             aria-label={folder.title}
@@ -96,19 +104,36 @@ export function LibraryShelfView({
                 <ShelfToolIcon name="pen" />
               </span>
             )}
-            <span className="library-paper-folder__sheet" aria-hidden="true" />
-            <span className="library-paper-folder__sheet" aria-hidden="true" />
+            <LibraryFolderSources materials={workspace.materials} collectionId={folder.id} />
             <span className="library-paper-folder__front" aria-hidden="true">
               {folder.title}
             </span>
           </button>
         ))}
-        {canCreate && !editing && (
+        {typewriter && !removed.includes(typewriter.id) && (
+          <button
+            type="button"
+            className="library-shelf-typewriter"
+            aria-label={uiText("Redação e vestibulares")}
+            onClick={() => (editing ? setModal(typewriter) : onOpen(typewriter.id))}
+          >
+            <LibraryTypewriter />
+            {editing && (
+              <span className="shelf-item-pencil">
+                <ShelfToolIcon name="pen" />
+              </span>
+            )}
+          </button>
+        )}
+        {(canCreate || !typewriter) && !editing && (
           <button
             className="notebook-display-shelf__create"
             type="button"
-            aria-label={uiText(1354)}
-            onClick={() => dialog.current?.showModal()}
+            aria-label={uiText("Criar na prateleira")}
+            onClick={() => {
+              setCreateChoice(undefined);
+              dialog.current?.showModal();
+            }}
           >
             <span aria-hidden="true">+</span>
           </button>
@@ -144,10 +169,10 @@ export function LibraryShelfView({
               <div
                 className="library-paper-folder library-folder-preview shelf-book-preview"
                 data-folder-style={inspectedStyle}
+                data-folder-shape={inspected && shapes.get(inspected.id)}
                 aria-hidden="true"
               >
-                <span className="library-paper-folder__sheet" />
-                <span className="library-paper-folder__sheet" />
+                <LibraryFolderSources materials={workspace.materials} collectionId={inspected.id} />
                 <span className="library-paper-folder__front">{inspected.title}</span>
               </div>
               {folderTab === "covers" ? (
@@ -227,15 +252,24 @@ export function LibraryShelfView({
         aria-labelledby="library-folder-title"
         onClose={() => dialog.current?.querySelector("form")?.reset()}
       >
+        <button
+          type="button"
+          className="library-icon library-create-close"
+          aria-label={uiText("Fechar")}
+          onClick={() => dialog.current?.close()}
+        >
+          <PaperCloseIcon />
+        </button>
         <form
           onSubmit={(event) => {
             event.preventDefault();
             const title = String(new FormData(event.currentTarget).get("folderName") ?? "").trim();
-            if (!title || !canCreate) return;
+            if (!title || (createChoice === "folder" ? !canCreate : !!typewriter)) return;
             dispatch({
               type: "library/collection-saved",
               collection: {
                 id: createWorkspaceId("collection"),
+                kind: createChoice ?? "folder",
                 title,
                 motif: "book",
                 createdAt: new Date().toISOString(),
@@ -244,23 +278,58 @@ export function LibraryShelfView({
             dialog.current?.close();
           }}
         >
-          <h2 id="library-folder-title">{uiText(1985)}</h2>
-          <label>
-            {uiText("Nome da pasta")}
-            <input name="folderName" required maxLength={80} />
-          </label>
-          <div className="shelf-dialog-actions">
-            <button
-              className="secondary-button"
-              type="button"
-              onClick={() => dialog.current?.close()}
-            >
-              {uiText(155)}
-            </button>
-            <button className="shelf-wood-button" type="submit">
-              {uiText(1354)}
-            </button>
-          </div>
+          <h2 id="library-folder-title">
+            {uiText(
+              createChoice
+                ? createChoice === "folder"
+                  ? "Criar pasta"
+                  : "Criar máquina de escrever"
+                : "O que você quer criar?",
+            )}
+          </h2>
+          {!createChoice ? (
+            <div className="library-create-choices">
+              <button
+                type="button"
+                className="shelf-wood-button"
+                disabled={!canCreate}
+                onClick={() => setCreateChoice("folder")}
+              >
+                <span className="library-choice-folder" aria-hidden="true" />
+                <strong>{uiText("Pasta")}</strong>
+                <small>{collections.length}/3</small>
+              </button>
+              <button
+                type="button"
+                className="shelf-wood-button"
+                disabled={!!typewriter}
+                onClick={() => setCreateChoice("typewriter")}
+              >
+                <LibraryTypewriter />
+                <strong>{uiText("Redação e vestibulares")}</strong>
+                <small>{typewriter ? "1/1" : "0/1"}</small>
+              </button>
+            </div>
+          ) : (
+            <>
+              <label>
+                {uiText(createChoice === "typewriter" ? "Nome da máquina" : "Nome da pasta")}
+                <input name="folderName" required maxLength={80} />
+              </label>
+              <div className="shelf-dialog-actions">
+                <button
+                  className="secondary-button"
+                  type="button"
+                  onClick={() => dialog.current?.close()}
+                >
+                  {uiText(155)}
+                </button>
+                <button className="shelf-wood-button" type="submit">
+                  {uiText(createChoice === "typewriter" ? "Criar máquina" : "Criar pasta")}
+                </button>
+              </div>
+            </>
+          )}
         </form>
       </dialog>
     </>
@@ -428,6 +497,7 @@ export function LibraryFolderContents({
   const allSelected = selectedSources.length === materials.length;
   const [error, setError] = useState("");
   const input = useRef<HTMLInputElement>(null);
+  const uploadOrigin = useRef<"goodnotes" | undefined>(undefined);
 
   async function generateSummary() {
     if (summaryBusy || !selectedSources.length) return;
@@ -956,6 +1026,7 @@ export function LibraryFolderContents({
                     className="shelf-wood-button"
                     onClick={() => {
                       setShowSources(false);
+                      uploadOrigin.current = undefined;
                       input.current?.click();
                     }}
                   >
@@ -992,7 +1063,10 @@ export function LibraryFolderContents({
                 <button
                   type="button"
                   className="shelf-wood-button"
-                  onClick={() => input.current?.click()}
+                  onClick={() => {
+                    uploadOrigin.current = undefined;
+                    input.current?.click();
+                  }}
                 >
                   {uiText("Escolher um arquivo")}
                 </button>
@@ -1415,6 +1489,7 @@ export function LibraryFolderContents({
                   className="shelf-wood-button"
                   onClick={() => {
                     setSourceType(undefined);
+                    uploadOrigin.current = "goodnotes";
                     input.current?.click();
                   }}
                 >
@@ -1680,6 +1755,8 @@ export function LibraryFolderContents({
             const file = event.currentTarget.files?.[0];
             event.currentTarget.value = "";
             if (!file) return;
+            const origin = uploadOrigin.current;
+            uploadOrigin.current = undefined;
             setError("");
             const kind = /\.pdf$/i.test(file.name)
               ? "pdf"
@@ -1707,6 +1784,7 @@ export function LibraryFolderContents({
                 collectionId: folder.id,
                 subjectId,
                 title: file.name,
+                ...(origin === "goodnotes" ? { tags: ["source-goodnotes"] } : {}),
                 kind,
                 content,
                 createdAt: new Date().toISOString(),
