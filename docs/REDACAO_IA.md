@@ -38,3 +38,10 @@ A IA da Olena ainda não foi medida nesta tarefa (o melhor modelo treinado chego
 - Tela, aviso de envio, "Compartilhar" e "Reportar um problema" (PR 2). "Reportar" guarda só avaliação e categoria, nunca o texto.
 - Ligar a chave `OLENA_ESSAY_SCORE` é decisão da dona, depois da medição.
 - Qualidade do Llama 3.1 8B comentando redação em português: não verificado. Testar com 3 ou 4 redações reais antes de abrir ao público.
+
+## Tela e medição (PR 2, 21/11/2026)
+
+- A tela está em `src/components/essay-olena-review.tsx` (aviso de envio e custo, resumo e sanfona por competência, compartilhar, reportar). O relato fica só neste aparelho (categoria e data, nunca o texto); não há envio à equipe.
+- Medição: `scripts/measure-essay-olena.mjs`. Passos e cuidados no cabeçalho do arquivo. A chave é da dona e vem de variáveis de ambiente. O script reutiliza o provedor e o validador do servidor, para medir o que o app de fato faz, e para ao chegar a um teto de neurons (padrão 6.000), retomando no dia seguinte. A amostra é fixa (ordem por hash do id, 100 a 150 redações do teste, só as que cabem em 6.000 caracteres). Resultado em `tmp/essay-olena-measure/result.json`, ignorado pelo Git.
+- O tema que vai ao modelo na medição é o começo da descrição do corpus (200 caracteres), enquanto o app envia o título curto da proposta; essa diferença pode afetar a comparação (não verificado o tamanho do efeito).
+- Depois de medir, a dona liga `OLENA_ESSAY_SCORE=on` só se a regra permitir (QWK médio de 0,40 ou mais: número como estimativa; de 0,30 a 0,40: faixa, ainda por implementar na tela; abaixo: nada a ligar).
