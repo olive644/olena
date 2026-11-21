@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 
-// Fontes que não são PDF: TXT em ANSI, nota em branco, foto grande e link do YouTube.
+// Fontes que não são PDF: TXT em ANSI, nota em branco, foto grande e nota em branco.
 const texto =
   "A fotossíntese é o processo pelo qual as plantas produzem glicose usando luz solar, água e gás carbônico. A clorofila, presente nos cloroplastos, absorve a luz. Como resultado, a planta libera oxigênio para a atmosfera. A fotossíntese ocorre em duas etapas: a fase clara, que depende da luz e produz ATP e NADPH, e a fase escura, que usa esses compostos para fixar o carbono no ciclo de Calvin. A respiração celular é o processo inverso, no qual a glicose é quebrada para liberar energia. O ciclo do carbono liga os dois processos na natureza. Sem a fotossíntese, não haveria oxigênio suficiente para os animais. A glicose produzida é armazenada como amido nas raízes e sementes. Os estômatos são poros nas folhas que controlam a entrada de gás carbônico e a saída de oxigênio.";
 
@@ -36,7 +36,7 @@ async function openFolder(page: Page, theme: string) {
 }
 
 for (const theme of ["light", "dark"]) {
-  test(`fontes: TXT ANSI, foto grande, nota e YouTube entram; só a Olena gera: ${theme}`, async ({
+  test(`fontes: TXT ANSI, foto grande e nota entram; só a Olena gera: ${theme}`, async ({
     page,
   }, info) => {
     test.setTimeout(120_000);
@@ -84,15 +84,8 @@ for (const theme of ["light", "dark"]) {
     await expect(page.getByText("Minha nota", { exact: true })).toBeVisible();
 
     await page.getByRole("button", { name: "Adicionar fontes", exact: true }).click();
-    await page.getByRole("button", { name: "Link do YouTube" }).click();
-    await page.getByLabel("Link do vídeo").fill("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-    await page.getByRole("button", { name: "Adicionar fonte", exact: true }).click();
-    await expect(
-      page.getByRole("checkbox", {
-        name: "Selecionar https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      }),
-    ).toBeDisabled();
-    await expect(page.getByText(/Só referência: o OlenaStudy não lê vídeos/)).toBeVisible();
+    await expect(page.getByRole("button", { name: "Link do YouTube" })).toHaveCount(0);
+    await page.getByRole("button", { name: "Adicionar fontes", exact: true }).click();
     await page.screenshot({ path: info.outputPath(`fontes-${theme}.png`) });
 
     // Os quatro tipos só oferecem a Olena, com o aviso de envio e do limite diário. Sem conta

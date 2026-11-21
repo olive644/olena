@@ -430,13 +430,15 @@ export function LibraryFolderContents({
   const [renamingId, setRenamingId] = useState<string>();
   const [removingIds, setRemovingIds] = useState<string[]>([]);
   const [showSources, setShowSources] = useState(false);
-  const [sourceType, setSourceType] = useState<"YouTube" | "Nota em branco" | "Goodnotes">();
+  const [sourceType, setSourceType] = useState<"Nota em branco" | "Goodnotes">();
   const [creating, setCreating] = useState<keyof typeof studySections>();
   const [showStudyTypes, setShowStudyTypes] = useState(false);
   const credits = useOlenaCredits();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const selectedSources = materials.filter(({ id }) => selectedIds.includes(id));
-  // Link (YouTube) é só referência: o app não lê vídeos, então não entra nos geradores.
+  // Link é só referência: o app não lê vídeos, então não entra nos geradores. Não há mais como
+  // criar link novo (a leitura de vídeo do YouTube pelo servidor foi testada e não é confiável);
+  // os que já estavam salvos continuam listados, só para poderem ser removidos.
   const readableMaterials = materials.filter(({ kind }) => kind !== "link");
   const maxSelectedSources = 3;
   const allSelected = selectedSources.length === readableMaterials.length;
@@ -866,7 +868,6 @@ export function LibraryFolderContents({
                   </button>
                   {(
                     [
-                      ["YouTube", "play", "Link do YouTube"],
                       ["Nota em branco", "manual-words", "Nota em branco"],
                       ["Goodnotes", "flashcards", "Importar do Goodnotes"],
                     ] as const
@@ -1331,27 +1332,12 @@ export function LibraryFolderContents({
                   const data = new FormData(event.currentTarget);
                   const content = String(data.get("content") ?? "").trim();
                   if (!content) return;
-                  if (sourceType === "YouTube") {
-                    const url = URL.canParse(content) ? new URL(content) : undefined;
-                    if (
-                      url?.protocol !== "https:" ||
-                      !["youtube.com", "www.youtube.com", "m.youtube.com", "youtu.be"].includes(
-                        url.hostname,
-                      )
-                    ) {
-                      setError("Informe um link HTTPS do YouTube.");
-                      return;
-                    }
-                  }
                   dispatch({
                     type: "material/added",
                     collectionId: folder.id,
                     subjectId,
-                    title:
-                      sourceType === "YouTube"
-                        ? content
-                        : String(data.get("title") ?? "").trim() || "Nota",
-                    kind: sourceType === "YouTube" ? "link" : "text",
+                    title: String(data.get("title") ?? "").trim() || "Nota",
+                    kind: "text",
                     content,
                     createdAt: new Date().toISOString(),
                   });
@@ -1359,20 +1345,12 @@ export function LibraryFolderContents({
                   setSourceType(undefined);
                 }}
               >
-                {sourceType === "YouTube" ? (
-                  <label>
-                    {uiText("Link do vídeo")} <input name="content" type="url" required />
-                  </label>
-                ) : (
-                  <>
-                    <label>
-                      {uiText("Título")} <input name="title" maxLength={80} required />
-                    </label>
-                    <label>
-                      {uiText("Nota")} <textarea name="content" maxLength={20000} required />
-                    </label>
-                  </>
-                )}
+                <label>
+                  {uiText("Título")} <input name="title" maxLength={80} required />
+                </label>
+                <label>
+                  {uiText("Nota")} <textarea name="content" maxLength={20000} required />
+                </label>
                 {error && <p role="alert">{error}</p>}
                 <button type="submit" className="shelf-wood-button">
                   {uiText("Adicionar fonte")}
