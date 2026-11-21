@@ -25,14 +25,10 @@ for (const width of [320, 360, 390, 768, 1280]) {
     if (mobile) {
       await expect(profile).toBeVisible();
       await expect(profile.locator("img").first()).toBeVisible();
-      const more = page.getByRole("button", { name: "Mais ferramentas", exact: true });
-      await expect(more).toBeVisible();
-      await more.click();
-      const moreDialog = page.getByRole("dialog", { name: "Mais ferramentas" });
-      await expect(moreDialog).toBeVisible();
-      await expect(moreDialog.locator(".user-profile")).toHaveCount(0);
-      await page.keyboard.press("Escape");
-      await expect(more).toBeFocused();
+      // Sem menu extra: todas as ferramentas e o Perfil cabem na barra móvel.
+      await expect(page.getByRole("button", { name: "Mais ferramentas", exact: true })).toHaveCount(
+        0,
+      );
       const practice = navigation.getByRole("button", { name: "Praticar", exact: true });
       const agenda = navigation.getByRole("button", { name: "Agenda", exact: true });
       await practice.click();
