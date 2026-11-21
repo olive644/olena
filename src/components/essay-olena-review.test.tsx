@@ -124,7 +124,7 @@ describe("comentários da Olena na redação", () => {
   });
 
   it("copia a avaliação sem o texto da redação", async () => {
-    const writeText = vi.fn(async (_text: string) => undefined);
+    const writeText = vi.fn<(text: string) => Promise<void>>(async () => undefined);
     Object.assign(navigator, { clipboard: { writeText }, share: undefined });
     render(<EssayOlenaReview text={essay} requester={async () => review()} />);
     fireEvent.click(screen.getByRole("button", { name: "Pedir nota da Olena" }));
