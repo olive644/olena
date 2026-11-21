@@ -671,7 +671,7 @@ describe("flashcards, quiz e simulado com a Olena", () => {
     });
   });
 
-  it("link do YouTube nunca é enviado: fica só como referência", () => {
+  it("link antigo nunca é enviado: fica só como referência e não há como criar link novo", () => {
     signedIn();
     const link = {
       ...source,
@@ -684,6 +684,23 @@ describe("flashcards, quiz e simulado com a Olena", () => {
     expect(
       within(dialog).getByRole("checkbox", { name: "Selecionar https://youtu.be/x" }),
     ).toHaveProperty("disabled", true);
+  });
+
+  it("não oferece mais o link do YouTube ao adicionar fontes", () => {
+    signedIn();
+    render(
+      <LibraryFolderContents
+        folder={folder}
+        materials={[source]}
+        subjectId="materia-1"
+        dispatch={vi.fn<(action: WorkspaceAction) => void>()}
+        onBack={() => undefined}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Adicionar fontes" }));
+    expect(screen.queryByRole("button", { name: "Link do YouTube" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Nota em branco" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Importar do Goodnotes" })).toBeTruthy();
   });
 
   it("mostra o baralho como uma linha e estuda em outra tela: esquerda errei, direita acertei", () => {

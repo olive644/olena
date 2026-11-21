@@ -5693,3 +5693,9 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Problema: a #683 passou os flashcards para a IA com o prompt de "pergunta curta e resposta", e o baralho saía com pergunta aberta, que a tela de estudo (setas, gabarito, painel de qualidade) não trata como flashcard.
 - Correção: o servidor pede afirmações para julgar (metade verdadeiras, metade falsas, a falsa com um ponto plausível alterado, sem pistas como "sempre" e "nunca", uma ideia por frase, explicação com a frase correta). O modelo devolve `{statement, true, explanation}` e `parseStudyCards` converte para o cartão guardado: afirmação na frente e "Verdadeiro." ou "Falso. O texto diz:" no começo do verso. Cartão sem gabarito é recusado, a geração é refeita uma vez e, se vier de novo, vira erro.
 - Não verificado: a qualidade real das afirmações do modelo de 8 bilhões de parâmetros (só testado com respostas simuladas). Conferir gerando de uma fonte real e usando o botão de curadoria.
+
+## Sai a opção de link do YouTube nas fontes (20/11/2026)
+
+- Decisão: ler vídeo do YouTube pelo servidor foi testado e não é confiável. Num endpoint descartável na Vercel (3 vídeos públicos, 4 rodadas), só 1 de 3 devolveu legenda e os outros 2 voltaram "confirme que você não é um bot"; do mesmo código num IP residencial os 3 funcionaram; pelo navegador do aluno, o YouTube recusa pedidos de outro site (403). Interfaces não oficiais também contrariam os termos de uso. O teste foi apagado.
+- Mudança: "Link do YouTube" não aparece mais em "Adicionar fontes". Fontes de link que já estavam salvas continuam listadas e removíveis, com o aviso de que são só referência e de que a transcrição pode ser colada em uma nota em branco. Link nunca vai à Olena.
+- Não validado: o e2e `library-sources` rodou só no CI, não localmente.
