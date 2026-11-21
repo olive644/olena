@@ -485,7 +485,8 @@ function isNotebook(value: unknown): boolean {
       value["coverStyle"] === "oliver-estrelas" ||
       value["coverStyle"] === "mathematics" ||
       value["coverStyle"] === "english" ||
-      value["coverStyle"] === "pride") &&
+      value["coverStyle"] === "pride" ||
+      ["blood-moon", "solar-eclipse", "lunar-eclipse"].includes(String(value["coverStyle"]))) &&
     (value["shelf"] === undefined ||
       (Number.isInteger(value["shelf"]) && Number(value["shelf"]) >= 0)) &&
     (value["parentId"] === undefined || isString(value["parentId"])) &&
@@ -852,7 +853,15 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
             item["kind"] === "typewriter") &&
           ["moon", "sun", "book"].includes(String(item["motif"])) &&
           (item["style"] === undefined ||
-            ["classic", "pride", "mathematics", "english"].includes(String(item["style"]))) &&
+            [
+              "classic",
+              "pride",
+              "mathematics",
+              "english",
+              "blood-moon",
+              "solar-eclipse",
+              "lunar-eclipse",
+            ].includes(String(item["style"]))) &&
           (item["shape"] === undefined ||
             LIBRARY_FOLDER_SHAPES.some((shape) => shape === item["shape"])),
       ))

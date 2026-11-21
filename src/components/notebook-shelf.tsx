@@ -1,3 +1,4 @@
+import { shelfSkinUnlocked } from "../domain/shelf-skins";
 import { TypewriterDesk } from "./typewriter-desk";
 import { flushSync } from "react-dom";
 import { LibraryFolderContents, LibraryShelfView } from "../views/library-shelf-view";
@@ -89,7 +90,11 @@ export function NotebookShelf({
       }
       for (const folder of folders) {
         const style = folderStyles[folder.id];
-        if (style && !removedFolders.includes(folder.id))
+        if (
+          style &&
+          !removedFolders.includes(folder.id) &&
+          shelfSkinUnlocked(folder.kind === "typewriter" ? "typewriter" : "folder", style, earned)
+        )
           dispatch({ type: "library/collection-saved", collection: { ...folder, style } });
       }
       for (const id of removedFolders) dispatch({ type: "library/collection-removed", id });
@@ -122,13 +127,15 @@ export function NotebookShelf({
   const openFolder = workspace.libraryCollections?.find((folder) => folder.id === openFolderId);
   if (openFolder?.kind === "typewriter")
     return (
-      <TypewriterDesk
-        key={openFolder.id}
-        workspace={workspace}
-        collectionId={openFolder.id}
-        dispatch={dispatch}
-        onBack={() => navigateFolder()}
-      />
+      <div className="library-typewriter-view">
+        <TypewriterDesk
+          key={openFolder.id}
+          workspace={workspace}
+          collectionId={openFolder.id}
+          dispatch={dispatch}
+          onBack={() => navigateFolder()}
+        />
+      </div>
     );
   if (openFolder) {
     return (
@@ -172,13 +179,25 @@ export function NotebookShelf({
         <NotebookShelfFrame
           lowerShelf={
             <LibraryShelfView
+              earned={earned}
               workspace={workspace}
               dispatch={dispatch}
               editing={editing}
               onOpen={navigateFolder}
               styles={folderStyles}
               removed={removedFolders}
-              onStyle={(id, style) => setFolderStyles((current) => ({ ...current, [id]: style }))}
+              onStyle={(id, style) => {
+                const folder = folders.find((item) => item.id === id);
+                if (
+                  folder &&
+                  shelfSkinUnlocked(
+                    folder.kind === "typewriter" ? "typewriter" : "folder",
+                    style,
+                    earned,
+                  )
+                )
+                  setFolderStyles((current) => ({ ...current, [id]: style }));
+              }}
               onRemove={(id) => setRemovedFolders((current) => [...current, id])}
             />
           }

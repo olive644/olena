@@ -1347,3 +1347,431 @@ html:has(.notebooks-showcase)::view-transition-old(library-folder-view) {
   top: 12px;
   right: 12px;
 }
+
+.has-lower-shelf [data-folder-style="blood-moon"] {
+  --folder-back: #482332;
+  --folder-face:
+    radial-gradient(circle at 65% 45%, #cf514c 0 24%, transparent 25%),
+    linear-gradient(145deg, #79303d 0 25%, #291f30 25% 75%, #512335 75%);
+}
+.has-lower-shelf [data-folder-style="solar-eclipse"] {
+  --folder-back: #252233;
+  --folder-face:
+    radial-gradient(circle at 60% 45%, #252233 0 21%, #facc15 22% 26%, transparent 27%),
+    linear-gradient(145deg, #514050 0 22%, #211f30 22% 76%, #383149 76%);
+}
+.has-lower-shelf [data-folder-style="lunar-eclipse"] {
+  --folder-back: #292b45;
+  --folder-face:
+    radial-gradient(circle at 67% 39%, #292b45 0 21%, transparent 22%),
+    radial-gradient(circle at 60% 45%, #c5b5e9 0 27%, transparent 28%),
+    linear-gradient(145deg, #514c77 0 22%, #292b45 22% 76%, #383452 76%);
+}
+.library-folder-styles .shelf-cover-choice small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.4;
+  margin-block: 8px;
+}
+
+/* Objetos de papel facetado apoiados na madeira. */
+.has-lower-shelf .notebook-shelf-vines.is-left {
+  left: 86px;
+}
+.has-lower-shelf .notebook-shelf-vines::after {
+  width: 58px;
+  height: 54px;
+  top: -67px;
+  left: -3px;
+  background:
+    linear-gradient(
+      30deg,
+      transparent 35%,
+      #e2ac72 36% 40%,
+      transparent 41% 56%,
+      #e2ac72 57% 61%,
+      transparent 62%
+    ),
+    linear-gradient(0deg, transparent 75%, #edba84 75% 91%, #98583e 91%),
+    linear-gradient(115deg, #c98756 0 43%, #a15e42 43% 74%, #693f36 74%);
+}
+.has-lower-shelf .notebook-shelf-vines.is-right::after {
+  background:
+    linear-gradient(
+      90deg,
+      transparent 28%,
+      #bcb2dd 29% 34%,
+      transparent 35% 60%,
+      #bcb2dd 61% 66%,
+      transparent 67%
+    ),
+    linear-gradient(0deg, transparent 75%, #c6b7e3 75% 91%, #685180 91%),
+    linear-gradient(112deg, #9e8abb 0 44%, #77608f 44% 74%, #514065 74%);
+}
+.notebook-shelf-globe {
+  position: absolute;
+  width: 72px;
+  height: 86px;
+  left: 8px;
+  top: -85px;
+  z-index: 2;
+  pointer-events: none;
+}
+.notebook-shelf-bust {
+  flex: 0 0 94px;
+  width: 94px;
+  height: 146px;
+  align-self: end;
+  margin-right: 18px;
+  pointer-events: none;
+}
+.notebook-display-shelf .notebook-spine--leaning {
+  rotate: -12deg;
+  transform-origin: bottom center;
+  margin-left: 8px;
+  margin-right: 12px;
+}
+@media (max-width: 600px) {
+  .has-lower-shelf .notebook-shelf-vines.is-left {
+    left: 62px;
+  }
+  .notebook-shelf-globe {
+    width: 52px;
+    height: 62px;
+    top: -61px;
+    left: 6px;
+  }
+  .notebook-shelf-bust {
+    flex-basis: 62px;
+    width: 62px;
+    height: 100px;
+    margin-right: 12px;
+  }
+}
+
+/* Preserve the generated art aspect ratio; the bust must never flex-shrink. */
+.notebook-display-shelf .notebook-shelf-bust {
+  width: auto;
+  height: clamp(118px, 20vh, 174px);
+  flex: 0 0 auto;
+  object-fit: contain;
+  margin-right: 0;
+}
+.notebook-shelf-globe {
+  object-fit: contain;
+}
+.has-lower-shelf .notebook-shelf-vines::before {
+  top: -62px;
+  left: 20px;
+  border-radius: 25%;
+}
+.has-lower-shelf .notebook-shelf-vines i {
+  translate: 0 -52px;
+}
+.has-lower-shelf .notebook-shelf-vines.is-right i {
+  translate: 0 -80px;
+}
+.notebook-display-shelf .notebook-spine--leaning {
+  rotate: -12deg;
+  margin-left: -6px;
+  margin-right: 15px;
+}
+@media (max-width: 600px) {
+  .notebook-display-shelf .notebook-shelf-bust {
+    height: 118px;
+    width: auto;
+    flex-basis: auto;
+  }
+}
+
+/* Globo apoiado na tampa: sua caixa termina exatamente na madeira. */
+.notebook-shelf-globe {
+  width: 104px;
+  height: 114px;
+  top: -106px;
+  left: 2px;
+  object-fit: contain;
+  object-position: center bottom;
+}
+.has-lower-shelf .notebook-shelf-vines.is-left {
+  left: 112px;
+}
+@media (max-width: 600px) {
+  .notebook-shelf-globe {
+    width: 76px;
+    height: 84px;
+    top: -77px;
+    left: 1px;
+  }
+  .has-lower-shelf .notebook-shelf-vines.is-left {
+    left: 80px;
+  }
+}
+
+.notebook-display-shelf .notebook-shelf-globe-display {
+  display: block;
+  width: auto;
+  height: clamp(160px, 25vh, 220px);
+  flex: 0 0 auto;
+  align-self: end;
+  object-fit: contain;
+  margin-right: 16px;
+}
+.has-lower-shelf .notebook-shelf-vines.is-left {
+  left: 0;
+}
+@media (max-width: 600px) {
+  .notebook-display-shelf .notebook-shelf-globe-display {
+    height: 146px;
+    margin-right: 8px;
+  }
+  .has-lower-shelf .notebook-shelf-vines.is-left {
+    left: 0;
+  }
+}
+
+/* Compensa a margem transparente sob a base desenhada do globo. */
+.notebook-display-shelf .notebook-shelf-globe-display {
+  translate: 0 7px;
+}
+@media (max-width: 600px) {
+  .notebook-display-shelf .notebook-shelf-globe-display {
+    translate: 0 5px;
+  }
+}
+
+/* Biblioteca mobile: fileiras começam junto à madeira, plantas ficam nas bordas. */
+@media (max-width: 680px) {
+  .notebook-display-shelf.has-lower-shelf {
+    padding-inline: 12px;
+    margin-top: 74px;
+  }
+  .notebook-display-shelf.has-lower-shelf::before,
+  .notebook-display-shelf.has-lower-shelf::after {
+    margin-inline: -12px;
+  }
+  .notebook-display-shelf.has-lower-shelf > .notebook-display-shelf__books {
+    padding-inline: 8px;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  .has-lower-shelf .notebook-shelf-vines {
+    height: 122px;
+    width: 44px;
+    scale: 0.65;
+  }
+  .has-lower-shelf .notebook-shelf-vines.is-left {
+    left: -5px;
+  }
+  .has-lower-shelf .notebook-shelf-vines.is-right {
+    right: -5px;
+  }
+  .has-lower-shelf .notebook-shelf-vines i:nth-child(n + 8) {
+    display: none;
+  }
+  .has-lower-shelf .notebook-shelf-vines::before {
+    bottom: 38px;
+  }
+  .has-lower-shelf .notebook-shelf-vines.is-left i {
+    margin-left: -21px;
+  }
+  .has-lower-shelf .notebook-shelf-vines.is-right i {
+    margin-left: -21px;
+  }
+}
+
+@media (max-width: 680px) {
+  .notebook-display-shelf.has-lower-shelf > .library-folder-row {
+    position: static;
+  }
+  .has-lower-shelf .library-shelf-candles {
+    position: absolute;
+    left: 54px;
+    top: -61px;
+    height: 62px;
+    z-index: 3;
+    gap: 2px;
+  }
+  .has-lower-shelf .library-shelf-candles span {
+    width: 12px;
+  }
+  .has-lower-shelf .notebook-shelf-cat {
+    position: absolute;
+    width: 96px;
+    right: 44px;
+    top: -47px;
+    height: 48px;
+    object-fit: contain;
+    object-position: bottom;
+    z-index: 3;
+  }
+  html:has(.notebooks-showcase .has-lower-shelf),
+  html:has(.notebooks-showcase .has-lower-shelf) body,
+  .notebooks-main:has(.has-lower-shelf),
+  .notebooks-showcase:has(.has-lower-shelf),
+  .notebook-shelves:has(.has-lower-shelf),
+  .has-lower-shelf .notebook-display-shelf__books {
+    scrollbar-width: none;
+  }
+  html:has(.notebooks-showcase .has-lower-shelf)::-webkit-scrollbar,
+  html:has(.notebooks-showcase .has-lower-shelf) body::-webkit-scrollbar,
+  .notebooks-main:has(.has-lower-shelf)::-webkit-scrollbar,
+  .notebooks-showcase:has(.has-lower-shelf)::-webkit-scrollbar,
+  .notebook-shelves:has(.has-lower-shelf)::-webkit-scrollbar,
+  .has-lower-shelf .notebook-display-shelf__books::-webkit-scrollbar {
+    display: none;
+  }
+  .has-lower-shelf .notebook-shelf-vines {
+    top: 0;
+    height: 110px;
+    width: 44px;
+    scale: 1;
+  }
+  .has-lower-shelf .notebook-shelf-vines.is-left {
+    left: 0;
+  }
+  .has-lower-shelf .notebook-shelf-vines.is-right {
+    right: 0;
+  }
+  .has-lower-shelf .notebook-shelf-vines::after {
+    top: -34px;
+    left: 0;
+    width: 34px;
+    height: 35px;
+  }
+  .has-lower-shelf .notebook-shelf-vines::before {
+    top: -29px;
+    bottom: 9px;
+    left: 12px;
+    width: 12px;
+    border-radius: 0 0 50% 20%;
+    rotate: 0deg;
+  }
+  .has-lower-shelf .notebook-shelf-vines i,
+  .has-lower-shelf .notebook-shelf-vines.is-left i,
+  .has-lower-shelf .notebook-shelf-vines.is-right i {
+    margin: 0;
+    translate: 0 -19px;
+    left: 3px;
+    width: 18px;
+    height: 17px;
+  }
+  .has-lower-shelf .notebook-shelf-vines i:nth-child(even) {
+    left: 12px;
+  }
+  .has-lower-shelf .notebook-shelf-vines.is-right i {
+    height: 10px;
+  }
+  .has-lower-shelf .notebook-shelf-vines i:nth-child(n + 8) {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .has-lower-shelf .library-folder-row[data-empty="true"] .notebook-display-shelf__create {
+    top: auto;
+    bottom: 45px;
+  }
+}
+
+@media (max-width: 680px) {
+  .has-lower-shelf .notebook-shelf-vines {
+    height: 190px;
+  }
+  .has-lower-shelf .notebook-shelf-vines::after {
+    top: -44px;
+    left: -2px;
+    width: 42px;
+    height: 45px;
+  }
+  .has-lower-shelf .notebook-shelf-vines::before {
+    top: -38px;
+    bottom: 16px;
+    left: 13px;
+  }
+  .has-lower-shelf .notebook-shelf-vines i,
+  .has-lower-shelf .notebook-shelf-vines.is-left i,
+  .has-lower-shelf .notebook-shelf-vines.is-right i {
+    width: 22px;
+    height: 21px;
+    left: 0;
+    translate: 0 -27px;
+  }
+  .has-lower-shelf .notebook-shelf-vines i:nth-child(even) {
+    left: 11px;
+  }
+  .has-lower-shelf .notebook-shelf-vines.is-right i {
+    height: 12px;
+  }
+  .has-lower-shelf .notebook-shelf-vines i:nth-child(n + 8) {
+    display: block;
+  }
+  .has-lower-shelf .notebook-shelf-vines i:nth-child(n + 15) {
+    display: none;
+  }
+}
+
+.library-folder-contents > header {
+  flex-wrap: wrap;
+}
+.library-folder-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1 0 100%;
+  min-width: 0;
+  gap: 12px;
+  padding: 2px 4px;
+}
+.library-folder-contents > header > nav {
+  flex-basis: 100%;
+}
+
+:root body .library-credit-unavailable {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  min-height: 36px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #facc15;
+  font-size: 23px;
+}
+
+.library-creation-cost {
+  display: grid;
+  gap: 9px;
+  margin-block: 16px;
+  padding: 14px;
+  color: #fff9ef;
+  border: 1px solid #ba9166;
+  border-radius: 4px 13px 4px 9px;
+  background: linear-gradient(135deg, #a97951 0 9%, transparent 9%), #654237;
+}
+.library-creation-cost > span {
+  font-size: 12px;
+}
+.library-creation-cost strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+.library-creation-cost .paper-digits {
+  font-size: 21px;
+  --digit-face: #facc15;
+  --digit-fold: #fff0a1;
+  --digit-depth: #92640d;
+  --digit-edge: #92640d;
+}
+.library-creation-cost-ai {
+  padding-top: 9px;
+  border-top: 1px solid #ac8867;
+}
+.library-creation-cost-note {
+  font-size: 12px;
+}

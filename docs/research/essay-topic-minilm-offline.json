@@ -1,0 +1,281 @@
+{
+  "generatedAt": "2026-11-20T19:15:04.334Z",
+  "model": {
+    "id": "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
+    "revision": "2c4055b12046f11709e9df2c122e59ffbdc2f900"
+  },
+  "runtime": "@huggingface/transformers@3.8.1",
+  "device": "cpu",
+  "offline": true,
+  "cpu": "Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz",
+  "loadMs": 1319.1909,
+  "rssAfterBytes": 415035392,
+  "sampleCount": 26,
+  "relevantTop1": 11,
+  "relevantCount": 12,
+  "medianMs": 17.086599999999862,
+  "maxMs": 32.16159999999991,
+  "results": [
+    {
+      "id": "essay-01-relevant",
+      "kind": "relevant",
+      "expectedTopic": "essay-01",
+      "firstTopic": "essay-01",
+      "firstSimilarity": 0.783417422548028,
+      "targetSimilarity": 0.783417422548028,
+      "margin": 0.18331221502404715,
+      "elapsedMs": 17.329400000000078
+    },
+    {
+      "id": "essay-01-paraphrase",
+      "kind": "paraphrase",
+      "expectedTopic": "essay-01",
+      "firstTopic": "essay-01",
+      "firstSimilarity": 0.7222468064049004,
+      "targetSimilarity": 0.7222468064049004,
+      "margin": 0.19522036160425715,
+      "elapsedMs": 17.086599999999862
+    },
+    {
+      "id": "essay-01-unrelated",
+      "kind": "unrelated",
+      "expectedTopic": "essay-01",
+      "firstTopic": "essay-11",
+      "firstSimilarity": 0.6938652313175127,
+      "targetSimilarity": 0.4407106579405972,
+      "margin": 0.25315457337691544,
+      "elapsedMs": 16.932999999999993
+    },
+    {
+      "id": "essay-01-keyword-bait",
+      "kind": "keyword-bait",
+      "expectedTopic": "essay-01",
+      "firstTopic": "essay-01",
+      "firstSimilarity": 0.549505946560018,
+      "targetSimilarity": 0.549505946560018,
+      "margin": 0.26442007698307585,
+      "elapsedMs": 19.252700000000004
+    },
+    {
+      "id": "essay-06-relevant",
+      "kind": "relevant",
+      "expectedTopic": "essay-06",
+      "firstTopic": "essay-06",
+      "firstSimilarity": 0.8040522555264746,
+      "targetSimilarity": 0.8040522555264746,
+      "margin": 0.258292188711172,
+      "elapsedMs": 18.451700000000073
+    },
+    {
+      "id": "essay-06-paraphrase",
+      "kind": "paraphrase",
+      "expectedTopic": "essay-06",
+      "firstTopic": "essay-06",
+      "firstSimilarity": 0.6684245021471685,
+      "targetSimilarity": 0.6684245021471685,
+      "margin": 0.2777218899667754,
+      "elapsedMs": 21.524200000000064
+    },
+    {
+      "id": "essay-06-unrelated",
+      "kind": "unrelated",
+      "expectedTopic": "essay-06",
+      "firstTopic": "essay-20",
+      "firstSimilarity": 0.7468261851864404,
+      "targetSimilarity": 0.3233916315030652,
+      "margin": 0.3349478524581515,
+      "elapsedMs": 24.366399999999885
+    },
+    {
+      "id": "essay-06-keyword-bait",
+      "kind": "keyword-bait",
+      "expectedTopic": "essay-06",
+      "firstTopic": "essay-06",
+      "firstSimilarity": 0.3958611593996508,
+      "targetSimilarity": 0.3958611593996508,
+      "margin": 0.1473467387544435,
+      "elapsedMs": 16.115400000000136
+    },
+    {
+      "id": "essay-11-relevant",
+      "kind": "relevant",
+      "expectedTopic": "essay-11",
+      "firstTopic": "essay-11",
+      "firstSimilarity": 0.6938652313175127,
+      "targetSimilarity": 0.6938652313175127,
+      "margin": 0.25315457337691544,
+      "elapsedMs": 15.7958000000001
+    },
+    {
+      "id": "essay-11-paraphrase",
+      "kind": "paraphrase",
+      "expectedTopic": "essay-11",
+      "firstTopic": "essay-11",
+      "firstSimilarity": 0.6055241920753043,
+      "targetSimilarity": 0.6055241920753043,
+      "margin": 0.2779005427233508,
+      "elapsedMs": 17.226799999999912
+    },
+    {
+      "id": "essay-11-unrelated",
+      "kind": "unrelated",
+      "expectedTopic": "essay-11",
+      "firstTopic": "essay-22",
+      "firstSimilarity": 0.7934260134668234,
+      "targetSimilarity": 0.36920999304509483,
+      "margin": 0.4202349001845048,
+      "elapsedMs": 16.894399999999905
+    },
+    {
+      "id": "essay-11-keyword-bait",
+      "kind": "keyword-bait",
+      "expectedTopic": "essay-11",
+      "firstTopic": "essay-11",
+      "firstSimilarity": 0.4984453208740296,
+      "targetSimilarity": 0.4984453208740296,
+      "margin": 0.1784697461733395,
+      "elapsedMs": 15.30170000000021
+    },
+    {
+      "id": "essay-20-relevant",
+      "kind": "relevant",
+      "expectedTopic": "essay-20",
+      "firstTopic": "essay-20",
+      "firstSimilarity": 0.7468261851864404,
+      "targetSimilarity": 0.7468261851864404,
+      "margin": 0.3349478524581515,
+      "elapsedMs": 20.55959999999982
+    },
+    {
+      "id": "essay-20-paraphrase",
+      "kind": "paraphrase",
+      "expectedTopic": "essay-20",
+      "firstTopic": "essay-01",
+      "firstSimilarity": 0.4782658350757228,
+      "targetSimilarity": 0.4770187731238045,
+      "margin": 0.0012470619519183157,
+      "elapsedMs": 16.992500000000064
+    },
+    {
+      "id": "essay-20-unrelated",
+      "kind": "unrelated",
+      "expectedTopic": "essay-20",
+      "firstTopic": "essay-26",
+      "firstSimilarity": 0.687670318389745,
+      "targetSimilarity": 0.2683936142468229,
+      "margin": 0.4020729922132016,
+      "elapsedMs": 18.18380000000002
+    },
+    {
+      "id": "essay-20-keyword-bait",
+      "kind": "keyword-bait",
+      "expectedTopic": "essay-20",
+      "firstTopic": "essay-20",
+      "firstSimilarity": 0.4929639484083766,
+      "targetSimilarity": 0.4929639484083766,
+      "margin": 0.2594612594428398,
+      "elapsedMs": 19.269199999999955
+    },
+    {
+      "id": "essay-22-relevant",
+      "kind": "relevant",
+      "expectedTopic": "essay-22",
+      "firstTopic": "essay-22",
+      "firstSimilarity": 0.7934260134668234,
+      "targetSimilarity": 0.7934260134668234,
+      "margin": 0.4202349001845048,
+      "elapsedMs": 32.16159999999991
+    },
+    {
+      "id": "essay-22-paraphrase",
+      "kind": "paraphrase",
+      "expectedTopic": "essay-22",
+      "firstTopic": "essay-22",
+      "firstSimilarity": 0.6078136840367937,
+      "targetSimilarity": 0.6078136840367937,
+      "margin": 0.280330496801226,
+      "elapsedMs": 15.807399999999689
+    },
+    {
+      "id": "essay-22-unrelated",
+      "kind": "unrelated",
+      "expectedTopic": "essay-22",
+      "firstTopic": "essay-01",
+      "firstSimilarity": 0.783417422548028,
+      "targetSimilarity": 0.3620975820330581,
+      "margin": 0.18331221502404715,
+      "elapsedMs": 16.03560000000016
+    },
+    {
+      "id": "essay-22-keyword-bait",
+      "kind": "keyword-bait",
+      "expectedTopic": "essay-22",
+      "firstTopic": "essay-22",
+      "firstSimilarity": 0.5342774072148542,
+      "targetSimilarity": 0.5342774072148542,
+      "margin": 0.3816077165457261,
+      "elapsedMs": 22.428100000000086
+    },
+    {
+      "id": "essay-26-relevant",
+      "kind": "relevant",
+      "expectedTopic": "essay-26",
+      "firstTopic": "essay-26",
+      "firstSimilarity": 0.687670318389745,
+      "targetSimilarity": 0.687670318389745,
+      "margin": 0.4020729922132016,
+      "elapsedMs": 16.4970000000003
+    },
+    {
+      "id": "essay-26-paraphrase",
+      "kind": "paraphrase",
+      "expectedTopic": "essay-26",
+      "firstTopic": "essay-26",
+      "firstSimilarity": 0.7450645958552297,
+      "targetSimilarity": 0.7450645958552297,
+      "margin": 0.2034026522988145,
+      "elapsedMs": 16.070800000000418
+    },
+    {
+      "id": "essay-26-unrelated",
+      "kind": "unrelated",
+      "expectedTopic": "essay-26",
+      "firstTopic": "essay-06",
+      "firstSimilarity": 0.8040522555264746,
+      "targetSimilarity": 0.4147880407783352,
+      "margin": 0.258292188711172,
+      "elapsedMs": 18.934699999999793
+    },
+    {
+      "id": "essay-26-keyword-bait",
+      "kind": "keyword-bait",
+      "expectedTopic": "essay-26",
+      "firstTopic": "essay-26",
+      "firstSimilarity": 0.5580840729407587,
+      "targetSimilarity": 0.5580840729407587,
+      "margin": 0.38447098290612736,
+      "elapsedMs": 13.077899999999772
+    },
+    {
+      "id": "nonsense",
+      "kind": "nonsense",
+      "expectedTopic": "essay-01",
+      "firstTopic": "essay-22",
+      "firstSimilarity": 0.07206209386695149,
+      "targetSimilarity": 0.02216730980841498,
+      "margin": 0.010839872515189253,
+      "elapsedMs": 10.722400000000107
+    },
+    {
+      "id": "single-word",
+      "kind": "insufficient",
+      "expectedTopic": "essay-01",
+      "firstTopic": "essay-11",
+      "firstSimilarity": 0.2733387982467995,
+      "targetSimilarity": 0.10524675747621862,
+      "margin": 0.08848384314855248,
+      "elapsedMs": 5.53269999999975
+    }
+  ],
+  "limitation": "Authored smoke fixtures, not human-scored essays. Similarity is not argument quality, grammar assessment or an ENEM score. No production threshold is calibrated by this run."
+}

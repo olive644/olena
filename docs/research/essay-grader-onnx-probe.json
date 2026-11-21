@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "competency": "C1",
+  "deploymentEnabled": false,
+  "floatBytes": 435967068,
+  "q8Bytes": 109752745,
+  "seconds": 20.02279289999933,
+  "checks": [
+    {
+      "tokens": 3,
+      "originalClass": 3,
+      "q8Class": 3,
+      "maxLogitDifference": 0.6240816116333008
+    },
+    {
+      "tokens": 10,
+      "originalClass": 3,
+      "q8Class": 3,
+      "maxLogitDifference": 1.487343668937683
+    },
+    {
+      "tokens": 352,
+      "originalClass": 4,
+      "q8Class": 4,
+      "maxLogitDifference": 0.4085862636566162
+    }
+  ],
+  "qualification": "Conversion smoke only, no grading accuracy or mobile validation",
+  "quantizationComparison": {
+    "rows": [
+      {
+        "rowIndex": 0,
+        "floatScore": 120,
+        "q8Score": 120,
+        "human": 120
+      },
+      {
+        "rowIndex": 6,
+        "floatScore": 120,
+        "q8Score": 120,
+        "human": 120
+      },
+      {
+        "rowIndex": 12,
+        "floatScore": 160,
+        "q8Score": 160,
+        "human": 160
+      },
+      {
+        "rowIndex": 18,
+        "floatScore": 200,
+        "q8Score": 200,
+        "human": 200
+      },
+      {
+        "rowIndex": 24,
+        "floatScore": 160,
+        "q8Score": 160,
+        "human": 160
+      },
+      {
+        "rowIndex": 30,
+        "floatScore": 120,
+        "q8Score": 120,
+        "human": 120
+      },
+      {
+        "rowIndex": 36,
+        "floatScore": 160,
+        "q8Score": 160,
+        "human": 160
+      },
+      {
+        "rowIndex": 42,
+        "floatScore": 160,
+        "q8Score": 160,
+        "human": 160
+      },
+      {
+        "rowIndex": 48,
+        "floatScore": 160,
+        "q8Score": 160,
+        "human": 120
+      },
+      {
+        "rowIndex": 54,
+        "floatScore": 120,
+        "q8Score": 120,
+        "human": 160
+      },
+      {
+        "rowIndex": 60,
+        "floatScore": 80,
+        "q8Score": 80,
+        "human": 80
+      },
+      {
+        "rowIndex": 66,
+        "floatScore": 120,
+        "q8Score": 120,
+        "human": 120
+      },
+      {
+        "rowIndex": 71,
+        "floatScore": 120,
+        "q8Score": 120,
+        "human": 120
+      },
+      {
+        "rowIndex": 77,
+        "floatScore": 80,
+        "q8Score": 80,
+        "human": 120
+      },
+      {
+        "rowIndex": 83,
+        "floatScore": 120,
+        "q8Score": 120,
+        "human": 120
+      },
+      {
+        "rowIndex": 89,
+        "floatScore": 80,
+        "q8Score": 120,
+        "human": 80
+      },
+      {
+        "rowIndex": 95,
+        "floatScore": 160,
+        "q8Score": 160,
+        "human": 160
+      },
+      {
+        "rowIndex": 101,
+        "floatScore": 80,
+        "q8Score": 80,
+        "human": 80
+      },
+      {
+        "rowIndex": 107,
+        "floatScore": 80,
+        "q8Score": 80,
+        "human": 80
+      },
+      {
+        "rowIndex": 113,
+        "floatScore": 120,
+        "q8Score": 120,
+        "human": 120
+      },
+      {
+        "rowIndex": 119,
+        "floatScore": 120,
+        "q8Score": 120,
+        "human": 120
+      },
+      {
+        "rowIndex": 125,
+        "floatScore": 80,
+        "q8Score": 120,
+        "human": 120
+      },
+      {
+        "rowIndex": 131,
+        "floatScore": 120,
+        "q8Score": 120,
+        "human": 120
+      },
+      {
+        "rowIndex": 137,
+        "floatScore": 120,
+        "q8Score": 120,
+        "human": 120
+      }
+    ],
+    "agreement": 0.9166666666666666
+  }
+}

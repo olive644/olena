@@ -1,0 +1,187 @@
+{
+  "note": "Author-created smoke tests. No teacher grades or claim of ENEM scoring accuracy.",
+  "topics": [
+    {
+      "id": "essay-01",
+      "reference": "Os efeitos da exclusão digital no acesso à cidadania. Dificuldades de pessoas sem conexão, sem aparelhos ou formação para usar serviços públicos e exercer direitos."
+    },
+    {
+      "id": "essay-06",
+      "reference": "Caminhos para combater o estigma sobre a saúde mental. Preconceito contra pessoas com sofrimento psíquico, procura por ajuda, redes de cuidado e atendimento psicológico."
+    },
+    {
+      "id": "essay-11",
+      "reference": "Desafios para a permanência de jovens no ensino médio brasileiro. Abandono dos estudos por necessidade de trabalhar, desigualdade e falta de apoio escolar."
+    },
+    {
+      "id": "essay-20",
+      "reference": "Desafios para a proteção de trabalhadores de plataformas digitais. Entregadores e motoristas de aplicativos, remuneração, algoritmos, autonomia e direitos trabalhistas."
+    },
+    {
+      "id": "essay-22",
+      "reference": "Desafios para a gestão de resíduos sólidos no Brasil. Lixo urbano, coleta seletiva, reciclagem, redução do descarte e condições de trabalho de catadores."
+    },
+    {
+      "id": "essay-26",
+      "reference": "Caminhos para prevenir a violência contra a mulher. Agressões no ambiente doméstico, proteção das vítimas, canais de denúncia e prevenção da violência de gênero."
+    }
+  ],
+  "samples": [
+    {
+      "id": "essay-01-relevant",
+      "topicId": "essay-01",
+      "kind": "relevant",
+      "text": "A falta de acesso à internet impede cidadãos de solicitar benefícios e agendar consultas. O poder público deve oferecer atendimento presencial e pontos de conexão com orientação para que a digitalização não amplie desigualdades."
+    },
+    {
+      "id": "essay-01-paraphrase",
+      "topicId": "essay-01",
+      "kind": "paraphrase",
+      "text": "Quando o Estado exige cadastros exclusivamente pelo celular, quem não dispõe de aparelho ou não sabe utilizá-lo fica sem atendimento. Canais alternativos e orientação gratuita ajudam essas pessoas a exercer seus direitos."
+    },
+    {
+      "id": "essay-01-unrelated",
+      "topicId": "essay-01",
+      "kind": "unrelated",
+      "text": "Muitos adolescentes deixam o ensino médio para sustentar a família. Apoio financeiro e acompanhamento escolar podem reduzir o abandono, desde que também enfrentem a dificuldade de conciliar estudo e trabalho."
+    },
+    {
+      "id": "essay-01-keyword-bait",
+      "topicId": "essay-01",
+      "kind": "keyword-bait",
+      "text": "internet cidadania exclusão digital internet cidadania exclusão digital internet cidadania exclusão digital internet cidadania exclusão digital internet cidadania exclusão digital internet cidadania exclusão digital internet cidadania exclusão digital internet cidadania exclusão digital"
+    },
+    {
+      "id": "essay-06-relevant",
+      "topicId": "essay-06",
+      "kind": "relevant",
+      "text": "O preconceito contra pessoas com depressão dificulta a busca por atendimento. Escolas e serviços de saúde precisam explicar que sofrimento psíquico não é fraqueza, criando espaços de acolhimento e caminhos para tratamento."
+    },
+    {
+      "id": "essay-06-paraphrase",
+      "topicId": "essay-06",
+      "kind": "paraphrase",
+      "text": "Quem sofre emocionalmente pode esconder os sintomas por medo de ser julgado. Conversas responsáveis e acolhimento por profissionais ajudam a romper o silêncio e possibilitam procurar ajuda antes de o sofrimento se agravar."
+    },
+    {
+      "id": "essay-06-unrelated",
+      "topicId": "essay-06",
+      "kind": "unrelated",
+      "text": "Entregadores de aplicativos ficam expostos a acidentes e rendimentos instáveis. A transparência das decisões algorítmicas e a proteção social devem fazer parte das regras de contratação, com participação dos próprios trabalhadores."
+    },
+    {
+      "id": "essay-06-keyword-bait",
+      "topicId": "essay-06",
+      "kind": "keyword-bait",
+      "text": "depressão saúde mental preconceito depressão saúde mental preconceito depressão saúde mental preconceito depressão saúde mental preconceito depressão saúde mental preconceito depressão saúde mental preconceito depressão saúde mental preconceito depressão saúde mental preconceito"
+    },
+    {
+      "id": "essay-11-relevant",
+      "topicId": "essay-11",
+      "kind": "relevant",
+      "text": "Muitos adolescentes deixam o ensino médio para sustentar a família. Apoio financeiro e acompanhamento escolar podem reduzir o abandono, desde que também enfrentem a dificuldade de conciliar estudo e trabalho."
+    },
+    {
+      "id": "essay-11-paraphrase",
+      "topicId": "essay-11",
+      "kind": "paraphrase",
+      "text": "Uma estudante que precisa gerar renda pode interromper a trajetória antes de concluir a educação básica. Para que ela continue aprendendo, são importantes condições de sustento e uma escola que acompanhe suas dificuldades."
+    },
+    {
+      "id": "essay-11-unrelated",
+      "topicId": "essay-11",
+      "kind": "unrelated",
+      "text": "O descarte de lixo sem separação dificulta a reciclagem e amplia a poluição. Municípios devem combinar coleta seletiva, redução de embalagens e apoio às cooperativas de catadores para enfrentar o problema."
+    },
+    {
+      "id": "essay-11-keyword-bait",
+      "topicId": "essay-11",
+      "kind": "keyword-bait",
+      "text": "ensino médio evasão estudantes ensino médio evasão estudantes ensino médio evasão estudantes ensino médio evasão estudantes ensino médio evasão estudantes ensino médio evasão estudantes ensino médio evasão estudantes ensino médio evasão estudantes"
+    },
+    {
+      "id": "essay-20-relevant",
+      "topicId": "essay-20",
+      "kind": "relevant",
+      "text": "Entregadores de aplicativos ficam expostos a acidentes e rendimentos instáveis. A transparência das decisões algorítmicas e a proteção social devem fazer parte das regras de contratação, com participação dos próprios trabalhadores."
+    },
+    {
+      "id": "essay-20-paraphrase",
+      "topicId": "essay-20",
+      "kind": "paraphrase",
+      "text": "Quem transporta passageiros pelo telefone depende de regras que nem sempre conhece. Bloqueios sem explicação e ausência de cobertura em acidentes mostram a necessidade de garantir condições dignas a quem presta esses serviços."
+    },
+    {
+      "id": "essay-20-unrelated",
+      "topicId": "essay-20",
+      "kind": "unrelated",
+      "text": "A violência doméstica persiste quando vítimas não encontram proteção e dependem financeiramente do agressor. É necessário integrar acolhimento, acesso à justiça e políticas de autonomia econômica para interromper o ciclo de agressões."
+    },
+    {
+      "id": "essay-20-keyword-bait",
+      "topicId": "essay-20",
+      "kind": "keyword-bait",
+      "text": "aplicativos entregadores trabalho direitos aplicativos entregadores trabalho direitos aplicativos entregadores trabalho direitos aplicativos entregadores trabalho direitos aplicativos entregadores trabalho direitos aplicativos entregadores trabalho direitos aplicativos entregadores trabalho direitos aplicativos entregadores trabalho direitos"
+    },
+    {
+      "id": "essay-22-relevant",
+      "topicId": "essay-22",
+      "kind": "relevant",
+      "text": "O descarte de lixo sem separação dificulta a reciclagem e amplia a poluição. Municípios devem combinar coleta seletiva, redução de embalagens e apoio às cooperativas de catadores para enfrentar o problema."
+    },
+    {
+      "id": "essay-22-paraphrase",
+      "topicId": "essay-22",
+      "kind": "paraphrase",
+      "text": "Reaproveitar materiais exige que moradores separem o que descartam e que a cidade ofereça estrutura para recolhê-los. Valorizar quem faz a triagem permite reduzir desperdícios e destinações inadequadas."
+    },
+    {
+      "id": "essay-22-unrelated",
+      "topicId": "essay-22",
+      "kind": "unrelated",
+      "text": "A falta de acesso à internet impede cidadãos de solicitar benefícios e agendar consultas. O poder público deve oferecer atendimento presencial e pontos de conexão com orientação para que a digitalização não amplie desigualdades."
+    },
+    {
+      "id": "essay-22-keyword-bait",
+      "topicId": "essay-22",
+      "kind": "keyword-bait",
+      "text": "lixo reciclagem coleta resíduos lixo reciclagem coleta resíduos lixo reciclagem coleta resíduos lixo reciclagem coleta resíduos lixo reciclagem coleta resíduos lixo reciclagem coleta resíduos lixo reciclagem coleta resíduos lixo reciclagem coleta resíduos"
+    },
+    {
+      "id": "essay-26-relevant",
+      "topicId": "essay-26",
+      "kind": "relevant",
+      "text": "A violência doméstica persiste quando vítimas não encontram proteção e dependem financeiramente do agressor. É necessário integrar acolhimento, acesso à justiça e políticas de autonomia econômica para interromper o ciclo de agressões."
+    },
+    {
+      "id": "essay-26-paraphrase",
+      "topicId": "essay-26",
+      "kind": "paraphrase",
+      "text": "Mulheres ameaçadas dentro de casa precisam de uma rede que lhes permita sair em segurança. Abrigos, atendimento especializado e meios de sustento tornam a proteção mais efetiva do que apenas orientar a vítima a denunciar."
+    },
+    {
+      "id": "essay-26-unrelated",
+      "topicId": "essay-26",
+      "kind": "unrelated",
+      "text": "O preconceito contra pessoas com depressão dificulta a busca por atendimento. Escolas e serviços de saúde precisam explicar que sofrimento psíquico não é fraqueza, criando espaços de acolhimento e caminhos para tratamento."
+    },
+    {
+      "id": "essay-26-keyword-bait",
+      "topicId": "essay-26",
+      "kind": "keyword-bait",
+      "text": "mulher violência doméstica denúncia mulher violência doméstica denúncia mulher violência doméstica denúncia mulher violência doméstica denúncia mulher violência doméstica denúncia mulher violência doméstica denúncia mulher violência doméstica denúncia mulher violência doméstica denúncia"
+    },
+    {
+      "id": "nonsense",
+      "topicId": "essay-01",
+      "kind": "nonsense",
+      "text": "zxqv plmrt asdfg qwerty zzzzz blorpt nnnn"
+    },
+    {
+      "id": "single-word",
+      "topicId": "essay-01",
+      "kind": "insufficient",
+      "text": "teste"
+    }
+  ]
+}

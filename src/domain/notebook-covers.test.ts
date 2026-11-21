@@ -5,8 +5,8 @@ import { isWorkspaceState } from "../data/local-workspace";
 import { mergeWorkspaceStates } from "./workspace-sync-merge";
 
 describe("capas conquistadas dos cadernos", () => {
-  it("usa os mesmos requisitos dos headers e conserva as duas capas legadas", () => {
-    expect(NOTEBOOK_COVERS).toHaveLength(4);
+  it("usa objetivos fáceis de estudo e conserva as capas legadas", () => {
+    expect(NOTEBOOK_COVERS).toHaveLength(7);
     for (const style of [undefined, "helena-estrelas", "oliver-estrelas"] as const)
       expect(notebookCoverTheme(style)).toBe("stars");
     expect(notebookCoverUnlocked("helena-estrelas", new Set())).toBe(true);

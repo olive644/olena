@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "runtime": "Transformers.js on Node CPU, not browser or physical mobile",
+  "deploymentEnabled": false,
+  "remoteModelsAllowed": false,
+  "loadMs": 671.8412999999999,
+  "tests": [
+    {
+      "prediction": [
+        {
+          "label": 120,
+          "score": 0.3151952624320984
+        },
+        {
+          "label": 80,
+          "score": 0.20030982792377472
+        },
+        {
+          "label": 160,
+          "score": 0.17552851140499115
+        },
+        {
+          "label": 200,
+          "score": 0.1299586296081543
+        },
+        {
+          "label": 0,
+          "score": 0.09314893931150436
+        },
+        {
+          "label": 40,
+          "score": 0.08585883677005768
+        }
+      ],
+      "milliseconds": 29.273999999999887
+    },
+    {
+      "prediction": [
+        {
+          "label": 120,
+          "score": 0.5244631767272949
+        },
+        {
+          "label": 160,
+          "score": 0.22791177034378052
+        },
+        {
+          "label": 80,
+          "score": 0.10050002485513687
+        },
+        {
+          "label": 200,
+          "score": 0.0659141093492508
+        },
+        {
+          "label": 0,
+          "score": 0.04940323904156685
+        },
+        {
+          "label": 40,
+          "score": 0.03180771321058273
+        }
+      ],
+      "milliseconds": 15.856499999999869
+    }
+  ]
+}

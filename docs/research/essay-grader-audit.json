@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "models": [
+    {
+      "id": "kamel-usp/jbcs2025_bertimbau_base-C1",
+      "revision": "1ad2e0f61009276ce3c1d23b24b6f55e0eb102d8",
+      "source": "https://huggingface.co/kamel-usp/jbcs2025_bertimbau_base-C1",
+      "license": null,
+      "licenseFiles": [],
+      "bytes": 435734528,
+      "sha256": "c8e1242477f9af3b16b9a5747d747b5fedb6ba415abeb24a39f156cbf3ddc223",
+      "browserReady": false,
+      "hasTokenizer": false,
+      "architecture": ["BertForSequenceClassification"],
+      "maxTokens": 512,
+      "labels": {
+        "0": 0,
+        "1": 40,
+        "2": 80,
+        "3": 120,
+        "4": 160,
+        "5": 200
+      },
+      "publishedMetrics": {
+        "accuracy": 0.644928,
+        "rmse": 26.3752,
+        "qwk": 0.674272
+      },
+      "metricsAreIndependentlyReproduced": false
+    },
+    {
+      "id": "kamel-usp/jbcs2025_bertimbau_base-C2",
+      "revision": "3afae7b80c36bf0042b19778620a0ad1135b7135",
+      "source": "https://huggingface.co/kamel-usp/jbcs2025_bertimbau_base-C2",
+      "license": null,
+      "licenseFiles": [],
+      "bytes": 435734528,
+      "sha256": "ffb3dc6edf71b49ef9a680ddbcef80ff232b365f9f3ceb10beeb146e777dbe0b",
+      "browserReady": false,
+      "hasTokenizer": false,
+      "architecture": ["BertForSequenceClassification"],
+      "maxTokens": 512,
+      "labels": {
+        "0": 0,
+        "1": 40,
+        "2": 80,
+        "3": 120,
+        "4": 160,
+        "5": 200
+      },
+      "publishedMetrics": {
+        "accuracy": 0.369565,
+        "rmse": 55.7427,
+        "qwk": 0.410256
+      },
+      "metricsAreIndependentlyReproduced": false
+    },
+    {
+      "id": "kamel-usp/jbcs2025_bertimbau_base-C3",
+      "revision": "bad03f1db697f1fb612e4d74bb55d6f0e8cd7a16",
+      "source": "https://huggingface.co/kamel-usp/jbcs2025_bertimbau_base-C3",
+      "license": null,
+      "licenseFiles": [],
+      "bytes": 435734528,
+      "sha256": "0b3a54f1a88befaa17e93136a620fb807f8201e6359a9c16ee6866fe405ec5c9",
+      "browserReady": false,
+      "hasTokenizer": false,
+      "architecture": ["BertForSequenceClassification"],
+      "maxTokens": 512,
+      "labels": {
+        "0": 0,
+        "1": 40,
+        "2": 80,
+        "3": 120,
+        "4": 160,
+        "5": 200
+      },
+      "publishedMetrics": {
+        "accuracy": 0.376812,
+        "rmse": 52.6404,
+        "qwk": 0.345205
+      },
+      "metricsAreIndependentlyReproduced": false
+    },
+    {
+      "id": "kamel-usp/jbcs2025_bertimbau_base-C4",
+      "revision": "be129129fc134c0e782ae9f62b33da331367ab7b",
+      "source": "https://huggingface.co/kamel-usp/jbcs2025_bertimbau_base-C4",
+      "license": null,
+      "licenseFiles": [],
+      "bytes": 435734528,
+      "sha256": "d8bccc56cd90cfee8250529478698050472e5a23ca80bebdc39a12ba7391a820",
+      "browserReady": false,
+      "hasTokenizer": false,
+      "architecture": ["BertForSequenceClassification"],
+      "maxTokens": 512,
+      "labels": {
+        "0": 0,
+        "1": 40,
+        "2": 80,
+        "3": 120,
+        "4": 160,
+        "5": 200
+      },
+      "publishedMetrics": {
+        "accuracy": 0.644928,
+        "rmse": 26.3752,
+        "qwk": 0.625813
+      },
+      "metricsAreIndependentlyReproduced": false
+    },
+    {
+      "id": "kamel-usp/jbcs2025_bertimbau_base-C5",
+      "revision": "fb36ac8b730b27c491174f81a69d6da1c0962026",
+      "source": "https://huggingface.co/kamel-usp/jbcs2025_bertimbau_base-C5",
+      "license": null,
+      "licenseFiles": [],
+      "bytes": 435734528,
+      "sha256": "ae33686eacfa0569244ae043d59f6d0143d2a3580047cbfcfce8115a9c2fbf75",
+      "browserReady": false,
+      "hasTokenizer": false,
+      "architecture": ["BertForSequenceClassification"],
+      "maxTokens": 512,
+      "labels": {
+        "0": 0,
+        "1": 40,
+        "2": 80,
+        "3": 120,
+        "4": 160,
+        "5": 200
+      },
+      "publishedMetrics": {
+        "accuracy": 0.318841,
+        "rmse": 61.2905,
+        "qwk": 0.476219
+      },
+      "metricsAreIndependentlyReproduced": false
+    }
+  ],
+  "totalWeightBytes": 2178672640,
+  "deploymentEnabled": false,
+  "blockers": [
+    "No explicit fine-tuned weight license found",
+    "No ONNX files or tokenizer in checkpoints",
+    "512-token limit requires verified input handling",
+    "No independent grading-quality evaluation yet"
+  ]
+}

@@ -5594,3 +5594,82 @@ X no alto à esquerda do painel da proposta; cronômetro no alto à direita, pr�
 
 ### 2026-11-20 - Linhas preservadas durante foco
 Causa: regra global focus-visible brightness(1.2) saturava linhas claras até branco. Exceção limitada ao textarea de redação mantém filter:none. Edge 1366/390 com digitação real, foco e rolagem: gradiente preservado e sem clareamento; capturas tmp/essay-lines-focused-*.png.
+
+### 2026-11-20 - Cronômetro pausável
+Cronômetro verde com pausa e vermelho com play. Tempo acumulado exclui pausas e preserva frações de segundo. Números e dois-pontos usam PaperDigits. Edge desktop/mobile verifica congelamento durante pausa e continuação ao retomar; capturas tmp/essay-clock-*.png.
+
+### 2026-11-20 - Controles fixos durante rolagem
+X e cronômetro permanecem no topo. Desktop mantém controles fora da rolagem da proposta; mobile usa posição fixa com espaço reservado. Edge 1366/390 verifica posição antes/depois de rolar e pausa/retomada acessíveis.
+
+### 2026-11-20 - Trilhos de rolagem em papel
+Proposta com trilho à esquerda e conteúdo LTR preservado. Trilhos da proposta e redação recebem acabamento roxo facetado, sem setas nativas; fallback scrollbar-color para outros motores. Edge valida trilho esquerdo, leitura LTR e rolagem. Controles X/cronômetro movidos para portal no body, fixos e fora do recorte dos ancestrais; biblioteca completa validada por elementFromPoint após scroll.
+
+### 2026-11-20 - Detalhes roxos da proposta
+Bordas, divisórias e sombra da folha de proposta usam a família roxa do trilho (#9764df/#c5a8eb/#673aa7). Créditos e links usam roxo escuro para leitura em branco. Alteração restrita à proposta, sem mudar infográficos editoriais ou cartões de madeira. Edge em 1366/390 verifica cores computadas e renderização.
+
+### 2026-11-20 - Revisão ortográfica somente na entrega
+
+Integração local Hunspell WebAssembly e dictionary-pt, sem API paga ou envio de texto a terceiros. Removidos modo assistido e revisão durante a escrita, conforme pedido. Entregar pausa o cronômetro, salva cópia da entrega e abre sugestões explícitas, ignorar e localizar, com desfazer/refazer. Resultados vinculados à revisão exata do texto; falha e timeout preservam rascunho. Créditos/licenças em public/third-party/essay-spelling.txt. Arquitetura e custos em docs/ESSAY_REVIEW.md.
+
+13 testes focados, TypeScript, ESLint e build aprovados. Biblioteca completa e produção testadas em Edge 1366/390, temas claro/escuro, sem chamadas externas durante revisão. Desempenho medido 1,0 a 1,4 s no desktop com esses viewports. Gate de tamanho continua vermelho: 1873,1 KiB de JS total >1764 KiB, entrada inicial219,4 KiB; sem aumentar limite ou omitir verificação. Não publicado nesta etapa.
+
+### 2026-11-20 - Entrega flutuante
+Botão Entregar redação sem ícone, roxo facetado, centralizado e fixo na borda inferior com safe-area. Portal no body impede recorte por ancestrais e mantém posição durante rolagem. Validado no Edge desktop/mobile; oito testes focados, TypeScript e ESLint aprovados.
+
+### 2026-11-20 - Comparação de corretores gratuitos
+
+Inspecionados IME-USP, NILC-Metrix, UTFPR e corretor-enem com revisões fixadas e licenças registradas. Executados MiniLM e E5-small quantizados, em laboratório isolado sem alterar dependências do app. Cada um avaliou 26 casos autorais em seis temas, com 11/12 nas paráfrases/textos pertinentes. Ambos associam listas repetitivas ao tema, portanto não aprovados como avaliadores completos ou para nota. Reexecução com fetch bloqueado confirmou inferência local após download inicial. Pesos/tokenizer de aproximadamente 129 MiB por modelo não enviados ao produto. Relatório, limitações e comandos em docs/research/ESSAY_LOCAL_EVALUATION.md; resultados JSON e fixtures versionáveis. Nenhuma API paga ou API do Olena usada.
+
+### 2026-11-20 - Triagem temática local na entrega
+
+Modelo MiniLM opcional, com aviso de download de aproximadamente 150 MB, sem API do Olena nem envio do texto. Perfis editoriais gerados para as 60 propostas, versão/modelo fixados; título e apoio ponderados. Texto analisado em blocos, parágrafos e conjunto, com evidências localizáveis. Resultados provisórios: alinhamento, possível tangenciamento, possível fuga e inconclusivo. Repetição/insuficiência/ambiguidade causam abstenção; nenhuma nota zero automática. Cancelamento e mudança de texto/tema invalidam o trabalho.
+
+23 testes, TS, ESLint e build aprovados. Browser produção/CSP 1366/390: texto fora do assunto, introdução isolada e repetição passaram; somente downloads GET para Hugging Face/CDN, sem redação no tráfego. Modelo executado de verdade no browser. Textos pertinentes próximos podem permanecer inconclusivos, registrado no smoke report; nenhum teste em celular físico. Gate de tamanho permanece vermelho: 2791,7 KiB >1764 KiB total, entrada inicial219,4 KiB. Sem aumento de teto e sem publicar.
+
+
+### Resultado de redação em tela própria (2026-11-20)
+A entrega agora alterna o editor para uma tela de resultado com a arte existente da Olena. Não abre LibraryDialog; controles e botão flutuante do editor são ocultados. Retornar à folha preserva o rascunho e o histórico. A revisão ortográfica exibe contexto e distingue possíveis alterações de acentuação. Diagnósticos objetivos apontam parágrafos duplicados, bloco único e períodos longos, sem inferir qualidade ou nota. A triagem temática apresenta os parágrafos mais próximo e mais distante do tema, mantendo abstenção e consentimento para o modelo local. Não há nota pedagógica atribuída nem serviço pago ativado.
+
+Arte do resultado: Poliana ensinando na lousa e Olena sentada aprendendo, fundo transparente, sem brilhos ou risquinhos decorativos; ilustração compacta no cabeçalho, adaptada a mobile. Asset public/essay-art/poliana-teaching-olena.webp.
+
+
+### Viabilidade de notas locais (20/11/2026)
+Cinco classificadores USP auditados e executados em laboratório isolado, com hashes de pesos fixados. Comparação exploratória: 24 avaliações públicas de 23 redações, C1/C4 mais próximas das notas humanas nesta amostra; C2/C3/C5 com maiores desvios. Entradas inválidas receberam notas positivas, e o limite de 512 tokens cortou textos. C1 convertida para ONNX Q8 (109,75 MB), funcionando em Transformers.js Node CPU; 22/24 previsões iguais ao FP32. Não houve teste em aparelho físico nem integração de notas no app. Licença explícita dos pesos não localizada, e licença do dataset tem divergência de metadados. Nenhuma API paga usada. Resultados e condições de integração em docs/research/ESSAY_GRADING_FEASIBILITY.md.
+
+
+### Primeiro treinamento próprio (20/11/2026)
+Corpus Essay-BR de revisão fixa e licença MIT declarada: 4.570 ocorrências, 4.568 retidas após exclusão de duas conflitantes. Divisão por IDs de proposta: 60 temas/3.122 redações de treino, 13/792 de validação e 13/654 de teste. Encoder local congelado leu integralmente 1.855.114 tokens; treino de cinco regressões com seleção apenas na validação, controles estrutural/lexical e mediana do treino. Cabeçalho semântico exportado com 166.691 bytes, reprodutível e com paridade aritmética em JS, sem pesos do encoder incluídos. MAE total semântico 119,51/1000, maior erro 680; C3 piorou em relação à mediana e não houve ganho consistente nas cinco competências. Portanto, notas continuam desativadas. Cache privado ignorado, nenhuma API paga ou dependência nova do app. Evidências e limites: docs/research/ESSAY_OWN_GRADER.md.
+
+Resultado de redação: removidos, a pedido do usuário, os parágrafos explicativos sobre limitações de correção, download e processamento local, além dos links de licenças na tela. Diagnósticos, ações explícitas, estado sem nota e arquivos de atribuição permanecem.
+
+
+### Análise automática e marcações (20/11/2026)
+Por pedido do usuário, a análise de tema inicia ao abrir o resultado da entrega, sem botão de download ou análise manual. Não inicia durante a escrita; cancelamento, retry e invalidação por texto/tema continuam. O primeiro uso pode baixar o modelo local automaticamente; nenhuma redação é enviada. As observações de tema, ortografia e organização foram reunidas em Marcações, com trechos do texto e marcadores facetados, mantendo apenas diagnósticos disponíveis e sem inventar notas ou avaliações de competências. Erros e resultados inconclusivos continuam explícitos.
+
+Resultado de redação: Pontuação/Em breve substituem o rótulo pedagógico; contador de palavras removido do resultado. Revisão ortográfica e critérios recolhíveis com FocusPaperArrow roxa compartilhada; critérios mostram Em breve. Rodapé apenas Continuar para propostas. Sugestões do dicionário filtradas por validade e proximidade, com preferência por plural preservando radical (cidadões → cidadãos), sem alegar compreensão contextual.
+
+Resultado: botão Veja aqui sua redação e a proposta exporta dois PNGs locais, com favicon, marca OlenaStudy e rodapé Feito por OlenaStudy. Redação usa snapshot entregue; proposta contém instruções, textos motivadores e infográfico com fonte. Geração via Canvas, fontes do app, sem dependências ou upload.
+
+Entregas de redação agora são reabertas no resultado final, sem edição ou nova entrega; rascunhos não entregues continuam editáveis. Aba Minhas redações com ícone facetado verde próprio lista entregas da máquina atual. Propostas concluídas mostram Ver resultado. Continuidade e reabertura verificadas em PC e celular.
+
+Correção de navegação: Minhas redações passou a tópico dentro da aba Redação, não uma aba separada. Cards creme no tema claro e grafite no escuro, mantendo reabertura somente do resultado.
+
+Compartilhamento de redação: ação ao lado do download com ícones monocromáticos próprios. Modal original apresenta prévia PNG 1080×1920 transparente, proposta × redação e tempo, com opção Incluir proposta. Compartilha arquivo via Web Share quando disponível; fallback de download PNG, sem upload ou link público. Prévia e alternância verificadas em 1366/390; canal alpha conferido. Tempo da entrega persistido em tag para reabertura; entregas antigas sem duração permanecem sem recuperação retroativa do tempo.
+
+Máquina de escrever: entrada pela biblioteca integrada ao mecanismo View Transition existente, com aproximação e deslocamento leves; saída usa transição de retorno à estante. Movimento reduzido preservado, fallback sem bloqueio em navegador sem suporte. Fluxos verificados em 1366/390 e com reduced motion.
+
+Folha de redação: painel recolhível no contador de palavras, com caracteres e opções 50/65/85 caracteres por linha (grande/média/pequena). Ajusta tamanho visual pelo espaço disponível e métricas da fonte, sem alterar conteúdo; fonte proporcional torna o número uma referência de capacidade. Fecha por clique externo ou Escape e mantém linhas da folha. Verificado em PC e celular.
+
+Opções de escrita movidas do rodapé para balão flutuante ancorado à área visível da folha, fora do contêiner rolável. Reposiciona em scroll/resize e desaparece no resultado ou folha recolhida. Validado em PC/celular.
+
+Máquina de escrever agora participa da inspeção e personalização da prateleira como pastas: modal com detalhes, prévia e quatro skins (clássica, LGBT, Matemática, Inglês), preview imediato e aplicação pelo salvamento compartilhado. Usa collection.style existente sem migração ou alteração dos limites. Fluxos e quatro previews/salvamento verificados em 1366/390; 15 testes da biblioteca passaram.
+
+Skins de prateleira: pastas, máquinas e cadernos ganharam Lua Sangrenta, Eclipse Solar e Eclipse Lunar gratuitos; LGBT e padrão permanecem gratuitos. Objetivos por item: Inglês 1/5/10 acertos; Matemática rodada 1/10 acertos/etapa 1. Integração às conquistas reais e preservação de desbloqueios legados de 100 acertos. Preview, bloqueio no seletor e validação no salvamento compartilham regras. Novos IDs aceitos no carregamento persistido.
+
+
+### Créditos da Olena na pasta — 2026-11-21
+Reutilizados orçamento, API autenticada e medidor das PRs 686/688/689 na main. Cabeçalho da pasta mostra saldo real à direita da seta, com PaperDigits amarelos; nenhuma conversão para dois usos ou dois créditos. Custo variável em neurons, reserva/acerto e limites do servidor preservados. O hook consulta ao abrir, após geração e na renovação. Sem conta/saldo disponível não inventa número. Testes de orçamento/servidor e 25 testes de UI aprovados; layout conferido a 390/1366px com fixture isolada de saldo, sem chamar IA.
+
+
+### Gerações da pasta — somente Olena (2026-11-21)
+Removida geração automática local de resumo, flashcards, quizzes e simulados na pasta. Reutilizados library-ai.ts, extração de fontes e generateWithOlena da main. Custo estimado para todas as categorias; tamanho altera custo de quiz/prova. Sem saldo desabilita, saldo insuficiente avisa sem bloquear tentativa. Backend mantém orçamento/reserva/acerto da main. 49 testes aprovados; conferência de cada modal em PC/mobile com fonte textual e saldo de teste sem gerar IA real.

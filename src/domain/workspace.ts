@@ -152,7 +152,14 @@ export type StudyMaterial = {
   annotations?: { id: string; page: number; quote: string; note: string }[];
 };
 
-export type LibraryFolderStyle = "classic" | "pride" | "mathematics" | "english";
+export type LibraryFolderStyle =
+  | "classic"
+  | "pride"
+  | "mathematics"
+  | "english"
+  | "blood-moon"
+  | "solar-eclipse"
+  | "lunar-eclipse";
 type LibraryCollection = {
   kind?: "folder" | "typewriter";
   id: string;

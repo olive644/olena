@@ -1,0 +1,13 @@
+Essay topic analysis: third-party notices
+
+Transformers.js 3.8.1, Apache-2.0. https://github.com/huggingface/transformers.js
+ONNX Runtime Web, MIT. https://github.com/microsoft/onnxruntime
+Model: Xenova/paraphrase-multilingual-MiniLM-L12-v2
+Revision: 2c4055b12046f11709e9df2c122e59ffbdc2f900
+Base model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2, Apache-2.0.
+https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+https://huggingface.co/Xenova/paraphrase-multilingual-MiniLM-L12-v2
+Model weights are fetched directly from the model publisher only after the user requests analysis.
+The essay is processed locally and is not sent to Hugging Face or an inference API.
+Editorial topic vectors are generated from the Olena proposal catalogue with the pinned model.
+This is experimental thematic triage, not an official ENEM evaluation or automatic zero.

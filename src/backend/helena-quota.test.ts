@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  ADDRESS_DAILY_LIMIT,
   DAY_SECONDS,
   noticeLanguage,
   quotaMessage,
@@ -19,9 +20,12 @@ describe("cota diária da Olena", () => {
     "user-minute",
     "user-day",
     "address-day",
-    "summary-user-day",
-    "summary-day",
-    "global-day",
+    "user-budget",
+    "address-budget",
+    "global-budget",
+    "busy",
+    "duplicate",
+    "request-too-big",
     "provider-quota",
   ];
 
@@ -31,11 +35,40 @@ describe("cota diária da Olena", () => {
     expect(message).not.toMatch(/[\u2013\u2014]/);
   });
 
-  it("lembra do Resumo automático só nos resumos e diz a hora em que volta", () => {
-    expect(quotaMessage("global-day", "summarize")).toContain("Resumo automático");
-    expect(quotaMessage("global-day", "tutor")).not.toContain("Resumo automático");
-    expect(quotaMessage("summary-day", "summarize")).toContain("21h");
+  it("o aviso de créditos diz quanto foi usado, quanto cabe e quando volta", () => {
+    const message = quotaMessage("user-budget", "quiz", "pt", {
+      usedCredits: 410,
+      limitCredits: 450,
+    });
+    expect(message).toContain("410 de 450");
+    expect(message).toContain("créditos");
+    expect(message).toContain("21h");
+    expect(message).not.toMatch(/\b2 (resumos|quizzes|simulados|flashcards)\b/);
+    expect(
+      quotaMessage("user-budget", "quiz", "en", { usedCredits: 410, limitCredits: 450 }),
+    ).toContain("410 of 450");
+  });
+
+  it("o aviso de texto grande diz o custo e o limite", () => {
+    const message = quotaMessage("request-too-big", "summarize", "pt", {
+      requestCredits: 340,
+      requestMaxCredits: 300,
+    });
+    expect(message).toContain("340");
+    expect(message).toContain("300");
+    expect(message).toContain("menos fontes");
+  });
+
+  it("o limite global e o do provedor falam do limite gratuito do dia e da hora de volta", () => {
+    expect(quotaMessage("global-budget", "quiz")).toContain("21h");
+    expect(quotaMessage("provider-quota", "quiz")).toContain("limite gratuito de hoje");
     expect(quotaMessage(undefined, "tutor")).toContain("Limite de uso atingido");
+    // Não há mais caminho gratuito no aparelho: o aviso não promete um.
+    for (const name of names) expect(quotaMessage(name, "quiz")).not.toContain("automático");
+  });
+
+  it("o limite por rede cabe uma turma e não é o limite de custo", () => {
+    expect(ADDRESS_DAILY_LIMIT).toBeGreaterThanOrEqual(250);
   });
 
   it("traduz todos os avisos para inglês e escolhe o idioma pelo cabeçalho", () => {
@@ -44,11 +77,8 @@ describe("cota diária da Olena", () => {
     expect(noticeLanguage(null)).toBe("pt");
     for (const name of names) {
       const english = quotaMessage(name, "summarize", "en");
-      expect(english).not.toMatch(/Olena atingiu|voltam|Você|às 21h/);
-      expect(english).toMatch(/Olena|You|requests|Usage/);
+      expect(english).not.toMatch(/Olena atingiu|voltam|Você|às 21h|Esse|A Olena/);
+      expect(english).toMatch(/Olena|You|request|Usage|text/i);
     }
-    expect(quotaMessage("global-day", "summarize", "en")).toContain(
-      "Automatic summary still works",
-    );
   });
 });

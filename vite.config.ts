@@ -72,6 +72,7 @@ async function olenaMiddleware(request: IncomingMessage, response: ServerRespons
   }
 }
 export default defineConfig({
+  worker: { format: "es" },
   plugins: [
     react(),
     {

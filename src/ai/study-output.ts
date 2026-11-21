@@ -1,0 +1,190 @@
+// Saída da IA para flashcards, quiz e simulado da Biblioteca. O modelo devolve JSON; ele é dado NÃO
+// confiável (pode vir com texto em volta, campos a mais, alternativas repetidas ou resposta fora
+// da lista). Servidor e tela usam estas mesmas funções: o que não passa aqui nunca vira cartão nem
+// questão. Sem DOM nem rede, para rodar nos dois lados.
+
+export type StudyCard = { front: string; back: string };
+export type StudyQuestion = {
+  prompt: string;
+  options: string[];
+  answer: number;
+  explanation: string;
+};
+
+export const MAX_STUDY_CARDS = 20;
+export const MAX_STUDY_QUESTIONS = 20;
+const MAX_FRONT = 300;
+const MAX_BACK = 500;
+const MAX_PROMPT = 600;
+const MAX_OPTION = 240;
+const MAX_EXPLANATION = 500;
+
+/**
+ * Objetos completos de uma lista JSON que pode ter sido cortada no meio (o modelo parou no limite
+ * de tokens). Percorre o texto respeitando textos entre aspas e devolve só os objetos fechados.
+ */
+function salvageObjects(text: string): unknown[] | undefined {
+  const start = text.indexOf("[");
+  if (start < 0) return undefined;
+  const items: unknown[] = [];
+  let depth = 0;
+  let begin = -1;
+  let inString = false;
+  let escaped = false;
+  for (let index = start + 1; index < text.length; index += 1) {
+    const char = text[index]!;
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (char === "\\") escaped = true;
+      else if (char === '"') inString = false;
+      continue;
+    }
+    if (char === '"') inString = true;
+    else if (char === "{") {
+      if (depth === 0) begin = index;
+      depth += 1;
+    } else if (char === "}" && depth > 0) {
+      depth -= 1;
+      if (depth === 0 && begin >= 0) {
+        try {
+          items.push(JSON.parse(text.slice(begin, index + 1)) as unknown);
+        } catch {
+          // objeto quebrado: segue para o próximo
+        }
+        begin = -1;
+      }
+    }
+  }
+  return items.length > 0 ? items : undefined;
+}
+
+/** Corpo JSON de uma resposta do modelo: tira cerca de código e texto antes e depois. */
+export function extractJson(text: string): unknown {
+  const unfenced = text.replace(/```(?:json)?/gi, "");
+  const start = unfenced.search(/[[{]/);
+  if (start < 0) return undefined;
+  const open = unfenced[start]!;
+  const end = unfenced.lastIndexOf(open === "{" ? "}" : "]");
+  if (end > start) {
+    try {
+      return JSON.parse(unfenced.slice(start, end + 1)) as unknown;
+    } catch {
+      // cai para o resgate abaixo
+    }
+  }
+  // Resposta cortada pelo limite de tokens: aproveita as questões ou cartões que vieram inteiros.
+  return salvageObjects(unfenced.slice(start));
+}
+
+const clean = (value: unknown, max: number): string | undefined => {
+  if (typeof value !== "string") return undefined;
+  const text = value.replace(/\s+/g, " ").trim();
+  return text.length > 0 && text.length <= max ? text : undefined;
+};
+
+const asRecord = (value: unknown): Record<string, unknown> | undefined =>
+  typeof value === "object" && value !== null && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : undefined;
+
+function listFrom(value: unknown, key: string): unknown[] | undefined {
+  if (Array.isArray(value)) return value;
+  const record = asRecord(value);
+  const inner = record?.[key];
+  return Array.isArray(inner) ? inner : undefined;
+}
+
+const normalize = (text: string) =>
+  text.toLocaleLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " ").trim();
+
+const TRUE_BACK = /^(?:Verdadeiro|True)\./;
+const FALSE_BACK = /^(?:Falso|False)\./;
+
+/** Verdadeiro ou falso do modelo: o campo pode vir como booleano, "true"/"false" ou "verdadeiro"/"falso". */
+function truthFrom(value: unknown): boolean | undefined {
+  if (typeof value === "boolean") return value;
+  if (typeof value !== "string") return undefined;
+  const text = normalize(value);
+  if (text === "true" || text === "verdadeiro") return true;
+  if (text === "false" || text === "falso") return false;
+  return undefined;
+}
+
+/**
+ * Flashcards de verdadeiro ou falso. O modelo devolve {"statement","true","explanation"}; o cartão
+ * guardado tem a afirmação na frente e o gabarito no começo do verso ("Verdadeiro. ..." ou "Falso.
+ * O texto diz: ..."), que é o que a tela de estudo lê. Pergunta aberta, sem gabarito, é recusada:
+ * flashcard aqui é afirmação para julgar. Também aceita o cartão já no formato guardado
+ * ({"front","back"} com o gabarito no verso), que é o que o servidor devolve à tela. Mínimo de 3.
+ */
+export function parseStudyCards(text: string, limit = MAX_STUDY_CARDS): StudyCard[] | undefined {
+  const list = listFrom(extractJson(text), "cards");
+  if (!list) return undefined;
+  const seen = new Set<string>();
+  const cards: StudyCard[] = [];
+  for (const item of list) {
+    const record = asRecord(item);
+    let front: string | undefined;
+    let back: string | undefined;
+    if (record && ("statement" in record || "truth" in record || "true" in record)) {
+      front = clean(record["statement"] ?? record["front"], MAX_FRONT);
+      const truth = truthFrom(record["truth"] ?? record["true"] ?? record["answer"]);
+      const explanation = clean(record["explanation"] ?? record["back"], MAX_BACK - 40);
+      if (!front || truth === undefined || !explanation) continue;
+      back = truth ? `Verdadeiro. ${explanation}` : `Falso. O texto diz: ${explanation}`;
+    } else {
+      front = clean(record?.["front"], MAX_FRONT);
+      back = clean(record?.["back"], MAX_BACK);
+      if (!front || !back || (!TRUE_BACK.test(back) && !FALSE_BACK.test(back))) continue;
+    }
+    if (normalize(front) === normalize(back)) continue;
+    if (seen.has(normalize(front))) continue;
+    seen.add(normalize(front));
+    cards.push({ front, back });
+    if (cards.length >= limit) break;
+  }
+  return cards.length >= 3 ? cards : undefined;
+}
+
+/**
+ * Questões de múltipla escolha válidas: número de alternativas pedido, sem repetição, resposta
+ * dentro da lista. `optionCount` é 3 (fácil) ou 4. A letra na frente ("A)") é tirada.
+ */
+export function parseStudyQuestions(
+  text: string,
+  optionCount: number,
+  limit = MAX_STUDY_QUESTIONS,
+): StudyQuestion[] | undefined {
+  const list = listFrom(extractJson(text), "questions");
+  if (!list) return undefined;
+  const seen = new Set<string>();
+  const questions: StudyQuestion[] = [];
+  for (const item of list) {
+    const record = asRecord(item);
+    const prompt = clean(record?.["question"] ?? record?.["prompt"], MAX_PROMPT);
+    const rawOptions = record?.["options"];
+    const answer = record?.["answer"];
+    if (!prompt || !Array.isArray(rawOptions) || rawOptions.length !== optionCount) continue;
+    const options = rawOptions.map((option) =>
+      clean(
+        typeof option === "string" ? option.replace(/^\(?[A-Ea-e][).:]\s+/, "") : option,
+        MAX_OPTION,
+      ),
+    );
+    if (options.some((option) => option === undefined)) continue;
+    const finalOptions = options as string[];
+    if (new Set(finalOptions.map(normalize)).size !== finalOptions.length) continue;
+    if (typeof answer !== "number" || !Number.isInteger(answer)) continue;
+    if (answer < 0 || answer >= finalOptions.length) continue;
+    if (seen.has(normalize(prompt))) continue;
+    seen.add(normalize(prompt));
+    questions.push({
+      prompt,
+      options: finalOptions,
+      answer,
+      explanation: clean(record?.["explanation"], MAX_EXPLANATION) ?? "",
+    });
+    if (questions.length >= limit) break;
+  }
+  return questions.length >= 2 ? questions : undefined;
+}

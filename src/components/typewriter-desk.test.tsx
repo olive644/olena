@@ -57,10 +57,26 @@ it("abre textos próprios, salva por proposta e recupera ao voltar", () => {
     "value",
     "Minha tese e meus argumentos.",
   );
-  fireEvent.click(screen.getByRole("button", { name: "Concluir treino" }));
-  expect(screen.getByRole("status").textContent).toContain("sem nota automática");
-  fireEvent.click(screen.getByRole("button", { name: "Voltar às propostas" }));
+  fireEvent.click(screen.getByRole("button", { name: "Entregar redação" }));
+  expect(
+    screen
+      .getByText("Treino concluído. Sua redação foi salva, sem nota automática.")
+      .getAttribute("role"),
+  ).toBe("status");
+  fireEvent.click(screen.getByRole("button", { name: /^Continuar$/ }));
   expect(screen.getByRole("img", { name: "Treino concluído" })).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: new RegExp("Proposta 1.*" + title) }));
+  expect(screen.getByRole("heading", { name: "Redação entregue!" })).toBeTruthy();
+  expect(screen.queryByRole("textbox", { name: "Sua redação" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Entregar redação" })).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: /^Continuar$/ }));
+  expect(screen.queryByRole("tab", { name: "Minhas redações" })).toBeNull();
+  expect(screen.getByRole("heading", { name: "Minhas redações" })).toBeTruthy();
+  fireEvent.click(screen.getAllByRole("button", { name: new RegExp(title) })[0]!);
+  expect(screen.getByRole("heading", { name: "Sua redação entregue" })).toBeTruthy();
+  expect(screen.queryByRole("textbox", { name: "Sua redação" })).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: /^Continuar$/ }));
+  fireEvent.click(screen.getByRole("tab", { name: /^Redação$/ }));
   fireEvent.click(screen.getByRole("button", { name: /Proposta 2[^0-9]/ }));
   expect(screen.getByRole("textbox", { name: "Sua redação" })).toHaveProperty("value", "");
 });
@@ -68,7 +84,7 @@ it("abre textos próprios, salva por proposta e recupera ao voltar", () => {
 it("alterna abas acessíveis, com navegação por teclado e acervos oficiais", () => {
   render(<Host />);
   const essay = screen.getByRole("tab", { name: "Redação" });
-  const entrance = screen.getByRole("tab", { name: "Vestibular" });
+  const entrance = screen.getByRole("tab", { name: "Vestibular (em breve)" });
   expect(essay.getAttribute("aria-selected")).toBe("true");
   fireEvent.keyDown(essay, { key: "ArrowRight" });
   expect(entrance.getAttribute("aria-selected")).toBe("true");

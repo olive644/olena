@@ -1,7 +1,15 @@
 export function EssayDeskIcon({ name }: { name: string }) {
   return (
     <svg className="essay-desk-icon" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
-      {name === "redacao" ? (
+      {name === "minhas" ? (
+        <>
+          <path d="M9 10h25l7 8v26H9Z" fill="#32897e" />
+          <path d="M5 5h25l7 8v26H5Z" fill="#63c9b4" />
+          <path d="M30 5v9h7Z" fill="#c2f2de" />
+          <path d="M11 19h18v3H11Zm0 7h14v3H11Z" fill="#edfff7" />
+          <path d="m23 34 5 5 11-13 4 4-15 16-9-8Z" fill="#24816c" />
+        </>
+      ) : name === "redacao" ? (
         <>
           <path d="M7 3h23l11 11v31H7Z" fill="#fff2ce" />
           <path d="m30 3 11 11H30Z" fill="#d6b98a" />

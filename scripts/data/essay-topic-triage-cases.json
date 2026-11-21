@@ -1,0 +1,35 @@
+{
+  "note": "Authored extended smoke cases. Not human-calibrated classifications.",
+  "samples": [
+    {
+      "id": "essay-01-extended",
+      "topicId": "essay-01",
+      "kind": "extended-relevant",
+      "text": "A digitalização dos serviços públicos precisa ampliar direitos, mas pode excluir quem não possui conexão ou formação para utilizar aplicativos. Acesso à cidadania envolve conseguir atendimento, solicitar benefícios e acompanhar processos com autonomia. Por isso, a oferta de plataformas precisa ser acompanhada de alternativas e orientação.\n\nEm regiões com infraestrutura precária, a dependência do celular transfere ao cidadão os custos de acessar o Estado. Pessoas idosas também podem enfrentar dificuldades para preencher cadastros, mesmo quando há internet disponível. A consequência é a criação de barreiras no exercício de direitos que deveriam ser universais.\n\nPortanto, governos devem manter canais presenciais e investir em pontos de acesso gratuito com apoio de profissionais capacitados. Escolas e centros comunitários podem oferecer formação digital, respeitando necessidades locais. Avaliar o acesso efetivo ao atendimento permite verificar se a modernização está reduzindo ou ampliando a desigualdade."
+    },
+    {
+      "id": "essay-22-extended",
+      "topicId": "essay-22",
+      "kind": "extended-relevant",
+      "text": "O descarte de resíduos sólidos exige uma política que considere geração, coleta e destinação dos materiais. Nas cidades brasileiras, a mistura de restos de alimentos com embalagens dificulta o reaproveitamento e amplia a pressão sobre locais de disposição final. A gestão do lixo precisa articular responsabilidade pública e participação dos moradores.\n\nA coleta seletiva depende de rotas regulares, informação acessível e condições de trabalho para quem realiza a triagem. Quando catadores não possuem equipamentos adequados, uma atividade ambientalmente relevante permanece marcada pela insegurança. Separar materiais em casa perde eficácia se não existe infraestrutura para recolher e aproveitar o que foi separado.\n\nAssim, municípios devem ampliar a coleta diferenciada e formalizar parcerias com cooperativas, oferecendo proteção e remuneração compatíveis com o serviço prestado. Fabricantes também precisam reduzir embalagens e organizar o retorno de produtos. Acompanhar o volume recuperado ajuda a corrigir falhas e reduzir o descarte inadequado."
+    },
+    {
+      "id": "extended-unrelated",
+      "topicId": "essay-01",
+      "kind": "extended-unrelated",
+      "text": "O descarte de resíduos sólidos exige uma política que considere geração, coleta e destinação dos materiais. Nas cidades brasileiras, a mistura de restos de alimentos com embalagens dificulta o reaproveitamento e amplia a pressão sobre locais de disposição final. A gestão do lixo precisa articular responsabilidade pública e participação dos moradores.\n\nA coleta seletiva depende de rotas regulares, informação acessível e condições de trabalho para quem realiza a triagem. Quando catadores não possuem equipamentos adequados, uma atividade ambientalmente relevante permanece marcada pela insegurança. Separar materiais em casa perde eficácia se não existe infraestrutura para recolher e aproveitar o que foi separado.\n\nAssim, municípios devem ampliar a coleta diferenciada e formalizar parcerias com cooperativas, oferecendo proteção e remuneração compatíveis com o serviço prestado. Fabricantes também precisam reduzir embalagens e organizar o retorno de produtos. Acompanhar o volume recuperado ajuda a corrigir falhas e reduzir o descarte inadequado."
+    },
+    {
+      "id": "intro-only",
+      "topicId": "essay-01",
+      "kind": "partial-intro",
+      "text": "A exclusão digital afeta o acesso à cidadania e exige atenção social.\n\nO descarte de resíduos sólidos exige uma política que considere geração, coleta e destinação dos materiais. Nas cidades brasileiras, a mistura de restos de alimentos com embalagens dificulta o reaproveitamento e amplia a pressão sobre locais de disposição final. A gestão do lixo precisa articular responsabilidade pública e participação dos moradores.\n\nA coleta seletiva depende de rotas regulares, informação acessível e condições de trabalho para quem realiza a triagem. Quando catadores não possuem equipamentos adequados, uma atividade ambientalmente relevante permanece marcada pela insegurança. Separar materiais em casa perde eficácia se não existe infraestrutura para recolher e aproveitar o que foi separado.\n\nAssim, municípios devem ampliar a coleta diferenciada e formalizar parcerias com cooperativas, oferecendo proteção e remuneração compatíveis com o serviço prestado. Fabricantes também precisam reduzir embalagens e organizar o retorno de produtos. Acompanhar o volume recuperado ajuda a corrigir falhas e reduzir o descarte inadequado."
+    },
+    {
+      "id": "repeated-punctuated",
+      "topicId": "essay-01",
+      "kind": "keyword-bait",
+      "text": "Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. Internet cidadania exclusão digital. "
+    }
+  ]
+}

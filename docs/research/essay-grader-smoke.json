@@ -1,0 +1,1125 @@
+{
+  "schemaVersion": 1,
+  "runtime": {
+    "torch": "2.15.0+cpu",
+    "device": "cpu",
+    "threads": 4
+  },
+  "inputProtocol": "essay-only exploratory; original checkpoint training protocol not verified",
+  "humanGradedTestSet": true,
+  "independentHoldoutCreatedByUs": false,
+  "fullPublishedBenchmarkReproduced": false,
+  "deploymentEnabled": false,
+  "results": [
+    {
+      "model": "kamel-usp/jbcs2025_bertimbau_base-C1",
+      "revision": "1ad2e0f61009276ce3c1d23b24b6f55e0eb102d8",
+      "loadAndTestSeconds": 10.129,
+      "cases": [
+        {
+          "case": "empty",
+          "predictedScore": 120,
+          "maxProbabilityNotCalibratedConfidence": 0.327391,
+          "inputTokens": 2,
+          "truncated": false,
+          "inferenceSeconds": 0.8247
+        },
+        {
+          "case": "one-word",
+          "predictedScore": 120,
+          "maxProbabilityNotCalibratedConfidence": 0.461726,
+          "inputTokens": 3,
+          "truncated": false,
+          "inferenceSeconds": 0.0453
+        },
+        {
+          "case": "repeated-keywords",
+          "predictedScore": 120,
+          "maxProbabilityNotCalibratedConfidence": 0.714499,
+          "inputTokens": 177,
+          "truncated": false,
+          "inferenceSeconds": 0.1964
+        },
+        {
+          "case": "short-off-topic",
+          "predictedScore": 120,
+          "maxProbabilityNotCalibratedConfidence": 0.864349,
+          "inputTokens": 21,
+          "truncated": false,
+          "inferenceSeconds": 0.056
+        },
+        {
+          "case": "argumentative",
+          "predictedScore": 200,
+          "maxProbabilityNotCalibratedConfidence": 0.867309,
+          "inputTokens": 185,
+          "truncated": false,
+          "inferenceSeconds": 0.1845
+        },
+        {
+          "case": "long-tail",
+          "predictedScore": 200,
+          "maxProbabilityNotCalibratedConfidence": 0.647103,
+          "inputTokens": 1314,
+          "truncated": true,
+          "inferenceSeconds": 0.4784
+        }
+      ],
+      "labeledTest": {
+        "source": {
+          "dataset": "kamel-usp/aes_enem_dataset",
+          "revision": "8df4b700221dc20410e1e28900bbf215da545347",
+          "config": "JBCS2025",
+          "split": "test",
+          "sha256": "2ac3bfdae6d14edaf0b79bc3d73947903f244c6ac5dcff7d233e919c785b4f42",
+          "metadataLicense": "apache-2.0",
+          "licenseDescriptionConflict": "MIT in dataset card"
+        },
+        "selection": "24 evenly spaced row indices, exploratory only",
+        "rows": [
+          {
+            "rowIndex": 0,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 6,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 12,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 18,
+            "human": 200,
+            "prediction": 200,
+            "truncated": true
+          },
+          {
+            "rowIndex": 24,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 30,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 36,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 42,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 48,
+            "human": 120,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 54,
+            "human": 160,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 60,
+            "human": 80,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 66,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 71,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 77,
+            "human": 120,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 83,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 89,
+            "human": 80,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 95,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 101,
+            "human": 80,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 107,
+            "human": 80,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 113,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 119,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 125,
+            "human": 120,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 131,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 137,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          }
+        ],
+        "metrics": {
+          "n": 24,
+          "mae": 6.666666666666667,
+          "rmse": 16.32993161855452,
+          "exactAccuracy": 0.8333333333333334,
+          "within40": 1,
+          "qwk": 0.8636363636363636
+        },
+        "uniqueEssayCount": 23
+      }
+    },
+    {
+      "model": "kamel-usp/jbcs2025_bertimbau_base-C2",
+      "revision": "3afae7b80c36bf0042b19778620a0ad1135b7135",
+      "loadAndTestSeconds": 11.383,
+      "cases": [
+        {
+          "case": "empty",
+          "predictedScore": 40,
+          "maxProbabilityNotCalibratedConfidence": 0.253849,
+          "inputTokens": 2,
+          "truncated": false,
+          "inferenceSeconds": 1.6364
+        },
+        {
+          "case": "one-word",
+          "predictedScore": 80,
+          "maxProbabilityNotCalibratedConfidence": 0.358557,
+          "inputTokens": 3,
+          "truncated": false,
+          "inferenceSeconds": 0.1464
+        },
+        {
+          "case": "repeated-keywords",
+          "predictedScore": 120,
+          "maxProbabilityNotCalibratedConfidence": 0.383198,
+          "inputTokens": 177,
+          "truncated": false,
+          "inferenceSeconds": 0.2166
+        },
+        {
+          "case": "short-off-topic",
+          "predictedScore": 80,
+          "maxProbabilityNotCalibratedConfidence": 0.580192,
+          "inputTokens": 21,
+          "truncated": false,
+          "inferenceSeconds": 0.1301
+        },
+        {
+          "case": "argumentative",
+          "predictedScore": 120,
+          "maxProbabilityNotCalibratedConfidence": 0.411675,
+          "inputTokens": 185,
+          "truncated": false,
+          "inferenceSeconds": 0.7548
+        },
+        {
+          "case": "long-tail",
+          "predictedScore": 120,
+          "maxProbabilityNotCalibratedConfidence": 0.421888,
+          "inputTokens": 1314,
+          "truncated": true,
+          "inferenceSeconds": 0.5743
+        }
+      ],
+      "labeledTest": {
+        "source": {
+          "dataset": "kamel-usp/aes_enem_dataset",
+          "revision": "8df4b700221dc20410e1e28900bbf215da545347",
+          "config": "JBCS2025",
+          "split": "test",
+          "sha256": "2ac3bfdae6d14edaf0b79bc3d73947903f244c6ac5dcff7d233e919c785b4f42",
+          "metadataLicense": "apache-2.0",
+          "licenseDescriptionConflict": "MIT in dataset card"
+        },
+        "selection": "24 evenly spaced row indices, exploratory only",
+        "rows": [
+          {
+            "rowIndex": 0,
+            "human": 160,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 6,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 12,
+            "human": 40,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 18,
+            "human": 40,
+            "prediction": 160,
+            "truncated": true
+          },
+          {
+            "rowIndex": 24,
+            "human": 160,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 30,
+            "human": 40,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 36,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 42,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 48,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 54,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 60,
+            "human": 80,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 66,
+            "human": 40,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 71,
+            "human": 120,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 77,
+            "human": 40,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 83,
+            "human": 40,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 89,
+            "human": 120,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 95,
+            "human": 160,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 101,
+            "human": 120,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 107,
+            "human": 40,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 113,
+            "human": 200,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 119,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 125,
+            "human": 120,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 131,
+            "human": 40,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 137,
+            "human": 200,
+            "prediction": 120,
+            "truncated": false
+          }
+        ],
+        "metrics": {
+          "n": 24,
+          "mae": 40,
+          "rmse": 55.37749241945383,
+          "exactAccuracy": 0.375,
+          "within40": 0.7083333333333334,
+          "qwk": 0.29501915708812265
+        },
+        "uniqueEssayCount": 23
+      }
+    },
+    {
+      "model": "kamel-usp/jbcs2025_bertimbau_base-C3",
+      "revision": "bad03f1db697f1fb612e4d74bb55d6f0e8cd7a16",
+      "loadAndTestSeconds": 25.99,
+      "cases": [
+        {
+          "case": "empty",
+          "predictedScore": 40,
+          "maxProbabilityNotCalibratedConfidence": 0.225436,
+          "inputTokens": 2,
+          "truncated": false,
+          "inferenceSeconds": 10.5308
+        },
+        {
+          "case": "one-word",
+          "predictedScore": 80,
+          "maxProbabilityNotCalibratedConfidence": 0.283546,
+          "inputTokens": 3,
+          "truncated": false,
+          "inferenceSeconds": 0.0512
+        },
+        {
+          "case": "repeated-keywords",
+          "predictedScore": 200,
+          "maxProbabilityNotCalibratedConfidence": 0.371803,
+          "inputTokens": 177,
+          "truncated": false,
+          "inferenceSeconds": 0.194
+        },
+        {
+          "case": "short-off-topic",
+          "predictedScore": 80,
+          "maxProbabilityNotCalibratedConfidence": 0.459389,
+          "inputTokens": 21,
+          "truncated": false,
+          "inferenceSeconds": 0.1102
+        },
+        {
+          "case": "argumentative",
+          "predictedScore": 200,
+          "maxProbabilityNotCalibratedConfidence": 0.363414,
+          "inputTokens": 185,
+          "truncated": false,
+          "inferenceSeconds": 0.5215
+        },
+        {
+          "case": "long-tail",
+          "predictedScore": 200,
+          "maxProbabilityNotCalibratedConfidence": 0.602455,
+          "inputTokens": 1314,
+          "truncated": true,
+          "inferenceSeconds": 0.7533
+        }
+      ],
+      "labeledTest": {
+        "source": {
+          "dataset": "kamel-usp/aes_enem_dataset",
+          "revision": "8df4b700221dc20410e1e28900bbf215da545347",
+          "config": "JBCS2025",
+          "split": "test",
+          "sha256": "2ac3bfdae6d14edaf0b79bc3d73947903f244c6ac5dcff7d233e919c785b4f42",
+          "metadataLicense": "apache-2.0",
+          "licenseDescriptionConflict": "MIT in dataset card"
+        },
+        "selection": "24 evenly spaced row indices, exploratory only",
+        "rows": [
+          {
+            "rowIndex": 0,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 6,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 12,
+            "human": 40,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 18,
+            "human": 80,
+            "prediction": 160,
+            "truncated": true
+          },
+          {
+            "rowIndex": 24,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 30,
+            "human": 40,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 36,
+            "human": 120,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 42,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 48,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 54,
+            "human": 160,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 60,
+            "human": 80,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 66,
+            "human": 40,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 71,
+            "human": 80,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 77,
+            "human": 40,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 83,
+            "human": 40,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 89,
+            "human": 80,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 95,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 101,
+            "human": 80,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 107,
+            "human": 80,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 113,
+            "human": 160,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 119,
+            "human": 120,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 125,
+            "human": 120,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 131,
+            "human": 40,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 137,
+            "human": 160,
+            "prediction": 120,
+            "truncated": false
+          }
+        ],
+        "metrics": {
+          "n": 24,
+          "mae": 36.666666666666664,
+          "rmse": 52.91502622129181,
+          "exactAccuracy": 0.4166666666666667,
+          "within40": 0.75,
+          "qwk": 0.1923076923076924
+        },
+        "uniqueEssayCount": 23
+      }
+    },
+    {
+      "model": "kamel-usp/jbcs2025_bertimbau_base-C4",
+      "revision": "be129129fc134c0e782ae9f62b33da331367ab7b",
+      "loadAndTestSeconds": 24.345,
+      "cases": [
+        {
+          "case": "empty",
+          "predictedScore": 80,
+          "maxProbabilityNotCalibratedConfidence": 0.2565,
+          "inputTokens": 2,
+          "truncated": false,
+          "inferenceSeconds": 9.4566
+        },
+        {
+          "case": "one-word",
+          "predictedScore": 80,
+          "maxProbabilityNotCalibratedConfidence": 0.395406,
+          "inputTokens": 3,
+          "truncated": false,
+          "inferenceSeconds": 0.064
+        },
+        {
+          "case": "repeated-keywords",
+          "predictedScore": 40,
+          "maxProbabilityNotCalibratedConfidence": 0.403099,
+          "inputTokens": 177,
+          "truncated": false,
+          "inferenceSeconds": 0.1863
+        },
+        {
+          "case": "short-off-topic",
+          "predictedScore": 80,
+          "maxProbabilityNotCalibratedConfidence": 0.764106,
+          "inputTokens": 21,
+          "truncated": false,
+          "inferenceSeconds": 0.0499
+        },
+        {
+          "case": "argumentative",
+          "predictedScore": 160,
+          "maxProbabilityNotCalibratedConfidence": 0.524172,
+          "inputTokens": 185,
+          "truncated": false,
+          "inferenceSeconds": 0.1956
+        },
+        {
+          "case": "long-tail",
+          "predictedScore": 120,
+          "maxProbabilityNotCalibratedConfidence": 0.772775,
+          "inputTokens": 1314,
+          "truncated": true,
+          "inferenceSeconds": 0.5211
+        }
+      ],
+      "labeledTest": {
+        "source": {
+          "dataset": "kamel-usp/aes_enem_dataset",
+          "revision": "8df4b700221dc20410e1e28900bbf215da545347",
+          "config": "JBCS2025",
+          "split": "test",
+          "sha256": "2ac3bfdae6d14edaf0b79bc3d73947903f244c6ac5dcff7d233e919c785b4f42",
+          "metadataLicense": "apache-2.0",
+          "licenseDescriptionConflict": "MIT in dataset card"
+        },
+        "selection": "24 evenly spaced row indices, exploratory only",
+        "rows": [
+          {
+            "rowIndex": 0,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 6,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 12,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 18,
+            "human": 160,
+            "prediction": 200,
+            "truncated": true
+          },
+          {
+            "rowIndex": 24,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 30,
+            "human": 80,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 36,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 42,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 48,
+            "human": 120,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 54,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 60,
+            "human": 80,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 66,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 71,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 77,
+            "human": 120,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 83,
+            "human": 160,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 89,
+            "human": 120,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 95,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 101,
+            "human": 80,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 107,
+            "human": 40,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 113,
+            "human": 120,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 119,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 125,
+            "human": 120,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 131,
+            "human": 80,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 137,
+            "human": 160,
+            "prediction": 120,
+            "truncated": false
+          }
+        ],
+        "metrics": {
+          "n": 24,
+          "mae": 15,
+          "rmse": 24.49489742783178,
+          "exactAccuracy": 0.625,
+          "within40": 1,
+          "qwk": 0.7258883248730964
+        },
+        "uniqueEssayCount": 23
+      }
+    },
+    {
+      "model": "kamel-usp/jbcs2025_bertimbau_base-C5",
+      "revision": "fb36ac8b730b27c491174f81a69d6da1c0962026",
+      "loadAndTestSeconds": 11.78,
+      "cases": [
+        {
+          "case": "empty",
+          "predictedScore": 40,
+          "maxProbabilityNotCalibratedConfidence": 0.23228,
+          "inputTokens": 2,
+          "truncated": false,
+          "inferenceSeconds": 1.6338
+        },
+        {
+          "case": "one-word",
+          "predictedScore": 40,
+          "maxProbabilityNotCalibratedConfidence": 0.30515,
+          "inputTokens": 3,
+          "truncated": false,
+          "inferenceSeconds": 0.0675
+        },
+        {
+          "case": "repeated-keywords",
+          "predictedScore": 80,
+          "maxProbabilityNotCalibratedConfidence": 0.343282,
+          "inputTokens": 177,
+          "truncated": false,
+          "inferenceSeconds": 0.2045
+        },
+        {
+          "case": "short-off-topic",
+          "predictedScore": 0,
+          "maxProbabilityNotCalibratedConfidence": 0.394802,
+          "inputTokens": 21,
+          "truncated": false,
+          "inferenceSeconds": 0.0547
+        },
+        {
+          "case": "argumentative",
+          "predictedScore": 120,
+          "maxProbabilityNotCalibratedConfidence": 0.371129,
+          "inputTokens": 185,
+          "truncated": false,
+          "inferenceSeconds": 0.1949
+        },
+        {
+          "case": "long-tail",
+          "predictedScore": 80,
+          "maxProbabilityNotCalibratedConfidence": 0.307142,
+          "inputTokens": 1314,
+          "truncated": true,
+          "inferenceSeconds": 0.6191
+        }
+      ],
+      "labeledTest": {
+        "source": {
+          "dataset": "kamel-usp/aes_enem_dataset",
+          "revision": "8df4b700221dc20410e1e28900bbf215da545347",
+          "config": "JBCS2025",
+          "split": "test",
+          "sha256": "2ac3bfdae6d14edaf0b79bc3d73947903f244c6ac5dcff7d233e919c785b4f42",
+          "metadataLicense": "apache-2.0",
+          "licenseDescriptionConflict": "MIT in dataset card"
+        },
+        "selection": "24 evenly spaced row indices, exploratory only",
+        "rows": [
+          {
+            "rowIndex": 0,
+            "human": 80,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 6,
+            "human": 120,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 12,
+            "human": 40,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 18,
+            "human": 40,
+            "prediction": 160,
+            "truncated": true
+          },
+          {
+            "rowIndex": 24,
+            "human": 120,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 30,
+            "human": 40,
+            "prediction": 120,
+            "truncated": false
+          },
+          {
+            "rowIndex": 36,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 42,
+            "human": 0,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 48,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 54,
+            "human": 160,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 60,
+            "human": 40,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 66,
+            "human": 40,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 71,
+            "human": 40,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 77,
+            "human": 0,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 83,
+            "human": 40,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 89,
+            "human": 0,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 95,
+            "human": 0,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 101,
+            "human": 40,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 107,
+            "human": 0,
+            "prediction": 0,
+            "truncated": false
+          },
+          {
+            "rowIndex": 113,
+            "human": 80,
+            "prediction": 40,
+            "truncated": false
+          },
+          {
+            "rowIndex": 119,
+            "human": 80,
+            "prediction": 160,
+            "truncated": false
+          },
+          {
+            "rowIndex": 125,
+            "human": 120,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 131,
+            "human": 40,
+            "prediction": 80,
+            "truncated": false
+          },
+          {
+            "rowIndex": 137,
+            "human": 120,
+            "prediction": 160,
+            "truncated": false
+          }
+        ],
+        "metrics": {
+          "n": 24,
+          "mae": 40,
+          "rmse": 55.37749241945383,
+          "exactAccuracy": 0.3333333333333333,
+          "within40": 0.7916666666666666,
+          "qwk": 0.545679012345679
+        },
+        "uniqueEssayCount": 23
+      }
+    }
+  ]
+}
