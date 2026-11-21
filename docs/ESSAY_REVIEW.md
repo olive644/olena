@@ -47,18 +47,18 @@ Verificação: 23 testes focados aprovados, TypeScript, ESLint e build. Edge com
 
 Gate de publicação continua pendente: 2791,7 KiB de JavaScript total contra 1764 KiB; entrada inicial permanece 219,4 KiB. O worker de tema é opcional e tem cerca de 889 KiB, mas ainda conta no teto global. Não aumentamos nem burlamos o limite. É necessário resolver o orçamento antes da publicação.
 
-
 ### Resultado de redação em tela própria (2026-11-20)
+
 A entrega agora alterna o editor para uma tela de resultado com a arte existente da Olena. Não abre LibraryDialog; controles e botão flutuante do editor são ocultados. Retornar à folha preserva o rascunho e o histórico. A revisão ortográfica exibe contexto e distingue possíveis alterações de acentuação. Diagnósticos objetivos apontam parágrafos duplicados, bloco único e períodos longos, sem inferir qualidade ou nota. A triagem temática apresenta os parágrafos mais próximo e mais distante do tema, mantendo abstenção e consentimento para o modelo local. Não há nota pedagógica atribuída nem serviço pago ativado.
 
-
 ### Viabilidade de notas locais (20/11/2026)
+
 Cinco classificadores USP auditados e executados em laboratório isolado, com hashes de pesos fixados. Comparação exploratória: 24 avaliações públicas de 23 redações, C1/C4 mais próximas das notas humanas nesta amostra; C2/C3/C5 com maiores desvios. Entradas inválidas receberam notas positivas, e o limite de 512 tokens cortou textos. C1 convertida para ONNX Q8 (109,75 MB), funcionando em Transformers.js Node CPU; 22/24 previsões iguais ao FP32. Não houve teste em aparelho físico nem integração de notas no app. Licença explícita dos pesos não localizada, e licença do dataset tem divergência de metadados. Nenhuma API paga usada. Resultados e condições de integração em docs/research/ESSAY_GRADING_FEASIBILITY.md.
 
-
 ### Primeiro treinamento próprio (20/11/2026)
+
 Corpus Essay-BR de revisão fixa e licença MIT declarada: 4.570 ocorrências, 4.568 retidas após exclusão de duas conflitantes. Divisão por IDs de proposta: 60 temas/3.122 redações de treino, 13/792 de validação e 13/654 de teste. Encoder local congelado leu integralmente 1.855.114 tokens; treino de cinco regressões com seleção apenas na validação, controles estrutural/lexical e mediana do treino. Cabeçalho semântico exportado com 166.691 bytes, reprodutível e com paridade aritmética em JS, sem pesos do encoder incluídos. MAE total semântico 119,51/1000, maior erro 680; C3 piorou em relação à mediana e não houve ganho consistente nas cinco competências. Portanto, notas continuam desativadas. Cache privado ignorado, nenhuma API paga ou dependência nova do app. Evidências e limites: docs/research/ESSAY_OWN_GRADER.md.
 
-
 ### Análise automática e marcações (20/11/2026)
+
 Por pedido do usuário, a análise de tema inicia ao abrir o resultado da entrega, sem botão de download ou análise manual. Não inicia durante a escrita; cancelamento, retry e invalidação por texto/tema continuam. O primeiro uso pode baixar o modelo local automaticamente; nenhuma redação é enviada. As observações de tema, ortografia e organização foram reunidas em Marcações, com trechos do texto e marcadores facetados, mantendo apenas diagnósticos disponíveis e sem inventar notas ou avaliações de competências. Erros e resultados inconclusivos continuam explícitos.

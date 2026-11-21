@@ -145,21 +145,27 @@ function isSimplePolygon(vertices: readonly Vec[]): boolean {
   return true;
 }
 
-// Encaixa `to` no eixo mais próximo em torno de `from`, mantendo o comprimento, quando o desvio é
-// de até AXIS_SNAP. O ponto de partida é o que a pessoa escolheu, por isso é ele o pivô. Fora da
-// tolerância devolve o próprio `to`, sem tocar (a igualdade de referência diz se houve encaixe).
+// Encaixa `to` no ângulo "bonito" mais próximo em torno de `from`, mantendo o comprimento: os eixos
+// (0, 90, 180, 270 graus) com tolerância de AXIS_SNAP_DEGREES e os demais múltiplos de 15 graus
+// (30, 45, 60...) com uma tolerância menor, para uma diagonal de propósito não ser puxada. O ponto
+// de partida é o que a pessoa escolheu, por isso é ele o pivô. Fora da tolerância devolve o próprio
+// `to`, sem tocar (a igualdade de referência diz se houve encaixe).
+const STEP_SNAP = (2.5 * Math.PI) / 180;
+const ANGLE_STEP = Math.PI / 12;
 function snapToAxis(from: Vec, to: Vec): Vec {
   const dx = to.x - from.x;
   const dy = to.y - from.y;
   const length = Math.hypot(dx, dy);
   if (length === 0) return to;
   const angle = Math.atan2(dy, dx);
-  const quarter = Math.PI / 2;
-  const nearest = Math.round(angle / quarter) * quarter;
-  if (Math.abs(angle - nearest) > AXIS_SNAP) return to;
+  const nearest = Math.round(angle / ANGLE_STEP) * ANGLE_STEP;
+  const onAxis = Math.abs(Math.round(nearest / (Math.PI / 2)) * (Math.PI / 2) - nearest) < 1e-9;
+  if (Math.abs(angle - nearest) > (onAxis ? AXIS_SNAP : STEP_SNAP)) return to;
+  const cos = Math.cos(nearest);
+  const sin = Math.sin(nearest);
   return {
-    x: from.x + Math.round(Math.cos(nearest)) * length,
-    y: from.y + Math.round(Math.sin(nearest)) * length,
+    x: from.x + (onAxis ? Math.round(cos) : cos) * length,
+    y: from.y + (onAxis ? Math.round(sin) : sin) * length,
   };
 }
 
@@ -265,6 +271,23 @@ function recognizeArrow(
   return { kind: "arrow", points: densify([tail, head, tip1, head, tip2], pressure, false) };
 }
 
+// Reta e seta prontas entre dois pontos, para o ajuste ao vivo depois do "segurar para acertar".
+export function lineShape(from: Vec, to: Vec, pressure = 0.5): HandwritingPoint[] {
+  return densify([from, to], pressure, false);
+}
+
+export function arrowShape(tail: Vec, head: Vec, pressure = 0.5): HandwritingPoint[] {
+  const shaft = dist(tail, head);
+  const outAngle = Math.atan2(head.y - tail.y, head.x - tail.x);
+  const barbLength = Math.min(shaft * 0.24, Math.max(20, shaft * 0.18));
+  const barbAngle = (Math.PI * 28) / 180;
+  const tip = (sign: number): Vec => ({
+    x: head.x + Math.cos(outAngle + Math.PI + sign * barbAngle) * barbLength,
+    y: head.y + Math.sin(outAngle + Math.PI + sign * barbAngle) * barbLength,
+  });
+  return densify([tail, head, tip(-1), head, tip(1)], pressure, false);
+}
+
 export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedShape | null {
   if (points.length < 8) return null;
   const length = pathLength(points);
@@ -309,9 +332,22 @@ export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedS
   const tilted = orientedRectangle(points);
   const minSide = Math.min(box.width, box.height);
   if (tilted.tilt <= AXIS_SNAP_DEGREES && rectangleFit.mean <= minSide * 0.07) {
+    let corners = rectangle.slice(0, 4);
+    // Quase quadrado: os lados ficam iguais, em torno do mesmo centro.
+    if (Math.abs(box.width - box.height) <= Math.max(box.width, box.height) * 0.08) {
+      const half = (box.width + box.height) / 4;
+      const mx = (box.minX + box.maxX) / 2;
+      const my = (box.minY + box.maxY) / 2;
+      corners = [
+        { x: mx - half, y: my - half },
+        { x: mx + half, y: my - half },
+        { x: mx + half, y: my + half },
+        { x: mx - half, y: my + half },
+      ];
+    }
     candidates.push({
       kind: "rectangle",
-      vertices: rectangle.slice(0, 4),
+      vertices: corners,
       score: rectangleFit.mean / minSide,
     });
   } else if (Math.min(tilted.width, tilted.height) >= 40) {
@@ -359,8 +395,13 @@ export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedS
   // Elipse: cada ponto tem "raio normalizado" perto de 1 em relação à caixa.
   const cx = (box.minX + box.maxX) / 2;
   const cy = (box.minY + box.maxY) / 2;
-  const rx = box.width / 2;
-  const ry = box.height / 2;
+  let rx = box.width / 2;
+  let ry = box.height / 2;
+  // Quase redonda: a mão quis um círculo, então os dois raios ficam iguais.
+  if (Math.abs(rx - ry) <= Math.max(rx, ry) * 0.1) {
+    rx = (rx + ry) / 2;
+    ry = rx;
+  }
   let ellipseError = 0;
   for (const point of points) {
     ellipseError += Math.abs(Math.hypot((point.x - cx) / rx, (point.y - cy) / ry) - 1);
@@ -377,7 +418,15 @@ export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedS
     candidates.push({ kind: "ellipse", vertices: ring, score: ellipseError * 0.6 });
   }
 
-  const best = candidates.sort((a, b) => a.score - b.score)[0];
+  // Uma forma simples ganha da complicada: um triângulo ou retângulo feito à mão, com cantos
+  // arredondados ou gancho na ponta, também cabe num polígono de 5 a 8 lados com folga ainda
+  // menor (mais vértices sempre ajustam melhor), mas a pessoa quis a forma simples. Um polígono
+  // de verdade não cabe num triângulo (erro grande), então só some quando o simples já serve.
+  const simple = candidates.some(
+    (candidate) => candidate.kind === "triangle" || candidate.kind === "rectangle",
+  );
+  const pool = simple ? candidates.filter((candidate) => candidate.kind !== "polygon") : candidates;
+  const best = pool.sort((a, b) => a.score - b.score)[0];
   if (!best) return null;
   return { kind: best.kind, points: densify(best.vertices, pressure, true) };
 }

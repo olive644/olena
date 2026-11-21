@@ -1,9 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import { uiText } from "../i18n/runtime";
 import type { Flashcard, FlashcardRating } from "../domain/workspace";
 import { toDateKey } from "../domain/workspace";
 import { createMathSound } from "../data/math-sound";
+import {
+  FEEDBACK_REASONS,
+  type FeedbackEvent,
+  type FeedbackReason,
+} from "../domain/flashcard-feedback";
 import { PaperCloseIcon } from "./paper-close-icon";
 import "./flashcard-study.css";
 
@@ -35,6 +40,31 @@ export function truthOf(back: string): boolean | undefined {
 }
 type Phase = "study" | "retry" | "done";
 
+const REASON_LABELS: Record<FeedbackReason, () => string> = {
+  nonsense: () => uiText("Sem sentido"),
+  obvious: () => uiText("Óbvia demais"),
+  "actually-true": () => uiText("Na verdade é verdadeira"),
+  grammar: () => uiText("Erro de gramática"),
+  loose: () => uiText("Frase solta"),
+};
+
+const TRUE_LABELS = { pt: "Verdadeiro.", en: "True." } as const;
+const FALSE_LABELS = { pt: "Falso. O texto diz:", en: "False. The text says:" } as const;
+const LABEL =
+  /^(?:Verdadeiro\.|Falso\. O texto diz:|True\.|False\. The text says:|Falso\.|False\.)\s*/;
+
+/** O verso sem o gabarito: só a explicação (a frase do arquivo). */
+function explanationOf(back: string): string {
+  return back.replace(LABEL, "");
+}
+function buildBack(truth: boolean, explanation: string, previousBack: string): string {
+  const language = /^(?:True|False)\./.test(previousBack) ? "en" : "pt";
+  return `${truth ? TRUE_LABELS[language] : FALSE_LABELS[language]} ${explanation.trim()}`;
+}
+
+/** Relógio lido só dentro de ações do usuário, nunca na renderização. */
+const nowMs = () => Date.now();
+
 function clock(milliseconds: number): string {
   const total = Math.max(0, Math.round(milliseconds / 1000));
   return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
@@ -49,16 +79,29 @@ function clock(milliseconds: number): string {
 export function FlashcardStudy({
   title,
   cards,
+  sourceTitle,
   onReview,
+  onDiscard,
+  onFeedback,
+  onEdit,
   onClose,
 }: {
   title: string;
   cards: readonly Flashcard[];
+  /** Nome do arquivo de onde os cartões saíram, para citar a fonte. */
+  sourceTitle?: string;
   onReview: (id: string, rating: FlashcardRating, reviewedOn: string) => void;
+  /** Exclui o cartão do baralho (afirmação ruim). */
+  onDiscard: (id: string) => void;
+  /** Sinal de qualidade do cartão (aceito, editado ou descartado com motivo). */
+  onFeedback?: (id: string, event: FeedbackEvent) => void;
+  onEdit: (id: string, front: string, back: string) => void;
   onClose: () => void;
 }) {
   // O baralho é fixado ao abrir: salvar uma revisão muda os cartões, mas não a fila desta sessão.
-  const [deck] = useState(() => cards.map(({ id, front, back }) => ({ id, front, back })));
+  const [deck] = useState(() =>
+    cards.map(({ id, front, back, sourcePage }) => ({ id, front, back, sourcePage })),
+  );
   const byId = new Map(deck.map((card) => [card.id, card]));
   const [phase, setPhase] = useState<Phase>("study");
   const [queue, setQueue] = useState<string[]>(() => deck.map(({ id }) => id));
@@ -81,6 +124,10 @@ export function FlashcardStudy({
     };
   }, []);
   const [feedback, setFeedback] = useState<{ right: boolean }>();
+  const [discarded, setDiscarded] = useState<string[]>([]);
+  const [edits, setEdits] = useState<Record<string, { front: string; back: string }>>({});
+  const [editing, setEditing] = useState(false);
+  const [reporting, setReporting] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const proceedButton = useRef<HTMLButtonElement>(null);
 
@@ -89,7 +136,8 @@ export function FlashcardStudy({
     if (feedback) proceedButton.current?.focus({ preventScroll: true });
   }, [feedback]);
 
-  const current = byId.get(queue[position] ?? "");
+  const base = byId.get(queue[position] ?? "");
+  const current = base ? { ...base, ...edits[base.id] } : undefined;
   const wrongNow = answers.filter(({ right }) => !right).length;
   const rightNow = answers.length - wrongNow;
 
@@ -98,19 +146,15 @@ export function FlashcardStudy({
     for (const answer of list) {
       if (saved.current.has(answer.id)) continue;
       saved.current.add(answer.id);
-      onReview(answer.id, answer.right ? "easy" : "again", today);
+      onReview(answer.id, answer.right ? "good" : "again", today);
+      onFeedback?.(answer.id, { type: "kept" });
     }
   }
   function leave() {
     if (round === 1 && phase === "study") saveFirstRound(answers);
     onClose();
   }
-  function advance(next: Answer[]) {
-    setFlipped(false);
-    if (position + 1 < queue.length) {
-      setPosition(position + 1);
-      return;
-    }
+  function finishPass(next: Answer[]) {
     if (round === 1) {
       saveFirstRound(next);
       setFirstRound(next);
@@ -120,13 +164,59 @@ export function FlashcardStudy({
       setQueue(wrong);
       setPhase("retry");
     } else {
-      setElapsed(Date.now() - startedAt);
+      setElapsed(nowMs() - startedAt);
       setPhase("done");
     }
   }
+  function advance(next: Answer[]) {
+    setFlipped(false);
+    setReporting(false);
+    if (position + 1 < queue.length) {
+      setPosition(position + 1);
+      return;
+    }
+    finishPass(next);
+  }
+  /** Afirmação ruim: sai do baralho para sempre e a sessão segue sem ela. */
+  function discard(reason?: FeedbackReason) {
+    if (phase !== "study" || !current) return;
+    onFeedback?.(current.id, reason ? { type: "discarded", reason } : { type: "discarded" });
+    setReporting(false);
+    onDiscard(current.id);
+    setDiscarded([...discarded, current.id]);
+    // se o cartão já tinha sido respondido nesta tela (gabarito aberto), essa resposta some
+    const kept = feedback ? answers.slice(0, -1) : answers;
+    const rest = queue.filter((id) => id !== current.id);
+    setAnswers(kept);
+    setFeedback(undefined);
+    setFlipped(false);
+    setEditing(false);
+    setQueue(rest);
+    if (position >= rest.length) finishPass(kept);
+  }
+  function saveEdit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!current) return;
+    const data = new FormData(event.currentTarget);
+    const front = String(data.get("front") ?? "").trim();
+    if (!front) return;
+    let back: string;
+    if (truthOf(current.back) !== undefined) {
+      const explanation = String(data.get("explanation") ?? "").trim();
+      if (!explanation) return;
+      back = buildBack(data.get("truth") === "true", explanation, current.back);
+    } else {
+      back = String(data.get("back") ?? "").trim();
+      if (!back) return;
+    }
+    onFeedback?.(current.id, { type: "edited" });
+    onEdit(current.id, front, back);
+    setEdits({ ...edits, [current.id]: { front, back } });
+    setEditing(false);
+  }
   /** `choice` é o lado da seta: direita (verdadeiro ou acertei) ou esquerda (falso ou errei). */
   function answer(choice: boolean) {
-    if (phase !== "study" || !current || feedback) return;
+    if (phase !== "study" || !current || feedback || editing) return;
     const truth = truthOf(current.back);
     const right = truth === undefined ? choice : choice === truth;
     sound.current?.unlock();
@@ -166,7 +256,7 @@ export function FlashcardStudy({
   function restart(ids: string[]) {
     saved.current.clear();
     setFirstRound([]);
-    setStartedAt(Date.now());
+    setStartedAt(nowMs());
     setElapsed(0);
     begin(ids, 1);
   }
@@ -185,7 +275,7 @@ export function FlashcardStudy({
     return () => window.removeEventListener("keydown", onKey);
   });
 
-  const total = deck.length;
+  const total = deck.length - discarded.length;
   const scored = firstRound.length || total;
   const firstRight = firstRound.filter(({ right }) => right).length;
   const live = deck.map(({ id }) => cards.find((card) => card.id === id));
@@ -233,67 +323,147 @@ export function FlashcardStudy({
           <h2 ref={heading} tabIndex={-1} className="flashcard-study__title">
             {title}
           </h2>
-          <div
-            className="flashcard-study__stage"
-            data-effect={effect ? (effect.right ? "right" : "wrong") : undefined}
-            key={effect?.serial ?? 0}
-          >
-            {effect && (
-              <div className="flashcard-study__particles" aria-hidden="true">
-                {Array.from({ length: 12 }, (_, i) => (
-                  <i key={i} style={{ "--particle": i } as React.CSSProperties} />
-                ))}
+          {editing && (
+            <form className="flashcard-study__edit" onSubmit={saveEdit}>
+              <label>
+                {judged ? uiText("Afirmação") : uiText("Frente do cartão")}
+                <textarea
+                  name="front"
+                  required
+                  maxLength={600}
+                  rows={4}
+                  defaultValue={current.front}
+                />
+              </label>
+              {judged ? (
+                <>
+                  <fieldset>
+                    <legend>{uiText("Resposta correta")}</legend>
+                    <label>
+                      <input
+                        type="radio"
+                        name="truth"
+                        value="true"
+                        defaultChecked={truthOf(current.back) === true}
+                      />
+                      {uiText("Verdadeiro")}
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="truth"
+                        value="false"
+                        defaultChecked={truthOf(current.back) === false}
+                      />
+                      {uiText("Falso")}
+                    </label>
+                  </fieldset>
+                  <label>
+                    {uiText("Explicação")}
+                    <textarea
+                      name="explanation"
+                      required
+                      maxLength={600}
+                      rows={3}
+                      defaultValue={explanationOf(current.back)}
+                    />
+                  </label>
+                </>
+              ) : (
+                <label>
+                  {uiText("Verso do cartão")}
+                  <textarea
+                    name="back"
+                    required
+                    maxLength={600}
+                    rows={3}
+                    defaultValue={current.back}
+                  />
+                </label>
+              )}
+              <div className="flashcard-study__edit-actions">
+                <button type="submit" className="flashcard-study__primary">
+                  {uiText("Salvar")}
+                </button>
+                <button type="button" onClick={() => setEditing(false)}>
+                  {uiText("Cancelar")}
+                </button>
               </div>
-            )}
-            <button
-              type="button"
-              className="flashcard-study__verdict is-wrong"
-              aria-label={judged ? uiText("Falso") : uiText("Errei")}
-              disabled={feedback !== undefined}
-              onClick={() => answer(false)}
+            </form>
+          )}
+          {!editing && (
+            <div
+              className="flashcard-study__stage"
+              data-effect={effect ? (effect.right ? "right" : "wrong") : undefined}
+              key={effect?.serial ?? 0}
             >
-              <StudyArrow back />
-              <small>{judged ? uiText("Falso") : uiText("Errei")}</small>
-            </button>
-            <button
-              type="button"
-              className="flashcard-study__card"
-              data-side={flipped ? "back" : "front"}
-              data-result={feedback ? (feedback.right ? "right" : "wrong") : undefined}
-              aria-label={uiText("Virar cartão")}
-              aria-disabled={judged}
-              onClick={() => {
-                if (!judged) setFlipped((value) => !value);
-              }}
-            >
-              <small>
-                {feedback
-                  ? feedback.right
-                    ? uiText("Correto!")
-                    : uiText("Não foi dessa vez.")
-                  : flipped
-                    ? uiText("Resposta")
-                    : judged
-                      ? uiText("Afirmação")
-                      : uiText("Pergunta")}
-              </small>
-              <strong aria-live="polite">{flipped ? current.back : current.front}</strong>
-              <span>
-                {position + 1} {uiText("de")} {queue.length}
-              </span>
-            </button>
-            <button
-              type="button"
-              className="flashcard-study__verdict is-right"
-              aria-label={judged ? uiText("Verdadeiro") : uiText("Acertei")}
-              disabled={feedback !== undefined}
-              onClick={() => answer(true)}
-            >
-              <StudyArrow />
-              <small>{judged ? uiText("Verdadeiro") : uiText("Acertei")}</small>
-            </button>
-          </div>
-          {feedback ? (
+              {effect && (
+                <div className="flashcard-study__particles" aria-hidden="true">
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <i key={i} style={{ "--particle": i } as React.CSSProperties} />
+                  ))}
+                </div>
+              )}
+              <button
+                type="button"
+                className="flashcard-study__verdict is-wrong"
+                aria-label={judged ? uiText("Falso") : uiText("Errei")}
+                disabled={feedback !== undefined}
+                onClick={() => answer(false)}
+              >
+                <StudyArrow back />
+                <small>{judged ? uiText("Falso") : uiText("Errei")}</small>
+              </button>
+              <button
+                type="button"
+                className="flashcard-study__card"
+                data-side={flipped ? "back" : "front"}
+                data-result={feedback ? (feedback.right ? "right" : "wrong") : undefined}
+                aria-label={uiText("Virar cartão")}
+                aria-disabled={judged}
+                onClick={() => {
+                  if (!judged) setFlipped((value) => !value);
+                }}
+              >
+                <small>
+                  {feedback
+                    ? feedback.right
+                      ? uiText("Correto!")
+                      : uiText("Não foi dessa vez.")
+                    : flipped
+                      ? uiText("Resposta")
+                      : judged
+                        ? uiText("Afirmação")
+                        : uiText("Pergunta")}
+                </small>
+                <strong aria-live="polite">{flipped ? current.back : current.front}</strong>
+                <span>
+                  {position + 1} {uiText("de")} {queue.length}
+                  {flipped && current.sourcePage
+                    ? ` · ${
+                        sourceTitle
+                          ? uiText("Fonte: {0}, página {1}", [
+                              sourceTitle,
+                              String(current.sourcePage),
+                            ])
+                          : uiText("Página {0}", [String(current.sourcePage)])
+                      }`
+                    : ""}
+                </span>
+              </button>
+              <button
+                type="button"
+                className="flashcard-study__verdict is-right"
+                aria-label={judged ? uiText("Verdadeiro") : uiText("Acertei")}
+                disabled={feedback !== undefined}
+                onClick={() => answer(true)}
+              >
+                <StudyArrow />
+                <small>{judged ? uiText("Verdadeiro") : uiText("Acertei")}</small>
+              </button>
+            </div>
+          )}
+          {editing ? null : feedback ? (
             <button
               type="button"
               ref={proceedButton}
@@ -308,6 +478,35 @@ export function FlashcardStudy({
                 ? uiText("Esquerda é falso, direita é verdadeiro.")
                 : uiText("Toque no cartão para virar")}
             </p>
+          )}
+          {!editing && !reporting && (
+            <div className="flashcard-study__tools">
+              <button type="button" onClick={() => setEditing(true)}>
+                {uiText("Editar cartão")}
+              </button>
+              <button type="button" onClick={() => setReporting(true)}>
+                {judged ? uiText("Afirmação ruim") : uiText("Cartão ruim")}
+              </button>
+            </div>
+          )}
+          {!editing && reporting && (
+            <div
+              className="flashcard-study__tools"
+              role="group"
+              aria-label={uiText("Por que está ruim?")}
+            >
+              {FEEDBACK_REASONS.map((reason) => (
+                <button key={reason} type="button" onClick={() => discard(reason)}>
+                  {REASON_LABELS[reason]()}
+                </button>
+              ))}
+              <button type="button" onClick={() => discard()}>
+                {uiText("Sem motivo")}
+              </button>
+              <button type="button" onClick={() => setReporting(false)}>
+                {uiText("Cancelar")}
+              </button>
+            </div>
           )}
           <footer className="flashcard-study__foot">
             <button

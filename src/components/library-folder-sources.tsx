@@ -74,7 +74,7 @@ export function LibraryFolderSources({
                       fontWeight="900"
                       fontFamily="sans-serif"
                     >
-                      PDF
+                      {"PDF"}
                     </text>
                   </>
                 ) : kind === "image" ? (

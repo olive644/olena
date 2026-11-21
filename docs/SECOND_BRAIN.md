@@ -22,7 +22,7 @@ Seis silhuetas recortadas independentes da capa. libraryFolderShapes resolve leg
 
 ## Quizzes, simulados e revisão única, 17/11/2026
 
-Biblioteca gera quizzes e simulados a partir das fontes, reaproveitando extração PDF/OCR e lacunas locais. Sem IA nem dependências novas. Simulados têm capa, cronômetro, entrega manual ou automática, correção com fonte, assinatura e carimbo da Olena. Nome usa username do perfil; download direto em PDF paginado reutiliza notebook-export com nome de arquivo opcional. Quizzes e flashcards revisam erros somente uma vez.
+Biblioteca (pastas): resumo, flashcards, quiz e simulado são gerados SÓ pela Olena (IA, Cloudflare Workers AI) desde 19/11/2026, 2 usos por dia por pessoa em cada tipo, com conta de verdade; o texto vai ao servidor só depois do clique, com aviso. Fluxo, limites e modelo de ameaça em docs/BIBLIOTECA_IA.md. A extração de PDF/OCR continua no aparelho. Sem dependências novas. Simulados têm capa, cronômetro, entrega manual ou automática, correção com fonte, assinatura e carimbo da Olena. Nome usa username do perfil; download direto em PDF paginado reutiliza notebook-export com nome de arquivo opcional. Quizzes e flashcards revisam erros somente uma vez.
 
 Provas: testes focados de geração, revisão, cronômetro, branco, apelido e download; TypeScript e lint dos arquivos passaram. Fluxo desktop escuro e geometria mobile conferidos na prévia; PDF real baixado e página inspecionada. Claro, teclado completo e E2E amplo não verificados. Geração heurística por lacunas, sem perguntas interpretativas. Verificação completa iniciada, publicação antecipada solicitada pelo proprietário; CI fica para Claude.
 
@@ -1237,7 +1237,7 @@ produto.
 4. Criar e marcar Hábitos diários.
 5. Escrever, desenhar ou anexar uma digitalização nos Cadernos.
 6. Guardar links, textos e flashcards por matéria na Biblioteca.
-   Na aba Resumo da pasta, o "Resumo automático" (`src/domain/pdf-summary/`) resume PDF e texto no aparelho, sem IA e sem rede; "Gerar com a Olena" é o caminho com IA.
+   Na aba Resumo da pasta, "Gerar com a Olena" é o único caminho (IA); o "Resumo automático" no aparelho (`src/domain/pdf-summary/`) deixou de ser usado pela tela e está pendente de remoção.
 7. Revisar flashcards, responder Quizzes, completar Bingos e acompanhar metas em Praticar.
 8. Praticar escuta em rodadas curtas com voz natural (Cloudflare Workers AI) e fallback do dispositivo.
 9. Criar uma Sala online e sincronizar lobby e rodada entre dispositivos.
@@ -2103,22 +2103,22 @@ A decisão do proprietário é não usar a API do Olena nem uma API com cota par
 
 EssayTopicReview inicia essay-topic.worker somente por pedido explícito, com aviso de download. MiniLM fixado + perfis public/essay-topics/profiles.json (60 propostas) são comparados em domain/essay-topic.ts; textos curtos/repetidos e margens pequenas geram abstenção. Comparação é por bloco, parágrafo e conjunto, com offsets preservados; não produz nota. CSP permite downloads de huggingface.co e subdomínios de cdn.hf.co, texto permanece local. Worker formato ES para divisão de código, WASM single-thread, sem blob. Qualidade/limiares ainda experimentais e gate de tamanho pendente, conforme docs/ESSAY_REVIEW.md.
 
-
 ### Resultado de redação em tela própria (2026-11-20)
+
 A entrega agora alterna o editor para uma tela de resultado com a arte existente da Olena. Não abre LibraryDialog; controles e botão flutuante do editor são ocultados. Retornar à folha preserva o rascunho e o histórico. A revisão ortográfica exibe contexto e distingue possíveis alterações de acentuação. Diagnósticos objetivos apontam parágrafos duplicados, bloco único e períodos longos, sem inferir qualidade ou nota. A triagem temática apresenta os parágrafos mais próximo e mais distante do tema, mantendo abstenção e consentimento para o modelo local. Não há nota pedagógica atribuída nem serviço pago ativado.
 
 Arte do resultado: Poliana ensinando na lousa e Olena sentada aprendendo, fundo transparente, sem brilhos ou risquinhos decorativos; ilustração compacta no cabeçalho, adaptada a mobile. Asset public/essay-art/poliana-teaching-olena.webp.
 
-
 ### Viabilidade de notas locais (20/11/2026)
+
 Cinco classificadores USP auditados e executados em laboratório isolado, com hashes de pesos fixados. Comparação exploratória: 24 avaliações públicas de 23 redações, C1/C4 mais próximas das notas humanas nesta amostra; C2/C3/C5 com maiores desvios. Entradas inválidas receberam notas positivas, e o limite de 512 tokens cortou textos. C1 convertida para ONNX Q8 (109,75 MB), funcionando em Transformers.js Node CPU; 22/24 previsões iguais ao FP32. Não houve teste em aparelho físico nem integração de notas no app. Licença explícita dos pesos não localizada, e licença do dataset tem divergência de metadados. Nenhuma API paga usada. Resultados e condições de integração em docs/research/ESSAY_GRADING_FEASIBILITY.md.
 
-
 ### Primeiro treinamento próprio (20/11/2026)
+
 Corpus Essay-BR de revisão fixa e licença MIT declarada: 4.570 ocorrências, 4.568 retidas após exclusão de duas conflitantes. Divisão por IDs de proposta: 60 temas/3.122 redações de treino, 13/792 de validação e 13/654 de teste. Encoder local congelado leu integralmente 1.855.114 tokens; treino de cinco regressões com seleção apenas na validação, controles estrutural/lexical e mediana do treino. Cabeçalho semântico exportado com 166.691 bytes, reprodutível e com paridade aritmética em JS, sem pesos do encoder incluídos. MAE total semântico 119,51/1000, maior erro 680; C3 piorou em relação à mediana e não houve ganho consistente nas cinco competências. Portanto, notas continuam desativadas. Cache privado ignorado, nenhuma API paga ou dependência nova do app. Evidências e limites: docs/research/ESSAY_OWN_GRADER.md.
 
-
 ### Análise automática e marcações (20/11/2026)
+
 Por pedido do usuário, a análise de tema inicia ao abrir o resultado da entrega, sem botão de download ou análise manual. Não inicia durante a escrita; cancelamento, retry e invalidação por texto/tema continuam. O primeiro uso pode baixar o modelo local automaticamente; nenhuma redação é enviada. As observações de tema, ortografia e organização foram reunidas em Marcações, com trechos do texto e marcadores facetados, mantendo apenas diagnósticos disponíveis e sem inventar notas ou avaliações de competências. Erros e resultados inconclusivos continuam explícitos.
 
 Resultado de redação: Pontuação/Em breve substituem o rótulo pedagógico; contador de palavras removido do resultado. Revisão ortográfica e critérios recolhíveis com FocusPaperArrow roxa compartilhada; critérios mostram Em breve. Rodapé apenas Continuar para propostas. Sugestões do dicionário filtradas por validade e proximidade, com preferência por plural preservando radical (cidadões → cidadãos), sem alegar compreensão contextual.
@@ -2137,10 +2137,10 @@ Máquina de escrever agora participa da inspeção e personalização da pratele
 
 Skins de prateleira: pastas, máquinas e cadernos ganharam Lua Sangrenta, Eclipse Solar e Eclipse Lunar gratuitos; LGBT e padrão permanecem gratuitos. Objetivos por item: Inglês 1/5/10 acertos; Matemática rodada 1/10 acertos/etapa 1. Integração às conquistas reais e preservação de desbloqueios legados de 100 acertos. Preview, bloqueio no seletor e validação no salvamento compartilham regras. Novos IDs aceitos no carregamento persistido.
 
-
 ### Créditos da Olena na pasta — 2026-11-21
+
 Reutilizados orçamento, API autenticada e medidor das PRs 686/688/689 na main. Cabeçalho da pasta mostra saldo real à direita da seta, com PaperDigits amarelos; nenhuma conversão para dois usos ou dois créditos. Custo variável em neurons, reserva/acerto e limites do servidor preservados. O hook consulta ao abrir, após geração e na renovação. Sem conta/saldo disponível não inventa número. Testes de orçamento/servidor e 25 testes de UI aprovados; layout conferido a 390/1366px com fixture isolada de saldo, sem chamar IA.
 
-
 ### Gerações da pasta — somente Olena (2026-11-21)
+
 Removida geração automática local de resumo, flashcards, quizzes e simulados na pasta. Reutilizados library-ai.ts, extração de fontes e generateWithOlena da main. Custo estimado para todas as categorias; tamanho altera custo de quiz/prova. Sem saldo desabilita, saldo insuficiente avisa sem bloquear tentativa. Backend mantém orçamento/reserva/acerto da main. 49 testes aprovados; conferência de cada modal em PC/mobile com fonte textual e saldo de teste sem gerar IA real.

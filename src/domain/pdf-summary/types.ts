@@ -52,7 +52,11 @@ export type StructuredDocument = {
   title: string;
   language: Language;
   pages: number;
+  /** Falso para texto puro, nota e imagem lida por OCR: não há páginas para citar. */
+  paged?: false;
   blocks: DocumentBlock[];
+  /** Linhas do PDF na ordem de leitura, sem cabeçalho e rodapé e antes de virarem parágrafos e títulos. Prova usa estas. */
+  lines?: { text: string; page: number }[];
   characters: number;
 };
 

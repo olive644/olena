@@ -19,10 +19,17 @@ export const DEFAULT_NOTEBOOK_BINDINGS = Object.fromEntries(
 export type NotebookShortcutSettings = {
   bindings: Record<NotebookShortcutId, string>;
   penSide: PenShortcutAction;
+  penSecond: PenShortcutAction;
   penTail: PenShortcutAction;
 };
 export function defaultNotebookShortcuts(): NotebookShortcutSettings {
-  return { bindings: { ...DEFAULT_NOTEBOOK_BINDINGS }, penSide: "hand", penTail: "eraser" };
+  return {
+    bindings: { ...DEFAULT_NOTEBOOK_BINDINGS },
+    penSide: "hand",
+    // Sem ação própria: quem não configurou segue com a ferramenta escolhida, como sempre foi.
+    penSecond: "selected",
+    penTail: "eraser",
+  };
 }
 const validBinding =
   /^(?:(?:mod|alt|shift)\+)*(?:[\p{L}\p{N}]|f(?:[1-9]|1\d|2[0-4])|arrow(?:up|down|left|right)|space|tab|home|end|pageup|pagedown|delete|backspace|plus|minus|period|comma|slash|semicolon|bracketleft|bracketright|backslash|quote|backquote)$/u;
@@ -97,7 +104,7 @@ export function readNotebookShortcuts(): NotebookShortcutSettings {
     const parsed: unknown = JSON.parse(localStorage.getItem(NOTEBOOK_SHORTCUTS_KEY) ?? "{}");
     if (!parsed || typeof parsed !== "object") return result;
     const record = parsed as Record<string, unknown>;
-    for (const key of ["penSide", "penTail"] as const) {
+    for (const key of ["penSide", "penSecond", "penTail"] as const) {
       const value = record[key];
       if (typeof value === "string" && PEN_ACTIONS.some((action) => action === value))
         result[key] = value as PenShortcutAction;
@@ -159,7 +166,7 @@ export function useNotebookShortcuts() {
     settings,
     error,
     changeBinding,
-    changePen: (key: "penSide" | "penTail", value: PenShortcutAction) =>
+    changePen: (key: "penSide" | "penSecond" | "penTail", value: PenShortcutAction) =>
       save({ ...readNotebookShortcuts(), [key]: value }),
     reset: () => save(defaultNotebookShortcuts()),
   };

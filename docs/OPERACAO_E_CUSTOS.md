@@ -182,3 +182,8 @@ Proprietário pediu explicitamente subir o teto após a medição de 1761,1 KiB.
 - A conversa, o plano de estudo e a explicação da Olena foram desligados: o botão flutuante saiu do app e `/api/helena` devolve 410 para qualquer pedido que não seja `summarize` (sem gastar cota). A variável `HELENA_CHAT_ENABLED=true` na Vercel religa o servidor (a interface precisaria voltar em `src/app.tsx`).
 - Os avisos de cota e de erro do servidor saem em inglês quando o app está em inglês (cabeçalho `X-App-Language`).
 - Efeito sobre os limites da seção anterior: o teto de 300 pedidos por dia e os limites de conversa agora só valem para o resumo. Não verificado: quantos neurons por dia sobram; conferir no painel da Cloudflare depois de alguns dias.
+
+## 5. Biblioteca com a Olena (IA): limites e custo (19/11/2026)
+
+- Resumo, flashcards, quiz e simulado das pastas usam a Cloudflare Workers AI (plano gratuito: cerca de 10.000 neurons por dia para a conta toda, não verificado no painel). O uso é medido em créditos (neurons): teto global de 8.000 por dia, de 250 a 1.000 por pessoa, 300 por pedido e 2.500 por endereço, em `src/backend/helena-budget.ts`; contadores em `neuron-budget.ts`. Detalhes e modelo de ameaça em `docs/BIBLIOTECA_IA.md`.
+- **Medir antes de mexer:** olhe o consumo diário de neurons no painel da Cloudflare depois dos primeiros usos reais e ajuste `GLOBAL_DAILY_NEURONS` em `helena-budget.ts` (e os preços por `OLENA_NEURONS_IN_PER_M` e `OLENA_NEURONS_OUT_PER_M`). Se a cota gratuita acabar, o app mostra "A Olena atingiu o limite gratuito de hoje" e volta às 21h (Brasília). Passar do gratuito exige plano pago e é decisão e ação da dona do projeto.

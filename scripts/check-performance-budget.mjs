@@ -369,6 +369,14 @@ const MAX_TOTAL_JS_BYTES = 1764 * 1024;
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1764 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
+// Revisão de redação no aparelho: o worker de tema (Transformers.js), o corretor ortográfico
+// (Hunspell) e o runtime ONNX só são baixados quando o aluno entrega uma redação, como o leitor de
+// PDF. Por isso têm orçamento próprio e não entram no total da aplicação (1764 KiB), que NÃO foi
+// aumentado. Este teto é novo e é medido: 1000 KiB, com a medição registrada em
+// docs/CURRENT_STATE_AUDIT.md (19/11/2026 em diante). Subi-lo exige decisão da dona do projeto.
+const MAX_ESSAY_REVIEW_JS_BYTES = 1000 * 1024;
+const ESSAY_REVIEW_FILE =
+  /^(essay-topic\.worker|essay-proofreading\.worker|hunspell|ort-wasm-simd-threaded\.jsep)[-.]/;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
 // Checagem da configuração, não do build: garante que ninguém suba o orçamento normal além
@@ -405,7 +413,13 @@ const ttsWorker = sizes.find(
   (item) => item.file.startsWith("piper-tts.worker-") || item.file.startsWith("kokoro-tts.worker-"),
 );
 const applicationTotal = sizes
-  .filter((item) => item !== ttsWorker && !/^pdf[-.]/.test(item.file))
+  .filter(
+    (item) =>
+      item !== ttsWorker && !/^pdf[-.]/.test(item.file) && !ESSAY_REVIEW_FILE.test(item.file),
+  )
+  .reduce((sum, item) => sum + item.bytes, 0);
+const essayReviewBytes = sizes
+  .filter((item) => ESSAY_REVIEW_FILE.test(item.file))
   .reduce((sum, item) => sum + item.bytes, 0);
 const pdfBytes = sizes
   .filter((item) => /^pdf[-.]/.test(item.file))
@@ -418,6 +432,11 @@ const wasmBytes = (
 console.log(`JavaScript inicial: ${(initialBytes / 1024).toFixed(1)} KiB`);
 console.log(`JavaScript da aplicação: ${(applicationTotal / 1024).toFixed(1)} KiB`);
 console.log(`Leitor PDF opcional e worker: ${(pdfBytes / 1024).toFixed(1)} KiB`);
+console.log(`Revisão de redação opcional (workers): ${(essayReviewBytes / 1024).toFixed(1)} KiB`);
+if (essayReviewBytes > MAX_ESSAY_REVIEW_JS_BYTES)
+  throw new Error(
+    `Revisão de redação excedeu o orçamento de ${MAX_ESSAY_REVIEW_JS_BYTES / 1024} KiB.`,
+  );
 if (pdfBytes > MAX_PDF_JS_BYTES) throw new Error("Leitor PDF excedeu o orçamento de 1800 KiB.");
 // Recurso removido: impedir o retorno acidental do renderizador e do pacote Three.
 if (sizes.some((item) => /^notebook-3d[-.]/.test(item.file)))

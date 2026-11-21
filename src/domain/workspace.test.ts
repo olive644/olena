@@ -84,6 +84,91 @@ describe("workspaceReducer", () => {
     expect(state.notebooks[0]?.parentId).toBeUndefined();
     expect(state.notes[0]?.id).toBe("note");
   });
+  it("trocar o papel e a cor do caderno inteiro muda só as folhas dele, com miniatura nova", () => {
+    const initial = createInitialWorkspace();
+    const subjectId = initial.subjects[0]!.id;
+    let state = workspaceReducer(initial, {
+      type: "notebook/added",
+      id: "book",
+      title: "Caderno",
+      subjectId,
+      createdAt: "2026-09-20",
+    });
+    state = workspaceReducer(state, {
+      type: "notebook/added",
+      id: "other",
+      title: "Outro",
+      subjectId,
+      createdAt: "2026-09-20",
+    });
+    const document: HandwritingDocument = {
+      version: 1,
+      paper: "ruled",
+      paperColor: "light",
+      canvasSize: { width: 1200, height: 1600 },
+      strokes: [],
+    };
+    for (const [id, notebookId] of [
+      ["a", "book"],
+      ["b", "book"],
+      ["c", "other"],
+    ] as const) {
+      state = workspaceReducer(state, {
+        type: "note/added",
+        id,
+        notebookId,
+        subjectId,
+        updatedAt: "2026-09-20",
+      });
+      state = workspaceReducer(state, {
+        type: "note/asset-added",
+        assetId: `asset-${id}`,
+        noteId: id,
+        kind: "drawing",
+        name: id,
+        dataUrl: "data:image/png;base64,old",
+        createdAt: "2026-09-20",
+        handwriting: document,
+      });
+    }
+    const next = workspaceReducer(state, {
+      type: "notebook/paper-applied",
+      notebookId: "book",
+      paper: "grid",
+      paperColor: "night",
+      previews: { "asset-a": "data:image/png;base64,new" },
+      updatedAt: "2026-09-21",
+    });
+    const asset = (id: string) => next.notes.find((note) => note.id === id)!.assets[0]!;
+    expect(asset("a").handwriting).toMatchObject({ paper: "grid", paperColor: "night" });
+    expect(asset("a").dataUrl).toBe("data:image/png;base64,new");
+    // Sem miniatura nova a antiga fica; a pauta nova nunca encolhe nem corta a folha.
+    expect(asset("b").dataUrl).toBe("data:image/png;base64,old");
+    expect(asset("b").handwriting?.canvasSize).toEqual({ width: 3200, height: 2400 });
+    // Outro caderno não é tocado.
+    expect(asset("c").handwriting).toMatchObject({ paper: "ruled", paperColor: "light" });
+    // Só a cor: o papel e o tamanho ficam como estavam.
+    const colorOnly = workspaceReducer(state, {
+      type: "notebook/paper-applied",
+      notebookId: "book",
+      paperColor: "aged",
+      updatedAt: "2026-09-21",
+    });
+    expect(colorOnly.notes.find((note) => note.id === "a")!.assets[0]!.handwriting).toMatchObject({
+      paper: "ruled",
+      paperColor: "aged",
+      canvasSize: { width: 1200, height: 1600 },
+    });
+    // Caderno que não existe: nada muda.
+    expect(
+      workspaceReducer(state, {
+        type: "notebook/paper-applied",
+        notebookId: "nope",
+        paper: "grid",
+        updatedAt: "2026-09-21",
+      }),
+    ).toBe(state);
+  });
   it("reordena folhas dentro do caderno sem alterar o conteúdo", () => {
     const initial = createInitialWorkspace();
     const withNotebook = workspaceReducer(initial, {
@@ -233,11 +318,15 @@ describe("workspaceReducer", () => {
     const reviewed = workspaceReducer(withCard, {
       type: "flashcard/reviewed",
       id: card.id,
-      rating: "easy",
+      rating: "good",
       reviewedOn: "2026-08-30",
     });
-    expect(reviewed.flashcards[0]?.intervalDays).toBe(3);
-    expect(reviewed.flashcards[0]?.nextReview).toBe("2026-09-02");
+    // FSRS: primeira resposta "bom" agenda em poucos dias, e guarda a memória do cartão
+    expect(reviewed.flashcards[0]?.intervalDays).toBeGreaterThanOrEqual(2);
+    expect(reviewed.flashcards[0]?.intervalDays).toBeLessThanOrEqual(4);
+    expect(reviewed.flashcards[0]?.stability).toBeGreaterThan(0);
+    expect(reviewed.flashcards[0]?.difficulty).toBeGreaterThanOrEqual(1);
+    expect((reviewed.flashcards[0]?.nextReview ?? "") > "2026-08-30").toBe(true);
     expect(dueFlashcards(reviewed, "2026-08-30")).toHaveLength(0);
   });
 

@@ -66,7 +66,7 @@ import { HelenaLoading } from "./helena-loading";
 import type { ImportedPage } from "./page-import";
 import { NotebookPageBook } from "./notebook-page-book";
 import { HandwritingHistoryBar } from "./handwriting-history-bar";
-import { HandwritingPaperPicker } from "./handwriting-paper-picker";
+import { HandwritingPaperPicker, type NotebookPaperChange } from "./handwriting-paper-picker";
 import { HandwritingWritingWindow } from "./handwriting-writing-window";
 import { HandwritingColorDock } from "./handwriting-color-dock";
 import { HandwritingPenMeterPanel } from "./handwriting-pen-meter-panel";
@@ -79,6 +79,7 @@ import { restoreStrokes } from "./handwriting-undo";
 import type { RemoteCursor } from "../hooks/use-notebook-collaboration";
 import { cursorColor } from "./handwriting-cursor";
 import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
+import { createShapeAdjuster, type ShapeAdjuster } from "./handwriting-shape-adjust";
 import { HandwritingShapeInsert, type InsertKind } from "./handwriting-shape-insert";
 import { predictedTail, withPredictedTail } from "./handwriting-prediction";
 import { denoiseMousePath } from "./handwriting-denoise";
@@ -108,7 +109,12 @@ import { MAX_CONTROL_POINTS, dedupeControls, splinePoints } from "./handwriting-
 import { clampSpaceShift, itemsBelowLine } from "./handwriting-vertical-space";
 import { hitSelectionHandle } from "./handwriting-selection-ops";
 import { eraseInkArea, eraseWholeStrokes } from "./handwriting-eraser";
-import { isPenBarrelButton, isPenEraserTip, pointerSamples } from "./handwriting-pointer";
+import {
+  isPenBarrelButton,
+  isPenEraserTip,
+  isPenSecondButton,
+  pointerSamples,
+} from "./handwriting-pointer";
 import {
   newRemoteStrokes,
   partialStroke,
@@ -166,6 +172,8 @@ type HandwritingStudioProps = {
   captureActions?: import("react").ReactNode;
   cloud?: CloudSyncState;
   notebookPages?: StudyNote[];
+  /** Troca o papel e/ou a cor de todas as folhas do caderno; devolve quantas folhas mudaram. */
+  onApplyPaperToNotebook?: (change: NotebookPaperChange) => Promise<number> | number;
   currentPageId?: string;
   onSelectPage?: (id: string) => void;
   onCreatePage?: () => void;
@@ -191,10 +199,13 @@ type HandwritingStudioProps = {
 
 // Pausa, em milissegundos, para a forma desenhada ser acertada.
 const SHAPE_HOLD_MS = 600;
+// Tremor da mão parada: até esta distância (em pixels da tela) a pausa continua valendo.
+const SHAPE_HOLD_JITTER_PX = 3;
 
 export function HandwritingStudio({
   captureActions,
   notebookPages = [],
+  onApplyPaperToNotebook,
   currentPageId,
   onSelectPage,
   onCreatePage,
@@ -567,6 +578,10 @@ export function HandwritingStudio({
   // Tipo da forma em que o "segurar para acertar" transformou o traço de agora, e as retas
   // acertadas há pouco: uma nova reta pode fechar com elas um triângulo ou um retângulo.
   const shapeKindRef = useRef<ShapeKind | null>(null);
+  // Depois de acertar, arrastar de novo refaz a forma (tamanho, giro, ângulo) sem levantar a caneta.
+  const shapeAdjusterRef = useRef<ShapeAdjuster | null>(null);
+  const holdAnchorRef = useRef<HandwritingPoint | null>(null);
+  const [shapeBadge, setShapeBadge] = useState<{ kind: ShapeKind; detail: string } | null>(null);
   const recentLinesRef = useRef<RecentLine[]>([]);
   // Ponta prevista pelo navegador: só é desenhada na tela, nunca entra no traço.
   const predictedRef = useRef<HandwritingPoint[]>([]);
@@ -760,6 +775,37 @@ export function HandwritingStudio({
     const timer = window.setTimeout(() => setSaveConfirmation(0), 4000);
     return () => window.clearTimeout(timer);
   }, [saveConfirmation]);
+
+  // Varredura de brilho sobre a folha quando o caderno inteiro é trocado.
+  function sweepNotebook() {
+    const sheet = canvasRef.current?.closest(".handwriting-page-shell");
+    if (!sheet || isMotionReduced()) return;
+    const overlay = document.createElement("div");
+    overlay.className = "handwriting-notebook-sweep";
+    overlay.setAttribute("aria-hidden", "true");
+    for (let index = 0; index < 3; index += 1) {
+      const band = document.createElement("span");
+      band.style.setProperty("--i", String(index));
+      overlay.append(band);
+    }
+    for (let index = 0; index < 8; index += 1) {
+      const spark = document.createElement("i");
+      spark.style.setProperty("--i", String(index));
+      spark.style.setProperty("--x", `${8 + ((index * 37) % 84)}%`);
+      spark.style.setProperty("--y", `${10 + ((index * 53) % 76)}%`);
+      overlay.append(spark);
+    }
+    sheet.append(overlay);
+    window.setTimeout(() => overlay.remove(), 1700);
+  }
+
+  async function applyPaperToNotebook(change: NotebookPaperChange): Promise<number> {
+    if (change.paper) selectPaper(change.paper);
+    if (change.paperColor) selectPaperColor(change.paperColor);
+    // As opções ficam abertas: o brilho do botão e o aviso mostram o que aconteceu.
+    sweepNotebook();
+    return (await onApplyPaperToNotebook?.(change)) ?? 0;
+  }
 
   function selectPaperColor(nextColor: HandwritingPaperColor) {
     if (nextColor !== paperColor) animatePaperChange();
@@ -1674,16 +1720,21 @@ export function HandwritingStudio({
     // Também vale o botão apertado ANTES de encostar (button 0 com buttons 3), comum na S Pen.
     const isEraserTip = isPenEraserTip(event);
     const isBarrelButton = isPenBarrelButton(event);
-    if (event.button !== 0 && !isEraserTip && !isBarrelButton) return;
+    const isSecondButton = isPenSecondButton(event);
+    const penButton = isEraserTip || isBarrelButton || isSecondButton;
+    if (event.button !== 0 && !penButton) return;
     if (event.pointerType === "pen" && !penDetectedRef.current) {
       penDetectedRef.current = true;
       changePreference("penOnly", true);
     }
-    const penAction = isEraserTip ? shortcutSettings.penTail : shortcutSettings.penSide;
-    if ((isEraserTip || isBarrelButton) && penAction === "select" && tool !== "select")
-      setTool("select");
-    const rawTool: HandwritingTool =
-      (isEraserTip || isBarrelButton) && penAction !== "selected" ? penAction : tool;
+    // A ponta traseira vale mais que o botão lateral, que vale mais que o segundo botão.
+    const penAction = isEraserTip
+      ? shortcutSettings.penTail
+      : isBarrelButton
+        ? shortcutSettings.penSide
+        : shortcutSettings.penSecond;
+    if (penButton && penAction === "select" && tool !== "select") setTool("select");
+    const rawTool: HandwritingTool = penButton && penAction !== "selected" ? penAction : tool;
     // Borracha de fundo: em vez de apagar tinta, desenha um traço de cobertura que fura o fundo
     // importado ao ser solto. Daí em diante o gesto é o de um traço comum.
     const coverErase = rawTool === "eraser" && eraserBackground && backgroundAvailable;
@@ -1805,8 +1856,8 @@ export function HandwritingStudio({
           tool: effectiveTool === "ruler" ? "pen" : effectiveTool,
           ...(effectiveTool === "pen" ? { brush } : {}),
           ...(effectiveTool === "pen" && dash ? { dash } : {}),
-          ...(effectiveTool === "pen" && event.pointerType !== "pen"
-            ? { dynamics: "simulated" as const }
+          ...(effectiveTool === "pen"
+            ? { dynamics: event.pointerType === "pen" ? ("pen" as const) : ("simulated" as const) }
             : {}),
           ...(effectiveTool === "highlighter" ? { opacity: highlighterOpacity } : {}),
           color,
@@ -1827,6 +1878,9 @@ export function HandwritingStudio({
     clearTimeout(holdTimerRef.current);
     shapeSnappedRef.current = false;
     shapeKindRef.current = null;
+    shapeAdjusterRef.current = null;
+    holdAnchorRef.current = null;
+    setShapeBadge(null);
     // O traço em andamento fica só na camada ao vivo; a folha o recebe ao soltar a caneta.
     if (effectiveTool !== "ruler") {
       paintLive();
@@ -1955,7 +2009,18 @@ export function HandwritingStudio({
     }
     const liveStroke = liveStrokeRef.current;
     if (!liveStroke) return;
-    if (shapeSnappedRef.current) return;
+    if (shapeSnappedRef.current) {
+      const adjust = shapeAdjusterRef.current;
+      if (adjust) {
+        const result = adjust(canvasPoint(canvas, event));
+        liveStroke.points = result.points;
+        setShapeBadge((badge) =>
+          badge && badge.detail !== result.detail ? { ...badge, detail: result.detail } : badge,
+        );
+        scheduleLivePaint();
+      }
+      return;
+    }
     // Na dobra do canto não há papel: pontos ali nem entram no traço.
     const onPaper = sampleEvents.map(
       (sample) => !isInFoldCorner(bounds, sample.clientX, sample.clientY),
@@ -1992,10 +2057,17 @@ export function HandwritingStudio({
           )
         : [];
     scheduleLivePaint();
-    clearTimeout(holdTimerRef.current);
     if (shapeSnap && (activeToolRef.current === "pen" || activeToolRef.current === "highlighter")) {
-      holdTimerRef.current = setTimeout(snapHeldStroke, SHAPE_HOLD_MS);
-    }
+      const tip = liveStroke.points.at(-1);
+      const anchor = holdAnchorRef.current;
+      const tolerance = SHAPE_HOLD_JITTER_PX * (PAGE_WIDTH / Math.max(1, bounds.width));
+      // O tremor de uma mão parada não reinicia a contagem: só um movimento de verdade.
+      if (tip && (!anchor || Math.hypot(tip.x - anchor.x, tip.y - anchor.y) > tolerance)) {
+        clearTimeout(holdTimerRef.current);
+        holdAnchorRef.current = tip;
+        holdTimerRef.current = setTimeout(snapHeldStroke, SHAPE_HOLD_MS);
+      }
+    } else clearTimeout(holdTimerRef.current);
   }
 
   function snapHeldStroke() {
@@ -2003,11 +2075,16 @@ export function HandwritingStudio({
     if (!live || !drawingRef.current || shapeSnappedRef.current) return;
     const shape = recognizeShape(live.points);
     if (!shape) return;
+    const tip = live.points.at(-1);
+    shapeAdjusterRef.current = tip ? createShapeAdjuster(shape, tip) : null;
     live.points = shape.points;
     liveStabilizerRef.current = null;
     predictedRef.current = [];
     shapeSnappedRef.current = true;
     shapeKindRef.current = shape.kind;
+    setShapeBadge({ kind: shape.kind, detail: "" });
+    // Um toque de vibração confirma o encaixe, onde o aparelho tem.
+    navigator.vibrate?.(12);
     scheduleLivePaint();
   }
 
@@ -2021,6 +2098,9 @@ export function HandwritingStudio({
     )
       move(event);
     clearTimeout(holdTimerRef.current);
+    holdAnchorRef.current = null;
+    shapeAdjusterRef.current = null;
+    setShapeBadge(null);
     if (event.pointerType === "pen") {
       // eslint-disable-next-line react-hooks/purity -- Used by the imperative editor effects and pointer handlers.
       palmRef.current = { penDown: false, lastPenAt: performance.now() };
@@ -2698,7 +2778,9 @@ export function HandwritingStudio({
       ? shortcutSettings.penTail
       : isPenBarrelButton(event)
         ? shortcutSettings.penSide
-        : "selected";
+        : isPenSecondButton(event)
+          ? shortcutSettings.penSecond
+          : "selected";
     if (shortcut !== "selected" && shortcut !== "eraser") return;
     const writingTool = shortcut === "eraser" ? "eraser" : tool;
     writingToolRef.current = writingTool;
@@ -2719,7 +2801,8 @@ export function HandwritingStudio({
         ? {
             brush,
             ...(dash ? { dash } : {}),
-            ...(event.nativeEvent.pointerType !== "pen" ? { dynamics: "simulated" as const } : {}),
+            dynamics:
+              event.nativeEvent.pointerType === "pen" ? ("pen" as const) : ("simulated" as const),
           }
         : { opacity: highlighterOpacity }),
       color,
@@ -3841,12 +3924,31 @@ export function HandwritingStudio({
         inert={fileAction === "import"}
       >
         <HandwritingColorDock
-          active={
-            optionsOpen && ["pen", "highlighter", "ruler", "curve", "coordinates"].includes(tool)
-          }
+          active
           color={color}
-          onColorChange={setColor}
+          onColorChange={(next) => {
+            setColor(next);
+            // Escolher uma cor com a borracha na mão volta para a caneta, como nos outros apps.
+            if (tool === "eraser") setTool("pen");
+          }}
         />
+        <div className="handwriting-shape-badge" role="status" aria-live="polite">
+          {shapeBadge
+            ? [
+                {
+                  line: uiText("Reta"),
+                  ellipse: uiText(1665),
+                  rectangle: uiText(197),
+                  triangle: uiText(227),
+                  arrow: uiText(1666),
+                  polygon: uiText(228),
+                }[shapeBadge.kind],
+                shapeBadge.detail,
+              ]
+                .filter(Boolean)
+                .join(" ")
+            : null}
+        </div>
         <HandwritingPaperPicker
           paper={paper}
           paperColor={paperColor}
@@ -3866,6 +3968,7 @@ export function HandwritingStudio({
             selectPaperColor(next);
             setPaperSectionsOpen({ paper: false, color: false });
           }}
+          {...(onApplyPaperToNotebook ? { onApplyToNotebook: applyPaperToNotebook } : {})}
         />
 
         <div

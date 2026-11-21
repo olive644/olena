@@ -54,25 +54,35 @@
   text-shadow: 1px 2px #593631;
   border: 1px solid #c99a65;
   border-radius: 3px 8px 3px 6px;
-  background: linear-gradient(135deg, #d1a16a 0 8px, transparent 8px), linear-gradient(155deg, #94613f 0 58%, #674332 58%);
+  background:
+    linear-gradient(135deg, #d1a16a 0 8px, transparent 8px),
+    linear-gradient(155deg, #94613f 0 58%, #674332 58%);
   box-shadow: 0 3px #49302b;
 }
 :root body .source-quiz-answers > button {
   gap: 12px;
   padding: 12px 16px;
   border-radius: 4px 13px 4px 9px;
-  transition: transform 160ms ease, border-color 160ms ease;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease;
 }
 .source-quiz-answers > button[data-result="right"] > span {
-  background: linear-gradient(135deg, #a4e5bd 0 8px, transparent 8px), linear-gradient(155deg, #36826a 0 58%, #205541 58%);
+  background:
+    linear-gradient(135deg, #a4e5bd 0 8px, transparent 8px),
+    linear-gradient(155deg, #36826a 0 58%, #205541 58%);
   border-color: #a4e5bd;
 }
 .source-quiz-answers > button[data-result="wrong"] > span {
-  background: linear-gradient(135deg, #ffa0ad 0 8px, transparent 8px), linear-gradient(155deg, #b64460 0 58%, #742b43 58%);
+  background:
+    linear-gradient(135deg, #ffa0ad 0 8px, transparent 8px),
+    linear-gradient(155deg, #b64460 0 58%, #742b43 58%);
   border-color: #ffa0ad;
 }
 @media (prefers-reduced-motion: reduce) {
-  :root body .source-quiz-answers > button { transition: none; }
+  :root body .source-quiz-answers > button {
+    transition: none;
+  }
 }
 :root body .source-quiz-answers > button[aria-pressed="true"] {
   border-color: #facc15;

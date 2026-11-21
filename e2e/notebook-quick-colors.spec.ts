@@ -46,12 +46,11 @@ test("barra de cores rápidas com conta-gotas que lê a folha e lembra a cor", a
   // Um ponto da folha que esteja na área visível (no celular a folha é mais alta que a tela).
   const view = (await editor.locator(".handwriting-viewport").boundingBox())!;
   const clickX = Math.max(shell.x + 20, view.x + view.width * 0.5);
-  // Com as opções abertas (a paleta só aparece assim), o painel pode cobrir a folha no celular:
+  // Se as opções estiverem abertas, o painel pode cobrir a folha no celular:
   // se o toque cair nele, sobe para a parte da folha que continua à mostra.
-  const panel = await editor
-    .locator(".handwriting-brush-panel, .handwriting-ink-options")
-    .first()
-    .boundingBox();
+  const panelLocator = editor.locator(".handwriting-brush-panel, .handwriting-ink-options");
+  // A paleta agora fica à vista sem abrir as opções: o painel pode nem existir.
+  const panel = (await panelLocator.count()) ? await panelLocator.first().boundingBox() : null;
   let clickY = Math.max(shell.y + 20, view.y + view.height * 0.4);
   if (
     panel &&

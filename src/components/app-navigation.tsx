@@ -180,9 +180,10 @@ export function Sidebar({ view, onNavigate }: NavigationProps) {
           width="24"
           height="24"
         />
-        <div className="sidebar__brand" aria-label="OLENASTUDY">
+        <div className="sidebar__brand" aria-label={"OLENASTUDY"}>
           <strong>
-            OLENA<span>STUDY</span>
+            {"OLENA"}
+            <span>{"STUDY"}</span>
           </strong>
         </div>
       </div>

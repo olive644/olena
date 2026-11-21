@@ -747,7 +747,7 @@ describe("flashcards, quiz e simulado com a Olena", () => {
     fireEvent.keyDown(window, { key: "ArrowLeft" });
     expect(within(study).getByText("Vamos rever as perguntas que você errou.")).toBeTruthy();
     expect(dispatch).toHaveBeenCalledWith(
-      expect.objectContaining({ type: "flashcard/reviewed", id: "c1", rating: "easy" }),
+      expect.objectContaining({ type: "flashcard/reviewed", id: "c1", rating: "good" }),
     );
     expect(dispatch).toHaveBeenCalledWith(
       expect.objectContaining({ type: "flashcard/reviewed", id: "c2", rating: "again" }),

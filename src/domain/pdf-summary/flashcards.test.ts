@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { flashcardsFromPlainText, MAX_AUTO_FLASHCARDS } from "./index";
-import { falseVersion, numbersIn } from "./true-false";
+import { falseVersion, looksLikeStatement, numbersIn } from "./true-false";
 import {
   computingHistory,
   fixtureAsText,
@@ -68,7 +68,7 @@ describe("flashcards automáticos de verdadeiro ou falso", () => {
 });
 
 describe("afirmações falsas", () => {
-  const base = { index: 0, language: "pt" as const, numbers: [], terms: [], definitions: [] };
+  const base = { index: 0, language: "pt" as const, numbers: [], definitions: [] };
 
   it("troca um ano por outro, sem mexer em quantidades nem em décadas inteiras", () => {
     expect(falseVersion("Em 1945, o ENIAC foi concluído nos Estados Unidos.", base)).toMatch(
@@ -115,5 +115,44 @@ describe("afirmações falsas", () => {
       "18",
       "2.300",
     ]);
+  });
+
+  it("não troca o número de um nome de produto", () => {
+    expect(
+      falseVersion("O Altair 8800 foi vendido em forma de kit.", { ...base, index: 1 }),
+    ).not.toContain("Altair 8801");
+    const result = falseVersion("O Altair 8800 foi vendido como kit.", { ...base, index: 1 });
+    expect(result === undefined || result.includes("Altair 8800")).toBe(true);
+  });
+
+  it("não nega verbo de oração subordinada", () => {
+    const result = falseVersion("Ele sabe o que é um chip e usa isso hoje.", { ...base, index: 2 });
+    expect(result === undefined || !result.includes("não é")).toBe(true);
+  });
+});
+
+describe("o que é uma afirmação completa", () => {
+  it("barra cabeçalho de tabela, título e linha do tempo", () => {
+    for (const bad of [
+      "Início do projeto Apresentação pública Fim da operação",
+      "Início do projeto Apresentação pública Fim da operação.",
+      "Fotossíntese e Respiração Celular na Planta",
+      "1945 ENIAC Pensilvânia Estados Unidos Fim.",
+      "Nome | Ano | País | Tipo.",
+      "Resumo geral do capítulo.",
+    ])
+      expect(looksLikeStatement(bad, "pt")).toBe(false);
+  });
+
+  it("aceita frases completas", () => {
+    for (const good of [
+      "O ENIAC foi concluído em 1945 na Universidade da Pensilvânia.",
+      "A planta usa gás carbônico, água e luz para produzir glicose.",
+      "Os três inventores receberam o Prêmio Nobel de Física em 1956.",
+    ])
+      expect(looksLikeStatement(good, "pt")).toBe(true);
+    expect(looksLikeStatement("The ENIAC was completed in 1945 at the university.", "en")).toBe(
+      true,
+    );
   });
 });

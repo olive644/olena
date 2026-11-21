@@ -35,8 +35,7 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: "Espaço do aluno" })).toBeTruthy();
     expect(screen.queryByText(/dados salvos neste dispositivo/i)).toBeNull();
     const sidebar = screen.getByRole("complementary", { name: "" });
-    fireEvent.click(within(sidebar).getByRole("button", { name: "Expandir menu lateral" }));
-    expect(within(sidebar).getByLabelText("OlenaStudy")).toBeTruthy();
+    expect(within(sidebar).getByLabelText("OLENASTUDY")).toBeTruthy();
     expect(screen.queryByAltText(/rosto da helena/i)).toBeNull();
     expect(screen.queryByAltText("Olena, a mascote do OlenaStudy")).toBeNull();
     expect(screen.queryByText(/by oli/i)).toBeNull();
@@ -64,16 +63,14 @@ describe("App", () => {
     ).toBeTruthy();
   }, 30000);
 
-  it("expande a navegação lateral para revelar categorias e nomes", () => {
+  it("mostra a navegação lateral já expandida, com categorias e nomes", () => {
     render(<App />);
     const sidebar = screen.getByRole("complementary", { name: "" });
-    const toggle = within(sidebar).getByRole("button", { name: "Expandir menu lateral" });
 
-    expect(toggle.getAttribute("aria-expanded")).toBe("false");
-    fireEvent.click(toggle);
-    expect(within(sidebar).getByRole("button", { name: "Recolher menu lateral" })).toBeTruthy();
+    expect(within(sidebar).queryByRole("button", { name: "Expandir menu lateral" })).toBeNull();
+    expect(within(sidebar).queryByRole("button", { name: "Recolher menu lateral" })).toBeNull();
     expect(sidebar.classList.contains("sidebar--expanded")).toBe(true);
-    expect(within(sidebar).getByLabelText("OlenaStudy")).toBeTruthy();
+    expect(within(sidebar).getByLabelText("OLENASTUDY")).toBeTruthy();
     expect(within(sidebar).getByText("Área do aluno")).toBeTruthy();
     expect(within(sidebar).getByText("Meus materiais")).toBeTruthy();
     expect(within(sidebar).queryByText("Área do professor")).toBeNull();
@@ -136,22 +133,26 @@ describe("App", () => {
     expect(within(main).queryByRole("button", { name: "Cadernos" })).toBeNull();
   });
 
-  it("organiza as ferramentas secundárias no menu móvel", async () => {
+  it("reúne todas as ferramentas na barra móvel, sem menu de mais ferramentas", async () => {
     render(<App />);
     const mobileNavigation = screen.getByRole("navigation", { name: "Navegação móvel" });
     expect(
       mobileNavigation.querySelectorAll(
         ":scope > .mobile-nav__item, :scope > .appearance-picker > .mobile-nav__item",
       ),
-    ).toHaveLength(5);
-    fireEvent.click(screen.getByRole("button", { name: "Mais ferramentas" }));
-
-    const moreMenu = screen.getByRole("dialog", { name: "Mais ferramentas" });
-    expect(within(moreMenu).queryByLabelText("Trocar foto de perfil")).toBeNull();
-    expect(within(moreMenu).queryByRole("button", { name: "Hábitos" })).toBeNull();
-    fireEvent.click(within(moreMenu).getByRole("button", { name: "Biblioteca" }));
+    ).toHaveLength(6);
+    expect(within(mobileNavigation).queryByRole("button", { name: "Mais ferramentas" })).toBeNull();
+    // O Perfil é o sexto item da barra móvel, com o avatar da conta no lugar do ícone.
+    expect(
+      within(mobileNavigation).getByRole("button", { name: "Perfil" }).querySelector("img"),
+    ).toBeTruthy();
+    fireEvent.click(within(mobileNavigation).getByRole("button", { name: "Biblioteca" }));
     expect(await screen.findByRole("main")).toBeTruthy();
-    expect(screen.queryByRole("dialog", { name: "Mais ferramentas" })).toBeNull();
+    expect(
+      within(mobileNavigation)
+        .getByRole("button", { name: "Biblioteca" })
+        .getAttribute("aria-current"),
+    ).toBe("page");
   });
 
   it("mantém Praticar no mesmo padrão dos outros itens móveis", () => {
@@ -160,7 +161,7 @@ describe("App", () => {
     const practice = within(navigation).getByRole("button", { name: "Praticar" });
     const agenda = within(navigation).getByRole("button", { name: "Agenda" });
     expect(practice.className).toBe(agenda.className);
-    expect(practice.querySelectorAll(".navigation-icon__variant")).toHaveLength(3);
+    expect(practice.querySelectorAll(".navigation-icon--colorful")).toHaveLength(1);
     fireEvent.click(practice);
     expect(practice.getAttribute("aria-current")).toBe("page");
     expect(practice.className).toBe("mobile-nav__item mobile-nav__item--active");
@@ -181,13 +182,10 @@ describe("App", () => {
       const button = within(navigation).getByRole("button", { name: label });
       const artwork = button.querySelector(`[data-icon="${icon}"]`);
       expect(artwork).toBeTruthy();
-      expect(artwork?.classList.contains("navigation-icon--brand")).toBe(true);
-      expect(artwork?.querySelectorAll(".navigation-icon__variant")).toHaveLength(3);
-      for (const variant of ["claro", "roxo", "escuro"]) {
-        expect(
-          artwork?.querySelector(`img[src="/navigation-icons/paper/${variant}/${icon}.svg"]`),
-        ).toBeTruthy();
-      }
+      expect(artwork?.classList.contains("navigation-icon--colorful")).toBe(true);
+      expect(
+        artwork?.querySelector(`img[src="/navigation-icons/colorful/${icon}.svg"]`),
+      ).toBeTruthy();
     });
   });
 
@@ -270,15 +268,7 @@ describe("App", () => {
       screen.getByRole("navigation", { name: "Navegação principal" }),
     ).getByRole("button", { name: "Perfil" });
     expect(profile.getAttribute("aria-current")).toBe("page");
-    expect(
-      profile.querySelector('img[src="/navigation-icons/paper/profile-active.svg"]'),
-    ).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Mais ferramentas" }));
-    expect(
-      within(screen.getByRole("dialog", { name: "Mais ferramentas" })).queryByRole("button", {
-        name: "Perfil",
-      }),
-    ).toBeNull();
+    expect(profile.querySelector("img.navigation-profile__avatar")).toBeTruthy();
   });
 
   it("mostra a rosa que cresce com o temporizador de foco", async () => {

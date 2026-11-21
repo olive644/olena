@@ -73,6 +73,8 @@ it("abre textos próprios, salva por proposta e recupera ao voltar", () => {
   expect(screen.queryByRole("tab", { name: "Minhas redações" })).toBeNull();
   expect(screen.getByRole("heading", { name: "Minhas redações" })).toBeTruthy();
   fireEvent.click(screen.getAllByRole("button", { name: new RegExp(title) })[0]!);
+  // A cópia entregue fica no painel "Redação", fechado e inerte até o aluno abri-lo.
+  fireEvent.click(screen.getByRole("button", { name: "Redação" }));
   expect(screen.getByRole("heading", { name: "Sua redação entregue" })).toBeTruthy();
   expect(screen.queryByRole("textbox", { name: "Sua redação" })).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: /^Continuar$/ }));

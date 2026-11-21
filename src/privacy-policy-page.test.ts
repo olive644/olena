@@ -135,6 +135,8 @@ describe("página da Política de Privacidade", () => {
       "www.googleapis.com": "Google",
       "apis.google.com": "Google",
       "api.datamuse.com": "consulta de vocabulário",
+      "huggingface.co": "modelos de análise de redação",
+      "cdn.hf.co": "modelos de análise de redação",
       "tarotapi.dev": "consulta dos significados das cartas",
       "www.google.com": "verificação de segurança",
     };
@@ -151,6 +153,7 @@ describe("página da Política de Privacidade", () => {
       "A empresa que hospeda o aplicativo na internet",
       "Uma empresa parceira de voz por inteligência artificial",
       "Um serviço de consulta de vocabulário",
+      "Um serviço de arquivos de modelos de análise de redação",
     ]) {
       expect(text).toContain(funcao);
     }

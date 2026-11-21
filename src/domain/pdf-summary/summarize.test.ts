@@ -211,3 +211,18 @@ describe("desempenho", () => {
     expect(stats.ratio).toBeLessThan(0.3);
   }, 30_000);
 });
+
+describe("texto sem páginas", () => {
+  it("resumo de texto puro, nota ou imagem lida por OCR não cita página", async () => {
+    const result = await summaryOf(photosynthesis);
+    expect(result.markdown).not.toMatch(/\(págs?\./);
+  });
+
+  it("o PDF continua citando as páginas", async () => {
+    const doc = structureText(fixtureAsText(photosynthesis), photosynthesis.title);
+    const asPdf: typeof doc = { ...doc };
+    delete asPdf.paged;
+    const result = await summarizeDocument(asPdf);
+    expect(result.markdown).toMatch(/\(págs?\./);
+  });
+});

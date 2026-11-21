@@ -30,6 +30,8 @@ import { ShelfToolIcon } from "../components/shelf-tool-icon";
 import { PaperDigits } from "../components/paper-digits";
 import { LibraryDialog } from "../components/library-dialog";
 import { FlashcardStudy } from "../components/flashcard-study";
+import { noteFeedback } from "../domain/flashcard-feedback";
+import { learnFromSignal } from "../domain/flashcard-quality";
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useRef, useState, type Dispatch, type ReactNode } from "react";
 import {
@@ -40,6 +42,14 @@ import {
   type WorkspaceAction,
   type WorkspaceState,
 } from "../domain/workspace";
+import {
+  MAX_IMAGE_INPUT_BYTES,
+  MAX_PDF_BYTES,
+  MAX_SOURCE_BYTES,
+  decodeText,
+  fitsLibrary,
+  imageDataUrl,
+} from "./library-source-files";
 import "./library-shelf-view.css";
 
 const folderStyles = [
@@ -478,10 +488,13 @@ export function LibraryFolderContents({
   materials: folderMaterials,
   subjectId,
   flashcards = [],
+  libraryChars = 0,
   dispatch,
   onBack,
 }: {
   flashcards?: readonly Flashcard[];
+  /** Caracteres que a Biblioteca inteira já guarda na conta (todas as pastas). */
+  libraryChars?: number;
   folder: NonNullable<WorkspaceState["libraryCollections"]>[number];
   materials: WorkspaceState["materials"];
   subjectId: string;
@@ -531,7 +544,7 @@ export function LibraryFolderContents({
   const [renamingId, setRenamingId] = useState<string>();
   const [removingIds, setRemovingIds] = useState<string[]>([]);
   const [showSources, setShowSources] = useState(false);
-  const [sourceType, setSourceType] = useState<"YouTube" | "Nota em branco" | "Goodnotes">();
+  const [sourceType, setSourceType] = useState<"Nota em branco" | "Goodnotes">();
   const [creating, setCreating] = useState<keyof typeof studySections>();
   const [showStudyTypes, setShowStudyTypes] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -544,12 +557,17 @@ export function LibraryFolderContents({
   const resetClock = credits.resetAt
     ? new Date(credits.resetAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
     : "";
+  // Link é só referência: o app não lê vídeos, então não entra nos geradores. Não há mais como
+  // criar link novo (a leitura de vídeo do YouTube pelo servidor foi testada e não é confiável);
+  // os que já estavam salvos continuam listados, só para poderem ser removidos.
+  const readableMaterials = materials.filter(({ kind }) => kind !== "link");
   const maxSelectedSources = 3;
-  const allSelected = selectedSources.length === materials.length;
+  const allSelected = selectedSources.length === readableMaterials.length;
   const [error, setError] = useState("");
   const input = useRef<HTMLInputElement>(null);
   const uploadOrigin = useRef<"goodnotes" | undefined>(undefined);
 
+  /** Lê o texto das fontes no aparelho: texto direto, imagem por OCR, PDF (OCR nas páginas só imagem). */
   async function extractSourceTexts(): Promise<SourceText[]> {
     const texts: SourceText[] = [];
     let scanner: Awaited<ReturnType<typeof import("tesseract.js").createWorker>> | undefined;
@@ -763,11 +781,24 @@ export function LibraryFolderContents({
   const sourceSelection = (canRemove: boolean) => (
     <div className="library-source-selection">
       <ul>
-        {materials.map(({ id, title }) => (
+        {materials.map(({ id, title, kind, content }) => (
           <li key={id} className={removingIds.includes(id) ? "is-pulverizing" : undefined}>
             <div className="library-source-name">
               <img src="/room-icons/manual-words.svg" alt="" width="20" height="20" />
-              <span>{title}</span>
+              {kind === "link" ? (
+                <span>
+                  <a href={content} target="_blank" rel="noopener noreferrer">
+                    {title}
+                  </a>
+                  <small id={"link-note-" + id}>
+                    {uiText(
+                      "Só referência: o OlenaStudy não lê vídeos. Cole a transcrição ou suas anotações em uma nota em branco.",
+                    )}
+                  </small>
+                </span>
+              ) : (
+                <span>{title}</span>
+              )}
             </div>
             {canRemove && (
               <button
@@ -787,8 +818,9 @@ export function LibraryFolderContents({
                 type="checkbox"
                 aria-label={"Selecionar " + title}
                 checked={selectedIds.includes(id)}
+                aria-describedby={kind === "link" ? "link-note-" + id : undefined}
                 disabled={
-                  materials.find((source) => source.id === id)?.kind === "link" ||
+                  kind === "link" ||
                   (!selectedIds.includes(id) && selectedSources.length >= maxSelectedSources)
                 }
                 onChange={({ currentTarget }) => {
@@ -805,21 +837,22 @@ export function LibraryFolderContents({
       </ul>
       <label>
         <span>
-          {materials.length > maxSelectedSources
+          {readableMaterials.length > maxSelectedSources
             ? "Selecionar 3 fontes"
             : "Selecionar todas as fontes"}
         </span>
         <input
           type="checkbox"
+          disabled={readableMaterials.length === 0}
           checked={
-            materials.length > maxSelectedSources
+            readableMaterials.length > maxSelectedSources
               ? selectedSources.length === maxSelectedSources
-              : allSelected
+              : readableMaterials.length > 0 && allSelected
           }
           onChange={({ currentTarget }) =>
             setSelectedIds(
               currentTarget.checked
-                ? materials.slice(0, maxSelectedSources).map(({ id }) => id)
+                ? readableMaterials.slice(0, maxSelectedSources).map(({ id }) => id)
                 : [],
             )
           }
@@ -856,6 +889,27 @@ export function LibraryFolderContents({
         key={openDeck.id}
         title={openDeck.title}
         cards={openDeck.cards}
+        sourceTitle={openDeck.sourceTitle}
+        onFeedback={(id, event) => {
+          const card = openDeck.cards.find((item) => item.id === id);
+          noteFeedback(card?.origin, event);
+          if (card) learnFromSignal(card, event.type !== "kept");
+        }}
+        onDiscard={(id) => dispatch({ type: "flashcard/removed", id })}
+        onEdit={(id, front, back) => {
+          const card = openDeck.cards.find((item) => item.id === id);
+          if (!card) return;
+          dispatch({
+            type: "flashcard/updated",
+            id,
+            changes: {
+              front,
+              back,
+              subjectId: card.subjectId,
+              ...(card.deck ? { deck: card.deck } : {}),
+            },
+          });
+        }}
         onReview={(id, rating, reviewedOn) =>
           dispatch({ type: "flashcard/reviewed", id, rating, reviewedOn })
         }
@@ -864,6 +918,7 @@ export function LibraryFolderContents({
     );
   return (
     <section className="library-folder-contents" aria-label={folder.title}>
+      <OlenaCreditMeter usage={credits.usage} resetAt={credits.resetAt} spend={credits.spend} />
       <header>
         <div className="library-folder-topline">
           <button
@@ -913,6 +968,8 @@ export function LibraryFolderContents({
               aria-pressed={section === label}
               onClick={() => {
                 setSection(label);
+                // Um erro de outra aba não fica grudado na tela.
+                setError("");
                 setShowSources(false);
                 setShowStudyTypes(false);
               }}
@@ -1425,27 +1482,12 @@ export function LibraryFolderContents({
                   const data = new FormData(event.currentTarget);
                   const content = String(data.get("content") ?? "").trim();
                   if (!content) return;
-                  if (sourceType === "YouTube") {
-                    const url = URL.canParse(content) ? new URL(content) : undefined;
-                    if (
-                      url?.protocol !== "https:" ||
-                      !["youtube.com", "www.youtube.com", "m.youtube.com", "youtu.be"].includes(
-                        url.hostname,
-                      )
-                    ) {
-                      setError("Informe um link HTTPS do YouTube.");
-                      return;
-                    }
-                  }
                   dispatch({
                     type: "material/added",
                     collectionId: folder.id,
                     subjectId,
-                    title:
-                      sourceType === "YouTube"
-                        ? content
-                        : String(data.get("title") ?? "").trim() || "Nota",
-                    kind: sourceType === "YouTube" ? "link" : "text",
+                    title: String(data.get("title") ?? "").trim() || "Nota",
+                    kind: "text",
                     content,
                     createdAt: new Date().toISOString(),
                   });
@@ -1453,20 +1495,12 @@ export function LibraryFolderContents({
                   setSourceType(undefined);
                 }}
               >
-                {sourceType === "YouTube" ? (
-                  <label>
-                    {uiText("Link do vídeo")} <input name="content" type="url" required />
-                  </label>
-                ) : (
-                  <>
-                    <label>
-                      {uiText("Título")} <input name="title" maxLength={80} required />
-                    </label>
-                    <label>
-                      {uiText("Nota")} <textarea name="content" maxLength={20000} required />
-                    </label>
-                  </>
-                )}
+                <label>
+                  {uiText("Título")} <input name="title" maxLength={80} required />
+                </label>
+                <label>
+                  {uiText("Nota")} <textarea name="content" maxLength={20000} required />
+                </label>
                 {error && <p role="alert">{error}</p>}
                 <button type="submit" className="shelf-wood-button">
                   {uiText("Adicionar fonte")}
@@ -1590,12 +1624,6 @@ export function LibraryFolderContents({
                 {uiText("Sem créditos hoje. Você pode gerar de novo às {0}.", [resetClock])}
               </p>
             )}
-            {creating !== "Resumo" &&
-              creating !== "Flashcards" &&
-              creating !== "Quizzes" &&
-              creating !== "Simulados" && (
-                <p>{uiText("A geração deste tipo de material ainda não está disponível.")}</p>
-              )}
             {creating === "Quizzes" || creating === "Simulados" ? (
               <>
                 <div className="library-quiz-settings">
@@ -1696,20 +1724,42 @@ export function LibraryFolderContents({
                 : /\.(txt|md)$/i.test(file.name)
                   ? "text"
                   : undefined;
-            if (!kind || file.size > 1024 * 1024) {
-              setError("Escolha um PDF, imagem, TXT ou Markdown de até 1 MB.");
+            const limit =
+              kind === "image"
+                ? MAX_IMAGE_INPUT_BYTES
+                : kind === "pdf"
+                  ? MAX_PDF_BYTES
+                  : MAX_SOURCE_BYTES;
+            if (!kind || file.size > limit) {
+              setError(
+                uiText(
+                  "Escolha um PDF de até 5 MB, um TXT ou Markdown de até 1 MB, ou uma imagem de até 25 MB.",
+                ),
+              );
               return;
             }
             try {
               const content =
                 kind === "text"
-                  ? await file.text()
-                  : await new Promise<string>((resolve, reject) => {
-                      const reader = new FileReader();
-                      reader.onload = () => resolve(String(reader.result));
-                      reader.onerror = () => reject(reader.error);
-                      reader.readAsDataURL(file);
-                    });
+                  ? decodeText(new Uint8Array(await file.arrayBuffer()))
+                  : kind === "image"
+                    ? await imageDataUrl(file)
+                    : await new Promise<string>((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(String(reader.result));
+                        reader.onerror = () => reject(reader.error);
+                        reader.readAsDataURL(file);
+                      });
+              // Tudo isto vai para o espaço de trabalho sincronizado: passar do teto da conta
+              // pararia a sincronização, então a conta recusa antes de gravar.
+              if (!fitsLibrary(libraryChars, content.length)) {
+                setError(
+                  uiText(
+                    "A Biblioteca chegou ao limite de espaço da conta. Remova uma fonte para enviar outra.",
+                  ),
+                );
+                return;
+              }
               dispatch({
                 type: "material/added",
                 collectionId: folder.id,
@@ -1720,8 +1770,14 @@ export function LibraryFolderContents({
                 content,
                 createdAt: new Date().toISOString(),
               });
-            } catch {
-              setError("Não foi possível abrir o arquivo.");
+            } catch (failure) {
+              setError(
+                failure instanceof Error && failure.message === "image-too-large"
+                  ? uiText(
+                      "A imagem continua grande demais mesmo reduzida. Tire a foto mais de perto ou envie um PDF.",
+                    )
+                  : uiText("Não foi possível abrir o arquivo."),
+              );
             }
           }}
         />

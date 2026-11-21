@@ -3,9 +3,12 @@ import type { HandwritingPoint } from "../domain/handwriting";
 import { strokeRadii } from "./handwriting-ink";
 import {
   hasRealPressure,
+  penPressures,
+  PEN_TAPER_FLOOR,
   simulatedPressureRange,
   simulatedPressures,
   taperFactors,
+  usesPenDynamics,
   usesSimulatedWidth,
 } from "./handwriting-ink-dynamics";
 import { isHandwritingDocument } from "../data/local-workspace";
@@ -219,6 +222,7 @@ describe("validação do documento", () => {
   it("aceita traço sem a marca e com a marca simulada", () => {
     expect(isHandwritingDocument(document(undefined))).toBe(true);
     expect(isHandwritingDocument(document("simulated"))).toBe(true);
+    expect(isHandwritingDocument(document("pen"))).toBe(true);
   });
 
   it("recusa valor desconhecido", () => {
@@ -251,5 +255,97 @@ describe("todos os pincéis da caneta", () => {
     const slow = strokeRadii(mark, line(60, 0.8))[40]!;
     const fast = strokeRadii(mark, line(60, 12))[40]!;
     expect(slow).toBeGreaterThan(fast);
+  });
+});
+
+describe("caneta e mesa digitalizadora", () => {
+  it("o traço nasce leve mesmo quando o primeiro ponto chega com pressão alta", () => {
+    const pressures = penPressures(line(30, 3, 0.9), 6);
+    expect(pressures[0]).toBeLessThanOrEqual(0.3);
+    // E cresce até perto do que a mão pediu, sem ficar preso no começo.
+    expect(pressures.at(-1)!).toBeGreaterThan(0.75);
+    expect(pressures[5]!).toBeLessThan(pressures[25]!);
+  });
+
+  it("o tremor da leitura do hardware vira variação suave de largura", () => {
+    const noisy = Array.from({ length: 60 }, (_, index) =>
+      point(100 + index * 3, 200, index % 2 === 0 ? 0.35 : 0.65),
+    );
+    const pressures = penPressures(noisy, 6);
+    const rawJump = 0.3;
+    const smoothJump = Math.max(
+      ...pressures.slice(20).map((value, index) => Math.abs(value - pressures[19 + index]!)),
+    );
+    expect(smoothJump).toBeLessThan(rawJump / 2);
+  });
+
+  it("toque leve ainda deixa um fio visível e a pressão fica entre 0 e 1", () => {
+    const light = penPressures(line(40, 3, 0.1), 6);
+    expect(light.at(-1)!).toBeGreaterThan(0.12);
+    for (const value of penPressures(line(10, 3, 5), 6)) {
+      expect(value).toBeGreaterThan(0);
+      expect(value).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it("é causal: o traço ao vivo recebe os mesmos números do traço pronto", () => {
+    const points = line(40, 3, 0.7);
+    const full = penPressures(points, 6);
+    const partial = penPressures(points.slice(0, 25), 6);
+    expect(partial).toEqual(full.slice(0, 25));
+  });
+
+  it("vale só para traços de caneta marcados e nos pincéis de largura variável", () => {
+    const base = { tool: "pen" as const, points: line(5, 3), dynamics: "pen" as const };
+    expect(usesPenDynamics(base)).toBe(true);
+    expect(usesPenDynamics({ ...base, brush: "ink" })).toBe(true);
+    expect(usesPenDynamics({ ...base, brush: "ballpoint" })).toBe(true);
+    expect(usesPenDynamics({ ...base, brush: "fine" })).toBe(false);
+    expect(usesPenDynamics({ ...base, brush: "calligraphy" })).toBe(false);
+    expect(usesPenDynamics({ ...base, dash: "dashed" })).toBe(false);
+    expect(usesPenDynamics({ ...base, cover: true })).toBe(false);
+    expect(usesPenDynamics({ tool: "pen", points: base.points })).toBe(false);
+    expect(usesPenDynamics({ ...base, dynamics: "simulated" })).toBe(false);
+  });
+
+  it("as pontas da caneta afinam, sem sumir", () => {
+    const stroke = { tool: "pen" as const, width: 6, dynamics: "pen" as const };
+    const points = line(80, 3, 0.6);
+    const radii = strokeRadii(stroke, points);
+    const middle = radii[40]!;
+    expect(radii[0]!).toBeLessThan(middle * 0.8);
+    expect(radii.at(-1)!).toBeLessThan(middle * 0.8);
+    expect(radii.at(-1)!).toBeGreaterThan(middle * PEN_TAPER_FLOOR * 0.8);
+  });
+
+  it("ao vivo só o começo afina: o fim é a posição da caneta", () => {
+    const stroke = { tool: "pen" as const, width: 6, dynamics: "pen" as const };
+    const points = line(80, 3, 0.6);
+    const live = strokeRadii(stroke, points, { live: true });
+    expect(live.at(-1)!).toBeGreaterThan(live[0]! * 1.2);
+  });
+
+  it("traço de caneta antigo, sem marca, abre exatamente como antes", () => {
+    const old = { tool: "pen" as const, width: 6 };
+    const marked = { ...old, dynamics: "pen" as const };
+    const points = line(60, 3, 0.6);
+    expect(strokeRadii(marked, points)).not.toEqual(strokeRadii(old, points));
+    // Sem a marca, a pressão crua continua dando a largura: pontas iguais ao meio.
+    const radii = strokeRadii(old, points);
+    expect(radii[0]).toBeCloseTo(radii[30]!, 1);
+  });
+
+  it("lápis inclinado deixa o traço mais largo", () => {
+    const upright = line(40, 3, 0.6);
+    const tilted = upright.map((p) => ({ ...p, tiltX: 60, tiltY: 0 }));
+    const stroke = {
+      tool: "pen" as const,
+      brush: "pencil" as const,
+      width: 6,
+      dynamics: "pen" as const,
+    };
+    expect(strokeRadii(stroke, tilted)[20]!).toBeGreaterThan(
+      strokeRadii(stroke, upright)[20]! * 1.2,
+    );
   });
 });

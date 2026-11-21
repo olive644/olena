@@ -1775,3 +1775,15 @@ html:has(.notebooks-showcase)::view-transition-old(library-folder-view) {
 .library-creation-cost-note {
   font-size: 12px;
 }
+.library-source-name a {
+  color: inherit;
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
+.library-source-name small {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0.85;
+}

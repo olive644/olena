@@ -146,6 +146,7 @@ export function NotebookShelf({
           (material) => material.collectionId === openFolder.id && !material.archived,
         )}
         subjectId={workspace.subjects[0]?.id ?? ""}
+        libraryChars={workspace.materials.reduce((sum, item) => sum + item.content.length, 0)}
         flashcards={workspace.flashcards.filter((card) =>
           workspace.materials.some(
             (material) =>
