@@ -32,8 +32,8 @@ export function neuronsForTokens(
 export function maxOutputTokens(capability: HelenaRequest["capability"], count = 10): number {
   if (capability === "summarize") return 1_600;
   if (capability === "flashcards") return 1_600;
-  // Cinco competências com resumo e até quatro observações com trecho citado cada.
-  if (capability === "essay") return 2_400;
+  // Só o nível e a nota das cinco competências, sem comentários (as observações ficam para o Olena Pro).
+  if (capability === "essay") return 600;
   if (capability === "quiz" || capability === "exam") return Math.min(3_800, 500 + count * 190);
   return 700;
 }

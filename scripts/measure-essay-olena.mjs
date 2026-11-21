@@ -8,9 +8,9 @@
 //   3. node scripts/measure-essay-olena.mjs --dry-run          (lista a amostra e o custo, sem rede)
 //      node scripts/measure-essay-olena.mjs --count 120         (roda; guarda o progresso)
 //
-// Gasta a cota gratuita da conta (cerca de 60 neurons por redação, não verificado): 120 redações
-// passam de 7.000 neurons. O script para ao chegar em --max-neurons (padrão 6000) e retoma no dia
-// seguinte do ponto em que parou. Rode quando o app não estiver em uso, para não esgotar o dia.
+// Gasta a cota gratuita da conta (cerca de 10 neurons por redação, só nível e nota, não verificado):
+// 120 redações ficam perto de 1.200 neurons. O script para ao chegar em --max-neurons (padrão 6000)
+// e retoma no dia seguinte do ponto em que parou. Rode quando o app não estiver em uso.
 //
 // Regra de decisão, fixada ANTES de ver o resultado e que não muda depois (docs/REDACAO_IA.md):
 // QWK médio >= 0,40 mostra a nota como estimativa; de 0,30 a 0,40 mostra uma faixa; abaixo de 0,30

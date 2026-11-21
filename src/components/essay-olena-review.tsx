@@ -1,21 +1,16 @@
 import { useState } from "react";
 import { uiText } from "../i18n/runtime";
-import {
-  ESSAY_SCORE_STEPS,
-  type EssayCompetencyReview,
-  type EssayLevel,
-  type EssayReview,
-} from "../ai/essay-output";
+import type { EssayLevel, EssayReview } from "../ai/essay-output";
 import {
   EssayReviewError,
   estimateEssayCredits,
   requestEssayReview,
   type EssayReviewRequester,
 } from "../data/essay-olena-client";
-import { ESSAY_COMPETENCIES, essaySubmissionReview } from "../domain/essay-submission-review";
+import { essaySubmissionReview } from "../domain/essay-submission-review";
 import { useOlenaCredits } from "../views/use-olena-credits";
-import { FocusPaperArrow } from "./focus-paper-arrow";
 import { HelenaLoading } from "./helena-loading";
+import { PaperCardTitle } from "./paper-card-title";
 import "./essay-olena-review.css";
 
 const LEVEL_LABEL: Record<EssayLevel, string> = {
@@ -23,12 +18,12 @@ const LEVEL_LABEL: Record<EssayLevel, string> = {
   good: "Bom",
   great: "Muito bom",
 };
-/** Menos que isso não tem o que comentar, e o pedido gastaria créditos à toa. */
+/** Menos que isso não tem o que avaliar, e o pedido gastaria créditos à toa. */
 const MIN_WORDS = 30;
 
 const REPORT_CATEGORIES = [
-  "O comentário está errado",
-  "O trecho citado não está no meu texto",
+  "A nota parece errada",
+  "A nota mudou muito entre pedidos iguais",
   "Fugiu do tema ou da competência",
   "Texto ofensivo ou inadequado",
   "Outro problema",
@@ -50,20 +45,6 @@ function saveReport(category: string): boolean {
   }
 }
 
-function shareText(review: EssayReview): string {
-  const lines = review.competencies.map((item) => {
-    const title = ESSAY_COMPETENCIES.find((c) => c.id === item.id)?.title ?? item.id;
-    return `${item.id} ${uiText(title)}: ${uiText(LEVEL_LABEL[item.level])}. ${item.summary}`;
-  });
-  return [
-    uiText(
-      "Comentários da Olena sobre a minha redação (estimativa da IA, não é a nota oficial do Enem)",
-    ),
-    review.overall,
-    ...lines,
-  ].join("\n\n");
-}
-
 /** Soma das cinco notas, só quando a IA devolveu as cinco (a chave da nota está ligada). */
 function totalScore(review: EssayReview): number | undefined {
   const scores = review.competencies.map((item) => item.score);
@@ -72,44 +53,18 @@ function totalScore(review: EssayReview): number | undefined {
     : undefined;
 }
 
-function Competency({ item }: { item: EssayCompetencyReview }) {
-  const info = ESSAY_COMPETENCIES.find((competency) => competency.id === item.id);
-  return (
-    <details className="essay-disclosure essay-olena-competency" data-level={item.level}>
-      <summary>
-        <FocusPaperArrow />
-        <span>
-          {item.id} · {uiText(info?.title ?? item.id)}
-        </span>
-        <small className="essay-olena-level" data-level={item.level}>
-          {uiText(LEVEL_LABEL[item.level])}
-        </small>
-      </summary>
-      <p>{item.summary}</p>
-      {item.score !== undefined && (
-        <p className="essay-olena-score">
-          {uiText("Estimativa da IA: {0} de {1}", [
-            item.score,
-            ESSAY_SCORE_STEPS[ESSAY_SCORE_STEPS.length - 1] ?? 200,
-          ])}
-        </p>
-      )}
-      {item.notes.length > 0 ? (
-        <ul className="essay-olena-notes">
-          {item.notes.map((note, index) => (
-            <li key={index}>
-              {note.quote && (
-                <blockquote className="essay-spelling-context">{note.quote}</blockquote>
-              )}
-              <p>{note.comment}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <small>{uiText("Sem observações com trecho do texto nesta competência.")}</small>
-      )}
-    </details>
-  );
+function shareText(review: EssayReview): string {
+  const total = totalScore(review);
+  const levels = review.competencies
+    .map((item) => `${item.id}: ${uiText(LEVEL_LABEL[item.level])}`)
+    .join(" · ");
+  return [
+    uiText(
+      "Avaliação da Olena sobre a minha redação (estimativa da IA, não é a nota oficial do Enem)",
+    ),
+    ...(total === undefined ? [] : [uiText("Nota estimada: {0} de 1000", [total])]),
+    levels,
+  ].join("\n\n");
 }
 
 export function EssayOlenaReview({
@@ -169,7 +124,7 @@ export function EssayOlenaReview({
         return;
       }
       await navigator.clipboard.writeText(content);
-      setShared(uiText("Comentários copiados."));
+      setShared(uiText("Avaliação copiada."));
     } catch {
       setShared(uiText("Não foi possível compartilhar. Tente de novo."));
     }
@@ -178,8 +133,8 @@ export function EssayOlenaReview({
   const score = review ? totalScore(review.value) : undefined;
 
   return (
-    <section className="essay-olena" aria-label={uiText("Comentários da Olena")}>
-      <h3>{uiText("Comentários da Olena")}</h3>
+    <section className="essay-olena" aria-label={uiText("Nota da Olena")}>
+      <h3>{uiText("Nota da Olena")}</h3>
       <p className="essay-olena-note">
         {uiText(
           "Estimativa da IA por competência. Pode errar e pode variar da correção oficial do Enem.",
@@ -190,7 +145,7 @@ export function EssayOlenaReview({
         <div className="essay-olena-ask">
           <p>
             {uiText(
-              "Ao pedir, o texto da redação e o tema são enviados à Olena (IA) para gerar os comentários. Nada é enviado antes do seu toque e nós não guardamos o texto.",
+              "Ao pedir, o texto da redação e o tema são enviados à Olena (IA) para gerar a nota. Nada é enviado antes do seu toque e nós não guardamos o texto.",
             )}{" "}
             <a href="/politica-de-privacidade.html" target="_blank" rel="noreferrer">
               {uiText("Política de Privacidade")}
@@ -202,7 +157,7 @@ export function EssayOlenaReview({
           )}
           {tooShort && (
             <p role="status">
-              {uiText("Escreva pelo menos {0} palavras para pedir comentários.", [MIN_WORDS])}
+              {uiText("Escreva pelo menos {0} palavras para pedir a nota.", [MIN_WORDS])}
             </p>
           )}
           {empty && (
@@ -214,7 +169,7 @@ export function EssayOlenaReview({
             disabled={tooShort || empty}
             onClick={() => void ask()}
           >
-            {uiText(review ? "Pedir de novo" : "Pedir comentários da Olena")}
+            {uiText(review ? "Pedir de novo" : "Pedir nota da Olena")}
           </button>
         </div>
       )}
@@ -228,29 +183,37 @@ export function EssayOlenaReview({
         <div className="essay-olena-result">
           {stale && (
             <p role="status">
-              {uiText(
-                "O texto mudou depois destes comentários. Eles valem para a versão anterior.",
-              )}
+              {uiText("O texto mudou depois desta nota. Ela vale para a versão anterior.")}
             </p>
           )}
           <section className="essay-olena-summary" aria-label={uiText("Resumo da correção")}>
-            <p>{review.value.overall}</p>
-            {score !== undefined && (
+            {score !== undefined ? (
               <p className="essay-olena-total">
                 {uiText("Nota estimada pela IA: {0} de 1000. Não é a nota oficial.", [score])}
+              </p>
+            ) : (
+              <p>
+                {uiText("A nota geral ainda não está liberada. Veja o nível de cada competência.")}
               </p>
             )}
             <ul className="essay-olena-levels">
               {review.value.competencies.map((item) => (
                 <li key={item.id} data-level={item.level}>
                   <strong>{item.id}</strong> {uiText(LEVEL_LABEL[item.level])}
+                  {item.score !== undefined && <> · {item.score}</>}
                 </li>
               ))}
             </ul>
           </section>
-          {review.value.competencies.map((item) => (
-            <Competency key={item.id} item={item} />
-          ))}
+          <section
+            className="essay-olena-locked"
+            aria-label={uiText("Observações por competência")}
+          >
+            <p>{uiText("Observações e comentários por competência")}</p>
+            <p className="essay-olena-pro">
+              <PaperCardTitle value="EM BREVE OLENA PRO" />
+            </p>
+          </section>
           <div className="essay-olena-actions">
             <button
               type="button"

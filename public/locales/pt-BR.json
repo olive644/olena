@@ -4077,5 +4077,18 @@
   "Guardar relato",
   "Relato guardado neste aparelho.",
   "Não foi possível guardar o relato neste aparelho.",
-  "Entre na sua conta para pedir comentários da Olena."
+  "Entre na sua conta para pedir comentários da Olena.",
+  "A nota parece errada",
+  "A nota mudou muito entre pedidos iguais",
+  "Avaliação da Olena sobre a minha redação (estimativa da IA, não é a nota oficial do Enem)",
+  "Nota estimada: {0} de 1000",
+  "Avaliação copiada.",
+  "Nota da Olena",
+  "Ao pedir, o texto da redação e o tema são enviados à Olena (IA) para gerar a nota. Nada é enviado antes do seu toque e nós não guardamos o texto.",
+  "Escreva pelo menos {0} palavras para pedir a nota.",
+  "Pedir nota da Olena",
+  "O texto mudou depois desta nota. Ela vale para a versão anterior.",
+  "A nota geral ainda não está liberada. Veja o nível de cada competência.",
+  "Observações por competência",
+  "Observações e comentários por competência"
 ]

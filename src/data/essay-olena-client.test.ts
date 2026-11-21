@@ -19,16 +19,7 @@ vi.mock("./helena-client", async (original) => ({
 
 const essay = "A educação é um direito de todos. O governo deve ampliar o acesso ao ensino.";
 const answer = JSON.stringify({
-  overall: "Texto direto.",
-  competencies: ESSAY_COMPETENCY_IDS.map((id) => ({
-    id,
-    level: "good",
-    summary: "Adequado.",
-    notes: [
-      { quote: "O governo deve ampliar o acesso", comment: "Proposta curta." },
-      { quote: "frase que não existe no texto", comment: "Inventada." },
-    ],
-  })),
+  competencies: ESSAY_COMPETENCY_IDS.map((id) => ({ id, level: "good", score: 120 })),
 });
 const signedIn = () =>
   services.mockResolvedValue({
@@ -62,15 +53,26 @@ describe("pedido de comentários da redação", () => {
     expect(request).not.toHaveBeenCalled();
   });
 
-  it("valida a resposta de novo e descarta trecho que o texto não tem", async () => {
+  it("valida a resposta de novo: níveis e notas da escala, sem comentários", async () => {
     signedIn();
     request.mockResolvedValue({ answer });
     const review = await requestEssayReview(essay, "Educação");
     expect(review.competencies).toHaveLength(5);
-    expect(review.competencies[0]!.notes).toEqual([
-      { quote: "O governo deve ampliar o acesso", comment: "Proposta curta." },
-    ]);
+    expect(review.competencies[0]).toMatchObject({
+      id: "C1",
+      level: "good",
+      score: 120,
+      notes: [],
+    });
     expect(request.mock.calls[0]![1]).toMatchObject({ token: "token" });
+    // Servidor com a nota desligada: só o nível, e a tela aceita.
+    request.mockResolvedValue({
+      answer: JSON.stringify({
+        competencies: ESSAY_COMPETENCY_IDS.map((id) => ({ id, level: "great" })),
+      }),
+    });
+    const levels = await requestEssayReview(essay);
+    expect(levels.competencies.every((item) => item.score === undefined)).toBe(true);
   });
 
   it("separa limite, formato e indisponibilidade", async () => {

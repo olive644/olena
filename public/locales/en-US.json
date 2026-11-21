@@ -4077,5 +4077,18 @@
   "Save report",
   "Report saved on this device.",
   "Could not save the report on this device.",
-  "Sign in to your account to ask Olena for comments."
+  "Sign in to your account to ask Olena for comments.",
+  "The score looks wrong",
+  "The score changed a lot between identical requests",
+  "Olena's evaluation of my essay (AI estimate, not the official Enem score)",
+  "Estimated score: {0} of 1000",
+  "Evaluation copied.",
+  "Olena's score",
+  "When you ask, the essay text and the topic are sent to Olena (AI) to generate the score. Nothing is sent before you tap, and we do not keep the text.",
+  "Write at least {0} words to ask for the score.",
+  "Ask Olena for a score",
+  "The text changed after this score. It applies to the previous version.",
+  "The overall score is not available yet. See the level of each competency.",
+  "Notes by competency",
+  "Notes and comments by competency"
 ]

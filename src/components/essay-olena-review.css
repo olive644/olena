@@ -71,24 +71,37 @@
 .essay-olena-level[data-level="great"] {
   background: rgba(94, 170, 110, 0.32);
 }
-.essay-olena-competency {
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 8px;
+.essay-olena-locked {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 16px 18px;
+  border: 1px dashed var(--line);
+  border-radius: 4px 15px 4px 9px;
+  text-align: center;
 }
-.essay-olena-competency > summary > span {
-  flex: 1;
-  min-width: 0;
-}
-.essay-olena-notes {
-  margin: 8px 0 0;
-  padding: 0;
-  list-style: none;
-}
-.essay-olena-notes > li {
-  margin-block: 10px;
-}
-.essay-olena-score {
+.essay-olena-locked > p:first-child {
+  margin: 0;
   font-weight: 700;
+}
+.essay-olena-pro {
+  --digit-face: #a97951;
+  --digit-depth: #593631;
+  margin: 0;
+  font-size: clamp(1.1rem, 4vw, 1.6rem);
+}
+.essay-olena-pro .paper-card-title {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25em;
+}
+.essay-olena-pro .paper-card-word {
+  display: inline-flex;
+}
+.essay-olena-pro svg {
+  width: 0.54em;
+  height: 1em;
 }
 .essay-olena-actions {
   display: flex;

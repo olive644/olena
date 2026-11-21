@@ -60,7 +60,7 @@ export const requestEssayReview: EssayReviewRequester = async (text, topic) => {
       token,
       signal: AbortSignal.timeout(58_000),
     });
-    const review = parseEssayReview(response.answer, sent, { allowScore: true });
+    const review = parseEssayReview(response.answer, sent, { allowScore: true, detail: false });
     if (!review)
       throw new EssayReviewError(
         "format",

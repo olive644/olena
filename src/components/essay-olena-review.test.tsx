@@ -14,12 +14,12 @@ vi.mock("../views/use-olena-credits", () => ({ useOlenaCredits: () => credits })
 const essay = `${"A educação é um direito de todos e precisa de atenção. ".repeat(8)}O governo deve ampliar o acesso.`;
 
 const review = (score?: number): EssayReview => ({
-  overall: "Texto claro, com proposta curta.",
+  overall: "",
   competencies: ESSAY_COMPETENCY_IDS.map((id, index) => ({
     id,
     level: index === 0 ? "great" : index === 4 ? "needs-work" : "good",
-    summary: `Resumo de ${id}.`,
-    notes: [{ quote: "O governo deve ampliar o acesso", comment: `Observação de ${id}.` }],
+    summary: "",
+    notes: [],
     ...(score === undefined ? {} : { score: score as 120 }),
   })),
 });
@@ -43,15 +43,21 @@ describe("comentários da Olena na redação", () => {
     expect(screen.getByRole("link", { name: "Política de Privacidade" })).toBeTruthy();
   });
 
-  it("mostra resumo, as cinco competências em sanfona e o aviso de estimativa", async () => {
+  it("mostra os cinco níveis e trava as observações com EM BREVE OLENA PRO", async () => {
     const requester = vi.fn(async () => review());
     render(<EssayOlenaReview text={essay} topicTitle="Educação" requester={requester} />);
-    fireEvent.click(screen.getByRole("button", { name: "Pedir comentários da Olena" }));
-    await waitFor(() => expect(screen.getByText("Texto claro, com proposta curta.")).toBeTruthy());
+    fireEvent.click(screen.getByRole("button", { name: "Pedir nota da Olena" }));
+    await waitFor(() =>
+      expect(screen.getByText(/A nota geral ainda não está liberada/)).toBeTruthy(),
+    );
     expect(requester).toHaveBeenCalledWith(essay, "Educação");
-    expect(document.querySelectorAll("details.essay-olena-competency")).toHaveLength(5);
-    expect(screen.getAllByText("Precisa melhorar").length).toBeGreaterThan(0);
-    expect(screen.getByText("Observação de C3.")).toBeTruthy();
+    expect(document.querySelectorAll(".essay-olena-levels > li")).toHaveLength(5);
+    expect(screen.getByText("Precisa melhorar", { exact: false })).toBeTruthy();
+    // Sem comentários: nenhuma sanfona de observações, só o aviso de que vem no Olena Pro.
+    expect(document.querySelectorAll("details")).toHaveLength(0);
+    expect(document.querySelector(".essay-olena-locked")?.textContent).toContain(
+      "EM BREVE OLENA PRO",
+    );
     expect(screen.getByText(/pode variar da correção oficial do Enem/)).toBeTruthy();
     expect(credits.prepare).toHaveBeenCalled();
     expect(credits.reload).toHaveBeenCalled();
@@ -59,12 +65,12 @@ describe("comentários da Olena na redação", () => {
 
   it("com a chave da nota desligada não mostra número; com ela, mostra como estimativa", async () => {
     const { unmount } = render(<EssayOlenaReview text={essay} requester={async () => review()} />);
-    fireEvent.click(screen.getByRole("button", { name: "Pedir comentários da Olena" }));
-    await waitFor(() => screen.getByText("Texto claro, com proposta curta."));
+    fireEvent.click(screen.getByRole("button", { name: "Pedir nota da Olena" }));
+    await waitFor(() => screen.getByText(/A nota geral ainda não está liberada/));
     expect(screen.queryByText(/Nota estimada pela IA/)).toBeNull();
     unmount();
     render(<EssayOlenaReview text={essay} requester={async () => review(120)} />);
-    fireEvent.click(screen.getByRole("button", { name: "Pedir comentários da Olena" }));
+    fireEvent.click(screen.getByRole("button", { name: "Pedir nota da Olena" }));
     await waitFor(() =>
       screen.getByText(/Nota estimada pela IA: 600 de 1000\. Não é a nota oficial/),
     );
@@ -73,7 +79,7 @@ describe("comentários da Olena na redação", () => {
   it("bloqueia com texto curto demais e com saldo zero, sem chamar a Olena", () => {
     const requester = vi.fn();
     const { rerender } = render(<EssayOlenaReview text="Texto curto." requester={requester} />);
-    const button = screen.getByRole("button", { name: "Pedir comentários da Olena" });
+    const button = screen.getByRole("button", { name: "Pedir nota da Olena" });
     expect((button as HTMLButtonElement).disabled).toBe(true);
     fireEvent.click(button);
     expect(requester).not.toHaveBeenCalled();
@@ -81,8 +87,7 @@ describe("comentários da Olena na redação", () => {
     rerender(<EssayOlenaReview text={essay} requester={requester} />);
     expect(screen.getByRole("alert").textContent).toContain("Sem créditos hoje");
     expect(
-      (screen.getByRole("button", { name: "Pedir comentários da Olena" }) as HTMLButtonElement)
-        .disabled,
+      (screen.getByRole("button", { name: "Pedir nota da Olena" }) as HTMLButtonElement).disabled,
     ).toBe(true);
   });
 
@@ -105,39 +110,40 @@ describe("comentários da Olena na redação", () => {
       expect(screen.getByRole("alert").textContent).toContain("não gasta créditos"),
     );
     ask();
-    await waitFor(() => screen.getByText("Texto claro, com proposta curta."));
+    await waitFor(() => screen.getByText(/EM BREVE OLENA PRO/, { selector: ".visually-hidden" }));
     expect(screen.queryByRole("alert")).toBeNull();
   });
 
   it("avisa quando o texto mudou depois dos comentários", async () => {
     const requester = vi.fn(async () => review());
     const { rerender } = render(<EssayOlenaReview text={essay} requester={requester} />);
-    fireEvent.click(screen.getByRole("button", { name: "Pedir comentários da Olena" }));
-    await waitFor(() => screen.getByText("Texto claro, com proposta curta."));
+    fireEvent.click(screen.getByRole("button", { name: "Pedir nota da Olena" }));
+    await waitFor(() => screen.getByText(/EM BREVE OLENA PRO/, { selector: ".visually-hidden" }));
     rerender(<EssayOlenaReview text={`${essay} Mais uma frase.`} requester={requester} />);
-    expect(screen.getByText(/O texto mudou depois destes comentários/)).toBeTruthy();
+    expect(screen.getByText(/O texto mudou depois desta nota/)).toBeTruthy();
   });
 
-  it("copia os comentários sem o texto da redação", async () => {
+  it("copia a avaliação sem o texto da redação", async () => {
     const writeText = vi.fn(async (_text: string) => undefined);
     Object.assign(navigator, { clipboard: { writeText }, share: undefined });
     render(<EssayOlenaReview text={essay} requester={async () => review()} />);
-    fireEvent.click(screen.getByRole("button", { name: "Pedir comentários da Olena" }));
-    await waitFor(() => screen.getByText("Texto claro, com proposta curta."));
+    fireEvent.click(screen.getByRole("button", { name: "Pedir nota da Olena" }));
+    await waitFor(() => screen.getByText(/EM BREVE OLENA PRO/, { selector: ".visually-hidden" }));
     fireEvent.click(screen.getByRole("button", { name: "Compartilhar" }));
-    await waitFor(() => screen.getByText("Comentários copiados."));
+    await waitFor(() => screen.getByText("Avaliação copiada."));
     const shared = writeText.mock.calls[0]?.[0] ?? "";
     expect(shared).toContain("não é a nota oficial do Enem");
+    expect(shared).toContain("C1: Muito bom");
     expect(shared).not.toContain("O governo deve ampliar o acesso");
   });
 
   it("guarda o relato só com categoria e data, sem o texto", async () => {
     localStorage.clear();
     render(<EssayOlenaReview text={essay} requester={async () => review()} />);
-    fireEvent.click(screen.getByRole("button", { name: "Pedir comentários da Olena" }));
-    await waitFor(() => screen.getByText("Texto claro, com proposta curta."));
+    fireEvent.click(screen.getByRole("button", { name: "Pedir nota da Olena" }));
+    await waitFor(() => screen.getByText(/EM BREVE OLENA PRO/, { selector: ".visually-hidden" }));
     fireEvent.click(screen.getByRole("button", { name: "Reportar um problema" }));
-    fireEvent.click(screen.getByLabelText("O trecho citado não está no meu texto"));
+    fireEvent.click(screen.getByLabelText("A nota parece errada"));
     fireEvent.click(screen.getByRole("button", { name: "Guardar relato" }));
     const saved = JSON.parse(localStorage.getItem("helena.essayReports.v1") ?? "[]") as Record<
       string,
@@ -145,7 +151,7 @@ describe("comentários da Olena na redação", () => {
     >[];
     expect(saved).toHaveLength(1);
     expect(Object.keys(saved[0]!).sort()).toEqual(["at", "category"]);
-    expect(saved[0]!["category"]).toBe("O trecho citado não está no meu texto");
+    expect(saved[0]!["category"]).toBe("A nota parece errada");
     expect(JSON.stringify(saved)).not.toContain("educação");
   });
 });
