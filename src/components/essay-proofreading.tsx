@@ -3,6 +3,7 @@ import { uiText } from "../i18n/runtime";
 import { applyEssaySuggestion, type EssaySpellingResult } from "../domain/essay-proofreading";
 import { EssayTopicReview } from "./essay-topic-review";
 import { EssaySubmissionReport } from "./essay-submission-report";
+import { EssayOlenaReview } from "./essay-olena-review";
 
 import { HelenaLoading } from "./helena-loading";
 import { createPortal } from "react-dom";
@@ -231,6 +232,10 @@ export function EssayProofreading({
                   }}
                 />
               )}
+              <EssayOlenaReview
+                text={locked ? delivered : text}
+                {...(topicTitle ? { topicTitle } : {})}
+              />
               <details className="essay-disclosure essay-spelling-disclosure">
                 <summary>
                   <FocusPaperArrow />

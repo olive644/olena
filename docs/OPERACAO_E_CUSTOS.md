@@ -201,3 +201,5 @@ Só vale reavaliar quando existir a versão nativa do Olena. No navegador contin
 
 - Entra no mesmo orçamento de créditos da Biblioteca (teto global, por pessoa, por pedido e por rede). Não verificado: custo real; a reserva de uma redação de 6.000 caracteres é de cerca de 84 créditos (saída máxima de 2.400 tokens). Conferir no painel da Cloudflare depois dos primeiros usos.
 - Nenhum teto foi aumentado. A variável `OLENA_ESSAY_SCORE=on` liga a nota numérica (padrão desligada; não gasta mais, só muda o que a tela mostra). Detalhes em `docs/REDACAO_IA.md`.
+
+- Atualização de 21/11/2026: a correção passou a gerar só nível e nota (observações no Olena Pro, em breve). Reserva de cerca de 31 créditos por redação cheia e gasto real estimado em 7 a 10 neurons (não verificado), o que dá cerca de 25 correções por pessoa no piso de 250 créditos. Ver `docs/REDACAO_IA.md`.

@@ -73,12 +73,17 @@ const isCompetencyId = (value: unknown): value is EssayCompetencyId =>
  * uma vez, com nível dos três valores e resumo. Observações com trecho que a redação não contém são
  * descartadas (a IA não pode inventar evidência). A nota só é aceita com `allowScore` e dentro da
  * escala; fora disso o campo é descartado.
+ *
+ * Com `detail: false` (o pedido de hoje: só nível e nota, sem comentários) resumo, observações e
+ * resumo geral não são exigidos nem guardados. Com `requireScore` (o servidor, quando a nota está
+ * ligada) a nota das cinco competências é obrigatória; sem ela a resposta é refeita.
  */
 export function parseEssayReview(
   text: string,
   essay: string,
-  options: { allowScore: boolean },
+  options: { allowScore: boolean; detail?: boolean; requireScore?: boolean },
 ): EssayReview | undefined {
+  const detail = options.detail ?? true;
   const root = asRecord(extractJson(text));
   const list = root?.["competencies"];
   if (!root || !Array.isArray(list)) return undefined;
@@ -87,10 +92,10 @@ export function parseEssayReview(
   for (const item of list) {
     const record = asRecord(item);
     if (!record || !isCompetencyId(record["id"]) || byId.has(record["id"])) continue;
-    const summary = clean(record["summary"], MAX_SUMMARY);
-    if (!isLevel(record["level"]) || !summary) continue;
+    const summary = detail ? clean(record["summary"], MAX_SUMMARY) : "";
+    if (!isLevel(record["level"]) || summary === undefined || (detail && !summary)) continue;
     const notes: EssayNote[] = [];
-    const rawNotes = Array.isArray(record["notes"]) ? (record["notes"] as unknown[]) : [];
+    const rawNotes = detail && Array.isArray(record["notes"]) ? (record["notes"] as unknown[]) : [];
     for (const rawNote of rawNotes) {
       if (notes.length >= MAX_NOTES) break;
       const note = asRecord(rawNote);
@@ -113,11 +118,12 @@ export function parseEssayReview(
       notes,
     };
     if (options.allowScore && isScore(record["score"])) review.score = record["score"];
+    else if (options.requireScore) continue;
     byId.set(record["id"], review);
   }
   if (ESSAY_COMPETENCY_IDS.some((id) => !byId.has(id))) return undefined;
-  const overall = clean(root["overall"], MAX_OVERALL);
-  if (!overall) return undefined;
+  const overall = detail ? clean(root["overall"], MAX_OVERALL) : "";
+  if (overall === undefined || (detail && !overall)) return undefined;
   return {
     overall,
     competencies: ESSAY_COMPETENCY_IDS.map((id) => byId.get(id) as EssayCompetencyReview),

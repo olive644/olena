@@ -114,4 +114,27 @@ describe("parseEssayReview", () => {
     const parsed = parseEssayReview(review({}, list), essay, { allowScore: false });
     expect(parsed?.competencies[0]?.notes).toHaveLength(4);
   });
+
+  it("sem detalhe (o pedido de hoje) basta id e nível, e ignora resumo e observações", () => {
+    const only = JSON.stringify({
+      competencies: ESSAY_COMPETENCY_IDS.map((id) => ({
+        id,
+        level: "good",
+        notes: [{ comment: "ignorada" }],
+      })),
+    });
+    const parsed = parseEssayReview(only, essay, { allowScore: false, detail: false });
+    expect(parsed?.overall).toBe("");
+    expect(parsed?.competencies.every((item) => item.notes.length === 0)).toBe(true);
+    expect(parseEssayReview(only, essay, { allowScore: false })).toBeUndefined();
+  });
+
+  it("sem detalhe e com a nota obrigatória, falta de nota refaz a resposta", () => {
+    const semNota = JSON.stringify({
+      competencies: ESSAY_COMPETENCY_IDS.map((id) => ({ id, level: "good" })),
+    });
+    const options = { allowScore: true, detail: false };
+    expect(parseEssayReview(semNota, essay, { ...options, requireScore: true })).toBeUndefined();
+    expect(parseEssayReview(semNota, essay, options)).toBeDefined();
+  });
 });
