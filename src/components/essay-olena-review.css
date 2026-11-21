@@ -1,0 +1,131 @@
+/* Comentários da Olena na tela de resultado da redação. Papel recortado, sem moldura de foco. */
+.essay-olena {
+  margin: 24px 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.essay-olena > h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+.essay-olena p {
+  margin-block: 8px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.essay-olena-note {
+  font-size: 14px;
+}
+.essay-olena-ask {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+}
+.essay-olena-ask > button {
+  min-height: 44px;
+  margin-top: 8px;
+}
+.essay-olena-result {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.essay-olena-summary {
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 4px 15px 4px 9px;
+  background: var(--soft);
+}
+.essay-olena-summary > p:first-child {
+  margin-top: 0;
+}
+.essay-olena-total {
+  font-weight: 700;
+}
+.essay-olena-levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.essay-olena-levels > li,
+.essay-olena-level {
+  padding: 3px 10px;
+  border-radius: 3px 9px 3px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+.essay-olena-levels > li[data-level="needs-work"],
+.essay-olena-level[data-level="needs-work"] {
+  background: rgba(238, 122, 90, 0.28);
+}
+.essay-olena-levels > li[data-level="good"],
+.essay-olena-level[data-level="good"] {
+  background: rgba(255, 191, 69, 0.32);
+}
+.essay-olena-levels > li[data-level="great"],
+.essay-olena-level[data-level="great"] {
+  background: rgba(94, 170, 110, 0.32);
+}
+.essay-olena-locked {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 16px 18px;
+  border: 1px dashed var(--line);
+  border-radius: 4px 15px 4px 9px;
+  text-align: center;
+}
+.essay-olena-locked > p:first-child {
+  margin: 0;
+  font-weight: 700;
+}
+.essay-olena-pro {
+  --digit-face: #a97951;
+  --digit-depth: #593631;
+  margin: 0;
+  font-size: clamp(1.1rem, 4vw, 1.6rem);
+}
+.essay-olena-pro .paper-card-title {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25em;
+}
+.essay-olena-pro .paper-card-word {
+  display: inline-flex;
+}
+.essay-olena-pro svg {
+  width: 0.54em;
+  height: 1em;
+}
+.essay-olena-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.essay-olena-actions > button {
+  min-height: 44px;
+}
+.essay-olena-report {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 4px 15px 4px 9px;
+}
+.essay-olena-report > label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.essay-olena-report > button {
+  justify-self: start;
+  min-height: 44px;
+}

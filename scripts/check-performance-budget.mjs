@@ -370,10 +370,13 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // chunks próprios, abertos só ao entrar numa pasta; o notes-view caiu de 413,3 para 103,7 KiB. O
 // total não diminui porque este orçamento soma todos os chunks, lazy ou não. Teto de 1906 KiB
 // autorizado pela dona do projeto em 21/11/2026; a entrada inicial segue em 219,4 KiB.
-const MAX_TOTAL_JS_BYTES = 1906 * 1024;
+// Subiu para 1914 KiB, também autorizado por ela em 21/11/2026, para a tela dos comentários da
+// Olena na redação (medido 1912,6 KiB: typewriter-desk +8,4 KiB; use-olena-credits virou chunk
+// compartilhado, +0,3 KiB líquido).
+const MAX_TOTAL_JS_BYTES = 1914 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
-const HARD_CEILING_TOTAL_JS_BYTES = 1906 * 1024;
+const HARD_CEILING_TOTAL_JS_BYTES = 1914 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 // Revisão de redação no aparelho: o worker de tema (Transformers.js), o corretor ortográfico
 // (Hunspell) e o runtime ONNX só são baixados quando o aluno entrega uma redação, como o leitor de

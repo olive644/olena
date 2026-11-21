@@ -66,3 +66,5 @@ Por pedido do usuário, a análise de tema inicia ao abrir o resultado da entreg
 ## Comentários da Olena por competência (21/11/2026, só backend)
 
 Por decisão da dona, a Olena (Cloudflare Workers AI) passa a comentar a redação em C1 a C5, com nível (Precisa melhorar, Bom, Muito bom) por competência. Isto **muda** o texto acima sobre não haver envio da redação a terceiros: a revisão de ortografia, tema e estrutura continua no aparelho, mas o pedido de comentários da Olena envia o texto ao servidor e ao provedor de IA, só depois de um toque e com aviso do custo. Nesta etapa existe apenas a capacidade `essay` do servidor; a tela vem na PR seguinte. A nota numérica fica atrás da chave `OLENA_ESSAY_SCORE` (desligada), até a medição. Modelo de ameaça, custo e regra da nota em [REDACAO_IA.md](REDACAO_IA.md).
+
+A tela dos comentários da Olena (PR 2) fica no painel "Redação" da tela de resultado, depois da triagem de tema e antes da revisão ortográfica. Pede aviso e toque antes de enviar, mostra custo e saldo, e exige conta. Ver [REDACAO_IA.md](REDACAO_IA.md).

@@ -38,3 +38,21 @@ A IA da Olena ainda não foi medida nesta tarefa (o melhor modelo treinado chego
 - Tela, aviso de envio, "Compartilhar" e "Reportar um problema" (PR 2). "Reportar" guarda só avaliação e categoria, nunca o texto.
 - Ligar a chave `OLENA_ESSAY_SCORE` é decisão da dona, depois da medição.
 - Qualidade do Llama 3.1 8B comentando redação em português: não verificado. Testar com 3 ou 4 redações reais antes de abrir ao público.
+
+## Tela e medição (PR 2, 21/11/2026)
+
+- A tela está em `src/components/essay-olena-review.tsx` (aviso de envio e custo, resumo e sanfona por competência, compartilhar, reportar). O relato fica só neste aparelho (categoria e data, nunca o texto); não há envio à equipe.
+- Medição: `scripts/measure-essay-olena.mjs`. Passos e cuidados no cabeçalho do arquivo. A chave é da dona e vem de variáveis de ambiente. O script reutiliza o provedor e o validador do servidor, para medir o que o app de fato faz, e para ao chegar a um teto de neurons (padrão 6.000), retomando no dia seguinte. A amostra é fixa (ordem por hash do id, 100 a 150 redações do teste, só as que cabem em 6.000 caracteres). Resultado em `tmp/essay-olena-measure/result.json`, ignorado pelo Git.
+- O tema que vai ao modelo na medição é o começo da descrição do corpus (200 caracteres), enquanto o app envia o título curto da proposta; essa diferença pode afetar a comparação (não verificado o tamanho do efeito).
+- Depois de medir, a dona liga `OLENA_ESSAY_SCORE=on` só se a regra permitir (QWK médio de 0,40 ou mais: número como estimativa; de 0,30 a 0,40: faixa, ainda por implementar na tela; abaixo: nada a ligar).
+
+## Mudança de escopo (21/11/2026): só nível e nota, observações no Olena Pro
+
+Decisão da dona: o resultado é a **nota geral** (soma das cinco competências medidas). As observações e comentários por competência ficam trancados atrás de "EM BREVE OLENA PRO" (o mesmo letreiro de papel da prateleira). Como elas não aparecem, **o servidor deixou de gerá-las**: pagar por texto escondido seria desperdício.
+
+- A capacidade `essay` pede só `id`, `level` e (com a chave) `score` por competência, com no máximo 600 tokens de saída. O validador (`parseEssayReview` com `detail: false`) ignora resumo e observações; com a nota ligada (`requireScore`) a resposta sem nota em alguma competência é refeita. Sem a chave, só o nível chega à tela.
+- Custo (estimativa, não verificada): a reserva de uma redação cheia cai de cerca de 84 para cerca de 31 créditos, e o gasto real fica em torno de 7 a 10 neurons. No piso de 250 créditos por pessoa cabem cerca de 25 correções por dia (contra 3 a 5 com comentários); o teto global de 8.000 sustenta centenas.
+- A medição (`scripts/measure-essay-olena.mjs`) agora mede exatamente o que o app faz, e custa cerca de 10 neurons por redação (120 redações, perto de 1.200 neurons).
+- Risco: pedir só a nota, sem o modelo explicar, pode piorar a concordância com os corretores. Por isso a medição continua sendo a condição para ligar `OLENA_ESSAY_SCORE`.
+- As observações voltam com o Olena Pro: será uma capacidade própria (com a conta de créditos própria), porque o custo de reserva é diferente. O parser já aceita o modo com detalhe (`detail: true`, o padrão do validador), com trechos conferidos contra o texto.
+- Os valores de custo das seções anteriores deste documento (cerca de 84 créditos, 3 a 5 correções) valem para o formato com comentários, que não está em uso.
