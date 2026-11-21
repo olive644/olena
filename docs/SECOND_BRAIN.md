@@ -22,7 +22,7 @@ Seis silhuetas recortadas independentes da capa. libraryFolderShapes resolve leg
 
 ## Quizzes, simulados e revisão única, 17/11/2026
 
-Biblioteca (pastas): resumo, flashcards, quiz e simulado são gerados SÓ pela Olena (IA, Cloudflare Workers AI) desde 19/11/2026, 2 usos por dia por pessoa em cada tipo, com conta de verdade; o texto vai ao servidor só depois do clique, com aviso. Fluxo, limites e modelo de ameaça em docs/BIBLIOTECA_IA.md. A extração de PDF/OCR continua no aparelho. Sem dependências novas. Simulados têm capa, cronômetro, entrega manual ou automática, correção com fonte, assinatura e carimbo da Olena. Nome usa username do perfil; download direto em PDF paginado reutiliza notebook-export com nome de arquivo opcional. Quizzes e flashcards revisam erros somente uma vez.
+Biblioteca (pastas): resumo, flashcards, quiz e simulado são gerados SÓ pela Olena (IA, Cloudflare Workers AI) desde 19/11/2026, com créditos (neurons) por dia por pessoa, com conta de verdade; o texto vai ao servidor só depois do clique, com aviso. Fluxo, limites e modelo de ameaça em docs/BIBLIOTECA_IA.md. A extração de PDF/OCR continua no aparelho. Sem dependências novas. Simulados têm capa, cronômetro, entrega manual ou automática, correção com fonte, assinatura e carimbo da Olena. Nome usa username do perfil; download direto em PDF paginado reutiliza notebook-export com nome de arquivo opcional. Quizzes e flashcards revisam erros somente uma vez.
 
 Provas: testes focados de geração, revisão, cronômetro, branco, apelido e download; TypeScript e lint dos arquivos passaram. Fluxo desktop escuro e geometria mobile conferidos na prévia; PDF real baixado e página inspecionada. Claro, teclado completo e E2E amplo não verificados. Geração heurística por lacunas, sem perguntas interpretativas. Verificação completa iniciada, publicação antecipada solicitada pelo proprietário; CI fica para Claude.
 
@@ -2144,3 +2144,5 @@ Reutilizados orçamento, API autenticada e medidor das PRs 686/688/689 na main. 
 ### Gerações da pasta — somente Olena (2026-11-21)
 
 Removida geração automática local de resumo, flashcards, quizzes e simulados na pasta. Reutilizados library-ai.ts, extração de fontes e generateWithOlena da main. Custo estimado para todas as categorias; tamanho altera custo de quiz/prova. Sem saldo desabilita, saldo insuficiente avisa sem bloquear tentativa. Backend mantém orçamento/reserva/acerto da main. 49 testes aprovados; conferência de cada modal em PC/mobile com fonte textual e saldo de teste sem gerar IA real.
+
+Redação com a Olena: capacidade essay de /api/helena (helena-essay.ts, essay-output.ts), mesmo orçamento de créditos, nota numérica atrás de OLENA_ESSAY_SCORE (desligada até medir). Ver docs/REDACAO_IA.md.

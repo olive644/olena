@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import {
   HELENA_API_VERSION,
+  isEssayCapability,
   isStudyCapability,
   parseHelenaRequest,
   parseHelenaResponse,
@@ -229,7 +230,11 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
     const language = noticeLanguage(request.headers.get("X-App-Language"));
     // A conversa, o plano de estudo e a explicação foram desligados: a cota gratuita é da Biblioteca
     // (resumo, flashcards, quiz e simulado).
-    if (dependencies.chatEnabled === false && !isStudyCapability(parsed.value.capability))
+    if (
+      dependencies.chatEnabled === false &&
+      !isStudyCapability(parsed.value.capability) &&
+      !isEssayCapability(parsed.value.capability)
+    )
       return errorResponse(410, "provider_unavailable", ASSISTANT_OFF_MESSAGE[language]);
 
     const clientId = await dependencies.identifyClient(request);

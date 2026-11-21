@@ -3,6 +3,7 @@ import { createFirebaseAccountIdentity } from "./firebase-account-identity.js";
 import { createFirebaseRealtimeStore } from "./firebase-realtime-store.js";
 import { createHelenaHandler, type SpendOutcome } from "./helena-handler.js";
 import { createCloudflareTeacher } from "./helena-teacher.js";
+import { createEssayProvider } from "./helena-essay.js";
 import { createStudyProvider } from "./helena-study.js";
 import { checkRateLimit, refundRateLimit } from "./rate-limit.js";
 import { adjustBudget, readBudgetUsed, reserveBudget } from "./neuron-budget.js";
@@ -204,9 +205,14 @@ const handler = createHelenaHandler({
     },
     usage: (uid) => snapshot(uid),
   },
-  provider: createStudyProvider(
-    createMathGroundedProvider(createCloudflareTeacher(teacherConfig)),
+  provider: createEssayProvider(
+    createStudyProvider(
+      createMathGroundedProvider(createCloudflareTeacher(teacherConfig)),
+      teacherConfig,
+    ),
     teacherConfig,
+    // A nota numérica fica desligada até a medição contra corretores humanos (docs/ESSAY_REVIEW.md).
+    { allowScore: process.env["OLENA_ESSAY_SCORE"] === "on" },
   ),
 });
 
