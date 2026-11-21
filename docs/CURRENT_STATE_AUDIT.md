@@ -5901,3 +5901,10 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Por pedido da dona do projeto, o teto do total de JavaScript da aplicação subiu de 1764 para 1906 KiB (e o teto absoluto junto, no mesmo valor). Medido: 1903,6 KiB. O orçamento soma todos os chunks, então dividir não o reduz; o ganho da divisão é de carregamento.
 - Divisão: a mesa de redação (`typewriter-desk`, 255,7 KiB) e o conteúdo das pastas da Biblioteca (novo `library-folder-contents.tsx`, 65,9 KiB) viraram chunks próprios, carregados só ao abrir uma pasta, com `HelenaLoading` como espera. `notes-view` caiu de 413,3 para 103,7 KiB. `library-shelf-view.tsx` ficou só com a estante. Entrada inicial: 219,4 KiB.
 - Os testes de `LibraryFolderContents` passaram a importar do arquivo novo. Não verificado: tempo de abertura de uma pasta em aparelho físico (agora há uma espera de rede para o chunk na primeira abertura).
+
+### Correção de redação pela Olena, PR 1 (backend, 21/11/2026)
+
+- Nova capacidade `essay` em `/api/helena`: contrato (`helena-contract.ts`, redação até 6.000 caracteres e no máximo 2 fontes), custo (`helena-cost.ts`, saída máxima de 2.400 tokens), validador estrito (`src/ai/essay-output.ts`) e provedor (`src/backend/helena-essay.ts`, ligado em `helena-runtime.ts`). Atendida mesmo com `chatEnabled` falso, como a Biblioteca.
+- Segurança: prompt montado no servidor, redação e tema como dados, níveis e notas enumerados, trechos citados conferidos contra o texto, nota descartada com a chave `OLENA_ESSAY_SCORE` desligada, duas tentativas e devolução do gasto em falha. Testes: `essay-output.test.ts` e `helena-essay.test.ts` (injeção, trecho inexistente, nota fora da escala, limite de resposta, contrato).
+- Política de Privacidade (`public/politica-de-privacidade.html`) passa a descrever, por função e sem nomes, o envio de texto da Biblioteca e da redação a uma empresa parceira de IA. Era uma lacuna anterior.
+- Não verificado: qualidade dos comentários do modelo em português; custo real; retenção do provedor. Sem tela nesta PR. Sem dependências novas e sem mudança no orçamento de JavaScript.
