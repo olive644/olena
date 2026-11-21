@@ -104,3 +104,9 @@ Limites desta rodada (importam): CPU de 4 núcleos, sem GPU; só **400 das 3.122
 | BERTimbau ajustado (400 redações) | 0,254 | 0,370 | 0,247 | 0,323 | 0,304 |     0,300 |               125,02 |
 
 Leitura: com 13% dos dados, o ajuste fino chegou perto do QWK dos modelos treinados com todo o conjunto (0,30 contra 0,32 a 0,35) e melhorou sobre a mediana, mas não bateu o erro médio do controle estrutural. Isso NÃO mostra que o ajuste com todos os dados seja melhor ou pior: não foi testado. A literatura publicada reporta QWK de 0,60 a 0,73 por competência em redações de simulado ([JBCS 2025](https://www.ime.usp.br/~ddm/publication/barbosa-2025-jbcs)); a diferença para 0,30 é grande e não foi explicada aqui (dados, divisão, tokens e régua podem diferir; não verificado). Próximo passo para decidir: treino com os 3.122 textos, 512 tokens e seleção de época, em GPU, mais a IA da Olena com um exemplo no prompt, na mesma divisão.
+
+## Caderno para o teste completo com GPU
+
+`scripts/notebooks/essay_bertimbau_gpu.ipynb` roda o ajuste fino completo (3.122 redações de treino, 512 tokens, até 4 épocas, melhor época escolhida só pela validação) no Kaggle ou no Colab com GPU. Baixa o corpus na revisão fixada, confere o checksum e as contagens da divisão por tema (3.122, 792 e 654) e imprime uma tabela com QWK por competência e erro médio, ao lado das rodadas anteriores. Grava `resultado.json` sem texto de redação.
+
+Verificado: o código do caderno rodou até o fim em CPU em modo miniatura (`SMOKE = True`), incluindo download, checksum, divisão, treino, escolha de época, teste e tabela. Não verificado: o caminho com GPU (precisão mista e `GradScaler`), que não existe neste ambiente, e a duração real (estimada em 30 a 90 minutos). Os limites de direitos dos textos de terceiros e de uso só em pesquisa continuam valendo.
