@@ -1555,6 +1555,12 @@ html:has(.notebooks-showcase)::view-transition-old(library-folder-view) {
     justify-content: flex-start;
     gap: 8px;
   }
+  /* A hera da esquerda fica sobre a primeira lombada do caderno: a fileira de cadernos começa
+     depois dela. A fileira de pastas, mais abaixo, não é coberta. */
+  .notebook-display-shelf.has-lower-shelf
+    > .notebook-display-shelf__books:not(.library-folder-row) {
+    padding-inline-start: 34px;
+  }
   .has-lower-shelf .notebook-shelf-vines {
     height: 122px;
     width: 44px;
