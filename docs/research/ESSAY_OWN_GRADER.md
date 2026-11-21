@@ -89,3 +89,18 @@ O primeiro protótipo foi treinado e avaliado. Ele não atende à liberação de
 A próxima experiência precisa investigar representações e treinamento que capturem melhor sintaxe, argumentação e intervenção, com seleção pela validação. Não ajustar repetidamente esta experiência para melhorar os números já vistos no teste. Uma nova experiência precisa de protocolo de avaliação definido antes dos resultados e revisão pedagógica independente, incluindo casos de fuga, tangenciamento, cópia, repetição e redações insuficientes. Qualquer modelo de nota deverá abster-se quando a análise for inválida ou incompleta, sem inventar uma pontuação.
 
 Antes do produto: esclarecer a cobertura dos direitos dos textos da base, validar em redações reais do formato do app, medir em celular físico e resolver os gates de qualidade. Nenhum treinamento pago, endpoint externo de correção ou cobrança por redação foi ativado.
+
+## Ajuste fino do BERTimbau completo, rodada curta (21/11/2026)
+
+Pergunta: treinar o encoder inteiro é pior que as regressões sobre representações congeladas? Receita: `neuralmind/bert-base-portuguese-cased` com média das representações e uma camada linear de cinco saídas, erro quadrático, AdamW com taxa 3e-5, 3 épocas, 384 tokens por texto, lote 8. `scripts/finetune_bertimbau_essay.py`, mesma divisão por tema (60/13/13), nos 654 textos de teste, notas arredondadas para múltiplos de 40.
+
+Limites desta rodada (importam): CPU de 4 núcleos, sem GPU; só **400 das 3.122** redações de treino (13%); uma semente, sem ajuste de parâmetros, sem seleção de época; textos acima de 384 tokens cortados; 240 das 792 redações de validação. É um piso, não o teto do método.
+
+| Competência                       |    C1 |    C2 |    C3 |    C4 |    C5 | QWK médio | MAE total (0 a 1000) |
+| --------------------------------- | ----: | ----: | ----: | ----: | ----: | --------: | -------------------: |
+| Mediana do treino                 |     0 |     0 |     0 |     0 |     0 |         0 |               137,43 |
+| Estrutura                         | 0,150 | 0,362 | 0,356 | 0,358 | 0,383 |     0,322 |               115,84 |
+| Semântico congelado + estrutura   | 0,293 | 0,422 | 0,279 | 0,373 | 0,389 |     0,351 |               119,51 |
+| BERTimbau ajustado (400 redações) | 0,254 | 0,370 | 0,247 | 0,323 | 0,304 |     0,300 |               125,02 |
+
+Leitura: com 13% dos dados, o ajuste fino chegou perto do QWK dos modelos treinados com todo o conjunto (0,30 contra 0,32 a 0,35) e melhorou sobre a mediana, mas não bateu o erro médio do controle estrutural. Isso NÃO mostra que o ajuste com todos os dados seja melhor ou pior: não foi testado. A literatura publicada reporta QWK de 0,60 a 0,73 por competência em redações de simulado ([JBCS 2025](https://www.ime.usp.br/~ddm/publication/barbosa-2025-jbcs)); a diferença para 0,30 é grande e não foi explicada aqui (dados, divisão, tokens e régua podem diferir; não verificado). Próximo passo para decidir: treino com os 3.122 textos, 512 tokens e seleção de época, em GPU, mais a IA da Olena com um exemplo no prompt, na mesma divisão.
