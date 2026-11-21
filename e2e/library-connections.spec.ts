@@ -9,8 +9,9 @@ test("imagem enviada em uma pasta da Biblioteca persiste e abre sem enviar o arq
     localStorage.setItem("helena.guest.v1", "1");
   });
   await page.goto("/cadernos");
-  await page.getByRole("button", { name: "Criar pasta", exact: true }).click();
-  const folderDialog = page.getByRole("dialog", { name: "Nova pasta", exact: true });
+  await page.getByRole("button", { name: "Criar na prateleira", exact: true }).click();
+  await page.getByRole("button", { name: /^Pasta/ }).click();
+  const folderDialog = page.getByRole("dialog", { name: "Criar pasta", exact: true });
   await folderDialog.getByLabel("Nome da pasta", { exact: true }).fill("Revisão");
   await folderDialog.getByRole("button", { name: "Criar pasta", exact: true }).click();
   await page

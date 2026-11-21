@@ -76,10 +76,8 @@ test("task colors and unclipped day/week strips stay current on desktop and mobi
   await expect(dialog).not.toBeVisible();
 });
 
-test("desktop rail stays compact with small paper labels in both themes", async ({
-  page,
-}, info) => {
-  test.skip(info.project.name !== "desktop", "Desktop hover rail only");
+test("desktop sidebar stays expanded with paper labels in both themes", async ({ page }, info) => {
+  test.skip(info.project.name !== "desktop", "Desktop sidebar only");
   await expect(page.getByRole("searchbox", { name: "Buscar na agenda" })).toBeVisible();
   for (const theme of ["light", "dark"]) {
     await page.evaluate((value) => {
@@ -87,47 +85,27 @@ test("desktop rail stays compact with small paper labels in both themes", async 
     }, theme);
     const mainBefore = await page.locator(".main-content").boundingBox();
     const rail = page.locator(".sidebar");
-    await expect(rail).toHaveCSS("width", "84px");
+    await expect(rail).toHaveCSS("width", "260px");
     const item = rail.getByRole("button", { name: "Biblioteca", exact: true });
     const label = item.locator("span").last();
-    await item.hover();
-    await expect(rail).toHaveCSS("width", "84px");
+    // Os nomes ficam sempre visíveis, sem depender de hover, e o conteúdo não se move.
     await expect(label).toBeVisible();
-    await expect(label).toHaveCSS(
-      "color",
-      theme === "dark" ? "rgb(255, 249, 239)" : "rgb(41, 36, 50)",
-    );
-    await expect(label).toHaveCSS(
-      "background-color",
-      theme === "dark" ? "rgb(41, 36, 50)" : "rgb(255, 249, 239)",
-    );
-    const tip = await label.boundingBox();
-    expect(tip!.height).toBeLessThan(32);
-    expect(tip!.width).toBeLessThan(180);
+    await item.hover();
+    await expect(rail).toHaveCSS("width", "260px");
+    await expect(label).toBeVisible();
     expect((await page.locator(".main-content").boundingBox())!.x).toBe(mainBefore!.x);
     await page.mouse.move(500, 100);
-    await expect(rail).toHaveCSS("width", "84px");
-    await expect(label).not.toBeVisible();
+    await expect(rail).toHaveCSS("width", "260px");
+    await expect(label).toBeVisible();
     await page.keyboard.press("Tab");
     await item.focus();
-    await expect(rail).toHaveCSS("width", "84px");
     await expect(label).toBeVisible();
-    await expect(label).toHaveCSS("opacity", "1");
     await page.screenshot({ path: `test-results/agenda-nav-${theme}.png` });
     await item.blur();
-    const profile = page.locator(".sidebar").getByRole("button", { name: "Perfil", exact: true });
-    await profile.hover();
-    await expect(rail).toHaveCSS("width", "84px");
+    const profile = rail.getByRole("button", { name: "Perfil", exact: true });
     await expect(profile.locator("span").last()).toBeVisible();
-    await page.mouse.move(500, 100);
-    await expect(rail).toHaveCSS("width", "84px");
-    await expect(profile.locator("span").last()).not.toBeVisible();
     const active = rail.getByRole("button", { name: "Agenda", exact: true });
-    await active.hover();
-    await expect(active.locator("span").last()).toHaveCSS(
-      "color",
-      theme === "dark" ? "rgb(255, 249, 239)" : "rgb(41, 36, 50)",
-    );
+    await expect(active).toHaveAttribute("aria-current", "page");
     await page.mouse.move(500, 100);
   }
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -141,15 +119,8 @@ test("desktop rail stays compact with small paper labels in both themes", async 
         ),
     )
     .toBeLessThanOrEqual(0.001);
-  await page.getByRole("button", { name: "Expandir menu lateral", exact: true }).click();
-  await expect(page.locator(".sidebar")).toHaveCSS("width", "260px");
   await expect(
-    page
-      .locator(".sidebar")
-      .getByRole("button", { name: "Biblioteca", exact: true })
-      .locator("span")
-      .last(),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Recolher menu lateral", exact: true }).click();
-  await expect(page.locator(".sidebar")).toHaveCSS("width", "84px");
+    page.getByRole("button", { name: "Expandir menu lateral", exact: true }),
+  ).toHaveCount(0);
+  await expect(page.locator(".sidebar")).toHaveCSS("width", "260px");
 });

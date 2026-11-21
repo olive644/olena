@@ -30,8 +30,9 @@ for (const theme of ["light", "dark"]) {
       await dismiss();
       const back = page.getByRole("button", { name: "Meus Cadernos", exact: true });
       if (await back.isVisible()) await back.click();
-      await page.getByRole("button", { name: "Criar pasta", exact: true }).click();
-      const dialog = page.getByRole("dialog", { name: "Nova pasta", exact: true });
+      await page.getByRole("button", { name: "Criar na prateleira", exact: true }).click();
+      await page.getByRole("button", { name: /^Pasta/ }).click();
+      const dialog = page.getByRole("dialog", { name: "Criar pasta", exact: true });
       await dialog.getByLabel("Nome da pasta", { exact: true }).fill("tese");
       await dialog.getByRole("button", { name: "Criar pasta", exact: true }).click();
       await expect(page.locator(".library-folder-row")).toBeVisible();

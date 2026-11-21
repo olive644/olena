@@ -23,8 +23,9 @@ async function openFolder(page: Page, theme: string) {
   };
   await page.waitForTimeout(1200);
   await dismiss();
-  await page.getByRole("button", { name: "Criar pasta", exact: true }).click();
-  const create = page.getByRole("dialog", { name: "Nova pasta", exact: true });
+  await page.getByRole("button", { name: "Criar na prateleira", exact: true }).click();
+  await page.getByRole("button", { name: /^Pasta/ }).click();
+  const create = page.getByRole("dialog", { name: "Criar pasta", exact: true });
   await create.getByLabel("Nome da pasta", { exact: true }).fill("biologia");
   await create.getByRole("button", { name: "Criar pasta", exact: true }).click();
   await page.waitForTimeout(800);
