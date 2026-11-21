@@ -4,13 +4,18 @@ export const HELENA_MAX_SOURCE_COUNT = 12;
 const HELENA_MAX_SOURCE_LENGTH = 8_000;
 // Uma prova de 17 páginas tem cerca de 31.000 caracteres: 36.000 a levam inteira ao modelo.
 export const HELENA_MAX_TOTAL_SOURCE_LENGTH = 36_000;
+/** Redação: o texto e, se houver, o tema. O editor limita o texto a 6.000 caracteres. */
+export const HELENA_ESSAY_MAX_LENGTH = 6_000;
+export const HELENA_ESSAY_MAX_SOURCES = 2;
 
 export type HelenaCapability =
-  "tutor" | "explain" | "summarize" | "study-plan" | "flashcards" | "quiz" | "exam";
+  "tutor" | "explain" | "summarize" | "study-plan" | "flashcards" | "quiz" | "exam" | "essay";
 
 /** Os quatro pedidos da Biblioteca. São os únicos que a Olena atende e os que têm limite diário. */
 export const STUDY_CAPABILITIES = ["summarize", "flashcards", "quiz", "exam"] as const;
 export type StudyCapability = (typeof STUDY_CAPABILITIES)[number];
+/** Correção de redação: atendida mesmo com a conversa desligada, com o mesmo orçamento de créditos. */
+export const isEssayCapability = (value: string): value is "essay" => value === "essay";
 export const isStudyCapability = (value: string): value is StudyCapability =>
   (STUDY_CAPABILITIES as readonly string[]).includes(value);
 type HelenaSourceKind = "note" | "material" | "flashcard" | "task" | "goal";
@@ -55,6 +60,7 @@ const capabilities: readonly HelenaCapability[] = [
   "flashcards",
   "quiz",
   "exam",
+  "essay",
 ];
 const sourceKinds: readonly HelenaSourceKind[] = ["note", "material", "flashcard", "task", "goal"];
 
@@ -130,6 +136,15 @@ export function parseHelenaRequest(value: unknown): ParseResult<HelenaRequest> {
     HELENA_MAX_TOTAL_SOURCE_LENGTH
   ) {
     return { ok: false, message: "O conjunto de fontes é muito longo." };
+  }
+
+  if (
+    value["capability"] === "essay" &&
+    (sources.length < 1 ||
+      sources.length > HELENA_ESSAY_MAX_SOURCES ||
+      sources[0]!.content.length > HELENA_ESSAY_MAX_LENGTH)
+  ) {
+    return { ok: false, message: "Redação inválida ou muito longa." };
   }
 
   if (
