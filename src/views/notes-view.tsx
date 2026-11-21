@@ -613,7 +613,7 @@ export function NotesView({
     >
       {journey && <NotebookJourney journey={journey} onDone={finishJourney} />}
       {pageJourney && <NotebookPageJourney journey={pageJourney} onDone={finishPageJourney} />}
-      <PageHeader showUpdates={false} />
+      {activeNotebookId && <PageHeader showUpdates={false} />}
       {(() => {
         // Notas de texto mantêm cartões e fontes; o caderno manuscrito não repete esse bloco.
         if (activeNotebook?.kind !== "note" && activePage?.kind !== "note") return null;

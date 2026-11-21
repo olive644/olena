@@ -15,10 +15,10 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
   });
   for (const theme of ["light", "dark"]) {
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
-    const icons = navigation.locator(".navigation-icon__variant:visible");
+    const icons = navigation.locator(".navigation-icon--colorful img:visible");
     expect(await icons.count()).toBeGreaterThan(0);
     for (const icon of await icons.all()) {
-      await expect(icon).toHaveAttribute("src", /\/navigation-icons\/paper\/.*\.svg$/);
+      await expect(icon).toHaveAttribute("src", /\/navigation-icons\/colorful\/.*\.svg$/);
       await expect
         .poll(() =>
           icon.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0),
@@ -26,20 +26,10 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
         .toBe(true);
     }
     if (mobile) {
-      await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-      const menu = page.getByRole("dialog", { name: "Mais ferramentas" });
-      const secondary = menu.locator(".navigation-icon__variant:visible");
-      await expect(secondary).toHaveCount(1);
-      await expect(menu.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
-      for (const icon of await secondary.all()) {
-        await expect(icon).toHaveAttribute("src", /\/navigation-icons\/paper\/.*\.svg$/);
-        await expect
-          .poll(() =>
-            icon.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0),
-          )
-          .toBe(true);
-      }
-      await menu.getByRole("button", { name: "Fechar menu" }).click();
+      // Todas as ferramentas cabem na barra móvel: não há mais o menu "Mais ferramentas".
+      await expect(page.getByRole("button", { name: "Mais ferramentas", exact: true })).toHaveCount(
+        0,
+      );
     }
     if (theme === "light") {
       await setTestTheme(page, "dark");
@@ -153,7 +143,7 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
     "aria-current",
     "page",
   );
-  await expect(sidebar.getByText("Espaço do aluno", { exact: true })).toBeHidden();
+  await expect(sidebar.getByText("Espaço do aluno", { exact: true })).toBeVisible();
   await expect(page.getByRole("region", { name: "Ferramentas do Espaço do aluno" })).toHaveCount(0);
 
   await expect(page.locator(".view-heading--today")).toHaveCount(0);
@@ -164,19 +154,11 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
     .evaluateAll((items) => items.map((item) => getComputedStyle(item, "::before").content));
   expect(metricDecorations).toEqual(["none", "none", "none"]);
 
-  const compactSidebarBox = await sidebar.boundingBox();
-  const compactNavigationBox = await navigation.boundingBox();
-  expect(compactSidebarBox).not.toBeNull();
-  expect(compactNavigationBox).not.toBeNull();
-  expect(compactNavigationBox!.x).toBeGreaterThanOrEqual(compactSidebarBox!.x);
-  expect(compactNavigationBox!.x + compactNavigationBox!.width).toBeLessThanOrEqual(
-    compactSidebarBox!.x + compactSidebarBox!.width,
-  );
-
-  await page.getByRole("button", { name: "Expandir menu lateral" }).click();
+  // A barra lateral já nasce expandida: sem botão de expandir ou recolher.
+  await expect(page.getByRole("button", { name: "Expandir menu lateral" })).toHaveCount(0);
   await expect(sidebar).toHaveClass(/sidebar--expanded/);
   await expect(sidebar).toHaveCSS("width", "260px");
-  await expect(sidebar.getByLabel("OlenaStudy")).toBeVisible();
+  await expect(sidebar.getByLabel("OLENASTUDY")).toBeVisible();
   await expect(sidebar.getByText("Área do aluno", { exact: true })).toBeVisible();
   await expect(sidebar.getByText("Espaço do aluno", { exact: true })).toBeVisible();
 
@@ -208,7 +190,6 @@ test("troca o tema somente pela acessibilidade do Perfil", async ({ page }, test
   if (testInfo.project.name === "desktop") {
     const sidebar = page.locator(".sidebar");
     await expect(sidebar).toHaveCSS("background-color", "rgb(23, 21, 28)");
-    await sidebar.getByRole("button", { name: "Expandir menu lateral" }).click();
     await expect(sidebar.getByRole("button", { name: "Agenda" })).toHaveCSS(
       "color",
       "rgb(255, 249, 239)",
@@ -267,7 +248,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
     navigation.locator(
       ":scope > .mobile-nav__item, :scope > .appearance-picker > .mobile-nav__item",
     ),
-  ).toHaveCount(5);
+  ).toHaveCount(6);
 
   for (const label of ["Agenda", "Foco", "Praticar", "Espaço"]) {
     await navigation.getByRole("button", { name: label, exact: true }).click();
@@ -275,37 +256,12 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
     expect(overflow).toBe(false);
   }
 
-  await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-  const toolsDialog = page.getByRole("dialog", { name: "Mais ferramentas" });
-  await expect(toolsDialog).toBeVisible();
-  await page.waitForTimeout(350);
-  const toolItems = toolsDialog.locator(".more-item");
-  await expect(toolItems).toHaveCount(1);
-  await expect(toolsDialog.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
-
-  for (const item of await toolItems.all()) {
-    const iconBox = await item.locator(".navigation-icon").boundingBox();
-    const glyphBox = await item.locator(".navigation-icon__variant:visible").boundingBox();
-    expect(iconBox).not.toBeNull();
-    expect(glyphBox).not.toBeNull();
-    expect(iconBox!.width).toBeCloseTo(32, 3);
-    expect(iconBox!.height).toBeCloseTo(32, 3);
-    expect(glyphBox!.width).toBeCloseTo(20, 3);
-    expect(glyphBox!.height).toBeCloseTo(20, 3);
-  }
-
-  await toolsDialog.getByRole("button", { name: "Fechar menu" }).click();
-  await expect(toolsDialog).toBeHidden();
-
-  for (const label of ["Biblioteca"]) {
-    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-    const more = page.getByRole("dialog", { name: "Mais ferramentas" });
-    await expect(more).toBeVisible();
-    await more.getByRole("button", { name: label, exact: true }).click();
-    await expect(more).toBeHidden();
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
-    expect(overflow).toBe(false);
-  }
+  // As cinco ferramentas e o Perfil (com o avatar da conta) cabem na barra: não há menu extra.
+  await expect(page.getByRole("button", { name: "Mais ferramentas", exact: true })).toHaveCount(0);
+  await expect(navigation.getByRole("button", { name: "Perfil", exact: true })).toBeVisible();
+  await navigation.getByRole("button", { name: "Biblioteca", exact: true }).click();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+  expect(overflow).toBe(false);
 });
 
 test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, testInfo) => {
@@ -316,7 +272,7 @@ test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, te
   await expect(navigation).toHaveCSS("color", "rgb(41, 36, 50)");
   const agendaIcon = navigation
     .getByRole("button", { name: "Agenda", exact: true })
-    .locator(".navigation-icon__variant--claro");
+    .locator(".navigation-icon--colorful img");
   await expect(agendaIcon).toBeVisible();
 
   await navigation.getByRole("button", { name: "Agenda", exact: true }).click();
@@ -335,7 +291,7 @@ test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, te
   await expect(navigation).toHaveCSS("background-color", "rgb(41, 36, 50)");
   const focusIcon = navigation
     .getByRole("button", { name: "Foco", exact: true })
-    .locator(".navigation-icon__variant--escuro");
+    .locator(".navigation-icon--colorful img");
   await expect(focusIcon).toBeVisible();
   await expect(navigation).toHaveCSS("color", "rgb(255, 249, 239)");
 });

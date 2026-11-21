@@ -1,3 +1,4 @@
+import { libraryFolderShapes, type LibraryFolderShape } from "./library-folder-shapes.js";
 import type { CardOrigin } from "./flashcard-feedback.js";
 import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences.js";
 import { validLanguageAttempt, type LanguageAttempt } from "./language-progress.js";
@@ -152,12 +153,21 @@ export type StudyMaterial = {
   annotations?: { id: string; page: number; quote: string; note: string }[];
 };
 
-export type LibraryFolderStyle = "classic" | "pride" | "mathematics" | "english";
+export type LibraryFolderStyle =
+  | "classic"
+  | "pride"
+  | "mathematics"
+  | "english"
+  | "blood-moon"
+  | "solar-eclipse"
+  | "lunar-eclipse";
 type LibraryCollection = {
+  kind?: "folder" | "typewriter";
   id: string;
   title: string;
   motif: "moon" | "sun" | "book";
   style?: LibraryFolderStyle;
+  shape?: LibraryFolderShape;
   createdAt?: string;
 };
 
@@ -1146,14 +1156,38 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             : state.subjects,
       };
     }
-    case "library/collection-saved":
+    case "library/collection-saved": {
+      const current = state.libraryCollections ?? [];
+      const isNew = !current.some((item) => item.id === action.collection.id);
+      const machine = action.collection.kind === "typewriter";
+      if (
+        isNew &&
+        (machine
+          ? current.some((item) => item.kind === "typewriter")
+          : current.filter((item) => item.kind !== "typewriter").length >= 3)
+      )
+        return state;
+      const currentShapes = libraryFolderShapes(
+        current.filter((item) => item.kind !== "typewriter"),
+      );
+      const collections = [
+        ...current
+          .filter((item) => item.id !== action.collection.id)
+          .map((item) => ({ ...item, shape: currentShapes.get(item.id)! })),
+        {
+          ...action.collection,
+          shape: action.collection.shape ?? currentShapes.get(action.collection.id),
+        },
+      ];
+      const shapes = libraryFolderShapes(collections.filter((item) => item.kind !== "typewriter"));
       return {
         ...state,
-        libraryCollections: [
-          ...(state.libraryCollections ?? []).filter((item) => item.id !== action.collection.id),
-          action.collection,
-        ],
+        libraryCollections: collections.map((item) => ({
+          ...item,
+          shape: shapes.get(item.id) ?? "tabbed",
+        })),
       };
+    }
     case "library/collection-removed":
       return {
         ...state,

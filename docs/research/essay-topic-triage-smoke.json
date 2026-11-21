@@ -1,0 +1,226 @@
+{
+  "model": {
+    "id": "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
+    "revision": "2c4055b12046f11709e9df2c122e59ffbdc2f900"
+  },
+  "results": [
+    {
+      "id": "essay-01-relevant",
+      "kind": "relevant",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-01-paraphrase",
+      "kind": "paraphrase",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-01-unrelated",
+      "kind": "unrelated",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-01-keyword-bait",
+      "kind": "keyword-bait",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-06-relevant",
+      "kind": "relevant",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-06-paraphrase",
+      "kind": "paraphrase",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-06-unrelated",
+      "kind": "unrelated",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-06-keyword-bait",
+      "kind": "keyword-bait",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-11-relevant",
+      "kind": "relevant",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-11-paraphrase",
+      "kind": "paraphrase",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-11-unrelated",
+      "kind": "unrelated",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-11-keyword-bait",
+      "kind": "keyword-bait",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-20-relevant",
+      "kind": "relevant",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-20-paraphrase",
+      "kind": "paraphrase",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-20-unrelated",
+      "kind": "unrelated",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-20-keyword-bait",
+      "kind": "keyword-bait",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-22-relevant",
+      "kind": "relevant",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-22-paraphrase",
+      "kind": "paraphrase",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-22-unrelated",
+      "kind": "unrelated",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-22-keyword-bait",
+      "kind": "keyword-bait",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-26-relevant",
+      "kind": "relevant",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-26-paraphrase",
+      "kind": "paraphrase",
+      "status": "aligned",
+      "reason": "aligned",
+      "evidence": ["related"]
+    },
+    {
+      "id": "essay-26-unrelated",
+      "kind": "unrelated",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-26-keyword-bait",
+      "kind": "keyword-bait",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "nonsense",
+      "kind": "nonsense",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "single-word",
+      "kind": "insufficient",
+      "status": "inconclusive",
+      "reason": "insufficient",
+      "evidence": []
+    },
+    {
+      "id": "essay-01-extended",
+      "kind": "extended-relevant",
+      "status": "inconclusive",
+      "reason": "ambiguous",
+      "evidence": ["related", "related"]
+    },
+    {
+      "id": "essay-22-extended",
+      "kind": "extended-relevant",
+      "status": "inconclusive",
+      "reason": "ambiguous",
+      "evidence": ["related", "related"]
+    },
+    {
+      "id": "extended-unrelated",
+      "kind": "extended-unrelated",
+      "status": "off-topic",
+      "reason": "different",
+      "evidence": ["uncertain", "uncertain"]
+    },
+    {
+      "id": "intro-only",
+      "kind": "partial-intro",
+      "status": "tangential",
+      "reason": "partial",
+      "evidence": ["related", "uncertain"]
+    },
+    {
+      "id": "repeated-punctuated",
+      "kind": "keyword-bait",
+      "status": "inconclusive",
+      "reason": "repetition",
+      "evidence": []
+    }
+  ],
+  "limitation": "Author-created smoke fixtures, not calibration against human judgments."
+}

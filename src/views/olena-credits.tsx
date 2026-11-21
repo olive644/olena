@@ -1,3 +1,4 @@
+import { PaperDigits } from "../components/paper-digits";
 import { useEffect, useState, type CSSProperties } from "react";
 import type { HelenaUsage } from "../data/helena-client";
 import { countdownParts, creditLevel, dayElapsedShare } from "../domain/olena-credits";
@@ -20,7 +21,9 @@ export function OlenaCreditMeter({
   usage,
   resetAt,
   spend,
+  compact = false,
 }: {
+  compact?: boolean;
   usage: HelenaUsage | undefined;
   resetAt: number;
   spend: CreditSpend | undefined;
@@ -62,7 +65,7 @@ export function OlenaCreditMeter({
 
   return (
     <div
-      className="olena-credits"
+      className={`olena-credits${compact ? " olena-credits--compact" : ""}`}
       data-level={level}
       role="group"
       aria-label={uiText("Créditos da Olena")}
@@ -72,7 +75,7 @@ export function OlenaCreditMeter({
         <p className="olena-credits-line">
           <strong>{uiText("Créditos da Olena")}</strong>
           <span className="olena-credits-count">
-            <b>{shown}</b>
+            <b>{compact ? <PaperDigits value={String(shown)} /> : shown}</b>
             <span> / {usage.limitCredits}</span>
           </span>
         </p>

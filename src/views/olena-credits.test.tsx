@@ -43,6 +43,14 @@ describe("medidor de créditos da Olena", () => {
     expect(container.innerHTML).toBe("");
   });
 
+  it("mostra o saldo real com dígitos originais no cabeçalho compacto", () => {
+    const { container } = render(
+      <OlenaCreditMeter compact usage={usage(80)} resetAt={later} spend={undefined} />,
+    );
+    expect(container.querySelector(".olena-credits--compact .paper-digits")).not.toBeNull();
+    expect(screen.getByRole("group", { name: "Créditos da Olena" })).not.toBeNull();
+  });
+
   it("mostra o saldo, o limite e quando renova", () => {
     render(<OlenaCreditMeter usage={usage(80)} resetAt={later} spend={undefined} />);
     const meter = screen.getByRole("group", { name: "Créditos da Olena" });

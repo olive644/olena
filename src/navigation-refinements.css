@@ -134,3 +134,174 @@
     background: #fff9ef;
   }
 }
+
+.app-shell .sidebar__brand strong {
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  text-shadow: none;
+  background: none;
+  box-shadow: none;
+}
+.app-shell .sidebar__brand strong span {
+  color: #facc15;
+}
+.navigation-favicon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex: 0 0 24px;
+}
+.app-shell > .sidebar.sidebar--expanded > .sidebar__top {
+  gap: 9px;
+}
+.app-shell .navigation-icon--colorful img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: none !important;
+}
+.app-shell .sidebar__profile .navigation-icon img,
+.app-shell .mobile-nav__profile .navigation-icon img {
+  filter: sepia(1) saturate(3) hue-rotate(325deg) !important;
+}
+@media (max-width: 899px) {
+  .app-shell .mobile-nav {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .app-shell .mobile-nav__item {
+    min-width: 0;
+    padding-inline: 2px;
+    font-size: 0.55rem;
+  }
+}
+
+/* Miniatura do perfil conserva as artes escolhidas, sem filtros de ícone. */
+.app-shell .navigation-profile {
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 40px;
+  flex: 0 0 52px;
+  isolation: isolate;
+}
+.navigation-profile__cover {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 5px;
+}
+.app-shell .navigation-profile__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: none !important;
+}
+.navigation-profile__portrait {
+  position: relative;
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+.app-shell .navigation-profile__avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  filter: none !important;
+}
+.app-shell .navigation-profile .profile-frame-art {
+  position: absolute;
+  inset: -12%;
+  width: 124%;
+  height: 124%;
+  max-width: none;
+  object-fit: contain;
+  pointer-events: none;
+  filter: none !important;
+}
+@media (max-width: 899px) {
+  .app-shell .navigation-profile {
+    width: 40px;
+    height: 32px;
+    flex-basis: 40px;
+  }
+  .navigation-profile__portrait {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+.app-shell .sidebar__profile .nav-item,
+.app-shell .mobile-nav__profile {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.app-shell .sidebar__profile .navigation-profile,
+.app-shell .mobile-nav__profile .navigation-profile {
+  position: static;
+  isolation: auto;
+}
+.app-shell .sidebar__profile .navigation-profile__cover,
+.app-shell .mobile-nav__profile .navigation-profile__cover {
+  inset: 0;
+  border-radius: inherit;
+  z-index: -1;
+}
+.app-shell .sidebar__profile .navigation-profile__cover::after,
+.app-shell .mobile-nav__profile .navigation-profile__cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgb(15 13 23 / 55%));
+}
+.app-shell .sidebar__profile .nav-item:has(.navigation-profile__cover),
+.app-shell .mobile-nav__profile:has(.navigation-profile__cover) {
+  color: #fff;
+  text-shadow: 0 1px 3px #17151c;
+}
+
+@media (max-width: 899px) {
+  .app-shell .mobile-nav {
+    overflow: hidden;
+    isolation: isolate;
+    z-index: 80;
+  }
+  .app-shell .mobile-nav__profile .mobile-nav__icon {
+    display: grid;
+    place-items: center;
+    overflow: visible;
+  }
+  .app-shell .mobile-nav__profile .navigation-profile {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+  }
+  .app-shell .mobile-nav__profile .navigation-profile__portrait {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 899px) {
+  :root[data-theme="dark"] body .app-shell > .mobile-nav {
+    background-color: #292432;
+    background-image:
+      linear-gradient(135deg, #393244 0 7%, transparent 7%),
+      linear-gradient(315deg, #17151c 0 8%, transparent 8%);
+    border-color: #51465d;
+    box-shadow: 0 4px #17151c;
+    color: #fff9ef;
+  }
+  :root[data-theme="dark"] body .app-shell > .mobile-nav .mobile-nav__item {
+    color: #fff9ef;
+  }
+}

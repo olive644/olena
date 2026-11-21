@@ -1,3 +1,4 @@
+import { useTheme } from "./hooks/use-theme";
 import { uiText, useLanguage } from "./i18n/runtime";
 import { lazy, Suspense, useState, useEffect } from "react";
 import { useAppView } from "./hooks/use-app-view";
@@ -83,6 +84,7 @@ function hasReturningAccountData() {
 }
 
 function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signedOut?: boolean }) {
+  useTheme();
   useLanguage();
 
   const [moreOpen, setMoreOpen] = useState(false);

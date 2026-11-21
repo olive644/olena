@@ -155,3 +155,26 @@
     font-size: 0.68rem;
   }
 }
+
+.olena-credits--compact {
+  margin-left: auto;
+  gap: 7px;
+  padding: 4px 0;
+}
+.olena-credits--compact .olena-credits-line > strong,
+.olena-credits--compact .olena-credits-count > span,
+.olena-credits--compact .olena-credits-track,
+.olena-credits--compact .olena-credits-reset {
+  display: none;
+}
+.olena-credits--compact .olena-credits-gem {
+  width: 20px;
+  height: 23px;
+}
+.olena-credits--compact .paper-digits {
+  font-size: 23px;
+  --digit-face: #facc15;
+  --digit-fold: #fff0a1;
+  --digit-depth: #9c6d12;
+  --digit-edge: #9c6d12;
+}

@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "deploymentEnabled": false,
+  "fixtures": 3,
+  "headBytes": 166691,
+  "sha256": "5ba99dc27ab43ca7273a4335dd7fa645cfb3ec616ff07860ce9aef5c4d34660f",
+  "milliseconds": 5.525300000000001,
+  "qualification": "Linear-head arithmetic parity only; not an end-to-end browser or mobile grading test"
+}

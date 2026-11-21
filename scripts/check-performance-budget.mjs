@@ -364,11 +364,24 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Teco, cosméticos de Inglês e ofensivas agrupadas: 1746,6 KiB no total, 219,5 KiB na entrada.
 // Entrada e associação de contas: medidos 1761,1 KiB. Teto de 1764 KiB autorizado
 // pelo proprietário em 10/11/2026, mantendo os demais limites e a margem pequena.
-const MAX_TOTAL_JS_BYTES = 1764 * 1024;
+// Biblioteca com redações (mesa de redação, 66 propostas e artes de apoio, painel de resultado,
+// revisão e compartilhamento) mais o chunk compartilhado do workspace: medidos 1903,6 KiB, contra
+// 1634,8 KiB na main. A mesa de redação (255,7 KiB) e o conteúdo das pastas (65,9 KiB) agora são
+// chunks próprios, abertos só ao entrar numa pasta; o notes-view caiu de 413,3 para 103,7 KiB. O
+// total não diminui porque este orçamento soma todos os chunks, lazy ou não. Teto de 1906 KiB
+// autorizado pela dona do projeto em 21/11/2026; a entrada inicial segue em 219,4 KiB.
+const MAX_TOTAL_JS_BYTES = 1906 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
-const HARD_CEILING_TOTAL_JS_BYTES = 1764 * 1024;
+const HARD_CEILING_TOTAL_JS_BYTES = 1906 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
+// Revisão de redação no aparelho: o worker de tema (Transformers.js), o corretor ortográfico
+// (Hunspell) e o runtime ONNX só são baixados quando o aluno entrega uma redação, como o leitor de
+// PDF. Por isso têm orçamento próprio e não entram no total da aplicação. Este teto é novo e
+// é medido: 1000 KiB, com a medição registrada em docs/CURRENT_STATE_AUDIT.md (21/11/2026). Subi-lo exige decisão da dona do projeto.
+const MAX_ESSAY_REVIEW_JS_BYTES = 1000 * 1024;
+const ESSAY_REVIEW_FILE =
+  /^(essay-topic\.worker|essay-proofreading\.worker|hunspell|ort-wasm-simd-threaded\.jsep)[-.]/;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
 // Checagem da configuração, não do build: garante que ninguém suba o orçamento normal além
@@ -405,7 +418,13 @@ const ttsWorker = sizes.find(
   (item) => item.file.startsWith("piper-tts.worker-") || item.file.startsWith("kokoro-tts.worker-"),
 );
 const applicationTotal = sizes
-  .filter((item) => item !== ttsWorker && !/^pdf[-.]/.test(item.file))
+  .filter(
+    (item) =>
+      item !== ttsWorker && !/^pdf[-.]/.test(item.file) && !ESSAY_REVIEW_FILE.test(item.file),
+  )
+  .reduce((sum, item) => sum + item.bytes, 0);
+const essayReviewBytes = sizes
+  .filter((item) => ESSAY_REVIEW_FILE.test(item.file))
   .reduce((sum, item) => sum + item.bytes, 0);
 const pdfBytes = sizes
   .filter((item) => /^pdf[-.]/.test(item.file))
@@ -418,6 +437,11 @@ const wasmBytes = (
 console.log(`JavaScript inicial: ${(initialBytes / 1024).toFixed(1)} KiB`);
 console.log(`JavaScript da aplicação: ${(applicationTotal / 1024).toFixed(1)} KiB`);
 console.log(`Leitor PDF opcional e worker: ${(pdfBytes / 1024).toFixed(1)} KiB`);
+console.log(`Revisão de redação opcional (workers): ${(essayReviewBytes / 1024).toFixed(1)} KiB`);
+if (essayReviewBytes > MAX_ESSAY_REVIEW_JS_BYTES)
+  throw new Error(
+    `Revisão de redação excedeu o orçamento de ${MAX_ESSAY_REVIEW_JS_BYTES / 1024} KiB.`,
+  );
 if (pdfBytes > MAX_PDF_JS_BYTES) throw new Error("Leitor PDF excedeu o orçamento de 1800 KiB.");
 // Recurso removido: impedir o retorno acidental do renderizador e do pacote Three.
 if (sizes.some((item) => /^notebook-3d[-.]/.test(item.file)))

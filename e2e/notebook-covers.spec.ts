@@ -89,7 +89,7 @@ for (const theme of ["light", "dark"]) {
         await math.evaluate((button) => (button as HTMLButtonElement).click());
         await expect(math).toHaveAttribute("aria-pressed", "false");
         await expect(
-          dialog.getByText("Acerte 100 questões de Matemática.", { exact: true }),
+          dialog.getByText("Conclua uma etapa de Matemática.", { exact: true }),
         ).toBeVisible();
         await expect(
           page.getByRole("button", { name: "Salvar prateleira", exact: true }),

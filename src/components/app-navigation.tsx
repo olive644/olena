@@ -11,9 +11,41 @@ import {
 } from "react";
 import { MobileMenuContext } from "./mobile-menu-context";
 import { useTheme } from "../hooks/use-theme";
-import { type StoredProfile } from "../hooks/use-stored-profile";
+import { useStoredProfile, type StoredProfile } from "../hooks/use-stored-profile";
 import { NavigationIcon, type NavigationIconName } from "./navigation-icon";
 import { PROFILE_AVATARS } from "../domain/profile-avatars";
+import { ProfileFrameArt } from "./profile-frame-art";
+import { ProfileCoverArt } from "./profile-cover-art";
+import { profileCover } from "../domain/profile-covers";
+import { profileAvatarSource } from "../domain/profile-avatars";
+
+function NavigationProfile({
+  showCover = true,
+  showFrame = true,
+}: {
+  showCover?: boolean;
+  showFrame?: boolean;
+}) {
+  const [profile] = useStoredProfile();
+  return (
+    <span className="navigation-profile" aria-hidden="true">
+      {showCover && profile.cover && (
+        <span className="navigation-profile__cover">
+          <ProfileCoverArt theme={profileCover(profile.cover)} />
+        </span>
+      )}
+      <span className="navigation-profile__portrait">
+        <img
+          className="navigation-profile__avatar"
+          src={profileAvatarSource(profile.photoUrl)}
+          alt=""
+        />
+        {showFrame && <ProfileFrameArt frame={profile.frame} />}
+      </span>
+    </span>
+  );
+}
+
 const SystemUpdates = lazy(() =>
   import("./system-updates").then((module) => ({ default: module.SystemUpdates })),
 );
@@ -98,6 +130,7 @@ const MOBILE_ITEMS: readonly NavigationItem[] = localizeLabels(() => [
   { view: "planner", label: uiText(1550), icon: "planner" },
   { view: "learn", label: uiText(101), mobileLabel: uiText(101), icon: "gamepad" },
   { view: "focus", label: uiText(99), icon: "focus" },
+  { view: "library", label: uiText(1311), icon: "library" },
 ]);
 
 const MORE_ITEMS = NAVIGATION_SECTIONS.flatMap((section) => section.items).filter(
@@ -124,11 +157,11 @@ function NavigationButton({
       aria-label={item.label}
       aria-current={active ? "page" : undefined}
     >
-      <NavigationIcon
-        name={item.icon}
-        profileActive={item.view === "profile" && active}
-        profileAdaptive
-      />
+      {item.view === "profile" ? (
+        <NavigationProfile />
+      ) : (
+        <NavigationIcon colorful name={item.icon} />
+      )}
       <span>{item.label}</span>
     </button>
   );
@@ -137,30 +170,22 @@ function NavigationButton({
 export function Sidebar({ view, onNavigate }: NavigationProps) {
   useLanguage();
 
-  const [expanded, setExpanded] = useState(false);
-
   return (
-    <aside className={expanded ? "sidebar sidebar--expanded" : "sidebar"}>
+    <aside className="sidebar sidebar--expanded">
       <div className="sidebar__top">
-        <button
-          className="sidebar__toggle"
-          type="button"
-          aria-label={expanded ? uiText(1614) : uiText(1615)}
-          aria-expanded={expanded}
-          onClick={() => setExpanded((current) => !current)}
-        >
-          <span aria-hidden="true" />
-          <span aria-hidden="true" />
-          <span aria-hidden="true" />
-        </button>
-        {expanded && (
-          <div className="sidebar__brand" aria-label={uiText(116)}>
-            <strong>
-              {uiText(117)}
-              <span>{uiText(118)}</span>
-            </strong>
-          </div>
-        )}
+        <img
+          className="navigation-favicon"
+          src="/olena-favicon-192.png"
+          alt=""
+          width="24"
+          height="24"
+        />
+        <div className="sidebar__brand" aria-label={"OLENASTUDY"}>
+          <strong>
+            {"OLENA"}
+            <span>{"STUDY"}</span>
+          </strong>
+        </div>
       </div>
       <nav className="sidebar__nav" aria-label={uiText(119)}>
         {NAVIGATION_SECTIONS.map((section) => (
@@ -275,7 +300,7 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
                   aria-current={view === item.view ? "page" : undefined}
                   key={item.view}
                 >
-                  <NavigationIcon name={item.icon} />
+                  <NavigationIcon name={item.icon} colorful />
                   <span>{item.mobileLabel ?? item.label}</span>
                 </button>
               ))}
@@ -307,7 +332,7 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
               key={item.view}
             >
               <span className="mobile-nav__icon">
-                <NavigationIcon name={item.icon} />
+                <NavigationIcon name={item.icon} colorful />
               </span>
               <span>{item.mobileLabel ?? item.label}</span>
             </button>
@@ -325,7 +350,7 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
           onClick={() => navigate("profile")}
         >
           <span className="mobile-nav__icon">
-            <NavigationIcon name="profile" profileActive={view === "profile"} />
+            <NavigationProfile showCover={false} showFrame={false} />
           </span>
           <span>{uiText(120)}</span>
         </button>
@@ -344,23 +369,8 @@ export function PageHeader({
   useLanguage();
 
   useTheme();
-  const { open: moreOpen, setOpen: setMoreOpen } = useContext(MobileMenuContext);
-
   return (
     <header className="page-header">
-      <button
-        className="mobile-more-trigger paper-menu"
-        type="button"
-        aria-label={uiText(122)}
-        aria-expanded={moreOpen}
-        aria-controls="mobile-more-panel"
-        data-open={moreOpen}
-        onClick={() => setMoreOpen((open) => !open)}
-      >
-        <span aria-hidden="true" />
-        <span aria-hidden="true" />
-        <span aria-hidden="true" />
-      </button>
       <div className="page-header__actions">
         {
           <Suspense fallback={null}>

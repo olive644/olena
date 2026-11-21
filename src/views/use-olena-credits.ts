@@ -21,6 +21,7 @@ export type CreditSpend = {
 
 /** Saldo de créditos da Olena: lido ao abrir, depois de cada geração e quando o dia renova. */
 export function useOlenaCredits() {
+  const [status, setStatus] = useState<"loading" | "ready" | "signed-out" | "error">("loading");
   const [usage, setUsage] = useState<HelenaUsage>();
   const [resetAt, setResetAt] = useState(0);
   const [spend, setSpend] = useState<CreditSpend>();
@@ -34,13 +35,24 @@ export function useOlenaCredits() {
     void (async () => {
       try {
         const services = await getFirebaseAccountServices();
+        await services.auth.authStateReady?.();
+        if (controller.signal.aborted) return;
         const user = services.auth.currentUser;
-        if (!user || user.isAnonymous) return;
+        if (!user || user.isAnonymous) {
+          setUsage(undefined);
+          setStatus("signed-out");
+          return;
+        }
         const next = await fetchHelenaUsage({
           token: await user.getIdToken(),
           signal: controller.signal,
         });
-        if (!next || controller.signal.aborted) return;
+        if (controller.signal.aborted) return;
+        if (!next) {
+          setStatus("error");
+          return;
+        }
+        setStatus("ready");
         const amount = creditsSpent(lastUsed.current, next.usedCredits);
         lastUsed.current = next.usedCredits;
         setUsage(next);
@@ -57,7 +69,7 @@ export function useOlenaCredits() {
           playCreditSpendSound(sound.current, amount);
         }
       } catch {
-        // sem conta ou sem rede: o medidor só não aparece
+        if (!controller.signal.aborted) setStatus("error");
       }
     })();
     return () => controller.abort();
@@ -75,6 +87,8 @@ export function useOlenaCredits() {
 
   return {
     usage,
+    status,
+    retry: () => setTick((value) => value + 1),
     resetAt,
     spend,
     /** Chamar no clique de gerar: o navegador só libera o som depois de um gesto. */

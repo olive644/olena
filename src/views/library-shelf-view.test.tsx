@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
-import { LibraryFolderContents } from "./library-shelf-view";
+import { LibraryFolderContents } from "./library-folder-contents";
 
 const stream = vi.hoisted(() => vi.fn());
 const services = vi.hoisted(() => vi.fn());

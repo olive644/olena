@@ -1,10 +1,12 @@
+import { shelfSkinUnlocked } from "../domain/shelf-skins";
 import { flushSync } from "react-dom";
-import { LibraryFolderContents, LibraryShelfView } from "../views/library-shelf-view";
+import { LibraryShelfView } from "../views/library-shelf-view";
+import { HelenaLoading } from "./helena-loading";
 import type { LibraryFolderStyle } from "../domain/workspace";
 import { ShelfEditorTools } from "./shelf-editor-tools";
 import { ShelfToolIcon } from "./shelf-tool-icon";
 import { NotebookShelfFrame } from "./notebook-shelf-frame";
-import { useEffect, useRef, useState, type Dispatch } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type Dispatch } from "react";
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { StudyNotebook, WorkspaceAction, WorkspaceState } from "../domain/workspace";
 import { NotebookCover } from "./notebook-cover";
@@ -22,6 +24,18 @@ import {
 } from "../domain/notebook-covers";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { PaperCardTitle } from "./paper-card-title";
+
+// Mesa de redação e conteúdo da pasta só são necessários ao abrir uma pasta da Biblioteca: ficam em
+// chunks próprios para a estante abrir sem baixar o editor de redação, as propostas e os leitores
+// de quiz e simulado.
+const TypewriterDesk = lazy(() =>
+  import("./typewriter-desk").then((module) => ({ default: module.TypewriterDesk })),
+);
+const LibraryFolderContents = lazy(() =>
+  import("../views/library-folder-contents").then((module) => ({
+    default: module.LibraryFolderContents,
+  })),
+);
 
 export function NotebookShelf({
   workspace,
@@ -88,7 +102,11 @@ export function NotebookShelf({
       }
       for (const folder of folders) {
         const style = folderStyles[folder.id];
-        if (style && !removedFolders.includes(folder.id))
+        if (
+          style &&
+          !removedFolders.includes(folder.id) &&
+          shelfSkinUnlocked(folder.kind === "typewriter" ? "typewriter" : "folder", style, earned)
+        )
           dispatch({ type: "library/collection-saved", collection: { ...folder, style } });
       }
       for (const id of removedFolders) dispatch({ type: "library/collection-removed", id });
@@ -119,25 +137,41 @@ export function NotebookShelf({
     document.startViewTransition(() => flushSync(() => setOpenFolderId(id)));
   }
   const openFolder = workspace.libraryCollections?.find((folder) => folder.id === openFolderId);
+  if (openFolder?.kind === "typewriter")
+    return (
+      <div className="library-typewriter-view">
+        <Suspense fallback={<HelenaLoading />}>
+          <TypewriterDesk
+            key={openFolder.id}
+            workspace={workspace}
+            collectionId={openFolder.id}
+            dispatch={dispatch}
+            onBack={() => navigateFolder()}
+          />
+        </Suspense>
+      </div>
+    );
   if (openFolder) {
     return (
-      <LibraryFolderContents
-        key={openFolder.id}
-        folder={openFolder}
-        materials={workspace.materials.filter(
-          (material) => material.collectionId === openFolder.id && !material.archived,
-        )}
-        subjectId={workspace.subjects[0]?.id ?? ""}
-        libraryChars={workspace.materials.reduce((sum, item) => sum + item.content.length, 0)}
-        flashcards={workspace.flashcards.filter((card) =>
-          workspace.materials.some(
-            (material) =>
-              material.id === card.materialId && material.collectionId === openFolder.id,
-          ),
-        )}
-        dispatch={dispatch}
-        onBack={() => navigateFolder()}
-      />
+      <Suspense fallback={<HelenaLoading />}>
+        <LibraryFolderContents
+          key={openFolder.id}
+          folder={openFolder}
+          materials={workspace.materials.filter(
+            (material) => material.collectionId === openFolder.id && !material.archived,
+          )}
+          subjectId={workspace.subjects[0]?.id ?? ""}
+          libraryChars={workspace.materials.reduce((sum, item) => sum + item.content.length, 0)}
+          flashcards={workspace.flashcards.filter((card) =>
+            workspace.materials.some(
+              (material) =>
+                material.id === card.materialId && material.collectionId === openFolder.id,
+            ),
+          )}
+          dispatch={dispatch}
+          onBack={() => navigateFolder()}
+        />
+      </Suspense>
     );
   }
   return (
@@ -162,13 +196,25 @@ export function NotebookShelf({
         <NotebookShelfFrame
           lowerShelf={
             <LibraryShelfView
+              earned={earned}
               workspace={workspace}
               dispatch={dispatch}
               editing={editing}
               onOpen={navigateFolder}
               styles={folderStyles}
               removed={removedFolders}
-              onStyle={(id, style) => setFolderStyles((current) => ({ ...current, [id]: style }))}
+              onStyle={(id, style) => {
+                const folder = folders.find((item) => item.id === id);
+                if (
+                  folder &&
+                  shelfSkinUnlocked(
+                    folder.kind === "typewriter" ? "typewriter" : "folder",
+                    style,
+                    earned,
+                  )
+                )
+                  setFolderStyles((current) => ({ ...current, [id]: style }));
+              }}
               onRemove={(id) => setRemovedFolders((current) => [...current, id])}
             />
           }
@@ -232,7 +278,8 @@ export function NotebookShelf({
             </button>
           )}
         </NotebookShelfFrame>
-        {(books.length >= 5 || folders.length >= 3) && (
+        {(books.length >= 5 ||
+          folders.filter((item) => item.kind !== "typewriter").length >= 3) && (
           <p className="notebook-shelf-pro">
             <PaperCardTitle value="EM BREVE OLENA PRO" />
           </p>

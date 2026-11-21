@@ -1,3 +1,29 @@
+## Apoio visual nas propostas, 19/11/2026
+
+Todas as 60 propostas incluem Texto 4 com ilustração conceitual SVG autoral, legenda, texto alternativo e pergunta interpretativa. São seis cenas por categoria, sem estatísticas fictícias nem cópia de imagens da referência. Prévia desktop escura conferida com imagem e legenda. Nove testes cobrem presença visual nas categorias e integração ao editor.
+
+## Abas de redação e vestibular, 19/11/2026
+
+Catálogo ganhou abas acessíveis Redação/Vestibular, botões de madeira e oito ícones SVG recortados próprios (duas áreas e seis tópicos). Sessenta propostas autorais, dez por categoria, preservam ids dos trinta temas anteriores e seus rascunhos. Vestibular oferece links aos acervos oficiais Inep e Fuvest, sem simular provas internas. Navegação por setas/Home/End nas abas. Testes de abas, catálogo e recuperação de texto, prévia desktop escura conferida; claro e mobile específicos das abas não verificados.
+
+## Catálogo de redações por tópico, 19/11/2026
+
+TypewriterDesk passa a exibir seis categorias e trinta propostas autorais de treino, cinco por categoria. Não havia acervo de propostas no código; não se afirma que a lista contém todas as provas oficiais. Não foram copiadas coletâneas da referência. Proposta e três textos autorais aparecem ao lado da folha pautada no desktop, empilhados no mobile. Contagem de palavras, cronômetro e rascunho por id de proposta usam materiais existentes; debounce de 600ms e gravação ao voltar. Concluir marca treino concluído sem nota automática. Rascunhos legados são preservados no workspace.
+
+Testes verificam 30 ids únicos, seis tópicos, entrada, recuperação do texto e isolamento entre temas. Prévia escura desktop conferida, contraste da folha corrigido contra herança de campos escuros, mobile 390px sem overflow. Claro e teclado completo não verificados. Orientações oficiais consultadas: https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/outros-documentos .
+
+## Máquina de escrever na biblioteca, 17/11/2026
+
+O + abre escolha visual entre pasta e máquina recortada. kind opcional em libraryCollections distingue a máquina, limitada a uma, das três pastas. Campo validado e persistido pela estrutura existente. Biblioteca abre TypewriterDesk para rascunho manual, sem prometer correção ou geração de redação. Arte SVG original com animação de carro e teclas inspirada na referência Uiverse de Nawsome; movimento reduzido respeitado. Prévia desktop escura verificou criação, entrada própria e bloqueio da segunda máquina; demais temas e mobile desta composição ainda não verificados.
+
+## Fontes nas miniaturas das pastas, 17/11/2026
+
+LibraryFolderSources substitui papéis decorativos por miniaturas vetoriais de PDF, vídeo, Goodnotes, documento ou imagem presentes nas fontes, um por tipo. Ignora materiais gerados, arquivados e outras pastas; vazia não renderiza miniaturas. Estante e inspeção usam o mesmo componente. Novas importações Goodnotes recebem source-goodnotes; PDFs antigos sem essa marca continuam identificados como PDF, sem adivinhar a origem. Prévia desktop escura conferida com PDF real e duas pastas vazias.
+
+## Formatos distintos das pastas, 17/11/2026
+
+Seis silhuetas recortadas independentes da capa. libraryFolderShapes resolve legadas sem repetir; collection-saved fixa shape opcional no workspace, preserva formatos em edições e bloqueia a quarta criação sem apagar coleções legadas. Importação valida shape. Testes cobrem unicidade, ordem, edição, remoção/reposição e persistência. Prévia desktop escura conferida e geometria 390px sem overflow. Claro e inspeção visual individual das seis variantes ainda não verificados.
+
 ## Quizzes, simulados e revisão única, 17/11/2026
 
 Biblioteca gera quizzes e simulados a partir das fontes, reaproveitando extração PDF/OCR e lacunas locais. Sem IA nem dependências novas. Simulados têm capa, cronômetro, entrega manual ou automática, correção com fonte, assinatura e carimbo da Olena. Nome usa username do perfil; download direto em PDF paginado reutiliza notebook-export com nome de arquivo opcional. Quizzes e flashcards revisam erros somente uma vez.
@@ -5502,6 +5528,167 @@ Tudo local, sem IA e sem rede, na mesma PR do teto diário da Olena.
 - Persistência: as respostas da primeira rodada viram `flashcard/reviewed` (errei ou resposta errada = de novo, acertei = fácil), entram na agenda de revisão e sincronizam com a conta. As repetições dos errados não geram nova revisão. Sair no meio salva o que já foi respondido. Dominado = intervalo de 21 dias ou mais. Não há XP: o app não tem esse sistema e não foi inventado. Cartões ligados à fonte por `materialId`; gerar de novo não duplica frases iguais.
 - Validado na prévia local, modo escuro no PC, com um PDF real (16 afirmações, resposta errada mostrando gabarito). Não verificados: modo claro, celular, e a barra lateral do app segue na ordem de Tab por trás da tela de estudo.
 
+### 2026-11-19 - Imagens individuais das propostas
+
+- Substituídas as seis cenas por categoria por 60 infográficos conceituais autorais, um SVG exclusivo por proposta em public/essay-proposals. Cada proposta possui composição temática, texto alternativo, legenda e pergunta próprios; sem estatísticas inventadas.
+- Mapeamento por ID estável em src/data/essay-visuals.ts; geração reproduzível em scripts/generate-essay-visuals.mjs com briefs em scripts/data/essay-visual-briefs.json.
+- Validação: 64 testes passaram, TypeScript e ESLint passaram. Conferidos visualmente seis SVGs renderizados no Edge cobrindo exclusão digital, IA, vacinação, permanência escolar, desigualdade salarial e reciclagem. Demais arquivos verificados por cobertura dos 60 IDs e hashes exclusivos. Fluxo completo da interface, celular e tema claro não revalidados nesta alteração.
+- Prévia reiniciada diretamente com Vite em 127.0.0.1:4220; npm run dev encontra dependência OCR portuguesa ausente no predev.
+
+### 2026-11-20 - Imagens documentais por proposta de redação
+
+- Substituídos os 60 SVGs conceituais por 60 arquivos raster distintos selecionados no Commons: fotografias documentais, um infográfico publicado sobre inclusão escolar e uma peça de campanha sobre resíduos têxteis. A interface conserva o design Olena; as imagens conservam sua apresentação original, com ajuste de tamanho.
+- Cada registro possui legenda contextual, pergunta, texto alternativo, crédito, página de origem e licença. Os registros estrangeiros e históricos são identificados nas legendas. Imagens ilustrativas não são apresentadas como evidência de condições de saúde das pessoas retratadas.
+- Seleção persistida em scripts/data/essay-photo-selections.json; arquivos locais em public/essay-proposals. O uso da página não depende de chaves ou disponibilidade da API do Commons. O gerador respeita Retry-After nos downloads e usa as miniaturas fornecidas pela API. As ilustrações antigas e seus briefs foram removidos.
+- Falha de imagem mostra aviso e conserva os links de fonte e licença. Nova proposta recupera sua própria imagem sem herdar a falha da anterior.
+- Prova: 65 testes passaram, incluindo cobertura dos 60 IDs, arquivos e hashes distintos, créditos, licenças e recuperação após falha. TypeScript e ESLint dos arquivos envolvidos passaram. As 60 imagens foram decodificadas pelo Edge e conferidas em três folhas de contato. A conferência encontrou e substituiu uma digitalização do verso, uma vista de campus e um logotipo; as substituições foram renderizadas e conferidas novamente.
+- Uma proposta foi conferida no componente real em prévia isolada no PC escuro e em 390 px nos temas claro/escuro, sem erro de página ou rolagem horizontal. O catálogo abre no topo em /tmp/essay-photo-preview.html. O fluxo completo de autenticação e persistência na biblioteca não foi revalidado nesta alteração; CI completo não executado. Prévia Vite em 127.0.0.1:4220.
+
+### 2026-11-20 - Textos motivadores com infográficos por proposta
+
+- Substituídas as fotografias por 60 infográficos editoriais em SVG: 29 visuais quantitativos e 31 esquemas explicativos. Fundo branco, tipografia editorial e cores para informação, sem reproduzir o recorte visual da interface dentro das figuras. As imagens e textos são elaborações para treino, não peças oficiais de prova.
+- Cada proposta possui um Texto 2 adaptado da mesma fonte do infográfico e um Texto 3 autoral específico. O Texto 1 e o tema original foram preservados. Fontes, período, abrangência, unidades, notas e perguntas são registrados em scripts/data/essay-infographic-briefs.json. O gerador produz src/data/essay-visuals.ts e os arquivos de public/essay-proposals sem API, download ou chave. Os arquivos raster anteriores e a seleção de fotografias foram removidos.
+- Pesquisa em fontes institucionais: IBGE, Inep, Inaf/UNICEF, OMS, UNESCO, OIT, PNUMA, ministérios, Anvisa, ANPD, Iphan, Ipea, Banco Central, W3C e referências legislativas. Indicadores históricos preservam datas e populações. Estimativas, diagnósticos, denúncias e indicadores de domicílios são identificados por seus recortes. Esquemas não receberam percentuais inventados. O intervalo do plástico aparece como 19 a 23 milhões, não como uma estimativa pontual.
+- Verificação: 69 testes focados passaram, cobrindo todos os IDs, textos e fontes correspondentes, SVGs distintos e válidos, somas de distribuições, limites de percentuais, link de ampliação e recuperação após falha de imagem. TypeScript e ESLint dos arquivos envolvidos passaram.
+- Edge renderizou os 60 SVGs; todos os elementos de texto ficaram dentro do viewBox, e três folhas de contato foram conferidas visualmente. A navegação no componente real da redação, por prévia isolada, verificou as 60 propostas em 1366 px e 390 px, nos modos claro e escuro: 240 aberturas, sem erros de página ou rolagem horizontal, com correspondência entre Texto 2 e imagem. Capturas do esquema de resíduos foram conferidas nos tamanhos PC e celular. Não foi reexecutado o fluxo completo de autenticação e sincronização nem o CI completo.
+- Prévia direta de desenvolvimento continua em http://127.0.0.1:4220/tmp/essay-photo-preview.html. Os SVGs totalizam aproximadamente 202 KB e são carregados apenas quando a proposta é aberta, com opção de ampliação e acesso à fonte.
+
+### 2026-11-20 - Hierarquia editorial compacta da proposta
+
+- A área de apoio agora possui duas colunas com divisória central no PC: Texto I factual e seu infográfico à esquerda; Texto II contextual e Texto III de discussão à direita. Títulos em romanos, textos compactos, créditos menores. A imagem deixou de ser um bloco independente ocupando as duas colunas.
+- Figuras limitadas a 340 px de largura e 440 px de altura, preservando proporção e acesso à versão ampliada. Na captura de 1366 px, a imagem da proposta 1 passou a ocupar cerca de 315 px. No celular, uma coluna, sem divisória e com texto alinhado à esquerda em 13 px.
+- Validação inicial: capturas PC/celular em claro/escuro conferidas, sem rolagem horizontal; 69 testes e TypeScript passaram. O teste da redação verifica a presença dos títulos e a associação do infográfico ao texto factual da coluna.
+
+### 2026-11-20 - Ampliação dos textos motivadores das 60 propostas
+
+- Ampliados os 180 textos: cada Texto I, II e III possui dois parágrafos específicos. Texto I: contexto e leitura do indicador ou conceito; Texto II: contexto social autoral; Texto III: relações e perspectiva de discussão. Faixas observadas: 74 a 92 palavras no Texto I, 73 a 92 no Texto II e 67 a 82 no Texto III.
+- O Texto II usa authorText no brief editorial, com a contextualização da proposta e um desenvolvimento próprio. Foi removida a orientação genérica repetida sobre desenvolver uma posição. A renderização preserva os parágrafos, a hierarquia de duas colunas e os infográficos compactos. O gerador inclui authorText no catálogo. Nenhum valor, recorte numérico ou fonte do gráfico foi alterado; os acréscimos são leitura contextual e elaboração autoral, sem novas estatísticas.
+- Validação: 69 testes e TypeScript passaram. Conferidos todos os parágrafos e a imagem correspondente nas 60 propostas em 1366 px e 390 px, nos modos claro e escuro: 240 aberturas, sem erros de página ou rolagem horizontal. A captura completa dos textos de saúde mental foi conferida visualmente. Persistência de rascunho continua coberta pelo teste do componente. CI completo não executado.
+
+### 2026-11-20 - Ampliação dos infográficos em modal
+
+Removido o link de tamanho maior. Apenas os textos em imagem recebem ícone de tela cheia, reutilizando LibraryDialog e o ícone expand. Imagem ampliada preserva proporção e permite rolagem; X e Esc fecham e restauram o foco. Validado no Edge em 1366 e 390 px (tmp/essay-fullscreen-*.png), 69 testes, TypeScript e ESLint aprovados.
+
+### 2026-11-20 - Modal ajustado à imagem
+
+Ícone roxo sem fundo em espaço próprio, sem sobrepor texto. Modal sem título visual duplicado, dimensionado pela proporção do infográfico e pelo viewport; imagem inteira sem rolagem. Transições de entrada/saída, movimento reduzido e fechamento por X/Esc. Edge validado em 1366x768, 390x844 e 844x390, sem sobreposição ou overflow (tmp/essay-fit-*.png).
+
+### 2026-11-20 - Papel branco e leitura amarela
+
+As duas folhas iniciam em branco puro. Controles junto de Folha de redação reutilizam as miniaturas dobradas do seletor do caderno (branca e amarela de leitura), alterando ambas as folhas sem mudar o rascunho. Edge em 1366 e 390 px: troca e retorno ao branco, sem overflow; 3 testes do componente, TypeScript e ESLint aprovados.
+
+### 2026-11-20 - Recolher folha de redação
+
+Removidos os dois seletores de cor; folhas brancas fixas. Ícone lateral antes do título recolhe o editor e mantém controle para reabrir, com aria-expanded e aria-controls. Rascunho preservado. Validado no Edge desktop/mobile, TypeScript e 3 testes do componente.
+
+### 2026-11-20 - Folha no painel direito e histórico
+
+Folha branca ocupa o painel direito, sem margem lateral escura, altura ajustada à janela e rolagem própria. Desfazer/refazer reutiliza ícones do caderno e preserva autosave. Edge em 1366/390: posição, histórico, recolher/reabrir e rascunho validados. TypeScript e 3 testes aprovados.
+
+### 2026-11-20 - Folha até a borda inferior
+
+Workspace desktop ocupa a altura da janela com rolagens independentes da proposta e da escrita. Removida folga inferior e padding inferior do main somente nesta tela. Edge 1366x768 e 1366x900: borda inferior da folha coincide com viewport (tolerância 1px), antes e após rolar a proposta; capturas tmp/essay-bottom-*.png.
+
+### 2026-11-20 - Remoção da barra superior de redação
+
+Retirados a barra superior e o título repetido; X de saída fica no cabeçalho da proposta. Cronômetro movido antes do título da folha de escrita. Botão de recolher usa acabamento de madeira da prateleira. Edge desktop/mobile: histórico e recolhimento preservam rascunho; folha continua até a borda inferior em 768/900 px. TypeScript e 3 testes aprovados.
+
+### 2026-11-20 - Posições dos controles e ícone sem placa
+
+X no alto à esquerda do painel da proposta; cronômetro no alto à direita, próximo da divisão. Ícone de recolher antes do título da folha, sem fundo, borda ou sombra. Mantida área clicável e estado acessível. Validado recolher/reabrir e ausência de placa no Edge; layout até a borda inferior e histórico continuam aprovados.
+
+### 2026-11-20 - Ícone facetado e histórico por trechos
+
+Ícone de recolher redesenhado em papel recortado roxo, sem placa. Histórico agrupa digitação/deleção contínua (pausa máxima de 1s); colagem/substituição, perda de foco e undo/redo iniciam novas transações. Atalhos Ctrl/Cmd+Z e refazer suportados; nova edição descarta redo. Teste em Edge com digitação real confirma desfazer/refazer trecho inteiro; teste de componente cobre ramificação e atalhos.
+
+### 2026-11-20 - Linhas preservadas durante foco
+
+Causa: regra global focus-visible brightness(1.2) saturava linhas claras até branco. Exceção limitada ao textarea de redação mantém filter:none. Edge 1366/390 com digitação real, foco e rolagem: gradiente preservado e sem clareamento; capturas tmp/essay-lines-focused-*.png.
+
+### 2026-11-20 - Cronômetro pausável
+
+Cronômetro verde com pausa e vermelho com play. Tempo acumulado exclui pausas e preserva frações de segundo. Números e dois-pontos usam PaperDigits. Edge desktop/mobile verifica congelamento durante pausa e continuação ao retomar; capturas tmp/essay-clock-*.png.
+
+### 2026-11-20 - Controles fixos durante rolagem
+
+X e cronômetro permanecem no topo. Desktop mantém controles fora da rolagem da proposta; mobile usa posição fixa com espaço reservado. Edge 1366/390 verifica posição antes/depois de rolar e pausa/retomada acessíveis.
+
+### 2026-11-20 - Trilhos de rolagem em papel
+
+Proposta com trilho à esquerda e conteúdo LTR preservado. Trilhos da proposta e redação recebem acabamento roxo facetado, sem setas nativas; fallback scrollbar-color para outros motores. Edge valida trilho esquerdo, leitura LTR e rolagem. Controles X/cronômetro movidos para portal no body, fixos e fora do recorte dos ancestrais; biblioteca completa validada por elementFromPoint após scroll.
+
+### 2026-11-20 - Detalhes roxos da proposta
+
+Bordas, divisórias e sombra da folha de proposta usam a família roxa do trilho (#9764df/#c5a8eb/#673aa7). Créditos e links usam roxo escuro para leitura em branco. Alteração restrita à proposta, sem mudar infográficos editoriais ou cartões de madeira. Edge em 1366/390 verifica cores computadas e renderização.
+
+### 2026-11-20 - Revisão ortográfica somente na entrega
+
+Integração local Hunspell WebAssembly e dictionary-pt, sem API paga ou envio de texto a terceiros. Removidos modo assistido e revisão durante a escrita, conforme pedido. Entregar pausa o cronômetro, salva cópia da entrega e abre sugestões explícitas, ignorar e localizar, com desfazer/refazer. Resultados vinculados à revisão exata do texto; falha e timeout preservam rascunho. Créditos/licenças em public/third-party/essay-spelling.txt. Arquitetura e custos em docs/ESSAY_REVIEW.md.
+
+13 testes focados, TypeScript, ESLint e build aprovados. Biblioteca completa e produção testadas em Edge 1366/390, temas claro/escuro, sem chamadas externas durante revisão. Desempenho medido 1,0 a 1,4 s no desktop com esses viewports. Gate de tamanho continua vermelho: 1873,1 KiB de JS total >1764 KiB, entrada inicial219,4 KiB; sem aumentar limite ou omitir verificação. Não publicado nesta etapa.
+
+### 2026-11-20 - Entrega flutuante
+
+Botão Entregar redação sem ícone, roxo facetado, centralizado e fixo na borda inferior com safe-area. Portal no body impede recorte por ancestrais e mantém posição durante rolagem. Validado no Edge desktop/mobile; oito testes focados, TypeScript e ESLint aprovados.
+
+### 2026-11-20 - Comparação de corretores gratuitos
+
+Inspecionados IME-USP, NILC-Metrix, UTFPR e corretor-enem com revisões fixadas e licenças registradas. Executados MiniLM e E5-small quantizados, em laboratório isolado sem alterar dependências do app. Cada um avaliou 26 casos autorais em seis temas, com 11/12 nas paráfrases/textos pertinentes. Ambos associam listas repetitivas ao tema, portanto não aprovados como avaliadores completos ou para nota. Reexecução com fetch bloqueado confirmou inferência local após download inicial. Pesos/tokenizer de aproximadamente 129 MiB por modelo não enviados ao produto. Relatório, limitações e comandos em docs/research/ESSAY_LOCAL_EVALUATION.md; resultados JSON e fixtures versionáveis. Nenhuma API paga ou API do Olena usada.
+
+### 2026-11-20 - Triagem temática local na entrega
+
+Modelo MiniLM opcional, com aviso de download de aproximadamente 150 MB, sem API do Olena nem envio do texto. Perfis editoriais gerados para as 60 propostas, versão/modelo fixados; título e apoio ponderados. Texto analisado em blocos, parágrafos e conjunto, com evidências localizáveis. Resultados provisórios: alinhamento, possível tangenciamento, possível fuga e inconclusivo. Repetição/insuficiência/ambiguidade causam abstenção; nenhuma nota zero automática. Cancelamento e mudança de texto/tema invalidam o trabalho.
+
+23 testes, TS, ESLint e build aprovados. Browser produção/CSP 1366/390: texto fora do assunto, introdução isolada e repetição passaram; somente downloads GET para Hugging Face/CDN, sem redação no tráfego. Modelo executado de verdade no browser. Textos pertinentes próximos podem permanecer inconclusivos, registrado no smoke report; nenhum teste em celular físico. Gate de tamanho permanece vermelho: 2791,7 KiB >1764 KiB total, entrada inicial219,4 KiB. Sem aumento de teto e sem publicar.
+
+### Resultado de redação em tela própria (2026-11-20)
+
+A entrega agora alterna o editor para uma tela de resultado com a arte existente da Olena. Não abre LibraryDialog; controles e botão flutuante do editor são ocultados. Retornar à folha preserva o rascunho e o histórico. A revisão ortográfica exibe contexto e distingue possíveis alterações de acentuação. Diagnósticos objetivos apontam parágrafos duplicados, bloco único e períodos longos, sem inferir qualidade ou nota. A triagem temática apresenta os parágrafos mais próximo e mais distante do tema, mantendo abstenção e consentimento para o modelo local. Não há nota pedagógica atribuída nem serviço pago ativado.
+
+Arte do resultado: Poliana ensinando na lousa e Olena sentada aprendendo, fundo transparente, sem brilhos ou risquinhos decorativos; ilustração compacta no cabeçalho, adaptada a mobile. Asset public/essay-art/poliana-teaching-olena.webp.
+
+### Viabilidade de notas locais (20/11/2026)
+
+Cinco classificadores USP auditados e executados em laboratório isolado, com hashes de pesos fixados. Comparação exploratória: 24 avaliações públicas de 23 redações, C1/C4 mais próximas das notas humanas nesta amostra; C2/C3/C5 com maiores desvios. Entradas inválidas receberam notas positivas, e o limite de 512 tokens cortou textos. C1 convertida para ONNX Q8 (109,75 MB), funcionando em Transformers.js Node CPU; 22/24 previsões iguais ao FP32. Não houve teste em aparelho físico nem integração de notas no app. Licença explícita dos pesos não localizada, e licença do dataset tem divergência de metadados. Nenhuma API paga usada. Resultados e condições de integração em docs/research/ESSAY_GRADING_FEASIBILITY.md.
+
+### Primeiro treinamento próprio (20/11/2026)
+
+Corpus Essay-BR de revisão fixa e licença MIT declarada: 4.570 ocorrências, 4.568 retidas após exclusão de duas conflitantes. Divisão por IDs de proposta: 60 temas/3.122 redações de treino, 13/792 de validação e 13/654 de teste. Encoder local congelado leu integralmente 1.855.114 tokens; treino de cinco regressões com seleção apenas na validação, controles estrutural/lexical e mediana do treino. Cabeçalho semântico exportado com 166.691 bytes, reprodutível e com paridade aritmética em JS, sem pesos do encoder incluídos. MAE total semântico 119,51/1000, maior erro 680; C3 piorou em relação à mediana e não houve ganho consistente nas cinco competências. Portanto, notas continuam desativadas. Cache privado ignorado, nenhuma API paga ou dependência nova do app. Evidências e limites: docs/research/ESSAY_OWN_GRADER.md.
+
+Resultado de redação: removidos, a pedido do usuário, os parágrafos explicativos sobre limitações de correção, download e processamento local, além dos links de licenças na tela. Diagnósticos, ações explícitas, estado sem nota e arquivos de atribuição permanecem.
+
+### Análise automática e marcações (20/11/2026)
+
+Por pedido do usuário, a análise de tema inicia ao abrir o resultado da entrega, sem botão de download ou análise manual. Não inicia durante a escrita; cancelamento, retry e invalidação por texto/tema continuam. O primeiro uso pode baixar o modelo local automaticamente; nenhuma redação é enviada. As observações de tema, ortografia e organização foram reunidas em Marcações, com trechos do texto e marcadores facetados, mantendo apenas diagnósticos disponíveis e sem inventar notas ou avaliações de competências. Erros e resultados inconclusivos continuam explícitos.
+
+Resultado de redação: Pontuação/Em breve substituem o rótulo pedagógico; contador de palavras removido do resultado. Revisão ortográfica e critérios recolhíveis com FocusPaperArrow roxa compartilhada; critérios mostram Em breve. Rodapé apenas Continuar para propostas. Sugestões do dicionário filtradas por validade e proximidade, com preferência por plural preservando radical (cidadões → cidadãos), sem alegar compreensão contextual.
+
+Resultado: botão Veja aqui sua redação e a proposta exporta dois PNGs locais, com favicon, marca OlenaStudy e rodapé Feito por OlenaStudy. Redação usa snapshot entregue; proposta contém instruções, textos motivadores e infográfico com fonte. Geração via Canvas, fontes do app, sem dependências ou upload.
+
+Entregas de redação agora são reabertas no resultado final, sem edição ou nova entrega; rascunhos não entregues continuam editáveis. Aba Minhas redações com ícone facetado verde próprio lista entregas da máquina atual. Propostas concluídas mostram Ver resultado. Continuidade e reabertura verificadas em PC e celular.
+
+Correção de navegação: Minhas redações passou a tópico dentro da aba Redação, não uma aba separada. Cards creme no tema claro e grafite no escuro, mantendo reabertura somente do resultado.
+
+Compartilhamento de redação: ação ao lado do download com ícones monocromáticos próprios. Modal original apresenta prévia PNG 1080×1920 transparente, proposta × redação e tempo, com opção Incluir proposta. Compartilha arquivo via Web Share quando disponível; fallback de download PNG, sem upload ou link público. Prévia e alternância verificadas em 1366/390; canal alpha conferido. Tempo da entrega persistido em tag para reabertura; entregas antigas sem duração permanecem sem recuperação retroativa do tempo.
+
+Máquina de escrever: entrada pela biblioteca integrada ao mecanismo View Transition existente, com aproximação e deslocamento leves; saída usa transição de retorno à estante. Movimento reduzido preservado, fallback sem bloqueio em navegador sem suporte. Fluxos verificados em 1366/390 e com reduced motion.
+
+Folha de redação: painel recolhível no contador de palavras, com caracteres e opções 50/65/85 caracteres por linha (grande/média/pequena). Ajusta tamanho visual pelo espaço disponível e métricas da fonte, sem alterar conteúdo; fonte proporcional torna o número uma referência de capacidade. Fecha por clique externo ou Escape e mantém linhas da folha. Verificado em PC e celular.
+
+Opções de escrita movidas do rodapé para balão flutuante ancorado à área visível da folha, fora do contêiner rolável. Reposiciona em scroll/resize e desaparece no resultado ou folha recolhida. Validado em PC/celular.
+
+Máquina de escrever agora participa da inspeção e personalização da prateleira como pastas: modal com detalhes, prévia e quatro skins (clássica, LGBT, Matemática, Inglês), preview imediato e aplicação pelo salvamento compartilhado. Usa collection.style existente sem migração ou alteração dos limites. Fluxos e quatro previews/salvamento verificados em 1366/390; 15 testes da biblioteca passaram.
+
+Skins de prateleira: pastas, máquinas e cadernos ganharam Lua Sangrenta, Eclipse Solar e Eclipse Lunar gratuitos; LGBT e padrão permanecem gratuitos. Objetivos por item: Inglês 1/5/10 acertos; Matemática rodada 1/10 acertos/etapa 1. Integração às conquistas reais e preservação de desbloqueios legados de 100 acertos. Preview, bloqueio no seletor e validação no salvamento compartilham regras. Novos IDs aceitos no carregamento persistido.
+
+### Créditos da Olena na pasta — 2026-11-21
+
+Reutilizados orçamento, API autenticada e medidor das PRs 686/688/689 na main. Cabeçalho da pasta mostra saldo real à direita da seta, com PaperDigits amarelos; nenhuma conversão para dois usos ou dois créditos. Custo variável em neurons, reserva/acerto e limites do servidor preservados. O hook consulta ao abrir, após geração e na renovação. Sem conta/saldo disponível não inventa número. Testes de orçamento/servidor e 25 testes de UI aprovados; layout conferido a 390/1366px com fixture isolada de saldo, sem chamar IA.
+
+### Gerações da pasta — somente Olena (2026-11-21)
+
+Removida geração automática local de resumo, flashcards, quizzes e simulados na pasta. Reutilizados library-ai.ts, extração de fontes e generateWithOlena da main. Custo estimado para todas as categorias; tamanho altera custo de quiz/prova. Sem saldo desabilita, saldo insuficiente avisa sem bloquear tentativa. Backend mantém orçamento/reserva/acerto da main. 49 testes aprovados; conferência de cada modal em PC/mobile com fonte textual e saldo de teste sem gerar IA real.
+
 ## Qualidade dos flashcards, FSRS e curadoria, 17/11/2026
 
 - Filtro de entrada (`looksLikeStatement`): só frase completa vira cartão. Exige pontuação final, ao menos 6 palavras, poucas palavras com inicial maiúscula, sem linha de 4 ou mais maiúsculas seguidas, sem barra vertical ou tabulação e com verbo. Barra cabeçalho de tabela, título e linha do tempo (o caso "Início do projeto Apresentação pública Fim da operação"). A afirmação falsa também passa pelo filtro.
@@ -5699,3 +5886,18 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Decisão: ler vídeo do YouTube pelo servidor foi testado e não é confiável. Num endpoint descartável na Vercel (3 vídeos públicos, 4 rodadas), só 1 de 3 devolveu legenda e os outros 2 voltaram "confirme que você não é um bot"; do mesmo código num IP residencial os 3 funcionaram; pelo navegador do aluno, o YouTube recusa pedidos de outro site (403). Interfaces não oficiais também contrariam os termos de uso. O teste foi apagado.
 - Mudança: "Link do YouTube" não aparece mais em "Adicionar fontes". Fontes de link que já estavam salvas continuam listadas e removíveis, com o aviso de que são só referência e de que a transcrição pode ser colada em uma nota em branco. Link nunca vai à Olena.
 - Não validado: o e2e `library-sources` rodou só no CI, não localmente.
+
+## PR #690: merge com a main e correção das pendências, 21/11/2026
+
+- A PR estava sem CI (conflito com a main depois das #686, #688, #689 e #691). O merge manteve os créditos da PR (que só acrescentam à versão da main), a redação de dois botões da Biblioteca da PR e a remoção do link do YouTube da #691. Duplicatas que o merge automático deixou em `library-shelf-view.tsx` foram removidas.
+- Falhas que já existiam na branch da PR antes do merge, corrigidas: testes de navegação (`app.test.tsx`) ao desenho novo (barra lateral sempre expandida, Perfil com avatar na barra móvel, ícones coloridos, sem "Mais ferramentas"); testes da revisão de redação e da mesa de redação, que agora ficam no painel "Redação" (fechado e inerte até abrir); `english-cosmetics.test.ts`, porque as placas de 1, 5 e 10 acertos agora existem (capa, fundo e moldura continuam travados até 100); `api:check` (importações sem `.js` em `workspace.ts` e `local-workspace.ts`); `i18n:check` (marca e "PDF" em JSX); `format:check` (dois JSON gerados).
+- Privacidade: a PR liberou `huggingface.co` e `*.cdn.hf.co` no `connect-src` para baixar o modelo de tema da redação. O texto da redação não sai do aparelho (o worker só baixa o modelo e analisa localmente), mas o serviço recebe a conexão de rede. A Política de Privacidade passou a descrever esse serviço por função, e o teste que cruza CSP e política cobre os dois hosts.
+- Orçamento de JavaScript, medido (Linux, Node 22): entrada 219,5 KiB (main 219,3); aplicação 1901,2 KiB contra 1634,8 KiB na main, com teto de 1764 KiB. O aumento é: `notes-view` de 154,5 para 413,3 KiB (+258,8) e um chunk novo `workspace` de 40,0 KiB. O worker de tema (868,7 KiB), o runtime ONNX (43,4), o Hunspell (41,8) e o worker de ortografia (14,5) só carregam ao entregar uma redação: passaram a ter categoria própria (`MAX_ESSAY_REVIEW_JS_BYTES`, 1000 KiB, medido 968,4), como o leitor de PDF, fora do total da aplicação. O teto de 1764 KiB NÃO foi mexido: a PR continua 137,2 KiB acima dele, e subir o teto é decisão da dona do projeto (ou code-splitting de `notes-view`).
+- Dependência nova: `@huggingface/transformers` traz `onnxruntime-node`, cujo script de instalação baixa binários do GitHub (variante com CUDA). No ambiente desta sessão o download deu 404 e a instalação só passou com `--onnxruntime-node-install-cuda=skip`. Não verificado: se o CI da PR e a Vercel instalam sem essa opção; conferir no resultado do CI.
+- Testes locais: `listening-audio.test.ts` (8 testes) falha só neste ambiente, igual na main.
+
+### PR #690: teto de JavaScript e divisão do notes-view (21/11/2026)
+
+- Por pedido da dona do projeto, o teto do total de JavaScript da aplicação subiu de 1764 para 1906 KiB (e o teto absoluto junto, no mesmo valor). Medido: 1903,6 KiB. O orçamento soma todos os chunks, então dividir não o reduz; o ganho da divisão é de carregamento.
+- Divisão: a mesa de redação (`typewriter-desk`, 255,7 KiB) e o conteúdo das pastas da Biblioteca (novo `library-folder-contents.tsx`, 65,9 KiB) viraram chunks próprios, carregados só ao abrir uma pasta, com `HelenaLoading` como espera. `notes-view` caiu de 413,3 para 103,7 KiB. `library-shelf-view.tsx` ficou só com a estante. Entrada inicial: 219,4 KiB.
+- Os testes de `LibraryFolderContents` passaram a importar do arquivo novo. Não verificado: tempo de abertura de uma pasta em aparelho físico (agora há uma espera de rede para o chunk na primeira abertura).

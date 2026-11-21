@@ -21,6 +21,7 @@ export type NavigationIconName =
   | "medal-third";
 
 type NavigationIconProps = {
+  colorful?: boolean;
   name: NavigationIconName;
   paperVariant?: "claro" | "roxo" | "escuro";
   profileActive?: boolean;
@@ -45,10 +46,21 @@ const BRAND_ICON_NAMES = new Set<NavigationIconName>([
 
 export function NavigationIcon({
   name,
+  colorful = false,
   paperVariant,
   profileActive = false,
   profileAdaptive = false,
 }: NavigationIconProps) {
+  if (colorful && BRAND_ICON_NAMES.has(name))
+    return (
+      <span
+        className="navigation-icon navigation-icon--colorful"
+        data-icon={name}
+        aria-hidden="true"
+      >
+        <img src={`/navigation-icons/colorful/${name}.svg`} alt="" />
+      </span>
+    );
   if (name === "profile") {
     return (
       <span
