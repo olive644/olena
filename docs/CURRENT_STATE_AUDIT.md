@@ -5570,45 +5570,59 @@ Tudo local, sem IA e sem rede, na mesma PR do teto diário da Olena.
 - Validação: 69 testes e TypeScript passaram. Conferidos todos os parágrafos e a imagem correspondente nas 60 propostas em 1366 px e 390 px, nos modos claro e escuro: 240 aberturas, sem erros de página ou rolagem horizontal. A captura completa dos textos de saúde mental foi conferida visualmente. Persistência de rascunho continua coberta pelo teste do componente. CI completo não executado.
 
 ### 2026-11-20 - Ampliação dos infográficos em modal
+
 Removido o link de tamanho maior. Apenas os textos em imagem recebem ícone de tela cheia, reutilizando LibraryDialog e o ícone expand. Imagem ampliada preserva proporção e permite rolagem; X e Esc fecham e restauram o foco. Validado no Edge em 1366 e 390 px (tmp/essay-fullscreen-*.png), 69 testes, TypeScript e ESLint aprovados.
 
 ### 2026-11-20 - Modal ajustado à imagem
+
 Ícone roxo sem fundo em espaço próprio, sem sobrepor texto. Modal sem título visual duplicado, dimensionado pela proporção do infográfico e pelo viewport; imagem inteira sem rolagem. Transições de entrada/saída, movimento reduzido e fechamento por X/Esc. Edge validado em 1366x768, 390x844 e 844x390, sem sobreposição ou overflow (tmp/essay-fit-*.png).
 
 ### 2026-11-20 - Papel branco e leitura amarela
+
 As duas folhas iniciam em branco puro. Controles junto de Folha de redação reutilizam as miniaturas dobradas do seletor do caderno (branca e amarela de leitura), alterando ambas as folhas sem mudar o rascunho. Edge em 1366 e 390 px: troca e retorno ao branco, sem overflow; 3 testes do componente, TypeScript e ESLint aprovados.
 
 ### 2026-11-20 - Recolher folha de redação
+
 Removidos os dois seletores de cor; folhas brancas fixas. Ícone lateral antes do título recolhe o editor e mantém controle para reabrir, com aria-expanded e aria-controls. Rascunho preservado. Validado no Edge desktop/mobile, TypeScript e 3 testes do componente.
 
 ### 2026-11-20 - Folha no painel direito e histórico
+
 Folha branca ocupa o painel direito, sem margem lateral escura, altura ajustada à janela e rolagem própria. Desfazer/refazer reutiliza ícones do caderno e preserva autosave. Edge em 1366/390: posição, histórico, recolher/reabrir e rascunho validados. TypeScript e 3 testes aprovados.
 
 ### 2026-11-20 - Folha até a borda inferior
+
 Workspace desktop ocupa a altura da janela com rolagens independentes da proposta e da escrita. Removida folga inferior e padding inferior do main somente nesta tela. Edge 1366x768 e 1366x900: borda inferior da folha coincide com viewport (tolerância 1px), antes e após rolar a proposta; capturas tmp/essay-bottom-*.png.
 
 ### 2026-11-20 - Remoção da barra superior de redação
+
 Retirados a barra superior e o título repetido; X de saída fica no cabeçalho da proposta. Cronômetro movido antes do título da folha de escrita. Botão de recolher usa acabamento de madeira da prateleira. Edge desktop/mobile: histórico e recolhimento preservam rascunho; folha continua até a borda inferior em 768/900 px. TypeScript e 3 testes aprovados.
 
 ### 2026-11-20 - Posições dos controles e ícone sem placa
+
 X no alto à esquerda do painel da proposta; cronômetro no alto à direita, próximo da divisão. Ícone de recolher antes do título da folha, sem fundo, borda ou sombra. Mantida área clicável e estado acessível. Validado recolher/reabrir e ausência de placa no Edge; layout até a borda inferior e histórico continuam aprovados.
 
 ### 2026-11-20 - Ícone facetado e histórico por trechos
+
 Ícone de recolher redesenhado em papel recortado roxo, sem placa. Histórico agrupa digitação/deleção contínua (pausa máxima de 1s); colagem/substituição, perda de foco e undo/redo iniciam novas transações. Atalhos Ctrl/Cmd+Z e refazer suportados; nova edição descarta redo. Teste em Edge com digitação real confirma desfazer/refazer trecho inteiro; teste de componente cobre ramificação e atalhos.
 
 ### 2026-11-20 - Linhas preservadas durante foco
+
 Causa: regra global focus-visible brightness(1.2) saturava linhas claras até branco. Exceção limitada ao textarea de redação mantém filter:none. Edge 1366/390 com digitação real, foco e rolagem: gradiente preservado e sem clareamento; capturas tmp/essay-lines-focused-*.png.
 
 ### 2026-11-20 - Cronômetro pausável
+
 Cronômetro verde com pausa e vermelho com play. Tempo acumulado exclui pausas e preserva frações de segundo. Números e dois-pontos usam PaperDigits. Edge desktop/mobile verifica congelamento durante pausa e continuação ao retomar; capturas tmp/essay-clock-*.png.
 
 ### 2026-11-20 - Controles fixos durante rolagem
+
 X e cronômetro permanecem no topo. Desktop mantém controles fora da rolagem da proposta; mobile usa posição fixa com espaço reservado. Edge 1366/390 verifica posição antes/depois de rolar e pausa/retomada acessíveis.
 
 ### 2026-11-20 - Trilhos de rolagem em papel
+
 Proposta com trilho à esquerda e conteúdo LTR preservado. Trilhos da proposta e redação recebem acabamento roxo facetado, sem setas nativas; fallback scrollbar-color para outros motores. Edge valida trilho esquerdo, leitura LTR e rolagem. Controles X/cronômetro movidos para portal no body, fixos e fora do recorte dos ancestrais; biblioteca completa validada por elementFromPoint após scroll.
 
 ### 2026-11-20 - Detalhes roxos da proposta
+
 Bordas, divisórias e sombra da folha de proposta usam a família roxa do trilho (#9764df/#c5a8eb/#673aa7). Créditos e links usam roxo escuro para leitura em branco. Alteração restrita à proposta, sem mudar infográficos editoriais ou cartões de madeira. Edge em 1366/390 verifica cores computadas e renderização.
 
 ### 2026-11-20 - Revisão ortográfica somente na entrega
@@ -5618,6 +5632,7 @@ Integração local Hunspell WebAssembly e dictionary-pt, sem API paga ou envio d
 13 testes focados, TypeScript, ESLint e build aprovados. Biblioteca completa e produção testadas em Edge 1366/390, temas claro/escuro, sem chamadas externas durante revisão. Desempenho medido 1,0 a 1,4 s no desktop com esses viewports. Gate de tamanho continua vermelho: 1873,1 KiB de JS total >1764 KiB, entrada inicial219,4 KiB; sem aumentar limite ou omitir verificação. Não publicado nesta etapa.
 
 ### 2026-11-20 - Entrega flutuante
+
 Botão Entregar redação sem ícone, roxo facetado, centralizado e fixo na borda inferior com safe-area. Portal no body impede recorte por ancestrais e mantém posição durante rolagem. Validado no Edge desktop/mobile; oito testes focados, TypeScript e ESLint aprovados.
 
 ### 2026-11-20 - Comparação de corretores gratuitos
@@ -5630,24 +5645,24 @@ Modelo MiniLM opcional, com aviso de download de aproximadamente 150 MB, sem API
 
 23 testes, TS, ESLint e build aprovados. Browser produção/CSP 1366/390: texto fora do assunto, introdução isolada e repetição passaram; somente downloads GET para Hugging Face/CDN, sem redação no tráfego. Modelo executado de verdade no browser. Textos pertinentes próximos podem permanecer inconclusivos, registrado no smoke report; nenhum teste em celular físico. Gate de tamanho permanece vermelho: 2791,7 KiB >1764 KiB total, entrada inicial219,4 KiB. Sem aumento de teto e sem publicar.
 
-
 ### Resultado de redação em tela própria (2026-11-20)
+
 A entrega agora alterna o editor para uma tela de resultado com a arte existente da Olena. Não abre LibraryDialog; controles e botão flutuante do editor são ocultados. Retornar à folha preserva o rascunho e o histórico. A revisão ortográfica exibe contexto e distingue possíveis alterações de acentuação. Diagnósticos objetivos apontam parágrafos duplicados, bloco único e períodos longos, sem inferir qualidade ou nota. A triagem temática apresenta os parágrafos mais próximo e mais distante do tema, mantendo abstenção e consentimento para o modelo local. Não há nota pedagógica atribuída nem serviço pago ativado.
 
 Arte do resultado: Poliana ensinando na lousa e Olena sentada aprendendo, fundo transparente, sem brilhos ou risquinhos decorativos; ilustração compacta no cabeçalho, adaptada a mobile. Asset public/essay-art/poliana-teaching-olena.webp.
 
-
 ### Viabilidade de notas locais (20/11/2026)
+
 Cinco classificadores USP auditados e executados em laboratório isolado, com hashes de pesos fixados. Comparação exploratória: 24 avaliações públicas de 23 redações, C1/C4 mais próximas das notas humanas nesta amostra; C2/C3/C5 com maiores desvios. Entradas inválidas receberam notas positivas, e o limite de 512 tokens cortou textos. C1 convertida para ONNX Q8 (109,75 MB), funcionando em Transformers.js Node CPU; 22/24 previsões iguais ao FP32. Não houve teste em aparelho físico nem integração de notas no app. Licença explícita dos pesos não localizada, e licença do dataset tem divergência de metadados. Nenhuma API paga usada. Resultados e condições de integração em docs/research/ESSAY_GRADING_FEASIBILITY.md.
 
-
 ### Primeiro treinamento próprio (20/11/2026)
+
 Corpus Essay-BR de revisão fixa e licença MIT declarada: 4.570 ocorrências, 4.568 retidas após exclusão de duas conflitantes. Divisão por IDs de proposta: 60 temas/3.122 redações de treino, 13/792 de validação e 13/654 de teste. Encoder local congelado leu integralmente 1.855.114 tokens; treino de cinco regressões com seleção apenas na validação, controles estrutural/lexical e mediana do treino. Cabeçalho semântico exportado com 166.691 bytes, reprodutível e com paridade aritmética em JS, sem pesos do encoder incluídos. MAE total semântico 119,51/1000, maior erro 680; C3 piorou em relação à mediana e não houve ganho consistente nas cinco competências. Portanto, notas continuam desativadas. Cache privado ignorado, nenhuma API paga ou dependência nova do app. Evidências e limites: docs/research/ESSAY_OWN_GRADER.md.
 
 Resultado de redação: removidos, a pedido do usuário, os parágrafos explicativos sobre limitações de correção, download e processamento local, além dos links de licenças na tela. Diagnósticos, ações explícitas, estado sem nota e arquivos de atribuição permanecem.
 
-
 ### Análise automática e marcações (20/11/2026)
+
 Por pedido do usuário, a análise de tema inicia ao abrir o resultado da entrega, sem botão de download ou análise manual. Não inicia durante a escrita; cancelamento, retry e invalidação por texto/tema continuam. O primeiro uso pode baixar o modelo local automaticamente; nenhuma redação é enviada. As observações de tema, ortografia e organização foram reunidas em Marcações, com trechos do texto e marcadores facetados, mantendo apenas diagnósticos disponíveis e sem inventar notas ou avaliações de competências. Erros e resultados inconclusivos continuam explícitos.
 
 Resultado de redação: Pontuação/Em breve substituem o rótulo pedagógico; contador de palavras removido do resultado. Revisão ortográfica e critérios recolhíveis com FocusPaperArrow roxa compartilhada; critérios mostram Em breve. Rodapé apenas Continuar para propostas. Sugestões do dicionário filtradas por validade e proximidade, com preferência por plural preservando radical (cidadões → cidadãos), sem alegar compreensão contextual.
@@ -5670,12 +5685,12 @@ Máquina de escrever agora participa da inspeção e personalização da pratele
 
 Skins de prateleira: pastas, máquinas e cadernos ganharam Lua Sangrenta, Eclipse Solar e Eclipse Lunar gratuitos; LGBT e padrão permanecem gratuitos. Objetivos por item: Inglês 1/5/10 acertos; Matemática rodada 1/10 acertos/etapa 1. Integração às conquistas reais e preservação de desbloqueios legados de 100 acertos. Preview, bloqueio no seletor e validação no salvamento compartilham regras. Novos IDs aceitos no carregamento persistido.
 
-
 ### Créditos da Olena na pasta — 2026-11-21
+
 Reutilizados orçamento, API autenticada e medidor das PRs 686/688/689 na main. Cabeçalho da pasta mostra saldo real à direita da seta, com PaperDigits amarelos; nenhuma conversão para dois usos ou dois créditos. Custo variável em neurons, reserva/acerto e limites do servidor preservados. O hook consulta ao abrir, após geração e na renovação. Sem conta/saldo disponível não inventa número. Testes de orçamento/servidor e 25 testes de UI aprovados; layout conferido a 390/1366px com fixture isolada de saldo, sem chamar IA.
 
-
 ### Gerações da pasta — somente Olena (2026-11-21)
+
 Removida geração automática local de resumo, flashcards, quizzes e simulados na pasta. Reutilizados library-ai.ts, extração de fontes e generateWithOlena da main. Custo estimado para todas as categorias; tamanho altera custo de quiz/prova. Sem saldo desabilita, saldo insuficiente avisa sem bloquear tentativa. Backend mantém orçamento/reserva/acerto da main. 49 testes aprovados; conferência de cada modal em PC/mobile com fonte textual e saldo de teste sem gerar IA real.
 
 
@@ -5705,3 +5720,247 @@ Enem: filtros Ano/Dia/Progresso em baloes flutuantes de papel, selecao marcada, 
 - Regressão automatizada: questão 9 sem texto pesquisável usa a página indexada 7, renderiza um único canvas e não varre o restante do PDF. Testes cobrem cabeçalhos fragmentados/mistos, idioma, artigo O, divergência de caderno e todas as 3.145 entradas.
 - Navegador local: questão 9 de 2022 e 2026 abriu a página correspondente em 1366 e 390 px, com os dois temas, preservando página inteira e navegação Próxima/Ir para. Relatório em `docs/research/enem-question-pages-browser-validation.json`. A questão 9 de 2026 foi inspecionada visualmente na página 7, anteriormente vazia.
 - Limites que continuam: comentários salvos são dez e estatísticas processadas são 185 itens de 2022. As estatísticas oficiais de 2026 não aparecem na fonte de microdados consultada. Não declarar todas as resoluções/estatísticas concluídas nem inferir dados inexistentes.
+
+## Qualidade dos flashcards, FSRS e curadoria, 17/11/2026
+
+- Filtro de entrada (`looksLikeStatement`): só frase completa vira cartão. Exige pontuação final, ao menos 6 palavras, poucas palavras com inicial maiúscula, sem linha de 4 ou mais maiúsculas seguidas, sem barra vertical ou tabulação e com verbo. Barra cabeçalho de tabela, título e linha do tempo (o caso "Início do projeto Apresentação pública Fim da operação"). A afirmação falsa também passa pelo filtro.
+- Falsas mais seguras: saiu a troca de nome próprio (errava gênero e sentido); a negação só vale no verbo da oração principal (não em "o que é...", "quando foi..."); número colado a nome de produto ("Altair 8800") não é trocado; antônimos fracos foram removidos. Continuam: ano e número, negação ou retirada da negação, antônimo e definição trocada.
+- Curadoria na tela de estudo: "Afirmação ruim" (ou "Cartão ruim") exclui o cartão do baralho e a sessão segue sem ele; "Editar cartão" altera afirmação, gabarito e explicação; o gabarito cita arquivo e página quando conhecidos (texto, sem abrir o PDF: a Biblioteca não tem leitor de página). Excluir não é desfeito.
+- Revisão espaçada com FSRS (dependência nova `ts-fsrs` 5.4.2, MIT, sem dependências próprias): sem fuzz e sem passos curtos, então o mesmo histórico dá a mesma data em todos os aparelhos. A nota "good" foi adicionada (acertei no estudo); "again" sempre volta em 1 dia. Cartões antigos migram sem perder o intervalo: estabilidade vem do intervalo e dificuldade da facilidade (`ease`), e os campos antigos continuam preenchidos. Novos campos opcionais `stability` e `difficulty` no cartão (validados em `validFlashcardStudy`). Mudança de comportamento: nas telas antigas de três botões, "Fácil" agora usa a nota Easy do FSRS (intervalos mais longos que antes).
+- Prova: testes de agendamento (ordem again, hard, good, easy; determinismo; migração), do filtro, das falsas e da tela (excluir, editar, citar fonte). Não verificados: modo claro, celular, qualidade em PDFs reais variados, impacto no tamanho do pacote (`performance:check` não rodado aqui).
+
+## Contadores de qualidade dos flashcards (fase A), 17/11/2026
+
+- Cada cartão automático guarda `origin` (true, definition, number, negation, opposite), o gerador que o fez. Na tela de estudo, "Afirmação ruim" agora pergunta o motivo (sem sentido, óbvia demais, na verdade é verdadeira, erro de gramática, frase solta, ou sem motivo) antes de excluir. Aceitar (responder na primeira rodada), editar e descartar viram contadores por tipo.
+- Os contadores ficam só no aparelho (`localStorage`, chave `helena.flashcardFeedback.v1`) e não têm nenhum texto de material, frase ou nome de arquivo, só números. Nada é enviado a servidor. Não sincronizam entre aparelhos e somem se o usuário limpar os dados do navegador. Leitura para ajustar as regras: `loadFeedback()` e `rejectionRate()` em `src/domain/flashcard-feedback.ts`.
+- Próximas fases (não feitas, dependem de decisão da dona do projeto): doação opt-in de texto com consentimento e aviso de privacidade (atenção a materiais com direitos autorais e a menores de idade, LGPD, revisão jurídica), classificador de qualidade e, só com o Olena nativo, modelo próprio.
+- Limite: não há tela para ver os contadores ainda. Não verificado em celular nem no modo claro (só texto novo em botões já existentes).
+
+## Painel de qualidade e filtro aprendido (fase C local), 17/11/2026
+
+- Configurações, Estudo e foco, seção "Qualidade dos flashcards" (`flashcard-quality-panel.tsx`): tabela por tipo de cartão com aceitos, editados, descartados, taxa de rejeição e motivo mais comum, estado do filtro e botão "Zerar contadores e filtro" com confirmação. Só lê dados deste aparelho.
+- Filtro aprendido (`flashcard-quality.ts`): regressão logística com 14 números por cartão (tipo, tamanho, pontuação, proporção de maiúsculas...). Aprende a cada sinal do usuário (descartar ou editar = rejeitado, aceitar = bom) e guarda só os pesos (`helena.flashcardQuality.v1`), nunca o texto. Só começa a agir com 30 avaliações e esconde cartões com mais de 80% de chance de rejeição ao criar flashcards novos; nunca deixa o baralho com menos de 4 cartões, e o aviso informa quantos ficaram de fora.
+- Não é treinamento central: cada aparelho aprende sozinho, sem sincronizar com a conta e sem enviar nada. Com poucos dados o filtro é fraco e pode errar para os dois lados; por isso a trava de 30 avaliações e o botão de zerar. O treino com dados de várias pessoas continua dependendo da fase B (doação com consentimento) e de revisão jurídica.
+- Validado na prévia local, modo escuro, largura de 800 px, com contadores de exemplo. Não verificados: modo claro, celular estreito, e o filtro agindo em baralho real (precisa de 30 avaliações).
+
+## Atualização da PR de quizzes e simulados com a main, 18/11/2026
+
+- Conflito em `flashcard-study.tsx` e `.css`: a PR trocou o visual da tela de estudo (seta própria, partículas, som, botões de madeira, revisão única dos errados) e a `main` trouxe edição de cartão, "Afirmação ruim" com motivo, citação da fonte e notas do FSRS. Resolvido mantendo os dois: a versão da `main` como base e a animação, o som e a seta da PR por cima. A revisão única dos errados (decisão da PR) vale em vez do laço até acertar.
+- Dois rótulos fixos da PR (`alt` e `aria-label` de "Olena" no simulado) passaram por `uiText`, porque `i18n:check` os barrava. Formatação das duas telas novas ajustada pelo Prettier.
+- Verificação local: `tsc`, lint sem erros, `i18n:check`, API, build e orçamento de desempenho (aplicação 1616,7 KiB de 1764) verdes; 2173 testes de componentes, domínio, telas e dados passando. Não rodei os testes de ponta a ponta nem verifiquei visualmente a tela de estudo combinada nem os quizzes e simulados.
+
+## Provas inteiras em PDF, 18/11/2026
+
+- Problema: o usuário pode enviar uma prova inteira. O texto dela é feito de questões numeradas com alternativas e gabarito, não de texto explicativo, e o gerador de afirmações tiraria "fatos" dos enunciados. Agora a prova é reconhecida e tratada à parte, nos quatro módulos.
+- Leitor de prova (`src/domain/pdf-summary/exam.ts`): corta o texto pelos marcadores (questão, alternativa, gabarito), não por quebras de linha, porque o leitor de PDF e o de texto juntam as linhas do parágrafo. Reconhece "QUESTÃO 1", "1)", "1.", alternativas "A)", "(A)" e "a)", alternativa quebrada em duas linhas, texto de apoio antes do enunciado, gabarito no fim ("1-B 2-B", "Questão 1: B"), dentro da questão ("Gabarito: B", "Resposta correta: B") e em arquivo separado (uma prova sem gabarito e um arquivo só de gabarito, quando não há ambiguidade). Lista dentro do enunciado ("1. item", minúscula) e "a alternativa correta" no meio da frase não viram questão nem resposta. Só vale como prova com 4 questões ou mais.
+- Nada é adivinhado: questão sem gabarito conhecido não vira material, e o aviso explica ("Essa prova não traz o gabarito..."). Questões que citam figura, gráfico ou tabela ficam de fora, porque o texto do PDF não traz a imagem, e o resumo lista os números delas.
+- Uso: flashcards de verdadeiro ou falso (a alternativa certa vira cartão verdadeiro e uma errada vira falso, com o gabarito no verso; origem `exam`), quiz e simulado com as questões reais (até 5 alternativas, até 100 questões, 10, 20 ou 50 conforme o tamanho) e resumo da prova (quantas questões, gabarito, distribuição das respostas, questões, figuras). O formato do quiz passou a aceitar 5 alternativas e até 100 questões.
+- Limites: a leitura depende do PDF ter texto selecionável (escaneado passa pelo OCR, que erra mais com alternativas); provas com duas colunas misturadas, fórmulas e símbolos matemáticos, tabelas dentro de alternativas e numeração fora do padrão podem falhar ou perder partes; só foi testado com textos de exemplo, não com provas reais de várias bancas. Não verificado: visual do quiz e simulado com 5 alternativas.
+
+## Quizzes de verdade, termos-chave e prova pelo leitor de PDF real, 18/11/2026
+
+- Quiz e simulado de texto comum (`quiz-questions.ts`, `extractFacts` em `summarize.ts`): saíram as lacunas soltas de `buildSourceQuiz`. Agora são perguntas de múltipla escolha de cinco tipos, sempre com quatro alternativas do mesmo tipo da resposta: "O que é X?" (a definição certa entre definições de outros termos), "Qual termo corresponde a esta definição?", "Qual ano completa a informação do texto?" (anos próximos, nunca outro ano da mesma frase), "Qual valor completa..." (valores da mesma ordem de grandeza, com a mesma casa decimal, só a partir de 10), "Qual afirmação está de acordo com o texto?" (uma frase verdadeira e três falsas feitas de outras frases) e "Qual NÃO está de acordo?" (uma falsa e três verdadeiras). A dificuldade muda a ordem dos tipos e a distância dos números e anos. A posição da resposta varia sem sorteio, e cada frase só gera uma pergunta. A explicação é sempre a frase do arquivo.
+- Limites: sem IA, a quantidade depende de quantos fatos o texto tem (texto curto rende 1 a 8 perguntas, e texto sem definições, datas, números ou frases completas pode render nenhuma); as afirmações falsas herdam as limitações das trocas de flashcards.
+- Termos-chave do resumo: nome inteiro no lugar do pedaço ("John von Neumann", "Blaise Pascal", "Universidade da Pensilvânia") e palavra comum que só aparece com maiúscula dentro de um nome deixa de virar termo próprio ("máquina").
+- Prova em PDF real: o teste com PDFs gerados (uma e duas colunas, com cabeçalho e número de página) achou três problemas do leitor, todos corrigidos: alternativas curtas e numéricas ("A) 1945") eram descartadas como ruído, "QUESTÃO n" no topo de páginas podia ser removido como cabeçalho repetido, e a classificação de títulos quebrava a ordem de questões e gabarito. O leitor de prova passou a usar as linhas cruas do PDF (`StructuredDocument.lines`), antes dessa classificação.
+- Não verificado: visual do quiz e simulado com 5 alternativas, provas reais de bancas e escolas diferentes, PDF escaneado com OCR.
+- Conferência visual (prévia local, modo escuro, desktop 800 px e celular 375 px, com uma prova de 5 alternativas): o quiz mostra as alternativas A a E sem quebrar o layout, a correção abre o painel "Correto!" com "Por quê?" e "Entendi", e o simulado mostra capa, cronômetro e questões em papel no celular. Corrigido o enunciado fixo "Complete a afirmação com a alternativa correta." para "Escolha a alternativa correta.", porque agora as perguntas não são só lacunas. Não verificados: modo claro e navegação completa por teclado.
+
+## Provas reais de concurso, 18/11/2026
+
+Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois gabaritos; os arquivos não entram no repositório). O que apareceu e o que foi feito:
+
+- Prova de 50 questões com texto-base: o leitor perdia a questão 4 (enunciado que abre com "..."), deixava "(E))" com parêntese a mais e o separador "_____" dentro das alternativas, e perdia o texto-base compartilhado ("As questões de números 1 a 5 baseiam-se no texto"). Agora lê as 50 questões, as alternativas limpas e o texto-base de cada faixa (as instruções da capa não viram apoio da questão 1). Quiz e simulado mostram o texto-base antes do enunciado (parágrafo à parte na prova); flashcards só usam questões cujo texto-base cabe no cartão (até 400 caracteres).
+- Gabarito sem a palavra "gabarito" ("001 - E 010 - E", com marca d'água do site): lido em `exam-key.ts` por linhas só de pares. Prova e gabarito em arquivos separados casam pelo título (tipo, versão, cargo): todo termo que distingue o gabarito precisa estar no começo da prova, o gabarito precisa cobrir 80% das questões e não pode haver empate; senão a prova fica sem gabarito e o app explica ("O gabarito tem várias provas ou versões...") em vez de arriscar o errado. Arquivo só de gabarito sem prova também é explicado.
+- Resultado nos arquivos reais: prova de 50 questões com o gabarito do tipo certo, 50 respondidas, 47 viram quiz e 72 flashcards (3 dependem de figura); a mesma prova junto de um gabarito de 17 páginas com dezenas de cargos continua casando o gabarito certo.
+- Flashcards de prova: enunciado que fica no meio da frase ("atender o público com") se completa com a alternativa; pergunta ou ordem ("Assinale...") ganha "Resposta:".
+- PDF com fonte sem mapa de caracteres (o texto sai como símbolos): `isGarbled` reconhece e a página passa pelo OCR no lugar. Testado com um PDF falso; o OCR de uma prova real desse tipo (a prova de neonatologia enviada) não foi rodado nesta máquina e deve ser mais lento e menos preciso com alternativas.
+- Limite conhecido: gabarito com várias tabelas lado a lado por cargo e versão (o arquivo "todos os cargos") é lido em pedaços; o filtro de cobertura impede usar um pedaço no lugar do gabarito inteiro, então o resultado é o aviso de gabarito ambíguo, não resposta errada. Ler essas tabelas por posição na página ficou para depois.
+
+## Formas profissionais e paleta sempre à vista, 18/11/2026
+
+- Segurar a caneta parada acerta reta, seta, elipse, retângulo, triângulo e polígono (já existia). Novo: a pausa tolera 3 px de tremor sem reiniciar a contagem; círculo e quadrado perfeitos quando a mão quase os fez (diferença de até 10% e 8%); retas encaixam a cada 15 graus (eixos com 5 graus de tolerância, demais com 2,5); vibração curta ao acertar.
+- Novo: depois de acertar, continuar arrastando refaz a forma sem levantar a caneta (`handwriting-shape-adjust.ts`). Reta e seta seguem a caneta com ímã de 15 graus; formas fechadas giram e mudam de tamanho em torno do centro, com ímã no tamanho original e no giro zero. Um selo na tela mostra o nome e o ângulo ou o tamanho (`role="status"`).
+- A paleta de cores agora aparece em qualquer ferramenta, sem abrir as opções, e só sai quando a pessoa a minimiza (vira o estojo; a escolha é lembrada no aparelho, com `localStorage` protegido). Escolher cor com a borracha volta para a caneta.
+- Prova: testes unitários de reconhecimento, ajuste, paleta e minimizar; e2e `handwriting-shape-adjust.spec.ts` (claro e escuro, desktop e celular) e `notebook-quick-colors.spec.ts`.
+- Limites: ajuste ao vivo validado com mouse no e2e; com S Pen e dedo no aparelho real, não verificado. Foco de teclado: o selo é só informativo. Formas de vários traços (fechar com retas) seguem como antes.
+
+## Segurar tipo ou cor de folha troca o caderno inteiro, 18/11/2026
+
+- No editor, segurar um tipo de papel ou uma cor de folha por 700 ms troca todas as folhas escritas à mão do caderno. Enquanto a pessoa segura, uma barra amarela enche no botão, o botão cresce um pouco e um som sobe de tom; ao completar há brilho em volta do botão, uma varredura com faíscas sobre a folha, um acorde curto e o aviso "Folhas trocadas: N." (`role="status"`). Soltar antes é um toque comum e troca só a folha aberta.
+- Alternativa sem segurar (teclado e toque): o botão "Caderno inteiro" nas opções aplica o papel ou a cor escolhidos ao caderno todo.
+- A ação `notebook/paper-applied` grava o papel e a cor em todas as folhas do caderno (a pauta nova nunca encolhe a folha, mesma regra do editor) e troca as miniaturas por PNGs desenhados com o renderizador do editor, uma folha por vez; a folha aberta é salva pelo próprio editor. Outros cadernos não são tocados.
+- Sons sintetizados na hora (`notebook-paper-sound.ts`), mudos com os efeitos sonoros desligados. Com movimento reduzido não há varredura nem brilho animado.
+- Prova: testes de reducer, do seletor (tempo, soltar cedo, clique que sobra, botão alternativo) e e2e `notebook-paper-hold.spec.ts` (claro e escuro, desktop e celular).
+- Limites: o desenho das miniaturas de cadernos muito grandes (dezenas de folhas) não foi medido; a troca do caderno compartilhado em colaboração não propaga para outros participantes além do fluxo normal de salvamento; o som não foi ouvido em aparelho real.
+
+## Chiado preso depois de trocar o caderno inteiro, 18/11/2026
+
+- Sintoma: depois do acorde de conclusão ficava um apito contínuo. Causa: ao completar a pressão, o código descartava a função que parava o tom de subida em vez de chamá-la, e o oscilador nunca recebia `stop`.
+- Correção: a subida agora nasce com parada agendada (duração mais 150 ms), então nunca passa do tempo; ao completar, a função de parar é chamada antes do acorde. Testes em `notebook-paper-sound.test.ts` (parada agendada na criação, parar duas vezes é seguro, cada nota do acorde tem fim).
+- Limite: o som real não foi ouvido em aparelho; a prova é pelo agendamento de `start` e `stop` do Web Audio.
+
+## Triângulo reconhecido como polígono, 18/11/2026
+
+- Sintoma: um triângulo claramente desenhado virava "Polígono" no segurar para acertar. Causa: o polígono de 5 a 8 lados usa uma tolerância bem mais apertada e, com mais vértices, sempre ajusta melhor um traço com cantos arredondados ou gancho na ponta, então vencia o triângulo na comparação de erro.
+- Correção: se um triângulo ou retângulo já serve, o polígono sai da disputa (um polígono de verdade não cabe num triângulo, o erro é grande). Teste novo reproduz o bug (falha sem a correção): triângulo com cantos arredondados, gancho e tremor de 0, 2 e 4; e um hexágono de verdade continua polígono.
+- Limite: verificado com traços sintéticos, não com a mão de várias pessoas; se outra forma for confundida, o caminho é o mesmo (a simples ganha da complicada).
+
+## Caneta e mesa digitalizadora com dinâmica própria, TikTok do rodapé, 18/11/2026
+
+- Pedido do proprietário: o mouse no caderno estava muito bom, mas caneta e mesa digitalizadora não. Causa encontrada no código: a dinâmica profissional (pressão suavizada e pontas finas) só valia para mouse e dedo (`dynamics: "simulated"`). Caneta com pressão real entrava crua na largura: o primeiro ponto já chegava com pressão alta (borrão no começo), a leitura do hardware tremia de ponto a ponto (largura serrilhada) e o fim saía chapado.
+- Regra nova (`handwriting-ink-dynamics.ts`, funções puras, causais como a do mouse): `penPressures` nasce leve (teto 0,3 no primeiro ponto), suaviza por distância percorrida (independe de 60, 125 ou 240 Hz), levanta toques leves com curva 0,8 e afina um pouco com a velocidade. `usesPenDynamics` decide quem recebe. Pontas afinam até 40% (a do mouse vai a 25%) e, ao vivo, só o começo afina. Lápis inclinado engrossa (`tiltShading`) quando a caneta informa inclinação.
+- Quem recebe: só traços novos de `pointerType "pen"`, marcados com `dynamics: "pen"` nos dois pontos de criação do estúdio, nos pincéis de largura variável e na Esferográfica. Fineliner (linha de escrever constante) e Caligrafia (largura pelo ângulo) ficam como são, assim como tracejado e borracha de fundo. Traços antigos não têm a marca e abrem iguais.
+- Dados: o validador do documento aceita `"pen"`. Limite honesto: uma versão antiga do app ainda aberta em outro aparelho recusa o valor novo e pode rejeitar a folha até atualizar; a mesma troca de versão já aconteceu com `"simulated"`. Não verificado: como o app antigo reage na prática.
+- Descartado: suavizador ao vivo próprio para caneta (mais leve que o do mouse). Medi círculos pequenos (raio 10 e 18 unidades) a 240 Hz com e sem tremor: o filtro atual encolhe 4%, os mais leves estouram o raio em 8 a 10%, então não há ganho que justifique mexer.
+- Prova: testes unitários novos (começo leve, tremor suavizado, causalidade ao vivo contra pronto, quem recebe a regra, pontas, lápis inclinado, validador) e e2e `handwriting-pen-dynamics.spec.ts` com pressão alta e tremida pelo CDP: a espessura no começo e no fim fica menor que no miolo e o miolo não serrilha. O e2e falha sem a regra (começo 13 contra limite 12). Captura inspecionada no desktop claro: linha com as duas pontas afinando. Não verificado: mesa Wacom ou S Pen reais, tema escuro, celular (a regra é de bitmap, sem interface nova).
+- TikTok do rodapé das Configurações: o link apontava para `@olena.app`, que não existe (a página do TikTok responde 10221, conta não encontrada). O perfil real é `@olenastudy.app` (apelido OlenaStudy, conferido na própria página). Corrigido e coberto por teste. Instagram corrigido pela proprietária: o perfil é `olenastudy.com.br` (eu havia mantido `olenastudy.app` sem conseguir confirmar, o Instagram exige login). Capa do onboarding e rodapé agora usam os mesmos dois links. O convite do Discord também difere entre o rodapé (`EHh6VpGUd`) e a capa do onboarding (`VVba3Tbvq`); não verificado qual está ativo, fica para a proprietária confirmar.
+
+## Botões da caneta e da mesa nas Configurações, 18/11/2026
+
+- Pedido: ver os botões das canetas e da mesa e colocá-los nas configurações. O que já havia: ação do botão lateral e da ponta traseira, e atalhos de teclado (as teclas da mesa digitalizadora chegam como teclado, então o gravador de atalhos já as cobre). O que faltava: o segundo botão lateral das canetas de mesa (Wacom, Huion), que o navegador manda como botão do meio e o editor ignorava (`start` saía cedo com `button 1`), e uma forma de saber o que o aparelho realmente envia.
+- Segundo botão: `isPenSecondButton` (`button 1` ou bit 4 de `buttons`, só em `pointerType "pen"`, vale também apertado antes de encostar). Ação nova `penSecond` em Configurações, Atalhos de caneta e mesa, com as mesmas seis opções. Padrão "Usar a ferramenta selecionada", então quem não configurou não muda nada. Precedência: ponta traseira, botão lateral, segundo botão. Vale na folha e na janela de escrita ampliada. Guardado na mesma chave sincronizada dos atalhos; versão antiga do app ignora o campo novo.
+- Teste de caneta e mesa (`pen-input-test.tsx`): área nas mesmas Configurações que mostra ao vivo dispositivo, pressão, inclinação e quais botões chegaram (lateral, segundo, ponta traseira). Nada é gravado nem enviado. Serve para conferir o aparelho antes de escolher a ação.
+- Textos: 12 entradas novas nos dois idiomas (4008 a 4019), manifesto do catálogo atualizado.
+- Prova: testes unitários (segundo botão, leitura do teste, salvar e restaurar a opção, valor inválido volta ao padrão), e2e `pen-second-button.spec.ts` (middle button por CDP com a ação Borracha apaga a tinta; falha sem a mudança no editor) e `notebook-settings-current` ampliado. Capturas inspecionadas em claro e escuro, PC e celular: opção com a legenda e a área de teste legíveis, sem rolagem horizontal.
+- Limites, não verificado: mesa Wacom ou Huion e S Pen reais. Cada driver decide se o segundo botão sai como botão do meio ou como outro; a área de teste existe justamente para isso. Teclas físicas da mesa e o anel continuam dependendo do aplicativo do fabricante enviar teclado ao navegador.
+
+## Validação das fontes da Biblioteca que não são PDF, 18/11/2026
+
+- Pedido: validar as outras fontes das pastas da Biblioteca e seguir em todas, menos o PDF. Método: script no app real (Chromium, pasta nova, modo visitante) adicionando TXT, Markdown, imagem com texto, nota em branco e link do YouTube, e rodando Resumo, Flashcards, Quiz e Simulado automáticos para cada uma, com rede observada. Goodnotes só leva o usuário a escolher o PDF exportado, então entra na parte do PDF.
+- Funcionaram de ponta a ponta, sem nenhuma requisição externa: TXT, Markdown, imagem por OCR em português e nota em branco, nos quatro geradores (7 flashcards cada na amostra de fotossíntese).
+- Problemas achados e corrigidos:
+  1. **YouTube:** a fonte era selecionável e, ao gerar, aparecia "Não consegui abrir o PDF https://...", erro errado. O app não lê vídeos (sem transcrição e sem enviar nada a serviços externos, regra de privacidade), então o link virou referência: o título abre o vídeo em nova aba, a seleção fica desativada com a explicação "Só referência... cole a transcrição ou suas anotações em uma nota em branco", e o "Selecionar 3 fontes" ignora links. Os geradores também recusam link com mensagem própria, por segurança.
+  2. **TXT em ANSI ou UTF-16:** `file.text()` lia tudo como UTF-8, então o Bloco de Notas do Windows trocava "fotossíntese" por "fotoss\u{FFFD}ntese". `decodeText` (`library-source-files.ts`) detecta BOM de UTF-8 e UTF-16, tenta UTF-8 estrito e cai em Windows-1252.
+  3. **Foto do celular recusada:** o limite era 1 MB para tudo, e uma foto passa fácil disso. Imagens até 25 MB agora são reduzidas no aparelho (maior lado 2400, 2000 ou 1600, JPEG 0,85, 0,72 ou 0,6) até caber em 1 MB. PDF, TXT e Markdown seguem com 1 MB. Se mesmo reduzida não couber, mensagem pedindo foto mais de perto ou PDF.
+  4. **"pág. 1" em texto sem páginas:** resumos de TXT, nota e imagem citavam "(pág. 1)" nos títulos. `StructuredDocument.paged: false` (só `structureText`) tira o trecho; PDF continua citando as páginas.
+  5. **Erro grudado nas abas:** o aviso de uma tentativa falha aparecia em Resumo, Flashcards, Quizzes e Simulados até outra ação. Trocar de aba agora limpa o erro.
+- Textos: 5 entradas novas nos dois idiomas (4020 a 4024), manifesto do catálogo atualizado.
+- Prova: testes unitários de `decodeText` (UTF-8, BOM, ANSI, UTF-16) e `fitWithin`, e do resumo sem páginas e com páginas no PDF; e2e `library-sources.spec.ts` (TXT ANSI sem "\u{FFFD}" e sem "pág.", foto PNG de mais de 1 MB aceita e lida por OCR, nota, YouTube desativado com o link correto, sem rolagem horizontal, sem requisição externa) em claro e escuro, PC e celular. Capturas inspecionadas.
+- Limites, não verificado: foto real de câmera (usei PNG com ruído gerado), HEIC (o seletor só aceita PNG, JPG e WebP), fotos com texto inclinado ou manuscrito (o OCR depende da legibilidade) e o Safari do iPhone (`createImageBitmap` e `toBlob` JPEG são padrão, mas não testei lá). Transcrição de YouTube ficou de fora de propósito: exigiria serviço externo, com modelo de ameaça, consentimento e limite de custo próprios.
+
+## Prova de vestibular real (PUC-Rio 2025, 17 páginas) na Biblioteca, 18/11/2026
+
+- Arquivo do proprietário: caderno "2º DIA, MANHÃ, GRUPO 2" (10 questões de Matemática, 25 de Ciências da Natureza e 6 discursivas), duas colunas, 3,4 MB. Conferido com o mesmo código do app (leitor de PDF, leitor de prova, geradores) e depois pela tela, sem requisição externa.
+- Achados antes das correções: (1) o app recusou o arquivo, por causa do limite de 1 MB; (2) lido à força, a prova **não era reconhecida** (0 questões) e virava texto comum: o resumo abria com um item das instruções e os flashcards saíam das regras do candidato ("Caso tal ocorra, o fato deve ser IMEDIATAMENTE notificado ao fiscal").
+- Causas no leitor de prova (`exam.ts`): o número da questão fica sozinho numa linha, sem ponto nem parêntese, e só se reconhecia "1." ou "Questão 1"; os itens de instrução "01 - O candidato...", "04 - ... (A), (B), (C)..." eram lidos como questões 1 a 10 e esgotavam a contagem; e a palavra "RESPOSTA" de "CARTÃO-RESPOSTA" e "CADERNO DE RESPOSTAS" ligava o modo gabarito, que engolia todas as questões depois.
+- Correção: (a) linha só com número abre questão se a seguinte começa o enunciado (não é alternativa nem outro número), o que afasta restos de fração e números de página; (b) item com zero à esquerda e traço ("01 -") é instrução, não questão; (c) "RESPOSTA" colada por hífen ou no meio da frase não abre o gabarito; (d) "RASCUNHO", título de seção em maiúsculas e a parte discursiva ("Questão 1" depois da 35) não entram na última alternativa.
+- Resultado no arquivo: 34 das 35 objetivas lidas, 5 alternativas cada. A questão 23 fica de fora porque as alternativas são figuras sem texto. As 6 discursivas não têm alternativas e não viram questão. O arquivo não traz gabarito, então o app diz isso e não inventa resposta; com um gabarito como outra fonte selecionada junto, gerou 66 flashcards (33 questões com resposta, uma depende de figura), quiz e simulado (gabarito de teste com respostas inventadas só para provar o fluxo).
+- **Teto de PDF subido, por decisão da proprietária (18/11/2026):** de 1 MB para 5 MB por PDF (a prova da PUC, de 3,4 MB, agora sobe). TXT e Markdown seguem com 1 MB; imagem aceita até 25 MB e é reduzida para caber em 1 MB. O PDF fica no espaço de trabalho em base64 (cerca de 4/3 do arquivo) e esse espaço sincroniza com a conta, e as regras do banco (`firebase-room.rules.json`, chave `helenastudy.workspace.v1`) recusam mais de 20.000.000 caracteres: passar disso pararia a sincronização de tudo, não só da Biblioteca. Por isso entrou também um **teto global de 12.000.000 caracteres para tudo o que a Biblioteca guarda** (`MAX_LIBRARY_CHARS`, soma de todas as pastas): o envio é recusado com "A Biblioteca chegou ao limite de espaço da conta" antes de gravar, e os 8.000.000 restantes ficam para agenda, progresso e o resto.
+- Custo, não verificado: como o espaço de trabalho inteiro sincroniza, um PDF grande aumenta o que cada aparelho baixa ao sincronizar, e o download é o gargalo de custo registrado em `docs/OPERACAO_E_CUSTOS.md`. Não medi quanto isso pesa no console do Firebase; vale olhar o download depois de a proprietária e os testadores enviarem PDFs de verdade. Se pesar, o caminho é guardar PDFs só no aparelho (IndexedDB por conta, como `library-files.ts`), fora do que sincroniza.
+- Prova do teto: unitários de `fitsLibrary` e das constantes; e2e envia um PDF de 2 MB (aceito, aparece na lista) e um de 6 MB (recusado com o aviso de 5 MB), nos dois formatos de tela; o PDF real da PUC subiu e gerou o resumo e o aviso de gabarito. Não coberto por teste automático: o teto global de 12.000.000 caracteres pela tela (precisaria de vários PDFs grandes); coberto só pela conta em `fitsLibrary`.
+- Limites conhecidos: fórmulas e frações saem embaralhadas do PDF (questão 2 mistura os pedaços da fração no enunciado e nas alternativas), e figuras, gráficos e circuitos não vêm no texto; o app marca como dependente de figura só quando o enunciado cita figura, tabela ou gráfico. Teste unitário reproduz o leiaute (falha sem a correção em três casos).
+
+### Atualização da prova da PUC-Rio, 19/11/2026
+
+- A proprietária pediu que essa prova passasse inteira. Agora o leitor acha **as 35 objetivas** (antes 34). A 23 tem alternativas só em figura: entra como questão, marcada como dependente de figura, em vez de sumir.
+- Fração ou expoente que o PDF separa da conta cai solto como número sozinho numa linha. Quando isso acontece dentro de uma questão (2, 9, 35 no arquivo), ela é marcada como dependente de figura: aparece no resumo, mas fica fora de flashcards, quiz e simulado, em vez de gerar alternativas trocadas. Junto com as que citam figura (12 e 24), são 6 de 35 fora do estudo; **29 podem virar flashcards, quiz e simulado** quando houver gabarito (58 flashcards na conferência, com gabarito de teste de respostas inventadas só para provar o fluxo).
+- O resumo da prova passou a dizer que há **6 questões discursivas**, sem alternativas, que não viram quiz nem simulado por não terem resposta única para corrigir.
+- Continua valendo: o arquivo não traz gabarito, e o app não inventa resposta. Para quiz e simulado, o gabarito da PUC entra como outra fonte selecionada junto. Testes novos (figura sem texto, fração solta, contagem de discursivas) em `exam.test.ts`.
+
+## Biblioteca só com a Olena (IA), 2 usos por dia por tipo, 19/11/2026
+
+- Decisão da proprietária: resumo, flashcards, quiz e simulado das pastas passam a ser gerados pela Olena (IA), as opções gratuitas no aparelho saíram da tela e cada tipo tem 2 usos por dia por pessoa. Modelo de ameaça, limites e o que não foi verificado: `docs/BIBLIOTECA_IA.md`.
+- Servidor: capacidades novas `flashcards`, `quiz` e `exam` no contrato (`helena-contract.ts`); `helena-study.ts` monta as instruções (do pedido só valem números limitados), chama o modelo, valida o JSON, refaz uma vez e devolve a resposta normalizada dentro de 12.000 caracteres; `helena-quota.ts` troca o teto do resumo (5 por dia) pelo de estudo (2 por dia por tipo, 40 globais por tipo, 100 globais no total, 250 por endereço); `refundRateLimit` devolve o uso quando a geração falha.
+- Tela: `library-ai.ts` (orçamento de texto, parâmetros do pedido, conversão em quiz) e `library-shelf-view.tsx` com um só botão "Gerar com a Olena" em cada aba, aviso de envio e do limite, e erro claro sem conta. Saíram do caminho da tela o resumo, os flashcards e o quiz automáticos, a leitura de prova por regras e as mensagens de gabarito.
+- Provas: 36 testes novos ou ajustados no servidor e na tela (limites por tipo, devolução do uso, validação da saída, pedidos só com números, aviso de envio, sem caminho gratuito, sem conta, limite diário), e2e `library-sources.spec.ts` em claro e escuro, PC e celular, sem requisição externa. Removidos os e2e do resumo automático (`library-auto-summary`, `library-scanned-summary`, `library-pdf-table-summary`), que testavam o caminho gratuito.
+- Limites, não verificado: a resposta do modelo real (Llama 3.1 8B) em português, a prova da PUC por esse caminho, o consumo real de neurons, a retenção de dados da Cloudflare e a Política de Privacidade, que não cita o envio do texto das fontes. O e2e não chama a Olena (não há login no preview); o fluxo com resposta é coberto por teste de componente com a Olena simulada.
+
+### Validação das fontes na Biblioteca com IA, 19/11/2026
+
+- Pergunta da proprietária: se as outras fontes foram validadas no caminho novo. Resposta honesta: no primeiro envio só uma fonte de texto passava por todos os fluxos. Fechado depois: testes de componente com cada tipo (Markdown, nota, imagem por OCR, imagem sem texto legível, PDF digital com página, PDF escaneado com OCR na página, três fontes de tipos diferentes juntas e link do YouTube), conferindo o que sai do aparelho para a Olena.
+- Achado com a prova real da PUC (17 páginas): o texto extraído tem 32.807 caracteres, acima do limite de 30.000 do contrato, e o orçamento antigo mandava 91%, com buracos entre os trechos e as regras do candidato ocupando o começo. Correção: limite de texto de 36.000 caracteres (`HELENA_MAX_TOTAL_SOURCE_LENGTH`) e colapso dos espaços duplos do PDF antes de repartir. Resultado: a prova inteira (31.090 caracteres) vai em 4 trechos seguidos, sem lacuna.
+- Continua não verificado: a resposta do modelo real para cada tipo de fonte e a qualidade do português. O e2e não chama a Olena (sem login no preview).
+
+## Correção: flashcards, quiz e simulado com a Olena não geravam em produção, 19/11/2026
+
+- Sintoma: depois da PR #683, os três tipos falhavam para a proprietária ("Serviço indisponível"). O resumo, que vai por fluxo, seguia funcionando.
+- Causa, vista nos logs de runtime da Vercel (função `/api/helena`, `motivo: "Resposta inválida."` nos três): quando o modelo responde JSON, a Cloudflare Workers AI entrega `result.response` já interpretado (objeto ou lista), não texto, e `runCloudflareText` só aceitava texto. Meus testes usavam uma resposta de texto, então não pegaram.
+- Correção: `runCloudflareText` aceita texto, objeto ou lista (objeto e lista voltam a texto com `JSON.stringify`) antes da mesma validação estrita. Vazio, nulo e número continuam recusados. Teste novo reproduz o erro de produção e falha sem a correção.
+- A falha devolveu o uso do dia (a devolução funcionou), então a cota de 2 por tipo não foi gasta pelos erros.
+- Lição registrada: o formato real da resposta da Cloudflare só apareceu em produção. Limite do que foi verificado: depois do deploy, a primeira geração real de cada tipo é a prova; a qualidade do português do modelo segue sem medição.
+
+## Correção: simulado ainda falhava depois da PR #684, 19/11/2026
+
+- Sintoma: depois do deploy da #684, flashcards e quiz voltaram, mas o simulado seguia sem gerar. Os logs de runtime da Vercel guardam 1 hora no plano atual e já tinham expirado quando a falha foi relatada, então o motivo exato não foi visto: a causa abaixo é a hipótese mais forte pelo código, não uma confirmação (não verificado).
+- Hipótese: o simulado pedia até 20 questões com limite de 2600 tokens de saída, que não comporta 20 questões com 4 alternativas e explicação (uns 170 tokens cada). O JSON chegava cortado, a validação recusava tudo e a segunda tentativa repetia o corte.
+- Correção: (1) o limite de tokens acompanha a quantidade pedida (500 + 190 por questão, teto de 3800); (2) se a resposta mesmo assim vier cortada, as questões e cartões que chegaram inteiros são aproveitados (mínimo de 2 questões ou 3 cartões continua valendo); (3) o simulado pede 8, 12 ou 16 questões em vez de 10, 15 ou 20, para caber no tempo de 25 s por tentativa.
+- Como conferir em produção: gerar um simulado curto, médio e longo logo após o deploy e, se falhar, ler os logs de `/api/helena` na hora, antes de a hora de retenção passar.
+
+## Olena: orçamento em créditos e segurança dos pedidos (19/11/2026)
+
+- Decisão: no lugar de "2 usos por dia por tipo e por pessoa", o servidor mede cada pedido em créditos (neurons da Cloudflare) pelo tamanho do texto e da resposta, reserva antes, acerta com o `usage` do provedor depois e devolve o que não foi gasto. Limites: global 8.000/dia, por pessoa 250 a 1.000 (parte justa de 12% do que resta), 300 por pedido, 2.500 por endereço. Detalhes em `docs/BIBLIOTECA_IA.md`.
+- Segurança: texto das fontes limpo e conferido no servidor, chave de idempotência por tentativa (409 em repetição), um pedido por vez por pessoa, identidade em hash nos contadores e nos registros.
+- UI: a tela de gerar da Biblioteca mostra "Créditos de hoje" (consulta `GET /api/helena?usage=1`) e o texto antigo de 2 vezes por dia saiu. Validada em teste de componente; **não** revalidada por captura em claro, escuro, PC e celular nesta mudança (a linha nova é um parágrafo de texto no mesmo bloco do aviso).
+- Limites declarados: preços de neurons e o `usage` do provedor não foram verificados contra a Cloudflare; a cota gratuita real (10.000/dia) continua sendo o teto de todos. App Check em `/api/helena` e o parágrafo de privacidade são da dona do projeto.
+
+## Medidor de créditos da Olena na pasta da Biblioteca (20/11/2026)
+
+- O que é: faixa acima das abas da pasta (PC e celular) com o saldo de créditos do dia, uma barra de saldo, uma barra fina do tempo até renovar e o texto "Renova em X h Y min, às HH:MM". Fica escondida sem conta conectada ou sem rede, porque não há saldo para mostrar. Lê `GET /api/helena?usage=1` ao abrir a pasta, depois de cada geração e quando o dia renova.
+- Estados: "Pouco saldo para um pedido grande" quando o saldo é menor que o custo máximo de um pedido (300) e "Os créditos de hoje acabaram" com a hora de volta. O aviso é em texto, não só em cor.
+- Ao gastar: contagem regressiva do número, barra encolhendo, plaquinha "−N" subindo, faíscas em losango (papel recortado) e som de moedas, só se o gasto subiu entre duas leituras. Geração que falhou e foi devolvida não anima nem toca. O som usa o contexto de áudio criado no clique de gerar e respeita a preferência de sons. Movimento reduzido (sistema ou app): o número muda de uma vez e a faixa anuncia "Gastou N créditos." por leitor de tela.
+- Validado: testes de componente e do hook; no navegador, em claro e escuro, PC e celular (375 px), saldo normal, baixo, zerado e com a animação, por uma página temporária só com o componente e as folhas de estilo (já removida). **Não** validado dentro do app real logado nem o som no aparelho (depende de gesto e de volume). O custo estimado do pedido atual antes de gerar continua sem tela própria.
+
+## Custo estimado e saldo na janela de gerar (20/11/2026)
+
+- A janela "Gerar com a Olena" mostra "Custo estimado deste pedido: até N créditos", calculado com a mesma fórmula do servidor (`ai/helena-cost.ts`) pelo tamanho das fontes e pela quantidade de questões ou cartões. Texto de PDF e imagem só sai do OCR depois do clique, então essas fontes entram com a fatia inteira a que têm direito: é um teto, o gasto real costuma ser menor.
+- Saldo menor que a estimativa: aviso em texto, mas o botão fica ligado (a conta final costuma ser menor e o servidor decide). Saldo zero: botão desligado e o motivo escrito na tela, com a hora em que volta (o motivo não depende de hover).
+- Validado só por teste de componente. **Não** validado por captura em claro, escuro, PC e celular: são dois parágrafos de texto no mesmo bloco do aviso da janela. Sem saldo conhecido (sem conta ou sem rede), a janela mostra só o custo e deixa tentar; o servidor recusa se faltar crédito.
+
+## Flashcards da Olena voltam a ser verdadeiro ou falso (20/11/2026)
+
+- Problema: a #683 passou os flashcards para a IA com o prompt de "pergunta curta e resposta", e o baralho saía com pergunta aberta, que a tela de estudo (setas, gabarito, painel de qualidade) não trata como flashcard.
+- Correção: o servidor pede afirmações para julgar (metade verdadeiras, metade falsas, a falsa com um ponto plausível alterado, sem pistas como "sempre" e "nunca", uma ideia por frase, explicação com a frase correta). O modelo devolve `{statement, true, explanation}` e `parseStudyCards` converte para o cartão guardado: afirmação na frente e "Verdadeiro." ou "Falso. O texto diz:" no começo do verso. Cartão sem gabarito é recusado, a geração é refeita uma vez e, se vier de novo, vira erro.
+- Não verificado: a qualidade real das afirmações do modelo de 8 bilhões de parâmetros (só testado com respostas simuladas). Conferir gerando de uma fonte real e usando o botão de curadoria.
+
+## Sai a opção de link do YouTube nas fontes (20/11/2026)
+
+- Decisão: ler vídeo do YouTube pelo servidor foi testado e não é confiável. Num endpoint descartável na Vercel (3 vídeos públicos, 4 rodadas), só 1 de 3 devolveu legenda e os outros 2 voltaram "confirme que você não é um bot"; do mesmo código num IP residencial os 3 funcionaram; pelo navegador do aluno, o YouTube recusa pedidos de outro site (403). Interfaces não oficiais também contrariam os termos de uso. O teste foi apagado.
+- Mudança: "Link do YouTube" não aparece mais em "Adicionar fontes". Fontes de link que já estavam salvas continuam listadas e removíveis, com o aviso de que são só referência e de que a transcrição pode ser colada em uma nota em branco. Link nunca vai à Olena.
+- Não validado: o e2e `library-sources` rodou só no CI, não localmente.
+
+## PR #690: merge com a main e correção das pendências, 21/11/2026
+
+- A PR estava sem CI (conflito com a main depois das #686, #688, #689 e #691). O merge manteve os créditos da PR (que só acrescentam à versão da main), a redação de dois botões da Biblioteca da PR e a remoção do link do YouTube da #691. Duplicatas que o merge automático deixou em `library-shelf-view.tsx` foram removidas.
+- Falhas que já existiam na branch da PR antes do merge, corrigidas: testes de navegação (`app.test.tsx`) ao desenho novo (barra lateral sempre expandida, Perfil com avatar na barra móvel, ícones coloridos, sem "Mais ferramentas"); testes da revisão de redação e da mesa de redação, que agora ficam no painel "Redação" (fechado e inerte até abrir); `english-cosmetics.test.ts`, porque as placas de 1, 5 e 10 acertos agora existem (capa, fundo e moldura continuam travados até 100); `api:check` (importações sem `.js` em `workspace.ts` e `local-workspace.ts`); `i18n:check` (marca e "PDF" em JSX); `format:check` (dois JSON gerados).
+- Privacidade: a PR liberou `huggingface.co` e `*.cdn.hf.co` no `connect-src` para baixar o modelo de tema da redação. O texto da redação não sai do aparelho (o worker só baixa o modelo e analisa localmente), mas o serviço recebe a conexão de rede. A Política de Privacidade passou a descrever esse serviço por função, e o teste que cruza CSP e política cobre os dois hosts.
+- Orçamento de JavaScript, medido (Linux, Node 22): entrada 219,5 KiB (main 219,3); aplicação 1901,2 KiB contra 1634,8 KiB na main, com teto de 1764 KiB. O aumento é: `notes-view` de 154,5 para 413,3 KiB (+258,8) e um chunk novo `workspace` de 40,0 KiB. O worker de tema (868,7 KiB), o runtime ONNX (43,4), o Hunspell (41,8) e o worker de ortografia (14,5) só carregam ao entregar uma redação: passaram a ter categoria própria (`MAX_ESSAY_REVIEW_JS_BYTES`, 1000 KiB, medido 968,4), como o leitor de PDF, fora do total da aplicação. O teto de 1764 KiB NÃO foi mexido: a PR continua 137,2 KiB acima dele, e subir o teto é decisão da dona do projeto (ou code-splitting de `notes-view`).
+- Dependência nova: `@huggingface/transformers` traz `onnxruntime-node`, cujo script de instalação baixa binários do GitHub (variante com CUDA). No ambiente desta sessão o download deu 404 e a instalação só passou com `--onnxruntime-node-install-cuda=skip`. Não verificado: se o CI da PR e a Vercel instalam sem essa opção; conferir no resultado do CI.
+- Testes locais: `listening-audio.test.ts` (8 testes) falha só neste ambiente, igual na main.
+
+### PR #690: teto de JavaScript e divisão do notes-view (21/11/2026)
+
+- Por pedido da dona do projeto, o teto do total de JavaScript da aplicação subiu de 1764 para 1906 KiB (e o teto absoluto junto, no mesmo valor). Medido: 1903,6 KiB. O orçamento soma todos os chunks, então dividir não o reduz; o ganho da divisão é de carregamento.
+- Divisão: a mesa de redação (`typewriter-desk`, 255,7 KiB) e o conteúdo das pastas da Biblioteca (novo `library-folder-contents.tsx`, 65,9 KiB) viraram chunks próprios, carregados só ao abrir uma pasta, com `HelenaLoading` como espera. `notes-view` caiu de 413,3 para 103,7 KiB. `library-shelf-view.tsx` ficou só com a estante. Entrada inicial: 219,4 KiB.
+- Os testes de `LibraryFolderContents` passaram a importar do arquivo novo. Não verificado: tempo de abertura de uma pasta em aparelho físico (agora há uma espera de rede para o chunk na primeira abertura).
+
+### Correção de redação pela Olena, PR 1 (backend, 21/11/2026)
+
+- Nova capacidade `essay` em `/api/helena`: contrato (`helena-contract.ts`, redação até 6.000 caracteres e no máximo 2 fontes), custo (`helena-cost.ts`, saída máxima de 2.400 tokens), validador estrito (`src/ai/essay-output.ts`) e provedor (`src/backend/helena-essay.ts`, ligado em `helena-runtime.ts`). Atendida mesmo com `chatEnabled` falso, como a Biblioteca.
+- Segurança: prompt montado no servidor, redação e tema como dados, níveis e notas enumerados, trechos citados conferidos contra o texto, nota descartada com a chave `OLENA_ESSAY_SCORE` desligada, duas tentativas e devolução do gasto em falha. Testes: `essay-output.test.ts` e `helena-essay.test.ts` (injeção, trecho inexistente, nota fora da escala, limite de resposta, contrato).
+- Política de Privacidade (`public/politica-de-privacidade.html`) passa a descrever, por função e sem nomes, o envio de texto da Biblioteca e da redação a uma empresa parceira de IA. Era uma lacuna anterior.
+- Não verificado: qualidade dos comentários do modelo em português; custo real; retenção do provedor. Sem tela nesta PR. Sem dependências novas e sem mudança no orçamento de JavaScript.
+
+### Correção de redação pela Olena, PR 2 (tela e medição, 21/11/2026)
+
+- Tela: `EssayOlenaReview` (`src/components/essay-olena-review.tsx`) na tela de resultado da redação, dentro do painel "Redação". Aviso de envio e privacidade com link para a Política, custo estimado em créditos e saldo do dia (`useOlenaCredits`), nada enviado antes do toque. Estados: texto curto demais (menos de 30 palavras), sem créditos, carregando com `HelenaLoading`, erro com tentar de novo (sem login, limite, falha, formato), texto mudou depois dos comentários. Resultado: cartão de resumo com os cinco níveis e sanfona por competência (`essay-disclosure`, o mesmo padrão da tela) com resumo e observações com o trecho citado. "Compartilhar" (compartilhamento do sistema ou cópia, sem o texto da redação) e "Reportar um problema".
+- Cliente: `src/data/essay-olena-client.ts` exige conta de verdade (sem login nada é enviado), manda só a redação (até 6.000 caracteres) e o tema, e valida a resposta de novo no aparelho (trecho que o texto não tem é descartado).
+- Nota numérica: aparece só se o servidor devolver as cinco notas (chave `OLENA_ESSAY_SCORE`, desligada), sempre como "estimativa da IA, não é a nota oficial". A variante em faixa só será feita se a medição cair entre 0,30 e 0,40.
+- "Reportar um problema": guarda só categoria e data em `helena.essayReports.v1` neste aparelho (50 registros no máximo). Não há envio à equipe; a tela diz isso. Envio remoto exigiria modelo de ameaça próprio (PR futura).
+- Medição: `scripts/measure-essay-olena.mjs` (pesquisa, fora do app) roda a Olena nas redações de teste e calcula o QWK por competência (`src/domain/essay-qwk.ts`, testado). Lê a chave de variáveis de ambiente; para ao atingir um teto de neurons e retoma no dia seguinte. Não foi executado: a chave é da dona e o corpus fica em `tmp/`. Regra de decisão registrada antes do resultado em `docs/REDACAO_IA.md`.
+- Verificação visual (harness temporário com resposta simulada, removido depois): claro e escuro, 800 px e 375 px. Sem rolagem horizontal no celular (375 de 375), alvos de toque de 44 px no mínimo, badges de nível legíveis nos dois temas (texto do tema sobre fundo translúcido), sanfona aberta com citação e botões visíveis. Limites: resposta simulada, não do modelo; foco de teclado e leitor de tela não foram exercitados nesta verificação (usa o foco em papel compartilhado, sem CSS de foco novo); o fluxo completo entregar, pedir e ver o resultado não tem e2e (não existe e2e da mesa de redação) e foi coberto por testes de componente e de cliente.
+- Não verificado: qualidade dos comentários do modelo em português, custo real por redação, comportamento com saldo real em produção.
+- Orçamento de JavaScript: medido 1912,6 KiB contra 1903,7 KiB da PR 1 (+8,9 KiB: `typewriter-desk` +8,4 KiB e `use-olena-credits` virou chunk compartilhado, +0,3 KiB líquido). Por pedido da dona, o teto subiu de 1906 para 1914 KiB (teto absoluto junto). Entrada inicial inalterada (219,4 KiB).
+
+### Correção de redação: só nível e nota, observações atrás do Olena Pro (21/11/2026)
+
+- Por decisão da dona, a tela mostra a nota geral (soma das cinco competências) e os cinco níveis; as observações por competência ficam trancadas com o letreiro "EM BREVE OLENA PRO" (`PaperCardTitle`, como na prateleira) e a sanfona de comentários saiu. Sem a chave `OLENA_ESSAY_SCORE`, a tela mostra os níveis e avisa que a nota geral ainda não está liberada.
+- O servidor deixou de gerar comentários (não se paga por texto escondido): `maxOutputTokens("essay")` caiu de 2.400 para 600 tokens e a reserva de uma redação cheia, de cerca de 84 para cerca de 31 créditos. Custo real estimado em 7 a 10 neurons por redação, não verificado.
+- Os testes do provedor, do cliente e da tela foram reescritos ao novo formato. Novas categorias de relato ("A nota parece errada", "A nota mudou muito entre pedidos iguais").
+- Verificação visual (harness temporário com resposta simulada, removido): cartão de nota e letreiro "EM BREVE OLENA PRO" vistos em claro (800 px) e escuro (375 px). No celular não há rolagem horizontal (375 de 375), os botões têm 44 px e o letreiro cabe em uma linha. Limites: o harness não carrega o CSS global dos botões secundários, então "Compartilhar" e "Reportar" não foram vistos com o estilo real do app; o link da Política no texto tem altura de linha (inline); foco de teclado e leitor de tela não foram exercitados.
+
+### Cache dos arquivos estáticos na Vercel (21/11/2026)
+
+- Medido em produção: os chunks com hash (por exemplo `/assets/pdf-DaveP19J.js`) saíam com `Cache-Control: public, max-age=0, must-revalidate`, o que obriga o navegador a revalidar cada um a cada visita. `/data/schools-inep-2024.json` (10 MB, 1,98 MB em brotli) e as fontes tinham o mesmo cabeçalho.
+- `vercel.json` passa a mandar: `/assets/(.*)` com `public, max-age=31536000, immutable` (todos os arquivos de `dist/assets` têm hash no nome, conferido no build); `/data/(.*)` com `public, max-age=86400, stale-while-revalidate=604800`; `/fonts/(.*)` com `public, max-age=2592000, stale-while-revalidate=604800` (nomes sem hash, por isso sem `immutable`). Testes em `src/security-headers.test.ts`.
+- Não verificado: o ganho de tempo em revisitas (não medido) e os cabeçalhos no deploy real até a PR ser publicada; conferir com `curl -I` em um chunk e em `/data/schools-inep-2024.json`. Risco: um arquivo em `/assets` sem hash seria servido por um ano; o build atual não tem nenhum.

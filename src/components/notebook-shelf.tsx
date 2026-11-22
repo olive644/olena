@@ -1,12 +1,12 @@
 import { shelfSkinUnlocked } from "../domain/shelf-skins";
-import { TypewriterDesk } from "./typewriter-desk";
 import { flushSync } from "react-dom";
-import { LibraryFolderContents, LibraryShelfView } from "../views/library-shelf-view";
+import { LibraryShelfView } from "../views/library-shelf-view";
+import { HelenaLoading } from "./helena-loading";
 import type { LibraryFolderStyle } from "../domain/workspace";
 import { ShelfEditorTools } from "./shelf-editor-tools";
 import { ShelfToolIcon } from "./shelf-tool-icon";
 import { NotebookShelfFrame } from "./notebook-shelf-frame";
-import { useEffect, useRef, useState, type Dispatch } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type Dispatch } from "react";
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { StudyNotebook, WorkspaceAction, WorkspaceState } from "../domain/workspace";
 import { NotebookCover } from "./notebook-cover";
@@ -24,6 +24,18 @@ import {
 } from "../domain/notebook-covers";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { PaperCardTitle } from "./paper-card-title";
+
+// Mesa de redação e conteúdo da pasta só são necessários ao abrir uma pasta da Biblioteca: ficam em
+// chunks próprios para a estante abrir sem baixar o editor de redação, as propostas e os leitores
+// de quiz e simulado.
+const TypewriterDesk = lazy(() =>
+  import("./typewriter-desk").then((module) => ({ default: module.TypewriterDesk })),
+);
+const LibraryFolderContents = lazy(() =>
+  import("../views/library-folder-contents").then((module) => ({
+    default: module.LibraryFolderContents,
+  })),
+);
 
 export function NotebookShelf({
   workspace,
@@ -128,33 +140,38 @@ export function NotebookShelf({
   if (openFolder?.kind === "typewriter")
     return (
       <div className="library-typewriter-view">
-        <TypewriterDesk
-          key={openFolder.id}
-          workspace={workspace}
-          collectionId={openFolder.id}
-          dispatch={dispatch}
-          onBack={() => navigateFolder()}
-        />
+        <Suspense fallback={<HelenaLoading />}>
+          <TypewriterDesk
+            key={openFolder.id}
+            workspace={workspace}
+            collectionId={openFolder.id}
+            dispatch={dispatch}
+            onBack={() => navigateFolder()}
+          />
+        </Suspense>
       </div>
     );
   if (openFolder) {
     return (
-      <LibraryFolderContents
-        key={openFolder.id}
-        folder={openFolder}
-        materials={workspace.materials.filter(
-          (material) => material.collectionId === openFolder.id && !material.archived,
-        )}
-        subjectId={workspace.subjects[0]?.id ?? ""}
-        flashcards={workspace.flashcards.filter((card) =>
-          workspace.materials.some(
-            (material) =>
-              material.id === card.materialId && material.collectionId === openFolder.id,
-          ),
-        )}
-        dispatch={dispatch}
-        onBack={() => navigateFolder()}
-      />
+      <Suspense fallback={<HelenaLoading />}>
+        <LibraryFolderContents
+          key={openFolder.id}
+          folder={openFolder}
+          materials={workspace.materials.filter(
+            (material) => material.collectionId === openFolder.id && !material.archived,
+          )}
+          subjectId={workspace.subjects[0]?.id ?? ""}
+          libraryChars={workspace.materials.reduce((sum, item) => sum + item.content.length, 0)}
+          flashcards={workspace.flashcards.filter((card) =>
+            workspace.materials.some(
+              (material) =>
+                material.id === card.materialId && material.collectionId === openFolder.id,
+            ),
+          )}
+          dispatch={dispatch}
+          onBack={() => navigateFolder()}
+        />
+      </Suspense>
     );
   }
   return (

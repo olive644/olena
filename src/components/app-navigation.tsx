@@ -155,7 +155,6 @@ function NavigationButton({
       type="button"
       onClick={onSelect}
       aria-label={item.label}
-      title={item.label}
       aria-current={active ? "page" : undefined}
     >
       {item.view === "profile" ? (
@@ -170,18 +169,10 @@ function NavigationButton({
 
 export function Sidebar({ view, onNavigate }: NavigationProps) {
   useLanguage();
-  const [expanded, setExpanded] = useState(true);
 
   return (
-    <aside className={`sidebar${expanded ? " sidebar--expanded" : ""}`}>
-      <button
-        type="button"
-        className="sidebar__top sidebar__brand-toggle"
-        aria-label={uiText(expanded ? "Recolher navegação" : "Expandir navegação")}
-        aria-expanded={expanded}
-        aria-controls="sidebar-navigation"
-        onClick={() => setExpanded((value) => !value)}
-      >
+    <aside className="sidebar sidebar--expanded">
+      <div className="sidebar__top">
         <img
           className="navigation-favicon"
           src="/olena-favicon-192.png"
@@ -189,13 +180,14 @@ export function Sidebar({ view, onNavigate }: NavigationProps) {
           width="24"
           height="24"
         />
-        <span className="sidebar__brand" aria-label="OLENASTUDY">
+        <div className="sidebar__brand" aria-label={"OLENASTUDY"}>
           <strong>
-            OLENA<span>STUDY</span>
+            {"OLENA"}
+            <span>{"STUDY"}</span>
           </strong>
-        </span>
-      </button>
-      <nav id="sidebar-navigation" className="sidebar__nav" aria-label={uiText(119)}>
+        </div>
+      </div>
+      <nav className="sidebar__nav" aria-label={uiText(119)}>
         {NAVIGATION_SECTIONS.map((section) => (
           <section className="nav-section" aria-label={section.label} key={section.label}>
             <span className="nav-section__label">{section.label}</span>

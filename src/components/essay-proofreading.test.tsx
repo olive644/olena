@@ -46,6 +46,8 @@ it("applies an explicit correction and terminates its worker on unmount", () => 
   );
   fireEvent.click(screen.getByRole("button", { name: "Entregar redação" }));
   act(() => FakeWorker.last.respond());
+  // A revisão fica no painel "Redação", fechado e inerte até o aluno abri-lo.
+  fireEvent.click(screen.getByRole("button", { name: "Redação" }));
   fireEvent.click(screen.getByText("Revisão ortográfica"));
   fireEvent.click(screen.getByRole("button", { name: "Substituir educasão por educação" }));
   expect(change).toHaveBeenCalledWith("A educação");
@@ -60,6 +62,8 @@ it("ignores a word without editing and refuses a stale response", () => {
   );
   fireEvent.click(screen.getByRole("button", { name: "Entregar redação" }));
   act(() => FakeWorker.last.respond());
+  // A revisão fica no painel "Redação", fechado e inerte até o aluno abri-lo.
+  fireEvent.click(screen.getByRole("button", { name: "Redação" }));
   fireEvent.click(screen.getByRole("button", { name: "Ignorar palavra" }));
   expect(change).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
@@ -83,6 +87,8 @@ it("reports failure without changing the draft and allows retry", () => {
     <EssayProofreading text="A educasão" onChange={change} onLocate={vi.fn()} onSubmit={vi.fn()} />,
   );
   fireEvent.click(screen.getByRole("button", { name: "Entregar redação" }));
+  // A revisão fica no painel "Redação", fechado e inerte até o aluno abri-lo.
+  fireEvent.click(screen.getByRole("button", { name: "Redação" }));
   fireEvent.click(screen.getByText("Revisão ortográfica"));
   act(() => FakeWorker.last.onerror?.());
   expect(screen.getByRole("alert").textContent).toContain("Seu texto foi preservado");

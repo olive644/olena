@@ -665,7 +665,7 @@ function EssayWriting({
               onContextMenu={(event) => event.preventDefault()}
             >
               <header>
-                <img src="/olena-favicon-192.png" alt="Olena" width="44" height="44" />
+                <img src="/olena-favicon-192.png" alt={"Olena"} width="44" height="44" />
                 <div>
                   <h1>{uiText(proposal.title)}</h1>
                   <small>{uiText("Assunto: {0}", [proposal.category])}</small>

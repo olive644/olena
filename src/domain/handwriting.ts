@@ -20,9 +20,10 @@ export type HandwritingStroke = {
   // Sem o campo, a linha é contínua (traços antigos abrem iguais).
   dash?: "dashed" | "dotted";
   // "simulated": traço de mouse ou dedo, sem pressão real. A largura vem da velocidade e as pontas
-  // afinam (ver handwriting-ink-dynamics). Sem o campo a largura é a de sempre: traços antigos
-  // abrem iguais.
-  dynamics?: "simulated";
+  // afinam (ver handwriting-ink-dynamics). "pen": caneta ou mesa digitalizadora, com pressão
+  // suavizada, curva de toque leve e pontas finas. Sem o campo a largura é a de sempre: traços
+  // antigos abrem iguais.
+  dynamics?: "simulated" | "pen";
   // Traço da borracha de fundo: não deixa tinta, apaga o fundo importado (página ou imagem) por
   // onde passa e revela o papel. Sem o campo, é tinta (traços antigos abrem iguais).
   cover?: true;

@@ -156,9 +156,7 @@
       "kind": "paraphrase",
       "status": "aligned",
       "reason": "aligned",
-      "evidence": [
-        "related"
-      ]
+      "evidence": ["related"]
     },
     {
       "id": "essay-26-unrelated",
@@ -193,40 +191,28 @@
       "kind": "extended-relevant",
       "status": "inconclusive",
       "reason": "ambiguous",
-      "evidence": [
-        "related",
-        "related"
-      ]
+      "evidence": ["related", "related"]
     },
     {
       "id": "essay-22-extended",
       "kind": "extended-relevant",
       "status": "inconclusive",
       "reason": "ambiguous",
-      "evidence": [
-        "related",
-        "related"
-      ]
+      "evidence": ["related", "related"]
     },
     {
       "id": "extended-unrelated",
       "kind": "extended-unrelated",
       "status": "off-topic",
       "reason": "different",
-      "evidence": [
-        "uncertain",
-        "uncertain"
-      ]
+      "evidence": ["uncertain", "uncertain"]
     },
     {
       "id": "intro-only",
       "kind": "partial-intro",
       "status": "tangential",
       "reason": "partial",
-      "evidence": [
-        "related",
-        "uncertain"
-      ]
+      "evidence": ["related", "uncertain"]
     },
     {
       "id": "repeated-punctuated",

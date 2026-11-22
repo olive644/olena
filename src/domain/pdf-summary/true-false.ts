@@ -12,8 +12,6 @@ export type FalseContext = {
   language: Language;
   /** Números que aparecem no arquivo, para trocar por um que também seja do texto. */
   numbers: readonly string[];
-  /** Termos-chave do arquivo. */
-  terms: readonly string[];
   /** Definição que esta frase própria dá (quando dá). */
   own?: DefinitionParts;
   /** Definições de outras frases do arquivo. */
@@ -50,6 +48,9 @@ function numberSwap(text: string, context: FalseContext): string | undefined {
     const start = match.index ?? 0;
     const after = text.slice(start + original.length);
     const before = text.slice(0, start);
+    // Número colado a um nome próprio no meio da frase é nome de produto ("Altair 8800"), não dado.
+    const previous = before.trimEnd().split(/\s+/).at(-1) ?? "";
+    if (before.trimEnd().includes(" ") && /^\p{Lu}/u.test(previous)) continue;
     // "2000 anos" e "1000 metros" são quantidades, não datas.
     const isYear = YEAR.test(original) && !QUANTITY_UNIT.test(after);
     const decade = /(?:d[ée]cada de|anos)\s+$/i.test(before);
@@ -85,6 +86,8 @@ const NEGATION_PT = /(?<![\p{L}])(?:nunca|nem|jamais|sem|nenhum|nenhuma)(?![\p{L
 const NOT_ONLY_PT = /n[ãa]o\s+(?:s[óo]|apenas|somente)|n[ãa]o\s+[ée]\s+s[óo]/iu;
 const AUXILIARY_PT =
   /(?<=\s)(é|são|foi|foram|era|eram|pode|podem|tem|têm|possui|possuem|usa|usam|permite|permitem|serve|servem|ocorre|ocorrem|faz|fazem|fica|ficam|precisa|precisam)(?=\s)/u;
+const SUBORDINATOR_PT =
+  /(?<![\p{L}])(?:que|quando|onde|enquanto|porque|embora|se|como|cujo|cuja|quem|qual|quais)(?![\p{L}])/iu;
 const AUXILIARY_EN = /(?<=\s)(is|are|was|were)(?=\s)/u;
 
 function negate(text: string, context: FalseContext): string | undefined {
@@ -99,7 +102,10 @@ function negate(text: string, context: FalseContext): string | undefined {
     return removed === text ? undefined : removed;
   }
   if (NEGATION_PT.test(text)) return undefined;
-  if (!AUXILIARY_PT.test(text)) return undefined;
+  const verb = AUXILIARY_PT.exec(text);
+  if (!verb) return undefined;
+  // Verbo de oração subordinada ("o que é...", "quando foi...") não vira negação segura.
+  if (SUBORDINATOR_PT.test(text.slice(0, verb.index))) return undefined;
   return text.replace(AUXILIARY_PT, "não $1");
 }
 
@@ -115,11 +121,6 @@ const OPPOSITES: Record<Language, readonly (readonly [string, string])[]> = {
     ["aumentam", "diminuem"],
     ["sempre", "nunca"],
     ["todos", "nenhum"],
-    ["rápido", "lento"],
-    ["rápida", "lenta"],
-    ["antigo", "moderno"],
-    ["interna", "externa"],
-    ["interno", "externo"],
   ],
   en: [
     ["larger", "smaller"],
@@ -129,7 +130,6 @@ const OPPOSITES: Record<Language, readonly (readonly [string, string])[]> = {
     ["increases", "decreases"],
     ["always", "never"],
     ["all", "none"],
-    ["faster", "slower"],
   ],
 };
 
@@ -149,27 +149,6 @@ function opposite(text: string, context: FalseContext): string | undefined {
   return undefined;
 }
 
-function termSwap(text: string, context: FalseContext): string | undefined {
-  // Só nomes próprios e siglas no meio da frase: trocar substantivo comum erra gênero e número.
-  const present = context.terms.filter(
-    (term) => /^\p{Lu}/u.test(term) && (wholeWord(term).exec(text)?.index ?? 0) > 0,
-  );
-  for (const term of present) {
-    const options = context.terms.filter(
-      (other) =>
-        other.toLowerCase() !== term.toLowerCase() &&
-        /^\p{Lu}/u.test(other) &&
-        other.includes(" ") === term.includes(" ") &&
-        !wholeWord(other).test(text),
-    );
-    if (!options.length) continue;
-    const hit = wholeWord(term).exec(text)!;
-    const pick = options[context.index % options.length]!;
-    return text.slice(0, hit.index) + pick + text.slice(hit.index + hit[0].length);
-  }
-  return undefined;
-}
-
 function definitionSwap(text: string, context: FalseContext): string | undefined {
   const own = context.own;
   if (!own) return undefined;
@@ -183,14 +162,79 @@ function definitionSwap(text: string, context: FalseContext): string | undefined
   return `${own.term} ${own.verb} ${rest}.`;
 }
 
-const MAKERS = [definitionSwap, numberSwap, negate, opposite, termSwap] as const;
+export type FalseKind = "definition" | "number" | "negation" | "opposite";
 
-/** Uma versão falsa da frase, ou undefined se nenhum gerador conseguiu mudá-la com segurança. */
-export function falseVersion(text: string, context: FalseContext): string | undefined {
+const MAKERS: readonly (readonly [
+  FalseKind,
+  (text: string, context: FalseContext) => string | undefined,
+])[] = [
+  ["definition", definitionSwap],
+  ["number", numberSwap],
+  ["negation", negate],
+  ["opposite", opposite],
+];
+
+/** Uma versão falsa da frase e o tipo de troca usado, ou undefined se nenhuma foi segura. */
+export function falseVariant(
+  text: string,
+  context: FalseContext,
+): { text: string; kind: FalseKind } | undefined {
   for (let step = 0; step < MAKERS.length; step += 1) {
-    const maker = MAKERS[(context.index + step) % MAKERS.length]!;
+    const [kind, maker] = MAKERS[(context.index + step) % MAKERS.length]!;
     const result = maker(text, context);
-    if (result && result !== text) return result;
+    if (result && result !== text) return { text: result, kind };
   }
   return undefined;
+}
+
+/** Só o texto da versão falsa. */
+export function falseVersion(text: string, context: FalseContext): string | undefined {
+  return falseVariant(text, context)?.text;
+}
+
+const FUNCTION_WORDS_PT = new Set([
+  "em",
+  "sem",
+  "tem",
+  "item",
+  "homem",
+  "jovem",
+  "origem",
+  "imagem",
+]);
+const VERB_PT =
+  /^(?:é|são|foi|foram|era|eram|está|estão|estava|estavam|tem|têm|teve|tinha|tinham|há|havia|pode|podem|podia|deve|devem|fez|faz|fazem|usa|usam|usou|permite|permitem|serve|servem|ocorre|ocorrem|fica|ficam|precisa|precisam|passou|passaram|chamou|ficou|virou|existe|existem|surge|surgem|aparece|aparecem|recebe|recebem|libera|liberam|produz|produzem|forma|formam|vê|vêm|vem|vai|vão|seria|seriam|será|serão|significa|significam)$/iu;
+const VERB_SUFFIX_PT = /^\p{L}{3,}(?:ou|eu|iu|ava|avam|aram|eram|iram|iam|ndo|am)$/iu;
+const VERB_EN =
+  /^(?:is|are|was|were|has|have|had|can|could|will|would|does|do|did|may|might|must|should|became|made|used|called|built|began|invented|released)$/i;
+
+/**
+ * A frase parece uma afirmação completa? Barra títulos, cabeçalhos de tabela, linhas de linha do
+ * tempo e listas coladas ("Início do projeto Apresentação pública Fim da operação"): exige
+ * pontuação final, tamanho mínimo, poucas palavras com inicial maiúscula e um verbo.
+ */
+export function looksLikeStatement(text: string, language: Language): boolean {
+  const clean = text.trim();
+  if (!/[.!?]$/.test(clean)) return false;
+  if (/[|\t]|^[\d\-*•#]/.test(clean)) return false;
+  const tokens = clean.split(/\s+/);
+  if (tokens.length < 6) return false;
+  const bare = (token: string) => token.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
+  const capitalized = tokens.slice(1).filter((token) => /^\p{Lu}\p{Ll}/u.test(bare(token)));
+  if (capitalized.length / (tokens.length - 1) > 0.4) return false;
+  let run = 0;
+  for (const token of tokens) {
+    run = /^\p{Lu}/u.test(bare(token)) ? run + 1 : 0;
+    if (run >= 4) return false;
+  }
+  const words = tokens.map(bare).filter(Boolean);
+  if (language === "en")
+    return words.some((word) => VERB_EN.test(word) || /^\p{L}{3,}ed$/iu.test(word));
+  return words.some(
+    (word) =>
+      VERB_PT.test(word) ||
+      (!FUNCTION_WORDS_PT.has(word.toLowerCase()) &&
+        !/(?:agem|igem|ugem|ção|são)$/iu.test(word) &&
+        VERB_SUFFIX_PT.test(word)),
+  );
 }

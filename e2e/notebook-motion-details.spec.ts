@@ -57,16 +57,6 @@ for (const theme of ["light", "dark"]) {
     await expect(page.locator(".notebook-sheet footer .paper-digits")).toHaveCount(2);
     await expect(page.locator(".notebook-preview-controls > span")).toHaveClass(/visually-hidden/);
     if (info.project.name === "desktop") {
-      const nav = page.locator(".sidebar .nav-item").first().locator("span").last();
-      const style = await nav.evaluate((node) => {
-        const s = getComputedStyle(node);
-        return {
-          background: s.backgroundColor,
-          image: s.backgroundImage,
-          radius: s.borderRadius,
-          shadow: s.boxShadow,
-        };
-      });
       const tool = page.getByRole("button", { name: "Colocar divisória", exact: true });
       const tip = await tool.evaluate((node) => {
         const s = getComputedStyle(node, "::after");
@@ -77,7 +67,11 @@ for (const theme of ["light", "dark"]) {
           shadow: s.boxShadow,
         };
       });
-      expect(tip).toEqual(style);
+      // A dica da ferramenta usa o papel recortado (fundo, canto cortado e sombra de papel). A barra
+      // lateral deixou de ter dicas porque agora já mostra os nomes.
+      expect(tip.background).not.toBe("rgba(0, 0, 0, 0)");
+      expect(tip.image).toContain("linear-gradient");
+      expect(tip.shadow).not.toBe("none");
     }
     const tools = page.getByRole("toolbar", { name: "Ferramentas do caderno" }).getByRole("button");
     for (const button of await tools.all()) {

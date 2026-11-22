@@ -18,6 +18,11 @@ for (const theme of ["light", "dark"]) {
     await page.locator(".notebook-spine").first().click();
     await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
     const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
+    // A paleta fica sempre à vista e o texto cresce para a direita: minimiza o estojo e o leva
+    // para baixo, longe da área usada pelo teste.
+    await editor.getByRole("button", { name: "Minimizar paleta de cores" }).click();
+    const case_ = editor.getByRole("button", { name: "Abrir estojo de cores" });
+    for (let step = 0; step < 14; step += 1) await case_.press("ArrowDown");
     await expect(editor.locator(".handwriting-canvas")).toBeVisible();
     const topPositions = async () =>
       Promise.all(

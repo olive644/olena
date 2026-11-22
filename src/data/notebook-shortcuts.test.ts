@@ -50,10 +50,13 @@ it("compartilha alterações, detecta conflitos e restaura teclado e caneta", ()
   expect(editor.result.current.settings.bindings["tool-eraser"]).toBe("e");
   act(() => profile.result.current.changePen("penSide", "highlighter"));
   expect(editor.result.current.settings.penSide).toBe("highlighter");
+  act(() => profile.result.current.changePen("penSecond", "eraser"));
+  expect(editor.result.current.settings.penSecond).toBe("eraser");
   act(() => editor.result.current.reset());
   expect(profile.result.current.settings).toEqual({
     bindings: DEFAULT_NOTEBOOK_BINDINGS,
     penSide: "hand",
+    penSecond: "selected",
     penTail: "eraser",
   });
   expect(readNotebookShortcuts()).toEqual(profile.result.current.settings);
@@ -71,4 +74,10 @@ it("normaliza Ctrl, Cmd, espaço e sinais, sem aceitar modificadores sozinhos", 
   expect(
     shortcutFromEvent(new KeyboardEvent("keydown", { key: "Shift", shiftKey: true })),
   ).toBeNull();
+});
+it("o segundo botão guardado volta ao abrir e valor inválido cai no padrão", () => {
+  localStorage.setItem(NOTEBOOK_SHORTCUTS_KEY, JSON.stringify({ penSecond: "highlighter" }));
+  expect(readNotebookShortcuts().penSecond).toBe("highlighter");
+  localStorage.setItem(NOTEBOOK_SHORTCUTS_KEY, JSON.stringify({ penSecond: "outra" }));
+  expect(readNotebookShortcuts().penSecond).toBe("selected");
 });

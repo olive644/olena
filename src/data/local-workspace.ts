@@ -1,4 +1,4 @@
-import { LIBRARY_FOLDER_SHAPES } from "../domain/library-folder-shapes";
+import { LIBRARY_FOLDER_SHAPES } from "../domain/library-folder-shapes.js";
 import { ENGLISH_PART_COUNT } from "../domain/english-part-order.js";
 import { uiText } from "../i18n/runtime.js";
 import { validLanguageAttempt } from "../domain/language-progress.js";
@@ -404,7 +404,9 @@ export function isHandwritingDocument(value: unknown): boolean {
       (stroke["dash"] === undefined ||
         stroke["dash"] === "dashed" ||
         stroke["dash"] === "dotted") &&
-      (stroke["dynamics"] === undefined || stroke["dynamics"] === "simulated") &&
+      (stroke["dynamics"] === undefined ||
+        stroke["dynamics"] === "simulated" ||
+        stroke["dynamics"] === "pen") &&
       (stroke["cover"] === undefined || stroke["cover"] === true) &&
       isString(stroke["color"]) &&
       /^#[0-9a-f]{6}$/i.test(stroke["color"]) &&

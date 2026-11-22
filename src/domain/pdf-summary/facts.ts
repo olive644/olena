@@ -468,8 +468,11 @@ export function keyTerms(
       (a, b) => b[1] - a[1] || a[0].length - b[0].length,
     );
     const capital = [...(capitalForms.get(key) ?? [])].sort((a, b) => b[1] - a[1]);
-    const shown = capital[0]?.[0] ?? forms[0]?.[0] ?? key;
-    const proper = (properCount.get(key) ?? 0) >= 1 ? 1.6 : 1;
+    // Só é nome próprio se aparece com maiúscula na maior parte das vezes: "Máquina" de "Máquina
+    // Analítica" não faz de "máquina" um nome.
+    const mostlyCapital = (properCount.get(key) ?? 0) >= 0.5 * count;
+    const shown = (mostlyCapital ? capital[0]?.[0] : undefined) ?? forms[0]?.[0] ?? key;
+    const proper = mostlyCapital && (properCount.get(key) ?? 0) >= 1 ? 1.6 : 1;
     scored.push({ key, score: count * idf * (isPair ? 1.3 : 1) * proper, shown });
   }
   scored.sort((a, b) => b.score - a.score || a.shown.localeCompare(b.shown));
@@ -485,7 +488,44 @@ export function keyTerms(
     chosen.push(candidate);
     if (chosen.length >= limit) break;
   }
-  return chosen.map(({ shown, score }) => ({ term: shown, score }));
+  // Nome inteiro no lugar do pedaço: "John" vira "John von Neumann", "Pascal" vira "Blaise Pascal".
+  const runs = new Map<string, number>();
+  const runPattern =
+    /(?<![\p{L}\p{N}])\p{Lu}[\p{L}'-]+(?:\s+(?:(?:de|da|do|dos|das|von|van|di)\s+)?\p{Lu}[\p{L}'-]+)+/gu;
+  for (const sentence of sentences)
+    for (const match of sentence.matchAll(runPattern)) {
+      if (match.index === 0) continue;
+      runs.set(match[0], (runs.get(match[0]) ?? 0) + 1);
+    }
+  const result: KeyTerm[] = [];
+  const seen = new Set<string>();
+  for (const { shown, score, key } of chosen) {
+    let term = shown;
+    if (!shown.includes(" ") && /^\p{Lu}/u.test(shown)) {
+      const best = [...runs]
+        .filter(([run]) =>
+          run.split(/\s+/).some((word) => word.toLowerCase() === shown.toLowerCase()),
+        )
+        .sort((a, b) => b[1] - a[1] || b[0].length - a[0].length)[0];
+      const share = best ? best[1] / Math.max(1, frequency.get(key) ?? 1) : 0;
+      if (best && (best[1] >= 2 || share >= 0.5)) term = best[0];
+    }
+    const id = term.toLowerCase();
+    if (seen.has(id)) continue;
+    seen.add(id);
+    result.push({ term, score });
+  }
+  // Uma palavra solta que já está dentro de um nome inteiro escolhido não repete.
+  return result.filter(
+    (entry) =>
+      entry.term.includes(" ") ||
+      !result.some(
+        (other) =>
+          other !== entry &&
+          other.term.includes(" ") &&
+          other.term.toLowerCase().split(/\s+/).includes(entry.term.toLowerCase()),
+      ),
+  );
 }
 
 /** Para ordenar e comparar sem depender de acento ou caixa. */

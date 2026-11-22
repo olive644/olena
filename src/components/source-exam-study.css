@@ -330,3 +330,14 @@
   width: 28px;
   height: 28px;
 }
+
+/* Texto-base que vem antes do enunciado de uma questão de prova. */
+.source-exam-context {
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  border-left: 3px solid currentColor;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  overflow-wrap: anywhere;
+}

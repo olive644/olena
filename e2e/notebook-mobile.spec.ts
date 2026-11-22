@@ -46,11 +46,12 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   expect(await editor.evaluate((node) => node.scrollTop)).toBe(0);
   await page.screenshot({ path: info.outputPath("caneta-mobile.png") });
   await editor.getByRole("button", { name: "Borracha", exact: true }).click();
+  // A paleta fica à vista em qualquer ferramenta; só some quando a pessoa a minimiza.
   await expect(
     editor
       .getByRole("group", { name: "Cores rápidas" })
       .getByRole("button", { name: "Tinta Roxo" }),
-  ).toBeHidden();
+  ).toBeVisible();
   await editor.getByRole("button", { name: "Histórico e zoom", exact: true }).click();
   await expect(editor.getByLabel("Zoom atual")).toBeVisible();
   await editor.getByRole("button", { name: "Recolher opções" }).click();
@@ -83,17 +84,12 @@ test("navegação escura e gavetas do caderno mantêm contraste e ações separa
   const header = page.locator(".page-header");
   await expect(nav).toHaveCSS("background-color", "rgb(41, 36, 50)");
   await expect(header).toHaveCSS("background-color", "rgb(41, 36, 50)");
-  await expect(page.getByRole("button", { name: "Mais ferramentas", exact: true })).toHaveCSS(
-    "background-color",
-    "rgba(0, 0, 0, 0)",
-  );
+  // Todas as ferramentas ficam na barra móvel; não há menu "Mais ferramentas".
+  await expect(page.getByRole("button", { name: "Mais ferramentas", exact: true })).toHaveCount(0);
   await page.screenshot({ path: info.outputPath("navegacao-escura.png") });
-  await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
-  const menu = page.getByRole("dialog", { name: "Mais ferramentas" });
-  await expect(menu.getByRole("button", { name: "Planos de aula" })).toHaveCount(0);
-  // Os cadernos agora ficam na Biblioteca: o menu não tem mais o item "Cadernos".
-  await expect(menu.getByRole("button", { name: "Cadernos", exact: true })).toHaveCount(0);
-  await page.keyboard.press("Escape");
+  // Os cadernos ficam na Biblioteca: a barra não tem os itens "Cadernos" nem "Planos de aula".
+  await expect(nav.getByRole("button", { name: "Planos de aula" })).toHaveCount(0);
+  await expect(nav.getByRole("button", { name: "Cadernos", exact: true })).toHaveCount(0);
   await openNotebooksView(page);
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();

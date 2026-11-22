@@ -44,7 +44,9 @@ describe("medidor de créditos da Olena", () => {
   });
 
   it("mostra o saldo real com dígitos originais no cabeçalho compacto", () => {
-    const { container } = render(<OlenaCreditMeter compact usage={usage(80)} resetAt={later} spend={undefined} />);
+    const { container } = render(
+      <OlenaCreditMeter compact usage={usage(80)} resetAt={later} spend={undefined} />,
+    );
     expect(container.querySelector(".olena-credits--compact .paper-digits")).not.toBeNull();
     expect(screen.getByRole("group", { name: "Créditos da Olena" })).not.toBeNull();
   });

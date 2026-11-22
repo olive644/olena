@@ -29,7 +29,8 @@ export function SourceQuizStudy({
     [checked, setChecked] = useState(false),
     [correct, setCorrect] = useState(0);
   const done = phase === "done";
-  const progress = phase !== "study" ? 100 : Math.round(((index + (checked ? 1 : 0)) / queue.length) * 100);
+  const progress =
+    phase !== "study" ? 100 : Math.round(((index + (checked ? 1 : 0)) / queue.length) * 100);
   const sound = useRef<ReturnType<typeof createMathSound> | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
@@ -163,8 +164,8 @@ export function SourceQuizStudy({
                   <small>
                     {index + 1} {uiText("de")} {queue.length}
                   </small>
-                  <h3>{uiText("Complete a afirmação com a alternativa correta.")}</h3>
-                  <p>{q.prompt}</p>
+                  <h3>{uiText("Escolha a alternativa correta.")}</h3>
+                  <p style={{ whiteSpace: "pre-line" }}>{q.prompt}</p>
                 </div>
               </div>
               <div className="source-quiz-answers" role="group" aria-label={uiText("Alternativas")}>
@@ -204,7 +205,8 @@ export function SourceQuizStudy({
                     <div className="source-quiz-explanation">
                       <p>{q.explanation}</p>
                       <small>
-                        {q.sourceTitle} · {uiText("Página")} {q.page}
+                        {q.sourceTitle}
+                        {q.page > 0 && ` · ${uiText("Página")} ${q.page}`}
                       </small>
                     </div>
                   )}

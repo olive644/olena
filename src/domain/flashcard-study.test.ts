@@ -18,20 +18,56 @@ const card: Flashcard = {
   nextReview: "2026-10-25",
 };
 describe("flashcard study", () => {
-  it("preserves old cards, grows successful intervals and resets failures to one day", () => {
+  it("grows successful intervals, resets failures to one day and is deterministic", () => {
     let current = card;
-    for (let i = 0; i < 12; i++) {
-      const next = reviewSchedule(current, "easy");
+    let day = "2026-10-25";
+    const days: number[] = [];
+    for (let i = 0; i < 8; i++) {
+      const next = reviewSchedule(current, "good", day);
       expect(next.intervalDays).toBeGreaterThanOrEqual(current.intervalDays);
-      expect(next.ease).toBeLessThanOrEqual(3.5);
-      current = { ...current, ...next };
+      expect(reviewSchedule(current, "good", day)).toEqual(next);
+      current = {
+        ...current,
+        ...next,
+        lastReviewedOn: day,
+        nextReview: new Date(Date.parse(`${day}T12:00:00Z`) + next.intervalDays * 86_400_000)
+          .toISOString()
+          .slice(0, 10),
+      };
+      day = current.nextReview;
+      days.push(next.intervalDays);
     }
-    expect(reviewSchedule(current, "again")).toMatchObject({
+    expect(days.at(-1)!).toBeGreaterThan(days[0]! * 4);
+    expect(reviewSchedule(current, "again", day)).toMatchObject({
       intervalDays: 1,
       repetitions: 0,
       lapses: 1,
     });
-    expect(reviewSchedule(card, "easy").intervalDays).toBe(3);
+  });
+  it("orders the grades: again < hard < good < easy for a new card", () => {
+    const [again, hard, good, easy] = (["again", "hard", "good", "easy"] as const).map(
+      (rating) => reviewSchedule(card, rating, "2026-10-25").intervalDays,
+    );
+    expect(again!).toBeLessThanOrEqual(hard!);
+    expect(hard!).toBeLessThanOrEqual(good!);
+    expect(good!).toBeLessThan(easy!);
+  });
+  it("upgrades a card studied before FSRS without losing its interval", () => {
+    const legacy: Flashcard = {
+      ...card,
+      intervalDays: 20,
+      ease: 2.5,
+      reviews: 5,
+      correct: 5,
+      lastReviewedOn: "2026-10-05",
+      nextReview: "2026-10-25",
+    };
+    const next = reviewSchedule(legacy, "good", "2026-10-25");
+    expect(next.intervalDays).toBeGreaterThanOrEqual(20);
+    expect(next.stability).toBeGreaterThan(0);
+    expect(next.difficulty).toBeGreaterThanOrEqual(1);
+    expect(next.difficulty).toBeLessThanOrEqual(10);
+    expect(next.reviews).toBe(6);
   });
   it("limits only new cards and counts first reviews across decks", () => {
     const cards = [

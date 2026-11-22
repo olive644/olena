@@ -25,8 +25,9 @@ for (const theme of ["light", "dark"]) {
       };
       await page.waitForTimeout(1200);
       await dismiss();
-      await page.getByRole("button", { name: "Criar pasta", exact: true }).click();
-      const dialog = page.getByRole("dialog", { name: "Nova pasta", exact: true });
+      await page.getByRole("button", { name: "Criar na prateleira", exact: true }).click();
+      await page.getByRole("button", { name: /^Pasta/ }).click();
+      const dialog = page.getByRole("dialog", { name: "Criar pasta", exact: true });
       await dialog.getByLabel("Nome da pasta", { exact: true }).fill("tese");
       await dialog.getByRole("button", { name: "Criar pasta", exact: true }).click();
       await page.waitForTimeout(800);
@@ -81,8 +82,9 @@ for (const [width, height] of [
     };
     await page.waitForTimeout(1200);
     await dismiss();
-    await page.getByRole("button", { name: "Criar pasta", exact: true }).click();
-    const dialog = page.getByRole("dialog", { name: "Nova pasta", exact: true });
+    await page.getByRole("button", { name: "Criar na prateleira", exact: true }).click();
+    await page.getByRole("button", { name: /^Pasta/ }).click();
+    const dialog = page.getByRole("dialog", { name: "Criar pasta", exact: true });
     await dialog.getByLabel("Nome da pasta", { exact: true }).fill("tese");
     await dialog.getByRole("button", { name: "Criar pasta", exact: true }).click();
     await page.waitForTimeout(800);

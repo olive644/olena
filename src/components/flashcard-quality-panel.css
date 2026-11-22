@@ -1,0 +1,40 @@
+.flashcard-quality {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+.flashcard-quality h2 {
+  margin: 0;
+}
+.flashcard-quality p {
+  margin: 0;
+}
+.flashcard-quality__scroll {
+  overflow-x: auto;
+}
+.flashcard-quality table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.flashcard-quality th,
+.flashcard-quality td {
+  padding: 8px 10px;
+  text-align: start;
+  border-bottom: 1px solid currentColor;
+  border-bottom-color: color-mix(in srgb, currentColor 25%, transparent);
+}
+.flashcard-quality__caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.flashcard-quality__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}

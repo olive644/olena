@@ -1,4 +1,5 @@
-import { libraryFolderShapes, type LibraryFolderShape } from "./library-folder-shapes";
+import { libraryFolderShapes, type LibraryFolderShape } from "./library-folder-shapes.js";
+import type { CardOrigin } from "./flashcard-feedback.js";
 import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences.js";
 import { validLanguageAttempt, type LanguageAttempt } from "./language-progress.js";
 import type { OnboardingConfiguration } from "./onboarding-configuration.js";
@@ -170,12 +171,17 @@ type LibraryCollection = {
   createdAt?: string;
 };
 
-export type FlashcardRating = "again" | "hard" | "easy";
+export type FlashcardRating = "again" | "hard" | "good" | "easy";
 
 export type Flashcard = {
   deck?: string;
   noteId?: string;
   ease?: number;
+  /** Como o cartão automático foi feito (para saber qual gerador erra mais). */
+  origin?: CardOrigin;
+  /** Memória FSRS: estabilidade em dias e dificuldade de 1 a 10. */
+  stability?: number;
+  difficulty?: number;
   repetitions?: number;
   reviews?: number;
   correct?: number;
@@ -366,6 +372,17 @@ export type WorkspaceAction =
       editingPageId?: string;
     }
   | { type: "notebook/page-moved"; notebookId: string; pageId: string; direction: -1 | 1 }
+  // Segurar um tipo ou cor de folha no editor troca o caderno inteiro: todas as folhas escritas
+  // à mão ganham o papel e/ou a cor. `previews` traz a miniatura nova de cada folha (por asset),
+  // já desenhada, para as prateleiras não mostrarem o papel antigo.
+  | {
+      type: "notebook/paper-applied";
+      notebookId: string;
+      paper?: HandwritingDocument["paper"];
+      paperColor?: NonNullable<HandwritingDocument["paperColor"]>;
+      previews?: Record<string, string>;
+      updatedAt: string;
+    }
   // Arrastar a miniatura no índice: leva a folha direto para a posição solta,
   // em vez de andar vizinho a vizinho como o botão de mover.
   | { type: "notebook/page-reordered"; notebookId: string; pageId: string; toIndex: number }
@@ -429,6 +446,7 @@ export type WorkspaceAction =
       noteId?: string;
       materialId?: string;
       sourcePage?: number;
+      origin?: CardOrigin;
       subjectId: string;
       front: string;
       back: string;
@@ -808,6 +826,45 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             return rest;
           }),
         notes: state.notes.filter((note) => !pageIds.has(note.id)),
+      };
+    }
+    case "notebook/paper-applied": {
+      const notebook = state.notebooks.find((item) => item.id === action.notebookId);
+      if (!notebook || (!action.paper && !action.paperColor)) return state;
+      const pages = new Set(notebook.pageIds);
+      return {
+        ...state,
+        notes: state.notes.map((note) =>
+          !pages.has(note.id)
+            ? note
+            : {
+                ...note,
+                updatedAt: action.updatedAt,
+                assets: note.assets.map((asset) => {
+                  const document = asset.handwriting;
+                  if (!document) return asset;
+                  const preview = action.previews?.[asset.id];
+                  return {
+                    ...asset,
+                    ...(preview ? { dataUrl: preview } : {}),
+                    handwriting: {
+                      ...document,
+                      ...(action.paper
+                        ? {
+                            paper: action.paper,
+                            // A pauta nova não encolhe nem corta o que já foi escrito.
+                            canvasSize: {
+                              width: Math.max(3200, document.canvasSize?.width ?? 0),
+                              height: Math.max(2400, document.canvasSize?.height ?? 0),
+                            },
+                          }
+                        : {}),
+                      ...(action.paperColor ? { paperColor: action.paperColor } : {}),
+                    },
+                  };
+                }),
+              },
+        ),
       };
     }
     case "notebook/page-moved":
@@ -1230,6 +1287,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             ...(action.noteId ? { noteId: action.noteId } : {}),
             ...(action.materialId ? { materialId: action.materialId } : {}),
             ...(action.sourcePage ? { sourcePage: action.sourcePage } : {}),
+            ...(action.origin ? { origin: action.origin } : {}),
             subjectId: action.subjectId,
             front: action.front,
             back: action.back,
@@ -1243,7 +1301,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         ...state,
         flashcards: state.flashcards.map((card) => {
           if (card.id !== action.id) return card;
-          const schedule = reviewSchedule(card, action.rating);
+          const schedule = reviewSchedule(card, action.rating, action.reviewedOn);
           return {
             ...card,
             ...schedule,

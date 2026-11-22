@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
-import { LibraryFolderContents } from "./library-shelf-view";
+import { LibraryFolderContents } from "./library-folder-contents";
 
 const stream = vi.hoisted(() => vi.fn());
 const services = vi.hoisted(() => vi.fn());
@@ -747,7 +747,7 @@ describe("flashcards, quiz e simulado com a Olena", () => {
     fireEvent.keyDown(window, { key: "ArrowLeft" });
     expect(within(study).getByText("Vamos rever as perguntas que você errou.")).toBeTruthy();
     expect(dispatch).toHaveBeenCalledWith(
-      expect.objectContaining({ type: "flashcard/reviewed", id: "c1", rating: "easy" }),
+      expect.objectContaining({ type: "flashcard/reviewed", id: "c1", rating: "good" }),
     );
     expect(dispatch).toHaveBeenCalledWith(
       expect.objectContaining({ type: "flashcard/reviewed", id: "c2", rating: "again" }),

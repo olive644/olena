@@ -13,7 +13,10 @@ import {
   keyTerms,
   type Definition,
 } from "./facts";
-import { falseVersion, numbersIn, type DefinitionParts } from "./true-false";
+import type { CardOrigin } from "../flashcard-feedback";
+import { falseVariant, looksLikeStatement, numbersIn, type DefinitionParts } from "./true-false";
+import { isExam, parseExam } from "./exam";
+import { examFlashcards, examProblem, examSummary } from "./exam-study";
 import {
   contentStems,
   countWords,
@@ -695,6 +698,25 @@ export async function summarizeDocument(
 ): Promise<SummaryResult> {
   const progress = (fraction: number, stage: SummaryStage) => options.onProgress?.(fraction, stage);
   progress(0, "structuring");
+  // Prova inteira: o resumo mostra as questões e o gabarito do arquivo, não frases soltas.
+  const exam = parseExam(doc);
+  if (isExam(exam)) {
+    const markdown = examSummary(exam, doc.title);
+    const words = countWords(markdown);
+    return {
+      title: doc.title,
+      markdown,
+      stats: {
+        pages: doc.pages,
+        sections: 1,
+        sentences: exam.questions.length,
+        selectedSentences: exam.questions.length,
+        wordsIn: words,
+        wordsOut: words,
+        ratio: 1,
+      },
+    };
+  }
   const prepared = prepare(doc);
   const { sections, sentences, language } = prepared;
   const wordsIn = sentences.reduce((sum, sentence) => sum + countWords(sentence.text), 0);
@@ -710,6 +732,9 @@ export async function summarizeDocument(
   const totalChars = sections.reduce((sum, section) => sum + section.chars, 0);
   const detail = options.detail ?? "medium";
   const L = LABELS[doc.language];
+  // Texto puro, nota e imagem lida por OCR não têm páginas: citar "pág. 1" seria inventar.
+  const pageSuffix = (section: Section) =>
+    doc.paged === false ? "" : ` (${pageLabel(section.startPage, section.endPage, L)})`;
   const target = targetCharacters(totalChars, detail);
   const used = new Set<number>();
   const lines: string[] = [];
@@ -774,7 +799,7 @@ export async function summarizeDocument(
   if (sections.length >= 3) {
     lines.push(`## ${L.route}`);
     for (const section of sections) {
-      lines.push(`- **${section.title}** (${pageLabel(section.startPage, section.endPage, L)})`);
+      lines.push(`- **${section.title}**${pageSuffix(section)}`);
     }
   }
 
@@ -819,7 +844,7 @@ export async function summarizeDocument(
     const plain = plainTitle(section.title);
     const heading = sections.length === 1 && section.title === L.mainPoints ? L.mainPoints : plain;
     const label = sections.length === 1 ? heading : `${sectionNumber}. ${heading}`;
-    lines.push(`## ${label} (${pageLabel(section.startPage, section.endPage, L)})`);
+    lines.push(`## ${label}${pageSuffix(section)}`);
     if (section.subtopics.length > 0) {
       lines.push(`**${L.subtopics}:** ${section.subtopics.join("; ")}`);
     }
@@ -1046,7 +1071,7 @@ export async function summarizeDocument(
 }
 
 /** Frente: uma afirmação. Verso: "Verdadeiro." ou "Falso." e a frase do arquivo que explica. */
-export type AutoFlashcard = { front: string; back: string; page: number };
+export type AutoFlashcard = { front: string; back: string; page: number; kind: CardOrigin };
 
 /** Teto de cartões por arquivo: o baralho precisa continuar revisável. */
 export const MAX_AUTO_FLASHCARDS = 200;
@@ -1085,6 +1110,12 @@ export async function flashcardsFromDocument(
   doc: StructuredDocument,
   options: Pick<SummaryOptions, "signal"> = {},
 ): Promise<AutoFlashcard[]> {
+  const exam = parseExam(doc);
+  if (isExam(exam)) {
+    const problem = examProblem(exam);
+    if (problem) throw problem;
+    return examFlashcards(exam).slice(0, MAX_AUTO_FLASHCARDS);
+  }
   const prepared = prepare(doc);
   const { sections, sentences, language } = prepared;
   for (let index = 0; index < sections.length; index += 1) {
@@ -1099,18 +1130,12 @@ export async function flashcardsFromDocument(
         sentence.candidate &&
         !dependsOnPrevious(sentence.text) &&
         !isReferenceLike(sentence.text) &&
-        sentence.text.length <= 260,
+        sentence.text.length <= 260 &&
+        looksLikeStatement(sentence.text, language),
     )
     .sort((x, y) => y.score - x.score)
     .slice(0, MAX_AUTO_FLASHCARDS);
   const numbers = [...new Set(sentences.flatMap((sentence) => numbersIn(sentence.text)))];
-  const terms = keyTerms(
-    sentences.map((sentence) => sentence.text),
-    language,
-    60,
-  )
-    .map(({ term }) => term)
-    .filter((term) => term.length >= 3);
   const definitions = sentences
     .map((sentence) => (sentence.definition ? definitionParts(sentence.definition) : undefined))
     .filter((item): item is DefinitionParts => item !== undefined);
@@ -1122,17 +1147,22 @@ export async function flashcardsFromDocument(
     const own = sentence.definition ? definitionParts(sentence.definition) : undefined;
     const wrong =
       falses <= trues
-        ? falseVersion(sentence.text, {
+        ? falseVariant(sentence.text, {
             index: sentence.id,
             language,
             numbers,
-            terms,
             definitions,
             ...(own ? { own } : {}),
           })
         : undefined;
-    const usable = wrong && !known.has(squash(wrong)) && wrong.length <= 300 ? wrong : undefined;
-    const front = usable ?? sentence.text;
+    const usable =
+      wrong &&
+      !known.has(squash(wrong.text)) &&
+      wrong.text.length <= 300 &&
+      looksLikeStatement(wrong.text, language)
+        ? wrong
+        : undefined;
+    const front = usable?.text ?? sentence.text;
     if (fronts.has(front)) continue;
     fronts.add(front);
     const back = usable
@@ -1140,7 +1170,65 @@ export async function flashcardsFromDocument(
       : `${TRUE_LABEL[language]} ${sentence.text}`;
     if (usable) falses += 1;
     else trues += 1;
-    made.push({ id: sentence.id, card: { front, back, page: sentence.page } });
+    made.push({
+      id: sentence.id,
+      card: { front, back, page: sentence.page, kind: usable ? usable.kind : "true" },
+    });
   }
   return made.sort((x, y) => x.id - y.id).map(({ card }) => card);
+}
+
+/** Frase do arquivo com o que o gerador de quiz precisa saber dela. */
+export type Fact = {
+  id: number;
+  text: string;
+  page: number;
+  score: number;
+  /** Anos de quatro dígitos citados na frase. */
+  years: string[];
+  definition?: { term: string; verb: string; plural: boolean; rest: string };
+};
+
+/** Frases importantes e autossuficientes do documento, com definição e anos já identificados. */
+export async function extractFacts(
+  doc: StructuredDocument,
+  options: Pick<SummaryOptions, "signal"> = {},
+): Promise<{ language: Language; facts: Fact[] }> {
+  const prepared = prepare(doc);
+  const { sections, sentences, language } = prepared;
+  for (let index = 0; index < sections.length; index += 1) {
+    options.signal?.throwIfAborted();
+    scoreSection(prepared, sections[index]!);
+    if (index % 4 === 3) await tick();
+  }
+  const facts: Fact[] = sentences
+    .filter(
+      (sentence) =>
+        sentence.candidate &&
+        !dependsOnPrevious(sentence.text) &&
+        !isReferenceLike(sentence.text) &&
+        sentence.text.length <= 320 &&
+        looksLikeStatement(sentence.text, language),
+    )
+    .map((sentence) => {
+      const parts = sentence.definition ? definitionParts(sentence.definition) : undefined;
+      return {
+        id: sentence.id,
+        text: sentence.text,
+        page: sentence.page,
+        score: sentence.score,
+        years: sentence.dates.map((date) => date.label).filter((label) => /^\d{4}$/.test(label)),
+        ...(parts && sentence.definition
+          ? {
+              definition: {
+                term: parts.term,
+                verb: parts.verb,
+                plural: sentence.definition.plural,
+                rest: parts.rest,
+              },
+            }
+          : {}),
+      };
+    });
+  return { language, facts };
 }

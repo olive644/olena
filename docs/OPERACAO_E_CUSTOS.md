@@ -182,3 +182,24 @@ Proprietário pediu explicitamente subir o teto após a medição de 1761,1 KiB.
 - A conversa, o plano de estudo e a explicação da Olena foram desligados: o botão flutuante saiu do app e `/api/helena` devolve 410 para qualquer pedido que não seja `summarize` (sem gastar cota). A variável `HELENA_CHAT_ENABLED=true` na Vercel religa o servidor (a interface precisaria voltar em `src/app.tsx`).
 - Os avisos de cota e de erro do servidor saem em inglês quando o app está em inglês (cabeçalho `X-App-Language`).
 - Efeito sobre os limites da seção anterior: o teto de 300 pedidos por dia e os limites de conversa agora só valem para o resumo. Não verificado: quantos neurons por dia sobram; conferir no painel da Cloudflare depois de alguns dias.
+
+## 5. Biblioteca com a Olena (IA): limites e custo (19/11/2026)
+
+- Resumo, flashcards, quiz e simulado das pastas usam a Cloudflare Workers AI (plano gratuito: cerca de 10.000 neurons por dia para a conta toda, não verificado no painel). O uso é medido em créditos (neurons): teto global de 8.000 por dia, de 250 a 1.000 por pessoa, 300 por pedido e 2.500 por endereço, em `src/backend/helena-budget.ts`; contadores em `neuron-budget.ts`. Detalhes e modelo de ameaça em `docs/BIBLIOTECA_IA.md`.
+- **Medir antes de mexer:** olhe o consumo diário de neurons no painel da Cloudflare depois dos primeiros usos reais e ajuste `GLOBAL_DAILY_NEURONS` em `helena-budget.ts` (e os preços por `OLENA_NEURONS_IN_PER_M` e `OLENA_NEURONS_OUT_PER_M`). Se a cota gratuita acabar, o app mostra "A Olena atingiu o limite gratuito de hoje" e volta às 21h (Brasília). Passar do gratuito exige plano pago e é decisão e ação da dona do projeto.
+
+## 6. Ideia futura: modelo aberto no app nativo (21/11/2026, não implementada)
+
+Só vale reavaliar quando existir a versão nativa do Olena. No navegador continua descartada (decisão de 17/11/2026). Números abaixo são estimativas, **não verificadas**: medir em aparelho real antes de decidir.
+
+- **Ganho:** custo zero por pedido (sem créditos nem teto global), texto que não sai do aparelho e uso offline.
+- **Limites:** modelos de 1 a 3 bilhões de parâmetros tendem a ser piores em português e em JSON estruturado que o modelo atual da Cloudflare; o arquivo (cerca de 0,7 GB a 2 GB quantizado) não cabe no download normal da loja e teria de ser baixado na primeira abertura; aparelhos com pouca memória não rodam bem; a geração de um quiz pode levar minutos e esquentar o celular; cada modelo tem a sua licença (Llama, Gemma, Qwen), que precisa ser lida antes de embutir.
+- **Caminho sugerido:** (1) usar o modelo que o próprio sistema oferece, quando houver (Gemini Nano no Android, modelo da Apple), sem peso no download; (2) deixar no aparelho só tarefas leves (flashcards, resumo curto) e manter na nuvem a correção de redação, que exige qualidade; (3) medir 3 ou 4 modelos nas mesmas redações e materiais antes de escolher.
+- Rodar no aparelho não passa pelo orçamento de créditos; se isso entrar, a tela precisa deixar claro quando o pedido é local e quando é da Olena na nuvem.
+
+## 7. Correção de redação com a Olena (21/11/2026)
+
+- Entra no mesmo orçamento de créditos da Biblioteca (teto global, por pessoa, por pedido e por rede). Não verificado: custo real; a reserva de uma redação de 6.000 caracteres é de cerca de 84 créditos (saída máxima de 2.400 tokens). Conferir no painel da Cloudflare depois dos primeiros usos.
+- Nenhum teto foi aumentado. A variável `OLENA_ESSAY_SCORE=on` liga a nota numérica (padrão desligada; não gasta mais, só muda o que a tela mostra). Detalhes em `docs/REDACAO_IA.md`.
+
+- Atualização de 21/11/2026: a correção passou a gerar só nível e nota (observações no Olena Pro, em breve). Reserva de cerca de 31 créditos por redação cheia e gasto real estimado em 7 a 10 neurons (não verificado), o que dá cerca de 25 correções por pessoa no piso de 250 créditos. Ver `docs/REDACAO_IA.md`.

@@ -83,9 +83,9 @@ const smooth = (t: number) => t * t * (3 - 2 * t);
 export function taperFactors(
   points: readonly HandwritingPoint[],
   taperLength: number,
-  ends: { start?: boolean; end?: boolean } = {},
+  ends: { start?: boolean; end?: boolean; floor?: number } = {},
 ): number[] {
-  const { start = true, end = true } = ends;
+  const { start = true, end = true, floor = TAPER_FLOOR } = ends;
   const count = points.length;
   if (count < 2 || taperLength <= 0) return points.map(() => 1);
   const along: number[] = [0];
@@ -100,7 +100,7 @@ export function taperFactors(
   return along.map((distance) => {
     const edge = Math.min(start ? distance : Infinity, end ? total - distance : Infinity);
     const t = Math.min(1, edge / length);
-    return TAPER_FLOOR + (1 - TAPER_FLOOR) * smooth(t);
+    return floor + (1 - floor) * smooth(t);
   });
 }
 
@@ -115,7 +115,7 @@ export function usesSimulatedWidth(stroke: {
   brush?: string;
   dash?: "dashed" | "dotted";
   cover?: true;
-  dynamics?: "simulated";
+  dynamics?: "simulated" | "pen";
   points: readonly HandwritingPoint[];
 }): boolean {
   return (
@@ -127,5 +127,75 @@ export function usesSimulatedWidth(stroke: {
     !stroke.dash &&
     stroke.points.length >= 2 &&
     !hasRealPressure(stroke.points)
+  );
+}
+
+// ---------------------------------------------------------------------------------------------
+// Caneta e mesa digitalizadora. Pressão de verdade vinha crua para a largura: o primeiro ponto já
+// chegava com pressão alta (borrão no começo), a leitura do hardware tremia de um ponto ao outro
+// (largura serrilhada) e a ponta final saía chapada. O mouse ganhou pressão suavizada e pontas
+// finas; a caneta passa a ter o equivalente, mas partindo da pressão que ela informa.
+
+// Distância (unidades da folha) em que a pressão alcança ~63% do alvo. Independe da taxa de
+// amostragem: 60, 125 ou 240 Hz dão a mesma curva ao longo do traço.
+const PEN_PRESSURE_DISTANCE = 6;
+// A tinta nasce leve e cresce, em vez de abrir já na pressão do primeiro ponto.
+const PEN_START_PRESSURE = 0.3;
+// Curva que levanta os toques leves (expoente menor que 1): a pressão 0,2 de um traço delicado
+// rende um fio visível em vez de quase nada.
+const PEN_PRESSURE_CURVE = 0.8;
+// Quanto a velocidade afina o traço da caneta (de 0 a 1 do que a pressão pediu). Menor que o do
+// mouse, porque a mão já controla a largura.
+const PEN_SPEED_THINNING = 0.18;
+// A ponta da caneta afina menos que a do mouse: ela já vem fina da pressão da mão.
+export const PEN_TAPER_FLOOR = 0.4;
+
+/**
+ * Pressão de cada ponto de um traço de caneta, já suavizada. Causal como a do mouse: o valor do
+ * ponto `i` depende só dos pontos até `i`, então o traço ao vivo e o pronto são idênticos.
+ */
+export function penPressures(points: readonly HandwritingPoint[], size: number): number[] {
+  const reference = Math.max(1, size);
+  const result: number[] = [];
+  let level = 0.5;
+  for (let index = 0; index < points.length; index += 1) {
+    const point = points[index]!;
+    const raw = Math.min(1, Math.max(0.05, point.pressure));
+    const shaped = Math.pow(raw, PEN_PRESSURE_CURVE);
+    if (index === 0) {
+      level = Math.min(shaped, PEN_START_PRESSURE);
+    } else {
+      const before = points[index - 1]!;
+      const gap = Math.hypot(point.x - before.x, point.y - before.y);
+      const speed = Math.min(1, gap / reference);
+      const target = shaped * (1 - PEN_SPEED_THINNING * speed);
+      level += (target - level) * (1 - Math.exp(-Math.max(gap, 0.65) / PEN_PRESSURE_DISTANCE));
+    }
+    result.push(level);
+  }
+  return result;
+}
+
+/**
+ * O traço é de caneta (marcado ao criar) e usa largura variável: pincéis de desenho e a
+ * Esferográfica. Fineliner (linha de escrever constante) e Caligrafia (largura pelo ângulo da
+ * pena) ficam como são. Tracejado e borracha de fundo também.
+ */
+export function usesPenDynamics(stroke: {
+  tool: "pen" | "highlighter";
+  brush?: string;
+  dash?: "dashed" | "dotted";
+  cover?: true;
+  dynamics?: "simulated" | "pen";
+  points: readonly HandwritingPoint[];
+}): boolean {
+  return (
+    stroke.dynamics === "pen" &&
+    stroke.tool === "pen" &&
+    stroke.brush !== "fine" &&
+    stroke.brush !== "calligraphy" &&
+    !stroke.cover &&
+    !stroke.dash &&
+    stroke.points.length >= 2
   );
 }

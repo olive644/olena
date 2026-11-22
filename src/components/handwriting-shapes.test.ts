@@ -440,3 +440,54 @@ describe("retângulo em qualquer ângulo", () => {
     expect(recognizeShape(sliver)?.kind).not.toBe("rectangle");
   });
 });
+
+describe("triângulo desenhado à mão não vira polígono", () => {
+  // Triângulo com cantos arredondados e um gancho de sobra na ponta de fechamento, do jeito que a
+  // mão faz: muitos pontos perto de cada vértice.
+  function roundedTriangle(wobble: number) {
+    const vertices: [number, number][] = [
+      [300, 100],
+      [450, 340],
+      [150, 340],
+    ];
+    const points: HandwritingPoint[] = [];
+    for (let side = 0; side < 3; side += 1) {
+      const [x1, y1] = vertices[side]!;
+      const [x2, y2] = vertices[(side + 1) % 3]!;
+      const length = Math.hypot(x2 - x1, y2 - y1);
+      const steps = Math.round(length / 6);
+      for (let step = 0; step <= steps; step += 1) {
+        const t = step / steps;
+        // Cantos arredondados: perto das pontas o traço corta para dentro.
+        const cut = Math.sin(Math.PI * t) ** 0.35;
+        const cx = (vertices[0]![0] + vertices[1]![0] + vertices[2]![0]) / 3;
+        const cy = (vertices[0]![1] + vertices[1]![1] + vertices[2]![1]) / 3;
+        const x = x1 + (x2 - x1) * t;
+        const y = y1 + (y2 - y1) * t;
+        const pull = (1 - cut) * 0.12;
+        points.push({
+          x: x + (cx - x) * pull + Math.sin(points.length * 1.7) * wobble,
+          y: y + (cy - y) * pull + Math.cos(points.length * 2.3) * wobble,
+          pressure: 0.5,
+        });
+      }
+    }
+    // Gancho: a mão passa um pouco do ponto onde começou.
+    points.push({ x: 308, y: 112, pressure: 0.5 }, { x: 316, y: 126, pressure: 0.5 });
+    return points;
+  }
+
+  it("cantos arredondados e tremor continuam sendo triângulo", () => {
+    for (const wobble of [0, 2, 4]) {
+      expect(recognizeShape(roundedTriangle(wobble))?.kind).toBe("triangle");
+    }
+  });
+
+  it("um hexágono de verdade continua polígono", () => {
+    const hex = Array.from({ length: 7 }, (_, index) => {
+      const angle = -Math.PI / 2 + (index / 6) * Math.PI * 2;
+      return [300 + Math.cos(angle) * 140, 300 + Math.sin(angle) * 140] as [number, number];
+    });
+    expect(recognizeShape(trace(hex, 1.5, 6))?.kind).toBe("polygon");
+  });
+});

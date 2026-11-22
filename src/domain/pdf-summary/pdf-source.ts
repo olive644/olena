@@ -97,6 +97,21 @@ export function itemsFromOcrText(text: string, height: number): PdfTextItem[] {
 
 const tick = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
+const READABLE = /[A-Za-zÀ-ÿ0-9\s.,;:!?()[\]"'“”‘’\-–—%/&+=°ºª§$@#*_<>]/;
+
+/**
+ * O texto da página é lixo? Alguns PDFs (fonte sem tabela de caracteres) entregam símbolos no lugar
+ * das letras, e o resumo viraria ruído. Com 25 caracteres ou mais, menos de 60% deles em letras,
+ * números e pontuação comuns é sinal disso.
+ */
+export function isGarbled(items: readonly { text: string }[]): boolean {
+  const text = items.map((item) => item.text).join("");
+  const chars = [...text.replace(/\s+/g, "")];
+  if (chars.length < 25) return false;
+  const readable = chars.filter((char) => READABLE.test(char)).length;
+  return readable / chars.length < 0.6;
+}
+
 export async function readPdf(
   pdf: PdfDocumentLike,
   options: ReadPdfOptions = {},
@@ -109,7 +124,8 @@ export async function readPdf(
     const content = await page.getTextContent();
     let items = itemsFromTextContent(content.items);
     const characters = items.reduce((sum, item) => sum + item.text.trim().length, 0);
-    if (characters < 25 && options.ocr) {
+    // Página só de imagem, ou com fonte sem mapa de caracteres (o texto sai como símbolos): OCR.
+    if ((characters < 25 || isGarbled(items)) && options.ocr) {
       const recognized = await options.ocr(number);
       if (recognized.trim()) items = itemsFromOcrText(recognized, viewport.height);
     }

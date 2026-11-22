@@ -29,6 +29,12 @@ describe("configurações do editor", () => {
     expect(screen.getByText("T", { selector: "kbd" })).toBeTruthy();
     fireEvent.click(screen.getByText("Atalhos de caneta e mesa"));
     expect(screen.getByRole("combobox", { name: "Botão lateral" })).toBeTruthy();
+    const second = screen.getByRole("combobox", { name: "Segundo botão" }) as HTMLSelectElement;
+    // Sem configurar, o segundo botão não muda a ferramenta (como sempre foi).
+    expect(second.value).toBe("selected");
+    fireEvent.change(second, { target: { value: "eraser" } });
+    expect(second.value).toBe("eraser");
+    expect(screen.getByText("Testar caneta e mesa")).toBeTruthy();
     const binding = screen.getByRole("button", { name: "Editar atalho: Caneta" });
     fireEvent.click(binding);
     fireEvent.keyDown(binding, { key: "q", code: "KeyQ" });
