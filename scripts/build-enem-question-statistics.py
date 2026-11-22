@@ -13,10 +13,19 @@ from datetime import date
 from pathlib import Path
 
 
-def aggregate(archive_path, year, output, tri_dir):
+def aggregate(archive_path, year, output, tri_dir, map_dir=None):
     bundles = [json.loads(path.read_text(encoding="utf-8"))
                for path in tri_dir.glob("*.json") if path.stem not in ("index", "audit")]
     bundles = [bundle for bundle in bundles if bundle["year"] == year]
+    # Cadernos conferidos só para estatística (sem parâmetros da TRI): completam o que a TRI não cobre.
+    if map_dir is not None and map_dir.exists():
+        covered = {(bundle["area"], int(bundle["examCode"])) for bundle in bundles}
+        for path in map_dir.glob("*.json"):
+            if path.stem == "audit":
+                continue
+            extra = json.loads(path.read_text(encoding="utf-8"))
+            if extra["year"] == year and (extra["area"], int(extra["examCode"])) not in covered:
+                bundles.append(extra)
     targets = {(bundle["area"], int(bundle["examCode"])): bundle for bundle in bundles}
     counts = {}
     prepared = {}
@@ -120,5 +129,6 @@ if __name__ == "__main__":
     parser.add_argument("--year", type=int, required=True)
     parser.add_argument("--output", type=Path, default=Path("public/enem/reviews"))
     parser.add_argument("--tri-dir", type=Path, default=Path("public/enem/tri"))
+    parser.add_argument("--map-dir", type=Path, default=Path("public/enem/stat-map"))
     args = parser.parse_args()
-    aggregate(args.archive, args.year, args.output, args.tri_dir)
+    aggregate(args.archive, args.year, args.output, args.tri_dir, args.map_dir)

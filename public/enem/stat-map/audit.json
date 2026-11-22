@@ -1,0 +1,390 @@
+[
+  {
+    "year": 2026,
+    "day": 1,
+    "status": "sem-itens"
+  },
+  {
+    "year": 2026,
+    "day": 2,
+    "status": "sem-itens"
+  },
+  {
+    "year": 2025,
+    "day": 1,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2025,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2025,
+    "day": 2,
+    "area": "CN",
+    "status": "tri"
+  },
+  {
+    "year": 2025,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
+  },
+  {
+    "year": 2024,
+    "day": 1,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2024,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2024,
+    "day": 2,
+    "area": "CN",
+    "status": "tri"
+  },
+  {
+    "year": 2024,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
+  },
+  {
+    "year": 2023,
+    "day": 1,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2023,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2023,
+    "day": 2,
+    "area": "CN",
+    "status": "tri"
+  },
+  {
+    "year": 2023,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
+  },
+  {
+    "year": 2022,
+    "day": 1,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2022,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2022,
+    "day": 2,
+    "area": "CN",
+    "status": "tri"
+  },
+  {
+    "year": 2022,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
+  },
+  {
+    "year": 2021,
+    "day": 1,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2021,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2021,
+    "day": 2,
+    "area": "CN",
+    "status": "tri"
+  },
+  {
+    "year": 2021,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
+  },
+  {
+    "year": 2020,
+    "day": 1,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2020,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2020,
+    "day": 2,
+    "area": "CN",
+    "status": "tri"
+  },
+  {
+    "year": 2020,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
+  },
+  {
+    "year": 2019,
+    "day": 1,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2019,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2019,
+    "day": 2,
+    "area": "CN",
+    "status": "tri"
+  },
+  {
+    "year": 2019,
+    "day": 2,
+    "area": "MT",
+    "code": 516,
+    "status": "mapeado"
+  },
+  {
+    "year": 2018,
+    "day": 1,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2018,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2018,
+    "day": 2,
+    "area": "CN",
+    "code": 448,
+    "status": "mapeado"
+  },
+  {
+    "year": 2018,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
+  },
+  {
+    "year": 2017,
+    "day": 1,
+    "area": "LC",
+    "code": 399,
+    "status": "mapeado"
+  },
+  {
+    "year": 2017,
+    "day": 1,
+    "area": "CH",
+    "code": 395,
+    "status": "mapeado"
+  },
+  {
+    "year": 2017,
+    "day": 2,
+    "area": "CN",
+    "code": 392,
+    "status": "mapeado"
+  },
+  {
+    "year": 2017,
+    "day": 2,
+    "area": "MT",
+    "code": 404,
+    "status": "mapeado"
+  },
+  {
+    "year": 2016,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2016,
+    "day": 1,
+    "area": "CN",
+    "status": "tri"
+  },
+  {
+    "year": 2016,
+    "day": 2,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2016,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
+  },
+  {
+    "year": 2015,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2015,
+    "day": 1,
+    "area": "CN",
+    "status": "tri"
+  },
+  {
+    "year": 2015,
+    "day": 2,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2015,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
+  },
+  {
+    "year": 2014,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2014,
+    "day": 1,
+    "area": "CN",
+    "status": "tri"
+  },
+  {
+    "year": 2014,
+    "day": 2,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2014,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
+  },
+  {
+    "year": 2013,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2013,
+    "day": 1,
+    "area": "CN",
+    "status": "tri"
+  },
+  {
+    "year": 2013,
+    "day": 2,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2013,
+    "day": 2,
+    "area": "MT",
+    "code": 179,
+    "status": "mapeado"
+  },
+  {
+    "year": 2012,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2012,
+    "day": 1,
+    "area": "CN",
+    "status": "tri"
+  },
+  {
+    "year": 2012,
+    "day": 2,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2012,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
+  },
+  {
+    "year": 2011,
+    "day": 1,
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2011,
+    "day": 1,
+    "area": "CN",
+    "code": 121,
+    "status": "mapeado"
+  },
+  {
+    "year": 2011,
+    "day": 2,
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2011,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
+  },
+  {
+    "year": 2010,
+    "day": 1,
+    "status": "sem-gabarito"
+  },
+  {
+    "year": 2010,
+    "day": 2,
+    "status": "sem-gabarito"
+  }
+]
