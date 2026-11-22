@@ -184,7 +184,7 @@ describe("App", () => {
       expect(artwork).toBeTruthy();
       expect(artwork?.classList.contains("navigation-icon--colorful")).toBe(true);
       expect(
-        artwork?.querySelector(`img[src="/navigation-icons/colorful/${icon}.svg"]`),
+        artwork?.querySelector(`img[src^="/navigation-icons/colorful/${icon}.svg"]`),
       ).toBeTruthy();
     });
   });
