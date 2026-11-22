@@ -4094,5 +4094,6 @@
   "Progresso",
   "Não foi possível carregar as provas do Enem. Confira a conexão.",
   "Carregando as provas do Enem…",
-  "Provas do Enem"
+  "Provas do Enem",
+  "Estimativa feita com o modelo da TRI e os parâmetros dos itens desta prova, publicados pelo Inep. Vale para a área escolhida e pode diferir da nota real."
 ]

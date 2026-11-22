@@ -4094,5 +4094,6 @@
   "Progress",
   "Could not load the Enem exams. Check your connection.",
   "Loading the Enem exams…",
-  "Enem exams"
+  "Enem exams",
+  "Estimate made with the IRT model and the item parameters of this exam, published by Inep. It applies to the chosen area and may differ from the real score."
 ]

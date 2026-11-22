@@ -272,7 +272,7 @@ export function EnemSubmissionResult({
               </summary>
               <p>
                 {uiText(
-                  "Estimativa feita por um modelo treinado com provas anteriores do ENEM. Pode apresentar uma diferença de pontos em relação à nota real.",
+                  "Estimativa feita com o modelo da TRI e os parâmetros dos itens desta prova, publicados pelo Inep. Vale para a área escolhida e pode diferir da nota real.",
                 )}
               </p>
               {tri === "error" && (
