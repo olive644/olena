@@ -5,6 +5,8 @@
 //   1. node scripts/prepare-own-essay-corpus.mjs && python scripts/prepare_own_essay_data.py
 //      (gera tmp/essay-own-grader/records.jsonl e prompts.json; tmp/ é ignorado pelo Git)
 //   2. defina CLOUDFLARE_ACCOUNT_ID e CLOUDFLARE_API_TOKEN no terminal (só na sessão)
+//   (outro modelo: defina OLENA_MODEL, por exemplo @cf/meta/llama-3.3-70b-instruct-fp8-fast; o resultado
+//    vai para tmp/essay-olena-measure-<modelo>/ e não se mistura com o do Llama 8B)
 //   3. node scripts/measure-essay-olena.mjs --dry-run          (lista a amostra e o custo, sem rede)
 //      node scripts/measure-essay-olena.mjs --count 120         (roda; guarda o progresso)
 //
@@ -21,10 +23,35 @@ import { existsSync, mkdirSync, readFileSync, appendFileSync, writeFileSync } fr
 import { build } from "rolldown";
 
 const ROOT = "tmp/essay-own-grader";
-const OUT = "tmp/essay-olena-measure";
 const SEED = "olena-measure-v1";
 const MAX_CHARS = 6_000;
-const PRICES = { input: 4_090, output: 34_870 };
+// Neurons por milhão de tokens (entrada, saída), da página de preços da Cloudflare (21/11/2026).
+// Modelo fora desta lista: informe OLENA_PRICE_IN e OLENA_PRICE_OUT (neurons por milhão de tokens).
+const KNOWN_PRICES = {
+  "@cf/meta/llama-3.1-8b-instruct-fp8-fast": [4_119, 34_868],
+  "@cf/meta/llama-3.3-70b-instruct-fp8-fast": [26_668, 204_805],
+  "@cf/meta/llama-4-scout-17b-16e-instruct": [24_545, 77_273],
+  "@cf/mistralai/mistral-small-3.1-24b-instruct": [31_876, 50_488],
+  "@cf/google/gemma-3-12b-it": [31_371, 50_560],
+  "@cf/qwen/qwen3-30b-a3b-fp8": [4_625, 30_475],
+};
+const DEFAULT_MODEL = "@cf/meta/llama-3.1-8b-instruct-fp8-fast";
+const model = process.env.OLENA_MODEL ?? DEFAULT_MODEL;
+const known = KNOWN_PRICES[model];
+const priceIn = Number(process.env.OLENA_PRICE_IN) || known?.[0];
+const priceOut = Number(process.env.OLENA_PRICE_OUT) || known?.[1];
+if (!priceIn || !priceOut) {
+  console.error(
+    `Modelo ${model} sem preço conhecido: defina OLENA_PRICE_IN e OLENA_PRICE_OUT (neurons por milhão de tokens).`,
+  );
+  process.exit(1);
+}
+const PRICES = { input: priceIn, output: priceOut };
+// Cada modelo tem a sua pasta de progresso e de resultado: as medições não se misturam.
+const OUT =
+  model === DEFAULT_MODEL
+    ? "tmp/essay-olena-measure"
+    : `tmp/essay-olena-measure-${model.split("/").pop()}`;
 
 const args = process.argv.slice(2);
 const flag = (name, fallback) => {
@@ -69,7 +96,6 @@ if (dryRun) {
 
 const accountId = process.env.CLOUDFLARE_ACCOUNT_ID ?? "";
 const token = process.env.CLOUDFLARE_API_TOKEN ?? "";
-const model = process.env.OLENA_MODEL ?? "@cf/meta/llama-3.1-8b-instruct-fp8-fast";
 if (!accountId || !token) {
   console.error(
     "Defina CLOUDFLARE_ACCOUNT_ID e CLOUDFLARE_API_TOKEN no terminal (nunca em arquivo).",
@@ -207,6 +233,7 @@ const mean =
 const summary = {
   medidas: ok.length,
   falhas: failed,
+  modelo: model,
   neuronsNestaRodada: Math.round(spent),
   qwkPorCompetencia: Object.fromEntries(names.map((name, i) => [name, perCompetency[i] ?? null])),
   qwkMedio: mean ?? null,
