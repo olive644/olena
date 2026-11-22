@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { ESSAY_COMPETENCY_IDS, normalizeEssayText, parseEssayReview } from "./essay-output";
+import {
+  ESSAY_COMPETENCY_IDS,
+  normalizeEssayText,
+  parseEssayReview,
+  repairModelJson,
+} from "./essay-output";
 
 const essay =
   "A educação é um direito de todos. No entanto, muitos jovens abandonam a escola cedo.\n\nPortanto, o governo deve ampliar o acesso ao ensino.";
@@ -136,5 +141,32 @@ describe("parseEssayReview", () => {
     const options = { allowScore: true, detail: false };
     expect(parseEssayReview(semNota, essay, { ...options, requireScore: true })).toBeUndefined();
     expect(parseEssayReview(semNota, essay, options)).toBeDefined();
+  });
+
+  it("conserta chave final esquecida e aspas com barra, sem mudar o conteúdo", () => {
+    const body = JSON.stringify({
+      competencies: ESSAY_COMPETENCY_IDS.map((id) => ({ id, level: "good", score: 120 })),
+    });
+    const options = { allowScore: true, detail: false, requireScore: true };
+    const semFim = body.slice(0, -1);
+    expect(semFim.endsWith("}]")).toBe(true);
+    expect(parseEssayReview(semFim, essay, options)?.competencies).toHaveLength(5);
+    const escapado = body.replace(/"/g, '\\"');
+    expect(escapado.startsWith('{\\"')).toBe(true);
+    expect(parseEssayReview(escapado, essay, options)?.competencies[0]?.score).toBe(120);
+    const ambos = escapado.slice(0, -1);
+    expect(parseEssayReview(ambos, essay, options)?.competencies).toHaveLength(5);
+  });
+
+  it("o conserto não aceita nota fora da escala nem texto cortado no meio", () => {
+    const options = { allowScore: true, detail: false, requireScore: true };
+    const fora = JSON.stringify({
+      competencies: ESSAY_COMPETENCY_IDS.map((id) => ({ id, level: "good", score: 150 })),
+    }).slice(0, -1);
+    expect(parseEssayReview(fora, essay, options)).toBeUndefined();
+    const cortado = '{"competencies":[{"id":"C1","level":"go';
+    expect(parseEssayReview(cortado, essay, options)).toBeUndefined();
+    expect(repairModelJson(cortado)).toBe(cortado);
+    expect(repairModelJson("sem json")).toBe("sem json");
   });
 });

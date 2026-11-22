@@ -69,6 +69,34 @@ const isCompetencyId = (value: unknown): value is EssayCompetencyId =>
   typeof value === "string" && (ESSAY_COMPETENCY_IDS as readonly string[]).includes(value);
 
 /**
+ * Dois defeitos de formato frequentes do modelo, com conteúdo certo: aspas com barra invertida
+ * (`{\"competencies\":...}`) e chaves ou colchetes finais esquecidos. Só consertamos a estrutura, nada do
+ * conteúdo: níveis, notas e trechos continuam passando pela validação normal. Texto cortado no meio
+ * de uma palavra ou de um número não é consertado.
+ */
+export function repairModelJson(text: string): string {
+  let body = text.trim();
+  if (/^s*{s*\\"/.test(body)) body = body.replace(/\\"/g, '"');
+  const start = body.search(/[[{]/);
+  if (start < 0) return body;
+  const stack: string[] = [];
+  let inString = false;
+  let escaped = false;
+  for (let index = start; index < body.length; index += 1) {
+    const char = body[index]!;
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (char === "\\") escaped = true;
+      else if (char === '"') inString = false;
+    } else if (char === '"') inString = true;
+    else if (char === "{") stack.push("}");
+    else if (char === "[") stack.push("]");
+    else if ((char === "}" || char === "]") && stack[stack.length - 1] === char) stack.pop();
+  }
+  return inString || stack.length === 0 ? body : body + stack.reverse().join("");
+}
+
+/**
  * Correção validada, ou `undefined` se a resposta não serve. Exige as cinco competências, cada uma
  * uma vez, com nível dos três valores e resumo. Observações com trecho que a redação não contém são
  * descartadas (a IA não pode inventar evidência). A nota só é aceita com `allowScore` e dentro da
@@ -84,7 +112,7 @@ export function parseEssayReview(
   options: { allowScore: boolean; detail?: boolean; requireScore?: boolean },
 ): EssayReview | undefined {
   const detail = options.detail ?? true;
-  const root = asRecord(extractJson(text));
+  const root = asRecord(extractJson(repairModelJson(text)));
   const list = root?.["competencies"];
   if (!root || !Array.isArray(list)) return undefined;
   const haystack = normalizeEssayText(essay);
