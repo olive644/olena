@@ -1,0 +1,2457 @@
+{
+  "version": 1,
+  "variantId": "c84938ba21a77a",
+  "year": 2022,
+  "paperUrl": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf",
+  "answerUrl": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf",
+  "questions": {
+    "q:100": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 123693,
+          "B": 129748,
+          "C": 98189,
+          "D": 122124,
+          "E": 100280,
+          "blank": 1470
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A redução do pH aumenta a disponibilidade de H+. No equilíbrio NH3+H+⇌NH4+, isso favorece a protonação da amônia e desloca a composição para o íon amônio. Assim, entre as espécies indicadas, NH4+ é favorecido pela maior acidez."
+        ],
+        "alternatives": {
+          "A": "A formação de nitrogênio gasoso depende de processos específicos como desnitrificação. A acidez não o produz diretamente por protonação.",
+          "B": "A amônia é uma base que aceita H+. Em meio mais ácido, ela tende a ser consumida na formação de amônio.",
+          "C": "Mais H+ favorece a reação da amônia com prótons, formando NH4+. Essa é a espécie conjugada predominante com a acidificação.",
+          "D": "A acidez pode protonar nitrito em vez de favorecer sua forma aniônica. Ele não é a espécie produzida pela reação básica destacada.",
+          "E": "O nitrato não é formado simplesmente por receber H+ da chuva ácida. Sua produção no ciclo envolve oxidação biológica, diferente do equilíbrio amônia-amônio."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:101": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 77668,
+          "B": 64391,
+          "C": 238317,
+          "D": 116886,
+          "E": 77090,
+          "blank": 1152
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Bastonetes respondem à intensidade luminosa, isto é, à quantidade de fótons recebidos. Se forem mais sensíveis, conseguem produzir resposta visual com menos luz incidente, permitindo melhor visão em ambientes pouco iluminados, sem ampliar necessariamente a percepção de cores."
+        ],
+        "alternatives": {
+          "A": "O daltonismo envolve principalmente o funcionamento dos cones. Maior sensibilidade dos bastonetes não implica essa condição.",
+          "B": "Perceber faixas espectrais diferentes depende de sensibilidade a frequências específicas. O enunciado atribui aos bastonetes resposta à quantidade de fótons.",
+          "C": "Bastonetes mais sensíveis detectam sinais com menor incidência de luz. Isso favorece a visão em ambientes escuros.",
+          "D": "A necessidade de mais luminosidade corresponderia a menor sensibilidade. O caso proposto aponta a capacidade oposta.",
+          "E": "A distinção de cores é função dos cones. A alteração nos bastonetes modifica sobretudo a visão sob baixa iluminação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:102": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 129482,
+          "B": 51685,
+          "C": 237539,
+          "D": 122777,
+          "E": 33006,
+          "blank": 1015
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As estruturas apresentadas compartilham um anel de seis carbonos com sistema de elétrons deslocalizados, o anel benzênico. Esse núcleo caracteriza a família aromática dos exemplos, independentemente do odor, dos grupos oxigenados ou das cadeias laterais."
+        ],
+        "alternatives": {
+          "A": "Ramificações podem ocorrer em inúmeros compostos não aromáticos. Elas não identificam o núcleo eletrônico compartilhado pelas estruturas.",
+          "B": "Insaturações isoladas também existem em alcenos e alcinos sem aromaticidade. O arranjo cíclico conjugado do anel é o traço específico.",
+          "C": "O anel benzênico aparece em todas as estruturas e contém o sistema eletrônico aromático. Ele é o denominador estrutural comum da família.",
+          "D": "Os exemplos têm oxigênio em diferentes funções, mas compostos aromáticos não precisam conter esse elemento. Benzeno é um contraexemplo simples.",
+          "E": "Carbono assimétrico não é condição de aromaticidade e não aparece como característica comum. O critério está no sistema do anel, não na quiralidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:103": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 80159,
+          "B": 57036,
+          "C": 194161,
+          "D": 162704,
+          "E": 80435,
+          "blank": 1009
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Wolbachia e vírus vivem dentro das células do mosquito e dependem de recursos do mesmo hospedeiro. Essa sobreposição gera competição que dificulta a multiplicação viral, reduz a carga de vírus no inseto e diminui a probabilidade de transmissão da dengue."
+        ],
+        "alternatives": {
+          "A": "O texto não descreve a bactéria ingerindo partículas virais. O mecanismo informado é a disputa por recursos intracelulares.",
+          "B": "Os insetos continuam cruzando e transmitindo a bactéria. Isso contradiz a hipótese de esterilização como fundamento da técnica.",
+          "C": "O método não exige modificar o DNA do mosquito. A bactéria é introduzida e mantida como organismo associado ao hospedeiro.",
+          "D": "A necessidade de recursos comuns faz vírus e bactéria competirem dentro do mosquito. Essa competição contribui para reduzir a replicação viral.",
+          "E": "Não há relato de inserir genes virais na bactéria. A redução de casos decorre da interação ecológica entre os dois agentes no hospedeiro."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:104": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 280217,
+          "B": 53638,
+          "C": 81017,
+          "D": 90729,
+          "E": 68360,
+          "blank": 1543
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Uma espécie exótica bem estabelecida pode disputar luz, água, nutrientes e espaço com plantas nativas. Se sua expansão substitui parte da flora original, reduz a diversidade local e altera relações ecológicas, mesmo que a espécie tenha sido introduzida há muitos anos."
+        ],
+        "alternatives": {
+          "A": "A ocupação de áreas e a substituição da flora nativa constituem um mecanismo direto de perda de biodiversidade. O bom estabelecimento de uma exótica pode torná-la invasora.",
+          "B": "Animais podem consumir os frutos, mas o texto não permite concluir que haverá competição que eliminará consumidores perdedores. O mecanismo mais direto é a substituição de plantas nativas.",
+          "C": "Mais possibilidades de relações não explicam necessariamente redução da biodiversidade. A alternativa enfatiza um aumento genérico sem mostrar o processo de perda.",
+          "D": "Uma população não se mantém indefinidamente acima da capacidade de suporte. Além disso, o texto não fornece taxas que sustentem essa condição.",
+          "E": "Facilitar dispersores de plantas nativas tenderia a favorecer sua manutenção. Isso não explica a perda de diversidade atribuída à expansão da exótica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:105": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 104556,
+          "B": 192016,
+          "C": 128184,
+          "D": 101563,
+          "E": 47237,
+          "blank": 1948
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na saída horizontal, a queda de um metro satisfaz 1=gt²/2, logo t²=0,2 s². Como o alcance é três metros, v²=3²/t²=45 m²/s². Na saída vertical com a mesma velocidade, a altura máxima acima do bico é h=v²/(2g)=45/20=2,25 m."
+        ],
+        "alternatives": {
+          "A": "Um metro e meio não decorre da combinação entre tempo de queda e alcance. É preciso determinar v²=45 antes de calcular a altura vertical.",
+          "B": "O tempo de queda fornece v²=45 e a equação vertical dá h=45/20=2,25 m. A pergunta mede altura a partir da saída de água.",
+          "C": "Somar diretamente um metro aos três metros horizontais não respeita as equações de movimento. Alcance horizontal e altura máxima não são aditivos.",
+          "D": "Quatro vírgula cinco resulta de dividir v² por g, esquecendo o fator dois. Na altura máxima, v²=2gh.",
+          "E": "Cinco metros não satisfaz v²=2gh com a velocidade obtida no ensaio horizontal. O valor correto é 2,25 m acima do bico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:106": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 55741,
+          "B": 164618,
+          "C": 123384,
+          "D": 128031,
+          "E": 102649,
+          "blank": 1081
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A fração de sacarose perdida é metade da concentração de microrganismos indicada numericamente em mg/L. Restam RB72:13×0,65=8,45; RB84:18×0,60=10,8; RB92:16×0,70=11,2; SP79:14×0,75=10,5; SP80:17×0,55=9,35 g/L. O maior teor final é o de RB92."
+        ],
+        "alternatives": {
+          "A": "RB72 perde 35% e termina com 8,45 g/L. Sua contaminação menor que a de algumas amostras não compensa o teor inicial baixo.",
+          "B": "RB84 começa com mais sacarose, mas perde 40% e fica com 10,8 g/L. Esse valor é inferior aos 11,2 g/L de RB92.",
+          "C": "RB92 perde 30% dos 16 g/L iniciais e conserva 11,2 g/L. É a maior concentração após dez horas.",
+          "D": "SP79 tem menos microrganismos e perde apenas 25%, mas termina com 10,5 g/L. O teor inicial menor impede que seja a melhor opção.",
+          "E": "SP80 perde 45% devido à maior concentração de microrganismos. Os 9,35 g/L restantes são menores que o teor final de RB92."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:107": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 160208,
+          "B": 192688,
+          "C": 63046,
+          "D": 86007,
+          "E": 72406,
+          "blank": 1149
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A PCR convencional amplifica DNA, enquanto o genoma do SARS-CoV-2 é RNA. É necessário usar transcriptase reversa para produzir DNA complementar, ou cDNA, a partir do RNA viral. Só então a DNA polimerase pode amplificar as sequências do teste."
+        ],
+        "alternatives": {
+          "A": "Concentrar o RNA pode ajudar na sensibilidade, mas não muda a natureza do molde. A PCR precisa de DNA complementar.",
+          "B": "Anticorpos são investigados em testes sorológicos, não na etapa que permite amplificar o genoma viral. A questão trata de ácidos nucleicos.",
+          "C": "Não é necessário cultivar vírus para fazer o teste genético. A amplificação do material extraído permite detectar a presença viral.",
+          "D": "A purificação remove interferentes, mas não converte RNA em DNA. A etapa específica indispensável para este vírus é a transcrição reversa.",
+          "E": "A transcriptase reversa produz cDNA usando RNA como molde. Esse DNA passa a ser amplificado na PCR."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:108": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 80438,
+          "B": 122244,
+          "C": 129000,
+          "D": 132725,
+          "E": 109614,
+          "blank": 1483
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O peso atua no centro de massa, verticalmente para baixo; a normal atua no contato com o piso e aponta para cima. A força aplicada acompanha a muleta e tem componente horizontal para a esquerda, de modo que o atrito no apoio deve apontar para a direita, opondo-se ao deslizamento."
+        ],
+        "alternatives": {
+          "A": "A força aplicada foi mantida vertical em vez de paralela à muleta inclinada. O peso também aparece no apoio e não no centro de massa.",
+          "B": "A normal foi colocada no centro de massa, embora seja força de contato com o piso. A força aplicada e o atrito também não correspondem às condições do ensaio inclinado.",
+          "C": "A força aplicada e o atrito têm direções compatíveis, mas o peso está no ponto de apoio. Ele deve atuar no centro de massa da muleta.",
+          "D": "O peso está no centro de massa, mas a normal não atua ali. Além disso, o atrito deve apontar para a direita para equilibrar a componente horizontal de F.",
+          "E": "O esquema coloca peso no centro de massa e normal no apoio. O atrito para a direita se opõe à tendência de o pé da muleta escorregar para a esquerda."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:109": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 101377,
+          "B": 93059,
+          "C": 101791,
+          "D": 101380,
+          "E": 176468,
+          "blank": 1429
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O H+ participa de etapas do mecanismo que facilitam a quebra das ligações do polissacarídeo e é regenerado ao final. Isso o caracteriza como catalisador: ele oferece um caminho de menor energia de ativação e aumenta a velocidade da hidrólise, sem alterar a constante de equilíbrio."
+        ],
+        "alternatives": {
+          "A": "A função destacada pelo mecanismo não é apenas dissolver o material. O H+ participa e é regenerado, mostrando ação catalítica.",
+          "B": "Um catalisador acelera as reações direta e inversa sem mudar a posição do equilíbrio. Sua presença não favorece por si um lado em condições fixas.",
+          "C": "A regeneração do H+ mostra que ele atua como catalisador. Seu efeito é reduzir a barreira cinética e acelerar a conversão.",
+          "D": "A constante de equilíbrio depende da temperatura, não da presença do catalisador. H+ muda o caminho e a velocidade, não o balanço termodinâmico.",
+          "E": "Pode haver interações com o substrato, mas a função global do íon é catalisar a reação. A explicação não se limita a ligações de hidrogênio."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:110": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 92279,
+          "B": 147659,
+          "C": 152937,
+          "D": 134990,
+          "E": 45575,
+          "blank": 2064
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A base consumida contém n=0,10×0,008=0,0008 mol de NaOH. Como a proporção é dois para um, há 0,0004 mol de ácido na alíquota, com massa 0,0004×150=0,060 g. Dividindo pelos 0,025 L de vinho, a concentração é 2,4 g/L."
+        ],
+        "alternatives": {
+          "A": "Um vírgula oito não resulta da proporção dois mols de base para um de ácido. A massa neutralizada é 0,060 g em 25 mL.",
+          "B": "O cálculo estequiométrico dá 0,0004 mol de ácido, equivalentes a 0,060 g. Em 0,025 L, isso corresponde a 2,4 g/L.",
+          "C": "Três vírgula seis aplica incorretamente a razão de volumes ou a massa molar. A quantidade de ácido é metade da quantidade de NaOH.",
+          "D": "Quatro vírgula oito surge se a proporção fosse um para um. O ácido é diprótico e consome dois mols de NaOH por mol.",
+          "E": "Nove vírgula seis multiplica onde a equação exige dividir a quantidade de base por dois. O resultado correto é quatro vezes menor."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:111": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 117684,
+          "B": 177207,
+          "C": 142615,
+          "D": 90894,
+          "E": 44872,
+          "blank": 2232
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A maior potência ocorre no modo superquente. Com vazão de 3 L/min, passam 50 g/s e o aumento é 30 °C, logo P=50×4,2×30=6300 W. A corrente é I=P/U=6300/220≈28,6 A. O múltiplo de cinco imediatamente superior é 30 A."
+        ],
+        "alternatives": {
+          "A": "Sessenta amperes é superior à corrente, mas não é o múltiplo de cinco imediatamente acima de 28,6 A. A especificação pedida é a menor desse critério.",
+          "B": "A corrente máxima é aproximadamente 28,6 A. O próximo múltiplo de cinco é trinta amperes.",
+          "C": "Vinte amperes não suportam a corrente do modo superquente. A potência máxima de 6300 W exige cerca de 28,6 A em 220 V.",
+          "D": "Dez amperes ficam abaixo até de alguns níveis menores e não protegem a operação nominal completa. É necessário dimensionar pela maior potência.",
+          "E": "Cinco amperes permitiriam apenas 1100 W em 220 V, muito menos que a potência máxima. O dispositivo seria inadequado ao funcionamento normal."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:112": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 57454,
+          "B": 44183,
+          "C": 294554,
+          "D": 60577,
+          "E": 117677,
+          "blank": 1059
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O carbonato reage com ácido produzindo sal, água e dióxido de carbono: CaCO3+2HCl→CaCl2+H2O+CO2. A efervescência observada corresponde à liberação de CO2, resultante da decomposição do ácido carbônico formado no processo."
+        ],
+        "alternatives": {
+          "A": "Hidrogênio pode surgir quando certos metais reagem com ácido. Aqui o reagente é carbonato de cálcio, que libera dióxido de carbono.",
+          "B": "A reação ácido-carbonato não libera oxigênio molecular. Os átomos de oxigênio formam água e CO2.",
+          "C": "A equação balanceada produz CO2 a partir do grupo carbonato. Esse é o gás responsável pelas bolhas observadas.",
+          "D": "Não há condição redutora para converter o carbono do carbonato em monóxido. A reação ácido-base mantém o carbono no CO2.",
+          "E": "O cloreto permanece no sal CaCl2 e não é oxidado a cloro. A liberação gasosa vem do carbonato, não do HCl."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:113": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 84587,
+          "B": 79202,
+          "C": 285080,
+          "D": 32686,
+          "E": 93091,
+          "blank": 858
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O hormônio relacionado à masculinização e aos caracteres sexuais masculinos é a testosterona. A exposição à atrazina reduz sua concentração nos machos em comparação aos controles, aproximando-a da observada em fêmeas e explicando os efeitos de desmasculinização relatados."
+        ],
+        "alternatives": {
+          "A": "O estrogênio não corresponde ao hormônio com maior nível nos machos controle e queda associada à desmasculinização. O padrão e os efeitos apontam para um andrógeno.",
+          "B": "Feromônios são sinais químicos de comunicação entre indivíduos. A questão trata de hormônio circulante ligado a caracteres sexuais masculinos.",
+          "C": "A testosterona participa do desenvolvimento de características masculinas. Sua redução é coerente com a alteração da laringe e com a desmasculinização descrita.",
+          "D": "A somatotrofina está ligada principalmente ao crescimento corporal. Não explica especificamente os caracteres sexuais afetados.",
+          "E": "O FSH atua na função das gônadas, mas não é o principal hormônio masculinizante indicado pelo padrão. A redução direta de testosterona explica os efeitos relatados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:114": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 204188,
+          "B": 142280,
+          "C": 34279,
+          "D": 77535,
+          "E": 116198,
+          "blank": 1024
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A molécula deriva de uma proteína capaz de interferir na coagulação, o processo que forma coágulos sanguíneos. Uma aplicação possível é evitar trombos que obstruem vasos, inclusive em certos acidentes vasculares cerebrais isquêmicos, em vez de tratar doenças sem relação direta com esse mecanismo."
+        ],
+        "alternatives": {
+          "A": "A modulação da coagulação pode reduzir a formação de trombos que bloqueiam vasos. Isso corresponde a uma aplicação coerente para certos AVCs isquêmicos.",
+          "B": "Anemia envolve redução de hemoglobina ou hemácias e não é corrigida por modular coagulação. Um agente anticoagulante pode inclusive agravar sangramentos.",
+          "C": "Urticária se relaciona a mediadores alérgicos, como histamina. O mecanismo descrito não aponta ação anti-histamínica.",
+          "D": "O aumento de linfonodos decorre de ativação imune e não é alvo direto da coagulação. A alternativa desloca a função da proteína.",
+          "E": "A pressão arterial depende de débito cardíaco e resistência vascular, entre outros fatores. Modular coagulação não equivale a regular diretamente hipertensão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:115": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 219940,
+          "B": 61672,
+          "C": 203956,
+          "D": 26999,
+          "E": 61911,
+          "blank": 1026
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para os planetas muito distantes do horizonte, o campo gravitacional depende da massa central e da distância, e não de o objeto ser uma estrela ou um buraco negro. Mantida a mesma massa e as condições orbitais, a atração permanece igual e as órbitas não mudam no modelo da questão."
+        ],
+        "alternatives": {
+          "A": "Uma espiral exigiria perda de energia orbital ou mudança no campo central. A substituição por igual massa não fornece esse mecanismo.",
+          "B": "Não surge uma força aleatória apenas porque a massa se tornou um buraco negro. O campo externo permanece determinado pela mesma massa.",
+          "C": "O buraco negro não suga automaticamente objetos distantes. Os planetas já têm velocidade orbital suficiente e continuam sujeitos à mesma atração.",
+          "D": "No modelo proposto, não há aumento da massa nem mudança relevante do campo nos raios orbitais. Não se conclui maior precessão apenas pela compactação central.",
+          "E": "A massa central é a mesma, portanto a aceleração gravitacional nas órbitas se mantém. Com as mesmas posições e velocidades, os planetas preservam suas trajetórias."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:116": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 99879,
+          "B": 245309,
+          "C": 55325,
+          "D": 140895,
+          "E": 32977,
+          "blank": 1119
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O ozônio tem forte capacidade de oxidar outras substâncias. A mesma reatividade que danifica componentes de microrganismos também pode lesar tecidos humanos e gerar subprodutos, explicando o risco de emprego indiscriminado sem controle de concentração e exposição."
+        ],
+        "alternatives": {
+          "A": "Um catalisador acelera reações sem ser consumido, mas não é esse o papel principal do ozônio sanitizante. Ele reage como agente oxidante.",
+          "B": "O ozônio aceita elétrons e oxida componentes orgânicos. Essa ação explica tanto o efeito desinfetante quanto o potencial de dano a tecidos.",
+          "C": "Um redutor doa elétrons; o ozônio atua predominantemente no sentido oposto. A alternativa inverte sua propriedade química principal.",
+          "D": "A toxicidade não é explicada simplesmente por liberação de prótons e acidez. A reatividade oxidante é o mecanismo destacado.",
+          "E": "O ozônio não é usado como base responsável por elevar pH. O risco descrito está no ataque oxidativo às moléculas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:117": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 63723,
+          "B": 245637,
+          "C": 122795,
+          "D": 62578,
+          "E": 79523,
+          "blank": 1248
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A inativação aleatória do X gera grupos de células que expressam alelos diferentes. Em heterozigotas, a proporção e a distribuição desses grupos variam, podendo produzir intensidades distintas de uma condição ligada ao X. Essa variação no grau de manifestação é expressividade variável."
+        ],
+        "alternatives": {
+          "A": "Pleiotropia é um gene influenciar características diferentes. O esquema mostra variação de atividade do mesmo par de alelos entre grupos celulares.",
+          "B": "A inativação altera a expressão do cromossomo sem mudar a sequência do gene. Portanto não constitui mutação gênica.",
+          "C": "Interação gênica envolve ação conjunta de genes distintos. O caso depende de qual cromossomo X permanece ativo em cada célula.",
+          "D": "Penetrância descreve se uma condição aparece ou não entre portadores de um genótipo. O mecanismo destacado permite variar sua intensidade e distribuição, caracterizando expressividade.",
+          "E": "A proporção de células que expressam o alelo recessivo pode diferir entre mulheres. Isso modifica a intensidade da manifestação e produz expressividade variável."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:118": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 98400,
+          "B": 232854,
+          "C": 75012,
+          "D": 96052,
+          "E": 71741,
+          "blank": 1445
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:119": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 135649,
+          "B": 64812,
+          "C": 128526,
+          "D": 66092,
+          "E": 178367,
+          "blank": 2058
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:120": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 59679,
+          "B": 123977,
+          "C": 90902,
+          "D": 180650,
+          "E": 118686,
+          "blank": 1610
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:121": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 152951,
+          "B": 112092,
+          "C": 163677,
+          "D": 70770,
+          "E": 75191,
+          "blank": 823
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:122": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 175769,
+          "B": 73325,
+          "C": 55323,
+          "D": 59914,
+          "E": 209919,
+          "blank": 1254
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:123": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 74157,
+          "B": 185179,
+          "C": 93865,
+          "D": 133214,
+          "E": 87772,
+          "blank": 1317
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:124": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 54195,
+          "B": 133705,
+          "C": 221145,
+          "D": 104133,
+          "E": 60172,
+          "blank": 2154
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:125": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 134803,
+          "B": 186302,
+          "C": 68497,
+          "D": 120108,
+          "E": 64322,
+          "blank": 1472
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:126": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 104306,
+          "B": 152851,
+          "C": 172476,
+          "D": 108893,
+          "E": 34992,
+          "blank": 1986
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:127": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 86382,
+          "B": 132462,
+          "C": 71948,
+          "D": 197516,
+          "E": 85599,
+          "blank": 1597
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:128": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 62542,
+          "B": 91479,
+          "C": 135950,
+          "D": 161687,
+          "E": 122412,
+          "blank": 1434
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:129": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 53032,
+          "B": 159576,
+          "C": 177255,
+          "D": 139418,
+          "E": 44192,
+          "blank": 2031
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:130": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 78760,
+          "B": 79532,
+          "C": 100398,
+          "D": 165098,
+          "E": 149810,
+          "blank": 1906
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:131": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 58663,
+          "B": 38104,
+          "C": 104724,
+          "D": 199790,
+          "E": 172783,
+          "blank": 1440
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:132": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 260498,
+          "B": 91622,
+          "C": 47151,
+          "D": 46365,
+          "E": 128429,
+          "blank": 1439
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:133": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 90485,
+          "B": 112700,
+          "C": 179139,
+          "D": 119806,
+          "E": 70813,
+          "blank": 2561
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:134": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 105620,
+          "B": 177043,
+          "C": 105430,
+          "D": 93532,
+          "E": 92161,
+          "blank": 1718
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:135": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 83919,
+          "B": 148926,
+          "C": 183770,
+          "D": 78315,
+          "E": 79191,
+          "blank": 1383
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:91": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 107263,
+          "B": 58189,
+          "C": 59837,
+          "D": 120132,
+          "E": 229365,
+          "blank": 718
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A eritropoietina estimula a eritropoiese, isto é, a produção de hemácias. Como essas células contêm hemoglobina que transporta oxigênio, seu aumento amplia a oferta desse gás aos tecidos e favorece o metabolismo aeróbio durante exercícios prolongados."
+        ],
+        "alternatives": {
+          "A": "A frequência cardíaca não é o alvo direto da eritropoietina. O hormônio aumenta a produção de células transportadoras de oxigênio.",
+          "B": "A ação descrita ocorre no sangue e não amplia o volume ou a capacidade dos pulmões. A captação pulmonar e o transporte sanguíneo são processos distintos.",
+          "C": "O aumento de massa muscular não é a ação principal desse hormônio. Não se deve confundir eritropoietina com esteroides anabolizantes.",
+          "D": "A maior oferta de oxigênio favorece a respiração aeróbia. A alternativa aponta metabolismo anaeróbio, que não utiliza esse gás.",
+          "E": "Mais hemácias significam maior quantidade de hemoglobina disponível. Assim aumenta a capacidade de transporte de oxigênio pelo sangue."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:92": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 184028,
+          "B": 192632,
+          "C": 78539,
+          "D": 63126,
+          "E": 56176,
+          "blank": 1003
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para o mesmo tempo de colisão, a força média depende da variação de quantidade de movimento. Nos pneus, o carro inverte o sentido, aumentando essa variação em comparação com parar nos blocos. Já os blocos dissipam mais energia, pois o carro termina sem energia cinética de retorno."
+        ],
+        "alternatives": {
+          "A": "A inversão da velocidade nos pneus aumenta o impulso e a força média. Nos blocos, a parada completa dissipa toda a energia cinética inicial, em vez de preservar parte no retorno.",
+          "B": "A força maior ocorre nos pneus, porque há inversão do movimento. A energia dissipada maior ocorre nos blocos, pois a velocidade final é zero.",
+          "C": "Os blocos exigem menor variação de momento que a reversão nos pneus. Além disso, as energias dissipadas não são iguais, já que o carro retorna com energia cinética numa das situações.",
+          "D": "A força está corretamente atribuída aos pneus, mas o retorno preserva energia cinética. Por isso os pneus dissipam menos que os blocos.",
+          "E": "Os blocos dissipam mais energia, mas não produzem a maior força média. Com tempos iguais, a inversão do movimento nos pneus implica maior impulso."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:93": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 57672,
+          "B": 130777,
+          "C": 119196,
+          "D": 134901,
+          "E": 130793,
+          "blank": 2165
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Quando pH supera o pKa, predomina a forma desprotonada; quando fica abaixo, predomina a protonada. Entre pH 5 e 7, a carboxila de pKa 1,8 está como COO−, o amínio de pKa 7,9 mantém NH3+ e o tiol de pKa 10,5 permanece SH. A espécie é zwitteriônica."
+        ],
+        "alternatives": {
+          "A": "COO− está adequado, mas o tiol não perde H predominantemente abaixo de pH 10,5. O grupo amino também deve permanecer majoritariamente protonado.",
+          "B": "A estrutura mantém COOH apesar de o pH superar bastante seu pKa, e remove H do tiol em meio insuficientemente básico. As duas escolhas contrariam os dados.",
+          "C": "A carboxila está desprotonada e os grupos amino e tiol permanecem protonados. Essa combinação corresponde aos três pKa na faixa urinária informada.",
+          "D": "A protonação do amino está correta, mas a carboxila deveria ser COO− e o tiol, SH. O pH está entre os pKa desses grupos.",
+          "E": "O amino e o tiol estão adequados, mas a carboxila não permanece predominantemente como COOH. Em pH 5 a 7, ela está acima de seu pKa de 1,8."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:94": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 201044,
+          "B": 34572,
+          "C": 116804,
+          "D": 169416,
+          "E": 52383,
+          "blank": 1285
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O protozoário modificado produz uma molécula também encontrada nas células do tumor. Ao apresentar esse antígeno ao sistema imune, o experimento induz uma resposta específica que reconhece posteriormente as células portadoras da mesma molécula e pode destruí-las."
+        ],
+        "alternatives": {
+          "A": "O mecanismo não é uma resposta indiscriminada contra todo o próprio organismo. Há indução de reconhecimento de uma molécula específica associada ao tumor.",
+          "B": "Hipersensibilidade é uma reação exacerbada ou inadequada que causa dano, como em alergias. Não é a estratégia de reconhecimento antigênico descrita.",
+          "C": "A resposta inata não explica a especificidade e a memória contra a molécula tumoral. O experimento depende de resposta adaptativa dirigida ao antígeno.",
+          "D": "A molécula tumoral é mostrada junto ao protozoário e passa a ser reconhecida pelas defesas. A apresentação de antígeno específico permite atingir as células do tumor.",
+          "E": "Um processo anti-inflamatório reduz aspectos da resposta inflamatória, sem explicar a destruição dirigida de células tumorais. O experimento pretende ativar defesas específicas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:95": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 54883,
+          "B": 140727,
+          "C": 186284,
+          "D": 153040,
+          "E": 38125,
+          "blank": 2445
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os sinais correspondentes estão separados por cerca de 12 s, com chegada mais cedo pela água. Como t_ar=L/340 e t_água=L/1540, a diferença fornece 12=L(1/340−1/1540). Assim L=12×340×1540/1200≈5236 m, aproximadamente 5240 m."
+        ],
+        "alternatives": {
+          "A": "O número resulta de usar tempos absolutos do relógio como tempos de propagação. O instante de emissão não é a origem dos eixos, por isso deve-se usar a diferença de doze segundos.",
+          "B": "Multiplicar a velocidade por um horário de chegada não isola o tempo desde a queda. A comparação correta utiliza o atraso entre os dois sinais.",
+          "C": "Multiplicar doze segundos pela diferença de velocidades não representa a diferença dos tempos L/v. A distância deve satisfazer a equação com os inversos das velocidades.",
+          "D": "A diferença de doze segundos equivale a L/340 menos L/1540. A resolução fornece cerca de 5,24 quilômetros.",
+          "E": "Cem metros produziriam uma diferença de chegada muito menor que doze segundos. O atraso observado corresponde a vários quilômetros de propagação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:96": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 76513,
+          "B": 88472,
+          "C": 49788,
+          "D": 178409,
+          "E": 181292,
+          "blank": 1030
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A luz solar atravessa materiais de índices de refração diferentes, como ar, plástico e água, sofrendo mudanças de direção. A geometria da garrafa distribui esses raios no ambiente interno. O fenômeno principal é refração, e o tamanho do orifício afasta a difração como explicação relevante."
+        ],
+        "alternatives": {
+          "A": "O furo é muito maior que o comprimento de onda, o que afasta a difração como mecanismo principal. A luz é redistribuída ao mudar de meio.",
+          "B": "Absorver luz reduziria sua disponibilidade no interior. O funcionamento útil depende de transmissão e desvio dos raios.",
+          "C": "Não há seleção de uma orientação de vibração da luz. A garrafa funciona pela passagem entre meios de diferentes índices.",
+          "D": "Reflexões podem ocorrer, mas não explicam principalmente a dispersão de luz transmitida pela água. O processo destacado é a mudança de direção na passagem de meio.",
+          "E": "A mudança de velocidade e direção entre ar, plástico e água caracteriza a refração. Ela permite espalhar a iluminação solar no cômodo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:97": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 52775,
+          "B": 179391,
+          "C": 289880,
+          "D": 37651,
+          "E": 15172,
+          "blank": 635
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A coagulação reúne partículas pequenas em flocos maiores, preparando sua separação. Na decantação, esses flocos sedimentam pela ação da gravidade e grande parte dos sólidos é removida do fluxo de água. A filtração retira o material que permanece depois dessa etapa."
+        ],
+        "alternatives": {
+          "A": "A coagulação promove a aglomeração das partículas, mas não as separa fisicamente da água por si só. Ela prepara os flocos para a remoção seguinte.",
+          "B": "A sedimentação dos flocos no fundo remove grande parte do material suspenso. Essa separação por gravidade ocorre na decantação.",
+          "C": "A filtração retém partículas residuais após a decantação. A maior parte dos flocos já deve ter sido removida antes dos filtros.",
+          "D": "A desinfecção visa inativar microrganismos. Não é a principal operação de remoção dos sólidos responsáveis pela turbidez.",
+          "E": "A fluoretação adiciona compostos de flúor para prevenção de cáries. Ela não remove os sólidos suspensos da água."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:98": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 235950,
+          "B": 72594,
+          "C": 69966,
+          "D": 87950,
+          "E": 107720,
+          "blank": 1324
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A termogenina oferece aos prótons uma via de retorno que dispensa a ATP sintase. O gradiente mitocondrial deixa de ser plenamente usado para produzir ATP e sua energia se dissipa como calor. Esse desacoplamento atinge a fosforilação oxidativa."
+        ],
+        "alternatives": {
+          "A": "A glicólise ocorre no citoplasma e não utiliza o gradiente de prótons mitocondrial. A termogenina atua em outra etapa.",
+          "B": "A fermentação lática não depende de cadeia respiratória nem de ATP sintase. O mecanismo descrito é mitocondrial e aeróbio.",
+          "C": "O ciclo do ácido cítrico fornece transportadores reduzidos, mas não é a etapa que usa o fluxo de prótons na ATP sintase. Essa função pertence à fosforilação oxidativa.",
+          "D": "A oxidação do piruvato produz acetil-CoA e NADH, sem utilizar diretamente o gradiente para sintetizar ATP. O bloqueio funcional ocorre depois.",
+          "E": "A fosforilação oxidativa acopla retorno de prótons e produção de ATP. A termogenina dissipa esse gradiente na forma de calor e desacopla o processo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:99": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 101225,
+          "B": 182288,
+          "C": 91359,
+          "D": 141292,
+          "E": 57544,
+          "blank": 1796
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Pela analogia com a lei de Ohm, a resistência de cada rota é a razão entre diferença de potencial e corrente. Os valores são R1=510/4=127,5; R2=608/4=152; R3=575/3≈191,7. A ordem crescente é 1, 2, 3."
+        ],
+        "alternatives": {
+          "A": "A comparação dos quocientes 127,5, 152 e 191,7 mostra R1<R2<R3. Essa é a ordem crescente solicitada.",
+          "B": "A rota três tem quociente maior que a dois, apesar de sua d.d.p. ser menor. É preciso dividir também pela corrente correspondente.",
+          "C": "As rotas um e dois têm a mesma corrente, e a um apresenta menor d.d.p. Logo a um deve preceder a dois.",
+          "D": "A rota três é a de maior resistência e não pode aparecer em primeiro lugar. A corrente menor eleva a razão entre d.d.p. e corrente.",
+          "E": "A sequência é decrescente em resistência. O aplicativo deve mostrar primeiro a rota menos congestionada, correspondente ao menor quociente."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:136": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 179439,
+          "B": 134802,
+          "C": 112848,
+          "D": 112922,
+          "E": 34361,
+          "blank": 1132
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:137": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 102710,
+          "B": 202029,
+          "C": 126458,
+          "D": 102017,
+          "E": 41052,
+          "blank": 1238
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:138": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 104442,
+          "B": 75867,
+          "C": 183239,
+          "D": 143692,
+          "E": 66317,
+          "blank": 1947
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:139": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 202884,
+          "B": 52167,
+          "C": 167896,
+          "D": 94553,
+          "E": 56671,
+          "blank": 1333
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:140": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 171114,
+          "B": 90698,
+          "C": 62282,
+          "D": 102907,
+          "E": 146623,
+          "blank": 1880
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:141": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 72635,
+          "B": 136388,
+          "C": 296150,
+          "D": 44736,
+          "E": 24438,
+          "blank": 1157
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:142": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 62201,
+          "B": 107577,
+          "C": 110224,
+          "D": 158363,
+          "E": 135062,
+          "blank": 2077
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:143": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 36979,
+          "B": 180952,
+          "C": 46963,
+          "D": 62970,
+          "E": 246323,
+          "blank": 1317
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:144": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 17477,
+          "B": 65570,
+          "C": 27883,
+          "D": 54958,
+          "E": 407934,
+          "blank": 1682
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:145": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 98204,
+          "B": 92432,
+          "C": 193400,
+          "D": 112281,
+          "E": 77173,
+          "blank": 2014
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:146": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 327444,
+          "B": 51067,
+          "C": 30345,
+          "D": 36053,
+          "E": 129210,
+          "blank": 1385
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:147": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 34319,
+          "B": 85451,
+          "C": 325113,
+          "D": 84775,
+          "E": 44700,
+          "blank": 1146
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:148": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 97534,
+          "B": 142325,
+          "C": 132496,
+          "D": 146776,
+          "E": 54093,
+          "blank": 2280
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:149": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 103658,
+          "B": 151794,
+          "C": 196709,
+          "D": 80112,
+          "E": 41288,
+          "blank": 1943
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:150": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 88743,
+          "B": 189807,
+          "C": 110045,
+          "D": 87247,
+          "E": 97150,
+          "blank": 2512
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:151": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 37297,
+          "B": 131393,
+          "C": 145227,
+          "D": 154995,
+          "E": 105514,
+          "blank": 1078
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:152": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 140538,
+          "B": 119036,
+          "C": 164851,
+          "D": 92788,
+          "E": 55617,
+          "blank": 2674
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:153": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 109804,
+          "B": 89002,
+          "C": 93286,
+          "D": 174010,
+          "E": 107772,
+          "blank": 1630
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:154": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 57981,
+          "B": 62646,
+          "C": 98167,
+          "D": 196324,
+          "E": 158670,
+          "blank": 1716
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:155": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 98508,
+          "B": 145600,
+          "C": 135352,
+          "D": 103813,
+          "E": 90363,
+          "blank": 1868
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:156": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 76352,
+          "B": 152334,
+          "C": 151332,
+          "D": 98076,
+          "E": 94301,
+          "blank": 3109
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:157": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 108532,
+          "B": 125997,
+          "C": 121727,
+          "D": 124764,
+          "E": 92191,
+          "blank": 2293
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:158": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 116456,
+          "B": 113799,
+          "C": 90891,
+          "D": 175835,
+          "E": 77008,
+          "blank": 1515
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:159": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 122110,
+          "B": 128400,
+          "C": 166731,
+          "D": 91447,
+          "E": 64292,
+          "blank": 2524
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:160": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 133954,
+          "B": 143894,
+          "C": 144252,
+          "D": 90102,
+          "E": 61212,
+          "blank": 2090
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:161": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 98565,
+          "B": 108402,
+          "C": 149907,
+          "D": 140979,
+          "E": 75230,
+          "blank": 2421
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:162": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 128408,
+          "B": 184708,
+          "C": 123192,
+          "D": 81269,
+          "E": 54967,
+          "blank": 2960
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:163": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 67899,
+          "B": 217347,
+          "C": 165617,
+          "D": 68899,
+          "E": 53975,
+          "blank": 1767
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:164": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 68909,
+          "B": 339384,
+          "C": 78626,
+          "D": 60245,
+          "E": 26312,
+          "blank": 2028
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:165": {
+      "answer": "E",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 71471,
+          "B": 159305,
+          "C": 48012,
+          "D": 68219,
+          "E": 226705,
+          "blank": 1792
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:166": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 271819,
+          "B": 63168,
+          "C": 83564,
+          "D": 85349,
+          "E": 70389,
+          "blank": 1215
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:167": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 80469,
+          "B": 188012,
+          "C": 109731,
+          "D": 98817,
+          "E": 95911,
+          "blank": 2564
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:168": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 120302,
+          "B": 41043,
+          "C": 64815,
+          "D": 312430,
+          "E": 34996,
+          "blank": 1918
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:169": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 130370,
+          "B": 170606,
+          "C": 142978,
+          "D": 89778,
+          "E": 38949,
+          "blank": 2823
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:170": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 58994,
+          "B": 136885,
+          "C": 180083,
+          "D": 124828,
+          "E": 72612,
+          "blank": 2102
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:171": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 112634,
+          "B": 130630,
+          "C": 139878,
+          "D": 110434,
+          "E": 78566,
+          "blank": 3362
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:172": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 130833,
+          "B": 129280,
+          "C": 100360,
+          "D": 139872,
+          "E": 72335,
+          "blank": 2824
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:173": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 63172,
+          "B": 170744,
+          "C": 95486,
+          "D": 85355,
+          "E": 158600,
+          "blank": 2147
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:174": {
+      "answer": "D",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 79897,
+          "B": 157730,
+          "C": 170741,
+          "D": 85465,
+          "E": 78560,
+          "blank": 3111
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:175": {
+      "answer": "ANULADA",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 98447,
+          "B": 57293,
+          "C": 98043,
+          "D": 213887,
+          "E": 105093,
+          "blank": 2741
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:176": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 74131,
+          "B": 94410,
+          "C": 140686,
+          "D": 119524,
+          "E": 143738,
+          "blank": 3015
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:177": {
+      "answer": "B",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 119744,
+          "B": 131164,
+          "C": 130377,
+          "D": 89241,
+          "E": 102264,
+          "blank": 2714
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:178": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 165696,
+          "B": 137037,
+          "C": 112221,
+          "D": 48501,
+          "E": 109456,
+          "blank": 2593
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:179": {
+      "answer": "A",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 144795,
+          "B": 147767,
+          "C": 105601,
+          "D": 129128,
+          "E": 46147,
+          "blank": 2066
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:180": {
+      "answer": "C",
+      "statistics": {
+        "population": 575504,
+        "counts": {
+          "A": 71613,
+          "B": 82193,
+          "C": 190347,
+          "D": 114226,
+          "E": 115263,
+          "blank": 1862
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2022 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    }
+  }
+}

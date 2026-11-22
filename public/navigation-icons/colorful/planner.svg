@@ -1,9 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <path fill="#e46f94" d="M8 9 39 9 42 13 40 41 8 43 6 14Z"/>
-  <path fill="#ffb6d0" d="M8 9 39 9 42 13 7 17Z"/>
-  <path fill="#a63b63" d="M35 17 42 13 40 41 35 37Z"/>
-  <path fill="#FFF9EF" d="M9 19 35 18 35 21 9 22Z"/>
-  <path fill="#e46f94" d="M13 4 17 4 17 14 13 14ZM29 4 33 4 33 13 29 13Z"/>
-  <path fill="#FACC15" d="M23 26 33 25 34 35 24 36Z"/>
-  <path fill="#FFE88D" d="M23 26 33 25 28 30Z"/>
-</svg>
+<path fill="#d5cbb9" d="m6 11 35-2 1 30-34 4z"/><path fill="#fff9ef" d="m7 18 33-2-1 23-29 3z"/>
+<path fill="#c65359" d="M6 11 39 9 42 13 40 21 7 23Z"/><path fill="#ef9592" d="M6 11 39 9 42 13 7 17Z"/><path fill="#8d3847" d="m35 17 7-4-2 26-5-2z"/>
+<path fill="#727282" d="M13 4h4v11h-4zM29 4h4v10h-4z"/><path fill="#c1bccb" d="M13 4h2v9h-2zM29 4h2v8h-2z"/>
+<path fill="#908997" d="M13 27h4v3h-4zM21 26h4v3h-4zM13 34h4v3h-4zM21 33h4v3h-4z"/><path fill="#facc15" d="m28 25 7-1 1 11-7 1z"/></svg>

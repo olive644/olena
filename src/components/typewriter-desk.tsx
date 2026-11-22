@@ -5,7 +5,15 @@ import { EssayVisualSupport } from "./essay-visual-support";
 import { EssayProofreading } from "./essay-proofreading";
 import { ESSAY_VISUALS } from "../data/essay-visuals";
 import { EssayDeskIcon } from "./essay-desk-icon";
-import { useEffect, useRef, useState, type Dispatch, type CSSProperties } from "react";
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type CSSProperties,
+} from "react";
 import { createWorkspaceId, type WorkspaceState, type WorkspaceAction } from "../domain/workspace";
 import { ESSAY_CATEGORIES, ESSAY_PROPOSALS, type EssayProposal } from "../data/essay-catalog";
 import { uiText } from "../i18n/runtime";
@@ -15,6 +23,8 @@ import { PaperEditorIcon } from "./paper-editor-icon";
 import { PaperCloseIcon } from "./paper-close-icon";
 import "./typewriter-desk.css";
 
+const EnemArchive = lazy(() => import("./enem-archive"));
+
 type DeskProps = {
   workspace: WorkspaceState;
   collectionId: string;
@@ -23,6 +33,7 @@ type DeskProps = {
 };
 export function TypewriterDesk(props: DeskProps) {
   const [selected, setSelected] = useState<string>();
+  const [enemOpen, setEnemOpen] = useState(false);
   const [tab, setTab] = useState<"redacao" | "vestibular">("redacao");
   const proposal = ESSAY_PROPOSALS.find((item) => item.id === selected);
   if (proposal)
@@ -137,38 +148,28 @@ export function TypewriterDesk(props: DeskProps) {
               />
             ))}
           </>
+        ) : enemOpen ? (
+          <Suspense fallback={<p role="status">{uiText("Abrindo acervo do Enem…")}</p>}>
+            <EnemArchive scope={props.collectionId} onBack={() => setEnemOpen(false)} />
+          </Suspense>
         ) : (
           <section className="essay-vestibular">
-            <h2>{uiText("Provas anteriores")}</h2>
-            <p>{uiText("Consulte provas e gabaritos nos acervos oficiais.")}</p>
             <div>
-              {[
-                {
-                  name: "Enem",
-                  url: "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos",
-                  detail: "Acervo de provas e gabaritos do Inep",
-                },
-                {
-                  name: "Fuvest • USP",
-                  url: "https://www.fuvest.br/acervo-vestibular",
-                  detail: "Acervo do Vestibular da USP",
-                },
-              ].map((item) => (
-                <a
-                  className="shelf-wood-button"
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key={item.name}
-                >
-                  <EssayDeskIcon name="vestibular" />
-                  <strong>{item.name}</strong>
-                  <small>{uiText(item.detail)}</small>
-                  <span>
-                    {uiText("Abrir acervo oficial")} <PaperArrow />
-                  </span>
-                </a>
-              ))}
+              <button type="button" className="shelf-wood-button" onClick={() => setEnemOpen(true)}>
+                <EssayDeskIcon name="vestibular" />
+                <strong>Enem</strong>
+                <PaperArrow />
+              </button>
+              <a
+                className="shelf-wood-button"
+                href="https://www.fuvest.br/acervo-vestibular"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <EssayDeskIcon name="vestibular" />
+                <strong>Fuvest · USP</strong>
+                <PaperArrow />
+              </a>
             </div>
           </section>
         )}

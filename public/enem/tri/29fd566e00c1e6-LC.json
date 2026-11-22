@@ -1,0 +1,446 @@
+{
+  "year": 2016,
+  "day": 2,
+  "area": "LC",
+  "variantId": "29fd566e00c1e6",
+  "officialUrl": "https://download.inep.gov.br/educacao_basica/enem/provas/2016/2016_PV_impresso_D2_CD5.pdf",
+  "answerUrl": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2016/GAB_ENEM_2016_DIA_2_05_AMARELO.pdf",
+  "examCode": "300",
+  "scale": [499.978, 108.086],
+  "items": [
+    {
+      "key": "english:91",
+      "id": "23559",
+      "answer": "D",
+      "a": 4.59766,
+      "b": 0.96572,
+      "c": 0.13238,
+      "excluded": false
+    },
+    {
+      "key": "english:92",
+      "id": "30170",
+      "answer": "E",
+      "a": 3.33756,
+      "b": 1.09342,
+      "c": 0.13912,
+      "excluded": false
+    },
+    {
+      "key": "english:93",
+      "id": "39570",
+      "answer": "C",
+      "a": 3.39249,
+      "b": 1.09008,
+      "c": 0.0732,
+      "excluded": false
+    },
+    {
+      "key": "english:94",
+      "id": "27055",
+      "answer": "E",
+      "a": 3.26792,
+      "b": 0.40842,
+      "c": 0.24997,
+      "excluded": false
+    },
+    {
+      "key": "english:95",
+      "id": "40290",
+      "answer": "A",
+      "a": 3.10975,
+      "b": 0.32336,
+      "c": 0.22556,
+      "excluded": false
+    },
+    {
+      "key": "q:100",
+      "id": "68217",
+      "answer": "B",
+      "a": 1.33428,
+      "b": 0.86208,
+      "c": 0.05399,
+      "excluded": false
+    },
+    {
+      "key": "q:101",
+      "id": "45089",
+      "answer": "A",
+      "a": 1.39389,
+      "b": 1.79567,
+      "c": 0.14872,
+      "excluded": false
+    },
+    {
+      "key": "q:102",
+      "id": "13547",
+      "answer": "B",
+      "a": 1.55604,
+      "b": 0.02711,
+      "c": 0.00854,
+      "excluded": false
+    },
+    {
+      "key": "q:103",
+      "id": "21776",
+      "answer": "E",
+      "a": 1.99405,
+      "b": 2.4691,
+      "c": 0.09933,
+      "excluded": false
+    },
+    {
+      "key": "q:104",
+      "id": "17194",
+      "answer": "A",
+      "a": 3.74839,
+      "b": 0.05543,
+      "c": 0.19965,
+      "excluded": false
+    },
+    {
+      "key": "q:105",
+      "id": "86338",
+      "answer": "A",
+      "a": 2.40068,
+      "b": 0.24895,
+      "c": 0.16861,
+      "excluded": false
+    },
+    {
+      "key": "q:106",
+      "id": "40014",
+      "answer": "E",
+      "a": 1.23712,
+      "b": 2.36346,
+      "c": 0.06559,
+      "excluded": false
+    },
+    {
+      "key": "q:107",
+      "id": "97420",
+      "answer": "D",
+      "a": 2.06036,
+      "b": 1.69001,
+      "c": 0.18694,
+      "excluded": false
+    },
+    { "key": "q:108", "id": "83000", "answer": "C", "a": 0, "b": 0, "c": 0, "excluded": true },
+    {
+      "key": "q:109",
+      "id": "50236",
+      "answer": "B",
+      "a": 3.46667,
+      "b": 1.04202,
+      "c": 0.14212,
+      "excluded": false
+    },
+    {
+      "key": "q:110",
+      "id": "35682",
+      "answer": "C",
+      "a": 2.34952,
+      "b": 1.55892,
+      "c": 0.13674,
+      "excluded": false
+    },
+    {
+      "key": "q:111",
+      "id": "97113",
+      "answer": "A",
+      "a": 1.36149,
+      "b": 0.80044,
+      "c": 0.11603,
+      "excluded": false
+    },
+    {
+      "key": "q:112",
+      "id": "83851",
+      "answer": "B",
+      "a": 2.62307,
+      "b": 1.13106,
+      "c": 0.27574,
+      "excluded": false
+    },
+    {
+      "key": "q:113",
+      "id": "85805",
+      "answer": "D",
+      "a": 2.34551,
+      "b": 0.69397,
+      "c": 0.20406,
+      "excluded": false
+    },
+    {
+      "key": "q:114",
+      "id": "96670",
+      "answer": "C",
+      "a": 2.92362,
+      "b": 1.1151,
+      "c": 0.15473,
+      "excluded": false
+    },
+    {
+      "key": "q:115",
+      "id": "38027",
+      "answer": "E",
+      "a": 1.64323,
+      "b": 2.21785,
+      "c": 0.27013,
+      "excluded": false
+    },
+    {
+      "key": "q:116",
+      "id": "97949",
+      "answer": "B",
+      "a": 0.56575,
+      "b": 2.6873,
+      "c": 0.01676,
+      "excluded": false
+    },
+    {
+      "key": "q:117",
+      "id": "96667",
+      "answer": "A",
+      "a": 3.96146,
+      "b": 1.02682,
+      "c": 0.10745,
+      "excluded": false
+    },
+    {
+      "key": "q:118",
+      "id": "82375",
+      "answer": "D",
+      "a": 1.88721,
+      "b": 1.14826,
+      "c": 0.20057,
+      "excluded": false
+    },
+    {
+      "key": "q:119",
+      "id": "97945",
+      "answer": "C",
+      "a": 1.20202,
+      "b": 2.41955,
+      "c": 0.12378,
+      "excluded": false
+    },
+    {
+      "key": "q:120",
+      "id": "96509",
+      "answer": "E",
+      "a": 1.8985,
+      "b": 1.12805,
+      "c": 0.16347,
+      "excluded": false
+    },
+    {
+      "key": "q:121",
+      "id": "98005",
+      "answer": "B",
+      "a": 2.32399,
+      "b": 0.94124,
+      "c": 0.14902,
+      "excluded": false
+    },
+    {
+      "key": "q:122",
+      "id": "96640",
+      "answer": "A",
+      "a": 3.12071,
+      "b": 1.58554,
+      "c": 0.15695,
+      "excluded": false
+    },
+    {
+      "key": "q:123",
+      "id": "61388",
+      "answer": "A",
+      "a": 1.63434,
+      "b": 0.78355,
+      "c": 0.21774,
+      "excluded": false
+    },
+    {
+      "key": "q:124",
+      "id": "61413",
+      "answer": "E",
+      "a": 3.23106,
+      "b": 1.11786,
+      "c": 0.07442,
+      "excluded": false
+    },
+    {
+      "key": "q:125",
+      "id": "98083",
+      "answer": "C",
+      "a": 3.38223,
+      "b": 0.53622,
+      "c": 0.23094,
+      "excluded": false
+    },
+    { "key": "q:126", "id": "97244", "answer": "B", "a": 0, "b": 0, "c": 0, "excluded": true },
+    {
+      "key": "q:127",
+      "id": "98151",
+      "answer": "B",
+      "a": 2.03207,
+      "b": 0.84352,
+      "c": 0.15591,
+      "excluded": false
+    },
+    {
+      "key": "q:128",
+      "id": "97379",
+      "answer": "C",
+      "a": 1.88369,
+      "b": 0.71672,
+      "c": 0.16741,
+      "excluded": false
+    },
+    {
+      "key": "q:129",
+      "id": "27677",
+      "answer": "B",
+      "a": 3.30709,
+      "b": 1.84378,
+      "c": 0.13759,
+      "excluded": false
+    },
+    {
+      "key": "q:130",
+      "id": "28735",
+      "answer": "D",
+      "a": 4.08315,
+      "b": 1.27586,
+      "c": 0.15154,
+      "excluded": false
+    },
+    {
+      "key": "q:131",
+      "id": "55655",
+      "answer": "A",
+      "a": 1.141,
+      "b": 1.07852,
+      "c": 0.04139,
+      "excluded": false
+    },
+    {
+      "key": "q:132",
+      "id": "86586",
+      "answer": "B",
+      "a": 1.37171,
+      "b": 2.03519,
+      "c": 0.15453,
+      "excluded": false
+    },
+    {
+      "key": "q:133",
+      "id": "39973",
+      "answer": "E",
+      "a": 1.44439,
+      "b": 0.60932,
+      "c": 0.05067,
+      "excluded": false
+    },
+    {
+      "key": "q:134",
+      "id": "96749",
+      "answer": "B",
+      "a": 0.92671,
+      "b": 0.91788,
+      "c": 0.00601,
+      "excluded": false
+    },
+    {
+      "key": "q:135",
+      "id": "97467",
+      "answer": "B",
+      "a": 0.93853,
+      "b": 2.0104,
+      "c": 0.12791,
+      "excluded": false
+    },
+    {
+      "key": "q:96",
+      "id": "96818",
+      "answer": "D",
+      "a": 3.51228,
+      "b": 1.12438,
+      "c": 0.14171,
+      "excluded": false
+    },
+    {
+      "key": "q:97",
+      "id": "67813",
+      "answer": "A",
+      "a": 2.15877,
+      "b": 0.25475,
+      "c": 0.35078,
+      "excluded": false
+    },
+    {
+      "key": "q:98",
+      "id": "49264",
+      "answer": "D",
+      "a": 1.21462,
+      "b": 1.8515,
+      "c": 0.06463,
+      "excluded": false
+    },
+    {
+      "key": "q:99",
+      "id": "97334",
+      "answer": "E",
+      "a": 1.45439,
+      "b": 0.85138,
+      "c": 0.02341,
+      "excluded": false
+    },
+    {
+      "key": "spanish:91",
+      "id": "55307",
+      "answer": "C",
+      "a": 1.56923,
+      "b": 0.8287,
+      "c": 0.0376,
+      "excluded": false
+    },
+    {
+      "key": "spanish:92",
+      "id": "54904",
+      "answer": "C",
+      "a": 2.68534,
+      "b": 0.99258,
+      "c": 0.15497,
+      "excluded": false
+    },
+    {
+      "key": "spanish:93",
+      "id": "22565",
+      "answer": "E",
+      "a": 1.75664,
+      "b": 1.92813,
+      "c": 0.19153,
+      "excluded": false
+    },
+    {
+      "key": "spanish:94",
+      "id": "55970",
+      "answer": "B",
+      "a": 1.34437,
+      "b": 1.3475,
+      "c": 0.10395,
+      "excluded": false
+    },
+    {
+      "key": "spanish:95",
+      "id": "23733",
+      "answer": "B",
+      "a": 2.52006,
+      "b": 1.16097,
+      "c": 0.1191,
+      "excluded": false
+    }
+  ]
+}

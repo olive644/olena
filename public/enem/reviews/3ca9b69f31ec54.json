@@ -1,0 +1,909 @@
+{
+  "version": 1,
+  "variantId": "3ca9b69f31ec54",
+  "year": 2019,
+  "paperUrl": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf",
+  "answerUrl": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf",
+  "questions": {
+    "q:100": {
+      "answer": "B",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 204054,
+          "B": 239420,
+          "C": 164480,
+          "D": 201426,
+          "E": 110945,
+          "blank": 2350
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:101": {
+      "answer": "A",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 112306,
+          "B": 343847,
+          "C": 154875,
+          "D": 218425,
+          "E": 90983,
+          "blank": 2239
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:102": {
+      "answer": "D",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 135333,
+          "B": 162663,
+          "C": 67333,
+          "D": 368844,
+          "E": 186168,
+          "blank": 2334
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:103": {
+      "answer": "E",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 74739,
+          "B": 61177,
+          "C": 58248,
+          "D": 344339,
+          "E": 381679,
+          "blank": 2493
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:104": {
+      "answer": "A",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 208634,
+          "B": 37327,
+          "C": 244645,
+          "D": 335883,
+          "E": 92669,
+          "blank": 3517
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:105": {
+      "answer": "D",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 150346,
+          "B": 149969,
+          "C": 144487,
+          "D": 391149,
+          "E": 84701,
+          "blank": 2023
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:106": {
+      "answer": "D",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 329379,
+          "B": 177410,
+          "C": 216633,
+          "D": 76504,
+          "E": 121611,
+          "blank": 1138
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:107": {
+      "answer": "A",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 117589,
+          "B": 286568,
+          "C": 255461,
+          "D": 168251,
+          "E": 92742,
+          "blank": 2064
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:108": {
+      "answer": "D",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 254455,
+          "B": 98124,
+          "C": 129698,
+          "D": 165102,
+          "E": 273260,
+          "blank": 2036
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:109": {
+      "answer": "A",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 221379,
+          "B": 199514,
+          "C": 221362,
+          "D": 183391,
+          "E": 92979,
+          "blank": 4050
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:110": {
+      "answer": "E",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 82420,
+          "B": 108938,
+          "C": 38166,
+          "D": 374582,
+          "E": 316442,
+          "blank": 2127
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:111": {
+      "answer": "A",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 399538,
+          "B": 116667,
+          "C": 104720,
+          "D": 187747,
+          "E": 112243,
+          "blank": 1760
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:112": {
+      "answer": "B",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 159409,
+          "B": 358986,
+          "C": 95110,
+          "D": 186338,
+          "E": 121063,
+          "blank": 1769
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:113": {
+      "answer": "C",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 131741,
+          "B": 185158,
+          "C": 306694,
+          "D": 172063,
+          "E": 124287,
+          "blank": 2732
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:114": {
+      "answer": "E",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 71990,
+          "B": 103246,
+          "C": 99823,
+          "D": 184556,
+          "E": 460626,
+          "blank": 2434
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:115": {
+      "answer": "D",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 65093,
+          "B": 224732,
+          "C": 118214,
+          "D": 451135,
+          "E": 61910,
+          "blank": 1591
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:116": {
+      "answer": "D",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 146095,
+          "B": 309567,
+          "C": 112127,
+          "D": 172755,
+          "E": 179815,
+          "blank": 2316
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:117": {
+      "answer": "D",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 240696,
+          "B": 202604,
+          "C": 265744,
+          "D": 119066,
+          "E": 90818,
+          "blank": 3747
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:118": {
+      "answer": "B",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 100861,
+          "B": 462287,
+          "C": 115877,
+          "D": 168053,
+          "E": 73176,
+          "blank": 2421
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:119": {
+      "answer": "C",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 154501,
+          "B": 343682,
+          "C": 179439,
+          "D": 143169,
+          "E": 98792,
+          "blank": 3092
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:120": {
+      "answer": "B",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 138574,
+          "B": 252487,
+          "C": 160268,
+          "D": 159694,
+          "E": 209686,
+          "blank": 1966
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:121": {
+      "answer": "C",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 95323,
+          "B": 216554,
+          "C": 320091,
+          "D": 215210,
+          "E": 74301,
+          "blank": 1196
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:122": {
+      "answer": "B",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 183619,
+          "B": 224543,
+          "C": 211815,
+          "D": 170123,
+          "E": 129469,
+          "blank": 3106
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:123": {
+      "answer": "C",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 153644,
+          "B": 217296,
+          "C": 311385,
+          "D": 105226,
+          "E": 132607,
+          "blank": 2517
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:124": {
+      "answer": "C",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 75085,
+          "B": 131787,
+          "C": 300923,
+          "D": 282287,
+          "E": 130543,
+          "blank": 2050
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:125": {
+      "answer": "A",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 153991,
+          "B": 197374,
+          "C": 197169,
+          "D": 219918,
+          "E": 150984,
+          "blank": 3239
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:126": {
+      "answer": "C",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 70342,
+          "B": 119587,
+          "C": 403452,
+          "D": 113156,
+          "E": 214310,
+          "blank": 1828
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:127": {
+      "answer": "B",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 153536,
+          "B": 228641,
+          "C": 200099,
+          "D": 244887,
+          "E": 93129,
+          "blank": 2383
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:128": {
+      "answer": "C",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 163299,
+          "B": 235147,
+          "C": 192437,
+          "D": 184168,
+          "E": 145730,
+          "blank": 1894
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:129": {
+      "answer": "D",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 223861,
+          "B": 277518,
+          "C": 114898,
+          "D": 180351,
+          "E": 124296,
+          "blank": 1751
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:130": {
+      "answer": "A",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 315510,
+          "B": 239198,
+          "C": 127990,
+          "D": 130178,
+          "E": 107562,
+          "blank": 2237
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:131": {
+      "answer": "D",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 161374,
+          "B": 199631,
+          "C": 212836,
+          "D": 273582,
+          "E": 73459,
+          "blank": 1793
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:132": {
+      "answer": "C",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 188883,
+          "B": 272732,
+          "C": 258478,
+          "D": 124463,
+          "E": 75748,
+          "blank": 2371
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:133": {
+      "answer": "C",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 123541,
+          "B": 330535,
+          "C": 219093,
+          "D": 151029,
+          "E": 94946,
+          "blank": 3531
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:134": {
+      "answer": "E",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 206518,
+          "B": 61048,
+          "C": 175020,
+          "D": 261099,
+          "E": 216133,
+          "blank": 2857
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:135": {
+      "answer": "B",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 160843,
+          "B": 204014,
+          "C": 213878,
+          "D": 206033,
+          "E": 134690,
+          "blank": 3217
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:91": {
+      "answer": "B",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 119365,
+          "B": 204150,
+          "C": 307636,
+          "D": 164991,
+          "E": 123545,
+          "blank": 2988
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:92": {
+      "answer": "E",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 262019,
+          "B": 223003,
+          "C": 66725,
+          "D": 141101,
+          "E": 227330,
+          "blank": 2497
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:93": {
+      "answer": "E",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 147102,
+          "B": 97068,
+          "C": 396017,
+          "D": 111265,
+          "E": 168822,
+          "blank": 2401
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:94": {
+      "answer": "A",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 270105,
+          "B": 100822,
+          "C": 270760,
+          "D": 199936,
+          "E": 78053,
+          "blank": 2999
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:95": {
+      "answer": "A",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 155244,
+          "B": 88067,
+          "C": 167728,
+          "D": 170720,
+          "E": 338942,
+          "blank": 1974
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:96": {
+      "answer": "E",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 81998,
+          "B": 20350,
+          "C": 76146,
+          "D": 267450,
+          "E": 474868,
+          "blank": 1863
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:97": {
+      "answer": "B",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 240958,
+          "B": 301222,
+          "C": 157195,
+          "D": 130363,
+          "E": 88520,
+          "blank": 4417
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:98": {
+      "answer": "E",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 173768,
+          "B": 312748,
+          "C": 95004,
+          "D": 85006,
+          "E": 253949,
+          "blank": 2200
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "q:99": {
+      "answer": "E",
+      "statistics": {
+        "population": 922675,
+        "counts": {
+          "A": 78255,
+          "B": 203465,
+          "C": 107364,
+          "D": 69610,
+          "E": 461868,
+          "blank": 2113
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2019 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    }
+  }
+}

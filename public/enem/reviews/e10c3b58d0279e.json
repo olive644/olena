@@ -1,0 +1,3969 @@
+{
+  "version": 1,
+  "variantId": "e10c3b58d0279e",
+  "year": 2021,
+  "paperUrl": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf",
+  "answerUrl": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf",
+  "questions": {
+    "q:100": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 104781,
+          "B": 85000,
+          "C": 162440,
+          "D": 50575,
+          "E": 134187,
+          "blank": 1085
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "No modelo de coevolução proposto pela questão, menor letalidade permite que o hospedeiro sobreviva por mais tempo e continue participando da transmissão. A dengue, com letalidade muito inferior, é associada à relação mais longa de adaptação entre vírus e seres humanos. Trata-se da inferência solicitada, sem uma regra universal para todos os patógenos."
+        ],
+        "alternatives": {
+          "A": "O período de incubação isolado não mede o tempo histórico de coevolução.",
+          "B": "Uma incubação menor não demonstra por si uma relação evolutiva mais antiga.",
+          "C": "A alta mortalidade elimina rapidamente hospedeiros e não é o critério de maior eficiência adotado.",
+          "D": "A ocorrência na África não permite datar a origem da relação entre esse vírus e humanos.",
+          "E": "A baixa letalidade é o indício usado na questão para uma associação mais longa e adaptada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:101": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 31864,
+          "B": 43003,
+          "C": 279966,
+          "D": 147025,
+          "E": 35476,
+          "blank": 734
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A decantação exige que o esgoto permaneça em repouso para que partículas mais densas se depositem no fundo. No esquema, essa condição ocorre no tanque séptico, identificado como etapa 3. É nele que o lodo pode ser separado por sedimentação."
+        ],
+        "alternatives": {
+          "A": "A caixa de gordura separa principalmente óleos e gorduras da cozinha.",
+          "B": "A caixa de passagem reúne os efluentes, sem a permanência prolongada exigida.",
+          "C": "O tanque séptico permite repouso e sedimentação das partículas que formam o lodo.",
+          "D": "O filtro biológico destaca o consumo de matéria orgânica por bactérias.",
+          "E": "A caixa de inspeção facilita a distribuição dos efluentes, sem ser o tanque de decantação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:102": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 174346,
+          "B": 89859,
+          "C": 30071,
+          "D": 180802,
+          "E": 61794,
+          "blank": 1196
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na estaquia, o pedaço de caule precisa formar raízes para absorver água e nutrientes e estabelecer uma nova planta. As auxinas aplicadas na base estimulam a formação de raízes adventícias, originadas em um órgão que antes era caulinar."
+        ],
+        "alternatives": {
+          "A": "O efeito pretendido na base da estaca é o enraizamento, e não a indução direta da floração.",
+          "B": "Auxinas mantêm a dominância apical e não são escolhidas para estimular gemas laterais.",
+          "C": "O tamanho das folhas não é o fator que permite a fixação inicial da estaca.",
+          "D": "A indução de raízes adventícias viabiliza o estabelecimento da nova roseira.",
+          "E": "A produção de compostos energéticos ocorre pelo metabolismo, sem ser o papel específico da auxina."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:103": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 100384,
+          "B": 157548,
+          "C": 156118,
+          "D": 73090,
+          "E": 49782,
+          "blank": 1146
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A comparação das estruturas mostra que a formação da lumirrubina altera a conectividade do esqueleto e cria um ciclo adicional. As funções orgânicas não são simplesmente trocadas e a mudança vai além da posição espacial de grupos em uma dupla. É uma isomeria de cadeia."
+        ],
+        "alternatives": {
+          "A": "A transformação não é apresentada como relação entre imagens especulares.",
+          "B": "As funções principais permanecem, sem troca de função que caracterize isomeria funcional.",
+          "C": "A formação de um novo fechamento na estrutura modifica o esqueleto da cadeia.",
+          "D": "Não se trata apenas de deslocar um grupo ou uma insaturação na mesma cadeia.",
+          "E": "A conectividade é alterada, e não apenas a disposição geométrica em torno de uma dupla."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:104": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 88903,
+          "B": 136831,
+          "C": 132935,
+          "D": 60165,
+          "E": 117979,
+          "blank": 1255
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As versões levam o mesmo automóvel de 0 a 100 km/h, portanto produzem a mesma variação de energia cinética. A versão a álcool realiza essa transferência em 12,9 s, menos que os 13,4 s da gasolina. Como potência é energia por tempo, a versão a álcool tem maior potência média nesse intervalo."
+        ],
+        "alternatives": {
+          "A": "A menor duração da aceleração pertence à versão a álcool, e não à gasolina.",
+          "B": "A velocidade máxima isolada não determina a potência média na aceleração analisada.",
+          "C": "A mesma energia cinética é adquirida em menos tempo com álcool, elevando a potência.",
+          "D": "A mesma variação de velocidade não implica potência igual quando os tempos diferem.",
+          "E": "Para a mesma energia, um tempo maior corresponde a menor potência média."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:105": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 105340,
+          "B": 68492,
+          "C": 69856,
+          "D": 207241,
+          "E": 85580,
+          "blank": 1559
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O circuito deve permitir escolher um único caminho com lâmpada entre os polos da bateria. Em D, a primeira chave seleciona a verde ou encaminha a corrente à segunda; esta seleciona a vermelha ou a azul. Assim, três cores podem ser acionadas separadamente."
+        ],
+        "alternatives": {
+          "A": "A ligação entre C da primeira chave e A da segunda cria um caminho com vermelha e azul em série.",
+          "B": "A azul permanece diretamente ligada aos polos, impedindo a seleção exclusiva das demais.",
+          "C": "A azul está conectada permanentemente à bateria, independentemente das chaves.",
+          "D": "A primeira chave escolhe verde ou a segunda chave, que seleciona exclusivamente vermelha ou azul.",
+          "E": "O fio entre os terminais A conecta verde e vermelha em paralelo, permitindo acionamento simultâneo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:106": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 77110,
+          "B": 102080,
+          "C": 245854,
+          "D": 73217,
+          "E": 38973,
+          "blank": 834
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A escolha exige simultaneamente baixa temperatura, membrana polimérica e meio ácido. A célula PEM trabalha entre 60 e 100 °C, utiliza ácido perfluorossulfônico sólido e apresenta prótons nas semirreações. É a única tecnologia da tabela que reúne os três requisitos."
+        ],
+        "alternatives": {
+          "A": "A AFC opera em meio básico com hidróxido de potássio, sem atender ao meio ácido exigido.",
+          "B": "A MSFC utiliza carbonatos fundidos e temperaturas muito altas.",
+          "C": "A PEM combina baixa temperatura operacional, eletrólito polimérico e transporte de prótons.",
+          "D": "A PAFC utiliza ácido fosfórico líquido e opera em temperatura superior à PEM.",
+          "E": "A SOFC utiliza óxido sólido e exige temperaturas entre 600 e 1 000 °C."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:107": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 142495,
+          "B": 132442,
+          "C": 44615,
+          "D": 110594,
+          "E": 107151,
+          "blank": 771
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A evaporação do suor retira calor da pele. Quando o ar está úmido, a presença elevada de vapor reduz a facilidade de evaporar mais água, prejudicando esse mecanismo de resfriamento. O desconforto decorre da menor eficiência da evaporação do suor."
+        ],
+        "alternatives": {
+          "A": "A umidade indica quantidade de vapor, sem exigir que sua temperatura seja elevada.",
+          "B": "O ar úmido dificulta a evaporação do suor e a perda de calor associada.",
+          "C": "A absorção de radiação não é o mecanismo de desconforto indicado pela umidade.",
+          "D": "O problema principal é a evaporação, sem atribuí-lo a uma redução da condução do ar.",
+          "E": "Com a pele mais quente que o ambiente, a condensação sobre ela não explica a situação descrita."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:108": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 64021,
+          "B": 140656,
+          "C": 184897,
+          "D": 73985,
+          "E": 72854,
+          "blank": 1655
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O hidróxido de sódio identifica um composto capaz de doar próton em uma reação ácido-base. Entre as estruturas, III apresenta uma hidroxila ligada diretamente ao anel aromático, caracterizando fenol. O fenol é neutralizado pela base com formação de fenolato e água."
+        ],
+        "alternatives": {
+          "A": "A estrutura I apresenta grupo derivado de ureia, sem hidroxila fenólica para o teste proposto.",
+          "B": "A estrutura II não apresenta a hidroxila fenólica ácida necessária ao teste.",
+          "C": "A hidroxila fenólica de III doa próton ao hidróxido e forma o sal correspondente.",
+          "D": "O pesticida IV não possui o grupo fenólico identificado pelo reagente básico.",
+          "E": "A estrutura V não fornece a função ácida que dá o teste positivo proposto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:109": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 70673,
+          "B": 139688,
+          "C": 81565,
+          "D": 98761,
+          "E": 146595,
+          "blank": 786
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A decomposição anaeróbia da matéria orgânica dos dejetos suínos em biodigestores gera uma mistura gasosa rica em metano. Esse biogás pode ser aproveitado energeticamente e reduz a carga orgânica descartada na água. É o combustível associado aos resíduos descritos."
+        ],
+        "alternatives": {
+          "A": "O etanol é obtido principalmente por fermentação de açúcares, sem ser o produto típico dos dejetos em biodigestão.",
+          "B": "A digestão anaeróbia dos resíduos produz biogás, cuja fração combustível principal é metano.",
+          "C": "O butano é um hidrocarboneto comum do gás liquefeito de petróleo, sem ser o produto dessa biodigestão.",
+          "D": "O metanol não é a mistura gasosa formada na degradação anaeróbia dos dejetos.",
+          "E": "O biodiesel é produzido de óleos e gorduras, sem corresponder à biodigestão dos resíduos descritos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:110": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 186497,
+          "B": 52455,
+          "C": 45603,
+          "D": 197228,
+          "E": 55536,
+          "blank": 749
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O agente atua no criadouro aquático e precisa ser ingerido com a água, o que corresponde à fase larval do mosquito. O dano ao tubo digestório compromete a sobrevivência dessa fase. Assim, o controle impede o desenvolvimento da larva antes de ela se tornar adulta."
+        ],
+        "alternatives": {
+          "A": "O adulto não vive ingerindo água do criadouro como a larva descrita.",
+          "B": "Os ovos não possuem o intestino no qual a curcumina se acumula.",
+          "C": "O efeito direto é a lesão letal da larva, sem atuar especificamente na regulação da metamorfose.",
+          "D": "A ingestão e a destruição intestinal atingem a larva presente no ambiente aquático.",
+          "E": "A substância atua após ingestão, sem um mecanismo de repelência do mosquito adulto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:111": {
+      "answer": "A",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 280201,
+          "B": 27017,
+          "C": 133245,
+          "D": 84893,
+          "E": 12023,
+          "blank": 689
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A energia solar chega à cidade por ondas eletromagnéticas, processo de irradiação que dispensa meio material. O ar aquecido sobre a ilha de calor sobe e transporta energia para a brisa. Esse movimento de massas de ar caracteriza convecção."
+        ],
+        "alternatives": {
+          "A": "A radiação liga o Sol à superfície, e o movimento do ar transfere calor por convecção.",
+          "B": "A segunda transferência ocorre pelo deslocamento de ar aquecido, sem predomínio de irradiação.",
+          "C": "A energia solar atravessa o espaço sem contato material, portanto não chega por condução.",
+          "D": "O espaço entre Sol e Terra impede a convecção como mecanismo solar.",
+          "E": "A primeira transferência é radiativa, sem transporte de matéria do Sol à cidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:112": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 36869,
+          "B": 196995,
+          "C": 94905,
+          "D": 154325,
+          "E": 54379,
+          "blank": 595
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A folha esticada e a folha amassada têm a mesma massa e o mesmo peso, mas oferecem áreas diferentes à interação com o ar. A resistência do ar altera a queda e também afeta diferentemente pedra e rolha. No vácuo, a aceleração gravitacional não depende da massa do corpo."
+        ],
+        "alternatives": {
+          "A": "O peso da folha não muda ao amassá-la, mas o tempo de queda muda.",
+          "B": "A forma e a área exposta alteram a força de resistência exercida pelo ar.",
+          "C": "A massa é a mesma nos dois formatos da folha e não explica a diferença.",
+          "D": "A densidade média pode acompanhar a mudança de forma, mas a força física determinante é o arrasto do ar.",
+          "E": "A gravidade local permanece a mesma para os corpos comparados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:113": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 67028,
+          "B": 123206,
+          "C": 183049,
+          "D": 122557,
+          "E": 40858,
+          "blank": 1370
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A proporção fornecida é 50 g de etanol para 100 g de glicose. Assim, 50 kg de glicose renderiam 25 kg de etanol; com conversão de 80%, obtêm-se 20 kg. A densidade de 0,80 kg/L fornece volume de 20 ÷ 0,80 = 25 litros."
+        ],
+        "alternatives": {
+          "A": "Dezesseis litros resultam de multiplicar pela densidade em vez de dividir a massa por ela.",
+          "B": "Vinte é a massa obtida em quilogramas, e não o volume em litros.",
+          "C": "A massa de 20 kg dividida por 0,80 kg/L corresponde a 25 L.",
+          "D": "Sessenta e quatro litros excedem o rendimento permitido pela proporção e pela conversão dadas.",
+          "E": "Cem litros ignoram tanto a proporção glicose-etanol quanto a conversão de 80%."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:114": {
+      "answer": "A",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 58853,
+          "B": 51195,
+          "C": 59296,
+          "D": 87129,
+          "E": 280283,
+          "blank": 1312
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A madeira corresponde ao xilema, e o cerne é sua porção interna com deposição de substâncias que favorecem durabilidade e resistência. A espécie 1 apresenta grande quantidade de cerne, superior às demais. É a escolha mais adequada para a construção proposta."
+        ],
+        "alternatives": {
+          "A": "A espécie 1 possui muito cerne, tecido relacionado à resistência da madeira.",
+          "B": "A espécie 2 apresenta muito alburno, mas não possui cerne.",
+          "C": "A espécie 3 tem floema abundante, que não corresponde à madeira resistente procurada.",
+          "D": "A espécie 4 tem muita periderme e floema, mas não apresenta cerne.",
+          "E": "A espécie 5 possui apenas pequena quantidade de cerne, inferior à espécie 1."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:115": {
+      "answer": "A",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 112617,
+          "B": 108874,
+          "C": 100902,
+          "D": 120600,
+          "E": 94082,
+          "blank": 993
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O pigmento aparece amarelo-alaranjado porque reflete principalmente essas faixas e absorve suas complementares. No círculo apresentado, as regiões opostas ao amarelo e ao laranja são violeta e azul. Logo, os carotenos absorvem majoritariamente entre violeta e azul."
+        ],
+        "alternatives": {
+          "A": "Violeta e azul são complementares às cores amarelo-alaranjadas refletidas pelo caroteno.",
+          "B": "A faixa azul-verde está associada no texto à absorção das antocianinas.",
+          "C": "Absorver verde-amarelo não corresponde às complementares do amarelo-alaranjado.",
+          "D": "Amarelo e laranja são as cores percebidas e refletidas, sem predomínio de absorção.",
+          "E": "A absorção em laranja-vermelho não produziria o amarelo-alaranjado descrito."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:116": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 169512,
+          "B": 94153,
+          "C": 27330,
+          "D": 220926,
+          "E": 25242,
+          "blank": 905
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O verso decisivo afirma que o planeta é menos denso que a água. Na tabela, apenas Saturno tem densidade relativa inferior a 1, com valor 0,7. A identificação independe de interpretar a distância terrestre, que varia ao longo das órbitas."
+        ],
+        "alternatives": {
+          "A": "Mercúrio tem densidade relativa 5,6, muito superior à da água.",
+          "B": "Júpiter possui densidade relativa 1,3, ainda acima da água.",
+          "C": "Urano apresenta densidade relativa 1,2, sem atender à condição do verso.",
+          "D": "Saturno é o único listado com densidade relativa inferior a 1, igual a 0,7.",
+          "E": "Netuno possui densidade relativa 1,7 e não pode ser o planeta descrito."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:117": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 89663,
+          "B": 72101,
+          "C": 146050,
+          "D": 80214,
+          "E": 148733,
+          "blank": 1307
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Pela relação R = ρL/A, com resistividade comum, basta comparar L/A. Os valores são aproximadamente 34,7 para o fio 1; 11,75 para o 2; 27 para o 3; e 106 para o 4. A ordem crescente é R2 < R3 < R1 < R4."
+        ],
+        "alternatives": {
+          "A": "R1 não é a menor, pois seu quociente L/A supera os de R2 e R3.",
+          "B": "A posição de R1 e R3 está invertida, já que 27 é menor que 34,7.",
+          "C": "Os quocientes 11,75, 27, 34,7 e 106 produzem essa sequência.",
+          "D": "R4 possui o maior quociente L/A, portanto não pode vir em primeiro.",
+          "E": "A sequência começa pelo maior valor e não corresponde à ordem crescente calculada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:118": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 165266,
+          "B": 124761,
+          "C": 136111,
+          "D": 62955,
+          "E": 47977,
+          "blank": 998
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A degradação de matéria orgânica com menor rendimento energético e formação de produtos orgânicos ainda combustíveis caracteriza a fermentação. Na fermentação alcoólica, por exemplo, parte da energia permanece no etanol produzido, que pode ser utilizado como combustível."
+        ],
+        "alternatives": {
+          "A": "A fotossíntese fixa carbono e produz matéria orgânica, em vez de degradá-la com baixo rendimento.",
+          "B": "A fermentação gera produtos orgânicos energéticos, como o etanol.",
+          "C": "A quimiossíntese usa energia química para fixar carbono, sem corresponder ao catabolismo descrito.",
+          "D": "A respiração aeróbica promove oxidação mais completa, com maior rendimento energético.",
+          "E": "A fosforilação oxidativa está associada à cadeia transportadora de elétrons e não define a produção dos subprodutos citados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:119": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 63009,
+          "B": 87242,
+          "C": 172398,
+          "D": 72115,
+          "E": 141726,
+          "blank": 1578
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A titulação com NaOH permite determinar a quantidade de ácido acetilsalicílico pela quantidade de base consumida na reação. Massa e densidade totais incluem os excipientes, e o papel indicador apenas avalia o pH. A quantificação do princípio ativo é obtida no teste 5."
+        ],
+        "alternatives": {
+          "A": "A massa do comprimido inclui amido e celulose, sem isolar a quantidade de ácido.",
+          "B": "A densidade do conjunto não determina diretamente a massa do princípio ativo.",
+          "C": "O papel indicador informa uma faixa de pH, sem quantificar o ácido presente.",
+          "D": "A temperatura de fusão não fornece a dosagem do ácido na mistura proposta.",
+          "E": "A titulação relaciona o consumo de base à quantidade do ácido e permite calcular seu teor."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:120": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 108355,
+          "B": 94943,
+          "C": 153922,
+          "D": 96557,
+          "E": 83218,
+          "blank": 1073
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Substâncias tóxicas persistentes podem se acumular nos organismos e atingir concentrações maiores a cada nível trófico, processo chamado biomagnificação. Entre os seres citados, os golfinhos ocupam posição predatória mais elevada e tendem a concentrar mais desses contaminantes."
+        ],
+        "alternatives": {
+          "A": "As esponjas não ocupam o nível predatório mais elevado entre os organismos citados.",
+          "B": "Os golfinhos recebem contaminantes de muitas presas e apresentam maior biomagnificação.",
+          "C": "O fitoplâncton inicia cadeias alimentares, sem o acúmulo sucessivo dos níveis superiores.",
+          "D": "Os herbívoros estão abaixo dos predadores na cadeia e tendem a menor concentração.",
+          "E": "As algas são produtoras e não concentram contaminantes por sucessivas relações de predação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:121": {
+      "answer": "A",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 98705,
+          "B": 61746,
+          "C": 204362,
+          "D": 47664,
+          "E": 124399,
+          "blank": 1192
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A velocidade inicial das cargas aponta para dentro do plano da imagem e o campo magnético para a direita. Pela regra da mão direita em F = q(v × B), a força na carga positiva aponta para baixo da página. O sinal negativo inverte a força na outra esfera, que aponta para cima."
+        ],
+        "alternatives": {
+          "A": "A força aponta para baixo na positiva e para cima na negativa, como exige a regra da mão direita.",
+          "B": "Cargas opostas com a mesma velocidade sofrem forças magnéticas de sentidos contrários.",
+          "C": "A força magnética é perpendicular ao campo, sem apontar horizontalmente ao longo da haste.",
+          "D": "As forças não podem ter o mesmo sentido quando as cargas possuem sinais opostos.",
+          "E": "Essa configuração inverte os sentidos previstos pelo produto vetorial para as duas cargas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:122": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 102356,
+          "B": 255462,
+          "C": 62062,
+          "D": 37478,
+          "E": 79731,
+          "blank": 979
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A escola já planejou sensibilização, capacitação e separação dos resíduos. Falta assegurar a etapa posterior: a retirada e o encaminhamento correto dos materiais para reciclagem. A parceria com prefeitura ou cooperativa completa o circuito de destinação."
+        ],
+        "alternatives": {
+          "A": "Ampliar a campanha ao bairro não resolve a retirada dos resíduos já separados.",
+          "B": "A parceria garante recolhimento e encaminhamento apropriado dos materiais recicláveis.",
+          "C": "A visita é educativa, mas não organiza a destinação dos resíduos da escola.",
+          "D": "A divulgação informa a ação, sem assegurar o transporte para reciclagem.",
+          "E": "Coletores externos aumentam a coleta, mas ainda deixam sem solução seu destino."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:123": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 47349,
+          "B": 58369,
+          "C": 43982,
+          "D": 25480,
+          "E": 361408,
+          "blank": 1480
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A consanguinidade aumenta a chance de dois animais portarem alelos recessivos herdados de ancestrais comuns. Antes de organizar cruzamentos, é necessário conhecer parentescos e características genéticas. O mapeamento genético permite orientar a separação e reduzir acasalamentos de risco."
+        ],
+        "alternatives": {
+          "A": "A transgenia insere material genético e não identifica o parentesco para organizar os grupos.",
+          "B": "A terapia gênica procura tratar alterações, sem ser o procedimento prévio de seleção de cruzamentos.",
+          "C": "Vacinas de DNA atuam na resposta imune e não corrigem a consanguinidade.",
+          "D": "A clonagem produziria indivíduos geneticamente semelhantes, sem ampliar a diversidade dos cruzamentos.",
+          "E": "A análise genética ajuda a reconhecer parentescos e alelos de risco antes do manejo reprodutivo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:124": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 37479,
+          "B": 81132,
+          "C": 207269,
+          "D": 99589,
+          "E": 111167,
+          "blank": 1432
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O cobre metálico inicia o ciclo com número de oxidação zero e passa a Cu2+ nas etapas intermediárias. Na etapa V, o zinco permite a redução dos íons cobre de volta a Cu metálico. A diminuição do número de oxidação de +2 para zero caracteriza a redução."
+        ],
+        "alternatives": {
+          "A": "Na etapa I, o cobre passa de zero a +2 e sofre oxidação.",
+          "B": "Na etapa II, o cobre continua com número de oxidação +2 no hidróxido.",
+          "C": "Na etapa III, a formação de CuO mantém o cobre em +2.",
+          "D": "Na etapa IV, a formação do sulfato não altera o número de oxidação do cobre.",
+          "E": "Na etapa V, Cu2+ recebe elétrons e retorna ao estado metálico de número de oxidação zero."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:125": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 41630,
+          "B": 126320,
+          "C": 143607,
+          "D": 117690,
+          "E": 107885,
+          "blank": 936
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O reflexo patelar é um arco reflexo medular. A informação sensorial chega à medula espinal e aciona neurônios motores que promovem a resposta muscular, sem depender de decisão consciente do encéfalo. A coordenação imediata está na medula."
+        ],
+        "alternatives": {
+          "A": "A ponte integra o encéfalo e não é o centro do arco reflexo patelar.",
+          "B": "A medula espinal recebe a aferência e organiza a resposta motora reflexa.",
+          "C": "O cerebelo participa da coordenação motora, mas não é o centro desse arco reflexo.",
+          "D": "O hipotálamo regula funções homeostáticas, sem coordenar diretamente o reflexo patelar.",
+          "E": "A neuro-hipófise libera hormônios e não integra o circuito reflexo do joelho."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:126": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 134195,
+          "B": 119044,
+          "C": 78919,
+          "D": 117335,
+          "E": 86849,
+          "blank": 1726
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Com a mesma área, espessura e diferença de temperatura, maior condutividade implica maior economia de gás. O alumínio tem k = 20 e o ferro k = 8. Na panela composta, 1/k efetivo = (1/2)/40 + (1/2)/5, resultando em k efetivo ≈ 8,89. A ordem de maior economia é alumínio, cobre-aço e ferro."
+        ],
+        "alternatives": {
+          "A": "A condutividade efetiva do cobre-aço é cerca de 8,89, inferior à do alumínio.",
+          "B": "Os valores 20, 8,89 e 8 ordenam as panelas da mais para a menos econômica.",
+          "C": "O alumínio tem a maior condutividade e não pode ocupar o último lugar.",
+          "D": "O cobre-aço conduz um pouco melhor que o ferro, portanto deve precedê-lo.",
+          "E": "O ferro tem a menor taxa de condução entre as três opções, sem ser o mais econômico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:127": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 49691,
+          "B": 136352,
+          "C": 86282,
+          "D": 190725,
+          "E": 73811,
+          "blank": 1207
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A montagem contém duas pilhas eletroquímicas ligadas em série, com suas tensões somadas. O cronômetro é a carga alimentada e o voltímetro mede a diferença de potencial entre os mesmos terminais, portanto fica em paralelo com a carga. O esquema B representa essa associação."
+        ],
+        "alternatives": {
+          "A": "O voltímetro aparece em série e há apenas uma pilha no esquema.",
+          "B": "Duas pilhas em série alimentam a carga, com voltímetro em paralelo nos terminais.",
+          "C": "As pilhas estão em oposição, de modo que suas tensões não se somam como na montagem.",
+          "D": "Os recipientes não equivalem a quatro resistores associados a uma única pilha.",
+          "E": "O circuito representa quatro pilhas e mantém o voltímetro em série com a carga."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:128": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 70159,
+          "B": 121930,
+          "C": 134057,
+          "D": 157632,
+          "E": 52326,
+          "blank": 1964
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para atingir A, a bala deve percorrer 120 m horizontalmente e subir 35 m. Com cos 53° = 0,6, t = 120/(0,6v0) = 200/v0. Substituindo em 35 = 0,8v0t − 5t², resulta 35 = 160 − 200000/v0², portanto v0² = 1600 e v0 = 40 m/s."
+        ],
+        "alternatives": {
+          "A": "Com 30 m/s, a trajetória fica abaixo da altura de A quando alcança os 120 m.",
+          "B": "Com 35 m/s, a altura calculada aos 120 m ainda é inferior a 35 m.",
+          "C": "A equação da trajetória para x = 120 m e y = 35 m fornece 40 m/s.",
+          "D": "Com 45 m/s, a bala passa acima da altura de A na posição horizontal indicada.",
+          "E": "Com 50 m/s, a trajetória também ultrapassa a altura do alvo e não fornece o valor solicitado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:129": {
+      "answer": "A",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 155776,
+          "B": 107485,
+          "C": 98097,
+          "D": 104187,
+          "E": 71237,
+          "blank": 1286
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em 35 anos transcorrem 35 ÷ 5 = 7 meias-vidas. A massa remanescente é 500 × (1/2)^7 = 500/128 = 3,90625 g. Portanto, o valor mais próximo é 3,9 g, sem uma redução linear da massa com o tempo."
+        ],
+        "alternatives": {
+          "A": "A divisão sucessiva por dois durante sete meias-vidas deixa aproximadamente 3,9 g.",
+          "B": "31,2 g corresponderiam a quatro meias-vidas, equivalentes a 20 anos.",
+          "C": "62,5 g são a massa após três meias-vidas, ou 15 anos.",
+          "D": "125 g restam após duas meias-vidas, ou 10 anos.",
+          "E": "250 g restam após apenas uma meia-vida, equivalente a 5 anos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:130": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 70264,
+          "B": 186303,
+          "C": 99289,
+          "D": 98604,
+          "E": 81700,
+          "blank": 1908
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A proteína mais curta será interrompida pelo códon terminal que surgir mais cedo. Substituir C por U no quarto códon transforma CAA em UAA, sinal de parada. Assim, a tradução termina após os três primeiros códons, antes do que nas outras mutações propostas."
+        ],
+        "alternatives": {
+          "A": "A deleção no terceiro códon desloca a leitura, mas não cria parada antes do quarto códon da opção B.",
+          "B": "A alteração CAA para UAA cria um sinal de parada na quarta posição.",
+          "C": "A troca AGU para ACU no sexto códon não produz um dos terminais indicados.",
+          "D": "A mudança UAG para UGG remove o terminal original e tende a prolongar a tradução.",
+          "E": "A deleção no quinto códon só pode afetar a sequência depois dos quatro primeiros, produzindo proteína maior."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:131": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 73613,
+          "B": 84855,
+          "C": 71099,
+          "D": 116257,
+          "E": 191070,
+          "blank": 1174
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Óleos vegetais contêm triglicerídeos, ésteres que reagem com a soda cáustica em meio aquoso. A hidrólise básica forma glicerol e sais de ácidos graxos, que constituem o sabão. Essa transformação é denominada saponificação."
+        ],
+        "alternatives": {
+          "A": "A produção de sabão não envolve uma redução dos grupos do triglicerídeo.",
+          "B": "A epoxidação forma anéis com oxigênio e não produz os sais que constituem o sabão.",
+          "C": "Substituição é uma classificação ampla que não nomeia especificamente o processo descrito.",
+          "D": "A esterificação forma ésteres, enquanto a reação empregada hidrolisa os ésteres do óleo.",
+          "E": "A hidrólise básica de triglicerídeos gera glicerol e sais de ácidos graxos, caracterizando saponificação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:132": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 119789,
+          "B": 88798,
+          "C": 90243,
+          "D": 90721,
+          "E": 147296,
+          "blank": 1221
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "No feto, a placenta realiza as trocas gasosas e os desvios circulatórios evitam a passagem obrigatória pelos pulmões ainda não funcionais. O forame oval participa dessa circulação funcionalmente simples, comparada na questão à dos peixes, com uma passagem cardíaca no circuito efetivo de oxigenação."
+        ],
+        "alternatives": {
+          "A": "Nas aves, a circulação dupla completa depende de circuitos pulmonar e sistêmico plenamente separados.",
+          "B": "O metabolismo lento dos répteis não explica a tolerância fetal ao desvio entre átrios.",
+          "C": "A separação ventricular não elimina a comunicação atrial mencionada no enunciado.",
+          "D": "O desvio dos pulmões aproxima funcionalmente a circulação fetal do circuito simples dos peixes.",
+          "E": "A explicação não se baseia em isolamento temporal por pressões como na alternativa sobre anfíbios."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:133": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 119729,
+          "B": 148530,
+          "C": 64873,
+          "D": 78177,
+          "E": 124607,
+          "blank": 2152
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A solução preparada tem pH 4,3, abaixo da faixa ideal de 5,5 a 6,5, portanto precisa receber uma base. O KOH eleva o pH e fornece potássio, nutriente que está abaixo do valor de referência. Sua adição atende à correção sem introduzir um elemento estranho ao cultivo."
+        ],
+        "alternatives": {
+          "A": "O ácido fosfórico diminuiria ainda mais o pH, agravando a acidez excessiva.",
+          "B": "O sulfato de cálcio fornece nutrientes, mas não é a base indicada para elevar o pH.",
+          "C": "O óxido de alumínio não fornece um nutriente da tabela e pode introduzir alumínio prejudicial.",
+          "D": "O cloreto de ferro não é a base necessária e adiciona cloreto já presente na solução preparada.",
+          "E": "O hidróxido neutraliza a acidez e acrescenta potássio, cuja concentração está deficiente."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:134": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 98735,
+          "B": 97794,
+          "C": 146104,
+          "D": 115539,
+          "E": 78135,
+          "blank": 1761
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Barras menores do mesmo material e espessura vibram com frequência fundamental maior que barras mais longas. Já a velocidade do som emitido depende do meio de propagação, o mesmo ar para ambas. Assim, f1 > f2 e v1 = v2."
+        ],
+        "alternatives": {
+          "A": "A barra menor tem frequência maior, e a velocidade do som no ar não diminui por isso.",
+          "B": "A igualdade de velocidades está correta, mas a ordem das frequências está invertida.",
+          "C": "A barra menor não produz a menor frequência, e as velocidades no mesmo meio são iguais.",
+          "D": "A menor barra produz frequência maior, enquanto ambos os sons se propagam à mesma velocidade no ar.",
+          "E": "A frequência maior não provoca maior velocidade de propagação no mesmo meio."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:135": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 59955,
+          "B": 106184,
+          "C": 66153,
+          "D": 128243,
+          "E": 176542,
+          "blank": 991
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Polvos com variações de cor e comportamento capazes de enganar predadores tiveram maior chance de sobreviver e deixar descendentes. Ao longo das gerações, a seleção natural favoreceu essas características. O mimetismo se estabeleceu por sua vantagem diante das pressões seletivas."
+        ],
+        "alternatives": {
+          "A": "A semelhança mimética não demonstra ancestralidade recente compartilhada com peixes e serpentes.",
+          "B": "Não é necessário que o polvo tenha as mesmas mutações dos animais imitados.",
+          "C": "A observação individual não explica, por si, o estabelecimento evolutivo da capacidade na população.",
+          "D": "O mimetismo defensivo não significa que o polvo tenha adquirido o mesmo modo de vida das espécies imitadas.",
+          "E": "A vantagem de sobrevivência e reprodução favorece o mimetismo por seleção natural."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:91": {
+      "answer": "A",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 229346,
+          "B": 123920,
+          "C": 79288,
+          "D": 91798,
+          "E": 13221,
+          "blank": 495
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Pais sem manifestação da doença podem ter um filho afetado, e o cruzamento entre dois portadores produz risco de um quarto. Representando os pais por Aa, o cruzamento Aa × Aa gera 1 AA, 2 Aa e 1 aa. O fenótipo doente em aa caracteriza herança recessiva."
+        ],
+        "alternatives": {
+          "A": "O cruzamento entre heterozigotos gera um quarto de descendentes recessivos afetados.",
+          "B": "Uma condição dominante se manifesta no portador do alelo, contrariando os pais assintomáticos descritos.",
+          "C": "A codominância expressaria os dois alelos, sem explicar esse padrão de portadores não afetados.",
+          "D": "O enunciado associa a doença a um gene, sem indicar determinação por vários genes.",
+          "E": "A chance de um quarto não exige a existência de mais de dois alelos na população."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:92": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 121019,
+          "B": 209764,
+          "C": 88394,
+          "D": 87741,
+          "E": 29785,
+          "blank": 1365
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O iodo é reduzido no cátodo e o lítio é oxidado no ânodo. A força eletromotriz de cada pilha é 0,54 − (−3,05) = 3,59 V. Três pilhas em série fornecem 10,77 V, valor dentro da faixa de 10,5 a 10,9 V exigida pelo carrinho de controle remoto."
+        ],
+        "alternatives": {
+          "A": "O relógio exige até 1,5 V, muito abaixo dos 10,77 V fornecidos.",
+          "B": "O celular opera entre 3,5 e 3,8 V, faixa próxima de uma pilha, sem a associação tripla.",
+          "C": "A câmera exige até 7,8 V, abaixo da tensão total das três pilhas.",
+          "D": "Os 10,77 V calculados pertencem à faixa de operação do carrinho.",
+          "E": "O notebook exige ao menos 19,5 V, acima da tensão da bateria proposta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:93": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 67894,
+          "B": 81354,
+          "C": 138986,
+          "D": 87374,
+          "E": 161019,
+          "blank": 1441
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O alcoolômetro flutua conforme a densidade do líquido. A temperatura modifica os volumes por dilatação térmica e, com isso, altera as densidades e a posição de equilíbrio do instrumento. A correção recupera a medida referente à temperatura de calibração de 20 °C."
+        ],
+        "alternatives": {
+          "A": "A dissociação da água não é o mecanismo que muda a flutuação do instrumento.",
+          "B": "A dilatação térmica normalmente reduz a densidade, em vez de aumentá-la.",
+          "C": "A mudança de volume por dilatação altera a densidade usada na medição.",
+          "D": "A correção térmica não pressupõe aumento real da proporção de álcool durante a leitura.",
+          "E": "A variação considerada é física, sem transformação das propriedades químicas da mistura."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:94": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 179036,
+          "B": 86778,
+          "C": 66030,
+          "D": 87861,
+          "E": 116890,
+          "blank": 1473
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A condução depende de duplas conjugadas ao longo da cadeia, com alternância entre ligações simples e duplas que permite deslocalização eletrônica. A estrutura D corresponde ao poliacetileno e preserva essa alternância na repetição das unidades. Nas demais, a conjugação é interrompida ou lateral."
+        ],
+        "alternatives": {
+          "A": "O anel aromático é lateral, enquanto a cadeia principal permanece saturada.",
+          "B": "A carbonila não forma uma sequência de duplas conjugadas carbono-carbono na cadeia.",
+          "C": "As duplas ficam separadas por mais de uma ligação simples na repetição.",
+          "D": "A repetição mantém a alternância contínua entre ligações simples e duplas.",
+          "E": "O carbono saturado substituído interrompe a conjugação ao longo da cadeia principal."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:95": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 21550,
+          "B": 13261,
+          "C": 361101,
+          "D": 44390,
+          "E": 97046,
+          "blank": 720
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As preguiças-gigantes comiam frutos e sementes e transportavam parte das sementes pelo ambiente, favorecendo sua dispersão. Com a extinção desses animais, diminuiu um agente de disseminação. Isso ajuda a explicar a menor abundância e a distribuição mais restrita da flora."
+        ],
+        "alternatives": {
+          "A": "A ação alimentar dos animais se relaciona à dispersão, sem indicar redução direta da produção de flores.",
+          "B": "A mudança descrita é de abundância e distribuição, sem diminuição necessária do tamanho das plantas.",
+          "C": "A perda de consumidores de frutos reduz agentes capazes de espalhar sementes.",
+          "D": "O texto não mostra alteração do número de sementes produzido por cada fruto.",
+          "E": "O desaparecimento dos dispersores limita a ocupação, sem exigir perda física dos hábitats disponíveis."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:96": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 27633,
+          "B": 94068,
+          "C": 229825,
+          "D": 143813,
+          "E": 40873,
+          "blank": 1856
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O carro consome 110 ÷ 5,0 = 22 kWh no percurso. O carregador fornece potência P = UI = 220 × 20 = 4 400 W, ou 4,4 kW. Como é ideal, o tempo para repor a energia é 22 ÷ 4,4 = 5,0 horas."
+        ],
+        "alternatives": {
+          "A": "O valor 0,005 h resulta de misturar quilowatt-hora com watt sem converter a potência.",
+          "B": "Em 0,125 h o carregador forneceria apenas 0,55 kWh, muito menos que os 22 kWh necessários.",
+          "C": "Em 2,5 h seriam repostos 11 kWh, metade da energia consumida.",
+          "D": "A divisão de 22 kWh por 4,4 kW fornece exatamente 5,0 horas.",
+          "E": "Oito horas reporiam 35,2 kWh, acima da energia utilizada no percurso."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:97": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 103927,
+          "B": 133037,
+          "C": 176269,
+          "D": 85190,
+          "E": 38676,
+          "blank": 969
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na dupla fecundação das angiospermas, um núcleo espermático fecunda a oosfera e outro se une aos dois núcleos polares. A segunda união origina o endosperma triploide, tecido de reserva que nutre o embrião durante seu desenvolvimento e a germinação."
+        ],
+        "alternatives": {
+          "A": "O endosperma alimenta o embrião, sem ser tecido de nutrição destinado ao fruto.",
+          "B": "A fecundação dos núcleos polares forma a reserva nutritiva do embrião.",
+          "C": "O revestimento da semente deriva dos tegumentos do óvulo e não da segunda fecundação.",
+          "D": "A segunda fecundação gera endosperma, sem uma camada protetora do megagametófito.",
+          "E": "Os vasos da planta jovem se diferenciam em seu corpo, sem derivar do endosperma triploide."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:98": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 90557,
+          "B": 110119,
+          "C": 81086,
+          "D": 168211,
+          "E": 86951,
+          "blank": 1144
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Um éster derivado do ácido etanoico possui o trecho CH3COO, correspondente ao acetato. Entre os acetatos da tabela, o de isoamila apresenta apenas ligações simples entre carbonos; o de benzila contém anel aromático. Logo, a substância pedida tem aroma de banana."
+        ],
+        "alternatives": {
+          "A": "O benzoato de metila deriva do ácido benzoico e possui anel aromático.",
+          "B": "O acetato de isoamila deriva do ácido etanoico e tem cadeia carbônica saturada.",
+          "C": "O acetato de benzila tem origem etanoica, mas seu anel aromático torna a cadeia insaturada.",
+          "D": "O propanoato de isobutila deriva do ácido propanoico, sem atender à origem etanoica.",
+          "E": "O antranilato de metila apresenta anel aromático e não deriva do ácido etanoico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:99": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 48939,
+          "B": 207640,
+          "C": 109819,
+          "D": 147857,
+          "E": 22707,
+          "blank": 1106
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A escala indica 0,2 s por divisão horizontal. Entre dois picos equivalentes há cinco divisões, de modo que o período cardíaco é 1,0 s. Assim, ocorre um batimento a cada segundo, ou 60 batimentos em um minuto."
+        ],
+        "alternatives": {
+          "A": "Trinta batimentos por minuto exigiriam período de 2 s, maior que o observado.",
+          "B": "O intervalo de 1 s entre picos corresponde a 60 batimentos por minuto.",
+          "C": "Cem batimentos por minuto corresponderiam a 0,6 s entre picos.",
+          "D": "Cento e vinte batimentos por minuto exigiriam intervalo de 0,5 s.",
+          "E": "Cento e oitenta batimentos por minuto exigiriam intervalo próximo de 0,33 s."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:136": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 59229,
+          "B": 111128,
+          "C": 86754,
+          "D": 225513,
+          "E": 54672,
+          "blank": 772
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "MCDLXIX corresponde a 1000 + 400 + 60 + 9 = 1469. Esse é o ano de fundação indicado na placa. A quantidade de anos completados em 2050 é 2050 − 1469 = 581, valor da alternativa D."
+        ],
+        "alternatives": {
+          "A": "379 não corresponde à diferença entre 2050 e o ano romano 1469.",
+          "B": "381 é duzentos anos menor que o intervalo correto de 581 anos.",
+          "C": "579 deixa de considerar corretamente a parcela IX, que representa nove.",
+          "D": "A conversão fornece 1469 e sua diferença para 2050 é 581.",
+          "E": "601 supera em vinte anos o intervalo entre 1469 e 2050."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:137": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 46845,
+          "B": 144530,
+          "C": 42182,
+          "D": 235630,
+          "E": 67809,
+          "blank": 1072
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A soma decimal é 9 + 12 = 21. Na base dois, 21 = 16 + 4 + 1 = 2^4 + 2^2 + 2^0. As posições correspondentes recebem 1, e as demais recebem 0, formando 10101."
+        ],
+        "alternatives": {
+          "A": "101 representa 5 em decimal, sem corresponder à soma 21.",
+          "B": "1101 representa 13, abaixo do total de 9 e 12.",
+          "C": "1111 representa 8 + 4 + 2 + 1 = 15, abaixo da soma decimal 21.",
+          "D": "10101 representa 16 + 4 + 1, que é 21.",
+          "E": "11001 representa 16 + 8 + 1 = 25, maior que a soma pedida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:138": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 54245,
+          "B": 71398,
+          "C": 219792,
+          "D": 105370,
+          "E": 85743,
+          "blank": 1520
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Restam 3 − 0,9 = 2,1 hectares para os lotes, equivalentes a 21 000 m². Dividindo por 300 m², são 70 terrenos. Os 20 promocionais rendem 400 000 reais, e os outros 50 rendem 1 500 000 reais. A receita total é 1 900 000 reais."
+        ],
+        "alternatives": {
+          "A": "700 000 reais não considera os preços de 20 e 30 mil aplicados aos 70 terrenos.",
+          "B": "1 600 000 reais fica abaixo da soma de 400 000 com 1 500 000.",
+          "C": "A receita de 20 lotes a 20 mil e 50 a 30 mil totaliza 1 900 000 reais.",
+          "D": "2 200 000 reais excede a receita dos 70 lotes disponíveis após descontar ruas.",
+          "E": "2 800 000 reais não desconta corretamente a área destinada às ruas e calçadas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:139": {
+      "answer": "A",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 113107,
+          "B": 85198,
+          "C": 143354,
+          "D": 163865,
+          "E": 31168,
+          "blank": 1376
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A ordem de escolha dos materiais não muda a fantasia: escolhem-se dois tecidos entre seis e cinco pedras entre quinze. Pelo princípio multiplicativo, o total é C(6,2) × C(15,5) = [6!/(4!2!)] × [15!/(10!5!)]."
+        ],
+        "alternatives": {
+          "A": "O produto das duas combinações conta escolhas independentes sem considerar a ordem.",
+          "B": "A expressão utiliza uma soma, mas cada escolha de tecidos deve ser combinada com cada escolha de pedras.",
+          "C": "Dividir apenas por 2! e 5! não desconta os materiais que ficam de fora das escolhas.",
+          "D": "O produto divide pelos fatoriais dos escolhidos, mas omite 4! e 10!, supercontando escolhas equivalentes.",
+          "E": "A combinação única não separa corretamente as escolhas de tecidos e de pedras."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:140": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 63849,
+          "B": 156652,
+          "C": 107327,
+          "D": 152932,
+          "E": 55790,
+          "blank": 1518
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em quatro anos, o laboratório A custa 180 + 4 × 60 = 420 mil reais, ou 4,2 mil por usuário. O B custa 120 + 4 × 16 = 184 mil reais, ou 2,3 mil por usuário. A economia por usuário é 4,2 − 2,3 = 1,90 mil reais."
+        ],
+        "alternatives": {
+          "A": "1,31 mil não resulta da diferença entre os custos por usuário das duas capacidades.",
+          "B": "A diferença de 4,2 mil para 2,3 mil por usuário é 1,90 mil reais.",
+          "C": "2,30 mil é o custo por usuário do laboratório B, sem descontá-lo do custo de A.",
+          "D": "2,36 mil corresponde à diferença total dividida por 100, ignorando a capacidade de 80 usuários de B.",
+          "E": "2,95 mil corresponde à diferença total dividida por 80, sem calcular separadamente os custos por usuário."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:141": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 86985,
+          "B": 120756,
+          "C": 97355,
+          "D": 180375,
+          "E": 51117,
+          "blank": 1480
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A frequência máxima calculada é 220 − 61 = 159 bpm. Os limites da faixa são 0,65 × 159 = 103,35 e 0,85 × 159 = 135,15 bpm. Somente os registros de 120 e 130 bpm estão dentro desse intervalo: forte no plano e subida moderada."
+        ],
+        "alternatives": {
+          "A": "Inclui 90 bpm, abaixo do limite inferior, e 140 bpm, acima do superior. Portanto, dois dos quatro trechos estão fora da faixa.",
+          "B": "O trecho leve no plano registra 90 bpm, valor menor que 103,35. Os outros dois estão na faixa, mas essa inclusão torna o conjunto inadequado.",
+          "C": "A subida forte registra 140 bpm e ultrapassa o teto de 135,15. Não basta a intensidade parecer adequada; é necessário respeitar os limites numéricos.",
+          "D": "Os valores 120 e 130 pertencem ao intervalo de 103,35 a 135,15 bpm. Esses são exatamente os dois trechos que atendem às duas condições.",
+          "E": "Os dois trechos listados são justamente os extremos externos: 90 está abaixo e 140 está acima da faixa. Nenhum deles atende ao intervalo calculado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:142": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 57130,
+          "B": 52189,
+          "C": 206097,
+          "D": 195681,
+          "E": 25926,
+          "blank": 1045
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para minimizar o número de lavagens, deve-se considerar a maior receita possível por atendimento, 35 reais. Oito lavagens completas rendem 280 reais, insuficientes. Nove rendem 315 reais, superando os 300 exigidos. Assim, o menor número possível é nove."
+        ],
+        "alternatives": {
+          "A": "Mesmo que as seis lavagens fossem completas, a receita seria 6 × 35 = 210 reais. Esse é o máximo com seis atendimentos e fica abaixo de 300.",
+          "B": "Oito lavagens completas rendem 280 reais. Como nem esse máximo cobre a despesa, oito atendimentos são insuficientes.",
+          "C": "Nove lavagens completas rendem 315 reais, e oito nunca chegam a 300. Isso prova tanto a viabilidade quanto a minimalidade de nove.",
+          "D": "Quinze lavagens simples atingem 300 reais, mas a pergunta pede o menor número possível. Usar lavagens completas permite reduzir esse número a nove.",
+          "E": "Vinte lavagens ultrapassam o necessário mesmo se todas forem simples. A existência de uma solução com nove mostra que vinte não é o mínimo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:143": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 37786,
+          "B": 84931,
+          "C": 225656,
+          "D": 42454,
+          "E": 146090,
+          "blank": 1151
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Comprando X e Y na Farmácia 2, o desconto reduz cada preço de 50 para 40 reais. Z custa 35 reais na Farmácia 3, totalizando 115. As outras opções custam, respectivamente, 135, 120, 130 e 116 reais. Logo, a combinação da alternativa C é a mais barata."
+        ],
+        "alternatives": {
+          "A": "Os três preços da Farmácia 1 somam 45 + 40 + 50 = 135 reais. Esse valor é 20 reais superior aos 115 da combinação mais econômica.",
+          "B": "X e Y na Farmácia 1 somam 85, e Z na 3 acrescenta 35, totalizando 120. Embora reduza a despesa, ainda custa 5 reais a mais que a opção C.",
+          "C": "O desconto conjunto em X e Y na Farmácia 2 produz 40 + 40 reais; com Z a 35 na 3, o total é 115. Esse é o menor dos cinco valores comparados.",
+          "D": "Comprando apenas X na Farmácia 2, não se obtém o desconto condicionado à compra de X e Y. O total é 50 + 45 + 35 = 130 reais.",
+          "E": "Os três medicamentos na Farmácia 3 somam 145, que com desconto de 20% resultam em 116 reais. Mesmo com desconto, fica um real acima da opção C."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:144": {
+      "answer": "A",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 182666,
+          "B": 78204,
+          "C": 51040,
+          "D": 157253,
+          "E": 67548,
+          "blank": 1357
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A estrutura apresenta dois cubos, cada um com seis faces quadradas, totalizando doze quadrados. As hastes que unem arestas correspondentes dos cubos delimitam um trapézio isósceles para cada uma das doze arestas. Portanto, formam-se doze trapézios isósceles e doze quadrados."
+        ],
+        "alternatives": {
+          "A": "As seis faces de cada cubo fornecem doze quadrados; as doze arestas correspondentes delimitam doze trapézios. A congruência das hastes laterais torna esses trapézios isósceles.",
+          "B": "Os trapézios não devem ser contados duas vezes por pertencerem visualmente a regiões vizinhas. Há um por par de arestas correspondentes, totalizando doze, e não vinte e quatro.",
+          "C": "As bases dos quadriláteros de ligação são paralelas, mas têm comprimentos diferentes. Portanto, eles são trapézios e não paralelogramos, que exigiriam dois pares de lados paralelos.",
+          "D": "O número oito corresponde aos vértices de cada cubo, sem contar corretamente os trapézios. Estes se associam às doze arestas e somam doze.",
+          "E": "As hastes correspondentes indicadas como congruentes produzem lados não paralelos iguais nos trapézios. As faces dos cubos são quadradas, sem justificar trapézios escalenos e retângulos não quadrados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:145": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 51095,
+          "B": 185444,
+          "C": 117731,
+          "D": 78621,
+          "E": 103916,
+          "blank": 1261
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Ao dobrar a planificação, é preciso acompanhar também a identificação dos vértices, e não apenas a distância no desenho. As faces 1, 2 e 3 mantêm algum vértice em comum com a face escura. A face 4 é a única formada pelos três vértices complementares, ficando oposta à escura."
+        ],
+        "alternatives": {
+          "A": "Uma face de um octaedro possui apenas uma face totalmente oposta. Incluir todas as quatro numeradas ignora as identificações dos vértices após a dobradura.",
+          "B": "As faces 1 e 3 continuam compartilhando vértices com a face escura. A ausência de uma aresta comum, isoladamente, não atende à definição de oposição dada.",
+          "C": "A face 1 parece distante na planificação, mas a montagem reúne vértices que estavam separados no papel. Ela não fica totalmente disjunta da face escura.",
+          "D": "A face 2 não reúne os três vértices opostos aos da face escura. É necessário acompanhar as dobras, pois a posição central na planificação não determina oposição.",
+          "E": "A face 4 não compartilha nem aresta nem vértice com a face escura após a montagem. Por isso, é a única que satisfaz integralmente a definição do enunciado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:146": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 114638,
+          "B": 142716,
+          "C": 105955,
+          "D": 133144,
+          "E": 39722,
+          "blank": 1893
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "No triângulo equilátero, a altura é h = lado × √3/2. Com h = 8, o lado é 16/√3 e o perímetro é 48/√3 = 16√3. Usando √3 ≈ 1,7, chega-se a cerca de 27,2 cm, cujo valor mais próximo é 27,18 cm. A deformação não muda o comprimento total da barra."
+        ],
+        "alternatives": {
+          "A": "9,07 cm se aproxima de uma medida de lado, sem somar os três lados do triângulo. A barra corresponde ao perímetro integral.",
+          "B": "13,60 cm equivale a 8 × 1,7, mas a altura não se transforma em perímetro pela simples multiplicação por √3. O fator correto é 2√3.",
+          "C": "20,40 cm não satisfaz o perímetro 16√3. Confundir altura com lado ou deixar de considerar uma parte da barra reduz indevidamente o comprimento.",
+          "D": "O perímetro é 16√3 ≈ 27,2 cm. Entre as opções, 27,18 cm é o valor mais próximo dessa medida.",
+          "E": "36,24 cm supera o perímetro calculado. O enunciado exclui perda ou acréscimo de material, portanto não se deve acrescentar outra extensão à barra."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:147": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 93907,
+          "B": 132336,
+          "C": 159905,
+          "D": 101293,
+          "E": 48918,
+          "blank": 1709
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A caneca tem a forma de tronco de cone, com raios 5 e 4 cm e altura 12 cm. Seu volume é V = πh(R² + Rr + r²)/3. Usando π = 3, V = 12 × (25 + 20 + 16) = 732 cm³, equivalentes a 732 mL."
+        ],
+        "alternatives": {
+          "A": "216 mL não resulta da expressão do tronco de cone com raios 5 e 4. A diferença entre as bases não substitui a soma R² + Rr + r².",
+          "B": "408 mL é menor que o volume de um cilindro de raio 4 e altura 12, que já seria 576 mL. Como toda a caneca é mais larga que essa base, esse valor é impossível.",
+          "C": "A expressão do tronco de cone fornece 732 cm³. Pela equivalência de 1 cm³ para 1 mL, a capacidade é 732 mL.",
+          "D": "2 196 mL corresponde a πh(R² + Rr + r²) sem a divisão por três. O fator 1/3 é indispensável na fórmula do tronco de cone.",
+          "E": "2 928 mL é quatro vezes 732 e surge ao utilizar os diâmetros como raios. Os raios corretos são metade de 10 e 8, isto é, 5 e 4 cm."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:148": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 79690,
+          "B": 134018,
+          "C": 134897,
+          "D": 85526,
+          "E": 102226,
+          "blank": 1711
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O limite de 0,80 real permite até 80 cm² de impressão. As áreas são 61,2 cm² para o triângulo, 64 para o quadrado, 88 para o retângulo, 91,8 para o hexágono e 75 para o círculo. Entre as áreas que não excedem 80, a maior é a do círculo."
+        ],
+        "alternatives": {
+          "A": "A área é 12² × 1,7/4 = 61,2 cm², e o cartão fica dentro do orçamento. Porém, o círculo oferece 75 cm² e mais espaço pelo limite permitido.",
+          "B": "O quadrado tem 8² = 64 cm² e custa 0,64 real. Ele é viável, mas oferece área menor que os 75 cm² do círculo.",
+          "C": "O retângulo tem área de 11 × 8 = 88 cm². Seu custo de 0,88 real ultrapassa o máximo de 0,80 real, apesar de sua área maior.",
+          "D": "O hexágono tem seis triângulos equiláteros de lado 6, totalizando 6 × 36 × 1,7/4 = 91,8 cm². O custo de 0,918 real excede o orçamento.",
+          "E": "O círculo de raio 5 tem área 3 × 25 = 75 cm² e custa 0,75 real. É a maior área entre os modelos que respeitam o teto de 0,80 real."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:149": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 118156,
+          "B": 118246,
+          "C": 111545,
+          "D": 119423,
+          "E": 68389,
+          "blank": 2309
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A relação dimensional é módulo volumétrico proporcional a densidade × velocidade². A densidade é medida em kg/m³ e a velocidade ao quadrado em m²/s². Multiplicando, obtém-se kg/(m·s²), isto é, kg·m−1·s−2, unidade equivalente ao pascal."
+        ],
+        "alternatives": {
+          "A": "Os expoentes m−2 e s−1 não resultam de multiplicar m−3 por m² e s−2. É necessário elevar toda a unidade de velocidade ao quadrado.",
+          "B": "A multiplicação kg·m−3 × m²·s−2 simplifica para kg·m−1·s−2. Como a constante é adimensional, essa é a unidade do módulo.",
+          "C": "O expoente m−5 surgiria ao dividir por velocidade², em vez de multiplicar. Além disso, o tempo deve permanecer com expoente negativo.",
+          "D": "O quilograma não deve ser invertido, pois a densidade multiplica a velocidade². Os sinais positivos de metro e segundo também contradizem a análise dimensional.",
+          "E": "A unidade inverte a massa e amplia a potência do comprimento sem fundamento na relação. A dependência direta da densidade exige kg com expoente positivo um."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:150": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 107301,
+          "B": 262819,
+          "C": 88008,
+          "D": 56095,
+          "E": 22236,
+          "blank": 1609
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As duas viagens com a mesma mala atingem a mesma massa. A diferença entre as listas mostra que uma calça e um sapato equivalem a seis camisetas: 12 camisetas + 4 calças + 3 sapatos = 18 camisetas + 3 calças + 2 sapatos. Retirar novamente uma calça e um sapato permite levar mais seis camisetas, totalizando 24 com duas calças e um sapato."
+        ],
+        "alternatives": {
+          "A": "Ao passar da segunda viagem para duas calças e um sapato, liberam-se exatamente seis camisetas de massa. Levar 22 deixaria duas camisetas de capacidade sem utilizar.",
+          "B": "As listas mostram a equivalência de uma calça e um sapato com seis camisetas. Substituindo esse par na segunda viagem, obtêm-se 18 + 6 = 24 camisetas.",
+          "C": "Vinte e seis exigiriam espaço para oito camisetas adicionais, mas a retirada do par libera apenas seis. A mala ultrapassaria a massa de referência em duas camisetas.",
+          "D": "Trinta e três excedem em nove camisetas a combinação de massa exatamente igual a 10 kg. A equivalência fornecida não permite esse acréscimo.",
+          "E": "Trinta e nove superam em quinze camisetas a capacidade obtida. A massa da mala continua a mesma e não pode ser descartada ou convertida em capacidade extra."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:151": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 104525,
+          "B": 129714,
+          "C": 142576,
+          "D": 98191,
+          "E": 61930,
+          "blank": 1132
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O motor antigo consome 20/16 = 1,25 L em 20 km. O novo economiza 0,1 L nessa distância, consumindo 1,15 L. Seu desempenho é 20/1,15 ≈ 17,391 km/L, que arredondado a uma casa decimal fica em 17,4 km/L."
+        ],
+        "alternatives": {
+          "A": "15,9 km/L representaria piora no desempenho, pois menos quilômetros seriam percorridos por litro. O enunciado informa economia de combustível.",
+          "B": "Somar 0,1 diretamente a 16 mistura grandezas: a economia é em litros por 20 km, sem ser um acréscimo de km/L. É preciso recalcular a razão distância/consumo.",
+          "C": "16,4 km/L ainda não corresponde ao consumo de 1,15 L para 20 km. A economia deve ser descontada dos 1,25 L usados anteriormente nessa distância.",
+          "D": "A razão 20 ÷ 1,15 é aproximadamente 17,391. O arredondamento para uma casa decimal produz 17,4 km/L.",
+          "E": "18 km/L implicariam consumir cerca de 1,111 L em 20 km, economia maior que 0,1 L. Portanto, ultrapassa a melhoria informada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:152": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 107774,
+          "B": 124787,
+          "C": 101481,
+          "D": 131366,
+          "E": 70787,
+          "blank": 1873
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A área das quatro paredes é 2h(comprimento + largura); dobrar as duas dimensões horizontais, mantendo h, dobra essa área. A pintura dos dois lados preserva o mesmo fator dois. Já a área do piso é comprimento × largura, multiplicada por quatro. O fornecedor II informa os fatores corretos."
+        ],
+        "alternatives": {
+          "A": "O dobro para as paredes está correto, mas o piso tem duas dimensões duplicadas. Sua área deve ser quatro vezes maior, e não apenas o dobro.",
+          "B": "As paredes dobram porque cada uma tem só sua dimensão horizontal duplicada. O piso quadruplica porque comprimento e largura são ambos duplicados.",
+          "C": "As paredes não quadruplicam, pois a altura continua inalterada. O fator quatro é adequado apenas ao piso.",
+          "D": "Os fatores foram trocados: as paredes crescem duas vezes e o piso quatro vezes. A permanência da altura impede o fator quatro nas paredes.",
+          "E": "O fator oito seria associado a três dimensões duplicadas em um volume. O pedido envolve áreas, e nem a altura foi duplicada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:153": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 55116,
+          "B": 104987,
+          "C": 128373,
+          "D": 158044,
+          "E": 89273,
+          "blank": 2275
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O volume necessário é 100 habitantes × 120 L/dia × 7 dias = 84 000 L, ou 84 m³. O raio interno é 2,5 m, metade do diâmetro. Usando π = 3, a área da base é 18,75 m². Logo, a altura é 84/18,75 = 4,48 m."
+        ],
+        "alternatives": {
+          "A": "1,12 m resulta de usar 5 m como raio, quadruplicando indevidamente a área da base. O dado de 5 m é o diâmetro, portanto o raio é 2,5 m.",
+          "B": "Com 3,10 m, o volume seria 18,75 × 3,10 = 58,125 m³, insuficiente para os 84 m³ requeridos. O reservatório terminaria antes de sete dias.",
+          "C": "Com 4,35 m, a capacidade seria 81,5625 m³, ainda inferior aos 84 m³. Mesmo próxima, essa altura não atende ao período completo.",
+          "D": "A divisão do volume requerido de 84 m³ pela área da base de 18,75 m² fornece exatamente 4,48 m. Essa é a altura mínima que atende aos sete dias.",
+          "E": "Com 5,60 m, a capacidade seria 105 m³, acima da demanda. A pergunta pede a altura mínima, e 4,48 m já fornece todo o volume necessário."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:154": {
+      "answer": "A",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 204863,
+          "B": 117297,
+          "C": 60264,
+          "D": 74327,
+          "E": 79878,
+          "blank": 1439
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Até 5 000 reais, o imposto é zero. Entre 5 000 e 10 000, cresce com inclinação de 10% até atingir 500 reais. Depois, passa a crescer com inclinação de 30%, chegando a 2 000 em 15 000. A função é contínua e formada por três segmentos com essas características, como em A."
+        ],
+        "alternatives": {
+          "A": "O gráfico fica em zero até 5 000, passa por (10 000, 500) e chega a (15 000, 2 000). A mudança para uma inclinação maior representa corretamente a alíquota marginal de 30%.",
+          "B": "O trecho final mantém a inclinação anterior e termina em 1 000. Pela tabela, o imposto final é 500 + 0,30 × 5 000 = 2 000, portanto a reta deveria ser mais inclinada.",
+          "C": "O gráfico cobra imposto antes de 5 000, contrariando a isenção. Além disso, termina em 1 000, quando o valor correto em 15 000 é 2 000.",
+          "D": "Os patamares constantes tratam o imposto como um valor fixo por faixa. A tabela define percentuais sobre o excesso de preço, de modo que o imposto cresce continuamente dentro de cada faixa.",
+          "E": "O gráfico não representa o trecho isento de zero a 5 000 e conserva uma única inclinação depois disso. Também indica 1 000 em 15 000, abaixo dos 2 000 calculados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:155": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 136734,
+          "B": 90047,
+          "C": 57642,
+          "D": 139050,
+          "E": 112991,
+          "blank": 1604
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Se d é o desconto inteiro, o ingresso custa 20 − d e o público é 200 + 40d. A receita é R(d) = (20 − d)(200 + 40d) = −40d² + 600d + 4000. A parábola tem concavidade para baixo, receita inicial 4000 e zero em d = 20. Como apenas descontos inteiros são admitidos, o gráfico deve conter pontos separados."
+        ],
+        "alternatives": {
+          "A": "A reta crescente ignora o produto entre preço decrescente e público crescente. A receita é quadrática e cai a zero quando o desconto chega a 20 reais.",
+          "B": "Os pontos respeitam a restrição a inteiros, mas apresentam crescimento linear permanente. A redução do preço acaba superando o aumento do público e faz a receita cair.",
+          "C": "A reta decrescente erra tanto a forma quanto o comportamento inicial. Por exemplo, com desconto de um real, a receita sobe de 4000 para 19 × 240 = 4560 reais.",
+          "D": "A parábola representa a expressão de receita, mas a linha contínua admite descontos fracionários. O enunciado restringe os ingressos e, portanto, os descontos a valores inteiros.",
+          "E": "Os pontos estão sobre uma parábola côncava para baixo e representam somente descontos inteiros. Também reproduzem receita inicial 4000 e receita zero no desconto de 20 reais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:156": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 79490,
+          "B": 147087,
+          "C": 104871,
+          "D": 91624,
+          "E": 113034,
+          "blank": 1962
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O índice j identifica o destino, portanto é preciso somar as colunas, sem subtrair saídas. As somas para as regiões 1 a 5 são 4, 8, 10, 11 e 12 dezenas de famílias. O maior fluxo recebido é o da região 5, com 120 famílias."
+        ],
+        "alternatives": {
+          "A": "A primeira coluna soma 0 + 0 + 2 + 1 + 1 = 4 dezenas. É o menor total recebido, e a soma da linha corresponderia a saídas.",
+          "B": "A segunda coluna soma 4 + 0 + 2 + 0 + 2 = 8 dezenas. Esse valor fica abaixo das 12 dezenas da região 5.",
+          "C": "A terceira coluna recebe 2 + 6 + 0 + 2 + 0 = 10 dezenas. Apesar do fluxo de seis dezenas vindo da região 2, o total não é o maior.",
+          "D": "A quarta coluna soma 2 + 2 + 3 + 0 + 4 = 11 dezenas. Ela fica apenas uma dezena abaixo da região 5, mas ainda perde na comparação.",
+          "E": "A quinta coluna soma 5 + 3 + 0 + 4 + 0 = 12 dezenas. É o maior total de chegadas, critério explicitamente escolhido pela construtora."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:157": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 220880,
+          "B": 111965,
+          "C": 100917,
+          "D": 56358,
+          "E": 46382,
+          "blank": 1566
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O avião B transporta 1,10 vez o número de passageiros e consome por passageiro 0,90 vez o combustível de A. Para a mesma distância e lotação completa, o consumo total é multiplicado por 1,10 × 0,90 = 0,99. Portanto, B consome 1% menos combustível."
+        ],
+        "alternatives": {
+          "A": "A redução de 10% vale para cada passageiro, mas o avião leva 10% mais pessoas. Ignorar esse aumento superestima a economia total.",
+          "B": "Os fatores sucessivos produzem 0,99 do consumo original. A diferença para 1 é 0,01, equivalente a uma redução total de 1%.",
+          "C": "Os percentuais não se cancelam por simples soma, pois incidem sobre fatores diferentes. O produto 1,10 × 0,90 é 0,99, e não 1.",
+          "D": "O consumo calculado é 99% do original, abaixo de A. Assim, a variação é negativa e não um aumento de 1%.",
+          "E": "O aumento da capacidade não implica aumento líquido de combustível porque há redução do consumo por passageiro. O produto dos fatores fornece queda, sem crescimento de 11%."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:158": {
+      "answer": "A",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 95097,
+          "B": 93037,
+          "C": 120009,
+          "D": 111216,
+          "E": 117253,
+          "blank": 1456
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada pneu requer 3 × 4 = 12 pessoa-segundos de trabalho. Com dois trabalhadores, o grupo reduzido precisa de 12/2 = 6 segundos. Os outros três grupos terminam em quatro segundos, mas a troca completa depende do último pneu. O tempo total é seis segundos."
+        ],
+        "alternatives": {
+          "A": "O grupo com duas pessoas demora 3/2 do tempo original, isto é, seis segundos. Como todos os pneus precisam estar prontos, esse grupo determina a duração da parada.",
+          "B": "5,7 segundos não mantém o produto pessoas × tempo igual a 12. A proporcionalidade inversa dada fornece exatamente seis, sem estimativa intermediária.",
+          "C": "Cinco segundos com duas pessoas representam apenas dez pessoa-segundos. Isso é menos que os doze necessários para completar o pneu.",
+          "D": "4,5 segundos tratam a redução de um trabalhador como pequeno acréscimo uniforme na equipe total. Porém, o trabalhador faltou em um grupo específico, que cai de três para duas pessoas.",
+          "E": "4,4 segundos corresponderiam a uma redistribuição global que o enunciado não permite. Cada grupo permanece responsável por um único pneu, e o grupo reduzido demora seis segundos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:159": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 51101,
+          "B": 89888,
+          "C": 79829,
+          "D": 221010,
+          "E": 94411,
+          "blank": 1829
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para cada suplemento, é necessário o menor número inteiro de sachês que atenda simultaneamente às três carências. Os totais mínimos são 16 sachês de I, 6 de II, 4 de III, 2 de IV e 2 de V. Seus custos são 32, 18, 20, 12 e 16 reais. O suplemento IV tem o menor custo."
+        ],
+        "alternatives": {
+          "A": "O mineral A exige 800/50 = 16 sachês de I, embora outros minerais precisem de menos. O custo chega a 32 reais, superior aos 12 reais da opção IV.",
+          "B": "O mineral C exige 1200/200 = 6 sachês de II, determinando o mínimo. Eles custam 18 reais, portanto a opção não é a mais barata.",
+          "C": "O suplemento III exige quatro sachês para atingir 1200 mg de C e superar a carência de A. A despesa é 4 × 5 = 20 reais.",
+          "D": "Dois sachês de IV fornecem 1200 mg de A, 1000 de B e 2000 de C. Atendem a todas as carências por 12 reais, menor gasto entre as opções.",
+          "E": "Um sachê de V não atende A nem B, apesar de atingir C. Dois sachês suprem tudo, mas custam 16 reais, quatro a mais que a opção IV."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:160": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 127332,
+          "B": 140681,
+          "C": 141701,
+          "D": 74564,
+          "E": 52403,
+          "blank": 1387
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A batata-doce custa inicialmente 0,6 × 5 = 3 reais e passa a custar 4,50, aumento de 1,50 real. O frango custava 0,4 × 12,50 = 5 reais, e deve passar a custar 3,50. Como seu preço por quilo não muda, a quantidade deve cair 1,50/5 = 30%."
+        ],
+        "alternatives": {
+          "A": "12,5% de 400 g são 50 g, cuja economia seria apenas 0,625 real. Esse corte não compensa o aumento de 1,50 real da batata-doce.",
+          "B": "Uma redução de 28% economizaria 28% de 5 reais, isto é, 1,40 real. Faltariam dez centavos para manter o custo total em dez reais.",
+          "C": "A economia exigida de 1,50 real equivale a 30% do gasto inicial de 5 reais com frango. Assim, a quantidade cai de 400 para 280 g.",
+          "D": "O aumento de 50% ocorreu no preço da batata-doce, não na quantidade necessária de frango. Cortar metade do frango economizaria 2,50 reais, mais do que o necessário.",
+          "E": "70% é a proporção de frango que permanece, pois 280/400 = 0,70. A pergunta pede a redução, que é os 30% restantes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:161": {
+      "answer": "A",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 143741,
+          "B": 117441,
+          "C": 145952,
+          "D": 70669,
+          "E": 57782,
+          "blank": 2483
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O gráfico varia de −3 a 3, portanto tem amplitude 3. Em t = 0, a posição é −3, o que exige cosseno com sinal negativo. Os mínimos se repetem a cada π segundos, então ω = 2π/π = 2. A expressão é P(t) = −3 cos(2t)."
+        ],
+        "alternatives": {
+          "A": "A função vale −3 em zero, tem amplitude 3 e período π. Esses três dados coincidem com os pontos característicos do gráfico.",
+          "B": "A função seno sem deslocamento vale zero em t = 0. Isso contradiz a posição inicial de −3 mostrada no gráfico.",
+          "C": "O cosseno positivo começa em +3, enquanto a curva começa no mínimo −3. A frequência está adequada, mas o sinal está invertido.",
+          "D": "A amplitude seria 6 e o valor inicial seria −6. O intervalo total entre extremos é seis, mas a amplitude é metade disso, igual a três.",
+          "E": "Além de começar em zero, essa função teria amplitude seis. Ela erra tanto a posição inicial quanto o deslocamento máximo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:162": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 62784,
+          "B": 97139,
+          "C": 87261,
+          "D": 162992,
+          "E": 124954,
+          "blank": 2938
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Com b = 1, definem-se u = a² + a − 1 e v = 1 + a − a². Como u estrela v = uv + u, a equação vira (a² + a − 1)(2 + a − a²) = 0. As raízes são (−1 ± √5)/2, −1 e 2. As duas maiores são 2 e (−1 + √5)/2, cuja soma é (3 + √5)/2."
+        ],
+        "alternatives": {
+          "A": "√5 é a diferença entre as duas raízes de a² + a − 1, sem ser a soma das duas maiores entre todas as quatro soluções. É necessário incluir também as raízes do outro fator.",
+          "B": "√3 não resulta de nenhum dos fatores obtidos pela definição das operações. A aplicação de estrela exige somar u ao produto uv, e não tratar o símbolo como multiplicação comum.",
+          "C": "√1 equivale a 1, que pode surgir de somas de raízes inadequadas. As duas maiores soluções são 2 e aproximadamente 0,618, cuja soma é maior que dois.",
+          "D": "Esse valor é apenas a maior raiz do primeiro fator. A saída pedida deve somá-la à solução 2 do segundo fator.",
+          "E": "A soma 2 + (−1 + √5)/2 simplifica para (3 + √5)/2. Ela utiliza exatamente as duas maiores raízes da equação completa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:163": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 70401,
+          "B": 139385,
+          "C": 181379,
+          "D": 81554,
+          "E": 63696,
+          "blank": 1653
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As medidas devem estar na mesma unidade. O comprimento original de 38,4 m corresponde a 3840 cm; dividindo pelo comprimento de 160 cm da réplica, obtém-se 24. A largura confirma: 168 cm/7 cm = 24. Portanto, cada unidade na réplica representa 24 no original, escala 1:24."
+        ],
+        "alternatives": {
+          "A": "576 é 24², fator que se aplicaria à relação entre áreas. A escala solicitada compara comprimentos e deve utilizar o fator linear 24.",
+          "B": "A razão 240 introduz um fator dez que não aparece na conversão correta de metros para centímetros. 38,4 m são 3840 cm, e 3840/160 é 24.",
+          "C": "Tanto 3840/160 quanto 168/7 resultam em 24. A concordância entre comprimento e largura confirma a escala linear 1:24.",
+          "D": "4,2 não é a razão entre qualquer par de medidas correspondentes na mesma unidade. Misturar metros e centímetros impede obter uma escala válida.",
+          "E": "2,4 decorre de perder um fator dez na conversão. A réplica de 160 cm mede 1,6 m, e 38,4/1,6 é 24, não 2,4."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:164": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 59542,
+          "B": 101002,
+          "C": 141246,
+          "D": 157168,
+          "E": 76962,
+          "blank": 2148
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O número de médicos aumenta 73 000 em cada década, portanto a projeção para 2020 é 438 000. A população cresce 23 e 21 milhões nas décadas anteriores, média de 22 milhões, chegando a 213 milhões. Assim, 438 000/213 000 000 × 1000 ≈ 2,056 médicos por mil habitantes, ou 2,06."
+        ],
+        "alternatives": {
+          "A": "0,17 não corresponde à divisão entre os totais projetados. É preciso atualizar médicos e população e, depois, converter a razão para cada mil habitantes.",
+          "B": "0,49 fica próximo da razão inversa em outra escala, sem representar médicos por mil habitantes. O numerador correto é 438 mil médicos.",
+          "C": "1,71 não utiliza simultaneamente as duas projeções para 2020. A razão deve ser calculada com 438 mil médicos e 213 milhões de habitantes.",
+          "D": "A razão 438/213 é aproximadamente 2,056 quando ambos os totais são expressos de modo compatível por mil habitantes. Arredondando a duas casas, resulta 2,06.",
+          "E": "3,32 excede a razão obtida com os valores projetados. A atualização acrescenta 73 mil médicos, sem justificar uma densidade superior a três por mil habitantes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:165": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 39267,
+          "B": 225028,
+          "C": 50012,
+          "D": 74131,
+          "E": 147694,
+          "blank": 1936
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O lucro é receita menos despesa, portanto os valores mensais são 5, 10, 5, 5 e 3 milhões de reais, de janeiro a maio. O maior é o de fevereiro, mesmo que maio tenha a maior receita. A previsão estabelece como piso esse lucro de 10 milhões."
+        ],
+        "alternatives": {
+          "A": "Em janeiro, o lucro é 10 − 5 = 5 milhões. Esse valor é metade do máximo de fevereiro e não define o piso pretendido.",
+          "B": "Em fevereiro, a receita de 20 e a despesa de 10 geram lucro de 10 milhões. Nenhum outro mês apresenta diferença maior entre as curvas.",
+          "C": "Em março, a diferença é 15 − 10 = 5 milhões. Comparar apenas a receita ou sua queda não substitui o cálculo do lucro.",
+          "D": "Em abril, o lucro é 20 − 15 = 5 milhões. Embora a receita se iguale à de fevereiro, a despesa maior reduz o resultado.",
+          "E": "Maio tem a maior receita, mas também despesa de 25 milhões. Seu lucro é 28 − 25 = 3 milhões, o menor da série."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:166": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 62046,
+          "B": 108669,
+          "C": 131558,
+          "D": 81103,
+          "E": 153656,
+          "blank": 1036
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As vendas passam de 236 para 519,2 milhões. O acréscimo absoluto é 519,2 − 236 = 283,2 milhões. Para obter o aumento percentual, divide-se esse acréscimo pelo valor inicial: 283,2/236 × 100 = 120%."
+        ],
+        "alternatives": {
+          "A": "45,4% aproxima a razão entre o valor inicial e o final. Essa razão não mede o crescimento em relação ao ponto de partida.",
+          "B": "54,5% corresponde aproximadamente ao acréscimo dividido pelo valor final. A base de um aumento percentual deve ser o valor inicial de 236 milhões.",
+          "C": "O crescimento absoluto de 283,2 milhões equivale a 1,2 vez os 236 milhões iniciais. Multiplicando por cem, o aumento é 120%.",
+          "D": "220% é o valor final expresso como percentual do inicial. O aumento é apenas a parcela que excede os 100% de partida, isto é, 120%.",
+          "E": "283,2 é o aumento em milhões de unidades monetárias, sem ser uma porcentagem. Ainda é necessário dividi-lo por 236 e multiplicar por cem."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:167": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 148341,
+          "B": 126999,
+          "C": 160833,
+          "D": 56419,
+          "E": 43316,
+          "blank": 2160
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Metade dos 105 imóveis corresponde a 52,5, portanto é necessário alcançar pelo menos o 53º preço na ordenação. As frequências acumuladas até 600, 700 e 800 mil são 25, 40 e 60 imóveis. Assim, dentre os limites oferecidos, 800 mil é o primeiro que inclui pelo menos metade dos apartamentos."
+        ],
+        "alternatives": {
+          "A": "Até 600 mil há 5 + 10 + 10 = 25 imóveis. Esse número é muito menor que os 53 necessários para alcançar ao menos metade de 105.",
+          "B": "Até 700 mil a frequência acumulada é 40. Ainda faltam treze imóveis para atingir o 53º da lista ordenada.",
+          "C": "Até 800 mil acumulam-se 60 imóveis, ultrapassando a metade, enquanto até 700 mil são apenas 40. É o menor dos valores oferecidos que atende ao critério.",
+          "D": "Até 900 mil já se ultrapassa a metade, mas o mesmo ocorre em 800 mil. Como a pergunta exige o menor preço entre as opções, 900 não é a escolha.",
+          "E": "Mil reais em milhares, isto é, um milhão, também inclui mais de metade da lista. Porém, é um limite maior que o necessário, pois 800 mil já satisfaz a condição."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:168": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 229332,
+          "B": 42825,
+          "C": 183534,
+          "D": 37384,
+          "E": 43154,
+          "blank": 1839
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As quatro maiores frequências originais são A, E, O e S, nessa ordem. A cifra preserva a frequência de ocorrência e troca apenas o símbolo: A vira D, E vira H, O vira R e S vira V. Portanto, a ordem no texto codificado é D, H, R e V."
+        ],
+        "alternatives": {
+          "A": "A, E, O e S são as letras mais frequentes do texto original. A alternativa deixa de aplicar o deslocamento de três posições exigido pela codificação.",
+          "B": "D, E, F e G resultam de codificar A, B, C e D. Essas não são as quatro maiores frequências do gráfico, pois B e C aparecem muito menos que E, O e S.",
+          "C": "Cada uma das letras A, E, O e S é deslocada três posições à frente, gerando D, H, R e V. A ordem das frequências é preservada porque a cifra apenas renomeia os símbolos.",
+          "D": "R, L, B e X não são os resultados do deslocamento de A, E, O e S pela tabela. A leitura deve acompanhar a correspondência original-codificado, sem inverter ou misturar posições.",
+          "E": "X, B, L e P corresponderiam a outras letras de origem. A codificação indicada é uniforme e não altera a ordem de frequência por critérios de posição no alfabeto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:169": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 117683,
+          "B": 90514,
+          "C": 189296,
+          "D": 96789,
+          "E": 42206,
+          "blank": 1580
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Ordenando os doze números, obtém-se 11, 11, 12, 13, 15, 15, 16, 16, 17, 18, 20 e 24. Como há quantidade par de dados, a mediana é a média do sexto e do sétimo: (15 + 16)/2 = 15,5 terremotos."
+        ],
+        "alternatives": {
+          "A": "11 é o menor valor observado e também aparece duas vezes. A mediana, porém, depende das posições centrais após ordenar todos os doze dados.",
+          "B": "15 ocupa a sexta posição, mas existe outra posição central, a sétima, com valor 16. Em uma lista de tamanho par, deve-se calcular a média das duas.",
+          "C": "Os valores centrais são 15 e 16. Sua média é 15,5, definição de mediana para os doze registros.",
+          "D": "15,7 se aproxima de uma média aritmética, sem corresponder à mediana solicitada. O critério do pesquisador não usa a soma de todos os dados.",
+          "E": "17,5 seria a média de 17 e 18, que estão mais à direita na lista ordenada. Eles não ocupam as duas posições centrais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:170": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 51445,
+          "B": 64695,
+          "C": 40671,
+          "D": 183981,
+          "E": 195684,
+          "blank": 1592
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "É preciso multiplicar a capacidade pelo percentual ocupado. Os volumes dos reservatórios I a V são, respectivamente, 21, 30, 10, 32 e 24 bilhões de litros. O IV contém o maior volume absoluto, embora o V apresente o maior percentual de ocupação."
+        ],
+        "alternatives": {
+          "A": "O reservatório I tem capacidade de 105 bilhões, mas está apenas 20% ocupado. Seu volume é 21 bilhões, abaixo dos 32 do IV.",
+          "B": "O II armazena 30% de 100 bilhões, totalizando 30 bilhões. Fica dois bilhões abaixo do IV.",
+          "C": "O III está na metade da capacidade, mas sua capacidade é apenas 20 bilhões. Seu volume de dez bilhões é o menor entre os cinco.",
+          "D": "O IV contém 40% de 80 bilhões, isto é, 32 bilhões. Esse produto é o maior volume absoluto, critério pedido no enunciado.",
+          "E": "O V tem a maior porcentagem, 60%, mas uma capacidade de apenas 40 bilhões. O volume é 24 bilhões, de modo que a maior barra percentual não implica a maior quantidade de água."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:171": {
+      "answer": "D",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 81631,
+          "B": 68802,
+          "C": 221960,
+          "D": 116881,
+          "E": 47435,
+          "blank": 1359
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A média deve considerar as frequências: há seis alunos de 9 anos, doze de 18 e nove de 27. A soma das idades é 6 × 9 + 12 × 18 + 9 × 27 = 513. Dividindo pelos 27 alunos, obtém-se média de 19 anos."
+        ],
+        "alternatives": {
+          "A": "9 anos é apenas a primeira idade registrada. Como existem muitos alunos de 18 e 27 anos, a média deve ser maior que nove.",
+          "B": "12 é a maior frequência do gráfico, e não uma média de idades. As alturas das barras contam alunos e não devem ser confundidas com as idades no eixo horizontal.",
+          "C": "18 é a média simples das três idades e também a mais frequente, mas não considera os diferentes números de alunos. A maior quantidade de alunos de 27 que de 9 eleva a média para 19.",
+          "D": "A média ponderada é 513/27 = 19. Os pesos seis, doze e nove correspondem exatamente às frequências de cada idade.",
+          "E": "27 anos é a maior idade da amostra. A presença de alunos mais novos torna a média estritamente menor que esse valor."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:172": {
+      "answer": "C",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 83661,
+          "B": 67814,
+          "C": 187098,
+          "D": 114201,
+          "E": 83117,
+          "blank": 2177
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os percentuais somam 2x + y = 100. A média ponderada dos tempos exige 3x + 5y + 12x = 600, ou 15x + 5y = 600. Dividindo por cinco, 3x + y = 120. Subtraindo a primeira equação, x = 20 e y = 60."
+        ],
+        "alternatives": {
+          "A": "Os percentuais 10, 80 e 10 somam cem, mas produzem média (30 + 400 + 120)/100 = 5,5 minutos. Isso contradiz os seis minutos informados.",
+          "B": "Os grupos teriam percentuais 10, 90 e 10, totalizando 110%. Uma distribuição de entrevistados não pode exceder cem por cento.",
+          "C": "Os grupos 20%, 60% e 20% somam cem e geram média 0,2 × 3 + 0,6 × 5 + 0,2 × 12 = 6. As duas condições são satisfeitas.",
+          "D": "Os valores 20, 80 e 20 somam 120%. Além de exceder cem, não podem ser usados como pesos percentuais válidos.",
+          "E": "Os percentuais 25, 50 e 25 somam cem, mas dão média 0,25 × 3 + 0,5 × 5 + 0,25 × 12 = 6,25. A média fica acima do valor descrito."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:173": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 85210,
+          "B": 129858,
+          "C": 105479,
+          "D": 135942,
+          "E": 78779,
+          "blank": 2800
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O coeficiente atual é 1/10 = 0,1. Para a nova ração, exige-se 1,5/média < 0,1. Como a média é positiva, a desigualdade equivale a média > 1,5/0,1 = 15 kg. Igualdade em 15 não basta porque o novo coeficiente precisa ser menor."
+        ],
+        "alternatives": {
+          "A": "Com média próxima de 5 kg, o coeficiente novo seria cerca de 1,5/5 = 0,30. Isso é maior, e não menor, que o coeficiente atual de 0,10.",
+          "B": "Uma média apenas superior a 9,5 não assegura melhora. Por exemplo, em 10 kg o novo coeficiente seria 0,15, ainda acima de 0,10.",
+          "C": "Superar a média antiga de 10 kg não é suficiente porque o desvio também aumentou. É preciso compensar o aumento de 50% no desvio com média superior a 15 kg.",
+          "D": "10,5 kg ainda produziria coeficiente aproximado de 0,143. O critério considera uma razão, sem simplesmente somar a diferença dos desvios à média antiga.",
+          "E": "Em 15 kg, o coeficiente se iguala ao anterior, 0,10. Somente uma média superior a 15 torna 1,5/média estritamente menor que 0,10."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:174": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 64095,
+          "B": 61836,
+          "C": 57362,
+          "D": 49789,
+          "E": 302944,
+          "blank": 2042
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Como todos os tipos foram vendidos em três franquias, comparar médias equivale a comparar os totais. As somas para I a V são 1245, 1230, 1220, 1233 e 1280 unidades. O tipo V tem o maior total e, consequentemente, a maior média por franquia."
+        ],
+        "alternatives": {
+          "A": "O tipo I tem média 415, pois vendeu 415 em cada franquia. A regularidade não o torna vencedor, já que V tem média 1280/3, aproximadamente 426,7.",
+          "B": "O tipo II soma 395 + 445 + 390 = 1230, média 410. O pico de 445 em uma franquia não compensa os resultados menores nas outras.",
+          "C": "O tipo III soma 425 + 370 + 425 = 1220, média aproximada de 406,7. É o menor total entre os cinco.",
+          "D": "O tipo IV soma 430 + 370 + 433 = 1233, média 411. Mesmo com valores altos em duas franquias, o total fica abaixo de V.",
+          "E": "O tipo V soma 435 + 425 + 420 = 1280, maior total da tabela. Como o divisor é três para todos, ele também tem a maior média."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:175": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 73705,
+          "B": 146331,
+          "C": 109273,
+          "D": 109272,
+          "E": 97353,
+          "blank": 2134
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A média mensal deve ponderar cada faturamento pela quantidade de meses. O total anual é 3,5 × 3 + 2,5 × 2 + 5 × 2 + 3 × 4 + 7,5 × 1 = 45 milhões. Dividindo por doze meses, M = 3,75 milhões, pertencente à faixa 2 ≤ M < 4, comissão II."
+        ],
+        "alternatives": {
+          "A": "A comissão I exige média menor que dois milhões. O total anual de 45 milhões produz média 3,75, acima dessa faixa.",
+          "B": "A média ponderada de 3,75 milhões satisfaz 2 ≤ M < 4. Portanto, enquadra-se exatamente na comissão II.",
+          "C": "A comissão III começa em quatro milhões, valor superior à média calculada. Usar a média simples dos cinco valores ignoraria suas frequências mensais.",
+          "D": "A comissão IV exige média de pelo menos cinco milhões. O fato de haver meses com cinco ou 7,5 não significa que a média anual alcance esse limite.",
+          "E": "A comissão V exige seis milhões ou mais de média mensal. O faturamento anual necessário seria ao menos 72 milhões, muito acima dos 45 observados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:176": {
+      "answer": "A",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 141351,
+          "B": 122515,
+          "C": 108933,
+          "D": 91649,
+          "E": 71448,
+          "blank": 2172
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O custo das n diárias é dn. A taxa de serviço corresponde à fração s desse total, portanto vale dns, enquanto a limpeza é cobrada uma única vez como L. Somando as três parcelas, obtém-se P = dn + L + dns."
+        ],
+        "alternatives": {
+          "A": "A expressão soma o total das diárias dn, a limpeza fixa L e a taxa proporcional dns. Cada parcela corresponde diretamente a um componente descrito no preço.",
+          "B": "O termo ds aplica a taxa a apenas uma diária. Para n diárias, a base da taxa deve ser dn e a cobrança deve valer dns.",
+          "C": "A expressão considera apenas uma diária e soma o percentual como se fosse dinheiro. Um percentual precisa multiplicar sua base de cobrança.",
+          "D": "O termo dns representa somente a taxa de serviço, sem incluir o preço das próprias diárias. Falta acrescentar dn ao total.",
+          "E": "Somar s diretamente trata uma fração percentual como valor monetário fixo. A cobrança de serviço deve ser s vezes dn, e não apenas s."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:177": {
+      "answer": "B",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 63008,
+          "B": 106262,
+          "C": 179652,
+          "D": 111727,
+          "E": 75360,
+          "blank": 2059
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A chance de errar todos os n lançamentos é (1/2)^n. Assim, a chance de pontuar é 1 − (1/2)^n e deve ser pelo menos 0,9. Com três dardos, vale 7/8 = 0,875; com quatro, vale 15/16 = 0,9375. Portanto, o mínimo é quatro."
+        ],
+        "alternatives": {
+          "A": "Com dois dardos, a chance de ao menos um acerto é 1 − 1/4 = 0,75. Ela fica abaixo dos 90% exigidos.",
+          "B": "Quatro dardos dão 1 − 1/16 = 93,75%, enquanto três dão apenas 87,5%. Isso demonstra que quatro atende ao limite e é o mínimo.",
+          "C": "Com seis dardos a chance seria 1 − 1/64, superior a 90%. Porém, não é mínimo porque quatro já satisfazem a condição.",
+          "D": "Nove dardos fornecem probabilidade muito alta, mas são desnecessários para atingir 90%. A restrição é um limite inferior de chance, sem exigir tantos lançamentos.",
+          "E": "Dez dardos também ultrapassam o limite, mas não minimizam a quantidade. Confundir o denominador dez de 9/10 com o número de dardos ignora a probabilidade complementar."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:178": {
+      "answer": "ANULADA",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 164661,
+          "B": 85038,
+          "C": 93504,
+          "D": 133237,
+          "E": 58972,
+          "blank": 2656
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A questão foi anulada no gabarito oficial. O enunciado distingue as placas pelo ano do título, portanto placas de um mesmo clube não são indistinguíveis. A contagem deve escolher e ordenar cinco entre sete placas gaúchas, ordenar as cinco cariocas, escolher e ordenar cinco entre sete mineiras e cinco entre nove paulistas, e ordenar as dez restantes: (7!/2!) × 5! × (7!/2!) × (9!/4!) × 10!. Essa expressão não aparece nas alternativas, por isso nenhuma letra deve ser marcada como correta."
+        ],
+        "alternatives": {
+          "A": "A divisão por 5!, 3!, 6! e 3!3! trata placas de um mesmo clube como repetidas. Porém, cada placa contém o ano de uma edição, tornando-as distintas; além disso, é preciso selecionar cinco das sete placas gaúchas e mineiras.",
+          "B": "Os fatores 7! e 9! ordenam todas as placas regionais, mas as linhas comportam apenas cinco. Faltam os divisores 2!, 2! e 4! dos arranjos de cinco placas, e o gabarito oficial não valida essa letra.",
+          "C": "30! permitiria qualquer placa em qualquer posição, ignorando as quatro primeiras linhas com restrições regionais. O painel não é uma permutação irrestrita das trinta placas.",
+          "D": "A expressão usa divisões próprias de seleção sem organizar adequadamente todas as posições e omite a ordenação das dez placas finais. Ela não coincide com o produto dos quatro arranjos e de 10! exigido pela distinção dos anos.",
+          "E": "O primeiro fator utiliza 9!/3!, embora existam sete placas gaúchas e a linha aceite cinco. As demais parcelas não corrigem esse excesso; a contagem coerente começa por 7!/2!, e a questão consta como anulada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:179": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 59738,
+          "B": 83360,
+          "C": 115369,
+          "D": 139897,
+          "E": 137327,
+          "blank": 2377
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A tabela fornece φ6 = 8φ + 5. Multiplicando por φ, tem-se φ7 = 8φ² + 5φ. Como φ² = φ + 1, a expressão vira 8(φ + 1) + 5φ = 13φ + 8. A substituição da identidade básica reduz novamente a potência à forma linear."
+        ],
+        "alternatives": {
+          "A": "5φ + 3 corresponde a φ5, já indicado na tabela. Repetir esse resultado deixa de multiplicar duas vezes até chegar à sétima potência.",
+          "B": "7φ + 2 não respeita a recorrência obtida ao multiplicar por φ e substituir φ². Os coeficientes seguintes a 8 e 5 devem ser 13 e 8.",
+          "C": "9φ + 6 soma apenas uma unidade a cada coeficiente de φ6. A multiplicação por φ não funciona por incremento simples dos coeficientes.",
+          "D": "11φ + 7 também não resulta da distribuição 8φ² + 5φ. Ao substituir φ² por φ + 1, os termos em φ somam 8 + 5 = 13.",
+          "E": "A redução 8φ² + 5φ = 8φ + 8 + 5φ fornece 13φ + 8. Esse cálculo utiliza diretamente a identidade que define a proporção áurea."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:180": {
+      "answer": "E",
+      "statistics": {
+        "population": 538068,
+        "counts": {
+          "A": 250729,
+          "B": 108881,
+          "C": 50935,
+          "D": 15889,
+          "E": 110365,
+          "blank": 1269
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A projeção é feita na direção de uma diagonal espacial do cubo. Seus dois extremos e o centro se projetam no mesmo ponto. Os seis vértices restantes formam o contorno de um hexágono, e as arestas e demais diagonais projetam-se sobre seus lados e segmentos que passam pelo centro. O desenho resultante é o hexágono dividido em seis triângulos da alternativa E."
+        ],
+        "alternatives": {
+          "A": "O desenho mantém linhas e vértices interiores que deveriam coincidir na projeção ao longo da diagonal vertical. A projeção ortogonal colapsa os dois extremos dessa diagonal no centro, sem o losango interno apresentado.",
+          "B": "O contorno em losango corresponderia a outra orientação de observação. Com a diagonal espacial perpendicular ao solo, os seis vértices laterais produzem um contorno hexagonal.",
+          "C": "A projeção retangular pressupõe uma face ou outra direção do cubo paralela ao plano de observação. A orientação dada é pela diagonal espacial, que produz seis extremos no contorno.",
+          "D": "O retângulo omite tanto a disposição hexagonal dos vértices quanto as projeções das diagonais. Ele não representa os trajetos por todas as arestas e diagonais exigidos.",
+          "E": "Os seis vértices não alinhados à diagonal vertical formam o hexágono, e as ligações projetadas atravessam seu centro. Os dois vértices extremos da diagonal vertical coincidem nesse centro, resultando exatamente na figura E."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    }
+  }
+}

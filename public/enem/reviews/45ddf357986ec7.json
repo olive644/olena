@@ -1,0 +1,4189 @@
+{
+  "version": 1,
+  "variantId": "45ddf357986ec7",
+  "year": 2023,
+  "paperUrl": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf",
+  "answerUrl": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf",
+  "questions": {
+    "q:46": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 63251,
+          "B": 57123,
+          "C": 428747,
+          "D": 81730,
+          "E": 28243,
+          "blank": 1451
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O bordado define o Sertão pela lembrança da avó bordando caminhos com linhas coloridas. A região ganha sentido por uma experiência familiar e afetiva, mostrando que o espaço vivido também se constrói por memórias e relações pessoais."
+        ],
+        "alternatives": {
+          "A": "Não há roteiro de visitação ou interesse em organizar turismo.",
+          "B": "Os caminhos são uma metáfora da memória familiar, sem abordagem holística.",
+          "C": "A avó e o ato de bordar ligam o espaço a vivências e vínculos afetivos.",
+          "D": "Não se indicam limites cartográficos, administrativos ou fronteiriços.",
+          "E": "O bordado é memória de uma prática, sem análise de renda ou profissão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:47": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 90944,
+          "B": 35104,
+          "C": 25642,
+          "D": 367415,
+          "E": 139847,
+          "blank": 1593
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O narrador contrasta o antigo controle sobre a circulação feminina com a possibilidade de as moças escreverem bilhetes. A difusão da escrita permite novas formas de comunicação e acompanha mudanças culturais nas relações sociais e familiares."
+        ],
+        "alternatives": {
+          "A": "A mobilidade entre regiões não é descrita na passagem.",
+          "B": "A missa integra o costume antigo, sem mudança de religião ou trânsito religioso.",
+          "C": "Não há relação entre o uso de bilhetes e a chegada de imigrantes.",
+          "D": "O letramento amplia a comunicação das mulheres e modifica costumes familiares.",
+          "E": "Não se mencionam reformas de currículo ou flexibilização institucional do ensino."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:48": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 266512,
+          "B": 149184,
+          "C": 140637,
+          "D": 52808,
+          "E": 47835,
+          "blank": 3569
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A privatização de bens comuns, a imposição de técnicas e o uso intensivo de venenos reduzem o controle camponês sobre território e recursos. O conjunto configura um cerco material e simbólico que compromete a reprodução das condições de vida dessas comunidades."
+        ],
+        "alternatives": {
+          "A": "A apropriação de recursos e a violência ameaçam a permanência e a vida camponesas.",
+          "B": "Os grandes proprietários integram a expansão do modelo criticado, não seu grupo prejudicado.",
+          "C": "O texto trata do campesinato e não centra a análise em organização sindical assalariada.",
+          "D": "A criação de empregos e o respeito a governos não explicam os conflitos descritos.",
+          "E": "As empresas impõem sua lógica tecnológica, sem serem apresentadas como vítimas de assédio."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:49": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 110391,
+          "B": 40668,
+          "C": 40013,
+          "D": 133243,
+          "E": 333961,
+          "blank": 2269
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Xinjiang é apresentado como território fronteiriço, energético e logístico estratégico. O incentivo à migração Han altera o equilíbrio demográfico para reforçar o controle do governo central sobre a região e conter riscos à integridade territorial chinesa."
+        ],
+        "alternatives": {
+          "A": "O objetivo não é definido pela oposição entre campo e cidade.",
+          "B": "A mudança demográfica não é descrita como garantia de liberdade religiosa.",
+          "C": "Os subsídios expressam intervenção central, sem transferência de autonomia administrativa.",
+          "D": "Aumentar a proporção de uma etnia dominante não visa preservar equilíbrio multicultural.",
+          "E": "O controle de uma região estratégica explica a política de integração territorial."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:50": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 167999,
+          "B": 107398,
+          "C": 157936,
+          "D": 55618,
+          "E": 169260,
+          "blank": 2334
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A plataforma busca destacar trajetórias negras ocultadas pela narrativa dos colonizadores, indo além da escravidão como referência exclusiva. Isso questiona uma visão centrada na experiência e nos interesses europeus para reconhecer a contribuição afro-brasileira."
+        ],
+        "alternatives": {
+          "A": "Não se propõe restaurar costumes tradicionais como finalidade central.",
+          "B": "O contraste não é entre humanidade e divindade, tema do antropocentrismo.",
+          "C": "A iniciativa amplia perspectivas e contesta a centralidade cultural dominante.",
+          "D": "A narrativa não retoma explicações religiosas ou um centro divino para a história.",
+          "E": "Ao rever a perspectiva dos colonizadores, critica o eurocentrismo historiográfico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:51": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 229229,
+          "B": 61856,
+          "C": 253227,
+          "D": 74315,
+          "E": 39799,
+          "blank": 2119
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A declaração concilia o apoio a um lar nacional judeu com a promessa de não prejudicar as comunidades não judaicas. Os conflitos territoriais posteriores mostram que a atuação britânica não conseguiu compatibilizar as reivindicações concorrentes e garantir essa mediação."
+        ],
+        "alternatives": {
+          "A": "O compromisso citado é territorial e político, sem programa geral de bem-estar social.",
+          "B": "Não se trata apenas de obter adesão muçulmana, mas de compatibilizar direitos sobre o território.",
+          "C": "A permanência do conflito territorial revela o fracasso da conciliação pretendida.",
+          "D": "A cooperação regional seria mais ampla que a promessa específica relativa à Palestina.",
+          "E": "A declaração não estabelece como objetivo derrubar governos autocráticos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:52": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 246197,
+          "B": 91396,
+          "C": 30440,
+          "D": 158511,
+          "E": 130994,
+          "blank": 3007
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Freire rejeita a ideia de que a pessoa seja mero resultado passivo de sua origem. Ao tomar consciência de estruturas de opressão construídas historicamente, o educando assume responsabilidade por agir sobre a realidade, o que implica participação social e política."
+        ],
+        "alternatives": {
+          "A": "Consciência crítica e responsabilidade fundamentam a participação na transformação coletiva.",
+          "B": "Os textos não concentram a ética na escolha de estilos artísticos ou culturais.",
+          "C": "A transformação social não é definida como competição entre agentes econômicos.",
+          "D": "A escola é um espaço de formação, sem proposta de conservar o sistema existente.",
+          "E": "A responsabilidade ultrapassa uma ascensão individual e envolve a realidade coletiva."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:53": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 43529,
+          "B": 302504,
+          "C": 102141,
+          "D": 108056,
+          "E": 102131,
+          "blank": 2184
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O Himalaia resulta da convergência e colisão entre as placas Indiana e Eurasiática. A compressão da crosta produz dobramentos e soerguimento, explicando tanto as elevadas altitudes quanto a continuidade do crescimento de suas montanhas."
+        ],
+        "alternatives": {
+          "A": "Não é o acúmulo de lavas que forma essa cordilheira de colisão continental.",
+          "B": "A colisão de placas comprime e eleva a crosta, mantendo o soerguimento.",
+          "C": "O intemperismo químico altera rochas e tende a desgastar o relevo.",
+          "D": "Depósitos de areia pelo vento não geram uma cordilheira com esse porte.",
+          "E": "O derretimento remove gelo e não explica a origem tectônica das montanhas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:54": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 212672,
+          "B": 130669,
+          "C": 116869,
+          "D": 147761,
+          "E": 49280,
+          "blank": 3294
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto reconhece a raiva como experiência que envolve inseparavelmente pensamento e corpo. Descartes é contraposto a essa concepção porque distingue substância pensante e substância extensa, formulando uma compreensão dualista da relação entre mente e corpo."
+        ],
+        "alternatives": {
+          "A": "A separação entre pensamento e matéria caracteriza o dualismo cartesiano.",
+          "B": "A filosofia cartesiana não reduz toda a mente a processos naturais materiais.",
+          "C": "Realismo é uma classificação ampla que não explica a separação específica discutida.",
+          "D": "O contraponto pedido é a divisão de substâncias, não simplesmente a primazia de ideias.",
+          "E": "A intencionalidade não é o conceito que define o contraste cartesiano apresentado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:55": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 339292,
+          "B": 51106,
+          "C": 131429,
+          "D": 59965,
+          "E": 75396,
+          "blank": 3357
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para os autores, a diversão não escapa à organização capitalista do trabalho. As mercadorias de entretenimento são produzidas pela mesma lógica mecanizada e repetitiva, de modo que o consumo no lazer prolonga a adaptação ao sistema produtivo."
+        ],
+        "alternatives": {
+          "A": "A indústria cultural submete o lazer à lógica de produção e consumo capitalista.",
+          "B": "O texto critica a padronização, em vez de afirmar livre realização das potencialidades.",
+          "C": "A recuperação psicológica aparece como promessa subordinada à volta ao trabalho.",
+          "D": "Necessidades artificiais cabem à crítica mais ampla, mas não exprimem a relação produtiva central.",
+          "E": "Organizar o prazer é uma descrição genérica que omite a crítica ao sistema capitalista."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:56": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 108957,
+          "B": 104565,
+          "C": 302511,
+          "D": 40203,
+          "E": 102468,
+          "blank": 1841
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A personagem rejeita a lista de poderes extraordinários e especifica que deseja poder político. O humor desloca o poder do campo individual fantástico para a possibilidade concreta de influir nas escolhas e decisões que organizam a vida coletiva."
+        ],
+        "alternatives": {
+          "A": "O pedido não se apresenta como explosão de revolta pessoal.",
+          "B": "O desejo tem conteúdo político coletivo e não se reduz ao consumo de um benefício individual.",
+          "C": "Poder político significa possibilidade de participar e influenciar decisões sociais.",
+          "D": "Desejar poder indica vontade de agir, incompatível com permanecer passivo.",
+          "E": "Não há identificação de partido nem defesa de seus interesses particulares."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:57": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 84538,
+          "B": 66732,
+          "C": 43179,
+          "D": 145974,
+          "E": 317280,
+          "blank": 2842
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Pedir perdão não cria um direito de recebê-lo, pois a outra pessoa conserva a possibilidade de recusar. A reflexão sustenta o valor do perdão na liberdade de decisão dos envolvidos, respeitando sua autonomia nas relações interpessoais."
+        ],
+        "alternatives": {
+          "A": "A recusa é uma possibilidade legítima, não necessariamente uma busca de dominação.",
+          "B": "O texto fundamenta a decisão na relação humana, sem determiná-la por vontade divina.",
+          "C": "A possibilidade aberta de aceitar ou recusar contraria a predestinação.",
+          "D": "Conhecimentos empíricos não são apresentados como determinantes da escolha.",
+          "E": "O perdão só conserva seu sentido quando a decisão do outro permanece autônoma."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:58": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 430745,
+          "B": 63328,
+          "C": 65776,
+          "D": 59400,
+          "E": 37223,
+          "blank": 4073
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A cavalgada nasce do transporte animal cotidiano e da devoção a Sant Ana. A modernização dos deslocamentos interrompe a prática, que depois é retomada com participação ampliada, articulando tradição religiosa e novas condições sociais."
+        ],
+        "alternatives": {
+          "A": "A permanência da devoção articula uma prática tradicional às transformações modernas.",
+          "B": "Não há referência a uma ordem emitida pelo papa para criar ou retomar a festa.",
+          "C": "Os participantes organizam a celebração, sem fundamentação estética clerical descrita.",
+          "D": "O caráter de devoção não decorre de obrigação esportiva imposta pela Igreja.",
+          "E": "O texto não atribui a retomada a uma doutrina filosófica determinada pela paróquia."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:59": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 402568,
+          "B": 79825,
+          "C": 58372,
+          "D": 60522,
+          "E": 55823,
+          "blank": 3435
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O garfo aparece primeiro nas cortes e continua por muito tempo como objeto de luxo feito de metais preciosos. A adoção de uma maneira específica de comer funciona como etiqueta capaz de marcar a posição social de seus usuários."
+        ],
+        "alternatives": {
+          "A": "O utensílio e a maneira de usá-lo distinguem grupos de maior riqueza e prestígio.",
+          "B": "O relato não justifica o garfo por preocupação sanitária.",
+          "C": "A origem italiana explica sua difusão, sem exaltação normativa do Mediterrâneo.",
+          "D": "A difusão descrita ocorre na modernidade, sem consagração de uma tradição medieval.",
+          "E": "A simples expansão de manufaturas não explica o uso do objeto como marca de etiqueta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:60": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 69450,
+          "B": 70743,
+          "C": 38513,
+          "D": 415884,
+          "E": 63124,
+          "blank": 2831
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os exemplos envolvem controle do dinheiro, destruição de bens, retenção de documentos e impedimento de acesso ao trabalho ou à conta bancária. Essas práticas restringem a autonomia material da mulher e caracterizam violência patrimonial."
+        ],
+        "alternatives": {
+          "A": "Difamação atinge a reputação, enquanto os exemplos atingem bens e recursos.",
+          "B": "Desvio comportamental é uma classificação genérica que não identifica a violência descrita.",
+          "C": "O texto não se limita à expressão de opiniões ou preconceitos.",
+          "D": "O controle e a subtração de bens, documentos e renda configuram violência patrimonial.",
+          "E": "Não é simples divergência conjugal, mas coerção sobre recursos e direitos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:61": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 52201,
+          "B": 33842,
+          "C": 54101,
+          "D": 31300,
+          "E": 486745,
+          "blank": 2356
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A aparência de automatismo do assistente esconde o trabalho repetitivo de linguistas subcontratados, mal remunerados e submetidos a horas extras. O texto expõe essa base humana apagada pela imagem de uma tecnologia que funcionaria como mágica."
+        ],
+        "alternatives": {
+          "A": "O problema central não é a multiplicidade de tarefas realizadas pelo profissional.",
+          "B": "A distribuição global da equipe não constitui por si a crítica exposta.",
+          "C": "A subcontratação precária limita a autonomia e não é celebrada como conquista.",
+          "D": "Os trabalhadores são distribuídos globalmente, sem foco na centralização de fábricas.",
+          "E": "A metáfora da mágica encobre o trabalho humano necessário ao funcionamento do sistema."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:62": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 99727,
+          "B": 123814,
+          "C": 356148,
+          "D": 50044,
+          "E": 27656,
+          "blank": 3156
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A rivalidade entre as Coreias decorre da divisão política da península e da oposição entre seus regimes no contexto da Guerra Fria. Mastros e propaganda sonora atualizam simbolicamente essa disputa ideológica entre Estados sem recorrer diretamente à guerra."
+        ],
+        "alternatives": {
+          "A": "As práticas culturais são usadas na rivalidade, mas sua origem é a oposição política entre governos.",
+          "B": "As populações compartilham origem histórica coreana, sem conflito étnico como causa central.",
+          "C": "A divisão da península e dos regimes explica a disputa político-ideológica estatal.",
+          "D": "Não há disputa empresarial privada ou imposição financeira no episódio.",
+          "E": "As demonstrações não se organizam em torno de proteção ambiental."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:63": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 172271,
+          "B": 289073,
+          "C": 79418,
+          "D": 39199,
+          "E": 76861,
+          "blank": 3723
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As porcelanas, tecidos e gravuras chinesas chegaram ao Brasil por redes comerciais entre continentes. Ao fornecerem modelos de figuras e paisagens para igrejas mineiras, esses objetos permitiram uma circulação cultural que influenciou a arte barroca local."
+        ],
+        "alternatives": {
+          "A": "As imagens arquitetônicas são motivos representados, não o mecanismo de circulação descrito.",
+          "B": "O comércio entre continentes levou objetos e referências estéticas chinesas às Minas.",
+          "C": "A inspiração artística não exige uma relação de dependência econômica em relação à China.",
+          "D": "Não se descreve uma política governamental impondo tais pinturas.",
+          "E": "O padrão estético resultante é explicado pelo intercâmbio de objetos e imagens."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:64": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 48970,
+          "B": 56512,
+          "C": 113111,
+          "D": 411166,
+          "E": 28193,
+          "blank": 2593
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O aquecimento, a perda de animais, a deterioração dos rios e as mudanças nas plantações denunciam a crise ambiental. O problema global se relaciona ao uso predatório dos recursos e à alteração dos ecossistemas, e não às formas de preservação ambiental."
+        ],
+        "alternatives": {
+          "A": "O manejo tradicional indígena não é apontado como causa dessa destruição global.",
+          "B": "A reciclagem é uma estratégia de redução de impactos, não o problema denunciado.",
+          "C": "O consumo consciente busca conter impactos e não explica as perdas descritas.",
+          "D": "A exploração predatória degrada ecossistemas e contribui para a crise climática.",
+          "E": "O reaproveitamento energético não é identificado como agente dos danos apresentados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:65": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 331526,
+          "B": 121889,
+          "C": 30662,
+          "D": 116296,
+          "E": 57090,
+          "blank": 3082
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O projeto de Lina foi silenciado enquanto seu marido recebeu o reconhecimento público. A recuperação posterior de sua autoria está ligada à contestação das desigualdades entre homens e mulheres e à busca de reconhecimento equitativo de suas contribuições."
+        ],
+        "alternatives": {
+          "A": "A revisão do apagamento da autoria feminina expressa a busca por equidade de gênero.",
+          "B": "Não se trata de censura a uma opinião ou de restrição de livre expressão.",
+          "C": "A conquista do voto não é o direito diretamente discutido pelo caso.",
+          "D": "A oportunidade profissional é relacionada, mas Lina já realizou a obra e teve sua autoria apagada.",
+          "E": "A reciprocidade é genérica e não identifica a desigualdade específica entre gêneros."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:66": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 539156,
+          "B": 23650,
+          "C": 31023,
+          "D": 38922,
+          "E": 25039,
+          "blank": 2755
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O testemunho de Carolina Maria de Jesus e o relato de 2021 mostram mães sem recursos para alimentar seus filhos. A permanência de experiências semelhantes em períodos distantes evidencia a recorrência histórica da miséria no Brasil."
+        ],
+        "alternatives": {
+          "A": "Os dois relatos mostram persistência de privação alimentar ao longo de décadas.",
+          "B": "Não há proposta de planejamento dos serviços de saúde.",
+          "C": "A fome não foi superada em nenhum dos testemunhos apresentados.",
+          "D": "As experiências revelam vulnerabilidade e não uma estabilidade favorável da economia.",
+          "E": "O sofrimento é denunciado de maneira direta, sem idealização da pobreza."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:67": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 35912,
+          "B": 437772,
+          "C": 55334,
+          "D": 46858,
+          "E": 81577,
+          "blank": 3092
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A cabruca combina produção de cacau com a manutenção do dossel da floresta nativa. Essa integração preserva mais biodiversidade que monoculturas e pastagens, exemplificando um uso produtivo dos recursos compatível com sua conservação."
+        ],
+        "alternatives": {
+          "A": "O cacau é cultura permanente e o texto não descreve difusão de culturas temporárias.",
+          "B": "O sistema agroflorestal permite produzir mantendo parte importante da vegetação e da biodiversidade.",
+          "C": "A prática é agrícola e não se refere a criação intensiva de animais.",
+          "D": "O foco não é impor uma dieta uniforme às comunidades tradicionais.",
+          "E": "Não há inovação de transporte ou armazenamento de produtos agrícolas descrita."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:68": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 56752,
+          "B": 49479,
+          "C": 435829,
+          "D": 49835,
+          "E": 65406,
+          "blank": 3244
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As moradias precárias no mangue e o curtume inserem usos urbanos num ambiente sujeito à maré. A contaminação mata peixes e altera o meio, evidenciando que a ocupação humana interfere na organização e nas condições do espaço geográfico."
+        ],
+        "alternatives": {
+          "A": "A paisagem descrita é urbana e degradada, sem conservação do meio rural.",
+          "B": "Não se relata aumento de vegetação nas margens.",
+          "C": "Habitação e atividade industrial alteram o mangue e as condições do espaço ocupado.",
+          "D": "Peixes mortos e contaminação contradizem a ideia de equilíbrio ambiental.",
+          "E": "A presença de mosquitos e urubus revela condições de proliferação, sem controle descrito."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:69": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 66753,
+          "B": 31317,
+          "C": 74549,
+          "D": 432809,
+          "E": 51738,
+          "blank": 3379
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A ameaça contra juízas e os abusos sistemáticos contra mulheres violam direitos fundamentais de segurança, igualdade e liberdade. A situação expressa desrespeito à dignidade humana, independentemente das justificativas políticas ou religiosas de seus autores."
+        ],
+        "alternatives": {
+          "A": "A preservação de uma estrutura social opressora não é critério para legitimar os atos.",
+          "B": "A violação denunciada diz respeito a direitos humanos, não à falta de respeito a crenças.",
+          "C": "A ideia genérica de moral não identifica tão precisamente a negação de direitos fundamentais.",
+          "D": "Ameaças, tortura e violência de gênero ferem diretamente a dignidade humana.",
+          "E": "Desobedecer hierarquias não explica a condição de vítima das mulheres."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:70": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 61793,
+          "B": 78662,
+          "C": 293376,
+          "D": 105393,
+          "E": 115605,
+          "blank": 5716
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O medo no enterro de Herzog e a referência aos jornalistas presos no DOI revelam a violência de órgãos do Estado. A ditadura institucionalizou repressão, prisão e tortura para silenciar opositores, o que explica o temor de falar publicamente sobre as mortes."
+        ],
+        "alternatives": {
+          "A": "O poema é usado como protesto e não como propaganda de integração do governo.",
+          "B": "O episódio mostra terror repressivo, sem campanha cívica como tema central.",
+          "C": "Os órgãos de repressão e o temor de novas mortes evidenciam eliminação da resistência.",
+          "D": "O funeral não é apresentado como ritual criado pelo governo para controlar a oposição.",
+          "E": "O controle repressivo não é explicado pela propriedade estatal de jornais ou emissoras."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:71": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 186502,
+          "B": 47060,
+          "C": 125142,
+          "D": 128179,
+          "E": 168661,
+          "blank": 5001
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O autor situa o desmatamento numa cadeia que começa com a grilagem, passa pela extração da madeira e pela ocupação pecuária. A apropriação ilegal de terras públicas ou devolutas abre a fronteira de exploração, antecedendo muitas vezes o cultivo de soja."
+        ],
+        "alternatives": {
+          "A": "A grilagem de terras devolutas inicia a apropriação e valorização especulativa das áreas.",
+          "B": "A sonegação tributária não é apontada como motor do processo territorial.",
+          "C": "O texto não identifica exportação clandestina como causa principal do desmatamento.",
+          "D": "Benefícios fiscais não são mencionados como fundamento do tripé analisado.",
+          "E": "A flexibilização legal pode ter relação com o tema, mas não é a causa indicada pelo autor."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:72": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 46311,
+          "B": 418769,
+          "C": 29799,
+          "D": 115090,
+          "E": 47519,
+          "blank": 3057
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O primeiro texto projeta benefícios tecnológicos das viagens espaciais para toda a sociedade, formulando uma expectativa favorável. A charge apresenta um indígena alertando um extraterrestre para não confiar nos visitantes, retomando criticamente a experiência da colonização e expressando desconfiança."
+        ],
+        "alternatives": {
+          "A": "O primeiro texto anuncia vantagens esperadas e não enfatiza dependência.",
+          "B": "A promessa de benefícios contrasta com o aviso irônico de desconfiança na charge.",
+          "C": "Não há angústia predominante no primeiro nem adaptação no segundo.",
+          "D": "A charge questiona intenções, sem afirmar um retrocesso técnico.",
+          "E": "O primeiro texto é otimista e o segundo ironiza a suposta intenção pacífica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:73": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 298734,
+          "B": 91367,
+          "C": 103536,
+          "D": 42390,
+          "E": 119663,
+          "blank": 4855
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A expansão marítima europeia exigiu construir e manter frotas de navios de madeira. Esse aumento da demanda por produtos florestais, somado a atividades urbanas e metalúrgicas, intensificou a retirada de árvores e agravou a crise descrita."
+        ],
+        "alternatives": {
+          "A": "A ampliação das frotas elevou diretamente o consumo de madeira na construção naval.",
+          "B": "O renascimento cultural não explica de modo direto a grande demanda por materiais navais.",
+          "C": "A centralização política é contemporânea, mas o nexo material destacado é a construção naval.",
+          "D": "As reformas religiosas não são apresentadas como causa do consumo de madeira.",
+          "E": "O texto descreve a crise das estruturas medievais, não a manutenção do feudalismo como causa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:74": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 85289,
+          "B": 113365,
+          "C": 77752,
+          "D": 332574,
+          "E": 46272,
+          "blank": 5293
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Embora exigissem tributos, culto ao Sol e reconhecimento do Sapa Inca, os governantes permitiam a continuidade de divindades e línguas locais. Essa coexistência mostra flexibilidade religiosa na gestão de um império composto por diferentes grupos étnicos."
+        ],
+        "alternatives": {
+          "A": "A categoria contemporânea de direitos humanos não descreve a política específica relatada.",
+          "B": "O texto analisa um império pré-colonial, sem tolerância a crenças coloniais como tema.",
+          "C": "O trabalho periódico é obrigatório e não aparece como regime tributário negociado.",
+          "D": "Os cultos locais continuam ao lado do culto imperial, indicando flexibilidade religiosa.",
+          "E": "A informação central de tolerância diz respeito a costumes culturais, não às normas de trabalho."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:75": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 45046,
+          "B": 61401,
+          "C": 485831,
+          "D": 36049,
+          "E": 28082,
+          "blank": 4136
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A mobilização questiona o emprego de um termo associado historicamente à desqualificação de pessoas escravizadas. Ao pedir sua retirada do canto esportivo, a torcida rejeita a reprodução de uma ofensa vinculada ao racismo, mesmo em contexto de rivalidade futebolística."
+        ],
+        "alternatives": {
+          "A": "O argumento apresentado é a origem racializada do insulto, não apenas um costume das elites.",
+          "B": "O termo não é questionado por hostilidade específica contra mulheres.",
+          "C": "A crítica ao insulto associado à escravidão expressa condenação do preconceito racial.",
+          "D": "Não se discute orientação sexual nem criação de uma penalidade por homofobia.",
+          "E": "A reivindicação não se fundamenta em estereótipos de masculinidade ou de papéis femininos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:76": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 95733,
+          "B": 108184,
+          "C": 53917,
+          "D": 357570,
+          "E": 42008,
+          "blank": 3133
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A queda do número médio de filhos se relaciona à ampliação da escolaridade e da participação feminina no trabalho remunerado, além do planejamento reprodutivo. A mudança de trajetórias e projetos de vida favorece famílias menores e adiamento da maternidade."
+        ],
+        "alternatives": {
+          "A": "A legislação sobre aborto não foi amplamente flexibilizada no período para explicar a tendência.",
+          "B": "O envelhecimento é em grande parte consequência da redução da fecundidade.",
+          "C": "O crescimento da gravidez precoce elevaria nascimentos, sem explicar a queda observada.",
+          "D": "A inserção feminina no trabalho acompanha mudanças nas escolhas e no calendário reprodutivo.",
+          "E": "O gráfico não relaciona a tendência a uma redução dos direitos de licença-maternidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:77": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 92877,
+          "B": 87523,
+          "C": 98175,
+          "D": 87944,
+          "E": 288910,
+          "blank": 5116
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O autor critica Portugal por privilegiar o ouro e não levar ao Brasil uma descoberta capaz de evitar mortes. A valorização da ciência e a cobrança de sua aplicação em benefício coletivo expressam a ideia de que governantes devem promover a saúde da população."
+        ],
+        "alternatives": {
+          "A": "O texto valoriza uma descoberta, mas sua crítica é à omissão governamental em aplicá-la.",
+          "B": "O governante português é criticado, sem apresentação de um monarca justo ideal.",
+          "C": "A liberdade natural não é o direito em discussão no trecho sobre vacinação.",
+          "D": "O ouro é criticado como prioridade, sem teoria da riqueza baseada na terra.",
+          "E": "A responsabilidade pública pela difusão da vacina sustenta a cobrança de proteção à saúde."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:78": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 189433,
+          "B": 105060,
+          "C": 134016,
+          "D": 40543,
+          "E": 186671,
+          "blank": 4822
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A agricultura urbana leva o cultivo para espaços da cidade que podem ser aproveitados para produzir alimentos e fortalecer relações comunitárias. Essa ocupação de lugares antes ociosos aproxima produção e consumo, encurtando a cadeia alimentar."
+        ],
+        "alternatives": {
+          "A": "Terrenos e espaços urbanos disponíveis podem receber hortas e produção de alimentos.",
+          "B": "O cultivo não implica adensar edificações ou população na área central.",
+          "C": "A aproximação entre quem planta e quem consome privilegia circuitos locais.",
+          "D": "O texto não propõe dependência de agrotóxicos ou fertilizantes químicos.",
+          "E": "Não se destaca uso de máquinas nem conversão para cultivo mecanizado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:79": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 172412,
+          "B": 151313,
+          "C": 115348,
+          "D": 167153,
+          "E": 47401,
+          "blank": 6918
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Gerineldo imagina que tudo em sua vida pode ser previsto por um inventário de possibilidades. Sartre, ao contrário, entende que a liberdade permite ao sujeito superar sua situação dada, produzindo sentidos e escolhas que não estão inteiramente determinados."
+        ],
+        "alternatives": {
+          "A": "O contraste não envolve a ação de processos psíquicos inconscientes.",
+          "B": "Ao fechar o futuro em previsões, Gerineldo nega a superação livre da situação.",
+          "C": "A diferença não se estabelece entre conhecimentos precisos e difusos.",
+          "D": "A brevidade da vida não é o ponto oposto entre determinismo e liberdade.",
+          "E": "A discussão não trata de mecanismos de evolução das espécies."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:80": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 274608,
+          "B": 131015,
+          "C": 62246,
+          "D": 113961,
+          "E": 74093,
+          "blank": 4622
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O governo reprime as Ligas Camponesas, mas fomenta uma formação sindical conservadora. A combinação visa neutralizar a mobilização autônoma no campo, canalizando demandas para organizações sob influência política compatível com o regime."
+        ],
+        "alternatives": {
+          "A": "A formação conservadora procura conter conflitos e controlar a mobilização rural.",
+          "B": "O texto não apresenta alteração de leis trabalhistas como objetivo da formação.",
+          "C": "O regime combatia formas de mobilização anteriores, sem propagar um programa populista.",
+          "D": "Os cursos não constituem um procedimento de regularização fundiária.",
+          "E": "A finalidade descrita é política, sem proposta de ampliar a oferta de trabalhadores."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:81": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 185015,
+          "B": 77121,
+          "C": 113185,
+          "D": 171346,
+          "E": 107195,
+          "blank": 6683
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Foucault descreve tratamentos distintos para crimes associados a diferentes classes. Ao punir duramente o roubo e negociar fraudes e evasões, o sistema judicial administra seletivamente as ilegalidades, reproduzindo uma relação de poder político e econômico."
+        ],
+        "alternatives": {
+          "A": "A separação de jurisdições e penas mostra gestão diferenciada das ilicitudes.",
+          "B": "Os exemplos indicam desigualdade no tratamento, contradizendo um modelo equânime.",
+          "C": "O sistema não elimina todos os crimes, mas trata categorias de modo seletivo.",
+          "D": "A distribuição de punições preserva privilégios, sem produzir justiça social.",
+          "E": "A hierarquia discutida é de classes e de tratamento judicial, não de prestígio cultural."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:82": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 83314,
+          "B": 338577,
+          "C": 95240,
+          "D": 76136,
+          "E": 61256,
+          "blank": 6022
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As cartas transportavam relatos, conselhos, fotografias e notícias entre comunidades separadas pela migração. Ao permitir transmitir e reconstruir tradições, a correspondência mantinha uma circulação cultural entre a sociedade de origem e a de acolhimento."
+        ],
+        "alternatives": {
+          "A": "As cartas descritas mantêm laços e não organizam confronto entre estrangeiros e nativos.",
+          "B": "Notícias e práticas culturais circulam entre os dois lados da experiência migratória.",
+          "C": "Não há autoridade impondo doutrina às narrativas pessoais.",
+          "D": "A troca familiar não é apresentada como instrumento estatal de fiscalização migratória.",
+          "E": "O dispositivo aproxima parentes, sem função de vigilância dos trabalhadores."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:83": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 101430,
+          "B": 60251,
+          "C": 330020,
+          "D": 49037,
+          "E": 114416,
+          "blank": 5391
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O desmatamento e os usos desordenados removem proteção vegetal e podem provocar erosão, perda de nutrientes e contaminação. A redução da fertilidade compromete as funções produtivas e ecológicas do solo, tornando sua recuperação difícil ou inviável em situações extremas."
+        ],
+        "alternatives": {
+          "A": "O aumento da biomassa pode favorecer a recomposição orgânica, não impedir a recuperação.",
+          "B": "Reduzir sais em excesso tende a melhorar as condições de muitos solos degradados.",
+          "C": "A perda de nutrientes e de capacidade produtiva limita a recuperação do solo.",
+          "D": "O aumento da microfauna pode contribuir para a dinâmica e a saúde do solo.",
+          "E": "A decomposição participa da formação do solo e não explica, por si, o impedimento citado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:84": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 146853,
+          "B": 64323,
+          "C": 82195,
+          "D": 215236,
+          "E": 145772,
+          "blank": 6166
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A racionalização da cozinha e a introdução de equipamentos reduzem movimentos e tempo gasto em tarefas domésticas. Num contexto em que essas tarefas recaíam sobre as mulheres, a economia de trabalho ampliava a possibilidade de dedicar tempo à socialização fora delas."
+        ],
+        "alternatives": {
+          "A": "O texto não transfere explicitamente às mulheres a gestão do orçamento doméstico.",
+          "B": "Não há proibição religiosa sendo abolida pelos equipamentos.",
+          "C": "A mudança material da cozinha não concede diretamente representação política.",
+          "D": "A redução do tempo de trabalho doméstico pode ampliar os momentos de convivência social.",
+          "E": "As tarefas são simplificadas, sem indicação de afastamento de profissões especializadas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:85": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 110434,
+          "B": 159326,
+          "C": 90965,
+          "D": 200612,
+          "E": 92993,
+          "blank": 6215
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os produtores rurais querem preservar exigências e barreiras que dificultam a entrada de produtos concorrentes. Já a indústria deseja reduzir tarifas e vender mais ao Mercosul, contrapondo proteção do mercado agrícola e liberalização do comércio de mercadorias."
+        ],
+        "alternatives": {
+          "A": "O conflito descrito é comercial, sem proposta de limitar migração ou fortalecer sindicatos.",
+          "B": "Não se discute ampliar leis trabalhistas nem importar livremente manufaturas.",
+          "C": "A proteção ambiental é contexto, mas não há proposta de transferência tecnológica industrial.",
+          "D": "O setor rural defende proteção por barreiras e o industrial apoia maior circulação de produtos.",
+          "E": "A retirada de entraves é desejada pelos industriais, não pelos produtores rurais mencionados primeiro."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:86": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 95201,
+          "B": 108695,
+          "C": 144387,
+          "D": 67621,
+          "E": 238776,
+          "blank": 5865
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Anaïs desenvolve autonomia de julgamento e confiança em sua formação, apesar da expectativa de modéstia e submissão doméstica reservada às mulheres. Sua postura rompe valores de gênero estabelecidos que aceitavam tais qualidades nos homens e as condenavam nas mulheres."
+        ],
+        "alternatives": {
+          "A": "A independência intelectual não significa rejeitar relações afetivas.",
+          "B": "A personagem desenvolve uma opinião própria, afirmando sua subjetividade.",
+          "C": "Ela contraria a limitação de comportamentos atribuída ao seu gênero.",
+          "D": "A atitude questiona um papel hierárquico, em vez de consolidá-lo.",
+          "E": "A confiança e o julgamento autônomo rompem os valores femininos institucionalizados no contexto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:87": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 174077,
+          "B": 304564,
+          "C": 70819,
+          "D": 55050,
+          "E": 49614,
+          "blank": 6421
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A hostilidade aos imigrantes é explicada pelo medo de concorrência no trabalho e de exploração econômica, somado à associação de estrangeiros ao comunismo e ao anarquismo. O tratamento combina, portanto, preconceitos socioeconômicos e ideológicos."
+        ],
+        "alternatives": {
+          "A": "Embora sejam judeus, a explicação apresentada enfatiza emprego e doutrinas políticas.",
+          "B": "Concorrência econômica e suspeita de ideologias estrangeiras estruturam a rejeição.",
+          "C": "Não há análise de limites territoriais ou taxas de alfândega.",
+          "D": "Os preconceitos descritos não são justificados por regras constitucionais específicas.",
+          "E": "O texto não atribui a rejeição a tratados internacionais ou decretos citados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:88": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 177840,
+          "B": 86971,
+          "C": 124745,
+          "D": 151092,
+          "E": 113358,
+          "blank": 6539
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A competitividade condenada por Milton Santos admite qualquer expediente para conquistar posições e eliminar rivais. O dumping, ao praticar preços artificialmente baixos para expulsar concorrentes e dominar o mercado, exemplifica essa disputa desleal que rompe limites de convivência econômica."
+        ],
+        "alternatives": {
+          "A": "O dumping usa preços predatórios para eliminar concorrentes e obter domínio de mercado.",
+          "B": "Reorganizar funções administrativas não implica uma prática desleal.",
+          "C": "Uma holding é forma de organização empresarial e não constitui necessariamente violência competitiva.",
+          "D": "Limitar monopólios pode proteger a concorrência, em vez de destruí-la.",
+          "E": "Modernizar a produção pode ocorrer respeitando regras e sem prejudicar deslealmente concorrentes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:89": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 30123,
+          "B": 28554,
+          "C": 49427,
+          "D": 496285,
+          "E": 51866,
+          "blank": 4290
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As simulações relacionam maior aquecimento global a alterações de temperatura e precipitação. Reduzir emissões de carbono limita o acúmulo de gases de efeito estufa de origem humana e atua sobre a causa central dessas mudanças, diminuindo sua intensidade futura."
+        ],
+        "alternatives": {
+          "A": "Ampliar transporte sem descarbonização pode aumentar o uso de combustíveis fósseis.",
+          "B": "A migração responde a condições sociais e ambientais, mas não reduz diretamente o efeito estufa.",
+          "C": "Monitorar vulcões não controla a principal emissão humana responsável pelo aquecimento.",
+          "D": "Controlar emissões de carbono reduz a intensificação antrópica do efeito estufa.",
+          "E": "Termelétricas movidas a combustíveis fósseis aumentam emissões e agravariam o problema."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:90": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 245761,
+          "B": 227944,
+          "C": 61245,
+          "D": 59351,
+          "E": 60645,
+          "blank": 5599
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Brás Cubas admite ter aprendido fórmulas e frases para ornamentar conversas, sem aprofundar os conteúdos. Essa valorização do efeito verbal e do convencimento aproxima sua postura da retórica sofística tal como criticada pelos filósofos gregos."
+        ],
+        "alternatives": {
+          "A": "O personagem confessa guardar a casca das ideias, sem elaborar conceitos em profundidade.",
+          "B": "O repertório é utilizado para produzir efeito e persuadir pela aparência do discurso.",
+          "C": "Não se trata de recitar narrativas épicas tradicionais como os rapsodos.",
+          "D": "O trecho não investiga experimentalmente a natureza ou sua constituição.",
+          "E": "A ornamentação é verbal e não uma representação pictográfica da cidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "english:1": {
+      "answer": "B",
+      "statistics": {
+        "population": 381727,
+        "counts": {
+          "A": 19648,
+          "B": 318129,
+          "C": 24472,
+          "D": 7263,
+          "E": 11252,
+          "blank": 963
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O cartaz relaciona o descarte anual de alimentos ao volume de lixo nos aterros. Ao recomendar consumir sobras e refrigerar perecíveis, apresenta o combate ao desperdício como responsabilidade ambiental."
+        ],
+        "alternatives": {
+          "A": "Não pede ampliar aterros, mas reduzir o lixo produzido.",
+          "B": "A relação entre comida descartada e aterros evidencia degradação ambiental.",
+          "C": "Não há referência a doações feitas por supermercados.",
+          "D": "A campanha aborda descarte, sem discutir capacidade de raciocínio.",
+          "E": "Recomendar refrigeração não significa afirmar falta de geladeiras."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "english:2": {
+      "answer": "B",
+      "statistics": {
+        "population": 381727,
+        "counts": {
+          "A": 28927,
+          "B": 98586,
+          "C": 159150,
+          "D": 33258,
+          "E": 60487,
+          "blank": 1319
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A metáfora contrapõe a ilha isolada à pessoa que integra um continente. A morte de qualquer indivíduo diminui o eu lírico porque todos pertencem à humanidade, ressaltando a conexão entre os seres humanos."
+        ],
+        "alternatives": {
+          "A": "A morte ilustra a interdependência, não um medo individual.",
+          "B": "O continente representa o vínculo de cada pessoa com o conjunto humano.",
+          "C": "A ilha é uma imagem negada, não a condição defendida pelo poema.",
+          "D": "O trecho não descreve uma ameaça de destruição territorial.",
+          "E": "A empatia é compatível com o poema, mas a metáfora destaca o vínculo coletivo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "english:3": {
+      "answer": "D",
+      "statistics": {
+        "population": 381727,
+        "counts": {
+          "A": 92582,
+          "B": 34775,
+          "C": 44906,
+          "D": 147133,
+          "E": 60686,
+          "blank": 1645
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A repetição de carry reúne perdas familiares, desastres, conhecimentos, trabalho, línguas e sonhos transportados simbolicamente pelos refugiados. A viagem marítima integra experiências múltiplas, que não se reduzem ao deslocamento físico."
+        ],
+        "alternatives": {
+          "A": "O poema enumera vivências, sem concentrar o sentido em conflitos culturais.",
+          "B": "Não trata dos resultados de uma disciplina escolar de história.",
+          "C": "A crise ambiental é uma das causas mencionadas, não a totalidade do percurso.",
+          "D": "Diplomas, memórias, lutas e idiomas compõem a pluralidade das experiências.",
+          "E": "Os viajantes já levam diplomas e saberes, sem apelo central por capacitação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "english:4": {
+      "answer": "A",
+      "statistics": {
+        "population": 381727,
+        "counts": {
+          "A": 254105,
+          "B": 56622,
+          "C": 33103,
+          "D": 24906,
+          "E": 11027,
+          "blank": 1964
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto mistura inglês e espanhol na própria escrita e nomeia músicas, meios de comunicação e práticas de ambos os universos. A forma do poema realiza o encontro cultural e linguístico que o eu lírico celebra como Spanglish."
+        ],
+        "alternatives": {
+          "A": "A mistura de idiomas e referências culturais concretiza a convergência.",
+          "B": "O foco é a convivência de duas línguas, sem narrativa de um período histórico.",
+          "C": "Embora haja experimentação poética, não se apresenta uma escola literária.",
+          "D": "O eu lírico celebra a mistura e não descreve uma discriminação sofrida.",
+          "E": "As referências musicais mostram circulação cultural, sem proibição de canções."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "english:5": {
+      "answer": "B",
+      "statistics": {
+        "population": 381727,
+        "counts": {
+          "A": 24356,
+          "B": 273408,
+          "C": 26249,
+          "D": 40210,
+          "E": 15954,
+          "blank": 1550
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A fala promete tratamento igual independentemente de idade, raça ou gênero. A imagem, porém, repete funcionários de aparência semelhante, homens com a mesma roupa e faixa etária, criando ironia sobre um escritório sem diversidade."
+        ],
+        "alternatives": {
+          "A": "A roupa semelhante participa da uniformidade, mas não é o alvo isolado da crítica.",
+          "B": "A contradição entre promessa inclusiva e homogeneidade visual denuncia falta de diversidade.",
+          "C": "Os diálogos entre colegas servem à ironia e não a ensinar uma interação.",
+          "D": "A composição questiona a organização, em vez de elogiá-la.",
+          "E": "Conversas no escritório não demonstram um projeto coletivo de cooperação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:10": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 43986,
+          "B": 83522,
+          "C": 40011,
+          "D": 77930,
+          "E": 413158,
+          "blank": 1938
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A repetição de vocabulário e os horários das postagens são pistas do funcionamento coordenado de contas falsas. Analisar esses padrões permite reconhecer práticas de disseminação de conteúdo inverídico, mesmo quando há pessoas por trás dos perfis."
+        ],
+        "alternatives": {
+          "A": "O objetivo é reconhecer desinformação, não fiscalizar a profissão de TI.",
+          "B": "Os padrões permitem detectar trolls, sem propor desenvolver essa tecnologia.",
+          "C": "O horário de trabalho é uma pista analítica, não uma proposta de flexibilização.",
+          "D": "O texto não formula uma proposta legal de regulamentação dos bots.",
+          "E": "A pobreza vocabular ajuda a identificar a atuação repetitiva de perfis falsos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:11": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 34484,
+          "B": 92813,
+          "C": 35313,
+          "D": 465501,
+          "E": 31098,
+          "blank": 1336
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os dados e a enumeração de atitudes perigosas preparam uma convocação a valores como solidariedade, respeito e consciência da vulnerabilidade. O objetivo argumentativo é sensibilizar o leitor para dirigir de modo responsável e preservar vidas."
+        ],
+        "alternatives": {
+          "A": "As causas são um argumento intermediário para promover mudança de conduta.",
+          "B": "O contexto mundial situa a campanha, mas não esgota a finalidade persuasiva.",
+          "C": "A estatística alarma o leitor como meio de sensibilização, não como fim isolado.",
+          "D": "O apelo à civilidade e ao respeito busca uma direção responsável.",
+          "E": "O texto inclui impunidade e relações sociais, sem reduzir o problema às emoções."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:12": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 61980,
+          "B": 187025,
+          "C": 301728,
+          "D": 58324,
+          "E": 48350,
+          "blank": 3138
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A descrição privilegia impressões sensoriais e julgamentos da observadora: perfume enjoativo, lentidão, roupas apertadas e extravagância. Esse olhar subjetivo apresenta a relação de Timóteo com vestimentas e maquiagem, caracterizando de modo impressionista seu fetiche."
+        ],
+        "alternatives": {
+          "A": "O efeito central vem das percepções concretas, não de palavras com duplo sentido.",
+          "B": "A condição de empregada não transforma o retrato em denúncia das relações de trabalho.",
+          "C": "Sensações e avaliações subjetivas compõem o retrato do gosto de Timóteo por vestir-se.",
+          "D": "A narradora identifica o que observa; dúvidas pontuais não tornam impreciso o foco.",
+          "E": "A passagem se concentra na aparência do personagem, sem organizar um enigma familiar."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:13": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 80597,
+          "B": 69514,
+          "C": 299205,
+          "D": 129875,
+          "E": 78905,
+          "blank": 2449
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O toque do outro percorre marcas da vida enquanto o eu lírico rememora seus amores. O verso final, em que afirma ter repousado dos cuidados, dá à relação presente o sentido de serenidade e entrega afetiva, em vez de arrependimento."
+        ],
+        "alternatives": {
+          "A": "As marcas são acolhidas pelo toque, sem expressão de vergonha.",
+          "B": "O quarto amor é assumido como repouso, sem hesitação entre parceiros.",
+          "C": "A recordação desemboca na tranquilidade alcançada com a entrega ao amor presente.",
+          "D": "Os amores passados são lembrados sem pedido para recuperá-los.",
+          "E": "O repouso afetivo contraria uma busca por prazer apenas passageiro."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:14": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 48868,
+          "B": 165570,
+          "C": 97118,
+          "D": 273748,
+          "E": 73312,
+          "blank": 1929
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os ouvintes já conhecem o capítulo, mas desejam ouvi-lo novamente. Soropita prolonga o relato com prazer e ocupa a sala com personagens, de modo que a atração se deve à singularidade de sua narração oral, capaz de renovar uma história conhecida."
+        ],
+        "alternatives": {
+          "A": "O prazer está em ouvir o narrador presente, não na qualidade técnica do aparelho.",
+          "B": "O enredo conhecido não explica por si o desejo de ouvir Soropita.",
+          "C": "O capítulo já fora ouvido na véspera, portanto não é inédito.",
+          "D": "A capacidade de prender a atenção caracteriza o modo singular de narrar.",
+          "E": "Não há indicação de dificuldade anterior para entender a novela."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:15": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 46705,
+          "B": 441692,
+          "C": 40808,
+          "D": 91000,
+          "E": 38370,
+          "blank": 1970
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Gravações de falantes já falecidos e de línguas extintas não podem ser simplesmente refeitas em novas viagens de campo. Sua perda elimina testemunhos únicos de modos de falar e de viver, atingindo de forma irreparável a memória e a identidade nacionais."
+        ],
+        "alternatives": {
+          "A": "Retomar pesquisas não recupera a voz de pessoas já falecidas.",
+          "B": "Os registros únicos integram a memória cultural e sua destruição pode ser irreversível.",
+          "C": "Ainda são possíveis pesquisas novas, embora uma parcela do acervo tenha desaparecido.",
+          "D": "O incêndio não extingue por si todas as culturas dos povos originários.",
+          "E": "O povo Tikuna mantém falantes e permite novas pesquisas de campo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:16": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 313656,
+          "B": 186504,
+          "C": 67716,
+          "D": 70364,
+          "E": 20960,
+          "blank": 1345
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A comparação com diferentes nomes de objetos na língua portuguesa mostra que Libras também varia. Os exemplos abrangem região, idade, gênero e época, fenômenos próprios de línguas naturais usadas por comunidades diversas."
+        ],
+        "alternatives": {
+          "A": "Libras apresenta variações sociais, regionais e históricas, como outras línguas.",
+          "B": "Nos exemplos, mudam os sinais para o mesmo significado, não o sentido das palavras.",
+          "C": "A diferença lexical não comprova alteração de toda a estrutura da língua.",
+          "D": "Variações regionais não equivalem a uma língua independente em cada região.",
+          "E": "O texto não afirma que as variantes impeçam a compreensão entre usuários."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:17": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 63513,
+          "B": 125954,
+          "C": 53068,
+          "D": 333949,
+          "E": 81848,
+          "blank": 2213
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os colchetes voltados para fora recebem um valor simbólico de abertura e receptividade. O editor relaciona essa forma à circulação de ideias vindas dos livros, construindo a identidade da revista e sua disposição de acolher diferentes assuntos."
+        ],
+        "alternatives": {
+          "A": "Não há restrição dos leitores a especialistas ou ao meio acadêmico.",
+          "B": "A inversão é deliberadamente não normativa e não demonstra rigor gramatical.",
+          "C": "A variedade de assuntos é enfatizada, sem compromisso com uma exclusividade temática.",
+          "D": "A abertura gráfica simboliza recepção e promoção das ideias dos livros.",
+          "E": "A explicação diz respeito ao nome e à identidade, não à estrutura de cada artigo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:18": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 140404,
+          "B": 110778,
+          "C": 203742,
+          "D": 128026,
+          "E": 75134,
+          "blank": 2461
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na primeira canção, a pergunta sobre quem lê tanta notícia aponta a abundância informacional das bancas. Na segunda, telas, algoritmos e repetição acelerada expressam o fluxo digital, permitindo aproximar as duas pela profusão de informações mediadas pela tecnologia."
+        ],
+        "alternatives": {
+          "A": "As cores não têm função crítica equivalente nos dois textos.",
+          "B": "Notícias impressas e fluxos digitais manifestam abundância de informação em épocas distintas.",
+          "C": "A oposição entre virtude e vício aparece explicitamente apenas no segundo trecho.",
+          "D": "Os fragmentos não estabelecem como ponto comum uma reivindicação de livre expressão.",
+          "E": "A finalidade comercial é explícita no algoritmo, mas não na descrição das bancas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:19": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 108872,
+          "B": 46724,
+          "C": 35519,
+          "D": 440067,
+          "E": 27892,
+          "blank": 1471
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A estrofe denuncia discursos que naturalizam a morte de pessoas negras. Os dados do Atlas quantificam a desigualdade na exposição ao homicídio, reforçando a denúncia de que o racismo torna essa população especialmente vulnerável à violência."
+        ],
+        "alternatives": {
+          "A": "Os números apresentados não demonstram uma série de crescimento diário das mortes.",
+          "B": "Não se mediu a evolução da temática racial na literatura brasileira.",
+          "C": "O texto cita formas artísticas sem apresentar contagem de sua expansão.",
+          "D": "A poesia denuncia a vulnerabilidade e a estatística comprova sua dimensão desigual.",
+          "E": "Os dados são de homicídios, não de adesão juvenil a movimentos culturais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:20": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 73156,
+          "B": 63945,
+          "C": 223134,
+          "D": 85053,
+          "E": 212629,
+          "blank": 2628
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A autora menciona o vocabulário de médicos, juristas, burocratas e cientistas para mostrar como usos especializados podem excluir a maioria. O questionamento denuncia essa barreira de compreensão como mecanismo de manutenção de privilégios e silenciamento."
+        ],
+        "alternatives": {
+          "A": "A referência bíblica introduz a importância da palavra, sem provar sua origem religiosa.",
+          "B": "O futuro da linguagem é problematizado, mas a prova da exclusão vem dos usos especializados.",
+          "C": "A relação geral entre língua e sociedade não identifica a estratégia específica pedida.",
+          "D": "O silenciamento é uma consequência, enquanto a argumentação focaliza a barreira linguística.",
+          "E": "A crítica ao jargão inacessível explica como os grupos de poder excluem a população."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:21": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 135203,
+          "B": 94515,
+          "C": 32704,
+          "D": 379640,
+          "E": 16978,
+          "blank": 1505
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O dicionário relaciona nomes populares de sintomas aos termos conhecidos pelos médicos. Ao reconhecer as variedades regionais, permite que a fala do paciente seja compreendida com mais precisão e reduz o risco de erros no diagnóstico."
+        ],
+        "alternatives": {
+          "A": "A iniciativa previne erros possíveis, sem se limitar a apontar erros já cometidos.",
+          "B": "O problema é diferença de vocabulário, não uma incapacidade absoluta de comunicação.",
+          "C": "Os sintomas já existiam; a novidade está no registro de seus nomes locais.",
+          "D": "A tradução entre variedades melhora a compreensão do relato do paciente.",
+          "E": "O dicionário registra denominações populares e não descobre um novo conjunto de doenças."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:22": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 92014,
+          "B": 40905,
+          "C": 406946,
+          "D": 68177,
+          "E": 50224,
+          "blank": 2279
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A cantiga passa dos negros mais velhos aos jovens e é aprendida por Luandi com o pai. Mesmo sem compreender todas as palavras, ele reconhece sua função de celebrar o retorno, mantendo viva uma herança africana pela transmissão oral."
+        ],
+        "alternatives": {
+          "A": "Alguns velhos ainda falam a língua, portanto o texto não a apresenta como extinta.",
+          "B": "O foco é a transmissão entre gerações, não a exaltação de tarefas juvenis.",
+          "C": "A aprendizagem pelo canto preserva vínculos ancestrais por meio da oralidade.",
+          "D": "Luandi não entende as palavras, embora reconheça o sentido social da cantiga.",
+          "E": "A cantiga é alegre e vitoriosa, sem predomínio de tristeza ou saudade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:23": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 154306,
+          "B": 259707,
+          "C": 109741,
+          "D": 77697,
+          "E": 56148,
+          "blank": 2946
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O primeiro texto critica a permanência de estereótipos machistas num desenho de futuro tecnologicamente avançado. O segundo explica que as diferenças de gênero são em grande parte construções imaginárias, o que esclarece a persistência dessas representações cristalizadas."
+        ],
+        "alternatives": {
+          "A": "O episódio ridiculariza mulheres ao volante, sem descrever censura formal de sua expressão.",
+          "B": "A mulher aparece dirigindo, portanto sua ausência pública não é a explicação mais precisa.",
+          "C": "Os estereótipos tradicionais persistem como construções sociais naturalizadas.",
+          "D": "O segundo texto rejeita que as grandes diferenças de papéis sejam inerentes aos sexos.",
+          "E": "Os papéis são rígidos e naturalizados, não difíceis de atribuir."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:24": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 45013,
+          "B": 24938,
+          "C": 23797,
+          "D": 90703,
+          "E": 474823,
+          "blank": 1271
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os imperativos não se cale e denuncie dirigem o anúncio à ação das mulheres diante da violência. O telefone e a referência à Defensoria oferecem os meios para essa denúncia durante o isolamento social."
+        ],
+        "alternatives": {
+          "A": "O telefone é um instrumento para a denúncia e não esgota o objetivo da campanha.",
+          "B": "A atuação da entidade dá suporte ao apelo, sem ser o foco informativo único.",
+          "C": "A continuidade da Defensoria reforça a possibilidade de denunciar.",
+          "D": "O aumento da violência contextualiza a convocação a agir.",
+          "E": "Os imperativos incentivam explicitamente a denúncia no período de isolamento."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:25": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 74604,
+          "B": 284369,
+          "C": 104262,
+          "D": 101190,
+          "E": 93585,
+          "blank": 2535
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A palavra arado aproxima o instrumento que abre a terra da linguagem que permite à narradora atuar no mundo. Ao descrever a fala deformada como um arado que dilacera o solo, ela transforma a dificuldade de articulação em metáfora do trabalho de lavoura."
+        ],
+        "alternatives": {
+          "A": "O ponto de vista é o da filha tentando falar, não o do pai organizando o plantio.",
+          "B": "O arado e a fala tornam-se ferramentas aproximadas pela imagem de abrir ou ferir a terra.",
+          "C": "Estar sozinha permite a tentativa, sem indicar medo central da solidão.",
+          "D": "A terra dilacerada é metáfora da fala difícil, não frustração agrícola literal.",
+          "E": "A recordação articula tempos diferentes e não descreve uma paralisia temporal."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:26": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 116952,
+          "B": 351335,
+          "C": 67349,
+          "D": 84711,
+          "E": 37999,
+          "blank": 2199
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Bilac imagina gerações que conhecerão os instrumentos de tortura apenas nos museus e terão indignação menor que a de quem viveu a escravidão. A diferença entre experiência e memória aponta o apagamento futuro da intensidade de suas marcas sociais."
+        ],
+        "alternatives": {
+          "A": "A descrição é carregada de indignação e de imagens violentas, sem impessoalidade.",
+          "B": "A oposição é entre gerações testemunhas e posteriores, não entre duas infâncias contemporâneas.",
+          "C": "O distanciamento histórico é associado ao enfraquecimento da percepção das marcas da escravidão.",
+          "D": "O texto não acusa museus de falsear fatos; enfatiza os limites da experiência indireta.",
+          "E": "A reação futura prevista é indignação reduzida, não indiferença dos contemporâneos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:27": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 396112,
+          "B": 52210,
+          "C": 43491,
+          "D": 72191,
+          "E": 92378,
+          "blank": 4163
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A sequência de todos, de todas e de todas as amplia a enumeração de relações: amores, casamentos, rancores e paixões. A repetição universaliza a ideia de que vínculos de formas e durações diversas compartilham a possibilidade necessária de terminar."
+        ],
+        "alternatives": {
+          "A": "A repetição do indefinido inclui progressivamente todas as modalidades de vínculo.",
+          "B": "A pontuação explicativa não sustenta a enumeração universalizadora das relações.",
+          "C": "Isso retoma uma duração anterior, sem abranger os diferentes tipos de amor.",
+          "D": "Mas introduz a oposição com o fim, porém não é o mecanismo reiterado de progressão.",
+          "E": "A nominalização organiza certas expressões, sem explicar o conjunto enumerativo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:28": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 32701,
+          "B": 137494,
+          "C": 378964,
+          "D": 77151,
+          "E": 32605,
+          "blank": 1630
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O uso da primeira pessoa torna explícita a experiência subjetiva de querer dizer algo e não conseguir fazê-lo como pretendido. A troca entre gritar e falar termina em calar, exprimindo o bloqueio e a dificuldade da comunicação."
+        ],
+        "alternatives": {
+          "A": "Não há parceiro amoroso nem relato de uma desilusão sentimental.",
+          "B": "O texto não identifica um agente que proíba ou censure a voz.",
+          "C": "A distância entre intenção, voz e silêncio expressa dificuldade para comunicar-se.",
+          "D": "O nó é vivido subjetivamente, sem causas externas especificadas.",
+          "E": "Embora se trate de poesia, o assunto é a expressão da voz e não a escrita literária."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:29": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 110950,
+          "B": 154441,
+          "C": 144238,
+          "D": 99463,
+          "E": 146485,
+          "blank": 4968
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O narrador concede dignidade e solenidade aos ratos, ligando-os à pompa da história colonial. Logo os imagina no crânio exposto de Tiradentes, produzindo desconcerto pelo contraste entre o tom grandioso do heroísmo e uma cena corporal repugnante."
+        ],
+        "alternatives": {
+          "A": "O casario é cenário para o contraste, sem descrição arquitetônica central.",
+          "B": "A imaginação histórica não constitui o eixo de confusão entre realidade e invenção.",
+          "C": "A literatura aparece como referência, mas o efeito culmina no contraste com o corpo degradado.",
+          "D": "O narrador não atribui loucura aos participantes da Inconfidência.",
+          "E": "A solenidade nacionalista se choca com roedores penetrando um crânio em decomposição."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:30": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 337852,
+          "B": 86818,
+          "C": 67524,
+          "D": 67489,
+          "E": 96546,
+          "blank": 4316
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As proibições arbitrárias alcançam brincadeiras e deslocamentos cotidianos, somando castigos e barreiras físicas. A Companhia representa um poder autoritário que impede qualquer brecha de desobediência e dissemina medo, em alusão à repressão política dos anos 1970."
+        ],
+        "alternatives": {
+          "A": "A ameaça de punição contamina atividades banais e estabelece um cotidiano de medo.",
+          "B": "O menino discute o excesso das ordens, sem investigar se as informações são verdadeiras.",
+          "C": "Os acontecimentos são narrados como parte da vida social, sem estrutura de sonho.",
+          "D": "A Companhia simboliza coerção, sem elogio ao investimento ou ao crescimento econômico.",
+          "E": "A repressão atinge toda a população e não apenas o isolamento das crianças."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:31": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 74695,
+          "B": 99159,
+          "C": 236865,
+          "D": 118681,
+          "E": 128781,
+          "blank": 2364
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O poema imagina cenários solenes para a dor de uma separação, mas o gesto efetivo é recolher migalhas à mesa. A experiência amorosa se realiza numa banalidade doméstica, que desloca a grandiloquência tradicional da perda sem apagar sua tensão."
+        ],
+        "alternatives": {
+          "A": "O interlocutor é observado em silêncio, sem convocação para decidir algo.",
+          "B": "O término não implica negar a validade de qualquer relação romântica.",
+          "C": "A dor da ruptura aparece condensada no gesto trivial de recolher migalhas.",
+          "D": "O silêncio não comprova que o conflito tenha sido resolvido em paz.",
+          "E": "Os espaços idealizados são imaginados e contrastados com a cena concreta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:32": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 165436,
+          "B": 232565,
+          "C": 124391,
+          "D": 77055,
+          "E": 58144,
+          "blank": 2954
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Jurandy apresenta no mesmo repertório o Bolero, ligado à tradição erudita europeia, e canções populares brasileiras de forte identidade regional. A sequência aproxima referências estéticas e culturais de origens distintas sem estabelecer uma hierarquia entre elas."
+        ],
+        "alternatives": {
+          "A": "A apresentação reúne Ravel e compositores populares brasileiros em um mesmo repertório.",
+          "B": "O texto descreve títulos e contexto, sem atribuir a todos uma mensagem de serenidade.",
+          "C": "As canções regionais também recebem destaque, sem supremacia declarada do erudito.",
+          "D": "O cenário pode atrair turistas, mas a questão pede a característica musical do repertório.",
+          "E": "A sequência promove convivência entre estilos, sem classificá-los como superiores ou inferiores."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:33": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 216187,
+          "B": 237631,
+          "C": 94900,
+          "D": 44755,
+          "E": 64334,
+          "blank": 2738
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O regime nazista classificava como degeneradas formas de arte moderna incompatíveis com seus padrões ideológicos e estéticos. A deformação expressiva das figuras na pintura de Segall insere-se nesse contexto de repressão, sem que a obra precise integrar um programa partidário de oposição."
+        ],
+        "alternatives": {
+          "A": "A censura impõe os padrões do regime e rejeita estéticas consideradas inconvenientes.",
+          "B": "A perseguição não comprova que Segall tenha criado a obra por um grupo político opositor.",
+          "C": "A representação corporal por si não explica a censura ideológica à arte moderna.",
+          "D": "O nazismo rejeitou a obra, que não antecipava o ideal artístico oficial do regime.",
+          "E": "O debate cultural é um efeito possível da arte, mas não explica a classificação nazista."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:34": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 139634,
+          "B": 205467,
+          "C": 138929,
+          "D": 85785,
+          "E": 88448,
+          "blank": 2282
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O espetáculo parte de gestos e atmosferas das religiões afro-brasileiras, mas o texto afasta a ideia de imitação literal do culto. A dança cênica reelabora esses referenciais populares em uma composição artística erudita e contemporânea."
+        ],
+        "alternatives": {
+          "A": "Não há ataque ao balé clássico, mas apropriação de uma referência religiosa.",
+          "B": "Os cultos afro-brasileiros permanecem vivos e não são apresentados como extintos.",
+          "C": "A cena transforma referências dos cultos em uma elaboração estética própria.",
+          "D": "O transe inspira a coreografia sem intenção irônica ou ridicularização.",
+          "E": "O caráter volátil da cena não estabelece oposição temática entre tradição e morte."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:35": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 443729,
+          "B": 63081,
+          "C": 71492,
+          "D": 50497,
+          "E": 28903,
+          "blank": 2843
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto combina aumento do número de praticantes, crescimento da audiência e reconhecimento institucional. Esses elementos indicam um ambiente favorável à expansão dos esportes eletrônicos, que encontram público e oportunidades de legitimação esportiva."
+        ],
+        "alternatives": {
+          "A": "Público crescente e reconhecimento olímpico apontam condições favoráveis de expansão.",
+          "B": "A dedicação dos jogadores é apenas um dos fatores descritos.",
+          "C": "Não se descreve uma campanha publicitária ou uma estratégia de marketing.",
+          "D": "As desenvolvedoras aparecem como participantes, sem análise de benefícios exclusivos a elas.",
+          "E": "A audiência citada não é identificada como exclusivamente televisiva."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:36": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 243894,
+          "B": 45592,
+          "C": 229399,
+          "D": 46039,
+          "E": 93317,
+          "blank": 2304
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O Marabaixo tem origem na memória dolorosa de mortos no tráfico escravista e passa a integrar danças, cantos e festas religiosas das comunidades negras. A prática transforma essa experiência histórica em expressão de pertencimento e produção cultural coletiva."
+        ],
+        "alternatives": {
+          "A": "A memória do sofrimento recebe novos sentidos em práticas artísticas comunitárias.",
+          "B": "O nome remete ao mar, mas o texto não descreve passos que imitem suas ondas.",
+          "C": "O lamento é a origem, enquanto a manifestação atual inclui dança e festa religiosa.",
+          "D": "A homenagem preserva a memória do trauma, em vez de apagá-la.",
+          "E": "O texto não descreve uma passagem ritual de funerais para festas, mas formação cultural."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:37": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 56059,
+          "B": 48119,
+          "C": 236453,
+          "D": 183925,
+          "E": 133500,
+          "blank": 2489
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As redes sociais ampliam o alcance do trabalho de Wolney para além do ambiente artístico local. A presença de suas colagens em livros no Brasil e no exterior exemplifica essa visibilidade que as plataformas virtuais ajudam a construir."
+        ],
+        "alternatives": {
+          "A": "A plataforma divulga a obra, sem resolver um problema técnico de colagem.",
+          "B": "As capas são resultados da circulação do trabalho, não um padrão visual que ele procura copiar.",
+          "C": "A exposição virtual amplia público e alcance nacional e internacional.",
+          "D": "A originalidade é valorizada, mas o objetivo da presença nas redes é ampliar a exposição.",
+          "E": "A divulgação digital não modifica necessariamente o sentido ou o material das colagens."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:38": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 464246,
+          "B": 88383,
+          "C": 28116,
+          "D": 30769,
+          "E": 46574,
+          "blank": 2457
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os artistas incorporam o rap, conhecido por meio do rádio, e o combinam com ritmos, experiências e reivindicações indígenas. Essa produção articula uma manifestação urbana contemporânea com identidades originárias, dando voz a causas como a demarcação de terras."
+        ],
+        "alternatives": {
+          "A": "A combinação de rap e ritmos indígenas revela encontro entre referências culturais.",
+          "B": "As letras aproximam lutas e linguagens, sem estabelecer oposição obrigatória entre temas.",
+          "C": "O rádio foi justamente o meio pelo qual os integrantes conheceram o gênero.",
+          "D": "A defesa da terra mostra ligação direta com a realidade social indígena.",
+          "E": "A poesia participa da criação musical, mas o movimento não se define como estudo escolar."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:39": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 104659,
+          "B": 139427,
+          "C": 229213,
+          "D": 101173,
+          "E": 83414,
+          "blank": 2659
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A notícia informa que uma petição criada por um cidadão solicitou substituir a definição heterossexual de casamento. A mobilização pública na plataforma foi eficaz e levou o dicionário a adotar pessoas, mostrando a ação coletiva como impulso da mudança."
+        ],
+        "alternatives": {
+          "A": "A alteração do conteúdo é o resultado da mobilização, não seu motor.",
+          "B": "A importância do casamento não explica a ação concreta que levou à mudança.",
+          "C": "A petição pública reuniu a demanda cidadã e pressionou pela atualização do verbete.",
+          "D": "O texto destaca a rapidez da mudança, não a propagação digital da definição antiga.",
+          "E": "A plataforma foi utilizada para a causa, sem campanha de divulgação como causa do resultado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:40": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 43402,
+          "B": 313534,
+          "C": 194355,
+          "D": 47470,
+          "E": 58557,
+          "blank": 3227
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na situação descrita, a participação de mulheres trans está condicionada a uma concentração hormonal máxima mantida por certo tempo. Esse critério biológico padronizado estabelece uma condição de acesso, delimitando o potencial inclusivo das competições."
+        ],
+        "alternatives": {
+          "A": "A colocação esportiva não é o critério que autoriza a participação.",
+          "B": "O limite de testosterona constitui o parâmetro biológico exigido para competir.",
+          "C": "O texto prevê participação na categoria feminina, sem exigir outra categoria.",
+          "D": "O afastamento ocorreu na trajetória pessoal e não é apresentado como regra geral.",
+          "E": "A terapia hormonal é relatada; não há proibição absoluta de substâncias externas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:41": {
+      "answer": "B",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 41760,
+          "B": 443899,
+          "C": 66819,
+          "D": 33672,
+          "E": 71627,
+          "blank": 2768
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O relato associa os abusos sofridos por Simone Biles à necessidade de enfrentar preconceitos sobre saúde mental. Sua interrupção nas competições evidencia que a prática esportiva envolve a dimensão emocional e exige proteção para além dos resultados e medalhas."
+        ],
+        "alternatives": {
+          "A": "As medalhas situam sua carreira, mas não constituem o problema principal da notícia.",
+          "B": "A saúde mental e os efeitos do abuso destacam a dimensão emocional dos atletas.",
+          "C": "Os comitês são responsabilizados como parte do sistema, sem esgotar o tema da reflexão.",
+          "D": "As falhas de investigação integram o caso, mas a reflexão esportiva é mais ampla.",
+          "E": "A federação aparece na denúncia, enquanto o foco recai sobre a proteção dos atletas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:42": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 40925,
+          "B": 62530,
+          "C": 54667,
+          "D": 51969,
+          "E": 447380,
+          "blank": 3074
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O trecho distingue o lazer ativo, mais acessível às populações abastadas, da atividade de deslocamento, mais frequente entre os menos favorecidos. O eixo explicativo é a desigualdade socioeconômica, que condiciona tempo, oportunidades e espaços para a prática."
+        ],
+        "alternatives": {
+          "A": "O gênero é uma variável citada, mas não o eixo da comparação entre lazer e deslocamento.",
+          "B": "Existem programas públicos citados; o texto não afirma ausência absoluta de políticas.",
+          "C": "A idade influencia a participação, sem substituir a explicação socioeconômica central.",
+          "D": "A condição étnica é um dos fatores associados, não o contraste central da passagem.",
+          "E": "A oposição entre classes organiza o argumento sobre acesso desigual à atividade no lazer."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:43": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 265635,
+          "B": 53834,
+          "C": 149327,
+          "D": 101956,
+          "E": 85144,
+          "blank": 4649
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Rui Barbosa transforma a permanência da esposa na poesia de Machado em novo noivado e apresenta a criação como florescência e frutificação da alma. Essas metáforas ligam a trajetória pessoal à obra para homenagear o escritor e afirmar sua permanência após a morte."
+        ],
+        "alternatives": {
+          "A": "As imagens de núpcias, florescência e reino figuram aspectos da vida e da criação de Machado.",
+          "B": "Há paralelismos, mas o recurso mais evidente solicitado são imagens semânticas, não sons.",
+          "C": "Os períodos são elaborados e figurativos, sem predomínio de relato breve e direto.",
+          "D": "As antíteses integram o discurso de Rui e não comparam teses presentes na obra de Machado.",
+          "E": "A homenagem afirma renovação e permanência, sem se organizar apenas como saudade do passado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:44": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 590711,
+          "B": 13871,
+          "C": 22701,
+          "D": 19787,
+          "E": 11465,
+          "blank": 2010
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A campanha responde à pergunta sobre a importância de amamentar com vantagens para o bebê: anticorpos, redução de riscos de doenças e desenvolvimento da face, da fala e da respiração. A enumeração informa benefícios para incentivar a amamentação."
+        ],
+        "alternatives": {
+          "A": "A lista reúne benefícios de proteção e desenvolvimento associados ao aleitamento.",
+          "B": "A proteção contra infecções é citada, mas não se oferece um tratamento médico.",
+          "C": "A imagem de uma mãe amamentando não se acompanha de discussão sobre o direito em público.",
+          "D": "A sucção é descrita como exercício para o bebê, sem instruções de exercícios maternos.",
+          "E": "O bebê recebe anticorpos da mãe; a campanha não afirma aumento dos anticorpos maternos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:45": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 45484,
+          "B": 185740,
+          "C": 30718,
+          "D": 100597,
+          "E": 294923,
+          "blank": 3083
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A carta se dirige à população e apresenta falhas nos diferentes níveis de atendimento público ao idoso. Ao pedir investimentos e dignidade, busca tornar a sociedade consciente da qualidade insuficiente desses serviços, com cobrança também aos governantes."
+        ],
+        "alternatives": {
+          "A": "A carta denuncia problemas da rede pública, sem ensinar autocuidados individuais ao idoso.",
+          "B": "Os governantes são chamados à responsabilidade, mas o destinatário e objetivo abrangem a população.",
+          "C": "A entidade assina a manifestação, sem fazer propaganda de seus próprios serviços.",
+          "D": "Não se descreve uma mudança legal regressiva, mas falhas de atendimento e integração.",
+          "E": "A denúncia pública das deficiências busca atenção social para a saúde dos idosos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:6": {
+      "answer": "D",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 60313,
+          "B": 60702,
+          "C": 180738,
+          "D": 331273,
+          "E": 26070,
+          "blank": 1449
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A inclusão de juntos altera o sentido individual de superar marcas ao destacar a solidariedade. O texto explica explicitamente que a mudança busca associar os valores olímpicos à atuação coletiva e à cooperação."
+        ],
+        "alternatives": {
+          "A": "Não se pretende fundir duas versões, mas acrescentar um valor ao lema.",
+          "B": "O COI aprova a mudança, porém sua aproximação institucional não é a finalidade.",
+          "C": "Os princípios esportivos já orientavam o lema desde sua criação.",
+          "D": "A palavra juntos acrescenta o sentido de solidariedade e cooperatividade.",
+          "E": "O vínculo com eventos atléticos já existia antes da alteração."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:7": {
+      "answer": "A",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 330714,
+          "B": 84323,
+          "C": 49870,
+          "D": 17139,
+          "E": 175990,
+          "blank": 2509
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A narradora apresenta seu corpo como potente, indomado e marcado por tensões, depois aproxima essa experiência da memória dos corpos escravizados. A articulação do feminino com a história racial evidencia violências que participam da construção de sua identidade."
+        ],
+        "alternatives": {
+          "A": "A representação corporal une experiência feminina e memória da escravidão.",
+          "B": "O pioneirismo cearense é relatado, sem contestação factual de sua cronologia.",
+          "C": "A força e a violência do corpo rompem com a reprodução de um padrão de beleza.",
+          "D": "As imagens intensas não conduzem a uma busca religiosa ou espiritual.",
+          "E": "A caatinga qualifica a narradora, sem constituir paisagem que imite corpos escravizados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:8": {
+      "answer": "C",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 100067,
+          "B": 87949,
+          "C": 340709,
+          "D": 91950,
+          "E": 38139,
+          "blank": 1731
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A afirmação de que brasileiros não falam português pressupõe que apenas a variedade lusitana seria legítima. O preconceito nasce dessa hierarquia idealizada, que transforma diferenças linguísticas em supostos erros e sustenta práticas de exclusão."
+        ],
+        "alternatives": {
+          "A": "A circulação da literatura fornece o contexto, sem explicar a hierarquia linguística.",
+          "B": "O texto não compara escolaridade dos grupos envolvidos.",
+          "C": "Considerar só o português lusitano correto pressupõe uma variedade ideal e superior.",
+          "D": "O intercâmbio possibilita contato, mas não exige rejeição da variedade brasileira.",
+          "E": "A distância geográfica não justifica classificar uma variedade como errada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:9": {
+      "answer": "E",
+      "statistics": {
+        "population": 660545,
+        "counts": {
+          "A": 359679,
+          "B": 20629,
+          "C": 30581,
+          "D": 34105,
+          "E": 213930,
+          "blank": 1621
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto enumera viajantes, ordens religiosas, artistas e correios urbanos como agentes de circulação de notícias. A eficácia resulta da combinação desses diferentes canais disponíveis no período, inclusive para espalhar boatos."
+        ],
+        "alternatives": {
+          "A": "A velocidade é limitada pelo transporte e não explica sozinha a rede descrita.",
+          "B": "A circulação oral dispensa a hipótese de amplo letramento dos marginalizados.",
+          "C": "Os selos buscavam autenticar mensagens, sem descrição de censura estatal.",
+          "D": "As notícias circulam por muitos grupos, sem privilégio explicativo da nobreza.",
+          "E": "A enumeração de pessoas e serviços demonstra a diversidade dos meios históricos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "spanish:1": {
+      "answer": "A",
+      "statistics": {
+        "population": 278818,
+        "counts": {
+          "A": 122806,
+          "B": 60804,
+          "C": 60046,
+          "D": 7821,
+          "E": 26095,
+          "blank": 1246
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As perguntas do cartaz expressam a dificuldade da criança para compreender seu próprio aprendizado. A sinopse informa que a disciplina e o afastamento familiar não resolvem o problema; a mudança ocorre quando o professor se interessa por Ishaan."
+        ],
+        "alternatives": {
+          "A": "A atenção individual do professor altera a experiência escolar da criança.",
+          "B": "As perguntas expressam sofrimento e dúvida, não uma característica geral dos disléxicos.",
+          "C": "O internato disciplinador fracassa antes da intervenção do professor.",
+          "D": "A distância dos pais é uma dificuldade adicional, não uma solução terapêutica.",
+          "E": "O contraste de interesses não descreve a passagem do protagonista à vida adulta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "spanish:2": {
+      "answer": "A",
+      "statistics": {
+        "population": 278818,
+        "counts": {
+          "A": 68246,
+          "B": 70775,
+          "C": 78929,
+          "D": 29484,
+          "E": 30053,
+          "blank": 1331
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os advérbios repetidos intensificam tanto a recusa da negação de si quanto a afirmação de liberdade e beleza. Sua recorrência transforma a aceitação da identidade negra em uma posição enfática e categórica."
+        ],
+        "alternatives": {
+          "A": "Rotundamente e categóricamente reforçam a intensidade da autoafirmação.",
+          "B": "Os verbos expressam ações, mas a pergunta pede o recurso que lhes confere ênfase.",
+          "C": "Os adjetivos caracterizam traços físicos, sem explicar a intensidade recorrente.",
+          "D": "Sangue e pele nomeiam elementos da identidade, sem funcionar como intensificadores.",
+          "E": "Os possessivos vinculam atributos ao eu, mas não produzem a ênfase pedida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "spanish:3": {
+      "answer": "E",
+      "statistics": {
+        "population": 278818,
+        "counts": {
+          "A": 17271,
+          "B": 15171,
+          "C": 56596,
+          "D": 40078,
+          "E": 148435,
+          "blank": 1267
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O poema apresenta pratos e sabores regionais como marcas reconhecíveis dos lugares. Ao dizer que são mais que receitas e vinculá-los a paisagens e tradições, interpreta a gastronomia como expressão da identidade cultural espanhola."
+        ],
+        "alternatives": {
+          "A": "A simpatia das pessoas aparece apenas como introdução ao tema gastronômico.",
+          "B": "As paisagens ajudam a explicar a culinária e não são o tema central autônomo.",
+          "C": "A variedade é exemplificada para sustentar a ligação da comida com a identidade.",
+          "D": "Paladar e olfato ajudam a reconhecer lugares, mas não esgotam a interpretação.",
+          "E": "Os pratos funcionam como símbolos culturais dos lugares e de seu povo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "spanish:4": {
+      "answer": "B",
+      "statistics": {
+        "population": 278818,
+        "counts": {
+          "A": 30183,
+          "B": 97796,
+          "C": 32611,
+          "D": 47028,
+          "E": 69868,
+          "blank": 1332
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cortina de humo designa figuradamente uma ação que desvia a atenção do que importa. No contexto, o manipulador aceita até o ridículo para produzir essa distração e impedir que o público perceba a verdade."
+        ],
+        "alternatives": {
+          "A": "O amadurecimento é discutido antes e não define a expressão figurada.",
+          "B": "A cortina de fumaça encobre fatos por meio do desvio de atenção.",
+          "C": "Rejeitar perguntas é outra atitude do manipulador, não o sentido da expressão.",
+          "D": "Pessoas desinformadas constituem seu público vulnerável, não a cortina.",
+          "E": "A presença controladora é mencionada separadamente do recurso de ocultação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "spanish:5": {
+      "answer": "A",
+      "statistics": {
+        "population": 278818,
+        "counts": {
+          "A": 165555,
+          "B": 24819,
+          "C": 47719,
+          "D": 20295,
+          "E": 19039,
+          "blank": 1391
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2023 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2023 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A canção denuncia uma agressão racista e questiona o silêncio das autoridades e da sociedade. A referência à cor da vítima e à xenofobia mostra indignação contra a discriminação, além da descrição de um episódio no metrô."
+        ],
+        "alternatives": {
+          "A": "A denúncia do racismo e da omissão explicita revolta diante da intolerância.",
+          "B": "O episódio urbano é específico e não fundamenta uma generalização sobre metrópoles.",
+          "C": "Anjo é uma imagem afetiva para a vítima, sem discussão de crenças místicas.",
+          "D": "O sonho frustrado integra a trajetória da vítima, mas o foco é a agressão racista.",
+          "E": "O metrô é o cenário do crime, enquanto a crítica recai sobre xenofobia e impunidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    }
+  }
+}

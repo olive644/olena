@@ -1,0 +1,38 @@
+[
+  {
+    "year": 2022,
+    "width": 1366,
+    "themes": ["light", "dark"],
+    "singlePage": true,
+    "savedSolution": true,
+    "statistics": "real-aggregates",
+    "aiRequests": 0
+  },
+  {
+    "year": 2026,
+    "width": 1366,
+    "themes": ["light", "dark"],
+    "singlePage": true,
+    "savedSolution": true,
+    "statistics": "unavailable",
+    "aiRequests": 0
+  },
+  {
+    "year": 2022,
+    "width": 390,
+    "themes": ["light", "dark"],
+    "singlePage": true,
+    "savedSolution": true,
+    "statistics": "real-aggregates",
+    "aiRequests": 0
+  },
+  {
+    "year": 2026,
+    "width": 390,
+    "themes": ["light", "dark"],
+    "singlePage": true,
+    "savedSolution": true,
+    "statistics": "unavailable",
+    "aiRequests": 0
+  }
+]

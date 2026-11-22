@@ -66,3 +66,5 @@ Realçar seleções controla somente o reforço opcional de aria-pressed/aria-se
 ## Realce amarelo configurável, ajuste solicitado em 12/11/2026
 
 O proprietário pediu que o amarelo de foco também respeite Realçar seleções. Quando desligado, não forçar sublinhado, sombra ou borda amarela em controles focados. Preservar foco perceptível de teclado com realce neutro, sem outline. Quando ligado, preservar o realce amarelo compartilhado. Marcos de leitura continuam sem decoração. LibraryDialog anuncia o título ao abrir, sem focar automaticamente o X. Essa orientação atualiza a regra anterior que mantinha amarelo de teclado mesmo com a opção desligada.
+
+- Botões de papel não podem ter contorno preto ou borda nativa do navegador. Usar facetas e sombra da própria paleta; preservar o foco acessível compartilhado.

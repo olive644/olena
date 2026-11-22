@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "source": "https://github.com/pedro-mantovani/calculadora_ENEM",
+  "referenceCommit": "2970bd3dbe7f11c7987ca67cb1a5494c9677b73e",
+  "papers": {
+    "3397e22a45df88": {
+      "languages": "3397e22a45df88-LC.json",
+      "humanities": "3397e22a45df88-CH.json"
+    },
+    "39d58613f8e47d": {
+      "nature": "39d58613f8e47d-CN.json",
+      "math": "39d58613f8e47d-MT.json"
+    },
+    "fa4953fbc0257c": {
+      "languages": "fa4953fbc0257c-LC.json",
+      "humanities": "fa4953fbc0257c-CH.json"
+    },
+    "1b567cfd22b433": {
+      "nature": "1b567cfd22b433-CN.json",
+      "math": "1b567cfd22b433-MT.json"
+    },
+    "45ddf357986ec7": {
+      "languages": "45ddf357986ec7-LC.json",
+      "humanities": "45ddf357986ec7-CH.json"
+    },
+    "bb6fbb6bc32506": {
+      "nature": "bb6fbb6bc32506-CN.json",
+      "math": "bb6fbb6bc32506-MT.json"
+    },
+    "c69f20176e3577": {
+      "languages": "c69f20176e3577-LC.json",
+      "humanities": "c69f20176e3577-CH.json"
+    },
+    "c84938ba21a77a": {
+      "nature": "c84938ba21a77a-CN.json",
+      "math": "c84938ba21a77a-MT.json"
+    },
+    "a70dfe1f8319f4": {
+      "languages": "a70dfe1f8319f4-LC.json",
+      "humanities": "a70dfe1f8319f4-CH.json"
+    },
+    "e10c3b58d0279e": {
+      "nature": "e10c3b58d0279e-CN.json",
+      "math": "e10c3b58d0279e-MT.json"
+    },
+    "bfb66dfd1cdeeb": {
+      "languages": "bfb66dfd1cdeeb-LC.json",
+      "humanities": "bfb66dfd1cdeeb-CH.json"
+    },
+    "8485c2d9c0edb6": {
+      "nature": "8485c2d9c0edb6-CN.json",
+      "math": "8485c2d9c0edb6-MT.json"
+    },
+    "54c56623802f4b": {
+      "languages": "54c56623802f4b-LC.json",
+      "humanities": "54c56623802f4b-CH.json"
+    },
+    "3ca9b69f31ec54": {
+      "nature": "3ca9b69f31ec54-CN.json"
+    },
+    "ca2909d1d9a3c9": {
+      "languages": "ca2909d1d9a3c9-LC.json",
+      "humanities": "ca2909d1d9a3c9-CH.json"
+    },
+    "250e1f12dba25e": {
+      "math": "250e1f12dba25e-MT.json"
+    },
+    "8470164fc2d43b": {
+      "humanities": "8470164fc2d43b-CH.json",
+      "nature": "8470164fc2d43b-CN.json"
+    },
+    "29fd566e00c1e6": {
+      "languages": "29fd566e00c1e6-LC.json",
+      "math": "29fd566e00c1e6-MT.json"
+    },
+    "3280d4022c252e": {
+      "humanities": "3280d4022c252e-CH.json",
+      "nature": "3280d4022c252e-CN.json"
+    },
+    "6eb14725f02747": {
+      "languages": "6eb14725f02747-LC.json",
+      "math": "6eb14725f02747-MT.json"
+    },
+    "d1e8dbf2324e86": {
+      "humanities": "d1e8dbf2324e86-CH.json",
+      "nature": "d1e8dbf2324e86-CN.json"
+    },
+    "b1665537e3adb0": {
+      "languages": "b1665537e3adb0-LC.json",
+      "math": "b1665537e3adb0-MT.json"
+    },
+    "a875e6d2998bbe": {
+      "humanities": "a875e6d2998bbe-CH.json",
+      "nature": "a875e6d2998bbe-CN.json"
+    },
+    "710ae4e8f9fe5e": {
+      "languages": "710ae4e8f9fe5e-LC.json"
+    },
+    "4d5a01be05f8af": {
+      "humanities": "4d5a01be05f8af-CH.json",
+      "nature": "4d5a01be05f8af-CN.json"
+    },
+    "4b8a85c7981e70": {
+      "languages": "4b8a85c7981e70-LC.json",
+      "math": "4b8a85c7981e70-MT.json"
+    },
+    "eb1083093ede87": {
+      "humanities": "eb1083093ede87-CH.json"
+    },
+    "2a740603ac1503": {
+      "languages": "2a740603ac1503-LC.json",
+      "math": "2a740603ac1503-MT.json"
+    }
+  }
+}

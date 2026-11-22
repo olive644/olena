@@ -381,7 +381,7 @@
   min-height: 48px;
   padding: 10px 14px;
   color: #fff3d4;
-  border: 1px solid #593631;
+  border: 0;
   border-radius: 5px 13px 4px 5px;
   background:
     linear-gradient(135deg, #c89863 0 14%, transparent 14%),

@@ -13,6 +13,7 @@ export default tseslint.config(
       "coverage",
       "playwright-report",
       "test-results",
+      "tmp",
       "public/ocr",
       "public/speech-runtime",
       "public/helena-assistant/rive.js",

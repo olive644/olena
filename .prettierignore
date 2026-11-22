@@ -6,6 +6,7 @@ node_modules
 coverage
 playwright-report
 test-results
+tmp
 package-lock.json
 # Código de terceiros e bundle reproduzível do renderizador da Helena.
 public/helena-assistant/rive.js

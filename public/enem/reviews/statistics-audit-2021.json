@@ -1,0 +1,10 @@
+{
+  "year": 2021,
+  "recordsRead": 2235426,
+  "questions": 135,
+  "mappedAreas": 4,
+  "rejectedAreaVectors": {
+    "sem_nota_ou_vetor_de_45": 531488
+  },
+  "source": "https://doi.org/10.5281/zenodo.20130840"
+}

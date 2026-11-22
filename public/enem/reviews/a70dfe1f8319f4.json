@@ -1,0 +1,3339 @@
+{
+  "version": 1,
+  "variantId": "a70dfe1f8319f4",
+  "year": 2021,
+  "paperUrl": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf",
+  "answerUrl": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf",
+  "questions": {
+    "q:46": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 42579,
+          "B": 307267,
+          "C": 44219,
+          "D": 53992,
+          "E": 82885,
+          "blank": 546
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O trabalhador continua acessível às mensagens da empresa após o fim do turno e retorna ao serviço durante o jantar. O celular estende as demandas profissionais ao tempo doméstico. A prática amplia atividades extras e enfraquece a separação entre trabalho e vida privada."
+        ],
+        "alternatives": {
+          "A": "O trabalho invade o jantar, portanto a vida privada perde proteção.",
+          "B": "A consulta e a resposta a mensagens prolongam as atividades além do turno.",
+          "C": "Não se descreve aumento de etapas administrativas formais.",
+          "D": "O tempo familiar é substituído por trabalho, sem diversificação do lazer.",
+          "E": "As obrigações domésticas permanecem, mesmo quando recebem menos atenção."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:47": {
+      "answer": "A",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 244878,
+          "B": 41807,
+          "C": 42026,
+          "D": 110299,
+          "E": 91280,
+          "blank": 1198
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Se a riqueza herdada cresce mais depressa que a renda e a produção, a posição econômica depende fortemente do patrimônio recebido. Isso contraria a ideia de que resultados correspondem ao esforço e ao mérito individuais. A lógica descrita enfraquece a ideologia meritocrática."
+        ],
+        "alternatives": {
+          "A": "A vantagem dos herdeiros independe de seu trabalho e põe em questão a explicação pelo mérito.",
+          "B": "O privilégio de nascimento é reforçado, e não enfraquecido, pela dinâmica apresentada.",
+          "C": "O texto não avalia uma lei específica nem sua execução.",
+          "D": "A remuneração do capital sustenta ganhos, sem indicar enfraquecimento de financeiras.",
+          "E": "O problema discutido é a legitimação da desigualdade, sem medir eficiência dos mercados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:48": {
+      "answer": "D",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 37822,
+          "B": 98146,
+          "C": 108847,
+          "D": 140784,
+          "E": 144357,
+          "blank": 1532
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O melhoramento e o manejo procuram viabilizar uvas em condições como o semiárido nordestino, áreas tropicais e a Serra Gaúcha. A diversidade dos locais exige cultivares e técnicas adequados a seus ambientes. O programa adapta o cultivo a características ambientais singulares."
+        ],
+        "alternatives": {
+          "A": "O texto trata de variedades cultivadas, sem um programa de proteção de espécies nativas ameaçadas.",
+          "B": "A autonomia das cadeias econômicas não é apresentada como objetivo do melhoramento.",
+          "C": "O tamanho e a tradição da propriedade não substituem a adaptação aos ambientes de cultivo.",
+          "D": "As condições climáticas e ambientais distintas orientam a adaptação das uvas.",
+          "E": "Parte da produção se destina à exportação, sem foco exclusivo no mercado interno."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:49": {
+      "answer": "C",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 41207,
+          "B": 48910,
+          "C": 354621,
+          "D": 44494,
+          "E": 40428,
+          "blank": 1828
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A Carta de Veneza defende a transmissão autêntica dos monumentos às futuras gerações. O segundo texto questiona mecanismos de proteção que isolam o monumento da realidade socioeconômica e favorecem seu abandono. Divergem, portanto, sobre as políticas de conservação do patrimônio cultural."
+        ],
+        "alternatives": {
+          "A": "A comercialização de imagens sacras não é objeto dos argumentos.",
+          "B": "A substituição de materiais artísticos não é o ponto discutido no segundo texto.",
+          "C": "Os textos confrontam princípios e limites das formas de preservar bens culturais.",
+          "D": "Nenhum dos trechos defende privatização de sítios arqueológicos.",
+          "E": "A discussão recai sobre monumentos e tombamento, sem se limitar a peças de museu."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:50": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 55764,
+          "B": 93629,
+          "C": 116447,
+          "D": 205923,
+          "E": 57846,
+          "blank": 1879
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os países industrializados evitam o custo de reciclar e enviam resíduos para Gana, onde jovens executam a desmontagem em condições poluentes. O arranjo distribui de modo desigual ganhos, tarefas e danos ambientais. Ele expressa uma divisão internacional do trabalho."
+        ],
+        "alternatives": {
+          "A": "A intoxicação e a precariedade contradizem uma situação de exercício pleno de direitos.",
+          "B": "A repartição desigual das etapas e dos riscos entre países caracteriza a divisão internacional do trabalho.",
+          "C": "Não há descrição de gestão toyotista, produção enxuta ou organização fabril correspondente.",
+          "D": "A transferência dos danos e a queima a céu aberto não são práticas sustentáveis.",
+          "E": "As importações de lixo são facilitadas por disfarces comerciais, sem caracterizar proteção alfandegária."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:51": {
+      "answer": "A",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 252314,
+          "B": 99042,
+          "C": 106246,
+          "D": 47193,
+          "E": 25333,
+          "blank": 1360
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O relatório propõe preços e autorizações que considerem tanto a grande indústria e a irrigação quanto a agricultura pequena e de subsistência. A segurança hídrica deve acomodar necessidades diferentes com eficiência e sustentabilidade. O princípio é uma distribuição equitativa do acesso à água."
+        ],
+        "alternatives": {
+          "A": "O atendimento a usuários com escalas e necessidades distintas expressa equidade na distribuição.",
+          "B": "O texto inclui atividades rurais e industriais, sem se limitar ao fornecimento urbano.",
+          "C": "Não se propõe reduzir obrigatoriamente a capacidade dos rios por racionamento.",
+          "D": "A recuperação dos solos não é o mecanismo apresentado no relatório.",
+          "E": "A gestão do uso e do retorno de água não equivale à geração de produtos recicláveis."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:52": {
+      "answer": "D",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 188473,
+          "B": 81588,
+          "C": 46831,
+          "D": 176867,
+          "E": 35813,
+          "blank": 1916
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A Lei Aberdeen dava à Grã-Bretanha instrumentos contra o tráfico atlântico de escravizados. O receio de que sua revogação permitisse a retomada dos velhos hábitos brasileiros mostra a intenção britânica de manter a proibição desse comércio, ainda que por outro tratado."
+        ],
+        "alternatives": {
+          "A": "O impasse envolve a continuidade da repressão ao tráfico, sem uma jurisdição conciliadora.",
+          "B": "O objetivo não é repartir os lucros ou os negócios marítimos com o Brasil.",
+          "C": "A discussão diplomática não trata de saúde pública ou de higienismo.",
+          "D": "O temor da retomada do tráfico explica a busca britânica de preservar sua proibição.",
+          "E": "O tráfico é questão de comércio internacional, sem defesa de um empreendimento familiar."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:53": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 77260,
+          "B": 276734,
+          "C": 26273,
+          "D": 101685,
+          "E": 48221,
+          "blank": 1315
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A lembrança de colocar pratos emborcados e rezar para prolongar a chuva une práticas cotidianas a crenças transmitidas pela avó. Essa memória de Zé de Sila registra formas populares de lidar com o clima e compõe o patrimônio cultural da região."
+        ],
+        "alternatives": {
+          "A": "O apelido de encantador de viúvas não torna o relato um ritual matrimonial.",
+          "B": "As orações e os gestos para interferir na chuva expressam práticas místicas de valor cultural.",
+          "C": "A comparação com Chicó não converte a memória relatada em manifestação de teatro político.",
+          "D": "O texto não descreve uma narrativa cinematográfica sobre o clima.",
+          "E": "O relato de práticas populares não é uma argumentação literária sobre catástrofes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:54": {
+      "answer": "C",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 86390,
+          "B": 96683,
+          "C": 226768,
+          "D": 63147,
+          "E": 56616,
+          "blank": 1884
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto associa a modernização tecnológica a terceirização, precarização e flexibilização. Esses efeitos mostram que a inovação também reorganiza o controle do trabalho e reduz a estabilidade das relações laborais. A crítica dirige-se à fragilização dessas relações."
+        ],
+        "alternatives": {
+          "A": "A execução técnica das tarefas não resume os efeitos sociais criticados.",
+          "B": "A qualificação é mencionada, mas a crítica se concentra na precarização.",
+          "C": "Terceirização e flexibilização podem enfraquecer vínculos e garantias de trabalho.",
+          "D": "Não se analisa uma hierarquia específica entre cargos executivos.",
+          "E": "O texto não rejeita a ciência em si, mas seus usos na reorganização empresarial do trabalho."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:55": {
+      "answer": "E",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 103431,
+          "B": 98201,
+          "C": 38211,
+          "D": 123888,
+          "E": 165680,
+          "blank": 2077
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O refugiado mantém laços culturais com a origem sem pertencer plenamente à comunidade receptora. Também deixa de exercer direitos no país de origem e depende de um novo estatuto jurídico. A transitoriedade combina desenraizamento cultural e insegurança legal."
+        ],
+        "alternatives": {
+          "A": "O trecho não pressupõe ascensão social nem a reduz a procedimentos burocráticos.",
+          "B": "O problema de pertencimento não decorre necessariamente de miscigenação étnica.",
+          "C": "Não são apresentados perda de qualificação ou policiamento como causas centrais.",
+          "D": "A situação pode envolver renda, mas o texto destaca pertencimento e direitos.",
+          "E": "A marginalidade cultural e a mudança incerta de estatuto jurídico sustentam a condição transitória."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:56": {
+      "answer": "D",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 71137,
+          "B": 68034,
+          "C": 122634,
+          "D": 146818,
+          "E": 121197,
+          "blank": 1668
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As naturalistas do século XIX aparecem subordinadas ao papel de esposas e aos deslocamentos dos maridos, sem autonomia equivalente para realizar projetos científicos. A atividade científica reproduzia hierarquias e estratificações sociais de gênero presentes na sociedade."
+        ],
+        "alternatives": {
+          "A": "A subordinação aos projetos dos maridos contradiz uma situação de igualdade de gênero.",
+          "B": "As viagens e coletas não são descritas como transformação de espaços de lazer.",
+          "C": "O vínculo ao papel de esposa evidencia permanência do patriarcado, sem sua superação.",
+          "D": "A hierarquia entre homens e mulheres é incorporada ao acesso e à atuação no campo científico.",
+          "E": "A coleta eventual não elimina o papel doméstico atribuído às mulheres."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:57": {
+      "answer": "D",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 65975,
+          "B": 211704,
+          "C": 39171,
+          "D": 164375,
+          "E": 48591,
+          "blank": 1672
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Marcuse afirma que as pessoas reconhecem sua alma nos bens que possuem. As necessidades sociais do capitalismo passam a ser sentidas como desejos pessoais. Essa adesão se realiza por mecanismos subjetivos de identificação entre o indivíduo e as mercadorias."
+        ],
+        "alternatives": {
+          "A": "O texto não atribui a formação dos desejos especificamente a políticas do Estado.",
+          "B": "Não se descreve um incentivo material controlado, mas uma incorporação subjetiva.",
+          "C": "As prescrições coletivas são interiorizadas, porém o destaque recai sobre a identificação com os bens.",
+          "D": "O reconhecimento de si nas mercadorias revela o mecanismo subjetivo de identificação.",
+          "E": "O narcisismo não é apresentado como reprimido pelo consumo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:58": {
+      "answer": "E",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 151897,
+          "B": 42145,
+          "C": 38521,
+          "D": 40199,
+          "E": 256146,
+          "blank": 2580
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A substituição de árvores e praças por concreto e a transformação de partes da cidade em mercadorias alteram os lugares de convivência. A mudança material da paisagem retira referências e modifica práticas cotidianas. O processo decorre da reorganização da paisagem geográfica urbana."
+        ],
+        "alternatives": {
+          "A": "As formas de convívio diminuem ou mudam, sem manutenção dos modos anteriores.",
+          "B": "O espaço público é transformado e reduzido, sem preservação de sua essência.",
+          "C": "O cenário descrito não é explicado pela ampliação de controles ambientais.",
+          "D": "As regras de participação política não aparecem como causa no texto.",
+          "E": "As intervenções materiais reorganizam a paisagem e as referências da vida urbana."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:59": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 65076,
+          "B": 317307,
+          "C": 24499,
+          "D": 89745,
+          "E": 33318,
+          "blank": 1543
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A previsão sertaneja é construída pela observação acumulada de astros, nuvens e chuvas. Os sinais são interpretados com base em experiências transmitidas ao longo do tempo. Trata-se de conhecimento produzido pela experiência perceptiva do ambiente."
+        ],
+        "alternatives": {
+          "A": "O texto não descreve testes controlados nem procedimentos próprios de uma técnica científica.",
+          "B": "A observação sensível repetida da natureza fundamenta os sinais interpretados pelos sertanejos.",
+          "C": "O saber é transmitido pela tradição, sem negá-la.",
+          "D": "As observações são regionais e situadas, sem padronizar culturas distintas.",
+          "E": "A interpretação local dos sinais não implica uniformização universal das informações."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:60": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 150676,
+          "B": 218683,
+          "C": 24884,
+          "D": 37357,
+          "E": 98437,
+          "blank": 1451
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A vida de gado representa uma massa que caminha, trabalha e dá mais do que recebe, mas permanece descrita ironicamente como feliz. A imagem do povo marcado critica a aceitação das condições impostas. O comportamento coletivo questionado é a passividade social."
+        ],
+        "alternatives": {
+          "A": "A massa é descrita como conduzida, sem militância política ativa.",
+          "B": "A metáfora do gado e a felicidade irônica denunciam a aceitação passiva da exploração.",
+          "C": "O fragmento não atribui a submissão a uma prática de altruísmo religioso.",
+          "D": "O alvo não é o controle individual da moral, mas a submissão coletiva.",
+          "E": "Não se menciona uma reação inconformada expressa pelo voto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:61": {
+      "answer": "A",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 293226,
+          "B": 60010,
+          "C": 98080,
+          "D": 46702,
+          "E": 31970,
+          "blank": 1500
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O Porto Maravilha procura substituir a antiga paisagem portuária por torres de serviços, consumo e lazer, tomando outras cidades internacionais como referência. O projeto busca inserir o Rio em circuitos competitivos de investimento e serviços globais."
+        ],
+        "alternatives": {
+          "A": "O polo internacional de serviços e a comparação com outras cidades evidenciam competição global.",
+          "B": "A valorização imobiliária prevista não corresponde à contenção da especulação.",
+          "C": "Os novos moradores não são apresentados como beneficiários de habitação popular.",
+          "D": "O objetivo é substituir funções e paisagens antigas por usos novos.",
+          "E": "O texto não apresenta mecanismos de gestão participativa como eixo das intervenções."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:62": {
+      "answer": "D",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 26499,
+          "B": 85943,
+          "C": 139016,
+          "D": 112275,
+          "E": 165829,
+          "blank": 1926
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A baixa incorporação de tecnologias de maior produtividade mantém o país dependente de commodities e de setores industriais com menor capacidade de inovação. Essa posição limita sua autonomia na divisão internacional do trabalho e o subordina aos fluxos globais de produção e valor."
+        ],
+        "alternatives": {
+          "A": "O trecho não demonstra queda de preços da cesta básica.",
+          "B": "A estatização não é consequência indicada da defasagem tecnológica.",
+          "C": "A limitação de produtividade não fundamenta uma ampliação necessária do consumo.",
+          "D": "A especialização pouco inovadora mantém dependência e subordinação na economia global.",
+          "E": "A modernização insuficiente é o problema descrito, sem incentivo comprovado a uma nova política."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:63": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 112502,
+          "B": 198870,
+          "C": 106543,
+          "D": 79698,
+          "E": 31458,
+          "blank": 2417
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A mineração altera territórios de comunidades tradicionais e prejudica a reprodução de seus modos de vida. Mesmo indenizações podem não recompor identidades e relações sociais. A atividade econômica aparece ligada ao rompimento de vínculos locais e territoriais."
+        ],
+        "alternatives": {
+          "A": "O problema não se resume à falta de financiamento de atividades culturais.",
+          "B": "A reconstrução abrupta das identidades e a perda das dinâmicas territoriais rompem vínculos locais.",
+          "C": "A presença de grandes empreendimentos não é descrita como carência geral de investimento.",
+          "D": "As práticas agroecológicas não são apresentadas como resultado da mineração.",
+          "E": "O texto ressalta perdas e insuficiência de compensações, sem enriquecimento das comunidades."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:64": {
+      "answer": "C",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 106383,
+          "B": 80562,
+          "C": 98210,
+          "D": 40286,
+          "E": 203820,
+          "blank": 2227
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para os autores, maioria significa a posição que define o padrão e exerce dominação, independentemente da quantidade de pessoas. Minoria designa uma relação de subordinação a esse padrão. Sua definição decorre de relações arbitrárias de poder, e não de inferioridade numérica ou biológica."
+        ],
+        "alternatives": {
+          "A": "Uma minoria pode ser numerosa, sem estar ameaçada de extinção.",
+          "B": "O conceito não depende da existência de programas de incentivo do Estado.",
+          "C": "A classificação se apoia em padrões e relações de dominação socialmente estabelecidos.",
+          "D": "A dominação pressupõe assimetria, e não conexões equivalentes entre os grupos.",
+          "E": "A referência a mulheres e crianças não transforma a hierarquia social em determinação biológica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:65": {
+      "answer": "A",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 369507,
+          "B": 53635,
+          "C": 35576,
+          "D": 46283,
+          "E": 24393,
+          "blank": 2094
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Engels afirma que os interesses da classe média são opostos aos dos trabalhadores, ainda que ela proclame simpatia por eles. O antagonismo entre classes explica a divergência entre palavras e ações. A passagem corresponde ao conceito de luta de classes."
+        ],
+        "alternatives": {
+          "A": "A oposição de interesses entre grupos sociais organiza a noção de luta de classes.",
+          "B": "O trecho não analisa o valor produzido pelo trabalhador e apropriado pelo empregador.",
+          "C": "Não se discute uma regra geral de construção do método científico.",
+          "D": "A passagem formula um conflito social, sem se concentrar em etapas de investigação.",
+          "E": "O fetichismo envolve relações sociais ocultadas nas mercadorias, tema diferente do antagonismo explícito entre classes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:66": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 85497,
+          "B": 284902,
+          "C": 68647,
+          "D": 46829,
+          "E": 43835,
+          "blank": 1778
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A concentração do encarceramento entre jovens negros de baixa escolaridade evidencia desigualdades sociais que atravessam o sistema penal. Políticas de acesso à educação, oportunidades e direitos podem enfrentar esses fatores. A inclusão social é a resposta pública coerente com o diagnóstico."
+        ],
+        "alternatives": {
+          "A": "O Código Civil não é o instrumento que define crimes e penas.",
+          "B": "A ampliação de oportunidades e direitos enfrenta a exclusão associada ao perfil apresentado.",
+          "C": "Reduzir a idade penal amplia o alcance da prisão, sem resolver os fatores de exclusão.",
+          "D": "A corrupção política não é o fator identificado pelos dados sobre escolaridade e perfil dos presos.",
+          "E": "Aumentar o tempo de prisão não minimiza o encarceramento e suas desigualdades."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:67": {
+      "answer": "E",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 40716,
+          "B": 122273,
+          "C": 131926,
+          "D": 86671,
+          "E": 146890,
+          "blank": 3012
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Depois dos incêndios, as autoridades não apenas reparavam edifícios: também modificavam a topografia e as práticas sociais. A catástrofe abria espaço para reorganizar a cidade e suas relações. O impacto descrito é a reconfiguração dos espaços ocupados e das dinâmicas comunitárias."
+        ],
+        "alternatives": {
+          "A": "O texto não concentra o impacto em normas sanitárias e prevenção de incêndios.",
+          "B": "A explicação não atribui as catástrofes a um diagnóstico de descaso e degradação ambiental.",
+          "C": "As crenças interpretavam o fogo, mas não são apresentadas como o principal objeto de transformação.",
+          "D": "Não se descreve substituição de regimes políticos ou de administrações locais.",
+          "E": "A reconstrução modifica simultaneamente a configuração urbana e as práticas da comunidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:68": {
+      "answer": "E",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 103841,
+          "B": 46086,
+          "C": 87098,
+          "D": 39173,
+          "E": 252823,
+          "blank": 2467
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A divulgação da carta Guarani-Kaiowá mobilizou pessoas que não pertenciam à comunidade e adotaram sua causa nas redes. A estratégia deu visibilidade à defesa do território e ampliou alianças. Seu efeito foi obter apoio de segmentos étnicos externos ao povo indígena."
+        ],
+        "alternatives": {
+          "A": "A mobilização em rede ampliou a militância em torno da causa.",
+          "B": "A afirmação pública da identidade Guarani-Kaiowá fortaleceu seu reconhecimento.",
+          "C": "Não se trata de comercialização nem de inserção em mercados internacionais.",
+          "D": "A rede apoia a permanência no território, sem afastamento da cultura local.",
+          "E": "Pessoas externas à comunidade aderiram à defesa de seus direitos territoriais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:69": {
+      "answer": "C",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 35080,
+          "B": 147433,
+          "C": 222555,
+          "D": 50644,
+          "E": 73534,
+          "blank": 2242
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os conselhos de geografia, cartografia e estatística e o IBGE foram criados para fornecer dados confiáveis à ação do Estado. O conhecimento sistemático do território e de suas diferenças regionais permitiria planejar e integrar o país. Essa era a estratégia política descrita."
+        ],
+        "alternatives": {
+          "A": "A coleta de dados não é apresentada como uma política específica de preservação paisagística.",
+          "B": "Conhecer a população não equivale a controlar seu crescimento.",
+          "C": "As instituições produzem conhecimento científico sobre o território e suas diversidades.",
+          "D": "O trecho não apresenta contenção da migração como objetivo direto.",
+          "E": "Não há proposta de criar unidades federativas como finalidade dessas instituições."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:70": {
+      "answer": "C",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 66610,
+          "B": 41972,
+          "C": 322886,
+          "D": 32735,
+          "E": 64634,
+          "blank": 2651
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os Xavante conheciam as condições que faziam diferentes sementes germinar, incluindo fogo e passagem pelo sistema digestivo de animais. A associação desses saberes à pesquisa da cidade permitiu recuperar o Cerrado. O relato evidencia o valor do conhecimento tradicional para a conservação ambiental."
+        ],
+        "alternatives": {
+          "A": "A recuperação do Cerrado não se apresenta como uma questão de logística agrícola nacional.",
+          "B": "Não há cultivo de hortaliças voltado ao consumo das cidades.",
+          "C": "Os conhecimentos indígenas de germinação contribuem diretamente para restaurar o ambiente.",
+          "D": "Os animais são mencionados pela dispersão e germinação de sementes, sem melhoramento de gado.",
+          "E": "A restauração ambiental não é descrita como reflorestamento comercial orgânico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:71": {
+      "answer": "A",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 271738,
+          "B": 59999,
+          "C": 90133,
+          "D": 49144,
+          "E": 57779,
+          "blank": 2695
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O trecho encadeia destruição das rochas, transporte dos fragmentos e deposição em áreas mais baixas, onde novos pacotes rochosos podem se formar. Essa sequência corresponde ao ciclo sedimentar, que transforma materiais expostos na superfície e origina rochas sedimentares."
+        ],
+        "alternatives": {
+          "A": "Intemperismo, erosão, transporte e deposição compõem o ciclo sedimentar descrito.",
+          "B": "Os agentes citados não indicam abalos sísmicos ou instabilidade tectônica.",
+          "C": "A ação biológica é apenas uma possibilidade de intemperismo e não abrange a sequência inteira.",
+          "D": "Não existe emissão ou resfriamento de lava basáltica no processo relatado.",
+          "E": "A compactação pode ocorrer depois da deposição, mas não nomeia todo o ciclo apresentado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:72": {
+      "answer": "E",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 113346,
+          "B": 78398,
+          "C": 65311,
+          "D": 36328,
+          "E": 234419,
+          "blank": 3686
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O planejamento participativo exige que grupos menos favorecidos consigam formular demandas e se fazer representar. Associações de bairro organizam interesses locais e criam canais coletivos de intervenção. Fortalecê-las amplia a participação social na gestão urbana."
+        ],
+        "alternatives": {
+          "A": "A redução de impostos, por si, não cria representação dos interesses sociais.",
+          "B": "A privatização pode restringir o acesso e não assegura voz no planejamento.",
+          "C": "O adensamento comercial altera o uso do solo, sem garantir participação popular.",
+          "D": "Condomínios fechados não representam necessariamente as camadas menos favorecidas.",
+          "E": "As associações articulam demandas comunitárias e fortalecem a representação dos moradores."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:73": {
+      "answer": "A",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 162527,
+          "B": 189378,
+          "C": 89294,
+          "D": 45771,
+          "E": 42039,
+          "blank": 2479
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O suicídio de Vargas provocou comoção e manifestações populares que alteraram o curso da crise e pressionaram seus adversários. É esse movimento que o texto contrapõe ao silêncio esperado de uma derrota. A repercussão imediata foi uma reação popular intensa."
+        ],
+        "alternatives": {
+          "A": "A comoção e as manifestações de apoio a Vargas frustraram a expectativa de silêncio dos adversários.",
+          "B": "Não houve uma intervenção militar imediata como consequência direta do suicídio.",
+          "C": "O país já tinha instituições democráticas, sem uma abertura inaugurada pelo episódio.",
+          "D": "O texto não apresenta uma campanha anticomunista como repercussão imediata.",
+          "E": "A reação popular constrangeu a oposição, em vez de representar sua radicalização vitoriosa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:74": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 112921,
+          "B": 173465,
+          "C": 85778,
+          "D": 90981,
+          "E": 65387,
+          "blank": 2956
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A Coroa determina o banimento dos ciganos e proíbe o ensino de sua língua às crianças para fazê-la desaparecer. A medida impõe a norma cultural dominante e reprime a continuidade de uma identidade coletiva. Seu objetivo é suprimir formas divergentes de interação social."
+        ],
+        "alternatives": {
+          "A": "A ordem citada proíbe a língua e não determina conversão religiosa.",
+          "B": "Eliminar o uso e a transmissão da língua reprime uma forma própria de interação cultural.",
+          "C": "O documento não se refere à participação econômica de potências estrangeiras.",
+          "D": "Os ciganos não são apresentados como participantes de revoltas nativistas.",
+          "E": "O grupo é deportado do reino e a proibição não se limita à produção artística de povos autóctones."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:75": {
+      "answer": "E",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 73802,
+          "B": 40511,
+          "C": 85335,
+          "D": 148253,
+          "E": 179971,
+          "blank": 3616
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os jesuítas articularam práticas médicas europeias ao uso indígena da flora e aprenderam funções de cura no cotidiano. A medicina colonial descrita é híbrida porque conjuga saberes empíricos de origens diferentes, em vez de substituir integralmente uma tradição pela outra."
+        ],
+        "alternatives": {
+          "A": "O trecho destaca terapias e aprendizado prático, sem definir a medicina por rituais místicos.",
+          "B": "Os religiosos continuam jesuítas, sem rejeição dos dogmas cristãos.",
+          "C": "O conhecimento indígena é incorporado, sem simples superação da tradição popular.",
+          "D": "A flora nativa se combina às práticas europeias, sem imposição exclusiva.",
+          "E": "A associação de experiências europeias e indígenas forma a prática híbrida de cura."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:76": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 217253,
+          "B": 95940,
+          "C": 108987,
+          "D": 55686,
+          "E": 51400,
+          "blank": 2222
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A mensagem acessível e a valorização da língua vulgar aproximam Francisco das preocupações de movimentos heréticos que criticavam a riqueza e o distanciamento social da Igreja. Essa afinidade temática não significa que Francisco tenha rompido com a instituição, mas que compartilhava críticas presentes em seu tempo."
+        ],
+        "alternatives": {
+          "A": "Os senhores feudais se vinculavam à ordem social hierárquica, sem a mesma preocupação renovadora.",
+          "B": "Os movimentos heréticos também criticavam características da Igreja e desigualdades sociais.",
+          "C": "As Cruzadas se voltavam à expansão e defesa militar da cristandade.",
+          "D": "As corporações organizavam ofícios urbanos, sem representar a crítica religiosa indicada.",
+          "E": "As universidades preservavam o latim como língua acadêmica e não definem essa contestação social."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:77": {
+      "answer": "A",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 195466,
+          "B": 90986,
+          "C": 66213,
+          "D": 74635,
+          "E": 100891,
+          "blank": 3297
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "José Murilo de Carvalho atribui à formação universitária local um papel na fragmentação da América espanhola. Alfredo Ávila relativiza esse papel e destaca a circulação dos impressos. A divergência diz respeito à importância das instituições de ensino na construção das identidades e regionalismos."
+        ],
+        "alternatives": {
+          "A": "Os historiadores atribuem pesos diferentes às universidades na formação de identidades políticas.",
+          "B": "O segundo autor fala da circulação de impressos, sem atribuir à imprensa centralização administrativa.",
+          "C": "Não se discute abandono de comunidades de professores.",
+          "D": "As associações acadêmicas e agremiações estudantis não são o objeto da comparação.",
+          "E": "O debate não se formula como desenvolvimento de nações alfabetizadas, mas como formação de identidades territoriais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:78": {
+      "answer": "A",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 178867,
+          "B": 154927,
+          "C": 59950,
+          "D": 82233,
+          "E": 52261,
+          "blank": 3250
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O primeiro texto enfatiza a luta parlamentar pela liberdade contra a tirania real. O segundo acrescenta camponeses, tecelões e grupos religiosos com reivindicações próprias. Sua concepção destaca a pluralidade de demandas sociais que compuseram a Revolução Inglesa."
+        ],
+        "alternatives": {
+          "A": "A enumeração de grupos e reivindicações mostra a diversidade de demandas na revolução.",
+          "B": "As lutas envolvem religião, terra e condições de vida, sem homogeneidade religiosa.",
+          "C": "Os próprios textos mostram interpretações distintas, sem uma abordagem histórica única.",
+          "D": "Os interesses apresentados são conflitos concretos, sem caracterização como superficiais.",
+          "E": "As demandas religiosas continuam relevantes, sem superioridade exclusiva da economia."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:79": {
+      "answer": "E",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 168543,
+          "B": 44627,
+          "C": 106417,
+          "D": 55347,
+          "E": 153216,
+          "blank": 3338
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O enclave industrial mantém poucos vínculos com o entorno e articula sua atuação a escalas externas. Ao trazer trabalhadores qualificados de fora em vez de incorporá-los localmente, a empresa reduz sua integração com a região. Essa ação corresponde à territorialização descrita."
+        ],
+        "alternatives": {
+          "A": "Vilas operárias criam relações residenciais próximas e não exemplificam o distanciamento do entorno.",
+          "B": "Eventos comunitários ampliam a interação com a população local.",
+          "C": "A recuperação de áreas degradadas é uma intervenção no entorno, sem indicar isolamento produtivo.",
+          "D": "A incorporação de saberes tradicionais fortalece vínculos com o território.",
+          "E": "A contratação de mão de obra externa reduz a articulação com recursos humanos locais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:80": {
+      "answer": "C",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 120084,
+          "B": 84127,
+          "C": 123233,
+          "D": 91711,
+          "E": 107941,
+          "blank": 4392
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A convivência entre estruturas tradicionais em declínio e novas estruturas em expansão permite posições políticas opostas e adia decisões. A modernização ocorre com tensões e ritmos desiguais. O diagnóstico aponta descompassos na construção de instituições modernas."
+        ],
+        "alternatives": {
+          "A": "O texto destaca indecisão e ambivalência, sem radicalidade contínua das elites.",
+          "B": "Não se examina especificamente a execução de planos econômicos ortodoxos.",
+          "C": "A coexistência de padrões antigos e novos cria descompassos institucionais na modernização.",
+          "D": "A legitimidade dos movimentos de classe não é o objeto da análise.",
+          "E": "A instabilidade não se limita à velocidade de aperfeiçoamento de programas partidários."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:81": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 134037,
+          "B": 225714,
+          "C": 75364,
+          "D": 51032,
+          "E": 41692,
+          "blank": 3649
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O Manifesto propõe oportunidades educacionais abertas a todos os grupos e uma hierarquia baseada em capacidades, em lugar do privilégio oligárquico. A defesa articula a democratização do acesso à escola à valorização do mérito revelado pela formação."
+        ],
+        "alternatives": {
+          "A": "O trecho aborda formação integral e igualdade de oportunidades, sem se limitar ao ensino técnico.",
+          "B": "As mesmas oportunidades de educação deveriam permitir selecionar capacidades, em vez de origem social.",
+          "C": "Não se restringe a finalidade da ampliação escolar à formação de gestores.",
+          "D": "Financiamento de pesquisa avançada não é o tema da proposta citada.",
+          "E": "Remuneração docente e alfabetização não constituem a relação explícita do fragmento."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:82": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 52734,
+          "B": 271347,
+          "C": 62539,
+          "D": 110981,
+          "E": 30832,
+          "blank": 3055
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "Sócrates questiona Mênon para mostrar que não é possível atribuir qualidades a algo sem antes saber o que esse algo é. A pergunta sobre a virtude conduz a interlocução à busca de uma definição. O conhecimento é examinado pelo diálogo, procedimento característico do método dialético."
+        ],
+        "alternatives": {
+          "A": "A passagem é uma interlocução, sem estrutura de carta.",
+          "B": "As perguntas e o confronto de noções orientam a busca dialógica de uma definição.",
+          "C": "Não há desenvolvimento de uma ação trágica nem linguagem voltada a esse gênero.",
+          "D": "O filósofo investiga um conceito ético, sem explicá-lo por fenômenos físicos.",
+          "E": "A finalidade é aprofundar a definição, e não suspender permanentemente o juízo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:83": {
+      "answer": "A",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 234613,
+          "B": 76784,
+          "C": 49126,
+          "D": 97089,
+          "E": 69960,
+          "blank": 3916
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "As tampas esculpidas transmitem aos filhos conselhos sobre escolha do cônjuge e vida conjugal. Os signos convertem objetos cotidianos em veículos de orientação entre gerações. Eles cumprem uma função pedagógica de transmissão de costumes e valores sociais."
+        ],
+        "alternatives": {
+          "A": "Os objetos ensinam orientações e costumes relativos à convivência e ao casamento.",
+          "B": "O texto descreve formas de transmitir mensagens, sem uma imposição de um único meio comunicativo.",
+          "C": "Os conselhos orientam os jovens, sem desvalorizar genericamente seus comportamentos.",
+          "D": "A preocupação com a vida conjugal preserva valores do matrimônio, sem destituí-los.",
+          "E": "Os artefatos tratam de relações sociais, sem constituir um estudo de celebrações religiosas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:84": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 211757,
+          "B": 196049,
+          "C": 40363,
+          "D": 33090,
+          "E": 46977,
+          "blank": 3252
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O torém reúne parentes e pessoas próximas em uma celebração associada ao tempo do caju e ao compartilhamento do mocororó. Ao proporcionar encontro e participação coletiva, reforça relações de pertencimento. Sua função é estimular a coesão social do grupo."
+        ],
+        "alternatives": {
+          "A": "O ritual se organiza pela experiência comunitária, sem celebração de uma história oficial.",
+          "B": "A reunião de parentes e conhecidos fortalece vínculos e pertencimento coletivo.",
+          "C": "Não há intenção de substituir ou superar práticas artesanais.",
+          "D": "A memória é compartilhada na prática social, sem manipulação individual indicada.",
+          "E": "O consumo da bebida não é apresentado como estratégia de modernização comercial."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:85": {
+      "answer": "A",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 145535,
+          "B": 221342,
+          "C": 57878,
+          "D": 67601,
+          "E": 36112,
+          "blank": 3020
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O anúncio informa que José fugia, apresentava-se como livre e chegou a trabalhar contratado como camarada em outra fazenda. Ao construir uma relação de trabalho fora do domínio do senhor, procurava sustentar uma condição de liberdade. Essa é a estratégia de resistência registrada."
+        ],
+        "alternatives": {
+          "A": "Apresentar-se como livre e conseguir contratação criava uma relação de trabalho autônoma em relação ao senhor.",
+          "B": "O documento não relata participação na fundação de um quilombo.",
+          "C": "O senhor ameaça quem o acolher, sem suavização das normas escravistas.",
+          "D": "A contratação foi usada na fuga, sem regularização oficial de funções pelo proprietário.",
+          "E": "Não se descreve cultivo ou organização de uma economia de subsistência."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:86": {
+      "answer": "A",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 299637,
+          "B": 57164,
+          "C": 93939,
+          "D": 50762,
+          "E": 26410,
+          "blank": 3576
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "A árvore de Descartes liga metafísica, física e ciências práticas como partes de um mesmo organismo. A moral mais elevada pressupõe o saber das demais áreas. A alegoria sustenta a unidade essencial do conhecimento e a dependência entre seus fundamentos e aplicações."
+        ],
+        "alternatives": {
+          "A": "Raízes, tronco e ramos pertencem à mesma árvore, representando a unidade articulada do saber.",
+          "B": "A metáfora apresenta a metafísica como fundamento, sem refutar genericamente as crenças.",
+          "C": "O pensamento especulativo é apenas parte da imagem, que inclui ciências práticas.",
+          "D": "O texto não define a experiência como método exclusivo de conhecimento.",
+          "E": "A árvore organiza afirmações e fundamentos, sem propor suspensão de todos os juízos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:87": {
+      "answer": "E",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 134855,
+          "B": 73609,
+          "C": 69691,
+          "D": 105027,
+          "E": 144488,
+          "blank": 3818
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O amor fati propõe amar a vida tal como é, em vez de apenas suportá-la ou desejar outra existência. A realização deve ser buscada na própria realidade vivida. Essa orientação critica a transferência da plenitude humana para um plano transcendente, associada à tradição cristã."
+        ],
+        "alternatives": {
+          "A": "A crítica não se dirige às relações afetivas ou à afetividade social.",
+          "B": "O avanço científico moderno não é discutido na formulação citada.",
+          "C": "Não se analisa a relação entre paganismo e natureza.",
+          "D": "A passagem não consiste em condenar os filósofos da Antiguidade.",
+          "E": "A afirmação desta vida contrasta com uma realização reservada ao além transcendente."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:88": {
+      "answer": "E",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 114581,
+          "B": 110741,
+          "C": 45135,
+          "D": 84785,
+          "E": 172289,
+          "blank": 3957
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto recomenda disciplinar e castigar a carne para submetê-la ao espírito, aceitando desconfortos e reduzindo desejos. Essa oposição atribui menor valor às necessidades e prazeres corporais. É uma expressão do ascetismo medieval e da desvalorização da materialidade do corpo."
+        ],
+        "alternatives": {
+          "A": "A passagem trata de disciplina corporal, sem destacar cerimônias litúrgicas.",
+          "B": "A orientação se baseia na submissão da carne ao espírito, sem centralidade da razão.",
+          "C": "O trabalho não é desqualificado no trecho, que recomenda esforço disciplinador.",
+          "D": "A simplicidade alimentar não é apresentada por uma classificação de alimentos impuros.",
+          "E": "O castigo e a sujeição do corpo expressam a prioridade espiritual sobre a materialidade corpórea."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:89": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 58521,
+          "B": 80100,
+          "C": 142248,
+          "D": 213113,
+          "E": 34669,
+          "blank": 2837
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "No solstício de junho, a maior incidência solar desloca-se para o hemisfério norte. Em Brasília, situada ao sul do Equador, o Sol ao meio-dia está ao norte do observador. Como a sombra se projeta no sentido oposto à fonte de luz, aponta para o sul."
+        ],
+        "alternatives": {
+          "A": "O norte é a direção do Sol ao meio-dia nessa data, e não da sombra.",
+          "B": "A posição do Sol ao norte determina a projeção da sombra para o sul.",
+          "C": "A sombra não aponta para leste ao meio-dia solar, quando o Sol está no meridiano.",
+          "D": "O oeste seria associado a uma posição solar a leste, sem corresponder ao meio-dia indicado.",
+          "E": "O componente leste da direção nordeste não corresponde ao alinhamento meridiano do meio-dia."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:90": {
+      "answer": "B",
+      "statistics": {
+        "population": 531488,
+        "counts": {
+          "A": 133030,
+          "B": 274432,
+          "C": 80301,
+          "D": 25730,
+          "E": 15812,
+          "blank": 2183
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      },
+      "solution": {
+        "paragraphs": [
+          "O transporte de dejetos era atribuído a escravizados de menor valor ou ao único escravizado da família. A distribuição da tarefa degradante reproduzia posições de poder, status e subordinação. A prática evidencia a reiteração das hierarquias sociais no cotidiano urbano."
+        ],
+        "alternatives": {
+          "A": "A atribuição aos indivíduos de menor status mostra desvalorização, sem prestígio do trabalho braçal.",
+          "B": "A tarefa degradante reproduz a hierarquia entre senhores, escravizados e diferentes posições no cativeiro.",
+          "C": "O transporte de dejetos não é apresentado como uma atividade sagrada.",
+          "D": "A escravidão e a desigualdade são reproduzidas, sem superação da exclusão econômica.",
+          "E": "O trecho não estabelece uma mudança de significado das tradições religiosas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "english:1": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O artigo transfere a responsabilidade pelo culto às celebridades para a sociedade: os consumidores aceitam imagens fabricadas e deixam de pensar por si. Ao dizer que há demanda por esse culto, o autor convoca os fãs a examinar suas próprias escolhas."
+        ],
+        "alternatives": {
+          "A": "Os talentos são citados como valores substituídos pela imagem, sem exaltação dos famosos.",
+          "B": "O alvo é o consumo dos admiradores, não os hábitos de compra das celebridades.",
+          "C": "A perda de pensamento autônomo fundamenta o convite à reflexão dos fãs.",
+          "D": "O texto afirma expressamente que as celebridades não podem receber toda a culpa.",
+          "E": "O marketing é descrito criticamente como fabricação de imagem comercial."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "english:2": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "O poema apresenta a formação britânica como uma receita: povos diversos entram como ingredientes, misturam suas línguas e devem receber justiça e respeito iguais. A receita transforma a diversidade histórica em riqueza coletiva, sem hierarquizar os grupos."
+        ],
+        "alternatives": {
+          "A": "A mistura de ingredientes representa a contribuição igualmente importante das várias culturas.",
+          "B": "A receita reúne povos de diferentes origens, sem restringir a formação a um legado geográfico.",
+          "C": "As referências históricas servem à valorização da mistura, e não apenas à descrição de um impacto.",
+          "D": "O poema recomenda igualdade, sem explicar uma estrutura de classes sociais.",
+          "E": "O florescimento das línguas é desejado, não apresentado como intolerância linguística."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "english:3": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Unthinkable qualifica a possibilidade de uma mulher negra chegar a primeira-dama. A passagem lembra o tratamento humilhante dispensado às mulheres negras e contrapõe essa exclusão ao lugar alcançado por Michelle Obama, ressaltando a improbabilidade histórica de tal ascensão."
+        ],
+        "alternatives": {
+          "A": "A posição de primeira-dama parecia inconcebível diante da exclusão racial e social narrada.",
+          "B": "Dar à filha o nome Miss foi uma estratégia efetivamente adotada pelos pais.",
+          "C": "A origem racial e regional é central para compreender o tratamento discriminatório.",
+          "D": "O trabalho feminino existia, mas era limitado a posições subalternizadas.",
+          "E": "A decisão parental aparece como resistência à humilhação, sem censura por irresponsabilidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "english:4": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "A expressão at odds with significa estar em conflito com algo. No cartum, o desejo de se manter bem informado entra em choque com o desejo de preservar a sanidade, pois as notícias produzem sofrimento. O humor depende desses dois anseios simultâneos e incompatíveis."
+        ],
+        "alternatives": {
+          "A": "A fala trata do efeito das notícias, sem discutir a confiabilidade das fontes.",
+          "B": "Estar informado e permanecer são são desejos apresentados como conflitantes.",
+          "C": "Não há dificuldade de aprender a utilizar aparelhos ou novas tecnologias.",
+          "D": "A personagem fala de equilíbrio emocional, não de neutralidade diante dos fatos.",
+          "E": "Ela deseja preservar a sanidade, sem formular uma preferência explícita por notícias positivas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "english:5": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "Céline considera a beleza e a história europeias opressivas, enquanto Jesse presume que sua preferência por Los Angeles se deve ao caráter feio da cidade. Ela corrige essa leitura e fala em neutralidade. O diálogo mostra que a avaliação do lugar depende da perspectiva de quem o visita."
+        ],
+        "alternatives": {
+          "A": "A mesma beleza pode ser vista como agradável ou opressiva, portanto não determina sozinha a avaliação.",
+          "B": "A divergência entre os personagens evidencia que o olhar do visitante orienta o julgamento.",
+          "C": "A história do local aparece como objeto de uma avaliação subjetiva, sem explicar todos os juízos.",
+          "D": "O diálogo não compara estadias longas e curtas para explicar as preferências.",
+          "E": "A lua de mel é um exemplo no argumento de Céline, e não a condição geral da avaliação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "spanish:1": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "As declarações selecionadas de García Lorca insistem no humano, na problemática social e na injustiça presente no mundo. A resenha usa essas falas para caracterizar o compromisso social do poeta, que não separa sua arte do sofrimento das pessoas."
+        ],
+        "alternatives": {
+          "A": "A menção ao além é subordinada à preocupação com a dor humana e a injustiça.",
+          "B": "O trecho não apresenta reações emocionais das elites às obras de Lorca.",
+          "C": "As falas vinculam a criação artística ao humano e aos problemas sociais.",
+          "D": "A seleção trata dos compromissos do escritor, sem comparar sua obra com questões atuais.",
+          "E": "A atenção à vida humana é valorizada, em vez de criticada pela resenha."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "spanish:2": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Auxilio descreve o tom espanhol dos escritores e individualiza sons, como os de zetas, ces e eses. Ao registrar essa musicalidade peculiar, a narradora percebe diferenças de pronúncia entre falantes da mesma língua. O tema é a variação do espanhol."
+        ],
+        "alternatives": {
+          "A": "A descrição dos sons e da musicalidade destaca uma variedade de pronúncia do espanhol.",
+          "B": "A poeira aparece na fala dos escritores, mas não constitui a reflexão sobre sua linguagem.",
+          "C": "Os anfitriões mencionados são espanhóis, sem comparação entre formas mexicanas de acolher.",
+          "D": "Os pedidos para parar a limpeza funcionam como ocasião para observar a pronúncia.",
+          "E": "Auxilio compreende os escritores, e o trecho não relata um impasse comunicativo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "spanish:3": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "A guilhotina sugere a capacidade de derrubar figuras e instituições. No texto, gravações de celulares revelam acordos e chantagens, desencadeiam investigações e até ajudam a libertar um inocente. A metáfora destaca o uso desses registros como instrumentos de consequência jurídica."
+        ],
+        "alternatives": {
+          "A": "A multiplicidade de funções é o contexto inicial, mas não explica a imagem de derrubada.",
+          "B": "A reunião de pessoas com ideias comuns aparece antes, sem ser o foco da guilhotina.",
+          "C": "A rapidez da divulgação não abrange as investigações e decisões legais destacadas.",
+          "D": "A Primavera Árabe ilustra mobilização, mas a metáfora enfatiza provas e consequências legais.",
+          "E": "Os registros podem alimentar investigações, responsabilizações e a revisão de uma prisão injusta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "spanish:4": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "O narrador compara o desgaste do velho à pedra reduzida e polida pelas águas. Assim como a ação contínua da água modifica a pedra, a passagem dos anos alterou o corpo da personagem. A analogia torna sensível o trabalho prolongado do tempo sobre o homem."
+        ],
+        "alternatives": {
+          "A": "A água que desgasta a pedra corresponde aos anos que reduziram e poliram o homem.",
+          "B": "A comparação descreve a personagem, e não transforma o ambiente em objeto.",
+          "C": "A sensação de estar fora do tempo aparece depois e não é o núcleo da analogia.",
+          "D": "O foco recai sobre os efeitos dos anos no corpo, não sobre o espaço físico do conto.",
+          "E": "A imagem sugere transformação e desgaste, sem afirmar que a velhice seja eterna."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "spanish:5": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Diante de guerra, miséria e violência, a personagem pergunta o que aconteceu com o mundo e recebe a resposta nosotros. A resposta inclui os próprios seres humanos como agentes dos problemas. O humor converte o espanto diante do caos em reconhecimento da responsabilidade coletiva."
+        ],
+        "alternatives": {
+          "A": "Nosotros devolve aos humanos a responsabilidade pelos males que eles próprios lamentam.",
+          "B": "A exclamação religiosa expressa espanto, mas a resposta final não propõe uma saída pela religião.",
+          "C": "A charge não identifica um grupo de trabalhadores nem limita a crítica às relações de trabalho.",
+          "D": "As palavras sobre os males do mundo não configuram uma crítica específica a telejornais.",
+          "E": "O desfecho responsabiliza a humanidade, sem apresentar uma manipulação das notícias."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:6": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "O asteroide não colidiu com a Terra, mas a notícia desenvolve uma série de cenários condicionais: se fosse capturado, se caísse no continente e se desabasse no oceano. A descrição insistente dessas catástrofes possíveis produz o tom alarmante do texto."
+        ],
+        "alternatives": {
+          "A": "A velocidade informa uma característica do asteroide, sem constituir a estratégia recorrente do relato.",
+          "B": "As várias condições hipotéticas acumulam imagens de destruição apesar de não ter ocorrido colisão.",
+          "C": "A referência aos astrônomos dá credibilidade aos cálculos, mas não explica a sequência alarmante.",
+          "D": "No mínimo intensifica um dado isolado, enquanto a construção do alarme envolve vários cenários.",
+          "E": "A distância lunar situa a passagem, sem desenvolver por si a visão de catástrofe."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:7": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Manoel de Barros ironiza o literato que troca pega por captura para supostamente purificar a língua. Ao oferecer ao dicionário expressões já usadas pelo povo, inverte essa hierarquia: a legitimidade da língua nasce também do uso popular, que merece reconhecimento."
+        ],
+        "alternatives": {
+          "A": "O contraste não visa separar fala e escrita, mas questionar o desprezo pela forma popular.",
+          "B": "A ironia recai sobre o purismo do literato, sem ridicularizar quem usa formas populares.",
+          "C": "A substituição de pega por captura é justamente a atitude censurada pelo poeta.",
+          "D": "O pedido de registro reconhece o valor das expressões consagradas pelo uso do povo.",
+          "E": "O poema propõe acolher usos existentes, sem formular um novo conjunto de regras gramaticais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:8": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "A observação de que o documentário foi o único finalista feito fora do eixo Estados Unidos-Europa destaca a excepcionalidade da conquista. Uma história do interior nordestino alcançou reconhecimento em uma disputa internacional dominada por outras regiões, o que amplia a dimensão da premiação."
+        ],
+        "alternatives": {
+          "A": "A homenagem a Luiz Gonzaga é apresentada depois e não é o aspecto reforçado pela comparação geográfica.",
+          "B": "A existência de outros finalistas mostra que houve concorrência na disputa.",
+          "C": "A posição excepcional entre os finalistas ressalta a conquista da narrativa ambientada no Nordeste.",
+          "D": "O trecho não apresenta valores nem dados sobre investimentos em cinema brasileiro.",
+          "E": "A parceria é mencionada, mas o recurso citado enfatiza o reconhecimento fora do eixo dominante."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:9": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Expressões como quem não tem brio engorda e a imagem de que para alguns até boi dá cria condensam interpretações coletivas da vida e da sorte. Ao incorporá-las ao diálogo literário, Guimarães Rosa preserva modos populares de dizer e os saberes transmitidos por esses ditados."
+        ],
+        "alternatives": {
+          "A": "A nevralgia serve à justificativa do atraso, sem representar o valor patrimonial central.",
+          "B": "As tarefas rurais mencionadas não são apresentadas como profissões extintas.",
+          "C": "Os nomes participam da narrativa, mas não explicam a preservação de saberes coletivos.",
+          "D": "Os provérbios registram formas populares de interpretar experiências compartilhadas.",
+          "E": "O trecho não procura desfazer crenças ou superstições por meio da descrição de costumes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:10": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "Ao afirmar que premiar Son of Saul seria um passo à frente, o crítico pressupõe que a Academia precisa avançar em suas escolhas. A avaliação favorável ao filme vem acompanhada dessa opinião indireta sobre os votantes. As outras passagens apenas informam ou descrevem aspectos da obra."
+        ],
+        "alternatives": {
+          "A": "A premiação em Cannes é uma informação verificável sobre a trajetória do filme.",
+          "B": "A identificação de Saul e de sua função apresenta elementos do enredo.",
+          "C": "A descrição da câmera explica uma escolha técnica de filmagem.",
+          "D": "A procura do rabino relata uma ação da personagem ao longo da narrativa.",
+          "E": "Passo à frente pressupõe uma avaliação crítica do estágio atual das escolhas da Academia."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:11": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "O eu lírico se defende de uma acusação de olhar Sinhá enquanto enfrenta a ameaça do tronco, da mutilação e da perda da visão. As formas de tratamento marcam a desigualdade entre senhor e escravizado; a referência ao iorubá e a Jesus integra essa experiência histórica de violência física e simbólica."
+        ],
+        "alternatives": {
+          "A": "O tronco, a ameaça aos olhos e a submissão verbal remetem à violência da escravidão.",
+          "B": "A influência africana aparece na língua mencionada, mas a situação central é a violência sofrida.",
+          "C": "A coexistência de iorubá e Jesus é registrada sem relativizar a importância do sincretismo.",
+          "D": "O eu lírico nega ter olhado Sinhá, sem narrar uma relação amorosa entre os dois.",
+          "E": "O conflito retratado é uma relação de dominação concreta, mais específica que uma diferença de visões."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:12": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "A campanha explora dois sentidos de pet: a sigla da garrafa descartável e o animal de estimação, que não pode ser descartado. A aproximação visual torna o abandono do cão moralmente chocante e busca sensibilizar o público para sua responsabilidade com os animais domésticos."
+        ],
+        "alternatives": {
+          "A": "A denúncia pode decorrer da conscientização, mas não é o pedido central da associação entre as imagens.",
+          "B": "A peça aproxima criticamente o descarte do abandono, sem desvincular os dois conceitos.",
+          "C": "A campanha não apresenta um convite específico para adotar animais em situação de rua.",
+          "D": "O contraste entre a garrafa descartável e o cão mobiliza a sensibilidade contra o abandono.",
+          "E": "A lei reforça a mensagem, mas não são detalhadas punições ou sanções penais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:13": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "A tirinha contrapõe as renúncias anunciadas diante da chegada do bebê. O contraste entre o que se espera da mulher e do homem expõe uma divisão desigual de encargos. A declaração final sobre a emancipação ganha sentido irônico porque a suposta igualdade convive com sacrifícios diferentes."
+        ],
+        "alternatives": {
+          "A": "O foco é a desigualdade no cotidiano familiar, sem conclamar diretamente à luta por direitos civis.",
+          "B": "As renúncias impostas à mulher põem em questão sua autonomia, em vez de comprová-la.",
+          "C": "A diferença de sacrifícios torna irônica a aparência de igualdade entre mulher e homem.",
+          "D": "A perda da vida social é objeto da crítica, sem ser recomendada como escolha desejável.",
+          "E": "A maternidade contextualiza a desigualdade, mas a crítica compara os papéis atribuídos aos dois adultos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:14": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "A reportagem relaciona a instalação à crise dos refugiados e afirma que sua força dispensa palavras. A obra preserva a memória de um drama humano e convida a refletir sobre ele. Assim, o texto destaca a arte como meio de lembrar acontecimentos dolorosos e evitar sua repetição."
+        ],
+        "alternatives": {
+          "A": "A localização do museu contextualiza a instalação, sem converter a reportagem em promoção turística.",
+          "B": "O tema são os refugiados contemporâneos, e não um levantamento de naufrágios ao longo dos séculos.",
+          "C": "A novidade do museu submarino é secundária diante da função memorial e crítica da obra.",
+          "D": "O texto não define todo o museu como memorial exclusivo dos mortos nas travessias.",
+          "E": "A escultura materializa a memória de um drama humano e sustenta sua reflexão pública."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:15": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Pestana produz com espontaneidade músicas populares dançantes, mas deseja a consagração ligada aos modelos clássicos europeus. Seu talento e sua ambição se desencontram. O conflito individual representa a tensão entre o erudito prestigiado e o popular associado à formação mestiça da música brasileira."
+        ],
+        "alternatives": {
+          "A": "A oposição não se explica por uma demonstração de menor complexidade das polcas.",
+          "B": "O texto enfatiza a tensão com os modelos europeus, sem afirmar prevalência africana no imaginário.",
+          "C": "A popularidade das composições já é reconhecida, embora não satisfaça a ambição erudita do músico.",
+          "D": "O desejo de criar música clássica contrasta com a produção espontânea de peças populares.",
+          "E": "O prestígio da música clássica compõe apenas um dos polos do conflito apresentado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:16": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "O artigo critica a pressa que empobrece as relações e cita uma conversa de Sinal fechado na qual os interlocutores mal conseguem se encontrar. A cena torna concreta a comunicação superficial descrita pelo autor e ajuda o leitor a reconhecer o problema em uma experiência cotidiana."
+        ],
+        "alternatives": {
+          "A": "A canção ilustra o esvaziamento do contato, sem apresentar uma advertência sobre riscos específicos.",
+          "B": "A conversa apressada exemplifica concretamente a superficialidade criticada no artigo.",
+          "C": "A letra citada desenvolve a correria, sem mostrar em paralelo uma situação de serenidade.",
+          "D": "O autor utiliza a pressa como problema real, em vez de questionar sua condição de clichê.",
+          "E": "As propostas de desacelerar surgem no comentário do autor, e não como soluções oferecidas pela letra."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:17": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "Paulo César Lima rompe o silêncio ao nomear o racismo que afirma sentir até na seleção. Ao contestar o papel de bom negro e assumir causas coletivas, o jogador torna visível a discriminação negada pelo discurso oficial. Essa atitude enfraquece a narrativa de democracia racial."
+        ],
+        "alternatives": {
+          "A": "A culpabilização dos jogadores em 1950 revela o racismo, mas o texto destaca a contestação posterior.",
+          "B": "A projeção internacional do futebol não impede que o preconceito permaneça presente.",
+          "C": "A depreciação inicial do esporte é parte do contexto, sem ser o gesto que rompe o mito.",
+          "D": "A interdição da palavra ajuda a sustentar o mito; sua denúncia é que o enfraquece.",
+          "E": "A reação de Paulo César e a nomeação pública do racismo desafiam a versão oficial."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:18": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Moema aparece como uma figura indígena idealizada, inserida em uma cena de grande carga dramática. A pintura retoma o indianismo romântico ao conferir beleza e intensidade emocional à personagem. A filiação estética depende dessa elaboração idealizante, e não apenas da existência de uma fonte literária."
+        ],
+        "alternatives": {
+          "A": "A beleza é construída segundo uma idealização artística, sem pretensão de retrato fiel.",
+          "B": "A morte integra a cena, mas seu tema isolado não identifica especificamente o Romantismo.",
+          "C": "A referência a Caramuru contextualiza a obra, sem definir por si a linguagem romântica.",
+          "D": "A idealização do corpo indígena e a dramaticidade correspondem à sensibilidade romântica.",
+          "E": "A natureza participa da composição, sem estabelecer o antagonismo indicado na alternativa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:19": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "O estudo relata menos tempo de lazer, menos brincadeiras com outras crianças nos espaços públicos e mais interação individual com aparelhos em casa. Essa substituição reduz oportunidades de movimento e de experiência corporal compartilhada. Por isso, indica uma infância corporalmente menos ativa."
+        ],
+        "alternatives": {
+          "A": "O crescimento do jogo solitário aponta redução, e não estímulo, da convivência entre crianças.",
+          "B": "O estudo relata que o tempo disponível para o lazer diminuiu.",
+          "C": "A passagem dos espaços públicos para dentro de casa não indica criação de novos espaços de brincar.",
+          "D": "A troca de brincadeiras coletivas ao ar livre por aparelhos favorece menor atividade corporal.",
+          "E": "As atividades e deveres extras sobrecarregam as crianças e reduzem o tempo para brincar."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:20": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Mini@tures reúne dança, vídeo, computação gráfica e internet. A criação considera inclusive tamanho de arquivo e tempo de download, explorando o espaço e o tempo da rede como parte da obra. A inovação consiste nessa combinação de linguagens para ampliar a expressão estética."
+        ],
+        "alternatives": {
+          "A": "O texto destaca a mistura de meios, sem propor oposição conceitual aos grandes espetáculos.",
+          "B": "Não são descritos mecanismos de financiamento da produção artística.",
+          "C": "A computação participa da criação, mas não substitui o corpo por movimentos exclusivamente digitais.",
+          "D": "A articulação entre corpo, imagem e rede amplia as possibilidades expressivas da dança.",
+          "E": "As limitações de acesso orientam escolhas técnicas, sem redefinir a obra por perfis individuais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:21": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "O primeiro texto afirma que o ciclo hidrológico repõe indefinidamente os estoques continentais. O segundo mostra um limite para essa reposição: sedimentos impermeáveis dificultam a infiltração, e a água evaporada pode precipitar em outro lugar. A divergência está na garantia de manutenção dos estoques de água doce."
+        ],
+        "alternatives": {
+          "A": "A reposição indefinida afirmada no primeiro texto é problematizada pelas restrições descritas no segundo.",
+          "B": "O segundo texto admite expressamente a utilização da água superficial no consumo.",
+          "C": "A discussão não se concentra em métodos de reposição específicos para regiões áridas.",
+          "D": "Nenhum dos textos propõe reduzir artificialmente precipitação e evaporação.",
+          "E": "O primeiro texto reconhece a distribuição desigual, sem defender sua equalização."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:22": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "O emprego de tu e você varia conforme a região e também se modifica ao longo do tempo. A expansão da informalidade e a coexistência regional das duas formas mostram que a língua admite diferentes usos. A diversidade linguística não desaparece com a difusão de um pronome."
+        ],
+        "alternatives": {
+          "A": "A idade aparece no depoimento, mas a distribuição apresentada também depende de região e época.",
+          "B": "A coexistência de formas de tratamento exemplifica a diversidade dos usos da língua.",
+          "C": "O texto enumera cidades em que você predomina, contrariando a generalização de tu por todo o país.",
+          "D": "A coexistência não elimina nuances de formalidade, como mostra a comparação histórica.",
+          "E": "As mudanças entre cartas antigas e usos atuais demonstram transformação linguística."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:23": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "John Lennon da Silva retoma uma coreografia do balé clássico e a interpreta pelo popping, com roupas e movimentos ligados à dança de rua. O resultado inovador nasce do encontro de referências de contextos sociais diferentes. A releitura amplia a obra sem exigir a reprodução do modelo original."
+        ],
+        "alternatives": {
+          "A": "O figurino integra a releitura, mas não é apresentado como sua causa exclusiva.",
+          "B": "A aproximação entre balé e dança de rua produz uma nova criação artística.",
+          "C": "O texto valoriza a inovação, sem ordenar as manifestações em uma hierarquia.",
+          "D": "Não se informa a formação do dançarino nem se conclui que ele só conheça a estética popular.",
+          "E": "O destaque recai sobre a troca de linguagem da dança, sem discutir uma adaptação obrigatória de gênero."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:24": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "A sucessão de espancamentos, lesões e ordens arbitrárias apresenta uma prisão em que o detento perde a proteção de direitos. Ele apanha sem conhecer a razão e aprende apenas a obedecer. A representação faz emergir práticas de um estado de exceção, marcado pela violência que suspende garantias legais."
+        ],
+        "alternatives": {
+          "A": "A exposição da violência não constitui defesa nem perpetuação de um senso comum sobre os presos.",
+          "B": "A agressão arbitrária e a ausência de garantias revelam práticas próprias de um estado de exceção.",
+          "C": "O preso é narrado em terceira pessoa, sem uma interlocução efetiva com grupos silenciados.",
+          "D": "A empatia pode ocorrer na leitura, mas não define a situação política representada no fragmento.",
+          "E": "A narrativa registra violência material reiterada, sem organizar uma lógica fantástica do absurdo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:25": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "O delegado intimida o estrangeiro em nome da autoridade militar, mas muda de postura quando a esposa revela parentesco com oficiais. A pergunta final, sobre o general estar na ativa, expõe sua submissão oportunista. Essa inversão encerra o episódio como uma anedota sobre o uso das relações de poder."
+        ],
+        "alternatives": {
+          "A": "A xenofobia integra a fala inicial, mas o desfecho cômico depende também da mudança diante do parentesco militar.",
+          "B": "A reversão da arrogância em humildade e a pergunta final conferem tom anedótico à cena.",
+          "C": "As falas expõem claramente o abuso de autoridade, sem ocultar a avaliação construída pela narrativa.",
+          "D": "A hostilidade não permanece constante: o delegado se torna submisso ao final.",
+          "E": "A inversão ridiculariza o privilégio e o autoritarismo, em vez de exaltá-los."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:26": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Depois de citar os versos que homenageiam Pedro, o texto explica que o Pedro mencionado é o imperador Dom Pedro II. O gigante do Brasil está dentro do trecho retomado e ganha identificação histórica na explicação seguinte. Essa dependência de sentido une a expressão do hino à retomada textual."
+        ],
+        "alternatives": {
+          "A": "É assim retoma o modo de descoberta descrito, sem identificar especificamente os velhos papéis.",
+          "B": "Sobre o qual retoma um nome antigo, e não algo novo.",
+          "C": "Por exemplo introduz a informação seguinte, sem funcionar como retomada referencial de um nome.",
+          "D": "A explicação sobre Pedro identifica o homenageado dos versos em que aparece o gigante do Brasil.",
+          "E": "O bruxo do Cosme Velho designa Machado de Assis, enquanto Dom Pedro II é outra pessoa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:27": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "A reportagem opõe o mobiliário de gosto colonial rebuscado ao desenho contemporâneo associado a Brasília. As linhas retas e curvas suaves das peças reduzem a ornamentação e organizam formas simples. A estética brasiliense aparece, assim, na simplificação visual das composições."
+        ],
+        "alternatives": {
+          "A": "As linhas retas participam das peças, mas o texto também destaca curvas suaves.",
+          "B": "O desenho contemporâneo abandona o gosto rebuscado mencionado como referência anterior.",
+          "C": "A assimetria não é apresentada como traço necessário ou central das peças.",
+          "D": "Há vários materiais, entre madeiras, couro e palhinha, portanto não existe unidade exclusiva de matéria-prima.",
+          "E": "A redução da ornamentação e o desenho de formas simples caracterizam a renovação estética."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:28": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "O Facebook desloca a atenção do feed para grupos depois de observar que muitos usuários já frequentam essas comunidades. A mudança incorpora práticas existentes no uso da plataforma. O projeto das tecnologias de comunicação se ajusta, portanto, aos comportamentos de seu público."
+        ],
+        "alternatives": {
+          "A": "A privacidade é prometida sem detalhes, de modo que não explica a mudança de design descrita.",
+          "B": "Os números de acesso aos grupos mostram que a plataforma adapta o desenho a hábitos dos usuários.",
+          "C": "A interação pode aumentar, mas o texto enfatiza a incorporação de uma preferência já observada.",
+          "D": "A monetização aparece como possibilidade futura, sem ser a explicação única da alteração.",
+          "E": "A lembrança do Orkut é comparativa e irônica, sem demonstrar uma evolução geral para a semelhança."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:29": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O autor distingue a desconfiança passiva da investigação ativa das notícias. Como não existe isenção absoluta, recomenda confrontar perspectivas, estudar e procurar elementos ocultos. Seu objetivo é formar uma leitura crítica das informações recebidas."
+        ],
+        "alternatives": {
+          "A": "O autor recomenda investigar as informações, sem garantir uma fonte plenamente isenta.",
+          "B": "Não se estabelece preferência por jornais de grande circulação.",
+          "C": "A busca de vários lados e das entrelinhas caracteriza a postura crítica defendida.",
+          "D": "A internet contextualiza a mudança, mas a proposta se dirige à leitura atual.",
+          "E": "O texto afirma que objetividade e isenção absolutas não existem."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:30": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "Pelino corrige os interlocutores mesmo em conversas informais e avalia pessoas pelo uso de palavras que desaprova. Seu purismo aplica uma única régua normativa a qualquer contexto. Assim, ignora que os usos linguísticos variam conforme a situação e o grau de formalidade."
+        ],
+        "alternatives": {
+          "A": "Pelino impõe as regras, sem contestar sua prioridade sobre o conteúdo.",
+          "B": "A defesa de valores patrióticos não é o critério linguístico evidenciado nas cenas.",
+          "C": "Ele intervém a cada suposta incorreção, sem complacência.",
+          "D": "As correções afirmam a gramática normativa, em vez de invalidá-la.",
+          "E": "A vigilância constante ignora a adequação dos usos a diferentes situações comunicativas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:31": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "A melhoria das rodas aumentou a aderência, possibilitou novas manobras e permitiu que mais iniciantes praticassem skate. Campeonatos, lojas e fábricas acompanharam a expansão. Esses fatores ampliaram o acesso e a participação na modalidade, democratizando sua prática."
+        ],
+        "alternatives": {
+          "A": "O aumento da segurança e do acesso levou mais pessoas a praticar skate.",
+          "B": "As demandas comerciais são consequência parcial da expansão, sem resumir o processo.",
+          "C": "O texto inclui iniciantes e lazer, sem restringir a história à profissionalização.",
+          "D": "A origem ligada ao surfe não implica substituição geral das práticas de lazer.",
+          "E": "A dependência de materiais e inovações não demonstra autonomia dos praticantes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:32": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Ao comparar o notebook ao antigo estojo, o narrador mobiliza lembranças, cheiros e juízos pessoais. O comentário final de que piorou de estojo e de vida sintetiza sua atitude afetiva diante da mudança. Predomina a função emotiva, centrada no enunciador."
+        ],
+        "alternatives": {
+          "A": "Há elaboração literária, mas a função predominante evidencia a experiência pessoal do narrador.",
+          "B": "O texto não toma o próprio código linguístico como assunto.",
+          "C": "Os dados sobre aparelhos são subordinados à avaliação afetiva do narrador.",
+          "D": "As memórias e os juízos sobre os dois objetos expõem a atitude do enunciador.",
+          "E": "O interlocutor não determina a narrativa nem recebe ordens do narrador."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:33": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Os quadrinhos explicam ao leitor como o livro foi produzido e introduzem o trabalho que ele encontrará. Mesmo usando linguagem visual e humor, o texto cumpre uma função introdutória. Essa apresentação da obra permite reconhecê-lo como prefácio."
+        ],
+        "alternatives": {
+          "A": "A apresentação do livro ao leitor é a função que define o prefácio.",
+          "B": "O apelo emocional pode existir em vários gêneros e não define um prefácio.",
+          "C": "O processo criativo é o conteúdo utilizado para cumprir a função de apresentação.",
+          "D": "A combinação de técnicas descreve a produção, mas não determina o gênero textual.",
+          "E": "Elementos gráficos para um público também ocorrem em outros gêneros."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:34": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "O infográfico relaciona telas antes de dormir a problemas de sono e consequências para a saúde infantil. Ao final, apresenta recomendações práticas, como reduzir o brilho e interromper o uso antes de deitar. As informações procuram provocar mudança de hábitos de quem cuida das crianças."
+        ],
+        "alternatives": {
+          "A": "A divulgação científica sustenta a orientação, mas o objetivo inclui mudar condutas.",
+          "B": "Os riscos e as recomendações visam alterar hábitos prejudiciais ao sono infantil.",
+          "C": "O mecanismo destacado é a interferência no sono, sem atribuição à falta de exercício.",
+          "D": "O foco é o uso antes de dormir, sem defender o abandono completo dos telefones.",
+          "E": "Não se indica substituir o aparelho por atividades lúdicas específicas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:35": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Os homens procuram definir a mulher a partir de sua idade, estado civil, aparência e possível profissão. O diálogo a enquadra segundo categorias masculinas de respeitabilidade e deixa sua atividade apenas subentendida. A identidade feminina é referendada pelo olhar e pelo julgamento dos homens."
+        ],
+        "alternatives": {
+          "A": "A esmola introduz a observação, sem explicar toda a identidade atribuída à mulher.",
+          "B": "Não se estabelece uma causa entre estilo de vida e conservação da aparência.",
+          "C": "O bem-estar da mulher não é descrito como dependente de casamento estável.",
+          "D": "O julgamento masculino classifica e delimita o lugar social da personagem.",
+          "E": "A atividade profissional é inferida pelos homens, sem haver relato de uma renúncia ao trabalho."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:36": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "Hazoumé transforma recipientes plásticos descartados em formas que lembram rostos e máscaras. O objeto deixa a função utilitária e passa a funcionar como criação estética e crítica ao consumo. A mudança de função reposiciona artisticamente materiais antes tratados como lixo."
+        ],
+        "alternatives": {
+          "A": "A combinação de materiais produz significado artístico, sem indicar empobrecimento da obra.",
+          "B": "A transformação dos recipientes em máscaras atribui aos objetos outra função e valor estético.",
+          "C": "As obras não são apresentadas como inacabadas nem dependentes de intervenção do espectador.",
+          "D": "A crítica ao lixo existe, mas não se descreve uma militância ecológica como definição formal da obra.",
+          "E": "O uso de descartes é escolha expressiva, sem prova de precariedade material do artista."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:37": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "A repetição de você deve simula ordens para aceitar desemprego, agradecer e obedecer. O exagero da promessa de recompensa no juízo final expõe o absurdo dessa submissão. A canção ironiza o conformismo e a disciplina que fazem o indivíduo aceitar injustiças."
+        ],
+        "alternatives": {
+          "A": "As ordens e recompensas absurdas ironizam a obediência conformista.",
+          "B": "A voz que recomenda deveres é construída ironicamente, sem adesão do compositor.",
+          "C": "O juízo final satiriza a promessa de compensação, sem propor solução religiosa.",
+          "D": "O carnaval integra a ironia da acomodação, sem ser o valor central questionado.",
+          "E": "A canção denuncia a submissão, sem defender indiferença coletiva."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:38": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O eu lírico pede sinais do outro e recupera imagens de marés, peixes e pés molhados para imaginar o reencontro. A memória sustenta o desejo de realização amorosa e aproxima simbolicamente o paraíso. O sonho de plenitude é desenhado por essas lembranças compartilhadas."
+        ],
+        "alternatives": {
+          "A": "A insistência em pedir contato mantém a possibilidade do reencontro, sem ceticismo predominante.",
+          "B": "A monotonia é atribuída condicionalmente ao outro, sem resumir a voz lírica.",
+          "C": "As imagens lembradas alimentam o desejo de realização e reencontro amoroso.",
+          "D": "Os pedidos não constituem uma acusação direta contra atitudes de afastamento.",
+          "E": "O poema expressa desejo de contato, sem discutir conceitualmente o significado do amor."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:39": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Falação é uma escolha lexical coloquial e pros é a contração informal de para os. Na letra, as duas formas aproximam a linguagem do registro da conversa cotidiana, coerente com a interpelação direta ao falso moralista."
+        ],
+        "alternatives": {
+          "A": "Falação e a contração pros são marcas identificáveis de informalidade.",
+          "B": "Teatro de revista é uma designação de gênero artístico, sem marca coloquial por si.",
+          "C": "Perfeito e Carnaval são palavras correntes também em textos formais.",
+          "D": "Oculista é um termo neutro de profissão, sem caracterizar registro informal.",
+          "E": "Curar e falso moralista não possuem, por si, a redução e a coloquialidade solicitadas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:40": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O narrador se contrapõe à desumanização de Alda afirmando que a ama. Ao converter o hospital em palácio e a mulher em princesa, cria imagens líricas dentro do espaço de violência e segregação. Essa imersão poética sustenta seu olhar afetivo sobre a interna."
+        ],
+        "alternatives": {
+          "A": "A voz narra o abandono com compaixão, sem ironia predominante.",
+          "B": "A violência do hospital é denunciada, sem resignação diante dos métodos praticados.",
+          "C": "As imagens de princesa, palácio e caminhos da dor poeticamente atravessam o espaço de exclusão.",
+          "D": "A descrição não busca investigar um universo mental desconhecido em chave explicativa.",
+          "E": "A linguagem é imagética e afetiva, sem apresentar a lucidez como objetivo do tratamento."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:41": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "O soneto identifica a alegria com um pavão vermelho que ocupa o quintal e faz os pavões anteriores desaparecerem. O esplendor da cor e da ave traduz a intensidade de uma felicidade alcançada. A imagem funciona como metáfora da plena realização do eu lírico."
+        ],
+        "alternatives": {
+          "A": "O quintal é cenário da alegria, sem representar desejo de isolamento.",
+          "B": "A ave simboliza um estado subjetivo, sem se limitar a exaltar a natureza.",
+          "C": "Há sinestesia na cor sonora, mas esse recurso participa da metáfora mais ampla da alegria.",
+          "D": "O pavão vermelho representa a alegria plena que supera as experiências anteriores.",
+          "E": "As imagens de luz e cor não configuram necessariamente uma visão mística."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:42": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "A erotização do corpo feminino envolve normas sociais que ensinam maneiras de posar, mover-se, desejar e se apresentar. A obra permite discutir o corpo como construção histórica. Por isso, o processo se liga à educação do gesto, da vontade e do comportamento."
+        ],
+        "alternatives": {
+          "A": "Exercícios excessivos são uma prática específica e não explicam a construção social da erotização.",
+          "B": "Medicamentos e cosméticos não abrangem as normas de gesto e apresentação do corpo.",
+          "C": "A modelagem social dos gestos e comportamentos participa da erotização histórica do corpo feminino.",
+          "D": "A existência de espaços de prática corporal não determina por si a erotização.",
+          "E": "Experiências de lazer podem ocorrer sem constituir os padrões sociais de sensualidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:43": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "O casal recorre a referências ancestrais como Calunga e Nsanga para imaginar uma união em outra terra, longe da escravidão. Essas imagens poéticas coexistem com a violência das cenas. A permanência desse repertório cultural enfatiza a resistência identitária das pessoas escravizadas."
+        ],
+        "alternatives": {
+          "A": "O desejo de união persiste, portanto os afetos não são apresentados apenas como impossíveis.",
+          "B": "A brutalidade está presente, mas o lirismo depende especialmente das referências ancestrais.",
+          "C": "A evocação de outra terra expressa uma resposta imaginativa, sem se reduzir ao abatimento.",
+          "D": "A memória cultural e a imaginação de liberdade afirmam a identidade sob a violência da escravidão.",
+          "E": "As referências preservadas mostram vínculo com a ancestralidade, sem simples apagamento pelo exílio."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:44": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "O vereador anuncia repetidamente uma habilidade que não possui, e a confiança na matraca leva moradores a afirmar que viram suas façanhas. A ironia mostra que a repetição e a credibilidade do meio podem fazer circular como verdade uma informação falsa."
+        ],
+        "alternatives": {
+          "A": "O vereador é um exemplo, mas o anúncio não apresenta uma campanha eleitoral.",
+          "B": "Os anúncios comerciais fazem parte do sistema, sem explicar o caso falso destacado.",
+          "C": "O interesse popular não garante a veracidade que a ironia põe em questão.",
+          "D": "O narrador declara falsa a façanha e mostra como o sistema a torna acreditada.",
+          "E": "O caso central não constitui orientação ou serviço de utilidade pública."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    },
+    "q:45": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "A trajetória de Abel Ferreira, a parceria com Pixinguinha e os elogios à sua sonoridade sustentam uma valorização do choro. A dificuldade de divulgação aparece em contraste com essa riqueza. O argumento principal destaca a relevância histórica e estética do gênero na música brasileira."
+        ],
+        "alternatives": {
+          "A": "A escola é um fator de divulgação citado, sem ser responsabilizada sozinha pelo desconhecimento do músico.",
+          "B": "A falta de incentivo é apontada, mas o texto não se limita a reivindicar verbas de preservação.",
+          "C": "Os exemplos biográficos e os juízos de valor fundamentam a importância histórica e estética do choro.",
+          "D": "Os dados de vida servem à valorização do gênero, sem constituir a finalidade única do texto.",
+          "E": "A baixa divulgação é problematizada em contraste com a riqueza do choro, sem simples constatação de impopularidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
+          }
+        ]
+      }
+    }
+  }
+}

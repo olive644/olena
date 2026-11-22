@@ -58,7 +58,7 @@ export function NavigationIcon({
         data-icon={name}
         aria-hidden="true"
       >
-        <img src={`/navigation-icons/colorful/${name}.svg`} alt="" />
+        <img src={`/navigation-icons/colorful/${name}.svg?v=20261121-3`} alt="" />
       </span>
     );
   if (name === "profile") {
