@@ -115,6 +115,35 @@ class MapTest(unittest.TestCase):
         self.assertEqual(first["counts"]["A"], 1)
         self.assertEqual(first["counts"]["B"], 1)
 
+    def test_linguagens_com_vetor_de_50_separam_ingles_espanhol_e_comuns(self):
+        letters = "ABCDE"
+        items = ([{"key": f"english:{n}", "answer": "A", "excluded": False} for n in range(1, 6)]
+                 + [{"key": f"spanish:{n}", "answer": "B", "excluded": False} for n in range(1, 6)]
+                 + [{"key": f"q:{n}", "answer": letters[n % 5], "excluded": False} for n in range(6, 46)])
+        (self.root / "map").mkdir()
+        (self.root / "tri").mkdir()
+        (self.root / "map" / f"{'c' * 14}-LC.json").write_text(json.dumps({
+            "year": 2017, "day": 1, "area": "LC", "variantId": "c" * 14, "examCode": 399,
+            "officialUrl": "https://x/p.pdf", "answerUrl": "https://x/g.pdf", "items": items}), encoding="utf8")
+        buffer = io.StringIO()
+        writer = csv.writer(buffer)
+        writer.writerow(["CO_PROVA_LC", "NU_NOTA_LC", "TX_RESPOSTAS_LC", "TP_LINGUA"])
+        common = "C" * 40
+        writer.writerow(["399", "600", "AAAAA" + "99999" + common, "0"])   # inglês
+        writer.writerow(["399", "500", "99999" + "BBBBB" + common, "1"])   # espanhol
+        writer.writerow(["399", "500", "AAAAA" + "BBBBB" + common, "0"])   # bloco do outro idioma com letras: recusado
+        archive = self.root / "l.zip"
+        with zipfile.ZipFile(archive, "w") as bundle:
+            bundle.writestr("PARTICIPANTES_2017.csv", buffer.getvalue())
+        report = builder.aggregate(archive, 2017, self.root / "out", self.root / "tri", self.root / "map")
+        self.assertEqual(report["questions"], 50)
+        questions = json.loads((self.root / "out" / f"{'c' * 14}.json").read_text(encoding="utf8"))["questions"]
+        self.assertEqual(questions["english:1"]["statistics"]["counts"]["A"], 1)
+        self.assertEqual(questions["english:1"]["statistics"]["population"], 1)
+        self.assertEqual(questions["spanish:1"]["statistics"]["counts"]["B"], 1)
+        self.assertEqual(questions["q:6"]["statistics"]["population"], 2)
+        self.assertEqual(report["rejectedAreaVectors"], {"sem_nota_ou_vetor_de_45": 1})
+
 
 if __name__ == "__main__":
     unittest.main()

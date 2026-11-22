@@ -13,6 +13,23 @@ from datetime import date
 from pathlib import Path
 
 
+def language_vector(responses, language):
+    """Vetor de 45 respostas de Linguagens do idioma escolhido, ou None se o formato não for o esperado.
+
+    A partir de 2017 (até onde os arquivos foram conferidos) o vetor tem 50 caracteres: inglês nas
+    posições 1 a 5, espanhol nas 6 a 10 e as comuns nas 11 a 50. O bloco do idioma não escolhido vem
+    preenchido com '9'. Se esse bloco tiver letras, o layout não é o conhecido e o registro é recusado.
+    """
+    if len(responses) == 45:
+        return responses
+    if len(responses) != 50 or language not in ("0", "1"):
+        return None
+    chosen, other = (responses[0:5], responses[5:10]) if language == "0" else (responses[5:10], responses[0:5])
+    if any(letter in "ABCDE" for letter in other) or any(letter not in "ABCDE9." for letter in chosen):
+        return None
+    return chosen + responses[10:50]
+
+
 def aggregate(archive_path, year, output, tri_dir, map_dir=None):
     bundles = [json.loads(path.read_text(encoding="utf-8"))
                for path in tri_dir.glob("*.json") if path.stem not in ("index", "audit")]
@@ -71,6 +88,8 @@ def aggregate(archive_path, year, output, tri_dir, map_dir=None):
                     if not bundle:
                         continue
                     responses = row.get(f"TX_RESPOSTAS_{area}", "")
+                    if area == "LC" and len(responses) == 50:
+                        responses = language_vector(responses, row.get("TP_LINGUA", "")) or ""
                     if not row.get(f"NU_NOTA_{area}") or len(responses) != 45:
                         rejected["sem_nota_ou_vetor_de_45"] += 1
                         continue
