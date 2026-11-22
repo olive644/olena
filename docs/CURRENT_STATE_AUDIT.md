@@ -5693,15 +5693,16 @@ Reutilizados orçamento, API autenticada e medidor das PRs 686/688/689 na main. 
 
 Removida geração automática local de resumo, flashcards, quizzes e simulados na pasta. Reutilizados library-ai.ts, extração de fontes e generateWithOlena da main. Custo estimado para todas as categorias; tamanho altera custo de quiz/prova. Sem saldo desabilita, saldo insuficiente avisa sem bloquear tentativa. Backend mantém orçamento/reserva/acerto da main. 49 testes aprovados; conferência de cada modal em PC/mobile com fonte textual e saldo de teste sem gerar IA real.
 
-
 ### Acervo oficial Enem — 2026-11-21
+
 Vestibular abre Enem dentro do app. Removidos título Provas anteriores e parágrafo sobre acervos; Fuvest permanece como link oficial. Grade original com 34 cartões (2010–2026, dias 1/2), 479 links de cadernos e gabaritos publicados, capas reais extraídas dos PDFs do Inep. Todos os links de prova encontrados nas páginas anuais estão indexados. Filtros ano/dia/progresso, salvos/conclusão e histórico de leitura neste dispositivo; não se apresentam tentativas ou notas fictícias. Seleção de variante e leitor PDF reutilizado com URL oficial; CSP permite somente download.inep.gov.br para esses arquivos. PDFs completos carregam por demanda; capas locais totalizam cerca de 2,4 MB. Scripts de atualização em scripts/fetch-enem-*.py, cache em tmp. TypeScript/ESLint focados e 8 testes aprovados; grade, filtros, variantes e renderização oficial conferidos em Edge 1366/390. Sem publicar nesta etapa.
 
-
 ### Ampliação Enem 2000–2026 — 2026-11-21
+
 Acervo ampliado para 45 cartões e 498 versões oficiais. Edições 2000–2008 identificadas como Dia único (day=0); 2009–2026 mantêm dias 1 e 2. Cabeçalho mostra limites derivados do catálogo; filtro inclui Dia único. Capas reais das 11 edições adicionadas extraídas de PDFs oficiais. Os 498 links de prova publicados nas páginas anuais foram indexados, sem lacunas. Nove testes aprovados; geração do catálogo mantém IDs anteriores e histórico.
 
 Enem: filtros Ano/Dia/Progresso em baloes flutuantes de papel, selecao marcada, fechamento por Escape e foco fora; borda escura removida do botao compartilhado shelf-wood-button. Validacao visual desktop/mobile claro/escuro; quatro testes do acervo e TypeScript passaram.
+
 ## 22/11/2026: revisão salva e estatísticas reais por questão do Enem
 
 - A revisão usa arquivos estáticos por caderno em `public/enem/reviews`, sem geração de IA ou consumo de créditos. Dez resumos curtos e justificativas A a E estão cadastrados: inglês, questões 1 a 5 dos cadernos azuis regulares de 2022 e 2026. Fontes publicadas e data de conferência aparecem na tela. Não se atribui aos professores citados uma revisão ou aprovação do OlenaStudy.
@@ -5964,3 +5965,11 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Medido em produção: os chunks com hash (por exemplo `/assets/pdf-DaveP19J.js`) saíam com `Cache-Control: public, max-age=0, must-revalidate`, o que obriga o navegador a revalidar cada um a cada visita. `/data/schools-inep-2024.json` (10 MB, 1,98 MB em brotli) e as fontes tinham o mesmo cabeçalho.
 - `vercel.json` passa a mandar: `/assets/(.*)` com `public, max-age=31536000, immutable` (todos os arquivos de `dist/assets` têm hash no nome, conferido no build); `/data/(.*)` com `public, max-age=86400, stale-while-revalidate=604800`; `/fonts/(.*)` com `public, max-age=2592000, stale-while-revalidate=604800` (nomes sem hash, por isso sem `immutable`). Testes em `src/security-headers.test.ts`.
 - Não verificado: o ganho de tempo em revisitas (não medido) e os cabeçalhos no deploy real até a PR ser publicada; conferir com `curl -I` em um chunk e em `/data/schools-inep-2024.json`. Risco: um arquivo em `/assets` sem hash seria servido por um ano; o build atual não tem nenhum.
+
+### PR #697 (Enem): integração com a main e correções de verificação (22/11/2026)
+
+- Merge da `main` na branch (só local até a dona autorizar o envio). Conflitos: `app-navigation.tsx` (a PR trazia barra lateral recolhível; a main decidiu por barra sempre expandida, então ficou a versão da main), `typewriter-desk.test.tsx` e dois arquivos de docs (mantidos os dois lados). O `?v=` que a PR pôs no ícone da navegação foi mantido e o teste de iconografia agora aceita o parâmetro.
+- `i18n:check` falhava em "Fuvest · USP", "Enem", "Ano", "Dia" e "Progresso": corrigido com texto em chave e catálogos.
+- O catálogo `public/enem/catalog.json` (212 KB) estava dentro do JavaScript do acervo. Passou a ser buscado por `fetch` quando o acervo abre (`src/data/enem-catalog.ts`), com carregamento, erro e "Tentar novamente"; testes ajustados e um novo. Total de JavaScript: 2114,1 para 1963,8 KiB.
+- O CSP liberava `download.inep.gov.br` em `connect-src`, mas todo PDF carrega pelo proxy do próprio domínio (`/enem-pdf`, `enemPdfUrl`): removido do CSP. A Política de Privacidade passou a descrever, sem nomes, o serviço público de provas do Enem. Não verificado: que a reescrita externa da Vercel não repasse cookies ou o IP do estudante ao serviço de origem.
+- **Aberto:** `performance:check` ainda falha: 1963,8 KiB contra o teto de 1914 KiB (autorização da dona necessária para subir; o acréscimo restante é o código do acervo, 40 KiB, e do leitor de PDF, 11,7 KiB). A suíte completa (3.396 testes), `tsc`, ESLint (0 erros), `api:check`, `i18n:check` e o build passam. Não executados: `npm run test:e2e` (822 testes) e a verificação visual das telas do Enem em claro/escuro, PC e celular nesta rodada.

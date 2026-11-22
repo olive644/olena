@@ -52,3 +52,7 @@ A base de 2025 precisa ser obtida e validada separadamente. Microdados de 2026 n
 ## Limites da entrega
 
 Os relatórios de navegador em `docs/research/enem-*-browser-validation.json` documentam verificações anteriores específicas em PC/celular e claro/escuro. Não constituem revisão visual de todas as questões nem validação do conteúdo semântico inteiro. A base da branch antecede alterações mais novas da main; integração e conflitos devem ser conferidos antes do merge. Não habilitar merge automático.
+
+## Atualização de 22/11/2026 (integração e verificação)
+
+Branch integrada com a main atual e com as verificações automáticas corrigidas (ver `docs/CURRENT_STATE_AUDIT.md`, seção "PR #697"). O catálogo agora vem por `fetch`. Restam: autorização para o teto de JavaScript (1963,8 KiB medidos contra 1914), `npm run test:e2e`, verificação visual, e as duas frentes editoriais acima (análises A a E e estatísticas), que são de produção de conteúdo em lote e não foram iniciadas nesta rodada.
