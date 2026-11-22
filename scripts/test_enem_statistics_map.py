@@ -165,6 +165,22 @@ class MapTest(unittest.TestCase):
         self.assertEqual(report["questions"], 50)
         self.assertEqual(report["rejectedAreaVectors"], {})
 
+    def test_linguagens_antes_de_2017_usam_idioma_nas_cinco_primeiras(self):
+        catalog = {"papers": [{"year": 2010, "day": 2, "variants": [
+            {"id": "e" * 14, "label": "Dia 2 - Caderno 5 - Amarelo", "url": "https://x/p.pdf", "answerUrl": "https://x/g.pdf"}]}]}
+        answer = {f"english:{n}": "A" for n in range(91, 96)}
+        answer.update({f"spanish:{n}": "B" for n in range(91, 96)})
+        answer.update({f"q:{n}": "C" for n in range(96, 136)})
+        positions = ([(n, "0") for n in range(91, 96)] + [(n, "1") for n in range(91, 96)]
+                     + [(n, "") for n in range(96, 136)])
+        rows = item_rows("LC", 93, positions, "A", color="AMARELO")
+        for row in rows:
+            language = row["TP_LINGUA"]
+            row["TX_GABARITO"] = "A" if language == "0" else "B" if language == "1" else "C"
+        write_items(self.root, 2010, rows)
+        result = mapper.build(self.root, catalog, {(2010, 2): answer}, self.root / "tri", self.root / "map")
+        self.assertEqual([(i["area"], i["status"]) for i in result if i["area"] == "LC"], [("LC", "mapeado")])
+
 
 if __name__ == "__main__":
     unittest.main()

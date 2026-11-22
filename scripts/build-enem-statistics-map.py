@@ -46,7 +46,13 @@ def keyed_items(rows, section, year):
     first = first_question(section, year)
     if section != "languages" or year < 2017:
         base = int(ordered[0]["CO_POSICAO"])
-        return [(f"q:{int(row['CO_POSICAO']) - base + first}", row) for row in ordered]
+        items = []
+        for row in ordered:
+            number = int(row["CO_POSICAO"]) - base + first
+            # Antes de 2017 as 5 questões de idioma repetem a posição (inglês e espanhol).
+            language = {"0": "english", "1": "spanish"}.get(row.get("TP_LINGUA", "")) if section == "languages" else None
+            items.append((f"{language}:{number}" if language else f"q:{number}", row))
+        return items
     counters = collections.Counter()
     items = []
     for row in ordered:

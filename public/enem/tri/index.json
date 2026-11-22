@@ -110,6 +110,14 @@
     "2a740603ac1503": {
       "languages": "2a740603ac1503-LC.json",
       "math": "2a740603ac1503-MT.json"
+    },
+    "bf022e1f8deabc": {
+      "humanities": "bf022e1f8deabc-CH.json",
+      "nature": "bf022e1f8deabc-CN.json"
+    },
+    "7c1488bbd58cb2": {
+      "languages": "7c1488bbd58cb2-LC.json",
+      "math": "7c1488bbd58cb2-MT.json"
     }
   }
 }

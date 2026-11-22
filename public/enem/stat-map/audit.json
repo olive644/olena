@@ -380,11 +380,25 @@
   {
     "year": 2010,
     "day": 1,
-    "status": "sem-gabarito"
+    "area": "CH",
+    "status": "tri"
+  },
+  {
+    "year": 2010,
+    "day": 1,
+    "area": "CN",
+    "status": "tri"
   },
   {
     "year": 2010,
     "day": 2,
-    "status": "sem-gabarito"
+    "area": "LC",
+    "status": "tri"
+  },
+  {
+    "year": 2010,
+    "day": 2,
+    "area": "MT",
+    "status": "tri"
   }
 ]
