@@ -157,7 +157,7 @@ export function TypewriterDesk(props: DeskProps) {
             <div>
               <button type="button" className="shelf-wood-button" onClick={() => setEnemOpen(true)}>
                 <EssayDeskIcon name="vestibular" />
-                <strong>Enem</strong>
+                <strong>{"Enem"}</strong>
                 <PaperArrow />
               </button>
               <a
@@ -167,7 +167,7 @@ export function TypewriterDesk(props: DeskProps) {
                 rel="noopener noreferrer"
               >
                 <EssayDeskIcon name="vestibular" />
-                <strong>Fuvest · USP</strong>
+                <strong>{"Fuvest · USP"}</strong>
                 <PaperArrow />
               </a>
             </div>

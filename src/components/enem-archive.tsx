@@ -817,7 +817,7 @@ export default function EnemArchive({ onBack, scope }: { onBack(): void; scope: 
         >
           <PaperArrow back />
         </button>
-        <h2>Enem</h2>
+        <h2>{"Enem"}</h2>
         <span>
           <button
             type="button"
@@ -857,7 +857,7 @@ export default function EnemArchive({ onBack, scope }: { onBack(): void; scope: 
       </div>
       <div className="enem-archive-filters">
         <ArchiveFilter
-          label="Ano"
+          label={uiText("Ano")}
           value={year}
           onChange={setYear}
           options={[
@@ -866,7 +866,7 @@ export default function EnemArchive({ onBack, scope }: { onBack(): void; scope: 
           ]}
         />
         <ArchiveFilter
-          label="Dia"
+          label={uiText("Dia")}
           value={day}
           onChange={setDay}
           options={[
@@ -876,7 +876,7 @@ export default function EnemArchive({ onBack, scope }: { onBack(): void; scope: 
           ]}
         />
         <ArchiveFilter
-          label="Progresso"
+          label={uiText("Progresso")}
           value={filter}
           onChange={setFilter}
           options={[
