@@ -5978,3 +5978,9 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 
 - Novo `scripts/build-enem-statistics-map.py` e diretório `public/enem/stat-map` (8 cadernos, mais auditoria). O agregador passa a completar o mapeamento da TRI com esses cadernos. Testes em `scripts/test_enem_statistics_map.py` (4 testes, mais o teste existente do agregador). Detalhes e comandos em `docs/ENEM_CONTINUACAO.md`.
 - Não verificado: as estatísticas desses cadernos ainda não foram calculadas (falta baixar os microdados), e nenhuma conferência cruzada com a distribuição real foi feita além de o gabarito dos itens coincidir 100% com o do PDF oficial.
+
+### Teto de JavaScript e limpeza local (22/11/2026)
+
+- Por autorização da dona, o teto do total de JavaScript da aplicação subiu de 1914 para 1966 KiB (e o teto absoluto junto), para o acervo do Enem (medido 1963,8 KiB; entrada inicial inalterada em 219,4 KiB).
+- Hospedagem dos PDFs do Enem: `scripts/upload-enem-pdfs.mjs` (68 arquivos, 213 MB, conferidos como PDF) envia ao Vercel Blob com o mesmo caminho do Inep; falta a dona criar a loja Blob e rodar o envio, e então apontar a reescrita `/enem-pdf` do `vercel.json` para o endereço da loja. Não testado contra o Blob (não há token neste ambiente).
+- Apagados do disco local os 11 arquivos `PARTICIPANTES_*.zip` (3,5 GB) de anos já processados e commitados.

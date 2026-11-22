@@ -58,3 +58,12 @@ it("não publica estimativa para 2026 nem para cadernos sem validação", () => 
       expect(bundle.items.length).toBe(bundle.area === "LC" ? 50 : 45);
     }
 });
+
+it("nenhum caderno servido pelo app tem erro médio acima do limite da calibração", () => {
+  // Provas fora da calibração ficam sem pontuação ("Indisponível nesta edição"). Se um caderno
+  // com erro alto entrar em public/enem/tri, scripts/build-enem-tri-accuracy.py o lista aqui.
+  const accuracy = JSON.parse(readFileSync("public/enem/tri/accuracy.json", "utf8")) as {
+    files: Record<string, unknown>;
+  };
+  expect(Object.keys(accuracy.files)).toEqual([]);
+});
