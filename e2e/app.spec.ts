@@ -18,7 +18,10 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
     const icons = navigation.locator(".navigation-icon--colorful img:visible");
     expect(await icons.count()).toBeGreaterThan(0);
     for (const icon of await icons.all()) {
-      await expect(icon).toHaveAttribute("src", /\/navigation-icons\/colorful\/.*\.svg(\?v=[0-9-]+)?$/);
+      await expect(icon).toHaveAttribute(
+        "src",
+        /\/navigation-icons\/colorful\/.*\.svg(\?v=[0-9-]+)?$/,
+      );
       await expect
         .poll(() =>
           icon.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0),

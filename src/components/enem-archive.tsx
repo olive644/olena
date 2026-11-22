@@ -1015,7 +1015,6 @@ export default function EnemArchive({ onBack, scope }: { onBack(): void; scope: 
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     let active = true;
-    setFailed(false);
     loadEnemCatalog().then(
       (value) => active && setCatalog(value),
       () => active && setFailed(true),
@@ -1033,7 +1032,10 @@ export default function EnemArchive({ onBack, scope }: { onBack(): void; scope: 
           <button
             type="button"
             className="shelf-wood-button"
-            onClick={() => setAttempt(attempt + 1)}
+            onClick={() => {
+              setFailed(false);
+              setAttempt(attempt + 1);
+            }}
           >
             {uiText("Tentar novamente")}
           </button>
