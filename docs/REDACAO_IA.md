@@ -56,3 +56,10 @@ Decisão da dona: o resultado é a **nota geral** (soma das cinco competências 
 - Risco: pedir só a nota, sem o modelo explicar, pode piorar a concordância com os corretores. Por isso a medição continua sendo a condição para ligar `OLENA_ESSAY_SCORE`.
 - As observações voltam com o Olena Pro: será uma capacidade própria (com a conta de créditos própria), porque o custo de reserva é diferente. O parser já aceita o modo com detalhe (`detail: true`, o padrão do validador), com trechos conferidos contra o texto.
 - Os valores de custo das seções anteriores deste documento (cerca de 84 créditos, 3 a 5 correções) valem para o formato com comentários, que não está em uso.
+
+## Primeira medição e correção de formato (21/11/2026)
+
+- Rodada parcial com 120 redações do teste: 60 respostas falharam com "Resposta fora do formato" (50%). A causa não era a nota: o modelo devolvia níveis e notas válidos, mas com a chave final esquecida (`...120}]`) ou com as aspas escapadas por barra (`{\"competencies\":...}`), e o validador recusava tudo. Em produção isso faria metade dos pedidos falhar (e ser reembolsada).
+- Correção: `repairModelJson` (`src/ai/essay-output.ts`) conserta só a estrutura (barras nas aspas e fechamentos esquecidos) antes da validação normal; níveis, notas e trechos continuam validados, e texto cortado no meio não é consertado. As 10 respostas reais que falharam passam a ser aceitas. Testes novos em `essay-output.test.ts`.
+- O script de medição passou a guardar a resposta bruta das falhas, a contar o gasto de todas as tentativas (antes só as bem-sucedidas, então o gasto anterior estava subestimado) e ganhou `--retry-failed`.
+- Resultado parcial (65 redações medidas, não decide nada): QWK por competência de 0,20 a 0,48 e média de 0,35, o que cairia em "mostrar faixa". Só entram as respostas que deram certo; falta refazer as outras. Custo medido: cerca de 8,5 neurons por correção bem-sucedida.

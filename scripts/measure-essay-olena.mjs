@@ -32,6 +32,7 @@ const flag = (name, fallback) => {
   return at >= 0 && args[at + 1] ? args[at + 1] : fallback;
 };
 const dryRun = args.includes("--dry-run");
+const retryFailed = args.includes("--retry-failed");
 const count = Math.min(150, Math.max(1, Number(flag("--count", "120")) || 120));
 const maxNeurons = Number(flag("--max-neurons", "6000")) || 6000;
 
@@ -96,10 +97,33 @@ const { createEssayProvider, quadraticWeightedKappa, scoreDisplayFor } = await i
   new URL(`../${OUT}/bundle.mjs`, import.meta.url)
 );
 
+// Guarda a resposta bruta e o gasto de CADA chamada (inclusive as que o validador recusa), para
+// entender as falhas. A resposta é só JSON de níveis e notas, sem o texto da redação.
+const captured = [];
+const capturingFetch = async (...fetchArgs) => {
+  const response = await fetch(...fetchArgs);
+  try {
+    const body = await response.clone().json();
+    const reply = body?.result?.response;
+    const usage = body?.result?.usage;
+    captured.push({
+      raw: (typeof reply === "string" ? reply : (JSON.stringify(reply) ?? "")).slice(0, 300),
+      neurons: usage
+        ? ((usage.prompt_tokens ?? 0) * PRICES.input +
+            (usage.completion_tokens ?? 0) * PRICES.output) /
+          1e6
+        : 0,
+    });
+  } catch {
+    // resposta que não é JSON: não há o que guardar
+  }
+  return response;
+};
 const provider = createEssayProvider(
   { generate: async () => ({ answer: "", suggestions: [] }) },
   { accountId, token, model },
   { allowScore: true },
+  capturingFetch,
 );
 
 const progressFile = `${OUT}/progress.jsonl`;
@@ -112,6 +136,8 @@ const done = new Map(
           const row = JSON.parse(line);
           return [row.id, row];
         })
+        // --retry-failed: as que falharam saem da lista e são refeitas (a nova linha vale).
+        .filter(([, row]) => !(retryFailed && row.failed))
     : [],
 );
 let spent = 0;
@@ -139,13 +165,10 @@ for (const row of sample) {
     privacy: { consent: true, retention: "none" },
   };
   let entry;
+  captured.length = 0;
   try {
     const result = await provider.generate(request);
     const parsed = JSON.parse(result.answer);
-    const neurons = result.usage
-      ? (result.usage.inputTokens * PRICES.input + result.usage.outputTokens * PRICES.output) / 1e6
-      : 0;
-    spent += neurons;
     if (parsed.competencies.some((item) => item.score === undefined))
       throw new Error("A resposta veio sem nota em alguma competência");
     entry = {
@@ -153,11 +176,17 @@ for (const row of sample) {
       human: row.grades.map((points) => points / 40),
       model: parsed.competencies.map((item) => item.score / 40),
       levels: parsed.competencies.map((item) => item.level),
-      neurons: Math.round(neurons * 100) / 100,
     };
   } catch (error) {
-    entry = { id: row.id, failed: String(error?.message ?? error).slice(0, 80) };
+    entry = {
+      id: row.id,
+      failed: String(error?.message ?? error).slice(0, 80),
+      raw: captured.map((call) => call.raw),
+    };
   }
+  const burned = captured.reduce((total, call) => total + call.neurons, 0);
+  spent += burned;
+  entry.neurons = Math.round(burned * 100) / 100;
   appendFileSync(progressFile, `${JSON.stringify(entry)}\n`);
   done.set(row.id, entry);
   await new Promise((resolve) => setTimeout(resolve, 1_000));
