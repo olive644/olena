@@ -8,14 +8,14 @@
     "english:91": {
       "answer": "C",
       "statistics": {
-        "population": 1,
+        "population": 611031,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 1,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 239702,
+          "B": 83759,
+          "C": 228555,
+          "D": 43145,
+          "E": 15177,
+          "blank": 693
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -28,14 +28,14 @@
     "english:92": {
       "answer": "D",
       "statistics": {
-        "population": 1,
+        "population": 611031,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 1,
-          "blank": 0
+          "A": 21133,
+          "B": 59501,
+          "C": 54554,
+          "D": 202492,
+          "E": 272585,
+          "blank": 766
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -48,14 +48,14 @@
     "english:93": {
       "answer": "E",
       "statistics": {
-        "population": 1,
+        "population": 611031,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 1,
-          "E": 0,
-          "blank": 0
+          "A": 66358,
+          "B": 124587,
+          "C": 88571,
+          "D": 22804,
+          "E": 307865,
+          "blank": 846
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -68,14 +68,14 @@
     "english:94": {
       "answer": "A",
       "statistics": {
-        "population": 1,
+        "population": 611031,
         "counts": {
-          "A": 1,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 308123,
+          "B": 45608,
+          "C": 137447,
+          "D": 60376,
+          "E": 58439,
+          "blank": 1038
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -88,14 +88,14 @@
     "english:95": {
       "answer": "A",
       "statistics": {
-        "population": 1,
+        "population": 611031,
         "counts": {
-          "A": 1,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 351043,
+          "B": 111094,
+          "C": 52633,
+          "D": 56422,
+          "E": 38314,
+          "blank": 1525
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -108,14 +108,14 @@
     "q:100": {
       "answer": "E",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 1,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 56020,
+          "B": 129855,
+          "C": 140832,
+          "D": 54115,
+          "E": 1066634,
+          "blank": 5551
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -128,14 +128,14 @@
     "q:101": {
       "answer": "C",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 1,
-          "blank": 0
+          "A": 312808,
+          "B": 183188,
+          "C": 618787,
+          "D": 151037,
+          "E": 184275,
+          "blank": 2912
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -148,14 +148,14 @@
     "q:102": {
       "answer": "E",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 1,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 252875,
+          "B": 199230,
+          "C": 33843,
+          "D": 176707,
+          "E": 786780,
+          "blank": 3572
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -168,14 +168,14 @@
     "q:103": {
       "answer": "C",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 1,
-          "E": 0,
-          "blank": 0
+          "A": 161567,
+          "B": 263485,
+          "C": 426778,
+          "D": 235435,
+          "E": 361536,
+          "blank": 4206
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -188,14 +188,14 @@
     "q:104": {
       "answer": "C",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 1,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 106052,
+          "B": 158332,
+          "C": 624085,
+          "D": 86450,
+          "E": 473306,
+          "blank": 4782
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -208,14 +208,14 @@
     "q:105": {
       "answer": "D",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 1,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 40321,
+          "B": 269515,
+          "C": 111473,
+          "D": 951268,
+          "E": 77064,
+          "blank": 3366
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -228,14 +228,14 @@
     "q:106": {
       "answer": "B",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 1,
-          "blank": 0
+          "A": 162650,
+          "B": 922613,
+          "C": 82370,
+          "D": 80435,
+          "E": 202975,
+          "blank": 1964
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -248,14 +248,14 @@
     "q:107": {
       "answer": "B",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 1,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 223407,
+          "B": 380516,
+          "C": 195507,
+          "D": 506702,
+          "E": 144099,
+          "blank": 2776
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -268,14 +268,14 @@
     "q:108": {
       "answer": "E",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 1,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 255811,
+          "B": 333277,
+          "C": 216783,
+          "D": 221777,
+          "E": 422080,
+          "blank": 3279
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -288,14 +288,14 @@
     "q:109": {
       "answer": "B",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 1,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 161593,
+          "B": 195625,
+          "C": 235060,
+          "D": 123458,
+          "E": 733819,
+          "blank": 3452
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -308,14 +308,14 @@
     "q:110": {
       "answer": "E",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 1,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 317680,
+          "B": 190206,
+          "C": 139983,
+          "D": 451419,
+          "E": 350216,
+          "blank": 3503
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -328,14 +328,14 @@
     "q:111": {
       "answer": "A",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 1,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 513474,
+          "B": 224728,
+          "C": 241865,
+          "D": 160638,
+          "E": 308916,
+          "blank": 3386
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -348,14 +348,14 @@
     "q:112": {
       "answer": "B",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 1,
-          "blank": 0
+          "A": 235406,
+          "B": 597770,
+          "C": 359677,
+          "D": 170516,
+          "E": 87254,
+          "blank": 2384
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -368,14 +368,14 @@
     "q:113": {
       "answer": "B",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 1,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 439356,
+          "B": 277997,
+          "C": 172662,
+          "D": 397862,
+          "E": 161753,
+          "blank": 3377
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -388,14 +388,14 @@
     "q:114": {
       "answer": "A",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 1,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 285449,
+          "B": 520496,
+          "C": 305763,
+          "D": 192736,
+          "E": 145552,
+          "blank": 3011
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -408,14 +408,14 @@
     "q:115": {
       "answer": "B",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 1,
-          "blank": 0
+          "A": 253443,
+          "B": 638237,
+          "C": 84310,
+          "D": 143214,
+          "E": 329810,
+          "blank": 3993
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -428,14 +428,14 @@
     "q:116": {
       "answer": "D",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 1,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 154431,
+          "B": 363149,
+          "C": 251565,
+          "D": 419860,
+          "E": 260751,
+          "blank": 3251
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -448,14 +448,14 @@
     "q:117": {
       "answer": "C",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 1,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 338535,
+          "B": 156680,
+          "C": 543241,
+          "D": 183692,
+          "E": 227307,
+          "blank": 3552
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -468,14 +468,14 @@
     "q:118": {
       "answer": "D",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 1,
-          "E": 0,
-          "blank": 0
+          "A": 291218,
+          "B": 206832,
+          "C": 116863,
+          "D": 272657,
+          "E": 561616,
+          "blank": 3821
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -488,14 +488,14 @@
     "q:119": {
       "answer": "A",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 1,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 610252,
+          "B": 168026,
+          "C": 350805,
+          "D": 167255,
+          "E": 152553,
+          "blank": 4116
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -508,14 +508,14 @@
     "q:120": {
       "answer": "D",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 1,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 427981,
+          "B": 298716,
+          "C": 137292,
+          "D": 436634,
+          "E": 147756,
+          "blank": 4628
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -528,14 +528,14 @@
     "q:121": {
       "answer": "E",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 1,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 200533,
+          "B": 307022,
+          "C": 340253,
+          "D": 158772,
+          "E": 444402,
+          "blank": 2025
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -548,14 +548,14 @@
     "q:122": {
       "answer": "E",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 1,
-          "blank": 0
+          "A": 354948,
+          "B": 132192,
+          "C": 250790,
+          "D": 138017,
+          "E": 573504,
+          "blank": 3556
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -568,14 +568,14 @@
     "q:123": {
       "answer": "D",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 1,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 218442,
+          "B": 245523,
+          "C": 253075,
+          "D": 289156,
+          "E": 442519,
+          "blank": 4292
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -588,14 +588,14 @@
     "q:124": {
       "answer": "C",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 1,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 112304,
+          "B": 169509,
+          "C": 588737,
+          "D": 247831,
+          "E": 331202,
+          "blank": 3424
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -608,14 +608,14 @@
     "q:125": {
       "answer": "D",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 1,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 256799,
+          "B": 182580,
+          "C": 149284,
+          "D": 800481,
+          "E": 60839,
+          "blank": 3024
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -628,14 +628,14 @@
     "q:126": {
       "answer": "A",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 1,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 895829,
+          "B": 99388,
+          "C": 165713,
+          "D": 119037,
+          "E": 169359,
+          "blank": 3681
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -648,14 +648,14 @@
     "q:127": {
       "answer": "E",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 1,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 412168,
+          "B": 153086,
+          "C": 168884,
+          "D": 137491,
+          "E": 577618,
+          "blank": 3760
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -668,14 +668,14 @@
     "q:128": {
       "answer": "C",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 1,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 61483,
+          "B": 88952,
+          "C": 1138083,
+          "D": 82963,
+          "E": 78289,
+          "blank": 3237
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -688,14 +688,14 @@
     "q:129": {
       "answer": "C",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 1,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 135833,
+          "B": 294204,
+          "C": 792630,
+          "D": 87746,
+          "E": 139387,
+          "blank": 3207
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -708,14 +708,14 @@
     "q:130": {
       "answer": "A",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 1,
-          "blank": 0
+          "A": 260564,
+          "B": 329569,
+          "C": 366617,
+          "D": 210989,
+          "E": 281359,
+          "blank": 3909
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -728,14 +728,14 @@
     "q:131": {
       "answer": "B",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 1,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 495534,
+          "B": 363482,
+          "C": 161609,
+          "D": 206489,
+          "E": 221838,
+          "blank": 4055
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -748,14 +748,14 @@
     "q:132": {
       "answer": "B",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 1,
-          "blank": 0
+          "A": 463931,
+          "B": 421340,
+          "C": 209711,
+          "D": 229856,
+          "E": 124115,
+          "blank": 4054
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -768,14 +768,14 @@
     "q:133": {
       "answer": "D",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 1,
-          "blank": 0
+          "A": 178039,
+          "B": 317638,
+          "C": 258335,
+          "D": 483296,
+          "E": 211303,
+          "blank": 4396
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -788,14 +788,14 @@
     "q:134": {
       "answer": "C",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 1,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 208970,
+          "B": 207207,
+          "C": 575726,
+          "D": 297303,
+          "E": 157533,
+          "blank": 6268
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -808,14 +808,14 @@
     "q:135": {
       "answer": "E",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 1,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 257327,
+          "B": 342763,
+          "C": 113785,
+          "D": 156316,
+          "E": 578999,
+          "blank": 3817
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -828,14 +828,14 @@
     "q:96": {
       "answer": "B",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 1,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 92710,
+          "B": 1046024,
+          "C": 73749,
+          "D": 113640,
+          "E": 122645,
+          "blank": 4239
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -848,14 +848,14 @@
     "q:97": {
       "answer": "D",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 1,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 0,
-          "blank": 0
+          "A": 233620,
+          "B": 152924,
+          "C": 265628,
+          "D": 733712,
+          "E": 63039,
+          "blank": 4084
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -868,14 +868,14 @@
     "q:98": {
       "answer": "E",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 0,
-          "E": 1,
-          "blank": 0
+          "A": 128609,
+          "B": 79914,
+          "C": 75637,
+          "D": 110381,
+          "E": 1054187,
+          "blank": 4279
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -888,14 +888,14 @@
     "q:99": {
       "answer": "B",
       "statistics": {
-        "population": 1,
+        "population": 1453007,
         "counts": {
-          "A": 0,
-          "B": 0,
-          "C": 0,
-          "D": 1,
-          "E": 0,
-          "blank": 0
+          "A": 201895,
+          "B": 1021486,
+          "C": 88456,
+          "D": 76549,
+          "E": 61900,
+          "blank": 2721
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
@@ -1796,6 +1796,106 @@
           "D": 121207,
           "E": 150570,
           "blank": 4443
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "spanish:91": {
+      "answer": "D",
+      "statistics": {
+        "population": 841976,
+        "counts": {
+          "A": 145856,
+          "B": 260756,
+          "C": 66420,
+          "D": 227148,
+          "E": 138686,
+          "blank": 3110
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "spanish:92": {
+      "answer": "C",
+      "statistics": {
+        "population": 841976,
+        "counts": {
+          "A": 106177,
+          "B": 60323,
+          "C": 133592,
+          "D": 292723,
+          "E": 246542,
+          "blank": 2619
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "spanish:93": {
+      "answer": "D",
+      "statistics": {
+        "population": 841976,
+        "counts": {
+          "A": 136690,
+          "B": 77773,
+          "C": 90668,
+          "D": 417308,
+          "E": 116620,
+          "blank": 2917
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "spanish:94": {
+      "answer": "B",
+      "statistics": {
+        "population": 841976,
+        "counts": {
+          "A": 170181,
+          "B": 291475,
+          "C": 87769,
+          "D": 208137,
+          "E": 81809,
+          "blank": 2605
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
+      }
+    },
+    "spanish:95": {
+      "answer": "A",
+      "statistics": {
+        "population": 841976,
+        "counts": {
+          "A": 350154,
+          "B": 97221,
+          "C": 140076,
+          "D": 158945,
+          "E": 92789,
+          "blank": 2791
         },
         "source": {
           "title": "INEP / Pedro Mantovani, microdados 2015 (CC BY 4.0)",

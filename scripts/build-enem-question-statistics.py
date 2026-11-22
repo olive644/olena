@@ -13,6 +13,14 @@ from datetime import date
 from pathlib import Path
 
 
+def normalize_language(value):
+    """Idioma como "0" ou "1". Alguns anos (2012) trazem "0.0" e "1.0"."""
+    try:
+        return str(int(float(value)))
+    except ValueError:
+        return ""
+
+
 def language_vector(responses, language):
     """Vetor de 45 respostas de Linguagens do idioma escolhido, ou None se o formato não for o esperado.
 
@@ -89,11 +97,11 @@ def aggregate(archive_path, year, output, tri_dir, map_dir=None):
                         continue
                     responses = row.get(f"TX_RESPOSTAS_{area}", "")
                     if area == "LC" and len(responses) == 50:
-                        responses = language_vector(responses, row.get("TP_LINGUA", "")) or ""
+                        responses = language_vector(responses, normalize_language(row.get("TP_LINGUA", ""))) or ""
                     if not row.get(f"NU_NOTA_{area}") or len(responses) != 45:
                         rejected["sem_nota_ou_vetor_de_45"] += 1
                         continue
-                    language = row.get("TP_LINGUA", "")
+                    language = normalize_language(row.get("TP_LINGUA", ""))
                     if area == "LC" and language not in ("0", "1"):
                         rejected["idioma_invalido"] += 1
                         continue

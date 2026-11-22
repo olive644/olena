@@ -144,6 +144,27 @@ class MapTest(unittest.TestCase):
         self.assertEqual(questions["q:6"]["statistics"]["population"], 2)
         self.assertEqual(report["rejectedAreaVectors"], {"sem_nota_ou_vetor_de_45": 1})
 
+    def test_idioma_escrito_com_decimal_e_aceito(self):
+        self.assertEqual([builder.normalize_language(v) for v in ("0", "1", "0.0", "1.0", "", "x")],
+                         ["0", "1", "0", "1", "", ""])
+        items = [{"key": f"english:{n}", "answer": "A", "excluded": False} for n in range(1, 6)] +                 [{"key": f"spanish:{n}", "answer": "B", "excluded": False} for n in range(1, 6)] +                 [{"key": f"q:{n}", "answer": "C", "excluded": False} for n in range(6, 46)]
+        (self.root / "map").mkdir()
+        (self.root / "tri").mkdir()
+        (self.root / "map" / f"{'d' * 14}-LC.json").write_text(json.dumps({
+            "year": 2012, "day": 2, "area": "LC", "variantId": "d" * 14, "examCode": 109,
+            "officialUrl": "https://x/p.pdf", "answerUrl": "https://x/g.pdf", "items": items}), encoding="utf8")
+        buffer = io.StringIO()
+        writer = csv.writer(buffer)
+        writer.writerow(["CO_PROVA_LC", "NU_NOTA_LC", "TX_RESPOSTAS_LC", "TP_LINGUA"])
+        writer.writerow(["109", "600", "A" * 45, "0.0"])
+        writer.writerow(["109", "500", "B" * 45, "1.0"])
+        archive = self.root / "y.zip"
+        with zipfile.ZipFile(archive, "w") as bundle:
+            bundle.writestr("PARTICIPANTES_2012.csv", buffer.getvalue())
+        report = builder.aggregate(archive, 2012, self.root / "out", self.root / "tri", self.root / "map")
+        self.assertEqual(report["questions"], 50)
+        self.assertEqual(report["rejectedAreaVectors"], {})
+
 
 if __name__ == "__main__":
     unittest.main()

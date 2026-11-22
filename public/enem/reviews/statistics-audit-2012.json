@@ -1,10 +1,8 @@
 {
   "year": 2012,
   "recordsRead": 4079886,
-  "questions": 135,
+  "questions": 185,
   "mappedAreas": 4,
-  "rejectedAreaVectors": {
-    "idioma_invalido": 1063567
-  },
+  "rejectedAreaVectors": {},
   "source": "https://doi.org/10.5281/zenodo.20130840"
 }
