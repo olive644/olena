@@ -1,12 +1,28 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { beforeEach, expect, it, vi } from "vitest";
 import { existsSync } from "node:fs";
 import catalog from "../../public/enem/catalog.json";
 import EnemArchive from "./enem-archive";
+import { loadEnemCatalog } from "../data/enem-catalog";
 const audio = vi.hoisted(() => ({ unlock: vi.fn(), play: vi.fn(), dispose: vi.fn() }));
 vi.mock("../data/math-sound", () => ({ createMathSound: () => audio }));
 
-beforeEach(() => localStorage.clear());
+beforeEach(() => {
+  localStorage.clear();
+  // O catálogo vem do servidor (fora do JavaScript): o teste serve o mesmo arquivo.
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response(JSON.stringify(catalog), { status: 200 })),
+  );
+});
+
+async function openArchive(scope: string) {
+  const view = render(<EnemArchive scope={scope} onBack={vi.fn()} />);
+  await act(async () => {
+    await loadEnemCatalog();
+  });
+  return view;
+}
 it("cobre 2010 a 2026 com dois dias e usa arquivos oficiais", () => {
   expect(catalog.papers).toHaveLength(34);
   for (let year = 2010; year <= 2026; year++)
@@ -22,8 +38,8 @@ it("cobre 2010 a 2026 com dois dias e usa arquivos oficiais", () => {
       }
     }
 });
-it("filtra ano e dia e oferece as versões e gabaritos publicados", () => {
-  render(<EnemArchive scope="test" onBack={vi.fn()} />);
+it("filtra ano e dia e oferece as versões e gabaritos publicados", async () => {
+  await openArchive("test");
   expect(document.querySelectorAll(".enem-paper-card")).toHaveLength(34);
   fireEvent.click(screen.getByLabelText("Ano", { selector: "summary" }));
   fireEvent.click(screen.getByRole("radio", { name: "2010" }));
@@ -50,8 +66,8 @@ it("filtra ano e dia e oferece as versões e gabaritos publicados", () => {
   expect(screen.queryByRole("button", { name: "Começar prova" })).toBeNull();
   expect(screen.getByRole("tab", { name: "Prova" }).getAttribute("aria-selected")).toBe("true");
 });
-it("preserva salvos e conclusão e permite removê-los", () => {
-  const { unmount } = render(<EnemArchive scope="test" onBack={vi.fn()} />);
+it("preserva salvos e conclusão e permite removê-los", async () => {
+  const { unmount } = await openArchive("test");
   fireEvent.click(screen.getAllByRole("button", { name: "Salvar prova" })[0]!);
   expect(audio.unlock).toHaveBeenCalled();
   expect(audio.play).toHaveBeenCalledWith("cardReveal");
@@ -65,7 +81,7 @@ it("preserva salvos e conclusão e permite removê-los", () => {
   expect(audio.play).toHaveBeenCalledWith("correct");
   expect(document.querySelectorAll(".enem-paper-card.is-completed")).toHaveLength(1);
   unmount();
-  render(<EnemArchive scope="test" onBack={vi.fn()} />);
+  await openArchive("test");
   fireEvent.click(screen.getByRole("tab", { name: "Minhas provas" }));
   expect(document.querySelectorAll(".enem-paper-card")).toHaveLength(1);
   fireEvent.click(screen.getByRole("button", { name: "Remover prova dos salvos" }));
@@ -76,8 +92,8 @@ it("preserva salvos e conclusão e permite removê-los", () => {
   expect(document.querySelectorAll(".enem-paper-card")).toHaveLength(0);
 });
 
-it("oferece filtros flutuantes sem edicoes antigas", () => {
-  render(<EnemArchive scope="years" onBack={vi.fn()} />);
+it("oferece filtros flutuantes sem edicoes antigas", async () => {
+  await openArchive("years");
   expect(catalog.papers.every((paper) => paper.year >= 2010)).toBe(true);
   fireEvent.click(screen.getByLabelText("Ano", { selector: "summary" }));
   expect(screen.queryByRole("radio", { name: "2009" })).toBeNull();
@@ -88,8 +104,8 @@ it("oferece filtros flutuantes sem edicoes antigas", () => {
   expect(document.querySelectorAll(".enem-paper-card")).toHaveLength(2);
 });
 
-it("retoma uma prova iniciada com a área e as respostas preservadas", () => {
-  render(<EnemArchive scope="resume" onBack={vi.fn()} />);
+it("retoma uma prova iniciada com a área e as respostas preservadas", async () => {
+  await openArchive("resume");
   fireEvent.click(screen.getByRole("button", { name: "Enem 2026, 1º dia" }));
   fireEvent.click(screen.getByRole("button", { name: "Começar prova" }));
   fireEvent.click(screen.getByRole("radio", { name: "Ciências Humanas e suas Tecnologias" }));
@@ -116,4 +132,19 @@ it("retoma uma prova iniciada com a área e as respostas preservadas", () => {
   fireEvent.click(screen.getByRole("button", { name: /^Continuar$/ }));
   fireEvent.click(screen.getByRole("button", { name: "Enem 2026, 1º dia" }));
   expect(screen.getByRole("heading", { name: "Prova entregue!" })).toBeTruthy();
+});
+
+it("mostra o carregamento e permite tentar de novo quando o catálogo falha", async () => {
+  vi.resetModules();
+  const fetchMock = vi
+    .fn()
+    .mockResolvedValueOnce(new Response("erro", { status: 500 }))
+    .mockResolvedValueOnce(new Response(JSON.stringify(catalog), { status: 200 }));
+  vi.stubGlobal("fetch", fetchMock);
+  const { default: Archive } = await import("./enem-archive");
+  render(<Archive scope="retry" onBack={vi.fn()} />);
+  expect(await screen.findByRole("alert")).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Tentar novamente" }));
+  await screen.findByLabelText("Ano", { selector: "summary" });
+  expect(document.querySelectorAll(".enem-paper-card")).toHaveLength(34);
 });

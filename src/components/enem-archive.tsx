@@ -8,7 +8,8 @@ import { enemPdfUrl } from "../data/enem-pdf-url";
 import { enemSections, type EnemSection } from "../data/enem-sections";
 import { LibraryDialog } from "./library-dialog";
 import { createPortal } from "react-dom";
-import catalog from "../../public/enem/catalog.json";
+import { HelenaLoading } from "./helena-loading";
+import { loadEnemCatalog, type EnemCatalog } from "../data/enem-catalog";
 import { uiText } from "../i18n/runtime";
 import { PaperArrow } from "./paper-arrow";
 import { FocusPaperArrow } from "./focus-paper-arrow";
@@ -19,7 +20,7 @@ import { PaperDigits } from "./paper-digits";
 import type { StudyMaterial } from "../domain/workspace";
 import "./enem-archive.css";
 const PdfReader = lazy(() => import("./library-pdf-reader"));
-type Paper = (typeof catalog.papers)[number];
+type Paper = EnemCatalog["papers"][number];
 type Progress = {
   saved?: boolean;
   opened?: boolean;
@@ -38,8 +39,7 @@ type Progress = {
   };
 };
 type History = Record<string, Progress>;
-const ids = new Set(catalog.papers.map((p) => p.id));
-function readHistory(key: string): History {
+function readHistory(key: string, ids: ReadonlySet<string>): History {
   try {
     const value: unknown = JSON.parse(localStorage.getItem(key) ?? "{}");
     if (!value || typeof value !== "object" || Array.isArray(value)) return {};
@@ -280,7 +280,15 @@ function ArchiveFilter({
     </details>
   );
 }
-export default function EnemArchive({ onBack, scope }: { onBack(): void; scope: string }) {
+function EnemArchiveView({
+  onBack,
+  scope,
+  catalog,
+}: {
+  onBack(): void;
+  scope: string;
+  catalog: EnemCatalog;
+}) {
   const sound = useRef<ReturnType<typeof createMathSound> | null>(null);
   useEffect(
     () => () => {
@@ -290,7 +298,9 @@ export default function EnemArchive({ onBack, scope }: { onBack(): void; scope: 
     [],
   );
   const key = `olena.enem.history.v1:${scope}`;
-  const [history, setHistory] = useState<History>(() => readHistory(key));
+  const [history, setHistory] = useState<History>(() =>
+    readHistory(key, new Set(catalog.papers.map((p) => p.id))),
+  );
   const [tab, setTab] = useState<"all" | "mine">("all");
   const [year, setYear] = useState("all");
   const [day, setDay] = useState("all");
@@ -994,6 +1004,43 @@ export default function EnemArchive({ onBack, scope }: { onBack(): void; scope: 
       </div>
       {downloadStatus && <p role="status">{downloadStatus}</p>}
       {!visible.length && <p className="enem-empty">{uiText("Nenhuma prova neste filtro.")}</p>}
+    </section>
+  );
+}
+
+/** O catálogo (cerca de 210 KB) vem do servidor quando o acervo abre, e não dentro do JavaScript. */
+export default function EnemArchive({ onBack, scope }: { onBack(): void; scope: string }) {
+  const [catalog, setCatalog] = useState<EnemCatalog>();
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    let active = true;
+    setFailed(false);
+    loadEnemCatalog().then(
+      (value) => active && setCatalog(value),
+      () => active && setFailed(true),
+    );
+    return () => {
+      active = false;
+    };
+  }, [attempt]);
+  if (catalog) return <EnemArchiveView onBack={onBack} scope={scope} catalog={catalog} />;
+  return (
+    <section className="enem-archive" aria-label={uiText("Provas do Enem")}>
+      {failed ? (
+        <div role="alert">
+          <p>{uiText("Não foi possível carregar as provas do Enem. Confira a conexão.")}</p>
+          <button
+            type="button"
+            className="shelf-wood-button"
+            onClick={() => setAttempt(attempt + 1)}
+          >
+            {uiText("Tentar novamente")}
+          </button>
+        </div>
+      ) : (
+        <HelenaLoading compact label={uiText("Carregando as provas do Enem…")} />
+      )}
     </section>
   );
 }

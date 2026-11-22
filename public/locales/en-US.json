@@ -4091,5 +4091,8 @@
   "The overall score is not available yet. See the level of each competency.",
   "Notes by competency",
   "Notes and comments by competency",
-  "Progress"
+  "Progress",
+  "Could not load the Enem exams. Check your connection.",
+  "Loading the Enem exams…",
+  "Enem exams"
 ]
