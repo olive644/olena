@@ -45,4 +45,23 @@ describe("cabeçalhos de segurança da Vercel", () => {
     expect(csp).toContain("frame-ancestors 'self'");
     expect(csp).toContain("base-uri 'self'");
   });
+
+  it("guarda por um ano os arquivos do build, que têm hash no nome", () => {
+    const cache = (source: string) =>
+      config.headers
+        .find((rule) => rule.source === source)
+        ?.headers.find((header) => header.key === "Cache-Control")?.value;
+    expect(cache("/assets/(.*)")).toBe("public, max-age=31536000, immutable");
+  });
+
+  it("dados e fontes sem hash não ficam imutáveis: cache curto com atualização em segundo plano", () => {
+    const cache = (source: string) =>
+      config.headers
+        .find((rule) => rule.source === source)
+        ?.headers.find((header) => header.key === "Cache-Control")?.value ?? "";
+    for (const source of ["/data/(.*)", "/fonts/(.*)"]) {
+      expect(cache(source)).toContain("stale-while-revalidate");
+      expect(cache(source)).not.toContain("immutable");
+    }
+  });
 });
