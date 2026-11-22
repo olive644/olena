@@ -2010,6 +2010,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 304498,
+        "counts": {
+          "A": 27973,
+          "B": 56910,
+          "C": 150809,
+          "D": 20283,
+          "E": 47981,
+          "blank": 542
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "english:2": {
@@ -2037,6 +2054,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 304498,
+        "counts": {
+          "A": 189957,
+          "B": 21320,
+          "C": 21555,
+          "D": 31594,
+          "E": 39400,
+          "blank": 672
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "english:3": {
@@ -2064,6 +2098,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 304498,
+        "counts": {
+          "A": 163191,
+          "B": 48548,
+          "C": 21007,
+          "D": 63892,
+          "E": 7195,
+          "blank": 665
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "english:4": {
@@ -2091,6 +2142,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 304498,
+        "counts": {
+          "A": 102485,
+          "B": 103798,
+          "C": 19688,
+          "D": 35261,
+          "E": 42435,
+          "blank": 831
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "english:5": {
@@ -2118,6 +2186,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 304498,
+        "counts": {
+          "A": 53395,
+          "B": 118497,
+          "C": 80140,
+          "D": 15605,
+          "E": 35967,
+          "blank": 894
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "spanish:1": {
@@ -2145,6 +2230,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 224520,
+        "counts": {
+          "A": 24874,
+          "B": 22107,
+          "C": 100083,
+          "D": 44710,
+          "E": 31804,
+          "blank": 942
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "spanish:2": {
@@ -2172,6 +2274,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 224520,
+        "counts": {
+          "A": 68137,
+          "B": 19390,
+          "C": 45044,
+          "D": 47045,
+          "E": 43879,
+          "blank": 1025
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "spanish:3": {
@@ -2199,6 +2318,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 224520,
+        "counts": {
+          "A": 64949,
+          "B": 21724,
+          "C": 68702,
+          "D": 24397,
+          "E": 43786,
+          "blank": 962
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "spanish:4": {
@@ -2226,6 +2362,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 224520,
+        "counts": {
+          "A": 123419,
+          "B": 25319,
+          "C": 16418,
+          "D": 15479,
+          "E": 42919,
+          "blank": 966
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "spanish:5": {
@@ -2253,6 +2406,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 224520,
+        "counts": {
+          "A": 150244,
+          "B": 13382,
+          "C": 20061,
+          "D": 25446,
+          "E": 14463,
+          "blank": 924
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:6": {
@@ -2280,6 +2450,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 86264,
+          "B": 272133,
+          "C": 68050,
+          "D": 61954,
+          "E": 39342,
+          "blank": 1275
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:7": {
@@ -2307,6 +2494,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 65787,
+          "B": 147546,
+          "C": 76925,
+          "D": 214355,
+          "E": 22399,
+          "blank": 2006
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:8": {
@@ -2334,6 +2538,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 129330,
+          "B": 30409,
+          "C": 220744,
+          "D": 97937,
+          "E": 49184,
+          "blank": 1414
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:9": {
@@ -2361,6 +2582,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 34500,
+          "B": 50938,
+          "C": 55352,
+          "D": 307092,
+          "E": 79515,
+          "blank": 1621
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:10": {
@@ -2388,6 +2626,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 31049,
+          "B": 44486,
+          "C": 49639,
+          "D": 40626,
+          "E": 361024,
+          "blank": 2194
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:11": {
@@ -2415,6 +2670,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 363982,
+          "B": 48106,
+          "C": 32749,
+          "D": 51933,
+          "E": 30760,
+          "blank": 1488
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:12": {
@@ -2442,6 +2714,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 24026,
+          "B": 33483,
+          "C": 11292,
+          "D": 353333,
+          "E": 106098,
+          "blank": 786
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:13": {
@@ -2469,6 +2758,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 60763,
+          "B": 62528,
+          "C": 166964,
+          "D": 23212,
+          "E": 214279,
+          "blank": 1272
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:14": {
@@ -2496,6 +2802,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 25417,
+          "B": 175810,
+          "C": 22187,
+          "D": 129633,
+          "E": 174868,
+          "blank": 1103
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:15": {
@@ -2523,6 +2846,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 80219,
+          "B": 72090,
+          "C": 119018,
+          "D": 173009,
+          "E": 82157,
+          "blank": 2525
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:16": {
@@ -2550,6 +2890,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 133160,
+          "B": 151553,
+          "C": 80682,
+          "D": 111351,
+          "E": 51141,
+          "blank": 1131
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:17": {
@@ -2577,6 +2934,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 152599,
+          "B": 65461,
+          "C": 47311,
+          "D": 162167,
+          "E": 99869,
+          "blank": 1611
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:18": {
@@ -2604,6 +2978,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 93158,
+          "B": 112401,
+          "C": 25127,
+          "D": 232361,
+          "E": 64825,
+          "blank": 1146
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:19": {
@@ -2631,6 +3022,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 93497,
+          "B": 111928,
+          "C": 32509,
+          "D": 270900,
+          "E": 19167,
+          "blank": 1017
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:20": {
@@ -2658,6 +3066,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 65916,
+          "B": 61059,
+          "C": 153064,
+          "D": 143564,
+          "E": 104365,
+          "blank": 1050
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:21": {
@@ -2685,6 +3110,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 225803,
+          "B": 66735,
+          "C": 58586,
+          "D": 76355,
+          "E": 99694,
+          "blank": 1845
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:22": {
@@ -2712,6 +3154,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 35715,
+          "B": 299568,
+          "C": 67093,
+          "D": 109510,
+          "E": 16202,
+          "blank": 930
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:23": {
@@ -2739,6 +3198,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 49484,
+          "B": 265970,
+          "C": 158218,
+          "D": 27296,
+          "E": 26794,
+          "blank": 1256
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:24": {
@@ -2766,6 +3242,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 34063,
+          "B": 60555,
+          "C": 84385,
+          "D": 90689,
+          "E": 257862,
+          "blank": 1464
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:25": {
@@ -2793,6 +3286,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 199643,
+          "B": 34188,
+          "C": 27238,
+          "D": 63818,
+          "E": 202746,
+          "blank": 1385
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:26": {
@@ -2820,6 +3330,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 91485,
+          "B": 105467,
+          "C": 71373,
+          "D": 164692,
+          "E": 93962,
+          "blank": 2039
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:27": {
@@ -2847,6 +3374,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 86378,
+          "B": 50390,
+          "C": 103205,
+          "D": 143262,
+          "E": 144102,
+          "blank": 1681
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:28": {
@@ -2874,6 +3418,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 122649,
+          "B": 120305,
+          "C": 135351,
+          "D": 120841,
+          "E": 28319,
+          "blank": 1553
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:29": {
@@ -2901,6 +3462,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 159054,
+          "B": 23867,
+          "C": 285129,
+          "D": 31470,
+          "E": 27985,
+          "blank": 1513
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:30": {
@@ -2928,6 +3506,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 66987,
+          "B": 160983,
+          "C": 105177,
+          "D": 68982,
+          "E": 124589,
+          "blank": 2300
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:31": {
@@ -2955,6 +3550,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 280753,
+          "B": 90705,
+          "C": 65911,
+          "D": 22895,
+          "E": 67861,
+          "blank": 893
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:32": {
@@ -2982,6 +3594,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 56382,
+          "B": 71728,
+          "C": 167440,
+          "D": 136003,
+          "E": 94684,
+          "blank": 2781
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:33": {
@@ -3009,6 +3638,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 88545,
+          "B": 52937,
+          "C": 194132,
+          "D": 154205,
+          "E": 37826,
+          "blank": 1373
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:34": {
@@ -3036,6 +3682,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 134886,
+          "B": 304089,
+          "C": 11037,
+          "D": 58781,
+          "E": 19356,
+          "blank": 869
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:35": {
@@ -3063,6 +3726,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 50459,
+          "B": 159415,
+          "C": 83531,
+          "D": 201396,
+          "E": 31789,
+          "blank": 2428
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:36": {
@@ -3090,6 +3770,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 59801,
+          "B": 135694,
+          "C": 23635,
+          "D": 236878,
+          "E": 71684,
+          "blank": 1326
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:37": {
@@ -3117,6 +3814,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 306504,
+          "B": 64100,
+          "C": 53313,
+          "D": 30933,
+          "E": 72623,
+          "blank": 1545
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:38": {
@@ -3144,6 +3858,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 141151,
+          "B": 118642,
+          "C": 131044,
+          "D": 43435,
+          "E": 92948,
+          "blank": 1798
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:39": {
@@ -3171,6 +3902,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 352676,
+          "B": 38273,
+          "C": 30861,
+          "D": 63938,
+          "E": 41842,
+          "blank": 1428
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:40": {
@@ -3198,6 +3946,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 126487,
+          "B": 58174,
+          "C": 146619,
+          "D": 95750,
+          "E": 99942,
+          "blank": 2046
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:41": {
@@ -3225,6 +3990,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 36417,
+          "B": 196385,
+          "C": 96342,
+          "D": 143854,
+          "E": 54012,
+          "blank": 2008
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:42": {
@@ -3252,6 +4034,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 113293,
+          "B": 167780,
+          "C": 99048,
+          "D": 58877,
+          "E": 88398,
+          "blank": 1622
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:43": {
@@ -3279,6 +4078,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 29083,
+          "B": 153969,
+          "C": 161274,
+          "D": 155254,
+          "E": 27997,
+          "blank": 1441
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:44": {
@@ -3306,6 +4122,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 143213,
+          "B": 59647,
+          "C": 97559,
+          "D": 166983,
+          "E": 59267,
+          "blank": 2349
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     },
     "q:45": {
@@ -3333,6 +4166,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2021_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 529018,
+        "counts": {
+          "A": 108125,
+          "B": 94158,
+          "C": 143425,
+          "D": 79010,
+          "E": 102025,
+          "blank": 2275
+        },
+        "source": {
+          "title": "INEP / Pedro Mantovani, microdados 2021 (CC BY 4.0)",
+          "url": "https://doi.org/10.5281/zenodo.20130840",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2021 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
+        }
       }
     }
   }
