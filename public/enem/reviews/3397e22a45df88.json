@@ -30,6 +30,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 503639,
+        "counts": {
+          "A": 20987,
+          "B": 53773,
+          "C": 30181,
+          "D": 311933,
+          "E": 85037,
+          "blank": 1728
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "english:2": {
@@ -57,6 +74,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 503639,
+        "counts": {
+          "A": 58113,
+          "B": 29000,
+          "C": 57986,
+          "D": 323273,
+          "E": 33041,
+          "blank": 2226
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "english:3": {
@@ -84,6 +118,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 503639,
+        "counts": {
+          "A": 18695,
+          "B": 27187,
+          "C": 114924,
+          "D": 288363,
+          "E": 52222,
+          "blank": 2248
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "english:4": {
@@ -111,6 +162,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 503639,
+        "counts": {
+          "A": 64526,
+          "B": 57513,
+          "C": 57556,
+          "D": 58418,
+          "E": 263092,
+          "blank": 2534
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "english:5": {
@@ -138,6 +206,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 503639,
+        "counts": {
+          "A": 364130,
+          "B": 36643,
+          "C": 46254,
+          "D": 29093,
+          "E": 25572,
+          "blank": 1947
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "spanish:1": {
@@ -165,6 +250,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 338529,
+        "counts": {
+          "A": 25176,
+          "B": 188399,
+          "C": 21547,
+          "D": 44479,
+          "E": 56730,
+          "blank": 2198
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "spanish:2": {
@@ -192,6 +294,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 338529,
+        "counts": {
+          "A": 84032,
+          "B": 36547,
+          "C": 40153,
+          "D": 123181,
+          "E": 51828,
+          "blank": 2788
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "spanish:3": {
@@ -219,6 +338,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 338529,
+        "counts": {
+          "A": 94291,
+          "B": 48909,
+          "C": 37193,
+          "D": 113079,
+          "E": 42177,
+          "blank": 2880
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "spanish:4": {
@@ -246,6 +382,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 338529,
+        "counts": {
+          "A": 45451,
+          "B": 58021,
+          "C": 124076,
+          "D": 53134,
+          "E": 55273,
+          "blank": 2574
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "spanish:5": {
@@ -273,6 +426,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 338529,
+        "counts": {
+          "A": 40133,
+          "B": 58820,
+          "C": 172834,
+          "D": 34049,
+          "E": 30300,
+          "blank": 2393
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:6": {
@@ -300,6 +470,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 84729,
+          "B": 69984,
+          "C": 44972,
+          "D": 248302,
+          "E": 390317,
+          "blank": 3864
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:7": {
@@ -327,6 +514,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 84933,
+          "B": 142873,
+          "C": 403116,
+          "D": 131316,
+          "E": 76107,
+          "blank": 3823
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:8": {
@@ -354,6 +558,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 257426,
+          "B": 190139,
+          "C": 86896,
+          "D": 266009,
+          "E": 37727,
+          "blank": 3971
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:9": {
@@ -381,6 +602,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 211700,
+          "B": 106812,
+          "C": 255899,
+          "D": 117237,
+          "E": 146623,
+          "blank": 3897
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:10": {
@@ -408,6 +646,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 265322,
+          "B": 114722,
+          "C": 90809,
+          "D": 45545,
+          "E": 321506,
+          "blank": 4264
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:11": {
@@ -435,6 +690,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 166156,
+          "B": 321469,
+          "C": 94938,
+          "D": 192426,
+          "E": 62611,
+          "blank": 4568
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:12": {
@@ -462,6 +734,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 31292,
+          "B": 84694,
+          "C": 543706,
+          "D": 158932,
+          "E": 21330,
+          "blank": 2214
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:13": {
@@ -489,6 +778,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 88387,
+          "B": 217439,
+          "C": 90954,
+          "D": 160675,
+          "E": 281093,
+          "blank": 3620
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:14": {
@@ -516,6 +822,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 135101,
+          "B": 103459,
+          "C": 454841,
+          "D": 45346,
+          "E": 101035,
+          "blank": 2386
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:15": {
@@ -543,6 +866,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 407272,
+          "B": 51620,
+          "C": 191796,
+          "D": 142643,
+          "E": 45722,
+          "blank": 3115
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:16": {
@@ -570,6 +910,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 74984,
+          "B": 96301,
+          "C": 112448,
+          "D": 159458,
+          "E": 395535,
+          "blank": 3442
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:17": {
@@ -597,6 +954,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 65742,
+          "B": 254943,
+          "C": 255614,
+          "D": 80164,
+          "E": 183026,
+          "blank": 2679
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:18": {
@@ -624,6 +998,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 635885,
+          "B": 39298,
+          "C": 105975,
+          "D": 32047,
+          "E": 26190,
+          "blank": 2773
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:19": {
@@ -651,6 +1042,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 18602,
+          "B": 127471,
+          "C": 22030,
+          "D": 16629,
+          "E": 654814,
+          "blank": 2622
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:20": {
@@ -678,6 +1086,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 94643,
+          "B": 396655,
+          "C": 68524,
+          "D": 162943,
+          "E": 116164,
+          "blank": 3239
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:21": {
@@ -705,6 +1130,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 97067,
+          "B": 115038,
+          "C": 362030,
+          "D": 215266,
+          "E": 50008,
+          "blank": 2759
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:22": {
@@ -732,6 +1174,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 105057,
+          "B": 543838,
+          "C": 148731,
+          "D": 30606,
+          "E": 11732,
+          "blank": 2204
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:23": {
@@ -759,6 +1218,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 163660,
+          "B": 167938,
+          "C": 270504,
+          "D": 70437,
+          "E": 165425,
+          "blank": 4204
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:24": {
@@ -786,6 +1262,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 51722,
+          "B": 475598,
+          "C": 67337,
+          "D": 141197,
+          "E": 104112,
+          "blank": 2202
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:25": {
@@ -813,6 +1306,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 225283,
+          "B": 116914,
+          "C": 92555,
+          "D": 66179,
+          "E": 333449,
+          "blank": 7788
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:26": {
@@ -840,6 +1350,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 26658,
+          "B": 734681,
+          "C": 14503,
+          "D": 27606,
+          "E": 36677,
+          "blank": 2043
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:27": {
@@ -867,6 +1394,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 603551,
+          "B": 60172,
+          "C": 38502,
+          "D": 112854,
+          "E": 24383,
+          "blank": 2706
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:28": {
@@ -894,6 +1438,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 151244,
+          "B": 422637,
+          "C": 109619,
+          "D": 38389,
+          "E": 117036,
+          "blank": 3243
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:29": {
@@ -921,6 +1482,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 282354,
+          "B": 110561,
+          "C": 137393,
+          "D": 61689,
+          "E": 245476,
+          "blank": 4695
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:30": {
@@ -948,6 +1526,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 233411,
+          "B": 172156,
+          "C": 198904,
+          "D": 189759,
+          "E": 42666,
+          "blank": 5272
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:31": {
@@ -975,6 +1570,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 103132,
+          "B": 37443,
+          "C": 211036,
+          "D": 458386,
+          "E": 29674,
+          "blank": 2497
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:32": {
@@ -1002,6 +1614,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 171017,
+          "B": 129354,
+          "C": 329618,
+          "D": 108205,
+          "E": 95929,
+          "blank": 8045
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:33": {
@@ -1029,6 +1658,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 88658,
+          "B": 518108,
+          "C": 103676,
+          "D": 109546,
+          "E": 19319,
+          "blank": 2861
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:34": {
@@ -1056,6 +1702,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 222243,
+          "B": 92886,
+          "C": 303812,
+          "D": 175671,
+          "E": 44373,
+          "blank": 3183
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:35": {
@@ -1083,6 +1746,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 190853,
+          "B": 52437,
+          "C": 94420,
+          "D": 101952,
+          "E": 398723,
+          "blank": 3783
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:36": {
@@ -1110,6 +1790,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 135325,
+          "B": 153336,
+          "C": 93177,
+          "D": 308041,
+          "E": 148895,
+          "blank": 3394
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:37": {
@@ -1137,6 +1834,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 380558,
+          "B": 154180,
+          "C": 73290,
+          "D": 185197,
+          "E": 44247,
+          "blank": 4696
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:38": {
@@ -1164,6 +1878,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 223620,
+          "B": 296259,
+          "C": 140910,
+          "D": 98364,
+          "E": 78335,
+          "blank": 4680
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:39": {
@@ -1191,6 +1922,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 48330,
+          "B": 194383,
+          "C": 515798,
+          "D": 39070,
+          "E": 40886,
+          "blank": 3701
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:40": {
@@ -1218,6 +1966,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 287107,
+          "B": 121398,
+          "C": 137713,
+          "D": 89143,
+          "E": 198384,
+          "blank": 8423
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:41": {
@@ -1245,6 +2010,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 186751,
+          "B": 344641,
+          "C": 32053,
+          "D": 147125,
+          "E": 127490,
+          "blank": 4108
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:42": {
@@ -1272,6 +2054,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 372343,
+          "B": 93466,
+          "C": 111963,
+          "D": 75401,
+          "E": 184225,
+          "blank": 4770
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:43": {
@@ -1299,6 +2098,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 62381,
+          "B": 161871,
+          "C": 63410,
+          "D": 362594,
+          "E": 186195,
+          "blank": 5717
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:44": {
@@ -1326,6 +2142,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 73289,
+          "B": 46176,
+          "C": 167113,
+          "D": 439317,
+          "E": 111389,
+          "blank": 4884
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:45": {
@@ -1353,6 +2186,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 150010,
+          "B": 97820,
+          "C": 465445,
+          "D": 74761,
+          "E": 50403,
+          "blank": 3729
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:46": {
@@ -1380,6 +2230,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 73771,
+          "B": 260190,
+          "C": 37766,
+          "D": 168068,
+          "E": 298440,
+          "blank": 3933
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:47": {
@@ -1407,6 +2274,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 272281,
+          "B": 97431,
+          "C": 53825,
+          "D": 311446,
+          "E": 102953,
+          "blank": 4232
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:48": {
@@ -1434,6 +2318,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 200441,
+          "B": 97689,
+          "C": 186340,
+          "D": 139967,
+          "E": 209682,
+          "blank": 8049
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:49": {
@@ -1461,6 +2362,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 90871,
+          "B": 77015,
+          "C": 389829,
+          "D": 199989,
+          "E": 79725,
+          "blank": 4739
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:50": {
@@ -1488,6 +2406,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 214876,
+          "B": 142807,
+          "C": 83080,
+          "D": 272472,
+          "E": 123156,
+          "blank": 5777
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:51": {
@@ -1515,6 +2450,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 81209,
+          "B": 117252,
+          "C": 64826,
+          "D": 421687,
+          "E": 152166,
+          "blank": 5028
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:52": {
@@ -1542,6 +2494,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 284639,
+          "B": 78835,
+          "C": 221296,
+          "D": 54850,
+          "E": 197472,
+          "blank": 5076
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:53": {
@@ -1569,6 +2538,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 189276,
+          "B": 192459,
+          "C": 112349,
+          "D": 77187,
+          "E": 265309,
+          "blank": 5588
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:54": {
@@ -1596,6 +2582,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 147375,
+          "B": 77126,
+          "C": 113222,
+          "D": 73054,
+          "E": 425623,
+          "blank": 5768
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:55": {
@@ -1623,6 +2626,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 160440,
+          "B": 228699,
+          "C": 84943,
+          "D": 271517,
+          "E": 89580,
+          "blank": 6989
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:56": {
@@ -1650,6 +2670,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 96225,
+          "B": 81613,
+          "C": 475375,
+          "D": 108247,
+          "E": 75375,
+          "blank": 5333
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:57": {
@@ -1677,6 +2714,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 482946,
+          "B": 98216,
+          "C": 49257,
+          "D": 95558,
+          "E": 109735,
+          "blank": 6456
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:58": {
@@ -1704,6 +2758,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 148974,
+          "B": 166204,
+          "C": 78901,
+          "D": 328141,
+          "E": 113906,
+          "blank": 6042
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:59": {
@@ -1731,6 +2802,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 106418,
+          "B": 158451,
+          "C": 120244,
+          "D": 151663,
+          "E": 299411,
+          "blank": 5981
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:60": {
@@ -1758,6 +2846,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 79313,
+          "B": 170818,
+          "C": 174510,
+          "D": 257509,
+          "E": 154191,
+          "blank": 5827
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:61": {
@@ -1785,6 +2890,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 137718,
+          "B": 88681,
+          "C": 118033,
+          "D": 39271,
+          "E": 452381,
+          "blank": 6084
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:62": {
@@ -1812,6 +2934,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 67788,
+          "B": 399904,
+          "C": 70199,
+          "D": 58121,
+          "E": 240294,
+          "blank": 5862
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:63": {
@@ -1839,6 +2978,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 172287,
+          "B": 391490,
+          "C": 72160,
+          "D": 100942,
+          "E": 99186,
+          "blank": 6103
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:64": {
@@ -1866,6 +3022,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 162627,
+          "B": 164222,
+          "C": 184302,
+          "D": 105873,
+          "E": 218020,
+          "blank": 7124
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:65": {
@@ -1893,6 +3066,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 89487,
+          "B": 78364,
+          "C": 448871,
+          "D": 82568,
+          "E": 135440,
+          "blank": 7438
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:66": {
@@ -1920,6 +3110,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 145873,
+          "B": 263184,
+          "C": 138740,
+          "D": 146801,
+          "E": 140757,
+          "blank": 6813
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:67": {
@@ -1947,6 +3154,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 260215,
+          "B": 144417,
+          "C": 113068,
+          "D": 227186,
+          "E": 88744,
+          "blank": 8538
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:68": {
@@ -1974,6 +3198,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 85409,
+          "B": 142524,
+          "C": 156458,
+          "D": 79890,
+          "E": 371754,
+          "blank": 6133
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:69": {
@@ -2001,6 +3242,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 87033,
+          "B": 247846,
+          "C": 296940,
+          "D": 136863,
+          "E": 66398,
+          "blank": 7088
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:70": {
@@ -2028,6 +3286,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 153720,
+          "B": 189860,
+          "C": 54924,
+          "D": 213502,
+          "E": 222371,
+          "blank": 7791
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:71": {
@@ -2055,6 +3330,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 481921,
+          "B": 131307,
+          "C": 78675,
+          "D": 55508,
+          "E": 88002,
+          "blank": 6755
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:72": {
@@ -2082,6 +3374,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 195050,
+          "B": 89865,
+          "C": 148439,
+          "D": 216856,
+          "E": 183946,
+          "blank": 8012
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:73": {
@@ -2109,6 +3418,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 486141,
+          "B": 76251,
+          "C": 81000,
+          "D": 138449,
+          "E": 52696,
+          "blank": 7631
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:74": {
@@ -2136,6 +3462,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 192111,
+          "B": 161451,
+          "C": 134008,
+          "D": 132312,
+          "E": 213239,
+          "blank": 9047
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:75": {
@@ -2163,6 +3506,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 94448,
+          "B": 349476,
+          "C": 177390,
+          "D": 156698,
+          "E": 56920,
+          "blank": 7236
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:76": {
@@ -2190,6 +3550,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 153296,
+          "B": 230523,
+          "C": 189600,
+          "D": 43928,
+          "E": 217259,
+          "blank": 7562
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:77": {
@@ -2217,6 +3594,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 477563,
+          "B": 78042,
+          "C": 82124,
+          "D": 122980,
+          "E": 74554,
+          "blank": 6905
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:78": {
@@ -2244,6 +3638,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 315144,
+          "B": 289605,
+          "C": 124604,
+          "D": 47419,
+          "E": 57976,
+          "blank": 7420
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:79": {
@@ -2271,6 +3682,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 167225,
+          "B": 246218,
+          "C": 235399,
+          "D": 122300,
+          "E": 61854,
+          "blank": 9172
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:80": {
@@ -2298,6 +3726,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 135745,
+          "B": 86955,
+          "C": 294346,
+          "D": 112883,
+          "E": 203717,
+          "blank": 8522
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:81": {
@@ -2325,6 +3770,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 154946,
+          "B": 128283,
+          "C": 214558,
+          "D": 89518,
+          "E": 246317,
+          "blank": 8546
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:82": {
@@ -2352,6 +3814,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 84384,
+          "B": 106233,
+          "C": 132564,
+          "D": 131412,
+          "E": 378228,
+          "blank": 9347
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:83": {
@@ -2379,6 +3858,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 182989,
+          "B": 221350,
+          "C": 136924,
+          "D": 230380,
+          "E": 59705,
+          "blank": 10820
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:84": {
@@ -2406,6 +3902,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 135818,
+          "B": 117858,
+          "C": 94082,
+          "D": 433355,
+          "E": 51758,
+          "blank": 9297
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:85": {
@@ -2433,6 +3946,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 166559,
+          "B": 388348,
+          "C": 101475,
+          "D": 78362,
+          "E": 97311,
+          "blank": 10113
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:86": {
@@ -2460,6 +3990,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 103716,
+          "B": 132446,
+          "C": 342201,
+          "D": 83366,
+          "E": 170439,
+          "blank": 10000
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:87": {
@@ -2487,6 +4034,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 202875,
+          "B": 281345,
+          "C": 187403,
+          "D": 98483,
+          "E": 62795,
+          "blank": 9267
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:88": {
@@ -2514,6 +4078,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 97180,
+          "B": 123107,
+          "C": 405449,
+          "D": 108048,
+          "E": 99007,
+          "blank": 9377
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:89": {
@@ -2541,6 +4122,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 80452,
+          "B": 205282,
+          "C": 85345,
+          "D": 145480,
+          "E": 316227,
+          "blank": 9382
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     },
     "q:90": {
@@ -2568,6 +4166,23 @@
             "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf"
           }
         ]
+      },
+      "statistics": {
+        "population": 842168,
+        "counts": {
+          "A": 259853,
+          "B": 120334,
+          "C": 183547,
+          "D": 184826,
+          "E": 84764,
+          "blank": 8844
+        },
+        "source": {
+          "title": "Inep, microdados do Enem 2025",
+          "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem",
+          "processedAt": "2026-11-22",
+          "scope": "Participantes de 2025 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy."
+        }
       }
     }
   }

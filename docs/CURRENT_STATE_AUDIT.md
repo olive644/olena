@@ -5982,5 +5982,11 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 ### Teto de JavaScript e limpeza local (22/11/2026)
 
 - Por autorização da dona, o teto do total de JavaScript da aplicação subiu de 1914 para 1966 KiB (e o teto absoluto junto), para o acervo do Enem (medido 1963,8 KiB; entrada inicial inalterada em 219,4 KiB).
-- Hospedagem dos PDFs do Enem: `scripts/upload-enem-pdfs.mjs` (68 arquivos, 213 MB, conferidos como PDF) envia ao Vercel Blob com o mesmo caminho do Inep; falta a dona criar a loja Blob e rodar o envio, e então apontar a reescrita `/enem-pdf` do `vercel.json` para o endereço da loja. Não testado contra o Blob (não há token neste ambiente).
+- Hospedagem dos PDFs do Enem: os 68 arquivos (213 MB, conferidos como PDF) foram enviados ao Vercel Blob com o mesmo caminho do Inep por `scripts/upload-enem-pdfs.mjs`, e a reescrita `/enem-pdf` do `vercel.json` aponta para a loja. Motivo: o Inep recusa pedidos de servidor com "Request Rejected". Verificado em 22/11/2026: três arquivos direto na loja e um pelo preview da Vercel responderam 200 com PDF. Só os cadernos padrão (azul no dia 1, amarelo no dia 2) estão hospedados. O token de escrita da loja é segredo da dona: não versionar e rotacionar após o envio.
 - Apagados do disco local os 11 arquivos `PARTICIPANTES_*.zip` (3,5 GB) de anos já processados e commitados.
+
+### Enem 2025 e 2022 dia 2, 22/11/2026
+
+- Estatísticas de respostas de 2025: 185 questões, 4.810.772 participantes lidos dos microdados oficiais do Inep (`RESULTADOS_2025.csv`, ZIP com compressão Deflate64 que o Python padrão não abre; extraído com `zipfile-inflate64` fora do repositório). `build-enem-question-statistics.py` agora aceita um CSV solto e detecta o separador. A fonte registrada nas questões de 2025 é o Inep, não a redistribuição do Zenodo.
+- 2022 dia 2: 80 de 90 resoluções. Ficaram de fora 118, 119, 158, 163, 165 e 178 (dependem de figuras pequenas que não foi possível conferir com segurança), 153 (só bate com o gabarito lendo a mediana dos meses de lucro positivo), 154 e 156 (as contas não chegam à letra do gabarito oficial; na 154 a maioria dos participantes marcou D) e 175 (anulada). Nenhuma delas foi forçada para a chave.
+- `docs/research/enem-review-coverage.json` recalculado. Em 2025 as resoluções já estavam completas; faltavam só as estatísticas.

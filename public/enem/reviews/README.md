@@ -1,9 +1,9 @@
 # Resoluções salvas e estatísticas do Enem
 
-Cobertura em 22/11/2026:
+Cobertura em 22/11/2026 (2022 dia 2 com 80 de 90):
 
-- 1.142 resoluções salvas com justificativas A a E. Os cadernos padrão de 2021, 2023, 2024, 2025 e 2026 têm 185 entradas por edição, contando os dois idiomas. Há cobertura parcial de 2020 e 2022. O objetivo de 3.145 entradas ainda não foi atingido. A contagem não significa que todas as justificativas já receberam o aprofundamento pedido.
-- Estatísticas de 1.920 itens, agregadas de microdados disponíveis entre 2011 e 2024. Algumas áreas ainda não têm correspondência validada; não extrapolar a cobertura para todas as questões ou edições.
+- 1.195 resoluções salvas com justificativas A a E. Os cadernos padrão de 2021, 2023, 2024, 2025 e 2026 têm 185 entradas por edição, contando os dois idiomas. Há cobertura parcial de 2020 e 2022. O objetivo de 3.145 entradas ainda não foi atingido. A contagem não significa que todas as justificativas já receberam o aprofundamento pedido.
+- Estatísticas de 2.960 itens, agregadas dos microdados de 2010 a 2025 (2025 direto do Inep; os demais anos pela redistribuição CC BY 4.0). Algumas áreas ainda não têm correspondência validada; não extrapolar a cobertura para todas as questões ou edições.
 - Edições, cadernos e questões fora dessa cobertura continuam explicitamente indisponíveis. Não há geração de explicações em tempo de execução.
 
 ## Conteúdo editorial

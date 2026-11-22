@@ -4,6 +4,7 @@ Entrada: PARTICIPANTES_<ano>.zip, redistribuição CC BY 4.0 de Pedro Mantovani/
 Usa apenas cadernos já conferidos integralmente pelo pipeline TRI.
 """
 import argparse
+import contextlib
 import csv
 import io
 import json
@@ -38,9 +39,25 @@ def language_vector(responses, language):
     return chosen + responses[10:50]
 
 
+@contextlib.contextmanager
+def open_participants(path):
+    """Abre o CSV de respostas: dentro de um ZIP (redistribuição) ou um CSV solto (microdados oficiais do Inep)."""
+    path = Path(path)
+    if path.suffix.lower() == ".csv":
+        with path.open(encoding="utf-8-sig", errors="replace", newline="") as stream:
+            yield stream
+        return
+    with zipfile.ZipFile(path) as archive:
+        entries = [name for name in archive.namelist() if name.lower().endswith(".csv")]
+        if len(entries) != 1:
+            raise ValueError("Esperado um CSV de participantes no arquivo")
+        with io.TextIOWrapper(archive.open(entries[0]), encoding="utf-8-sig", newline="") as stream:
+            yield stream
+
+
 def aggregate(archive_path, year, output, tri_dir, map_dir=None):
     bundles = [json.loads(path.read_text(encoding="utf-8"))
-               for path in tri_dir.glob("*.json") if path.stem not in ("index", "audit")]
+               for path in tri_dir.glob("*.json") if path.stem not in ("index", "audit", "accuracy")]
     bundles = [bundle for bundle in bundles if bundle["year"] == year]
     # Cadernos conferidos só para estatística (sem parâmetros da TRI): completam o que a TRI não cobre.
     if map_dir is not None and map_dir.exists():
@@ -78,12 +95,11 @@ def aggregate(archive_path, year, output, tri_dir, map_dir=None):
 
     records = 0
     rejected = Counter()
-    with zipfile.ZipFile(archive_path) as archive:
-        entries = [name for name in archive.namelist() if name.lower().endswith(".csv")]
-        if len(entries) != 1:
-            raise ValueError("Esperado um CSV de participantes no arquivo")
-        with io.TextIOWrapper(archive.open(entries[0]), encoding="utf-8-sig", newline="") as stream:
-            reader = csv.DictReader(stream)
+    with open_participants(archive_path) as stream:
+        if True:
+            first = stream.readline()
+            stream.seek(0)
+            reader = csv.DictReader(stream, delimiter=";" if first.count(";") > first.count(",") else ",")
             for row in reader:
                 records += 1
                 for area in ("LC", "CH", "CN", "MT"):

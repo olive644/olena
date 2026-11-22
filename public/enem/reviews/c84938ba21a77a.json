@@ -855,6 +855,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os isótopos urânio-235 e urânio-238 têm o mesmo comportamento químico, pois possuem o mesmo número de elétrons e de prótons. A única diferença útil é a massa, ligeiramente maior no urânio-238. Por isso a efusão separa os gases: as moléculas mais leves atravessam os poros um pouco mais depressa.",
+          "Um método alternativo que também explora a diferença de massa é a centrifugação. Em uma centrífuga, a força centrífuga empurra as espécies mais pesadas para a periferia, enquanto as mais leves ficam mais perto do eixo, o que permite enriquecer o isótopo leve. Os demais processos citados dependem de tamanho de partícula, solubilidade, ponto de ebulição ou propriedades magnéticas, não da massa."
+        ],
+        "alternatives": {
+          "A": "Errada: a peneiração separa sólidos por diferença de tamanho de grão, e não serve para gases cujas moléculas diferem só um pouco em massa.",
+          "B": "Correta: a centrifugação separa espécies pela massa, lançando as mais pesadas para fora e mantendo as mais leves perto do eixo, o que enriquece o urânio-235.",
+          "C": "Errada: a extração por solvente depende da solubilidade, e os dois hexafluoretos têm propriedades químicas praticamente idênticas, então não se separam assim.",
+          "D": "Errada: a destilação fracionada explora diferença de ponto de ebulição, que é quase igual para os dois isótopos, tornando o método ineficaz.",
+          "E": "Errada: a separação magnética atua sobre materiais com propriedades magnéticas distintas, e os dois hexafluoretos não se diferenciam por esse critério."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:121": {
@@ -875,6 +900,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A terapia gênica descrita usa um vírus como vetor para entregar uma cópia normal do gene RPE65 às células da retina. As células do paciente têm o gene mutado, e a cópia funcional passa a coexistir com ele.",
+          "O benefício vem da expressão desse gene: ele é transcrito e traduzido, resultando na enzima normal que antes faltava ou era defeituosa. O produto não corrige o código genético existente nem fabrica a proteína pronta; ele fornece o gene para que a própria célula produza a enzima. Assim, a alternativa que fala em expressão do gene responsável pela enzima normal descreve o mecanismo."
+        ],
+        "alternatives": {
+          "A": "Errada: o vetor não corrige o código do gene mutado, apenas acrescenta uma cópia normal, que é então usada na tradução da proteína.",
+          "B": "Errada: o RNA ribossômico não é alterado; o tratamento fornece um gene estrutural que será transcrito em RNA mensageiro e traduzido.",
+          "C": "Errada: a terapia não produz mutações benéficas; ela insere uma sequência já normal, sem depender de novas mutações ao acaso.",
+          "D": "Errada: o produto não libera a proteína pronta no olho, e sim o gene, de modo que a proteína só aparece depois de transcrição e tradução nas células.",
+          "E": "Correta: a cópia normal do gene inserida pelo vírus é expressa nas células da retina e permite a produção da enzima funcional, corrigindo o funcionamento celular."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:122": {
@@ -895,6 +945,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O processo usa o persulfato, que se converte no radical sulfato, um oxidante muito forte. Esse radical ataca o tricloroeteno e o degrada em compostos mais oxidados, como ácidos orgânicos, além de CO2, água e íons cloreto, como mostra o esquema.",
+          "Quando uma substância orgânica é transformada em produtos com mais oxigênio, há perda de elétrons (oxidação) pelo contaminante e ganho de elétrons (redução) pelo agente oxidante. Esse conjunto de transferência de elétrons caracteriza reações de oxirredução, que são a base da remediação descrita."
+        ],
+        "alternatives": {
+          "A": "Correta: o radical sulfato oxida o TCE a ácidos, CO2 e cloreto, em um processo de transferência de elétrons típico de oxirredução.",
+          "B": "Errada: o esquema não mostra a troca simples de um átomo ou grupo por outro, e sim a degradação oxidativa do contaminante em compostos oxigenados.",
+          "C": "Errada: não se forma um sólido insolúvel que se separa da água; os produtos de degradação permanecem dissolvidos ou escapam como gás.",
+          "D": "Errada: desidratação seria a perda de água de uma molécula, e o esquema mostra o contrário, com oxidação e formação de grupos oxigenados e de água.",
+          "E": "Errada: neutralização é a reação entre ácido e base, e o processo descrito se baseia em um oxidante radicalar atacando o poluente orgânico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:123": {
@@ -915,6 +990,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A filariose linfática é transmitida por mosquitos, principalmente do gênero Culex, e a leishmaniose é transmitida por flebotomíneos, os chamados mosquitos palha. Em ambos os casos, o parasita só chega ao ser humano pela picada de um inseto vetor.",
+          "Por isso a medida profilática comum é controlar a população desses vetores, por exemplo eliminando criadouros, usando telas e repelentes e aplicando medidas de saneamento ambiental dirigidas aos insetos. Outras medidas, como tratar esgoto ou cozinhar carnes, protegem contra doenças de transmissão fecal-oral ou alimentar, que não são o caso dessas duas."
+        ],
+        "alternatives": {
+          "A": "Errada: incinerar lixo orgânico ajuda em outras situações, mas não corta a transmissão por picada de inseto característica das duas doenças.",
+          "B": "Errada: rede de esgoto reduz doenças de veiculação hídrica, mas a filariose e a leishmaniose não se transmitem pela água contaminada por fezes.",
+          "C": "Errada: vermífugo age contra vermes intestinais, e a leishmaniose é causada por protozoário, então não há medida comum nesse sentido.",
+          "D": "Correta: as duas doenças dependem de insetos vetores, e o controle da população desses vetores interrompe o ciclo de transmissão em ambas.",
+          "E": "Errada: cozinhar bem a carne evita parasitoses alimentares, mas a transmissão da filariose e da leishmaniose não ocorre pela ingestão de carne."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:124": {
@@ -935,6 +1035,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A potência elétrica do parque é de 150 MW, e a eficiência dos painéis é de 20%. Isso significa que a potência solar incidente necessária é a potência elétrica dividida pela eficiência: 150 MW / 0,20 = 750 MW, ou seja, 750 000 000 W.",
+          "Como a irradiância média é de 1 500 W por metro quadrado, a área total vale 750 000 000 / 1 500 = 500 000 m2. Outra forma de ver: cada metro quadrado entrega 20% de 1 500, isto é, 300 W elétricos, e 150 000 000 W / 300 W/m2 resulta no mesmo valor."
+        ],
+        "alternatives": {
+          "A": "Errada: 1 000 000 m2 corresponde ao dobro da área necessária e surge, por exemplo, de usar o dado de energia anual de forma incorreta.",
+          "B": "Correta: a potência solar necessária é 150 MW / 0,20 = 750 MW, e dividindo por 1 500 W/m2 obtém-se 500 000 m2.",
+          "C": "Errada: 250 000 m2 ocorreria se a eficiência fosse de 40%, mas o enunciado fixa 20%.",
+          "D": "Errada: 100 000 m2 resulta de esquecer de dividir pela eficiência ou de confundir a potência de uma usina com a do parque.",
+          "E": "Errada: 20 000 m2 é muito pequeno e vem de multiplicar pela eficiência em vez de dividir, o que subestima a área."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:125": {
@@ -955,6 +1080,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No primeiro conjunto, o ácido clorídrico concentrado reage com o cianeto de potássio. Pela tabela, ácidos minerais fortes com cianetos são incompatíveis, e a reação libera o ácido cianídrico (HCN), um gás muito tóxico. Logo, o resultado é liberação de gás tóxico.",
+          "No segundo conjunto, o ácido nítrico concentrado é um oxidante forte e entra em contato com matéria orgânica, a sacarose. A tabela indica reação enérgica, com risco de explosão, o que caracteriza uma reação oxidativa forte. A ordem pedida, respectivamente, é gás tóxico e reação oxidativa forte."
+        ],
+        "alternatives": {
+          "A": "Correta: HCl com KCN gera HCN, gás tóxico, e HNO3 concentrado com sacarose provoca reação oxidativa forte, como indica o quadro.",
+          "B": "Errada: inverte a ordem; o conjunto 1 gera gás tóxico (HCN) e o conjunto 2 é que envolve a reação oxidativa forte.",
+          "C": "Errada: o conjunto 1 não forma sais tóxicos como risco principal, e sim o gás cianídrico, que é o perigo apontado pela incompatibilidade.",
+          "D": "Errada: o conjunto 2 não libera gás oxidante; o ácido nítrico em si é o oxidante que reage violentamente com a matéria orgânica.",
+          "E": "Errada: erra os dois itens, pois o conjunto 1 libera gás tóxico (não sais) e o conjunto 2 é uma reação oxidativa, e não a liberação de gás oxidante."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:126": {
@@ -975,6 +1125,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A tensão máxima na corda ocorre no ponto mais baixo da trajetória. Soltando-se do ângulo de 90° com a vertical, a criança desce uma altura igual ao comprimento L da corda. Pela conservação da energia mecânica, mgL = mv²/2, então v² = 2gL.",
+          "No ponto mais baixo, a resultante centrípeta é T - mg = mv²/L = 2mg, logo T = 3mg = 3 x 24 x 10 = 720 N no total. Como há dois segmentos iguais de corda, cada um suporta 360 N. A corda escolhida deve ter tensão de ruptura 25% maior: 360 x 1,25 = 450 N."
+        ],
+        "alternatives": {
+          "A": "Errada: 120 N seria apenas um terço do peso total ou uma divisão incorreta, e não considera a tensão adicional da força centrípeta.",
+          "B": "Errada: 300 N corresponde a 25% de acréscimo sobre 240 N, que é só o peso da criança, ignorando a força centrípeta e a divisão entre as duas cordas.",
+          "C": "Errada: 360 N é a tensão máxima em cada corda, mas falta somar a margem de segurança de 25% exigida pelo enunciado.",
+          "D": "Correta: a tensão máxima por corda é 360 N e, com 25% de margem, a tensão de ruptura é 1,25 x 360 = 450 N.",
+          "E": "Errada: 900 N resulta de aplicar o acréscimo de 25% sobre 720 N, esquecendo que o peso é dividido entre dois segmentos de corda."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:127": {
@@ -995,6 +1170,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A corrosão do ferro exige contato com oxigênio e água. A técnica descrita deposita filmes finos de cerâmicas, como zircônia e alumina, sobre a superfície metálica. Esses materiais não são metais que se oxidam no lugar do ferro, nem formam uma camada do próprio óxido de ferro.",
+          "O que eles fazem é recobrir o metal e impedir que a umidade e o oxigênio cheguem até ele. Esse mecanismo é chamado de efeito de barreira: sem o contato com o agente oxidante, a oxidação do ferro não ocorre. As demais opções envolvem metais de sacrifício ou outros metais em contato elétrico com o ferro, o que não é o caso de um filme cerâmico."
+        ],
+        "alternatives": {
+          "A": "Errada: a proteção catódica usa um metal mais redutor ligado ao ferro, e zircônia e alumina são óxidos cerâmicos, não metais redutores.",
+          "B": "Errada: metais de sacrifício se oxidam no lugar do ferro, mas os filmes de ZrO2 e Al2O3 já estão oxidados e não cumprem essa função.",
+          "C": "Errada: a passivação forma uma camada do próprio óxido do metal, enquanto aqui se deposita um material diferente sobre o ferro.",
+          "D": "Correta: o filme cerâmico recobre o ferro e impede o contato com o oxigênio e a água, que são os agentes da oxidação, atuando como barreira física.",
+          "E": "Errada: a galvanização é um revestimento metálico, em geral de zinco, e não um filme cerâmico de zircônia e alumina."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:128": {
@@ -1015,6 +1215,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em meio hipotônico, a concentração de solutos fora da célula é menor do que dentro dela. A água, então, passa por osmose para o interior, onde a concentração é maior, e as células vegetais ficam túrgidas.",
+          "O vacúolo, que armazena o pigmento arroxeado, recebe parte dessa água e aumenta de volume, o que dilui o pigmento no seu interior. A parede celular, rígida, impede que a célula se rompa, e a membrana permanece íntegra. Portanto, o que se observa ao microscópio é o vacúolo maior, com cor mais fraca."
+        ],
+        "alternatives": {
+          "A": "Errada: a água entra, mas a organela não se fragmenta; o vacúolo apenas aumenta de volume sem se romper.",
+          "B": "Errada: a parede celular protege a célula, então a membrana não se rompe nem libera o citosol em meio hipotônico.",
+          "C": "Correta: a água entra por osmose, o vacúolo incha e o pigmento fica mais diluído, resultado esperado em ambiente hipotônico.",
+          "D": "Errada: a parede celular de celulose resiste à pressão de turgor, e não ocorre quebra nem extravasamento do pigmento.",
+          "E": "Errada: murchamento com saída de pigmento ocorreria em meio hipertônico, quando a célula perde água, e não em meio hipotônico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:129": {
@@ -1035,6 +1260,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para um mesmo volume de material e a mesma energia absorvida, a variação de temperatura é dada por Q = m c ΔT, com m = densidade x volume. Assim, ΔT = Q / (densidade x volume x c), e como Q e o volume são iguais nas duas situações, ΔT é inversamente proporcional ao produto densidade x calor específico.",
+          "Para o concreto, 2 500 x 0,8 = 2 000 (em unidades coerentes); para a água, 1 000 x 4,2 = 4 200. A razão entre as variações de temperatura, concreto sobre água, é 4 200 / 2 000 = 2,1. Ou seja, o concreto aquece cerca de duas vezes mais do que a água para a mesma energia absorvida."
+        ],
+        "alternatives": {
+          "A": "Errada: razão 1,0 indicaria o mesmo aquecimento, o que contraria o fato de o concreto ter menor capacidade térmica por volume.",
+          "B": "Correta: ΔT é inversamente proporcional a densidade x calor específico, e a razão fica 4 200 / 2 000 = 2,1.",
+          "C": "Errada: 2,5 vem de usar apenas a razão das densidades, desconsiderando o calor específico.",
+          "D": "Errada: 5,3 corresponde à razão dos calores específicos (4,2 / 0,8), esquecendo de levar em conta a densidade de cada material.",
+          "E": "Errada: 13,1 aparece ao multiplicar em vez de dividir os fatores de densidade e de calor específico, invertendo a relação física."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:130": {
@@ -1055,6 +1305,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Pelo quadro, a massa de iodo 131 cai de 12,0 µg para 6,0 µg em 8 dias. Portanto, a meia-vida do isótopo é de 8 dias. Isso é coerente com os demais pontos: em 14 dias, 12 x 2^(-14/8) fica próximo de 3,6 µg.",
+          "Em 40 dias passam-se 40 / 8 = 5 meias-vidas. A massa final é 12 / 2^5 = 12 / 32 = 0,375 µg, valor mais próximo de 0,4 µg. Cada meia-vida reduz a massa pela metade: 6, 3, 1,5, 0,75 e 0,375."
+        ],
+        "alternatives": {
+          "A": "Errada: 2,4 µg corresponderia a cerca de 2,3 meias-vidas, ou seja, a pouco mais de 18 dias, e não a 40.",
+          "B": "Errada: 1,5 µg é a massa após 3 meias-vidas (24 dias), faltando ainda duas reduções pela metade.",
+          "C": "Errada: 0,8 µg é a massa após 4 meias-vidas (32 dias), antes do tempo pedido.",
+          "D": "Correta: com meia-vida de 8 dias, 40 dias dão 5 meias-vidas e 12 / 32 = 0,375 µg, próximo de 0,4 µg.",
+          "E": "Errada: 0,2 µg exigiria mais de 5 meias-vidas, ou seja, um tempo maior que 40 dias."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:131": {
@@ -1075,6 +1350,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os quatro exemplos mostram anfíbios com estratégias bem diferentes: a espécie 1 produz muitos gametas e não cuida da prole, enquanto as outras produzem cada vez menos gametas e investem mais em proteção, como vigiar a desova, colocá-la sobre folhas ou carregá-la no saco vocal.",
+          "Todas essas espécies persistem, o que indica que tanto produzir muitos descendentes com pouco cuidado quanto produzir poucos com muito cuidado podem levar ao sucesso reprodutivo. Ou seja, a seleção natural favorece diferentes soluções adaptativas. O texto não indica que fêmeas controlem machos, que o cuidado seja sempre necessário, nem que o ambiente mude o número de gametas."
+        ],
+        "alternatives": {
+          "A": "Errada: os textos não mostram que as fêmeas determinam o comportamento dos machos, apenas descrevem o que cada sexo faz.",
+          "B": "Errada: a espécie 1 se desenvolve sem nenhum cuidado parental, o que mostra que o cuidado não é necessário em todos os casos.",
+          "C": "Errada: não existe grau de evolução que determine o comportamento; todas as espécies atuais são igualmente evoluídas e adaptadas ao seu ambiente.",
+          "D": "Correta: espécies com muitos gametas e sem cuidado e outras com poucos gametas e muito cuidado coexistem, o que mostra estratégias diferentes levando ao sucesso.",
+          "E": "Errada: o texto não relaciona o ambiente a mudanças no número de gametas; trata de padrões reprodutivos característicos de cada espécie."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:132": {
@@ -1095,6 +1395,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na figura, em 21 de dezembro a incidência direta do Sol ao meio-dia ocorre sobre o Trópico de Capricórnio. Em uma localidade do hemisfério sul, o Sol está mais alto e os dias são mais longos em dezembro e janeiro, e o mais baixo em junho e julho, o que produz máxima geração em janeiro e mínima em julho.",
+          "O gráfico mostra exatamente isso: maior energia em 10/01, menor em 10/07 e valores intermediários em abril e outubro, que são próximos dos equinócios. Se a residência estivesse no Equador, abril e outubro teriam os maiores valores. No Trópico de Câncer, o padrão seria invertido, e nos polos haveria noite contínua em parte do ano, o que zeraria alguns valores."
+        ],
+        "alternatives": {
+          "A": "Correta: máximo em janeiro e mínimo em julho, com abril e outubro intermediários, é o padrão de um local no hemisfério sul próximo ao Trópico de Capricórnio.",
+          "B": "Errada: no Trópico de Câncer o Sol é mais direto em junho, de modo que a produção seria máxima em julho e mínima em janeiro, o inverso do gráfico.",
+          "C": "Errada: no Polo Norte há noite contínua em janeiro, e a produção não seria a mais alta nessa data.",
+          "D": "Errada: no Polo Sul a produção em julho seria nula por causa da noite polar, mas o gráfico mostra valor não nulo em 10/07.",
+          "E": "Errada: no Equador a insolação é maior perto dos equinócios, com picos em abril e outubro, e não em janeiro."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:133": {
@@ -1115,6 +1440,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A lâmpada de 4,5 W e 4,5 V tem resistência R = V² / P = (4,5)² / 4,5 = 4,5 Ω. Com as pilhas corretas, a f.e.m. total é 3 x 1,5 = 4,5 V. Quando uma pilha é invertida, sua f.e.m. se opõe às outras duas, e a f.e.m. resultante é 1,5 + 1,5 - 1,5 = 1,5 V.",
+          "A resistência interna continua somando 3 x 0,5 = 1,5 Ω, pois a pilha invertida mantém contato e sua resistência interna permanece no circuito. A resistência total é 4,5 + 1,5 = 6 Ω. Pela lei de Ohm para o circuito, i = 1,5 / 6 = 0,25 A."
+        ],
+        "alternatives": {
+          "A": "Correta: com f.e.m. resultante de 1,5 V e resistência total de 4,5 + 1,5 = 6 Ω, a corrente é 1,5 / 6 = 0,25 A.",
+          "B": "Errada: 0,33 A decorre de usar um valor incorreto de resistência total ou de f.e.m., e não corresponde ao circuito com a pilha invertida.",
+          "C": "Errada: 0,75 A seria obtido com f.e.m. de 4,5 V e resistência total de 6 Ω, ou seja, sem inverter nenhuma pilha.",
+          "D": "Errada: 1,00 A é a corrente nominal da lâmpada (4,5 W / 4,5 V), que só circularia com as pilhas na posição correta e sem resistência interna.",
+          "E": "Errada: 1,33 A ignoraria a oposição da pilha invertida e também a resistência interna, resultando em valor maior que o real."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:134": {
@@ -1135,6 +1485,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os ensaios variam apenas a temperatura. A atividade da catalase aumenta de 10 para 15 graus Celsius, pois mais energia cinética acelera a reação, mas depois cai de forma acentuada a partir de 20 e 25 graus. Esse comportamento é típico de enzimas: existe uma temperatura ótima e, acima dela, a atividade diminui.",
+          "A queda ocorre porque o calor rompe ligações fracas que mantêm a estrutura tridimensional da proteína, desnaturando-a. A forma do sítio ativo é alterada, e o substrato já não se encaixa bem. Como as demais condições (pH e quantidade de substrato) foram mantidas iguais nos ensaios, a explicação é a modificação da estrutura da enzima."
+        ],
+        "alternatives": {
+          "A": "Errada: o enunciado diz que apenas a temperatura foi variada, então o pH do meio foi mantido igual em todos os ensaios.",
+          "B": "Errada: a energia de ativação é reduzida pela enzima e não aumenta com a temperatura; além disso, ela não explicaria a queda da atividade.",
+          "C": "Errada: a enzima, como catalisador, não é consumida na reação, e os ensaios independentes partem das mesmas quantidades.",
+          "D": "Errada: as condições dos ensaios são as mesmas, exceto a temperatura, então a concentração inicial de substrato não variou entre eles.",
+          "E": "Correta: acima da temperatura ótima, o calor desnatura a catalase, alterando seu sítio ativo e reduzindo a decomposição do H2O2."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:135": {
@@ -1155,6 +1530,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para tratar uma infecção fúngica sem prejudicar as bactérias da microbiota, o fármaco deve atingir um alvo que exista nos fungos, que são eucariontes, e não nas bactérias, que são procariontes.",
+          "Os microtúbulos fazem parte do citoesqueleto e do fuso mitótico dos eucariontes, e as bactérias não os possuem. Logo, o antimicrobiano 2, que se liga aos microtúbulos e impede a separação das cromátides, afeta o fungo e poupa as bactérias. Ribossomos, membrana plasmática com fosfolipídeos e a síntese de DNA e de RNA existem nos dois grupos, então os demais fármacos atingiriam também a microbiota."
+        ],
+        "alternatives": {
+          "A": "Errada: bactérias também têm ribossomos e a síntese proteica seria bloqueada na microbiota, além de no fungo.",
+          "B": "Correta: os microtúbulos existem em eucariontes como os fungos e não em bactérias, de modo que o antimicrobiano 2 atua só no fungo.",
+          "C": "Errada: as bactérias também possuem membrana plasmática de fosfolipídeos, então a microbiota seria afetada.",
+          "D": "Errada: a timina faz parte do DNA de fungos e de bactérias, e a inibição da síntese de DNA atingiria os dois grupos.",
+          "E": "Errada: o RNA e a uracila existem em ambos os grupos, então bloquear a síntese de RNA também prejudicaria a microbiota."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:91": {
@@ -1571,6 +1971,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A folha mensal dos 100 professores não pode passar de 100 × 12 240 = R$ 1 224 000,00. Os 60 mestres, com 25% de aumento, passam a receber 8 000 × 1,25 = R$ 10 000,00 cada, o que soma R$ 600 000,00.",
+          "Sobram, portanto, R$ 624 000,00 para os 40 doutores, ou seja, R$ 15 600,00 por doutor. Como hoje cada um recebe R$ 12 000,00, o fator é 15 600 ÷ 12 000 = 1,3, que corresponde a um aumento máximo de 30%."
+        ],
+        "alternatives": {
+          "A": "14,4% daria um salário de R$ 13 728,00 para cada doutor, bem abaixo do limite de R$ 15 600,00, então não é o máximo permitido.",
+          "B": "20,7% resultaria em cerca de R$ 14 484,00 por doutor, ainda abaixo do teto. O máximo possível é maior que isso.",
+          "C": "22,0% levaria o doutor a R$ 14 640,00, valor que ainda deixa folga na média, portanto não é o aumento máximo.",
+          "D": "Correta: com 30% o doutor ganha R$ 15 600,00, a folha total é 600 000 + 624 000 = 1 224 000 e a média fica exatamente em R$ 12 240,00.",
+          "E": "37,5% daria R$ 16 500,00 por doutor e uma média de 12 600, acima do limite de R$ 12 240,00. Além disso, é o dado de quem confunde o aumento com outra razão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:137": {
@@ -1591,6 +2016,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em 60 dias há 60 × 24 × 60 = 86 400 minutos. Como o borrifador é acionado a cada 48 minutos, o número de acionamentos nesse período é 86 400 ÷ 48 = 1 800.",
+          "Esses 1 800 acionamentos gastam os 360 mL do recipiente, então cada um libera 360 ÷ 1 800 = 0,2 mL."
+        ],
+        "alternatives": {
+          "A": "0,125 mL viria de dividir o volume por um número de acionamentos maior que o real; com 1 800 acionamentos o valor correto é 0,2.",
+          "B": "Correta: 360 mL divididos por 1 800 acionamentos resultam em 0,200 mL por acionamento.",
+          "C": "4,8 mL é o volume que seria liberado por hora se fossem usados 75 acionamentos; trata-se de um erro de unidade ou de conversão de tempo.",
+          "D": "6,0 mL equivale a dividir 360 por 60, isto é, o gasto por dia, e não por acionamento.",
+          "E": "12,0 mL surge de dividir 360 por 30, número que não corresponde a nenhuma contagem de acionamentos do problema."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:138": {
@@ -1611,6 +2061,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Se 2 anos de Z equivalem a 1 ano terrestre, então 1 ano de Z dura metade de um ano terrestre: 365 ÷ 2 = 182,5 dias terrestres. Como um dia de Z vale 73 dias terrestres, basta dividir: 182,5 ÷ 73 = 2,5.",
+          "Logo, o ano de Z corresponde a 2,5 dias de Z. A informação de que um ano terrestre tem 365 dias de Z é dispensável para essa conta."
+        ],
+        "alternatives": {
+          "A": "Correta: 182,5 dias terrestres divididos por 73 dias terrestres por dia de Z dão 2,5 dias de Z.",
+          "B": "10,0 aparece de 730 ÷ 73, quando se usa um ano terrestre inteiro de 365 dias duas vezes, esquecendo que é o ano de Z que é a metade.",
+          "C": "730,0 é o dobro de 365, resultado de trocar a metade pelo dobro na relação entre os anos.",
+          "D": "13 322,5 vem de 365 × 36,5, mistura sem sentido das grandezas, multiplicando em vez de dividir por 73.",
+          "E": "53 290,0 é 730 × 73, resultado de multiplicar o ano por 73 em lugar de dividir pela duração do dia de Z."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:139": {
@@ -1631,6 +2106,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O carro que chegou por último é o da reta, que cumpre os 100 m em 15 s com velocidade constante. Os demais gráficos são curvas: alguns começam acima da reta e permanecem acima dela, outros começam abaixo e depois a cruzam, passando à frente.",
+          "Uma ultrapassagem feita pelo último carro exigiria que a reta passasse da posição de trás para a da frente de outra curva. Nos cruzamentos que aparecem no gráfico, quem passa à frente é sempre a curva, e a reta é ultrapassada. Assim, o último colocado não ultrapassou ninguém."
+        ],
+        "alternatives": {
+          "A": "Correta: nos pontos em que a reta cruza outras curvas, é o outro carro que passa à frente dela, então o último colocado fez 0 ultrapassagens.",
+          "B": "Contar 1 ultrapassagem seria tratar um cruzamento como se fosse a reta quem passasse na frente, quando na verdade ela é quem fica para trás.",
+          "C": "2 corresponde ao número de cruzamentos da reta com curvas que começam lentas, mas cada um deles é uma ultrapassagem sofrida, não realizada.",
+          "D": "3 conta cruzamentos entre outras curvas ou todos os encontros do gráfico, não só os feitos pelo último carro.",
+          "E": "4 soma todos os cruzamentos do gráfico, sem distinguir quem ultrapassa quem, e inclui encontros que não envolvem o carro em último lugar."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:140": {
@@ -1651,6 +2151,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O preço normal é 10% maior que o promocional: 1 000 × 1,10 = R$ 1 100,00. Com o cartão da loja há 2% de desconto sobre esse valor, então o preço pago é 1 100 × 0,98 = R$ 1 078,00.",
+          "A cliente calculou o preço promocional mais 8%: 1 000 × 1,08 = R$ 1 080,00. A loja apresentou R$ 1 078,00, que é R$ 2,00 menor que o valor calculado por ela."
+        ],
+        "alternatives": {
+          "A": "Correta: 1 078 (valor da loja) contra 1 080 (cálculo da cliente) dá diferença de R$ 2,00 a menos.",
+          "B": "R$ 100,00 menor seria a diferença entre o preço normal e o promocional, e não entre o valor da loja e o cálculo da cliente.",
+          "C": "R$ 200,00 menor não tem relação com nenhum dos valores obtidos; seria o dobro da diferença entre preço normal e promocional.",
+          "D": "R$ 42,00 maior sairia de comparar 1 078 com 1 036, valor que não aparece em nenhuma etapa do cálculo correto.",
+          "E": "R$ 80,00 maior confunde o acréscimo de 8% com uma diferença de valores e ignora o desconto sobre o preço normal."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:141": {
@@ -1671,6 +2196,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O carro sai de P voltado para cima. Em cada cruzamento onde o trajeto marcado muda de direção ou segue reto, anota-se a letra em relação ao sentido em que o carro se move naquele instante.",
+          "Percorrendo o caminho: vira à direita (D), segue em frente (F), vira à esquerda para subir (E), segue em frente (F), vira à direita (D), vira à direita para descer (D), vira à esquerda para ir ao leste (E), vira à esquerda para subir (E), segue em frente duas vezes (F, F) e, por fim, vira à direita (D) rumo a Q. A sequência é DFEFDDEEFFD."
+        ],
+        "alternatives": {
+          "A": "DDEFDDEEFFD erra o segundo cruzamento: após virar à direita, o carro segue em frente, e não vira de novo.",
+          "B": "DFEFDDDEFFD erra na sétima letra e seguintes: depois de descer, o carro vira à esquerda duas vezes (E, E), e não à direita seguida de esquerda.",
+          "C": "Correta: DFEFDDEEFFD acompanha corretamente cada cruzamento do caminho destacado, a partir do sentido inicial para cima.",
+          "D": "EFDFEEDDFFE começa virando à esquerda, o que levaria o carro para o lado oposto ao do caminho marcado; é a sequência espelhada.",
+          "E": "EFDFEEEDFFE também começa com E e, portanto, descreve o caminho refletido, saindo de P para a esquerda."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:142": {
@@ -1691,6 +2241,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O volume de cada caixa é V = (área da base) × (profundidade). O modelo I tem V = Ab · P. No II: (Ab/2) · 2P = Ab · P. No IV: 2Ab · (P/2) = Ab · P.",
+          "Nos modelos que mudam o raio, a área muda com o quadrado dele. No III, raio pela metade dá área Ab/4 e V = (Ab/4) · 2P = Ab · P/2. No V, raio dobrado dá área 4Ab e V = 4Ab · (P/2) = 2 · Ab · P, o maior de todos."
+        ],
+        "alternatives": {
+          "A": "O modelo I tem volume Ab · P, que é menor que os 2 · Ab · P do modelo V.",
+          "B": "O modelo II tem volume (Ab/2) · 2P = Ab · P, igual ao do I e menor que o do V.",
+          "C": "O modelo III tem raio pela metade, área Ab/4 e volume Ab · P/2, o menor de todos. É o erro de achar que metade do raio dá metade da área.",
+          "D": "O modelo IV tem volume 2Ab · P/2 = Ab · P, igual ao do I e inferior ao do V.",
+          "E": "Correta: dobrar o raio quadruplica a área e, com metade da profundidade, o volume fica 2 · Ab · P, o maior entre os cinco modelos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:143": {
@@ -1711,6 +2286,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A rentabilidade é o aluguel mensal dividido pelo valor do imóvel (em milhar de reais). Calculando ano a ano: 2005: 630 ÷ 90 = 7; 2007: 960 ÷ 120 = 8; 2009: 1 350 ÷ 270 = 5; 2011: 1 800 ÷ 450 = 4; 2013: 3 240 ÷ 540 = 6.",
+          "O maior valor é 8, obtido em 2007. Note que o maior aluguel (2013) não dá a maior rentabilidade, pois o imóvel também ficou mais caro."
+        ],
+        "alternatives": {
+          "A": "2005 tem razão 630 ÷ 90 = 7, boa, mas menor que a de 2007.",
+          "B": "Correta: em 2007, 960 ÷ 120 = 8, a maior razão entre aluguel e valor do imóvel.",
+          "C": "2009 tem 1 350 ÷ 270 = 5, bem abaixo das razões de 2005 e 2007.",
+          "D": "2011 tem 1 800 ÷ 450 = 4, a menor razão do período, e não a maior.",
+          "E": "2013 tem o maior aluguel (3 240), mas a razão é 3 240 ÷ 540 = 6; escolher só pelo aluguel ignora o valor do imóvel."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:144": {
@@ -1731,6 +2331,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Um bilhão é 1 000 000 000 (mil milhões). Então 1,35 bilhão é 1,35 × 1 000 000 000 = 1 350 000 000.",
+          "Escrito com todos os algarismos e centavos: R$ 1 350 000 000,00, que tem 9 algarismos antes da vírgula."
+        ],
+        "alternatives": {
+          "A": "135 000,00 equivale a cento e trinta e cinco mil, um valor milhões de vezes menor que o do enunciado.",
+          "B": "1 350 000,00 é 1,35 milhão, e não bilhão; confunde as duas ordens de grandeza.",
+          "C": "13 500 000,00 é 13,5 milhões, escrito com zero a menos e ainda longe de bilhão.",
+          "D": "135 000 000,00 é 135 milhões, número com um algarismo a menos que o pedido.",
+          "E": "Correta: 1,35 × 10^9 = 1 350 000 000,00, com os nove algarismos antes da vírgula."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:145": {
@@ -1751,6 +2376,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A cidade A está em (20, 40) e a B em (50, 20), do mesmo lado da Rodovia 003 (eixo x). O caminho mais curto de A até o eixo e de lá até B se obtém refletindo B em relação ao eixo, o que dá B' = (50, -20), e traçando a reta de A até B'.",
+          "Essa reta tem inclinação (-20 - 40) ÷ (50 - 20) = -2 e passa pelo eixo quando 40 - 2(x - 20) = 0, isto é, x = 40. O ponto de conexão fica em x = 40 km, que corresponde à localização IV."
+        ],
+        "alternatives": {
+          "A": "A localização I (x = 20) fica logo abaixo de A, mas o trecho até B fica longo; a soma das duas rodovias não é a menor.",
+          "B": "A localização II fica antes de x = 40, e o trajeto total ainda é maior que o mínimo obtido pela reflexão.",
+          "C": "A localização III também fica à esquerda do ponto ótimo e leva a um percurso total um pouco maior.",
+          "D": "Correta: a reta de A até o reflexo de B corta o eixo em x = 40, ponto de menor soma de distâncias, localização IV.",
+          "E": "A localização V (x = 50) é a mais próxima de B, mas deixa a Rodovia 001 muito longa; a soma não é mínima."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:146": {
@@ -1771,6 +2421,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O gasto total de cada operário é preço por hora vezes horas de serviço, mais o transporte. I: 120 × 8 = 960. II: 180 × 6 = 1 080. III: 170 × 6 + 20 = 1 040. IV: 110 × 9 + 10 = 1 000. V: 110 × 10 = 1 100.",
+          "O menor valor é R$ 960,00, do operário I. Escolher apenas pelo menor preço por hora (IV ou V) não leva ao menor gasto, pois eles demoram mais para terminar."
+        ],
+        "alternatives": {
+          "A": "Correta: o operário I custa 120 × 8 = R$ 960,00, o menor total entre os cinco.",
+          "B": "O operário II custa 180 × 6 = R$ 1 080,00, mais caro que o I mesmo sendo o mais rápido.",
+          "C": "O operário III soma 170 × 6 + 20 = R$ 1 040,00, valor que ainda supera o do I.",
+          "D": "O operário IV tem o menor preço por hora, mas gasta 110 × 9 + 10 = R$ 1 000,00 no total, mais que o I.",
+          "E": "O operário V custa 110 × 10 = R$ 1 100,00, o mais caro, porque o tempo de serviço é o mais longo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:147": {
@@ -1791,6 +2466,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O volume de uma esfera cresce com o cubo do raio. Ao passar o diâmetro de 2 cm para 4 cm, o raio dobra e o volume de cada docinho fica 2³ = 8 vezes maior.",
+          "Se uma porção dá 50 docinhos pequenos, ela equivale a 50 unidades de volume. A encomenda pede 150 docinhos grandes, que valem 150 × 8 = 1 200 unidades. Logo, são necessárias 1 200 ÷ 50 = 24 porções."
+        ],
+        "alternatives": {
+          "A": "2 seria o número de porções se o docinho grande tivesse o mesmo volume do pequeno e a encomenda fosse de 100 docinhos.",
+          "B": "3 corresponde a 150 ÷ 50 e ignora que cada docinho grande consome 8 vezes mais massa.",
+          "C": "6 resulta de considerar volume 2 vezes maior (150 × 2 ÷ 50), confundindo diâmetro com volume.",
+          "D": "12 resulta de usar fator 4, como se o volume crescesse com o quadrado do raio (área), e não com o cubo.",
+          "E": "Correta: 150 docinhos × 8 de massa cada = 1 200, dividido por 50 por porção, dá 24 porções."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:148": {
@@ -1811,6 +2511,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O cone original tem raio 4 cm e altura 10 cm. Mantida a altura, o volume do cone é proporcional ao quadrado do raio. Com volume 19% menor, o novo volume é 81% do original.",
+          "Então (r ÷ 4)² = 0,81, o que dá r ÷ 4 = 0,9 e r = 3,6 cm. Repare que o enunciado dá o diâmetro (8 cm), e o raio é metade dele."
+        ],
+        "alternatives": {
+          "A": "1,52 resulta de tirar 19% de 8 e dividir, tratando raio e volume como proporcionais diretos, o que está errado.",
+          "B": "3,24 é 4 × 0,81, que aplicaria 81% diretamente ao raio, mas o volume depende do quadrado do raio.",
+          "C": "Correta: 4 × √0,81 = 4 × 0,9 = 3,6 cm, raio que faz o volume cair 19%.",
+          "D": "6,48 é 8 × 0,81, que parte do diâmetro e não do raio e também ignora a raiz quadrada.",
+          "E": "7,20 é o diâmetro correspondente (2 × 3,6), e a questão pede o raio."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:149": {
@@ -1831,6 +2556,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As vagas criadas em janeiro de 2013 foram 28 900. Houve queda de 75% em relação a janeiro de 2012, então 28 900 representa os 25% que restaram do valor de 2012.",
+          "Se 25% de x são 28 900, então x = 28 900 ÷ 0,25 = 115 600 vagas em janeiro de 2012."
+        ],
+        "alternatives": {
+          "A": "16 514 vem de dividir 28 900 por 1,75, supondo que 2013 fosse 75% maior que 2012, o oposto do que ocorreu.",
+          "B": "86 700 é 28 900 × 3, como se a queda fosse de 66,7%; a queda de 75% exige multiplicar por 4.",
+          "C": "Correta: 28 900 ÷ 0,25 = 115 600, pois 2013 equivale a 25% do valor de 2012.",
+          "D": "441 343 aparece ao usar as admissões e desligamentos brutos em vez do saldo de vagas criadas.",
+          "E": "448 568 é outro valor que parte dos números de admissões e desligamentos, que não são o dado pedido."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:150": {
@@ -1851,6 +2601,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Quer-se que, nos dois apartamentos, pelo menos um quarto receba sol de manhã. Isso ocorre nos finais 1 e 2 (os dois quartos) e 3, 4, 5 e 6 (um quarto). Só os finais 7 e 8 ficam de fora. Portanto, em cada andar há 6 apartamentos que servem.",
+          "A escolha de 2 apartamentos é uma combinação, pois a ordem não importa: C(6, 2) = 6! ÷ (4! · 2!) = 15. Como o andar pode ser qualquer um dos 9, o total é 9 × 6! ÷ ((6 - 2)! · 2!) = 135 maneiras."
+        ],
+        "alternatives": {
+          "A": "A expressão 9 × 6!/(6 - 2)! é um arranjo e conta cada par duas vezes, pois considera a ordem de escolha dos apartamentos.",
+          "B": "Correta: 9 andares vezes a combinação de 6 apartamentos (finais 1 a 6) tomados 2 a 2, 9 × 6!/((6 - 2)! · 2!).",
+          "C": "Usa 4 apartamentos por andar, como se só os finais 3 a 6 servissem, ignorando os finais 1 e 2.",
+          "D": "Usa 2 apartamentos por andar, o que desconsidera quase todas as possibilidades de escolha.",
+          "E": "Usa 8 apartamentos por andar, incluindo os finais 7 e 8, que só recebem sol à tarde."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:151": {
@@ -1871,6 +2646,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A velocidade do pistão é V = T² - 4, que se anula quando T² = 4, ou seja, T = 2 ou T = -2. Basta contar quantas vezes a curva de temperatura atinge esses dois valores nas 10 horas.",
+          "No gráfico, a curva começa acima de 2, sobe até 4 e desce, cruzando T = 2 uma vez. Depois toca T = -2 em três mínimos (os picos intermediários chegam só a 0 e não afetam a contagem). No fim, volta a subir e cruza T = 2 mais uma vez. Total: 1 + 3 + 1 = 5."
+        ],
+        "alternatives": {
+          "A": "1 conta só uma das vezes em que T vale 2 e ignora os valores T = -2.",
+          "B": "2 considera apenas as duas passagens por T = 2, esquecendo que T = -2 também zera a velocidade.",
+          "C": "3 conta só os três pontos mínimos em T = -2 e desconsidera as passagens por T = 2.",
+          "D": "4 perde uma das ocorrências, por exemplo uma passagem por T = 2 ou um dos mínimos em -2.",
+          "E": "Correta: V = 0 para T = 2 (duas vezes) e T = -2 (três vezes), somando 5 anulações."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:152": {
@@ -1891,6 +2691,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Podemos imaginar que sempre são jogadas as 7 partidas, o que não muda quem é campeão: vence a World Series quem ganhar pelo menos 4 das 7. Assim, os 2^7 = 128 resultados são equiprováveis.",
+          "Dado que o time A venceu a primeira partida, restam 6 jogos e A precisa de pelo menos 3 vitórias neles: C(6,3) + C(6,4) + C(6,5) + C(6,6) = 20 + 15 + 6 + 1 = 42 casos entre 2^6 = 64. A probabilidade é 42/64."
+        ],
+        "alternatives": {
+          "A": "35/64 usaria só C(7,4)=35 como se fosse a contagem, o que não corresponde ao evento condicionado à vitória no primeiro jogo.",
+          "B": "40/64 não resulta da soma 20 + 15 + 6 + 1 e não tem base na contagem das sequências.",
+          "C": "Correta: 42 dos 64 resultados dos seis jogos restantes dão ao vencedor da primeira partida ao menos 3 vitórias, logo 42/64.",
+          "D": "44/64 contaria dois casos a mais, por exemplo sequências com menos de 3 vitórias adicionais.",
+          "E": "52/64 superestima a vantagem do primeiro vencedor, que é de 42/64, e não passa de pouco mais de 65%."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:153": {
@@ -1951,6 +2776,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Sejam a o circuito maior e b o menor. Do primeiro dia: 3a + 2b = 1 800 e 2a + b = 1 100. Da segunda, b = 1 100 - 2a; substituindo, 3a + 2 200 - 4a = 1 800, logo a = 400 m e b = 300 m.",
+          "No segundo dia: 400x + 300y = 5 000, isto é, 4x + 3y = 50, com x e y inteiros não negativos, maximizando x + y. Para ter mais voltas, usa-se mais o circuito menor. Os pares possíveis são (2, 14), (5, 10), (8, 6) e (11, 2), com somas 16, 15, 14 e 13. O maior é 16."
+        ],
+        "alternatives": {
+          "A": "10 voltas seria uma soma muito baixa; só o circuito maior sozinho daria 12 voltas e meia, e há combinações com mais voltas.",
+          "B": "13 corresponde ao par (11, 2), que usa o circuito maior ao máximo e, portanto, não maximiza o número de voltas.",
+          "C": "14 corresponde ao par (8, 6), solução válida mas que não é a que gera mais voltas.",
+          "D": "15 corresponde ao par (5, 10), válido, porém inferior ao par (2, 14).",
+          "E": "Correta: com 2 voltas no maior e 14 no menor, 2 × 400 + 14 × 300 = 5 000 m, somando 16 voltas, o máximo possível."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:156": {
@@ -1991,6 +2841,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada configuração é formada por modelo, motor, conjunto de opcionais e cor. Há 7 modelos e 2 motores. Os opcionais são 3, e cada um pode estar ou não presente, o que dá 2³ = 8 combinações (inclui nenhum, um, dois ou os três).",
+          "Sem a cor, são 7 × 2 × 8 = 112 configurações. Com c cores, o total é 112c, que deve ser maior que 1 000. Como 112 × 8 = 896 (insuficiente) e 112 × 9 = 1 008 (suficiente), o mínimo é 9 cores."
+        ],
+        "alternatives": {
+          "A": "8 cores dá 112 × 8 = 896 configurações, que não passam de 1 000, então o anúncio seria falso.",
+          "B": "Correta: 112 × 9 = 1 008 > 1 000, e com 8 cores não se chega a 1 000, logo o mínimo é 9.",
+          "C": "11 cores gera 1 232 configurações, número que serve, mas não é o mínimo necessário.",
+          "D": "18 resulta de contar os opcionais de forma errada, por exemplo 3 em vez de 8 combinações e dobrar, o que superestima.",
+          "E": "24 cores seria o caso de somar em vez de multiplicar opções, e gera muito mais que o necessário."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:158": {
@@ -2031,6 +2906,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Com os dígitos 0, 1, 0 e 0, a soma ponderada é S = 5·0 + 4·1 + 3·0 + 2·0 = 4. Dividindo 4 por 11, o quociente é 0 e o resto é R = 4.",
+          "O dígito verificador é a diferença entre 11 e esse resto: N5 = 11 − 4 = 7. Esse valor é um algarismo válido, pois pertence ao conjunto de 0 a 9."
+        ],
+        "alternatives": {
+          "A": "O zero não aparece em nenhum passo: o resto é 4 e a diferença 11 − 4 não dá 0.",
+          "B": "O valor 6 não sai da conta; seria obtido ao usar um resto igual a 5, mas o resto de 4 por 11 é 4.",
+          "C": "Correta: S = 4, o resto da divisão por 11 é 4 e N5 = 11 − 4 = 7.",
+          "D": "Daria 8 se o resto fosse 3, o que ocorreria ao esquecer o termo 4·N2 ou ao calcular S de modo errado.",
+          "E": "O valor 9 exigiria resto 2, o que não corresponde a S = 4."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:160": {
@@ -2051,6 +2951,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na escala 1 : 50, cada centímetro do desenho vale 50 cm reais. A altura do espaço é 3,8 × 50 = 190 cm = 1,90 m, e a largura é 1,6 × 50 = 80 cm = 0,80 m.",
+          "O fabricante pede folga de 10 cm em relação a móveis e paredes, na parte superior e nas laterais. Assim, a altura máxima do refrigerador é 1,90 − 0,10 = 1,80 m. Na largura, a folga vale nos dois lados: 0,80 − 0,10 − 0,10 = 0,60 m."
+        ],
+        "alternatives": {
+          "A": "Correta: 1,90 − 0,10 = 1,80 m de altura e 0,80 − 2 × 0,10 = 0,60 m de largura.",
+          "B": "A altura está certa, mas a largura de 0,70 m desconta a folga de apenas um lado.",
+          "C": "Usa as medidas reais do espaço sem nenhuma folga, ignorando a exigência de 10 cm do fabricante.",
+          "D": "Seriam as medidas obtidas ao converter a escala de modo errado, sem relação com 190 cm por 80 cm.",
+          "E": "Valores acima do espaço disponível: o refrigerador não caberia, pois o espaço real tem 1,90 m de altura."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:161": {
@@ -2071,6 +2996,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada equipe joga 3 partidas na fase de grupos, e em cada grupo de 4 equipes é possível fazer duas partidas por rodada, em 3 rodadas. Depois vêm oitavas, quartas, semifinais e final, uma rodada de jogos para cada fase. Ao todo são 3 + 4 = 7 datas de jogos.",
+          "A regra exige 3 dias de descanso entre dois jogos da mesma equipe, ou seja, o jogo seguinte ocorre 4 dias depois (domingo e depois quinta-feira). Contando o primeiro dia como dia 1, os jogos caem nos dias 1, 5, 9, 13, 17, 21 e 25. O torneio termina no 25º dia, no mínimo."
+        ],
+        "alternatives": {
+          "A": "Dá 22 ao supor intervalos de 3 dias entre as datas, esquecendo que são 3 dias de descanso entre os jogos.",
+          "B": "Correta: sete datas de jogos espaçadas de 4 em 4 dias, a partir do dia 1, terminam no dia 25.",
+          "C": "O valor 28 equivale a sete intervalos de 4 dias (7 × 4), contando um intervalo a mais do que o necessário.",
+          "D": "O número 48 é a quantidade de partidas só da fase de grupos (8 grupos com 6 jogos), e não o número de dias do torneio.",
+          "E": "Chega perto de 64 ao tratar cada partida como se ocupasse um dia próprio (são 63 jogos), sem aproveitar jogos simultâneos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:162": {
@@ -2091,6 +3041,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Restam 46 números a sortear. Pedro precisa de apenas um número para fechar a linha de cima (o 12). Na coluna da direita faltam o 05 e o 45, e na diagonal principal faltam o 11 e o 19. Os outros jogadores têm no máximo um dos quatro números marcados, então não conseguem completar uma linha em duas rodadas.",
+          "Ganhar na rodada 5: sair o 12, com probabilidade 1/46. Ganhar na rodada 6: ou o 12 sai só agora (45 sequências favoráveis em 46·45), ou saem o par 05 e 45 (2 ordens) ou o par 11 e 19 (2 ordens). Isso dá 45 + 2 + 2 = 49 casos em 46·45. A probabilidade total é 1/46 + 49/(46·45)."
+        ],
+        "alternatives": {
+          "A": "Soma 1/46 com 1/45, ignorando as combinações de dois números que também completam coluna e diagonal.",
+          "B": "O numerador 2 considera só um dos pares (05 e 45), esquecendo o 12 na segunda rodada e a diagonal.",
+          "C": "O numerador 8 não corresponde à contagem de casos favoráveis na segunda rodada.",
+          "D": "O numerador 43 é menor que o correto, pois desconta casos que na verdade ainda levam Pedro à vitória.",
+          "E": "Correta: 1/46 (12 na rodada 5) mais 49/(46·45), com 45 casos pelo 12 na rodada 6 e 4 casos pelos pares 05 e 45, 11 e 19."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:163": {
@@ -2131,6 +3106,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em 2012 o valor foi a média de 2011 e 2013: (73,67 + 74,23) / 2 = 73,95, que confere com o gráfico. A suposição é que 2013 seja a média de 2012 e 2014.",
+          "Chamando de x o valor de 2014, temos 74,23 = (73,95 + x) / 2. Então x = 2 · 74,23 − 73,95 = 148,46 − 73,95 = 74,51 anos."
+        ],
+        "alternatives": {
+          "A": "O valor 74,23 é o de 2013, e repeti-lo para 2014 contraria a regra de a média ser 2013.",
+          "B": "Correta: x = 2 · 74,23 − 73,95 = 74,51.",
+          "C": "O valor 75,07 viria de somar ao ano de 2013 uma diferença incorreta, e não satisfaz a condição da média.",
+          "D": "Seria 74,23 + 1, um acréscimo arbitrário que não tem apoio na condição da média.",
+          "E": "É um valor muito alto, obtido ao somar os valores de 2012 e 2013 e adicionar o de 2014 por engano."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:165": {
@@ -2171,6 +3171,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para ter média 18 em cinco jogos, o jogador precisa somar 5 · 18 = 90 pontos. Somando os quatro primeiros jogos: I tem 12 + 25 + 20 + 20 = 77; II tem 71; III tem 71; IV tem 75; V tem 75.",
+          "Os pontos que faltam no quinto jogo são 90 menos o total de cada um: I precisa de 13, II e III precisam de 19, IV e V precisam de 15. O menor valor é o de I, com 13 pontos."
+        ],
+        "alternatives": {
+          "A": "Correta: I soma 77 em quatro jogos e precisa de apenas 90 − 77 = 13 pontos.",
+          "B": "II soma 71 e precisa de 19 pontos, mais do que o jogador I.",
+          "C": "III também soma 71 e precisa de 19 pontos, mais do que I.",
+          "D": "IV soma 75 e precisa de 15 pontos, mais do que os 13 de I.",
+          "E": "V soma 75 e precisa de 15 pontos, também mais do que os 13 de I."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:167": {
@@ -2191,6 +3216,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Todos os projetos têm volume de 90 m³ (90 000 L), por exemplo 1,8 · 2 · 25 = 90. O revestimento cobre as paredes e o fundo, portanto a área é largura · comprimento + 2 · profundidade · (largura + comprimento).",
+          "Calculando: I = 50 + 2 · 1,8 · 27 = 147,2 m². II = 45 + 2 · 2 · 14 = 101 m². III = 90 + 2 · 1 · 21 = 132 m². IV = 60 + 2 · 1,5 · 19 = 117 m². V = 36 + 2 · 2,5 · 15 = 111 m². A menor área é a do projeto II."
+        ],
+        "alternatives": {
+          "A": "O projeto I exige 147,2 m², a maior área entre os cinco.",
+          "B": "Correta: o projeto II tem a menor área de revestimento, 101 m².",
+          "C": "O projeto III precisa de 132 m², bem acima de 101 m².",
+          "D": "O projeto IV precisa de 117 m², acima do projeto II.",
+          "E": "O projeto V precisa de 111 m², também acima do projeto II."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:168": {
@@ -2211,6 +3261,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O número de candidatos de cada curso é o número de vagas multiplicado pelos candidatos por vaga. Administração: 30 · 6 = 180. Ciências Contábeis: 40 · 6 = 240. Engenharia Elétrica: 50 · 7 = 350.",
+          "História: 30 · 8 = 240. Letras: 25 · 4 = 100. Pedagogia: 25 · 5 = 125. Somando 180 + 240 + 350 + 240 + 100 + 125, o total de candidatos é 1 235."
+        ],
+        "alternatives": {
+          "A": "O valor 200 não corresponde à soma; é pequeno demais, pois só Engenharia Elétrica já tem 350 candidatos.",
+          "B": "O valor 400 ficaria bem abaixo do total, que passa de mil.",
+          "C": "O valor 1 200 aproxima o total, mas a soma exata dos seis cursos é 1 235.",
+          "D": "Correta: 180 + 240 + 350 + 240 + 100 + 125 = 1 235.",
+          "E": "O valor 7 200 resulta de multiplicar a soma dos candidatos por vaga pelo número total de vagas, o que não faz sentido."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:169": {
@@ -2231,6 +3306,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O volume do cilindro é π · 4² · 50 = 800π cm³. Cada esfera tem diâmetro 1 cm, então raio 0,5 cm, e volume (4/3) · π · 0,5³ = π/6 cm³.",
+          "Sem perda de material, o número de esferas é a razão entre os volumes: 800π / (π/6) = 4 800 esferas."
+        ],
+        "alternatives": {
+          "A": "O valor 800 é o volume do cilindro dividido por π, sem dividir pelo volume da esfera.",
+          "B": "O valor 1 200 viria de usar um volume de esfera incorreto, como 2π/3 em vez de π/6.",
+          "C": "O valor 2 400 resulta de usar um volume de esfera igual a π/3, o dobro do correto.",
+          "D": "Correta: 800π dividido por π/6 dá 4 800 esferas.",
+          "E": "O valor 6 400 surgiria de um volume de esfera de π/8, que não é o da esfera de diâmetro 1 cm."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:170": {
@@ -2251,6 +3351,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Seja t o tempo de exercício em horas. A pessoa perde 1,5t kg, e como 1 L de água tem 1 kg, a recomendação é ingerir 40% a mais: 1,4 · 1,5t = 2,1t litros.",
+          "A pessoa ingeriu 1,7 L, então 2,1t = 1,7 e t = 1,7 / 2,1 ≈ 0,81 h, ou cerca de 48,6 minutos. Esse tempo está entre 45 e 55 minutos."
+        ],
+        "alternatives": {
+          "A": "Com 30 minutos a pessoa perderia 0,75 kg e deveria beber 1,05 L, não 1,7 L.",
+          "B": "Entre 35 e 45 minutos a perda é de no máximo 1,125 kg, exigindo menos que 1,7 L de água.",
+          "C": "Correta: 2,1t = 1,7 dá t ≈ 48,6 minutos, que está entre 45 e 55 minutos.",
+          "D": "Com mais de 60 minutos a exigência passaria de 2,1 L, mais do que o ingerido.",
+          "E": "Com 70 minutos ou mais seriam necessários cerca de 2,45 L ou mais, bem acima de 1,7 L."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:171": {
@@ -2271,6 +3396,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Com tela de 12 m, a primeira fileira fica a 0,6 · 12 = 7,2 m da tela. O limite aceitável da norma é 2,9 · 12 = 34,8 m, e é até lá que a sala será ampliada. As fileiras ficam a 1 m umas das outras.",
+          "As distâncias das fileiras são 7,2; 8,2; 9,2; e assim por diante, ou seja, 7,2 + k para k = 0, 1, 2, ... Precisamos de 7,2 + k ≤ 34,8, o que dá k ≤ 27,6, então k vai de 0 a 27. São 28 fileiras."
+        ],
+        "alternatives": {
+          "A": "Com 26 fileiras a última ficaria a 32,2 m, deixando de aproveitar espaço até 34,8 m.",
+          "B": "Com 27 fileiras a última ficaria a 33,2 m, e ainda caberia mais uma fileira.",
+          "C": "Correta: k de 0 a 27 dá 28 fileiras, a última a 34,2 m, dentro do limite de 34,8 m.",
+          "D": "Com 29 fileiras a última ficaria a 35,2 m, ultrapassando o limite de 34,8 m.",
+          "E": "O número 35 supera muito o limite, pois 34,8 − 7,2 já é menor que 28 espaços inteiros de 1 m."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:172": {
@@ -2291,6 +3441,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Pela lei, L = c · R² · T⁴. A estrela E tem raio R_E = R_F / 2 e temperatura T_E = 2 · T_F.",
+          "Substituindo: L_E = c · (R_F/2)² · (2T_F)⁴ = c · (R_F²/4) · 16 · T_F⁴ = 4 · c · R_F² · T_F⁴ = 4 · L_F."
+        ],
+        "alternatives": {
+          "A": "Obtém L_F/2 ao tratar a luminosidade como proporcional só ao raio, sem elevar nenhuma grandeza à potência.",
+          "B": "Obtém L_F/4 ao considerar somente o efeito do raio ao quadrado, sem a temperatura elevada à quarta potência.",
+          "C": "L_E = L_F só valeria se os efeitos do raio e da temperatura se anulassem, o que não ocorre: 1/4 vezes 16 é 4.",
+          "D": "Correta: (1/2)² · 2⁴ = 1/4 · 16 = 4, logo L_E = 4 L_F.",
+          "E": "O fator 8 viria de usar expoentes errados, por exemplo 2³, e não de (1/2)² · 2⁴."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:173": {
@@ -2311,6 +3486,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O total de famílias é 100 + 400 + 200 + 150 + 100 + 50 = 1 000. Com número par de dados, a mediana é a média entre o 500º e o 501º valor, ordenados.",
+          "As frequências acumuladas são: 0 filhos até a posição 100; 1 filho até a 500; 2 filhos até a 700. Logo o 500º valor é 1 e o 501º é 2, e a mediana é (1 + 2)/2 = 1,5."
+        ],
+        "alternatives": {
+          "A": "O valor 1,0 seria a mediana se o 501º valor também fosse 1, mas ele já pertence ao grupo de 2 filhos.",
+          "B": "Correta: o 500º elemento vale 1, o 501º vale 2, e a mediana é 1,5.",
+          "C": "O valor 1,9 aproxima a média aritmética dos dados, não a mediana.",
+          "D": "O valor 2,1 está acima da média e não é o valor central da distribuição ordenada.",
+          "E": "O valor 2,5 seria a média entre 2 e 3, o que não corresponde às posições centrais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:174": {
@@ -2331,6 +3531,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A trajetória é a parábola y = −x²/6 − 7x/3 + 12, com coeficiente de x² negativo, e a altura máxima é o valor y do vértice: y_v = −Δ/(4a), com Δ = (7/3)² + 4 · (1/6) · 12 = 49/9 + 8 = 121/9. Então y_v = (121/9) / (4/6) = 121/6 ≈ 20,17 m acima do eixo x.",
+          "O eixo x está a 1,5 m do piso, então a altura máxima da bola em relação ao piso é 121/6 + 1,5 ≈ 21,67 m. O saque é invalidado se a bola atingir o teto, ou seja, nos ginásios com teto de 17, 18, 19 e 21 m (I a IV). No ginásio V, com 40 m, o saque é válido."
+        ],
+        "alternatives": {
+          "A": "Considera só o ginásio de 17 m, mas a bola também ultrapassaria os tetos de 18, 19 e 21 m.",
+          "B": "Inclui apenas dois ginásios, mas a bola sobe a cerca de 21,67 m e também bate nos tetos de 19 e 21 m.",
+          "C": "Para no ginásio de 19 m, ignorando que o de 21 m também é menor que 21,67 m.",
+          "D": "Correta: a altura máxima é cerca de 21,67 m, maior que 17, 18, 19 e 21 m, e menor que 40 m.",
+          "E": "A bola não alcança o teto de 40 m do ginásio V, portanto o saque não foi invalidado ali."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:175": {
@@ -2371,6 +3596,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O modelo p(t) = −t² + 10t + 24 é uma parábola voltada para baixo, com máximo em t = −b/(2a) = −10/(−2) = 5. Nesse mês p(5) = −25 + 50 + 24 = 49 pessoas infectadas.",
+          "O mês de maior quantidade de infectados é t = 5, que pertence ao intervalo 5 ≤ t ≤ 6, da proposta III."
+        ],
+        "alternatives": {
+          "A": "O intervalo de t = 1 a 2 não contém t = 5; ali p(1) = 33 e p(2) = 40, valores menores que 49.",
+          "B": "O intervalo de t = 3 a 4 não inclui o mês 5; p(3) = 45 e p(4) = 48 ficam abaixo do máximo.",
+          "C": "Correta: o máximo ocorre em t = 5, mês incluído no intervalo 5 ≤ t ≤ 6.",
+          "D": "O intervalo de t = 7 a 9 já está na parte decrescente: p(7) = 45, e o máximo foi antes.",
+          "E": "O período de t = 10 a 12 tem p(10) = 24 e valores menores, longe do pico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:177": {
@@ -2391,6 +3641,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O padrão se repete a cada 13 dias. Em 24 semanas há 24 · 7 = 168 dias, e 168 = 13 · 12 + 12, então o último dia do treinamento corresponde ao 12º dia do ciclo, que é o treino T5. A 24ª semana vai do dia 162 ao dia 168.",
+          "Como 162 = 13 · 12 + 6, o dia 162 é o 6º do ciclo (repouso). Os sete dias da semana são, em ordem, as posições 6 a 12 do ciclo: R, T3, R, T4, R, R, T5."
+        ],
+        "alternatives": {
+          "A": "Começa em T3 e termina em R, mas a semana termina no dia 168, que é T5 e não repouso.",
+          "B": "Correta: dias 162 a 168 correspondem às posições 6 a 12 do ciclo, R T3 R T4 R R T5.",
+          "C": "Começa no repouso da posição 8 e termina em T1, o que deslocaria a semana em dois dias.",
+          "D": "Esta sequência corresponde a outro trecho do ciclo, com T5 no terceiro dia e T1 no quinto, o que não bate com a semana pedida.",
+          "E": "Começa com R, T5, R, T1, o que exigiria que o ciclo estivesse alinhado de outro modo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:178": {
@@ -2431,6 +3706,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No desenho, a varanda forma um L: uma faixa vertical com 4 cm de largura e 18,4 cm de altura, e uma faixa horizontal no topo com 5 cm de altura que se estende pelos 16 cm de largura total, descontada a parte da faixa vertical (16 − 4 = 12 cm).",
+          "Área no desenho: 4 · 18,4 + 12 · 5 = 73,6 + 60 = 133,6 cm². Na escala 1 : 50, cada área é multiplicada por 50² = 2 500, então a área real é 133,6 · 2 500 = 334 000 cm² = 33,4 m²."
+        ],
+        "alternatives": {
+          "A": "Correta: 133,6 cm² no desenho vezes 2 500 dá 334 000 cm², isto é, 33,40 m².",
+          "B": "O valor 66,80 m² dobra a área real, como se a escala fosse tratada de outro modo.",
+          "C": "O valor 89,24 m² não corresponde a nenhuma combinação das dimensões do L na escala dada.",
+          "D": "O valor 133,60 é a área em cm² no desenho, sem converter pela escala e pela unidade.",
+          "E": "O valor 534,40 é quatro vezes 133,60 e não tem apoio na conversão pela escala de 1 : 50."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:180": {
@@ -2451,6 +3751,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No setor adulto, o volume cai de 18 000 para 15 000 a cada dez dias, uma queda de 3 000. Mantendo a tendência, o período seguinte (dias 21 a 30) terá 15 000 − 3 000 = 12 000. No infantil, de 8 000 para 7 000, queda de 1 000, e o terceiro período terá 6 000.",
+          "A soma dos três períodos é (18 000 + 8 000) + (15 000 + 7 000) + (12 000 + 6 000) = 26 000 + 22 000 + 18 000 = 66 000. Como a meta é 77 000, faltam 77 000 − 66 000 = 11 000 reais."
+        ],
+        "alternatives": {
+          "A": "O valor 5 000 não aparece em nenhuma diferença da soma: falta bem mais para a meta.",
+          "B": "O valor 7 000 é o volume do setor infantil no segundo período, e não o que falta para a meta.",
+          "C": "Correta: 77 000 − 66 000 = 11 000.",
+          "D": "O valor 18 000 é o volume dos dois setores no último período, e não o que falta para a meta.",
+          "E": "O valor 29 000 ignora parte das vendas já realizadas e exagera o que falta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     }
   }
