@@ -34,6 +34,7 @@ const KNOWN_PRICES = {
   "@cf/mistralai/mistral-small-3.1-24b-instruct": [31_876, 50_488],
   "@cf/google/gemma-3-12b-it": [31_371, 50_560],
   "@cf/qwen/qwen3-30b-a3b-fp8": [4_625, 30_475],
+  "@cf/openai/gpt-oss-120b": [31_818, 68_182],
 };
 const DEFAULT_MODEL = "@cf/meta/llama-3.1-8b-instruct-fp8-fast";
 const model = process.env.OLENA_MODEL ?? DEFAULT_MODEL;
@@ -133,7 +134,12 @@ const capturingFetch = async (...fetchArgs) => {
     const reply = body?.result?.response;
     const usage = body?.result?.usage;
     captured.push({
-      raw: (typeof reply === "string" ? reply : (JSON.stringify(reply) ?? "")).slice(0, 300),
+      // Modelo que não responde em `result.response` (outro formato): guarda o começo de `result`,
+      // para ver onde está o texto.
+      raw: (typeof reply === "string"
+        ? reply
+        : (JSON.stringify(reply === undefined ? body?.result : reply) ?? "")
+      ).slice(0, 400),
       neurons: usage
         ? ((usage.prompt_tokens ?? 0) * PRICES.input +
             (usage.completion_tokens ?? 0) * PRICES.output) /
