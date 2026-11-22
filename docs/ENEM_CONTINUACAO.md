@@ -56,3 +56,7 @@ Os relatórios de navegador em `docs/research/enem-*-browser-validation.json` do
 ## Atualização de 22/11/2026 (integração e verificação)
 
 Branch integrada com a main atual e com as verificações automáticas corrigidas (ver `docs/CURRENT_STATE_AUDIT.md`, seção "PR #697"). O catálogo agora vem por `fetch`. Restam: autorização para o teto de JavaScript (1963,8 KiB medidos contra 1914), `npm run test:e2e`, verificação visual, e as duas frentes editoriais acima (análises A a E e estatísticas), que são de produção de conteúdo em lote e não foram iniciadas nesta rodada.
+
+## Lote 2026 dia 1, questões 67 a 90 (22/11/2026)
+
+Publicadas 24 resoluções com cinco justificativas A a E (`scripts/publish-enem-solutions.py`, chave oficial conferida). A tela é a mesma de 2022 (Resolução da questão e Análise das alternativas), sem mudança de desenho. Limites: a q68 depende de um primeiro texto e a q86 e a q90 de figuras que a extração de texto do PDF não traz; as justificativas dessas três usam só o texto visível e devem ser conferidas contra as imagens. Falta, para igualar 2022: 2003 resoluções e 1235 estatísticas (`docs/research/enem-review-coverage.json`). 2025 e 2026 seguem sem estatísticas, por falta de microdados publicados.

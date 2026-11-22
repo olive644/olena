@@ -77,7 +77,9 @@
     "english:4": {
       "answer": "D",
       "solution": {
-        "paragraphs": ["Origens e línguas diferentes compõem a identidade apresentada no poema."],
+        "paragraphs": [
+          "Origens e línguas diferentes compõem a identidade apresentada no poema."
+        ],
         "alternatives": {
           "A": "A presença da Europa é reconhecida como parte da história do eu lírico, mas ele afirma não ter um lar naquele continente. Isso impede interpretar o trecho como exaltação exclusiva da origem europeia: ela é apenas uma das referências de sua formação.",
           "B": "Os guetos de Nova York aparecem entre muitas marcas de origem e pertencimento, inclusive como lugares que o eu lírico não conheceu. Não há uma defesa específica de sua cultura que explique o conjunto do poema; a identidade descrita resulta de várias experiências.",
@@ -1904,14 +1906,14 @@
       "answer": "B",
       "solution": {
         "paragraphs": [
-          "O ingresso ampliado na universidade não elimina dificuldades materiais, acadêmicas e culturais. O texto mostra que inclusão exige condições de permanência e enfrentamento do preconceito, capazes de responder às experiências específicas dos estudantes indígenas."
+          "O relato mostra que a entrada de estudantes indígenas na universidade veio acompanhada de dificuldades materiais, como o sustento financeiro, e de barreiras culturais, como o isolamento e o preconceito. A tensão está entre a realidade específica desse grupo e políticas de permanência que ainda não dão conta dela."
         ],
         "alternatives": {
-          "A": "As barreiras relatadas vão além de desempenho individual ou de uma dificuldade linguística específica.",
-          "B": "As necessidades materiais e culturais evidenciam limites das respostas institucionais voltadas à permanência.",
-          "C": "O texto problematiza preconceitos e exclusões, sem afirmar neutralidade cultural do conhecimento universitário.",
-          "D": "A diversidade de gênero não constitui a tensão descrita no relato.",
-          "E": "Não é uma mudança de governo que explica as barreiras financeiras e culturais apresentadas."
+          "A": "O texto não trata de falta de mérito nem de proficiência linguística. A fala da estudante mostra que a dúvida sobre sua capacidade nasce do preconceito, e não de uma dificuldade com o idioma.",
+          "B": "Os obstáculos citados, financeiros, de acompanhamento e culturais, são específicos dos alunos indígenas. Isso evidencia que as medidas de permanência são insuficientes para esse público.",
+          "C": "Há entraves culturais no texto, mas ele não discute a neutralidade da ciência. O foco é a inclusão de um grupo étnico, e não o caráter do conhecimento científico.",
+          "D": "Gênero não aparece em nenhum trecho. O recorte do texto é étnico, e a tensão descrita não envolve a invisibilidade da diversidade de gênero.",
+          "E": "As dificuldades financeiras são citadas, mas sem ligação com mudança de governo ou com a distribuição de renda. O texto trata de como as universidades se organizam para receber o grupo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1931,14 +1933,14 @@
       "answer": "A",
       "solution": {
         "paragraphs": [
-          "O autor distingue a função de disponibilizar um acervo de um conjunto mais amplo de atividades de sociabilidade, debate e produção cultural. No contraste proposto, o gabinete não se resume à biblioteca, pois reúne finalidades de atuação pública que ultrapassam o empréstimo de livros."
+          "O trecho define o Gabinete de Leitura como algo maior que uma biblioteca: nele havia debates literários e científicos, discursos, periódicos, saraus e jogos. Ao compará-lo com outra organização socioeducativa do século XIX, o autor ressalta que as finalidades das duas instituições eram diferentes."
         ],
         "alternatives": {
-          "A": "A comparação destaca a diferença de abrangência dos objetivos: o gabinete reúne atividades que vão além da função de biblioteca descrita.",
-          "B": "Não se apresenta uma relação hierárquica de subordinação de agremiações estudantis.",
-          "C": "O autor não caracteriza os títulos disponíveis como predominantemente subversivos.",
-          "D": "Não é indicada uma predominância religiosa que distinga os acervos.",
-          "E": "O argumento diferencia os campos de atuação, em vez de demonstrar metodologias padronizadas entre as instituições."
+          "A": "O gabinete reunia leitura, debate público, publicação e convívio social, objetivos mais amplos que os de uma instituição centrada no acervo. É essa diferença de finalidades que o autor destaca.",
+          "B": "O texto não fala de hierarquia entre agremiações nem de estudantes. A comparação é sobre o que cada organização fazia, e não sobre relações de subordinação.",
+          "C": "As atividades listadas são debates, periódicos, saraus e jogos de baralho. Nenhuma menção a títulos proibidos ou subversivos aparece.",
+          "D": "Religião não é mencionada, nem a composição dos acervos. A ênfase está na sociabilidade e na vida cultural em torno do gabinete.",
+          "E": "O texto enumera atividades variadas e estatutos próprios de cada gabinete. Isso aponta para diversidade de práticas, e não para uma metodologia comum às duas associações."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1958,14 +1960,14 @@
       "answer": "E",
       "solution": {
         "paragraphs": [
-          "A memória do crime impede que o simples passar do tempo dispense o responsável de reconhecê-lo moralmente. O objetivo apontado é criar condições para que criminoso e vítima possam voltar a se relacionar como semelhantes, o que confere à lembrança uma perspectiva de reconstrução moral."
+          "Para o autor, o ressentimento mantém o criminoso preso ao seu crime, obrigando-o a se ver implicado no que fez. Só depois dessa reversão moral do tempo é possível que ele se relacione com a vítima como semelhante. A suspensão do tempo tem, portanto, uma função de reconstrução da relação moral."
         ],
         "alternatives": {
-          "A": "Apagar a culpa contraria a exigência de que o criminoso reconheça a verdade de seu ato.",
-          "B": "O passado não é desfeito; o texto insiste em manter seu significado moral presente.",
-          "C": "A finalidade declarada não é alimentar vingança, mas possibilitar uma relação moralmente reconstruída.",
-          "D": "A alternativa não expressa a transformação ética da relação entre responsável e vítima.",
-          "E": "A responsabilização moral é apresentada como condição para reconstruir uma relação entre semelhantes."
+          "A": "O ressentimento serve justamente para manter a culpa viva. Ele impede que o crime seja tratado como algo superado.",
+          "B": "O texto afirma que o criminoso permanece atado ao crime. A violação não é anulada, e sim reconhecida como realidade moral.",
+          "C": "O ressentimento aqui tem função moral, a de fazer o criminoso reconhecer seu ato. Ele não é descrito como desejo de vingança.",
+          "D": "O trecho trata de consciência e responsabilidade moral do criminoso. Não fala em consolidar disposições objetivas.",
+          "E": "Ao prender o criminoso ao seu ato, o ressentimento abre caminho para um novo vínculo entre ele e a vítima, de reconhecimento mútuo. Essa é a perspectiva reconstrutiva indicada no texto."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1985,14 +1987,14 @@
       "answer": "A",
       "solution": {
         "paragraphs": [
-          "O texto relaciona a erosão a alterações no rio, sobretudo aos desvios de água para usos domésticos, industriais e agrícolas. A diminuição do volume e do transporte de sedimentos reduz a capacidade de compensar a ação marinha. O processo costeiro é, assim, intensificado por intervenções humanas."
+          "O avanço do mar em Atafona é explicado, principalmente, pelo assoreamento do Rio Paraíba do Sul, causado por desvios de água para abastecimento doméstico, industrial e agrícola. Com menos volume, o rio não leva sedimentos suficientes para conter o mar. A erosão costeira é, portanto, intensificada por ação humana."
         ],
         "alternatives": {
-          "A": "Os desvios de água para diferentes atividades humanas são agentes antrópicos que intensificam o processo descrito.",
-          "B": "A explicação específica apresentada não se fundamenta em mudanças climáticas como causa principal.",
-          "C": "O texto destaca redução de volume e de aporte sedimentar, não chuvas intensas.",
-          "D": "Glaciações periódicas não explicam as alterações recentes indicadas na foz do rio.",
-          "E": "O intemperismo físico não corresponde às intervenções no fluxo e no transporte de sedimentos destacadas."
+          "A": "Os desvios de água para consumo e produção são atividades humanas. Elas reduzem a vazão do rio e agravam a erosão costeira descrita.",
+          "B": "O texto aponta vários motivos, mas o principal é o desvio de água. Mudanças climáticas não são citadas como causa.",
+          "C": "Chuvas fortes não aparecem no texto. O problema descrito é o contrário: o rio perde volume e transporta menos sedimentos.",
+          "D": "Glaciações levam milhares de anos. O avanço do mar descrito acontece desde a década de 1960, em escala de décadas.",
+          "E": "O intemperismo físico fragmenta rochas no próprio lugar. Ele não explica o recuo da costa pela falta de sedimentos trazidos pelo rio."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2012,14 +2014,14 @@
       "answer": "B",
       "solution": {
         "paragraphs": [
-          "A possibilidade técnica de escolher características dos filhos entra em tensão com a aceitação de uma vida cujas qualidades não estão inteiramente sob o controle dos pais. O conflito pressupõe a imprevisibilidade da constituição humana e pergunta se a filiação deve ser transformada em projeto de fabricação de atributos."
+          "No primeiro texto, a terapia gênica permite escolher características dos filhos. No segundo, valorizar os filhos é aceitá-los como são, abertos ao inesperado. O conflito moral só existe porque a natureza humana é tratada como algo não determinado de antemão: ou se aceita a imprevisibilidade, ou se tenta controlá-la."
         ],
         "alternatives": {
-          "A": "A biotecnologia permite formular o problema, mas o pressuposto moral do contraste é a imprevisibilidade que se tenta controlar.",
-          "B": "O caráter não inteiramente determinado ou controlável dos filhos fundamenta a tensão entre escolha técnica e abertura ao inesperado.",
-          "C": "O segundo texto questiona a transformação da possibilidade científica em critério moral suficiente.",
-          "D": "O interesse familiar é problematizado, sem receber primazia incondicional sobre a aceitação dos filhos.",
-          "E": "Não se demonstra que a seleção natural se tenha tornado obsoleta; o problema é a pretensão de controlar características humanas."
+          "A": "A biotecnologia é o contexto do primeiro texto, mas o segundo trata do amor dos pais e não depende dela. O que sustenta o conflito é a ideia de natureza humana, não o desenvolvimento técnico.",
+          "B": "O texto 2 valoriza o caráter imprevisível dos filhos e o texto 1 propõe escolhê-lo. O dilema pressupõe que a natureza humana não é totalmente determinada.",
+          "C": "O segundo texto questiona a vontade de controle e não coloca a ciência em primeiro lugar. A primazia do conhecimento científico não é pressuposto comum.",
+          "D": "O interesse da família é objeto de crítica no texto 2, que fala de filhos vistos como instrumentos de ambição. Ele é parte do conflito, e não o que o sustenta.",
+          "E": "Nenhum dos textos declara que a seleção natural ficou obsoleta. A discussão é sobre escolher características, e não sobre o fim de um processo evolutivo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2039,14 +2041,14 @@
       "answer": "C",
       "solution": {
         "paragraphs": [
-          "Os instrumentos são diferenciados segundo espécies, ambientes e experiências acumuladas de pesca. A transmissão oral e a prática cotidiana mostram um conhecimento desenvolvido na interação entre comunidades e natureza, que organiza trabalho e subsistência."
+          "A pesca artesanal é transmitida oralmente e aprendida na prática diária, com instrumentos feitos de materiais locais, como varas de coqueiro. A organização da vida da comunidade se apoia, assim, em saberes construídos na relação com a natureza."
         ],
         "alternatives": {
-          "A": "O texto não condiciona essas técnicas a trocas globais; destaca a transmissão e a experiência locais.",
-          "B": "A dimensão econômica é mencionada, mas o processo de formação dos saberes decorre da prática no ambiente.",
-          "C": "O conhecimento das espécies e das condições de captura orienta técnicas constituídas na relação com a natureza.",
-          "D": "Não se atribui a produção das técnicas a uma relação com empresas.",
-          "E": "A descrição ressalta transmissão oral e experiência cotidiana, não aprendizado industrial."
+          "A": "O texto destaca transmissão oral entre gerações em uma comunidade. Não há dependência de trocas globais.",
+          "B": "A pesca é descrita como subsistência e base econômica local. O saber não nasce da conexão com o comércio.",
+          "C": "Os instrumentos e as técnicas surgem da experiência com o ambiente e das espécies capturadas. O saber se funda na interação com a natureza.",
+          "D": "Empresas não aparecem no texto. O conhecimento vem da prática dos pescadores.",
+          "E": "O náilon é material industrial, mas o saber de usar as redes e os cestos vem da tradição e da experiência. A aprendizagem não é descrita como industrial."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2066,14 +2068,14 @@
       "answer": "D",
       "solution": {
         "paragraphs": [
-          "O Iluminismo difundiu conhecimento e crítica por livros, enciclopédias e textos de circulação mais ampla. A combinação de literatura científica com panfletos corresponde à ambição educativa e à busca de públicos diversos descritas no trecho."
+          "Os philosophes buscavam educar e reformar a sociedade por meio da mídia, difundindo suas ideias para homens e mulheres. No século XVIII, isso se fazia com obras de caráter científico e filosófico e com panfletos de ampla circulação, que alcançavam o público fora dos círculos eruditos."
         ],
         "alternatives": {
-          "A": "A pregação religiosa não caracteriza o principal meio de difusão desses pensadores no contexto apresentado.",
-          "B": "A transmissão de mitos não corresponde ao projeto de divulgação do conhecimento e da crítica iluministas.",
-          "C": "A circulação das ideias não se restringia à imprensa oficial nem se definia por caricaturas folclóricas.",
-          "D": "Obras de conhecimento e panfletos permitiam articular produção intelectual e ampla difusão das ideias.",
-          "E": "Textos satíricos existiram, mas a combinação indicada não representa tão diretamente o projeto educativo e científico descrito."
+          "A": "Sermões religiosos e gravuras cristãs pertenciam ao universo da Igreja. O Iluminismo questionava essa autoridade e não usava esses meios para difundir suas pautas.",
+          "B": "Contos mitológicos e poemas marginais não correspondem ao projeto educativo e reformista descrito. O texto fala de uma mensagem de reforma.",
+          "C": "A imprensa oficial era controlada pelo Estado absolutista, alvo das críticas iluministas. As caricaturas folclóricas também não eram o meio central desse movimento.",
+          "D": "Livros de ciência e filosofia e panfletos populares levaram as ideias dos pensadores a públicos amplos. Eles combinam com a ideia de educar por meio da mídia.",
+          "E": "Houve sátira em autores iluministas, mas o texto fala de um movimento educativo e reformista. Canções humorísticas não descrevem o instrumento central da difusão."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2093,14 +2095,14 @@
       "answer": "E",
       "solution": {
         "paragraphs": [
-          "A forma predominante indicada é o aterro sanitário. Diferentemente do lixão, ele emprega sistemas técnicos de impermeabilização, drenagem e controle dos resíduos para reduzir contaminações. O comando trata da disposição final, não de reciclagem ou de redução do consumo."
+          "Cerca de três quartos dos resíduos vão para aterros sanitários, que são a forma de disposição com menor impacto ambiental. Esse predomínio é resultado do uso de sistemas técnicos, como impermeabilização do solo e tratamento de chorume e gases, para reduzir a contaminação por poluentes."
         ],
         "alternatives": {
-          "A": "Coleta seletiva é uma etapa de separação e encaminhamento, não explica a engenharia da destinação final predominante.",
-          "B": "O texto compara locais de disposição, sem atribuir a predominância dos aterros à reciclagem industrial.",
-          "C": "O consumo consciente pode reduzir resíduos, mas não caracteriza o sistema técnico de um aterro sanitário.",
-          "D": "A economia circular busca manter materiais em uso; não é a definição da disposição final por aterramento.",
-          "E": "O controle técnico dos aterros sanitários busca reduzir a contaminação produzida pelos resíduos."
+          "A": "A coleta seletiva separa materiais para reaproveitamento. Ela não explica por que os aterros são o destino mais comum, nem se liga à segurança hídrica.",
+          "B": "A reciclagem industrial reduz o volume enviado ao descarte, e não explica a predominância dos aterros. A relação com o preço das mercadorias não aparece no texto.",
+          "C": "Políticas de consumo consciente atuam na geração de resíduos. O texto trata do destino final do lixo.",
+          "D": "A economia circular procura evitar o descarte. O predomínio de aterros mostra que esse modelo ainda é limitado.",
+          "E": "Aterros sanitários usam técnicas para evitar a contaminação do solo e da água, diferentemente dos lixões. Essa é a origem do padrão descrito."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2120,14 +2122,14 @@
       "answer": "D",
       "solution": {
         "paragraphs": [
-          "O patrimonialismo descrito confunde o que pertence à administração pública com os interesses pessoais de quem governa. Quando o poder é utilizado como extensão da propriedade particular, a finalidade coletiva da ação estatal fica subordinada a interesses privados."
+          "No patrimonialismo, o governante trata a administração pública como assunto pessoal e o poder como propriedade privada. Quando o interesse particular se sobrepõe ao público, o coletivo fica subjugado a quem governa."
         ],
         "alternatives": {
-          "A": "A apropriação pessoal do poder restringe, em vez de ampliar, a participação democrática plural.",
-          "B": "O traço apresentado não determina a consolidação de um regime parlamentarista.",
-          "C": "O texto não vincula essa forma de domínio à estagnação específica do setor exportador.",
-          "D": "Tratar a administração como patrimônio particular submete o interesse público à conveniência do governante.",
-          "E": "A passagem ressalta uma permanência histórica do patrimonialismo, não uma superação da crise colonial."
+          "A": "O patrimonialismo concentra poder em quem governa. Ele restringe a participação, e não a amplia.",
+          "B": "O texto não trata de sistemas de governo. A crítica é à forma como o poder é exercido.",
+          "C": "Não há menção à economia exportadora. O assunto é a relação entre governante e administração pública.",
+          "D": "Ao confundir o público com o privado, o governante coloca seu interesse acima do coletivo. Essa é a consequência descrita no texto.",
+          "E": "O patrimonialismo vem da herança colonial e a mantém. Ele não representa superação da crise colonial."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2147,14 +2149,14 @@
       "answer": "B",
       "solution": {
         "paragraphs": [
-          "Os centros articulam formação, pesquisa e extensão em agroecologia dentro de um movimento que atua pela reforma agrária. Capacitar agricultores e disseminar práticas nos assentamentos fortalece uma forma de organização do campo vinculada à transformação da realidade fundiária."
+          "Os centros do MST formam agricultores e extensionistas para difundir a agroecologia nos assentamentos da reforma agrária. Esses cursos fortalecem quem luta por acesso à terra e produz de modo alternativo, contribuindo para a transformação da realidade fundiária."
         ],
         "alternatives": {
-          "A": "A formação dos assentados não se orienta à manutenção de relações coronelistas de mando.",
-          "B": "A capacitação vinculada à reforma agrária contribui para transformar a organização fundiária e produtiva do campo.",
-          "C": "O texto descreve cursos e circulação de conhecimentos, não concessão de financiamento rural.",
-          "D": "Não se apresenta a valorização comercial de propriedades privadas como objetivo dos centros.",
-          "E": "A difusão da agroecologia nos movimentos e assentamentos não é descrita como expansão de organizações capitalistas."
+          "A": "O movimento questiona a concentração de terra que sustentava o coronelismo. Seus cursos não mantêm essas práticas.",
+          "B": "Capacitar agricultores de assentamentos fortalece a reforma agrária e a mudança na estrutura de posse da terra. É o que o texto sugere.",
+          "C": "O texto trata de formação técnica e de pesquisa. O crédito rural não é o tema.",
+          "D": "A reforma agrária questiona grandes propriedades privadas concentradas. Valorizá-las contraria o objetivo dos centros.",
+          "E": "A agroecologia propõe outro modelo de produção, distinto do agronegócio capitalista. Os cursos não ampliam esse modelo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2174,14 +2176,14 @@
       "answer": "E",
       "solution": {
         "paragraphs": [
-          "Aristóteles relaciona a avaliação moral às ações que dependem de nós. Se o agente pode escolher agir ou deixar de agir, a virtude e o vício não podem ser atribuídos apenas a forças externas. A possibilidade de escolha fundamenta sua responsabilidade ética."
+          "Para Aristóteles, se depende de nós agir ou não agir, também depende de nós sermos virtuosos ou viciosos. A ação voluntária é, assim, o fundamento da ética: o agente é responsável pelas consequências de suas escolhas."
         ],
         "alternatives": {
-          "A": "A passagem atribui escolhas ao agente, não o caráter moral de suas ações ao acaso.",
-          "B": "O argumento não dispensa responsabilidade pela submissão a terceiros; trata do que está no poder de agir do sujeito.",
-          "C": "A relação entre fenômenos e cosmos não é o objeto do raciocínio ético apresentado.",
-          "D": "Os valores não são explicados por uma determinação divina que substitua a deliberação humana.",
-          "E": "O poder de escolher entre agir e não agir sustenta a responsabilidade do agente por suas decisões."
+          "A": "O texto atribui virtude e vício às escolhas e não ao acaso. O que acontece depende do agente.",
+          "B": "O argumento afirma o oposto: está em nosso poder agir ou não. Não há espaço para eximir-se por ordens de terceiros.",
+          "C": "O assunto é a ação humana. O texto não discute fenômenos do cosmos.",
+          "D": "O texto não recorre a deuses para explicar os valores. A responsabilidade é de quem age.",
+          "E": "Se agir ou não agir depende de nós, respondemos pelos atos que escolhemos praticar. É essa a base da ética apresentada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2201,14 +2203,14 @@
       "answer": "D",
       "solution": {
         "paragraphs": [
-          "Embora os mosteiros fossem procurados por razões religiosas, a posição de seus integrantes variava conforme a origem social. A predominância da nobreza e a admissão de pessoas humildes em lugares inferiores mostram a reprodução, dentro da instituição, das hierarquias existentes fora dela."
+          "Os mosteiros acolhiam pessoas de todas as origens, mas eram refúgio sobretudo da nobreza, e os mais humildes entravam em posição inferior. Isso mostra que a hierarquia social de fora se repetia dentro dos mosteiros."
         ],
         "alternatives": {
-          "A": "O texto aponta diferenças de posição social, sem descrever disputas internas como característica central.",
-          "B": "A devoção ascética explica a procura por isolamento, mas não o tratamento desigual solicitado pelo comando.",
-          "C": "Não são controvérsias doutrinárias que explicam a distinção entre nobres e pessoas humildes.",
-          "D": "A manutenção de posições hierárquicas conforme a origem social reproduz as relações externas.",
-          "E": "O texto não identifica esses mosteiros especificamente com a organização dos templários."
+          "A": "O texto não descreve disputas internas entre os religiosos. O foco é o tratamento dado aos de origem humilde.",
+          "B": "A devoção ascética motivava o isolamento, mas o tratamento desigual dado aos humildes mostra outra coisa: a presença das diferenças sociais.",
+          "C": "Conflitos teológicos não são mencionados. A questão é a posição social de quem entrava.",
+          "D": "A nobreza ocupava o centro e os humildes ficavam em posição inferior. Os mosteiros reproduziam as relações da sociedade externa.",
+          "E": "As ordens templárias não são citadas. O texto trata de mosteiros em geral."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2228,14 +2230,14 @@
       "answer": "A",
       "solution": {
         "paragraphs": [
-          "O reconhecimento do território fundado por uma mulher que viveu a escravidão e conquistou a liberdade preserva referências da continuidade de uma comunidade negra. O tombamento valoriza uma memória social de resistência, pertencimento e construção de vida coletiva."
+          "O quilombo fundado por Tia Eva, ex-escravizada, em 1905, foi tombado pelo Iphan a pedido da própria comunidade. O tombamento reconhece nacionalmente a memória social da resistência negra, preservando as referências culturais desse território."
         ],
         "alternatives": {
-          "A": "O território e sua história guardam a memória da resistência e da continuidade de uma comunidade negra.",
-          "B": "A referência é a uma comunidade quilombola, não a saberes de etnias indígenas.",
-          "C": "O território é apresentado como quilombo urbano e sua valorização ultrapassa a proteção de um folclore rural.",
-          "D": "O reconhecimento não se baseia apenas em um valor estético de edificações coloniais.",
-          "E": "A história da comunidade não se reduz a uma cerimônia cívica ligada ao movimento abolicionista."
+          "A": "A comunidade nasceu da luta de uma ex-escravizada pela liberdade e foi reconhecida por suas referências culturais. O tombamento valoriza a memória da resistência negra.",
+          "B": "O texto trata de uma comunidade quilombola. Saberes indígenas não são o tema.",
+          "C": "O território é urbano, em Campo Grande. O texto não fala de folclore rural.",
+          "D": "O tombamento se baseia em referências culturais da comunidade. Não se trata de valorizar arquitetura colonial.",
+          "E": "O texto fala da fundação do quilombo por uma ex-escravizada. Não trata de comemoração cívica do abolicionismo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2255,14 +2257,14 @@
       "answer": "B",
       "solution": {
         "paragraphs": [
-          "O texto distingue produção de commodities para exportação e indústria da produção destinada diretamente à alimentação. Ampliar crédito para a agricultura familiar pode fortalecer a produção diversificada de alimentos e o abastecimento, respondendo ao desequilíbrio apontado, embora não seja a única política necessária contra a fome."
+          "O Brasil produz muitos alimentos, mas a produção é voltada a commodities para exportação e ração, enquanto a fome persiste. Para atenuar o problema, é preciso fortalecer quem produz alimentos para o consumo interno. Créditos financeiros para a agricultura familiar vão nessa direção."
         ],
         "alternatives": {
-          "A": "A qualificação urbana não responde diretamente à orientação da produção agrícola destacada no texto.",
-          "B": "O financiamento da agricultura familiar pode apoiar a produção de alimentos voltada ao abastecimento da população.",
-          "C": "Incentivar ainda mais o setor agroexportador não corrige a prioridade produtiva problematizada.",
-          "D": "O protecionismo comercial, isoladamente, não garante que a produção se destine à alimentação das pessoas.",
-          "E": "A oferta genérica de subsídios tecnológicos não identifica o segmento produtor capaz de responder ao problema apresentado."
+          "A": "Qualificar o trabalhador urbano não altera o que se produz no campo. O problema descrito é o destino da produção agrícola.",
+          "B": "A agricultura familiar produz alimentos para o consumo interno. Dar crédito a ela amplia essa oferta e ajuda a enfrentar a fome.",
+          "C": "Incentivar o setor agroexportador reforçaria o modelo que o texto aponta como causa do problema.",
+          "D": "O texto não indica falta de proteção contra produtos de fora. O problema é o que se planta e para onde vai.",
+          "E": "Subsídios tarifários para tecnologia não se ligam a produzir alimentos para a população. Eles não atacam a causa apontada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2282,14 +2284,14 @@
       "answer": "D",
       "solution": {
         "paragraphs": [
-          "A expansão ferroviária e empresarial, apresentada como progresso pela companhia, ocorreu no contexto de apropriação de terras e de deslocamento de populações da região do Contestado. A modernização econômica produziu benefícios concentrados e prejuízos às comunidades locais, contribuindo para os conflitos."
+          "O texto apresenta a Companhia como promotora do desenvolvimento rápido de uma região, com estrada de ferro, colônias e imigrantes. No contexto da Guerra do Contestado, esse projeto modernizou a economia, mas prejudicou as comunidades locais que viviam e plantavam na área."
         ],
         "alternatives": {
-          "A": "A expansão da ferrovia não é apresentada como redução de impactos ambientais; sua relação com a expropriação é central.",
-          "B": "O processo envolveu concentração e apropriação de terras, não uma expansão generalizada da pequena propriedade familiar.",
-          "C": "Não há referência a investimento educacional tecnológico que tenha reduzido o êxodo rural.",
-          "D": "A modernização conduzida pela empresa afetou negativamente populações e formas de vida locais.",
-          "E": "A imigração integra o projeto, mas a consequência histórica solicitada envolve o conjunto de transformações e prejuízos às comunidades."
+          "A": "A ferrovia ampliou o transporte, mas o conflito do Contestado não se explica por impactos ambientais reduzidos.",
+          "B": "A Companhia concentrou terras e expulsou famílias. A propriedade familiar não se expandiu, e os conflitos agrários aumentaram por outra razão.",
+          "C": "O texto não fala de educação tecnológica nem de êxodo rural. Seu foco é o desenvolvimento econômico da região.",
+          "D": "O projeto modernizador da ferrovia e da colonização atingiu as populações locais. Esse foi o contexto do conflito do Contestado.",
+          "E": "O programa inclui trazer imigrantes, mas a consequência central no Contestado foi o conflito com a população local. A desigualdade pela imigração não resume o episódio."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2309,14 +2311,14 @@
       "answer": "E",
       "solution": {
         "paragraphs": [
-          "O crescimento do período militar foi acompanhado por forte dependência de financiamento externo. A crise internacional e a elevação do custo dessas dívidas reduziram a capacidade de financiamento e agravaram os desequilíbrios econômicos. O endividamento externo é uma causa importante da recessão dos anos 1980."
+          "Após o Milagre Econômico, o modelo dos governos militares se desgastou na década de 1980, com inflação alta e retração industrial. Uma causa importante foi o endividamento externo, que levou o país a uma grave crise da dívida e limitou o crescimento."
         ],
         "alternatives": {
-          "A": "As grandes privatizações são associadas a outra etapa das reformas econômicas, não à causa central da crise descrita.",
-          "B": "A complexidade tributária não explica o encadeamento entre crescimento financiado e crise da dívida.",
-          "C": "A infraestrutura viária não é apontada como a restrição determinante desse episódio de recessão.",
-          "D": "A falta de qualificação não corresponde à explicação histórica central da crise apresentada.",
-          "E": "A ampliação da dívida e a dificuldade de financiá-la contribuíram para a crise e a retração econômica."
+          "A": "As privatizações de estatais ocorreram sobretudo nos anos 1990. Elas não explicam a recessão dos anos 1980.",
+          "B": "A complexidade tributária existe, mas não é a causa da recessão descrita no texto.",
+          "C": "A infraestrutura viária não é apontada como origem da crise da década de 1980.",
+          "D": "O texto não relaciona a crise à falta de mão de obra qualificada. O problema foi financeiro e inflacionário.",
+          "E": "O Brasil se endividou com recursos externos durante o período militar. A dívida pressionou as contas do país e contribuiu para a recessão."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2336,14 +2338,14 @@
       "answer": "E",
       "solution": {
         "paragraphs": [
-          "A circulação de informações, serviços e práticas por tecnologias de comunicação aproxima espaços rurais e urbanos sem exigir que se tornem fisicamente contínuos. Esse processo ajuda a incorporar elementos urbanos à economia, à cultura e às relações sociais do campo, formando situações híbridas."
+          "O texto afirma que áreas rurais passaram a incorporar elementos urbanos, formando um amálgama entre os dois. Um processo que aproximou o campo da cidade foi a evolução da tecnologia comunicacional, que difunde hábitos, informações e valores urbanos."
         ],
         "alternatives": {
-          "A": "A conurbação é a união física de áreas urbanas e não explica toda a diversidade de interações com espaços rurais.",
-          "B": "O texto não relaciona essa aproximação a uma diminuição da degradação ambiental.",
-          "C": "A delimitação de terras devolutas trata de uma condição fundiária, não da circulação de práticas e informações.",
-          "D": "Não é demonstrado que a redução de migrações tenha produzido as interações descritas.",
-          "E": "A evolução das comunicações amplia conexões e circulação de elementos entre o urbano e o rural."
+          "A": "Conurbação é a junção de cidades vizinhas. Ela não explica a interação entre rural e urbano.",
+          "B": "A degradação ambiental não é o assunto do texto. Sua desaceleração não aproxima campo e cidade.",
+          "C": "Terras devolutas são um tema jurídico. Elas não explicam a mistura de lógicas rural e urbana.",
+          "D": "Reduzir a migração não faria o campo incorporar elementos urbanos. O texto fala de integração de paisagens, economia e cultura.",
+          "E": "Redes de comunicação levam o modo de vida urbano ao campo. Isso explica a incorporação de elementos típicos da cidade."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2363,14 +2365,14 @@
       "answer": "C",
       "solution": {
         "paragraphs": [
-          "O primeiro texto descreve a luta pelo voto e pela influência sobre decisões políticas; o segundo mostra que a conquista do sufrágio não eliminou a sub-representação nos cargos eletivos. Em ambos, a reivindicação é ampliar a participação feminina nas instâncias que exercem poder e tomam decisões."
+          "Os dois textos tratam do movimento de mulheres: a FBPF pressionava parlamentares pelo voto, e hoje as mulheres ainda são minoria nos cargos eletivos. Nos dois contextos, a reivindicação central é participar da esfera decisória."
         ],
         "alternatives": {
-          "A": "A demanda se refere à igualdade de direitos e à representação de um grupo social, não à defesa de um interesse privado isolado.",
-          "B": "O movimento questiona a predominância masculina, em vez de se apropriar dela como princípio de organização.",
-          "C": "Votar, ser eleita e influenciar o poder público são formas de participar da esfera decisória.",
-          "D": "A imprensa é um instrumento da mobilização, não sua finalidade principal.",
-          "E": "Mobilizar a opinião é uma estratégia; a reivindicação comum é a participação efetiva nas decisões políticas."
+          "A": "O movimento defende direitos coletivos das mulheres. Interesse particular não é o que ele reivindica.",
+          "B": "O movimento questiona a exclusão feminina. Ele não se apropria do discurso patriarcal.",
+          "C": "Ter voto e ocupar cargos eletivos significa participar de onde se decide. É isso que os textos reivindicam.",
+          "D": "A FBPF usava jornais como estratégia, mas o texto 2 trata de cargos eletivos. Atuar na comunicação é um meio, e não a reivindicação.",
+          "E": "Mobilizar a opinião pública é uma tática descrita no texto 1. A reivindicação de fundo é a participação política."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2390,14 +2392,14 @@
       "answer": "B",
       "solution": {
         "paragraphs": [
-          "Bachelard descreve moradias localizadas por números, pavimentos e formas geométricas e contrapõe essa organização à intimidade e ao vínculo com a natureza. A crítica se dirige à racionalização do espaço urbano, que pode empobrecer dimensões simbólicas da experiência de habitar."
+          "Bachelard descreve a moradia na grande cidade como caixas superpostas, um lugar geométrico definido por número de rua e andar, sem raízes e sem relação com a natureza. O aspecto central é a racionalização dos espaços urbanos, que perdem intimidade."
         ],
         "alternatives": {
-          "A": "Os elevadores são um exemplo na reflexão, mas não se discute dependência de tecnologias assistivas.",
-          "B": "A padronização geométrica e a localização abstrata das moradias expressam a racionalização criticada.",
-          "C": "Não é analisado um processo de universalização do direito à moradia ou de outros direitos sociais.",
-          "D": "Não há apresentação de novas políticas de inclusão como aspecto central do trecho.",
-          "E": "A crítica aborda a experiência do espaço habitado, não a flexibilização de normas morais."
+          "A": "Elevadores são citados, mas como símbolo da perda de valores. A crítica não é à dependência de tecnologias assistivas.",
+          "B": "Casas numeradas, em caixas e organizadas como lugares geométricos mostram um espaço urbano racionalizado e sem raízes.",
+          "C": "O texto não fala de direitos sociais. A reflexão é sobre a experiência de morar.",
+          "D": "Políticas inclusivas não aparecem. O tema é a moradia nas grandes cidades.",
+          "E": "O texto não trata de normas morais. A crítica é à forma de habitar."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2417,14 +2419,14 @@
       "answer": "E",
       "solution": {
         "paragraphs": [
-          "O gráfico indica reservas expressivas em países emergentes, incluindo o Brasil, enquanto a produção se distribui de modo desigual. Como terras-raras têm importância para cadeias tecnológicas, o controle e o aproveitamento dessas reservas podem ampliar capacidade de negociação e autonomia geopolítica. É um potencial, não uma garantia automática."
+          "Terras-raras são insumos de tecnologias avançadas. Quando há reservas em países emergentes, esses países ganham um recurso estratégico em negociações internacionais. Isso favorece sua soberania geopolítica, em vez de manter a dependência dos países centrais."
         ],
         "alternatives": {
-          "A": "Terras-raras não são apresentadas como fonte energética cuja extração deva ser padronizada.",
-          "B": "Possuir reservas não democratiza automaticamente o acesso ao conhecimento e às tecnologias de processamento.",
-          "C": "A presença de reservas em países emergentes permite questionar uma concentração inevitável nos países centrais.",
-          "D": "O gráfico trata de países e reservas, sem demonstrar uma descentralização industrial organizada por blocos regionais.",
-          "E": "Recursos minerais estratégicos podem fortalecer a autonomia e a posição geopolítica de nações emergentes."
+          "A": "Terras-raras não são recursos energéticos. Reservas desses minerais não padronizam a extração de energia.",
+          "B": "Ter reservas de um mineral não democratiza o conhecimento científico. A relação entre as duas coisas não existe no gráfico.",
+          "C": "A presença de reservas fora do centro ajuda a reduzir, e não a concentrar, o domínio dos países centrais.",
+          "D": "Reservas minerais não definem, sozinhas, a descentralização industrial entre blocos regionais.",
+          "E": "Ter reservas de um mineral estratégico fortalece a posição de nações emergentes no cenário mundial. Isso favorece sua soberania geopolítica."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2444,14 +2446,14 @@
       "answer": "A",
       "solution": {
         "paragraphs": [
-          "Nas reduções, o trabalho guarani foi reorganizado para atividades de cultivo e criação de gado em assentamentos fixos. Essa incorporação à organização produtiva colonial disponibilizava mão de obra e produção para a economia local, ainda que envolvesse alterações profundas das práticas anteriores."
+          "Nas reduções, os guaranis passaram a praticar agricultura em campos fixos e a lidar com gado, abandonando a vida semissedentária. Esse trabalho atendeu aos interesses colonialistas porque oferecia força produtiva à economia local."
         ],
         "alternatives": {
-          "A": "A reorganização do trabalho indígena ampliava a força produtiva integrada à economia colonial local.",
-          "B": "O texto descreve reduções e trabalho missioneiro, não uma política de formação de núcleos de posseiros.",
-          "C": "A transculturação no contexto missioneiro não equivale a uma garantia plena de liberdade religiosa.",
-          "D": "O trabalho discutido é dos próprios guaranis, não a compra de trabalhadores cativos vindos do exterior.",
-          "E": "Não se menciona a implantação de feiras metropolitanas como finalidade dessas transformações."
+          "A": "O trabalho dos guaranis nas lavouras e no gado produzia riqueza para a colônia. Isso atendia aos interesses coloniais.",
+          "B": "As reduções fixavam os indígenas em aldeias organizadas, e não formavam posseiros desbravadores do interior.",
+          "C": "A organização das reduções impunha mudanças culturais e religiosas. Não garantia liberdade de crenças.",
+          "D": "O trabalho indígena das reduções era mão de obra local. O texto não trata de ampliar a compra de cativos externos.",
+          "E": "O texto não menciona feiras de mercadorias metropolitanas. A atividade descrita é agropecuária."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2471,14 +2473,14 @@
       "answer": "C",
       "solution": {
         "paragraphs": [
-          "Em áreas de elevada evaporação, o manejo inadequado da irrigação pode favorecer o acúmulo de sais no solo. Aplicar água por gotejamento na quantidade e no momento necessários reduz excessos e ajuda a evitar a salinização associada a esse contexto."
+          "A irrigação por gotejamento aplica a água na quantidade exata, evitando o excesso. Em áreas irrigadas, o excesso de água favorece o acúmulo de sais no solo. A técnica evita, assim, a salinização."
         ],
         "alternatives": {
-          "A": "Savanização é uma transformação de cobertura e condições ambientais que não corresponde ao acúmulo de sais por irrigação.",
-          "B": "Arenização envolve exposição e mobilização de materiais arenosos, não o efeito específico discutido.",
-          "C": "O controle da água aplicada ajuda a evitar o acúmulo de sais no solo em regiões de forte evaporação.",
-          "D": "Compactação se relaciona à redução de porosidade por pressão, não é o impacto central indicado no contexto.",
-          "E": "Impermeabilização costuma envolver cobertura ou selamento do solo e não explica a vantagem destacada do gotejamento."
+          "A": "Savanização é a perda de floresta em favor de vegetação de savana. Ela decorre sobretudo de desmatamento, e não da irrigação.",
+          "B": "A arenização é a formação de areais em solos frágeis, como no sul do país. Não é o problema descrito para o Vale do São Francisco.",
+          "C": "Água em excesso e evaporação elevam o teor de sais nos solos irrigados. O gotejamento evita esse problema ao fornecer só o necessário.",
+          "D": "A compactação resulta do peso de máquinas e do pisoteio, e não do volume de água aplicado.",
+          "E": "A impermeabilização ocorre com asfalto e construções. A irrigação agrícola não a provoca."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2498,14 +2500,14 @@
       "answer": "A",
       "solution": {
         "paragraphs": [
-          "A feira combina práticas, gerações, pessoas e usos do espaço em uma organização aberta e mutável. Sua recusa ao confinamento em ambientes fechados e geometricamente padronizados representa resistência à homogeneização da dinâmica urbana."
+          "O texto apresenta a feira como espaço livre, imprevisível e aberto, que recusa o confinamento em espaços edificados, cartesianos e fechados em si mesmos. Ela resiste, portanto, à homogeneização da dinâmica urbana."
         ],
         "alternatives": {
-          "A": "A diversidade e a flexibilidade da feira contrastam com a padronização de espaços urbanos fechados.",
-          "B": "O texto não apresenta a circulação de veículos como o processo ao qual a feira resiste.",
-          "C": "A permanência e a atualização de costumes são valorizadas, não combatidas.",
-          "D": "A demolição de monumentos não é o assunto do trecho.",
-          "E": "A comercialização de produtos integra a feira e não é apresentada como alvo da resistência."
+          "A": "A feira é diversa, espontânea e aberta, oposta a espaços padronizados. Isso a torna resistência à homogeneização urbana.",
+          "B": "O texto não trata de circulação de veículos. O contraste é entre a feira e espaços fechados.",
+          "C": "A feira é descrita como rito permanente. Ela preserva o costume tradicional, e não resiste a ele.",
+          "D": "Não há menção a monumentos públicos demolidos. O foco é o modo como a feira organiza o espaço.",
+          "E": "A feira tem de tudo e reúne comércio. O texto não a apresenta como resistência à venda de artesanato."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2525,14 +2527,14 @@
       "answer": "E",
       "solution": {
         "paragraphs": [
-          "O esquema simplifica a geometria real para tornar conexões e percursos mais legíveis. Cores, linhas e ângulos regulares constituem uma linguagem visual que pode ser repetida em outras redes. A referência comum é essa maneira de representar, não uma escala geográfica idêntica."
+          "O mapa de Beck abre mão do traçado real e usa linhas coloridas que se cruzam em ângulos de 45 e 90 graus para facilitar a leitura. Esse código gráfico simples e comum a redes diferentes explica por que ele serve de referência para outras: a homogeneização da linguagem."
         ],
         "alternatives": {
-          "A": "A adoção de um mesmo título não explica a capacidade de representar conexões entre linhas.",
-          "B": "O esquema pode distorcer distâncias e não depende de uma escala uniforme para cumprir sua função.",
-          "C": "A orientação geográfica não é o fundamento destacado da simplificação e da legibilidade.",
-          "D": "Não é um sistema de coordenadas normatizado que organiza o princípio visual apresentado.",
-          "E": "A repetição de convenções gráficas claras homogeneíza a linguagem usada para representar redes de metrô."
+          "A": "O título não é o aspecto destacado. O texto fala do desenho e da legibilidade.",
+          "B": "O texto afirma que o mapa não corresponde literalmente ao traçado real, portanto não padroniza escalas.",
+          "C": "O mapa usa ângulos fixos, e não a orientação real das linhas. O texto não fala de uniformizar a orientação.",
+          "D": "Coordenadas geográficas reais não são usadas no esquema. Ele privilegia a clareza do desenho.",
+          "E": "Linhas coloridas e ângulos de 45 e 90 graus formam uma linguagem gráfica comum, adotada por muitas redes de metrô. Esse é o aspecto que as torna referência."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
