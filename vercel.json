@@ -9,7 +9,7 @@
   "rewrites": [
     {
       "source": "/enem-pdf/:path*",
-      "destination": "https://download.inep.gov.br/:path*"
+      "destination": "https://33xpxcgqh4xsmdpz.public.blob.vercel-storage.com/:path*"
     },
     {
       "source": "/:view(planejador|foco|habitos|cadernos|aulas|aprender|biblioteca|atividades|perfil|notificacoes)",
