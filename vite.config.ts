@@ -46,7 +46,7 @@ async function enemPdfMiddleware(request: IncomingMessage, response: ServerRespo
           ),
         );
       } catch {
-        /* Busca o original se o cache de desenvolvimento ainda não existe. */
+        /* Busca na loja de PDFs do projeto se o cache de desenvolvimento não existe. */
       }
     }
     if (cachedData) data = cachedData;
@@ -61,13 +61,13 @@ async function enemPdfMiddleware(request: IncomingMessage, response: ServerRespo
           "--location",
           "--max-time",
           "45",
-          `https://download.inep.gov.br${path}`,
+          `https://33xpxcgqh4xsmdpz.public.blob.vercel-storage.com${path}`,
         ],
         { encoding: "buffer", maxBuffer: 64 * 1024 * 1024, windowsHide: true },
       );
       data = result.stdout;
     } else {
-      const pdf = await fetch(`https://download.inep.gov.br${path}`, {
+      const pdf = await fetch(`https://33xpxcgqh4xsmdpz.public.blob.vercel-storage.com${path}`, {
         signal: AbortSignal.timeout(45000),
       });
       if (!pdf.ok) {
