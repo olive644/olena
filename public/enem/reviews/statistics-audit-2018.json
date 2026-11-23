@@ -1,0 +1,10 @@
+{
+  "year": 2018,
+  "recordsRead": 3889110,
+  "questions": 185,
+  "mappedAreas": 4,
+  "rejectedAreaVectors": {
+    "sem_nota_ou_vetor_de_45": 5390
+  },
+  "source": "https://doi.org/10.5281/zenodo.20130840"
+}

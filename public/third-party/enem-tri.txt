@@ -1,0 +1,36 @@
+OlenaStudy — estimativa TRI do Enem
+
+Modelo: logístico de 3 parâmetros (3PL), EAP com 40 pontos igualmente espaçados em [-4,4] e priori normal padrão. Conversão de escala empírica por área. Não é um cálculo certificado pelo Inep. Não usa IA generativa nem API paga.
+
+Referência de implementação: https://github.com/pedro-mantovani/calculadora_ENEM
+Commit: 2970bd3dbe7f11c7987ca67cb1a5494c9677b73e
+Os parâmetros compactados foram extraídos dos CSVs ITENS_PROVA do mesmo repositório, provenientes dos microdados do Inep. Cada caderno/área foi conferido contra a sequência completa do gabarito oficial do PDF.
+Fonte primária: https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem
+Referência metodológica: https://github.com/inepoficial/microEnem (consulta ao método, sem incorporar código deste pacote).
+
+Validação: comparação com as funções Python/NumPy da referência e com 200 vetores de respostas e notas oficiais de 2022, sem identificadores. Amostra redistribuída por Pedro Mantovani no Zenodo: https://doi.org/10.5281/zenodo.20130840 (CC BY 4.0). Atribuição: INEP / Pedro Mantovani. Foram retidos somente código da prova, idioma, respostas e nota.
+Relatório técnico: docs/research/enem-tri-validation.json. Cobertura: /enem/tri/audit.json. As edições sem parâmetros, gabaritos não conferidos e provas com inconsistências documentadas não recebem nota estimada.
+
+MIT LICENSE — referência e adaptação
+
+MIT License
+
+Copyright (c) 2026 pedro-mantovani
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

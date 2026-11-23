@@ -161,7 +161,7 @@ describe("App", () => {
     const practice = within(navigation).getByRole("button", { name: "Praticar" });
     const agenda = within(navigation).getByRole("button", { name: "Agenda" });
     expect(practice.className).toBe(agenda.className);
-    expect(practice.querySelectorAll(".navigation-icon--colorful")).toHaveLength(1);
+    expect(practice.querySelectorAll(".navigation-icon--brand")).toHaveLength(1);
     fireEvent.click(practice);
     expect(practice.getAttribute("aria-current")).toBe("page");
     expect(practice.className).toBe("mobile-nav__item mobile-nav__item--active");
@@ -182,9 +182,9 @@ describe("App", () => {
       const button = within(navigation).getByRole("button", { name: label });
       const artwork = button.querySelector(`[data-icon="${icon}"]`);
       expect(artwork).toBeTruthy();
-      expect(artwork?.classList.contains("navigation-icon--colorful")).toBe(true);
+      expect(artwork?.classList.contains("navigation-icon--brand")).toBe(true);
       expect(
-        artwork?.querySelector(`img[src="/navigation-icons/colorful/${icon}.svg"]`),
+        artwork?.querySelector(`img[src="/navigation-icons/paper/claro/${icon}.svg"]`),
       ).toBeTruthy();
     });
   });

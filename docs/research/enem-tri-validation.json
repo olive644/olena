@@ -1,0 +1,15 @@
+{
+  "referenceCommit": "2970bd3dbe7f11c7987ca67cb1a5494c9677b73e",
+  "fixtures": 398,
+  "officialCases": 200,
+  "officialByArea": {
+    "('LC', 'spanish')": 40,
+    "('CH', '')": 40,
+    "('CN', '')": 40,
+    "('MT', '')": 40,
+    "('LC', 'english')": 40
+  },
+  "mae": 0.0,
+  "maxError": 0.0,
+  "source": "https://doi.org/10.5281/zenodo.20130840"
+}

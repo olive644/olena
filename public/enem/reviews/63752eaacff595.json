@@ -1,0 +1,2439 @@
+{
+  "version": 1,
+  "variantId": "63752eaacff595",
+  "year": 2026,
+  "paperUrl": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf",
+  "answerUrl": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf",
+  "questions": {
+    "q:91": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Pela lei de Coulomb, F = k e²/r². No colapso previsto pela física clássica, o elétron perde energia por radiação e se aproxima do núcleo. A redução de r eleva a atração, cada vez mais intensamente, como na curva crescente e não linear D."
+        ],
+        "alternatives": {
+          "A": "A força constante exigiria que a distância entre elétron e núcleo permanecesse constante, pois F = ke²/r². A hipótese clássica pedida no enunciado prevê perda de energia e aproximação em espiral; por isso, o gráfico horizontal não descreve essa evolução.",
+          "B": "O gráfico representa uma força que diminui linearmente com o tempo. O movimento em espiral reduz a distância ao núcleo, e a lei de Coulomb faz a atração aumentar, de modo que o sentido da variação está invertido.",
+          "C": "O crescimento da força está no sentido correto, mas a reta supõe uma taxa constante de aumento. Na descrição clássica, o encurtamento do raio e a dependência inversa de seu quadrado levam a uma elevação cada vez mais acentuada, não ao crescimento linear representado.",
+          "D": "Ao perder energia por emissão eletromagnética, o elétron se aproxima do núcleo. Como a força é inversamente proporcional ao quadrado da distância, ela cresce de maneira cada vez mais intensa na aproximação, comportamento representado pela curva crescente de concavidade para cima.",
+          "E": "A curva indica atração cada vez menor ao longo do tempo. Isso corresponderia a um afastamento do elétron, enquanto o modelo clássico em discussão prevê sua aproximação e, portanto, o aumento da força elétrica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:92": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "A carga térmica é 10 × 100 + 20 × 150 + 2 × 500 + 20 × 200 = 9 000 W. Como cada Btu/h equivale a 0,3 W, a capacidade necessária é 9 000/0,3 = 30 000 Btu/h. Escolher uma potência menor não compensaria o calor total dissipado no escritório."
+        ],
+        "alternatives": {
+          "A": "As fontes produzem 10×100 + 20×150 + 2×500 + 20×200 = 9.000 W. Uma capacidade de 7.000 Btu/h remove apenas 2.100 W, usando a conversão dada, e seria insuficiente para equilibrar esse aquecimento.",
+          "B": "A capacidade de 10.000 Btu/h equivale a 3.000 W. Esse valor coincide apenas com a potência dos computadores, deixando de compensar lâmpadas, geladeiras e pessoas, que também dissipam calor no escritório.",
+          "C": "Doze mil Btu/h correspondem a 3.600 W, abaixo dos 9.000 W totais. Embora o número seja maior que a potência expressa em watts, as unidades são diferentes: é necessário converter antes de comparar a carga térmica com a refrigeração.",
+          "D": "Vinte e quatro mil Btu/h equivalem a 7.200 W. Como o escritório recebe 9.000 W das fontes indicadas e as paredes são isolantes, essa capacidade ainda permite acúmulo de calor e não mantém a temperatura constante.",
+          "E": "A soma das potências é 1.000 + 3.000 + 1.000 + 4.000 = 9.000 W. Dividir por 0,3 W por Btu/h fornece 30.000 Btu/h, a menor capacidade oferecida capaz de compensar integralmente a carga térmica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:93": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O enunciado pede aproveitar todos os resíduos orgânicos coletados: 196 000 × 0,45 = 88 200 toneladas por dia, ou 88 200 000 kg. Dividindo por 20 kg/m³, obtêm-se 4 410 000 m³ de biogás. A geração elétrica é 4 410 000 × 1,2 = 5 292 000 kWh, aproximadamente 5,3 × 10⁶ kWh."
+        ],
+        "alternatives": {
+          "A": "O valor de aproximadamente 1,2×10⁷ kWh resulta de usar todo o resíduo coletado como se fosse orgânico: 196×10⁶/20×1,2. É necessário aplicar a fração de 45%, pois os demais resíduos não integram a matéria-prima especificada para o biogás.",
+          "B": "Esse resultado corresponde aproximadamente a aplicar 60% ao total coletado e converter tudo em energia, sem separar os orgânicos. A pergunta pede todos os resíduos orgânicos coletados, cujo percentual é 45%, independentemente da destinação atual aos aterros.",
+          "C": "A massa orgânica é 0,45×196×10⁶ = 88,2×10⁶ kg por dia. Ela gera 88,2×10⁶/20 = 4,41×10⁶ m³ de biogás; multiplicando por 1,2 kWh/m³, obtêm-se 5,292×10⁶ kWh, aproximadamente 5,3×10⁶.",
+          "D": "Multiplicar o potencial correto por 60% produz cerca de 3,2×10⁶ kWh, mas restringe a conta à parcela encaminhada aos aterros. O cenário proposto reaproveita todos os orgânicos coletados, e não apenas os que já recebem aquela destinação.",
+          "E": "Aproximadamente 2,1×10⁶ kWh correspondem a 40% do potencial dos orgânicos coletados. Essa porcentagem descreve a destinação irregular atual, não uma limitação do reaproveitamento total solicitado pela hipótese do enunciado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:94": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "O momento linear inicial é nulo, portanto os produtos têm momentos iguais em módulo e sentidos opostos. Para um mesmo p, a energia cinética é p²/(2m). A partícula alfa tem massa aproximada de quatro nêutrons, logo o nêutron recebe quatro vezes sua energia. Dividindo 20 MeV na razão 4:1, o nêutron recebe 16 MeV e a alfa, 4 MeV."
+        ],
+        "alternatives": {
+          "A": "Como os momentos finais têm módulos iguais, a energia cinética é inversamente proporcional à massa. A partícula alfa tem massa quatro vezes maior e recebe 4 MeV; esse é o valor de sua energia, não o da energia do nêutron pedida.",
+          "B": "Dividir os 20 MeV igualmente supõe energias cinéticas iguais para partículas de massas diferentes. A conservação do momento impõe módulos de momento iguais, mas K = p²/(2m), de modo que o nêutron mais leve recebe mais energia.",
+          "C": "Uma divisão de aproximadamente dois terços da energia não satisfaz a razão de massas dos produtos. A alfa tem quatro nucleons e o nêutron, um; momentos de mesmo módulo exigem que a energia do nêutron seja quatro vezes a da alfa.",
+          "D": "A divisão 15 MeV e 5 MeV dá razão de energias 3:1. Ela não corresponde à razão inversa das massas, que é 4:1 entre nêutron e alfa, e portanto não satisfaz simultaneamente a energia total e o momento total nulo.",
+          "E": "O momento inicial nulo exige pα = −pn. Como mα = 4mn e K = p²/(2m), segue que Kn = 4Kα; com Kn + Kα = 20 MeV, temos Kα = 4 MeV e Kn = 16 MeV."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:95": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "A 800 K, Rs = 20[1 + 0,002(800 − 300)] = 40 Ω. No ramo esquerdo, dois resistores de 40 Ω dividem igualmente os 12 V, deixando A a 6 V do terra. No ramo direito, o resistor inferior de 20 Ω recebe 12 × 20/(40 + 20) = 4 V, que é o potencial de B. Portanto VAB = 6 − 4 = 2 V."
+        ],
+        "alternatives": {
+          "A": "A 800 K, o sensor tem Rs = 20[1 + 0,002×500] = 40 Ω. Os potenciais nos pontos médios são 6 V e 4 V em relação ao terminal inferior; 5 V não corresponde à diferença entre esses pontos nem ao resultado dos divisores do circuito.",
+          "B": "Quatro volts são o potencial de B em relação ao terminal inferior: 12×20/(40+20). A tensão solicitada é entre A e B, e A está a 6 V; usar apenas o potencial de B ignora a outra extremidade da medida.",
+          "C": "Cada ramo recebe os mesmos 12 V, mas seus resistores não formam quatro divisões iguais dessa tensão. Após calcular Rs = 40 Ω, os divisores dão VA = 6 V e VB = 4 V, cuja diferença não é 3 V.",
+          "D": "Substituindo T = 800 K, obtém-se Rs = 40 Ω. No ramo esquerdo, VA = 12×40/(40+40) = 6 V; no direito, VB = 12×20/(40+20) = 4 V. Logo, a tensão entre A e B é 2 V.",
+          "E": "Uma diferença de 1 V não satisfaz os potenciais determinados pelas resistências dos dois ramos. É preciso calcular separadamente os divisores de tensão, pois A e B não estão ligados entre si: seus potenciais são 6 V e 4 V."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:96": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "O radar mede o intervalo entre a emissão e o retorno da onda refletida. Assim, a distância percorrida é o dobro dos 75 km até o avião: 150 km. Com velocidade de 300 000 km/s, o tempo é 150/300 000 = 0,0005 s = 5,0 × 10⁻⁴ s."
+        ],
+        "alternatives": {
+          "A": "O valor de 2.000 s é incompatível com a enorme velocidade fornecida para a onda e com uma distância de apenas dezenas de quilômetros. O tempo deve resultar de distância dividida por velocidade, considerando também o retorno do sinal.",
+          "B": "Quatro segundos corresponderiam a 1.200.000 km percorridos à velocidade dada. O sinal percorre somente 150 km entre ida e volta, de modo que o tempo é muito menor que um segundo.",
+          "C": "Meio segundo pode resultar de usar o percurso completo como 150.000 metros, mas manter a velocidade como 300.000 quilômetros por segundo. Essa mistura de unidades introduz um fator de mil; mantendo ambas as distâncias em quilômetros, 150/300.000 = 0,0005 s.",
+          "D": "O tempo de 1,5×10⁻³ s corresponderia a 450 km percorridos. A reflexão não exige esse percurso: o sinal percorre 75 km até o avião e mais 75 km de volta, totalizando 150 km.",
+          "E": "O radar mede o intervalo entre a emissão e o recebimento do eco. Portanto, a distância total é 2×75 = 150 km e o tempo é 150/300.000 = 5,0×10⁻⁴ s, mantendo as unidades de distância coerentes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:97": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "As bactérias simbióticas dos nódulos radiculares realizam fixação biológica de nitrogênio. Elas convertem o N₂ atmosférico em compostos nitrogenados que podem ser incorporados ao metabolismo vegetal. Esse fornecimento reduz a necessidade de aplicar fertilizantes nitrogenados na cultura da soja."
+        ],
+        "alternatives": {
+          "A": "A absorção de nitrito já presente no solo não é o mecanismo destacado pela formação dos nódulos. As bactérias simbióticas reduzem a dependência de fertilizantes porque incorporam à associação uma fonte de nitrogênio atmosférico, não apenas porque facilitam a absorção de um íon disponível.",
+          "B": "O nitrogênio atmosférico está na forma molecular N₂, e não como íons orgânicos prontos para serem capturados. A função das bactérias fixadoras é transformá-lo quimicamente em formas que possam integrar o metabolismo vegetal.",
+          "C": "Bactérias nos nódulos realizam fixação biológica do nitrogênio: convertem N₂ atmosférico em compostos assimiláveis pela planta. Essa entrada de nitrogênio na associação supre parte da necessidade nutricional e reduz o uso de fertilizantes nitrogenados.",
+          "D": "A decomposição de grandes moléculas é uma etapa importante da reciclagem da matéria, mas não define a fixação simbiótica descrita. Nos nódulos, o diferencial é utilizar o nitrogênio do ar, em vez de depender apenas da degradação de matéria orgânica preexistente.",
+          "E": "Converter nitrogênio orgânico em formas inorgânicas caracteriza a mineralização, como na amonificação. O enunciado destaca bactérias fixadoras associadas às raízes, cujo papel específico é incorporar nitrogênio atmosférico à nutrição da planta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:98": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "A água aquecida retira das folhas substâncias solúveis, caracterizando extração. O funil com algodão retém materiais sólidos, realizando filtração. Por fim, a rotação intensa separa partículas suspensas do sobrenadante, caracterizando centrifugação. A ordem é extração, filtração e centrifugação."
+        ],
+        "alternatives": {
+          "A": "O primeiro procedimento não retém sólidos em uma barreira: água quente extrai substâncias das folhas. Além disso, o funil com algodão realiza filtração, e a rotação intensa final corresponde à centrifugação; a sequência proposta troca essas operações.",
+          "B": "A água aquecida funciona como solvente na extração do princípio ativo das folhas. O algodão no funil retém sólidos por filtração; depois, a centrifugação acelera a separação das partículas menores, permitindo recolher o sobrenadante.",
+          "C": "Destilação exigiria vaporizar e recolher uma fração por condensação, o que não é descrito. A etapa final também não forma um sólido por reação ou alteração de solubilidade: ela separa partículas já presentes mediante rotação intensa.",
+          "D": "A centrifugação aparece somente ao final, após a extração aquosa e a filtração. Iniciar a sequência por ela contraria a ordem relatada, e chamar a última etapa de decantação ignora o uso explícito da rotação.",
+          "E": "A preparação inicial dissolve ou extrai substâncias vegetais, sem descrição de formação de precipitado. Embora a última etapa seja centrifugação, a operação intermediária é filtração pelo algodão, não decantação por repouso."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:99": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "As lâmpadas A e B formam ramos paralelos, enquanto C e D estão em série no trecho comum. O amperímetro i₁ mede somente a corrente de A; i₂ mede a corrente total que atravessa C e D. Se B queima e abre seu ramo, sobra um único caminho com A, C e D, e ambos os amperímetros registram a mesma corrente não nula."
+        ],
+        "alternatives": {
+          "A": "Com todas funcionando, A e B formam ramos paralelos. O amperímetro i₁ mede apenas a corrente de A, enquanto i₂ mede a corrente total que também passa por C e D; como B conduz, a corrente total é maior que a de A.",
+          "B": "Uma lâmpada incandescente queimada interrompe seu ramo. Se A queimar, o amperímetro i₁, em série com ela, registra zero, mesmo que exista corrente no restante do circuito; isso viola a exigência de leituras não nulas.",
+          "C": "Queimar B abre somente esse ramo paralelo. A corrente passa então por A, C e D em um único caminho, atravessando os dois amperímetros; suas leituras passam a ser iguais e permanecem diferentes de zero.",
+          "D": "C faz parte do caminho comum da corrente, em série com D e com o conjunto dos ramos A e B. Se seu filamento abrir, não haverá circuito fechado com as baterias, e ambos os amperímetros marcarão zero, valor excluído pelo comando.",
+          "E": "D também integra o trecho comum que liga o circuito às baterias. Sua queima interrompe a corrente em todo o circuito; as leituras podem ser iguais, mas são nulas, não atendendo à condição pedida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:100": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "A pele espessa e queratinizada dos répteis dificulta a passagem de água pela superfície corporal. Essa proteção contra a perda de água reduz o risco de ressecamento e favorece a vida terrestre, com menor dependência de ambientes úmidos que a observada nos anfíbios."
+        ],
+        "alternatives": {
+          "A": "A locomoção terrestre depende de estruturas como membros, musculatura e sustentação do corpo. A espessura e a queratinização da pele atuam principalmente como barreira à perda de água, não como mecanismo de propulsão.",
+          "B": "A pele queratinizada não torna os répteis capazes de manter uma temperatura interna constante por elevada produção metabólica de calor. Eles são predominantemente ectotérmicos; a vantagem destacada nessa característica é a conservação de água.",
+          "C": "Uma pele espessa e rica em queratina diminui a perda de água para o ambiente. Essa barreira reduz o risco de desidratação em terra, favorecendo a ocupação de ambientes menos úmidos que os exigidos por uma pele fina e permeável.",
+          "D": "Trocas gasosas cutâneas dependem de uma superfície fina, úmida e permeável. A queratinização espessa diminui essa permeabilidade, de modo que a alternativa inverte o efeito da adaptação apresentada.",
+          "E": "A excreção de compostos nitrogenados envolve o metabolismo e o sistema excretor, não a queratinização da pele. Répteis possuem adaptações excretoras que economizam água, mas elas são distintas da característica especificamente descrita no comando."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:101": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O esquema mostra que a hidrólise da linamarina pode liberar ácido cianídrico, HCN, ainda tóxico. O cozimento em água permite sua dissolução e favorece sua saída por volatilização. É a remoção desse produto ao longo do tratamento, e não apenas a quebra da linamarina, que explica a segurança do consumo."
+        ],
+        "alternatives": {
+          "A": "Os esquemas mostram que o tratamento produz HCN, justamente a substância tóxica destacada no enunciado. A segurança não pode ser atribuída apenas à formação de produtos pouco tóxicos, pois é necessário considerar a remoção do ácido produzido.",
+          "B": "Uma eventual alteração da atividade enzimática não explica a retirada do agente tóxico do alimento. O mecanismo relevante no processo apresentado é a formação de HCN e sua remoção favorecida pela solubilidade em água e pela volatilidade.",
+          "C": "A transformação da linamarina libera HCN, que é solúvel em água e volátil. No modelo apresentado pela questão, essas propriedades permitem transferi-lo para a água e removê-lo durante o aquecimento, em vez de mantê-lo concentrado no tubérculo.",
+          "D": "O esquema distingue a linamarina do HCN produzido em etapas posteriores. É o ácido cianídrico cuja volatilidade explica a remoção; dizer que a linamarina evapora com a água ignora essa sequência de transformações.",
+          "E": "Aquecimento fornece energia e pode alterar a velocidade de uma reação, mas não é um catalisador químico. Além disso, mencionar apenas a hidrólise não basta: a explicação precisa incluir a saída do HCN tóxico formado no tratamento."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:102": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "Uma transformação química produz substâncias de composição diferente. Na figura, III identifica a oxidação do petróleo, que envolve reação dos componentes com agentes oxidantes. Espalhamento, evaporação, dispersão e sedimentação alteram posição, distribuição ou estado físico, sem necessariamente modificar a composição química."
+        ],
+        "alternatives": {
+          "A": "I representa o espalhamento do petróleo sobre a superfície do mar. A mancha muda sua distribuição espacial, mas esse deslocamento, por si só, não modifica a composição química das substâncias.",
+          "B": "II é a evaporação de componentes do petróleo. A passagem do estado líquido para o gasoso é uma transformação física: não exige formar novas substâncias para que as moléculas deixem a superfície.",
+          "C": "III identifica a oxidação, em que constituintes do petróleo reagem e formam produtos com composição química diferente. É essa alteração das espécies químicas que a distingue dos processos de deslocamento, mudança de estado e separação representados pelas demais opções.",
+          "D": "IV indica dispersão, isto é, a distribuição de pequenas porções de petróleo na água. Dividir e transportar gotículas altera o estado de distribuição da mistura, mas não implica, isoladamente, uma reação química.",
+          "E": "V corresponde à sedimentação, com deposição de materiais no fundo. A mudança de posição e a separação pela ação da gravidade são processos físicos, não evidências de formação de novas substâncias."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:103": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O sururu filtra partículas da água e pode acumular contaminantes presentes no local. Sua baixa mobilidade também ajuda a relacionar a contaminação encontrada à área examinada. Assim, é um bioindicador adequado para avaliar a exposição ambiental a metais pesados no manguezal."
+        ],
+        "alternatives": {
+          "A": "Predadores podem acumular metais por meio da alimentação, mas o robalo se desloca e consome presas de diferentes locais. Sua contaminação pode refletir uma área mais ampla da cadeia alimentar, tornando-o menos diretamente representativo da água de um ponto do manguezal que um filtrador residente.",
+          "B": "A ave pode apresentar contaminação ao consumir pequenos animais, mas sua mobilidade e sua dieta integram diferentes ambientes. Para avaliar a exposição local aos poluentes presentes na água, o organismo filtrador oferece uma relação mais direta com o meio amostrado.",
+          "C": "O sururu filtra partículas suspensas e pode acumular os metais associados à água e ao material ingerido. Por permanecer ligado ao local e integrar a exposição ao longo do tempo, funciona como indicador da qualidade ambiental do manguezal.",
+          "D": "O aratu se alimenta de folhas e insetos, não filtrando continuamente partículas da água. Ele pode entrar em contato com contaminantes, mas sua dieta não fornece a mesma amostragem direta do meio aquático que a atividade do sururu.",
+          "E": "O jacaré ocupa um nível trófico elevado e pode sofrer biomagnificação de contaminantes. Entretanto, seu deslocamento e sua alimentação tornam a concentração observada menos específica de um ponto de coleta; o comando favorece o filtrador como indicador da exposição local."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:104": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O trajeto horizontal mantém a pressão abaixo da pressão do ponto triplo. Nessa condição, o aumento de temperatura de A para B atravessa a fronteira entre sólido e gás, sem passar por uma região de líquido estável. A transformação direta do sólido em gás é sublimação."
+        ],
+        "alternatives": {
+          "A": "A fusão atravessa a fronteira entre sólido e líquido. O trajeto tracejado está abaixo da pressão do ponto triplo, onde o aquecimento indicado cruza diretamente a fronteira sólido-gás, sem passar pela região de estabilidade do líquido.",
+          "B": "A ebulição pressupõe uma passagem do líquido para o gás. No diagrama, A se encontra na região sólida e a pressão é inferior à do ponto triplo; portanto, a fase líquida não aparece ao longo do percurso.",
+          "C": "A pressão constante do trajeto fica abaixo da pressão do ponto triplo. Ao aumentar a temperatura de A para B, cruza-se a curva de equilíbrio sólido-gás, passando diretamente do sólido ao gasoso: trata-se de sublimação.",
+          "D": "A solidificação é a mudança do líquido para o sólido, geralmente ao resfriar o sistema. A seta de A para B representa aquecimento a pressão constante e leva da região sólida à gasosa, em sentido e entre fases diferentes das propostas.",
+          "E": "A condensação transforma gás em líquido. O percurso apresentado aquece uma amostra inicialmente sólida e termina na região gasosa; não ocorre entrada na região líquida nem o resfriamento característico da mudança sugerida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:105": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "A seleção natural não cria características para atender a uma necessidade. Ela atua sobre variações já existentes entre os indivíduos, favorecendo em determinado ambiente aqueles com maior sucesso de sobrevivência e reprodução. Essas diferenças são as possibilidades comparadas ao material apresentado a um júri."
+        ],
+        "alternatives": {
+          "A": "O fluxo gênico pode introduzir variantes em uma população pela migração e reprodução. Contudo, a metáfora se refere ao conjunto de diferenças já existentes sobre o qual a seleção atua, não a um mecanismo específico que transfere alelos entre populações.",
+          "B": "Caracteres adquiridos durante a vida não são, em geral, transmitidos à descendência apenas porque foram desenvolvidos pelo uso. A seleção natural favorece diferenças hereditárias com efeitos sobre o sucesso reprodutivo, não uma transformação dirigida pela necessidade dos indivíduos.",
+          "C": "Diferenças entre hábitats podem alterar quais características são vantajosas, mas fazem parte das condições seletivas. As possibilidades submetidas ao julgamento da seleção são as variações dos organismos, e não os ambientes em si.",
+          "D": "A população já apresenta indivíduos com diferentes características. A seleção atua sobre essa variação, favorecendo, em determinado ambiente, os portadores de características hereditárias associadas a maior sobrevivência e reprodução; ela não cria previamente a variante de que o organismo precisa.",
+          "E": "A capacidade de agrupamento é apenas uma característica que pode variar e ser favorecida em certos contextos. O trecho apresenta um princípio geral sobre a diversidade dos indivíduos, não uma referência exclusiva à formação de grupos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:106": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Nos compostos apresentados, H tem número de oxidação +1 e O tem −2. Em NH₃, N + 3 = 0, logo N = −3; em NH₄⁺, N + 4 = +1, também N = −3. Esse é o menor estado entre as espécies listadas. NH₃ está na atmosfera e NH₄⁺, na litosfera, respeitando a ordem solicitada."
+        ],
+        "alternatives": {
+          "A": "Em NH₃, x + 3(+1) = 0, portanto o nitrogênio tem NOX −3. Em NH₄⁺, x + 4(+1) = +1 também dá −3; esses são os menores estados entre as espécies representadas na atmosfera e na litosfera, respectivamente.",
+          "B": "No NO₂, o nitrogênio tem NOX +4; no NO₂⁻, x + 2(−2) = −1 fornece +3. Ambos são maiores que −3, encontrado na amônia atmosférica e no amônio da litosfera.",
+          "C": "O NOX médio do nitrogênio em N₂O é +1, e no NO₃⁻ é +5. Esses valores não são os menores disponíveis em cada região, pois NH₃ e NH₄⁺ apresentam nitrogênio com NOX −3.",
+          "D": "NH₃ é a escolha correta para a atmosfera, pois apresenta NOX −3. Porém, em NO₃⁻ o nitrogênio tem NOX +5, o maior entre os íons mostrados na litosfera; a segunda espécie deveria ser NH₄⁺.",
+          "E": "NH₄⁺ apresenta corretamente o menor NOX na litosfera, −3. A primeira espécie está errada: em NO₂ o nitrogênio tem +4, enquanto a atmosfera também contém NH₃, na qual seu NOX é −3."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:107": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "A concentração é a quantidade de matéria dividida pelo volume. Um litro de água de densidade 1,0 g/mL contém 1 000 g. Como a massa molar de H₂O é 18 g/mol, há 1 000/18 ≈ 55,6 mol em um litro, aproximadamente 56 mol/L. Alterar o volume da amostra não muda essa razão."
+        ],
+        "alternatives": {
+          "A": "O número 0,0556 é a quantidade de mols contida em aproximadamente 1 mL de água, cuja massa é 1 g. Para expressar concentração em mol por litro, é preciso usar 1.000 mL, elevando o resultado por um fator de mil.",
+          "B": "Em 25 mL há 25 g de água, ou aproximadamente 1,39 mol. Esse valor é quantidade de matéria da amostra, não concentração: dividir por seu volume de 0,025 L leva a cerca de 55,6 mol/L.",
+          "C": "Dezoito é o valor da massa molar da água em g/mol, calculada como 2×1 + 16. A concentração exige dividir a massa presente em um litro por essa massa molar, e não usar o número 18 diretamente como mol/L.",
+          "D": "O valor de aproximadamente 28 mol corresponde à quantidade de água em 500 mL, pois 500/18 ≈ 27,8. A concentração dessa amostra é 27,8/0,5 ≈ 55,6 mol/L, igual à da amostra menor.",
+          "E": "Um litro de água tem massa de 1.000 g, usando a densidade fornecida. Como M(H₂O) = 18 g/mol, sua quantidade é 1.000/18 ≈ 55,6 mol; logo, a concentração é aproximadamente 56 mol/L, independentemente do volume da amostra."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:108": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O enunciado identifica a autoagregação apolar como etapa inicial. A região I é uma longa cadeia alquílica hidrofóbica, que se associa às cadeias de outras moléculas por forças de dispersão de London, incluídas entre as interações de van der Waals. Os grupos polares das outras regiões atuam em etapas distintas."
+        ],
+        "alternatives": {
+          "A": "Forças de dispersão existem entre moléculas, mas o trecho identifica a etapa inicial pela associação das partes apolares. A região II contém grupos polares da cadeia peptídica, não a longa porção alquílica cuja aproximação forma o agregado descrito.",
+          "B": "Interações íon-dipolo exigem a participação de íons e regiões polares. Elas não explicam a autoagregação inicial por interações apolares e deslocam a atenção da região I, que apresenta a cadeia hidrocarbonada hidrofóbica.",
+          "C": "A região I é uma longa cadeia alquílica, predominantemente apolar e hidrofóbica. Sua associação por interações de van der Waals, em conjunto com o efeito hidrofóbico no meio aquoso, permite organizar o agregado tubular inicial indicado no texto.",
+          "D": "A etapa inicial é descrita como autoagrupamento por interações intermoleculares, não como uma reação que cria ligações covalentes entre moléculas. A região III participa de interações com células e espécies do processo posterior, sem justificar a covalência proposta.",
+          "E": "Ligações de hidrogênio dependem de grupos apropriados, geralmente com O, N ou F e hidrogênios ligados a esses elementos. A cadeia alquílica da região I é formada essencialmente por ligações C-C e C-H e não oferece os grupos necessários à ligação proposta com a região II."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:109": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "A combustão do etanol libera CO₂, mas o crescimento da cana-de-açúcar retira CO₂ da atmosfera por fotossíntese. Assim, parte do carbono emitido pode retornar à biomassa no ciclo produtivo renovável. Essa circulação recente do carbono é a vantagem indicada, sem significar ausência de emissões ou de outros impactos ambientais."
+        ],
+        "alternatives": {
+          "A": "Um ciclo relativamente curto não significa baixa retirada de nutrientes do solo. A produção de biomassa demanda nutrientes e pode exigir reposição; a vantagem ambiental destacada para o etanol está na origem renovável do carbono, não nessa suposta ausência de demanda nutricional.",
+          "B": "A queima da cana pode liberar poluentes e afetar organismos do solo, não garantindo aumento da diversidade microbiana. A alternativa transforma uma prática com impactos ambientais em vantagem geral, sem respaldo no ciclo de produção descrito.",
+          "C": "A combustão do etanol produz CO₂, e outras etapas produtivas também podem emitir gases de efeito estufa. Ser renovável não torna o combustível livre de emissões; sua vantagem potencial depende do balanço do ciclo, não da afirmação absoluta de que nenhum desses gases é gerado.",
+          "D": "A cana-de-açúcar não é uma planta endêmica do Brasil, e expandir monoculturas pode reduzir hábitats e biodiversidade. Portanto, nem a origem atribuída à espécie nem a alegação de ausência de prejuízo à fauna e à flora justificam a alternativa.",
+          "E": "O CO₂ liberado na combustão pode voltar à biomassa pela fotossíntese da cana em crescimento. Essa circulação integra um ciclo renovável de carbono e constitui uma vantagem potencial em relação ao carbono fóssil, sem significar que todas as emissões do processo sejam automaticamente compensadas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:110": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "A lavagem retira preferencialmente compostos que interagem fortemente com a água. A estrutura V é um éster de longa cadeia carbônica, componente do biodiesel, predominantemente hidrofóbico. Ela permanece na fase orgânica, enquanto álcool, glicerol e impurezas com grupos polares ou iônicos são removidos pela lavagem."
+        ],
+        "alternatives": {
+          "A": "I é o etanol, um álcool de cadeia curta que estabelece ligações de hidrogênio com a água. Por sua grande afinidade com a fase aquosa, o reagente excedente pode ser removido nas lavagens, não sendo o componente de biodiesel que se deseja conservar.",
+          "B": "II apresenta uma cadeia longa, mas também duas hidroxilas livres, características de um monoacilglicerol residual. Esses grupos aumentam sua polaridade e sua interação com a água em comparação com o éster etílico V; no contraste proposto, ele não representa o produto purificado desejado, embora a lavagem não deva ser entendida como remoção quantitativa de todo resíduo.",
+          "C": "III é o glicerol, que contém três hidroxilas e estabelece numerosas ligações de hidrogênio com a água. Sua afinidade pela fase aquosa favorece a separação durante a lavagem do biodiesel bruto.",
+          "D": "IV é um carboxilato de sódio, com uma extremidade iônica e uma longa cadeia apolar, estrutura típica de um sabão. Ele é um contaminante anfifílico, que interage com a água e pode favorecer emulsões; não é o éster combustível que deve permanecer como produto.",
+          "E": "V é um éster etílico de cadeia longa, componente do biodiesel. O predomínio de sua porção hidrocarbonada confere baixa afinidade pela água, favorecendo sua permanência na fase orgânica enquanto a lavagem extrai componentes mais polares."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:111": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "A fonte deve satisfazer dois critérios: recurso não renovável e geração que não dependa diretamente do clima. A fissão de urânio atende a ambos: utiliza combustível mineral de estoque finito e pode ocorrer sem depender de sol, vento ou regime de chuvas."
+        ],
+        "alternatives": {
+          "A": "A fissão utiliza urânio, recurso mineral finito cuja reposição não ocorre na escala de consumo humano. A geração nuclear não depende diretamente de vento, incidência solar ou vazão de chuvas para produzir a reação, atendendo aos dois critérios da questão, embora a operação real tenha outras exigências, como refrigeração.",
+          "B": "A água integra um ciclo natural renovável, de modo que a fonte não atende ao requisito de não renovabilidade. Além disso, a disponibilidade hídrica depende do regime de chuvas e pode ser afetada por secas prolongadas.",
+          "C": "A radiação solar é uma fonte renovável na escala considerada. A produção fotovoltaica também varia com horário, nebulosidade e incidência de luz, contrariando ambos os critérios que distinguem a alternativa pedida.",
+          "D": "A biomassa pode ser reposta pelo crescimento de matéria orgânica, sendo classificada como fonte renovável quando manejada adequadamente. A queima ocorrer de forma controlada não transforma a origem do combustível em recurso mineral não renovável.",
+          "E": "O vento é uma fonte renovável e sua disponibilidade varia com condições atmosféricas. A geração depende do movimento do ar em intensidade adequada, não atendendo à exigência de independência das condições climáticas do enunciado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:112": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "O milho que recebeu o gene Bt passa a produzir uma proteína com ação sobre determinadas lagartas. A redução do ataque dessas pragas preserva mais plantas e estruturas produtivas, diminuindo as perdas da lavoura. A vantagem humana indicada é, portanto, o aumento da produtividade agrícola."
+        ],
+        "alternatives": {
+          "A": "A figura mostra redução do ataque de lagartas às plantas, e não uma operação de replantio. Essa redução pode evitar perdas, mas o benefício diretamente demonstrado é maior produção da lavoura protegida, sem dados específicos sobre custo de novas mudas ou sementes.",
+          "B": "O milho Bt produz uma proteína com ação sobre determinadas lagartas, reduzindo os danos causados por essas pragas. Com menor perda de tecido vegetal e de produção, a cultura pode apresentar maior produtividade, benefício diretamente relacionado ao esquema.",
+          "C": "O organismo que recebe o gene é o milho, não a lagarta. A técnica reduz a sobrevivência de insetos suscetíveis, mas não consiste em diminuir uma população de lagartas que se tornou transgênica.",
+          "D": "O objetivo da característica inserida é proteger a planta contra determinadas pragas. Aumentar a necessidade de praguicidas não é a vantagem apresentada; manejo de resistência e outros cuidados continuam necessários, mas não invertem o benefício ilustrado.",
+          "E": "O gene Bt atua no controle de insetos, não na reposição de nutrientes ou na fixação de nitrogênio. Portanto, a proteção contra lagartas não permite concluir que a planta passe a necessitar de menos fertilizantes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:113": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Para a mesma corda sob as condições indicadas, frequência e comprimento vibrante são inversamente proporcionais. Logo f × 45 = 660 × 60 e f = 880 Hz. Consultando o quadro, 880 Hz corresponde à nota lá da quinta oitava."
+        ],
+        "alternatives": {
+          "A": "Uma nota dó da quinta oitava teria aproximadamente 520 Hz, abaixo dos 660 Hz iniciais. Encurtar a corda eleva a frequência; a nova frequência calculada é 660×60/45 = 880 Hz, que não corresponde a dó.",
+          "B": "Mi é a nota da corda livre, com 660 Hz. Ao reduzir seu comprimento vibrante de 60 para 45 cm, mantendo as demais condições, a frequência aumenta por um fator de 4/3 e a nota deixa de ser aquele mi.",
+          "C": "Sol na quinta oitava corresponde a aproximadamente 784 Hz. Esse aumento é menor que o exigido pela redução do comprimento: como fL é constante, a frequência correta é 880 Hz.",
+          "D": "A relação inversa fornece f₂ = f₁L₁/L₂ = 660×60/45 = 880 Hz. Pela tabela, essa frequência corresponde a lá da quinta oitava; o cálculo usa os 45 cm efetivamente oscilantes, não os 15 cm retirados.",
+          "E": "Si na quinta oitava tem cerca de 990 Hz, o que exigiria um comprimento menor que 45 cm nas mesmas condições. O produto constante fL determina 880 Hz para o comprimento informado, correspondente a lá."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:114": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "Um kWh equivale a 3,6 × 10⁶ J. Para 10 km e quatro passageiros, o protótipo consome 3,6 × 10⁶/(10 000 × 4) = 90 J por metro por passageiro. Maior eficiência significa menor consumo nessa unidade. Apenas velomóvel, com 18, e bicicleta, com 60, estão abaixo de 90: dois meios de transporte."
+        ],
+        "alternatives": {
+          "A": "O protótipo gasta 1 kWh = 3,6×10⁶ J em 10.000 m, transportando quatro pessoas, ou 90 J por metro e passageiro. Não é apenas o velomóvel que fica abaixo desse valor: a bicicleta, com 60, também é mais eficiente.",
+          "B": "O gasto por passageiro é 3,6×10⁶/(10.000×4) = 90 J/(m·passageiro). O gráfico apresenta dois valores menores, 18 para o velomóvel e 60 para a bicicleta; menor gasto para o mesmo serviço significa maior eficiência energética.",
+          "C": "Contar quatro meios exige incluir a pedonalidade e a ferrovia eletrificada, que gastam 132 e 200 J por metro e passageiro. Ambos superam os 90 do protótipo; a comparação deve ser feita após dividir seu consumo pelas quatro pessoas.",
+          "D": "Cinco meios incluiriam também o bonde, cujo gasto é 432 J por metro e passageiro. Esse valor é maior que 90, e não menor; a autonomia de 1.000 km não altera o consumo específico já fornecido por trecho de 10 km.",
+          "E": "Os primeiros sete meios do gráfico chegam a 560 J por metro e passageiro. Esse corte não corresponde ao protótipo, cujo gasto específico é de apenas 90; comparar o veículo sem repartir o consumo pelos passageiros produz uma avaliação incorreta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:115": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Para formar pigmento rosa, é necessário que a primeira etapa funcione, portanto a planta deve ter ao menos um alelo A. Para o rosa não ser convertido em vermelho, a segunda etapa deve estar bloqueada pelo genótipo bb. Assim, plantas A_bb são rosas, e Aabb é uma possibilidade."
+        ],
+        "alternatives": {
+          "A": "Aa permite formar o pigmento rosa, mas Bb também permite produzir a enzima Y. Como a segunda etapa continua funcionando, o pigmento rosa é convertido em vermelho; o fenótipo final não é rosa.",
+          "B": "O genótipo aa impede a primeira etapa, independentemente do que ocorra no gene B. Mesmo sendo bb, essa planta não chega a produzir o intermediário rosa, permanecendo sem pigmento pela epistasia recessiva.",
+          "C": "AABB permite as duas conversões da via: de precursor branco para rosa e de rosa para vermelho. A presença de alelos dominantes nos dois genes leva ao produto final vermelho, não ao acúmulo do intermediário rosa.",
+          "D": "Aa conserva a função da enzima X e possibilita produzir o pigmento rosa. A combinação bb bloqueia a enzima Y e impede convertê-lo em vermelho; por isso Aabb apresenta a cor rosa, assim como qualquer genótipo A_bb.",
+          "E": "Em aaBb, a homozigose recessiva aa bloqueia a formação de pigmentos antes da etapa controlada por B. A presença de B não contorna esse bloqueio inicial, de modo que a planta não apresenta o pigmento rosa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:116": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "Pilhas e baterias descartadas inadequadamente podem liberar componentes tóxicos no solo. A água infiltrada mobiliza esses contaminantes e pode transportá-los até os aquíferos, contaminando o lençol freático. Entre as opções, essa é a via direta de poluição subterrânea destacada."
+        ],
+        "alternatives": {
+          "A": "A utilização de combustíveis fósseis é associada diretamente à emissão de poluentes na combustão. Vazamentos podem contaminar o solo em situações específicas, mas a alternativa não descreve esse mecanismo, ao contrário do descarte de resíduos com metais indicado em C.",
+          "B": "Compostos de enxofre liberados na atmosfera estão ligados à poluição do ar e à formação de precipitação ácida. A opção não identifica a fonte direta de metais que podem ser lixiviados no solo até alcançar a água subterrânea.",
+          "C": "Pilhas e baterias descartadas de forma inadequada podem liberar componentes tóxicos no solo. A água que infiltra pode transportar esses contaminantes para camadas mais profundas e atingir o lençol freático, estabelecendo a relação solicitada.",
+          "D": "O derramamento em alto-mar atinge diretamente o ambiente marinho e suas cadeias ecológicas. O lençol freático é uma reserva de água subterrânea em terrenos continentais; não é o compartimento diretamente descrito por esse tipo de vazamento.",
+          "E": "Queimadas causam emissão de fumaça, perda de matéria orgânica e danos ao solo e à biodiversidade. Embora tenham vários impactos ambientais, não representam, entre as opções, a via mais direta de contaminação subterrânea por resíduos tóxicos lixiviados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:117": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "A massa inicial de cromo representa 5,2/52 = 0,10 mol de Cr³⁺. Cada mol de Cr₂O₃ contém dois mols de cromo, de modo que se formariam 0,050 mol do óxido. Sua massa molar é 2 × 52 + 3 × 16 = 152 g/mol, dando 7,6 g teóricos. Aplicando 90% de rendimento: 7,6 × 0,90 = 6,84 g, aproximadamente 6,8 g."
+        ],
+        "alternatives": {
+          "A": "A quantidade inicial é 5,2/52 = 0,10 mol de átomos de Cr. Como cada mol de Cr₂O₃ contém dois mols de Cr, a produção teórica é 0,05 mol de óxido; 3,2 g não corresponde a essa relação nem à aplicação do rendimento de 90%.",
+          "B": "A amostra contém 0,10 mol de Cr, que pode formar 0,05 mol de Cr₂O₃. A massa molar do óxido é 2×52 + 3×16 = 152 g/mol, dando 7,6 g teóricos; com 90% de rendimento, obtêm-se 6,84 g, aproximadamente 6,8 g.",
+          "C": "Sete vírgula seis gramas são a massa teórica de Cr₂O₃ calculada pela estequiometria. A alternativa esquece a perda representada pelo rendimento de 90%, que reduz a massa efetivamente obtida para 6,84 g.",
+          "D": "Uma massa de 8,4 g supera até a produção teórica de 7,6 g a partir dos 5,2 g de Cr. O rendimento de 90% deve diminuir, e não aumentar, o resultado teórico; dividir por 0,9 aplicaria a correção no sentido errado.",
+          "E": "O valor de 13,7 g resulta de tratar 0,10 mol de Cr como 0,10 mol de Cr₂O₃ e aplicar 90% de rendimento. A fórmula contém dois átomos de Cr por unidade do óxido, portanto a quantidade correta de produto é a metade dessa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:118": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "O volume e a seção da coluna de B não mudam, logo sua altura hB permanece constante. No equilíbrio, as pressões no nível da interface satisfazem ρA g hA = ρB g hB. Como as densidades e hB continuam iguais, hA também permanece. A adição de A desloca os níveis absolutos, mas não essas alturas relativas à interface."
+        ],
+        "alternatives": {
+          "A": "O líquido B não é acrescentado e seu volume, em um trecho de seção uniforme, mantém sua coluna com a mesma altura hB. No equilíbrio, ρAghA = ρBghB; como as densidades e hB não mudam, hA também permanece igual. Os níveis absolutos podem subir sem mudar as alturas medidas a partir da interface.",
+          "B": "A altura hB realmente permanece constante, pois o volume de B é conservado. Entretanto, se hA aumentasse sozinha, a pressão no nível da interface deixaria de ser igual nos dois lados; o equilíbrio exige que a razão hA/hB permaneça constante.",
+          "C": "Adicionar A pode elevar os níveis do sistema, mas não aumenta o volume de B. É preciso distinguir altura absoluta e extensão da coluna medida desde a interface; hB permanece fixa, e a condição hidrostática mantém também hA.",
+          "D": "A alternativa propõe variações opostas que alterariam a razão entre as alturas. As densidades não mudam, e a igualdade das pressões impõe ρAhA = ρBhB; além disso, a quantidade de B não permite aumentar sua altura no tubo uniforme.",
+          "E": "Manter hA e aumentar hB elevaria a pressão apenas do lado de B no nível da interface. Isso contraria o equilíbrio hidrostático; conservar o volume de B e as densidades faz ambas as alturas relativas permanecerem constantes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:119": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "O algodoeiro produz matéria orgânica a partir do CO₂ na fotossíntese. Já a bactéria indicada usa carboidratos fornecidos no meio como fonte de carbono para sintetizar celulose. A diferença relevante é a origem do carbono utilizado: orgânico na cultura bacteriana, em contraste com a fixação de carbono atmosférico da planta."
+        ],
+        "alternatives": {
+          "A": "O sequestro de carbono atmosférico é característico da fotossíntese do algodoeiro. A bactéria citada utiliza matéria orgânica no cultivo para obter carbono; atribuir a ela esse mesmo mecanismo não explica a diferença entre os processos.",
+          "B": "A fotólise da água e a liberação de oxigênio fazem parte da fotossíntese oxigênica vegetal. Não são o mecanismo de produção de celulose pela bactéria heterotrófica apresentada, que depende de nutrientes orgânicos fornecidos no meio.",
+          "C": "A formação de ligações entre unidades de glicose na celulose não é uma reação de hidratação. A síntese de polissacarídeos envolve ligações glicosídicas e não distingue os dois processos pelo simples acréscimo de água sugerido pela alternativa.",
+          "D": "A bactéria utiliza carboidratos disponíveis no meio como fonte de carbono para sintetizar celulose. O algodoeiro, por sua vez, incorpora carbono atmosférico por fotossíntese antes de formar os compostos orgânicos, distinção metabólica central entre os processos.",
+          "E": "A síntese de uma macromolécula a partir de unidades menores é um processo anabólico. Catabolismo corresponde à degradação de moléculas; chamar a formação de celulose de reação catabólica contradiz a organização metabólica descrita."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:120": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "A gema apical participa da dominância apical, associada à ação de auxinas que inibem o desenvolvimento de gemas laterais. Sua remoção reduz essa inibição e permite brotações laterais. Como folhas, raízes e demais estruturas permanecem saudáveis, a planta pode continuar crescendo de forma mais ramificada."
+        ],
+        "alternatives": {
+          "A": "As lagartas destruíram apenas a gema apical, deixando folhas, raízes e demais estruturas. A retirada desse ponto de crescimento não implica morte de uma planta saudável; as gemas laterais podem continuar o desenvolvimento.",
+          "B": "Murcha é associada à perda de turgor, frequentemente relacionada à deficiência de água ou a danos no transporte hídrico. O experimento descreve solo úmido e ataque limitado à gema apical, sem indicar uma causa para esse déficit.",
+          "C": "A gema apical participa da dominância apical, que inibe o desenvolvimento das gemas laterais. Sua retirada reduz essa influência e favorece o crescimento de brotos laterais, produzindo uma planta mais ramificada.",
+          "D": "A resposta esperada à retirada do ápice não é simplesmente repor uma nova gema no mesmo local. O efeito fisiológico destacado é liberar as gemas laterais da dominância apical, permitindo que esses pontos preexistentes se desenvolvam.",
+          "E": "O fim do crescimento de um único ápice não paralisa todos os meristemas. As raízes e gemas laterais permanecem funcionais, e estas últimas podem crescer com a redução da inibição exercida pelo ápice removido."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:121": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "A intensidade a 1 m é 6/(4π × 1²) = 0,5 W/m², usando π = 3. A área de cada folha é 4 × 10⁻⁴ m², portanto ela recebe 2 × 10⁻⁴ J por segundo. No gráfico, a absorção em 650 nm é aproximadamente 60%. Assim, a energia absorvida por segundo é 0,60 × 2 × 10⁻⁴ = 1,2 × 10⁻⁴ J."
+        ],
+        "alternatives": {
+          "A": "A energia total incidente em uma folha por segundo é 2,0×10⁻⁴ J. Absorver 3,8×10⁻⁴ J excederia até essa energia disponível, violando o balanço energético antes mesmo de considerar a absorção parcial de 60%.",
+          "B": "O valor de 4,8×10⁻⁴ J é maior que a energia que chega à folha, 2,0×10⁻⁴ J por segundo. A lâmpada distribui sua potência sobre a esfera de área 4πr² = 12 m²; não se pode atribuir à folha uma fração maior que a incidente em sua área.",
+          "C": "Esse é o valor da energia incidente: [6/(4×3×1²)]×4×10⁻⁴ = 2×10⁻⁴ J em um segundo. A alternativa desconsidera que o gráfico indica absorção de apenas cerca de 60% em 650 nm.",
+          "D": "O resultado de 1,8×10⁻⁴ J corresponderia à absorção de 90% da energia incidente. Esse percentual se aproxima do pico em comprimentos de onda menores, mas não do valor de cerca de 60% para a luz vermelha de 650 nm utilizada.",
+          "E": "A intensidade a 1 m é 6/(4×3×1²) = 0,5 W/m². A área de 4 cm² equivale a 4×10⁻⁴ m², recebendo 2×10⁻⁴ J por segundo; com a absorção de 60% lida em 650 nm, a energia absorvida é 1,2×10⁻⁴ J."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:122": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "A homozigose de alelos recessivos diz respeito ao par de alelos do genoma nuclear. Na clonagem descrita, o núcleo diploide transferido veio da célula somática da ovelha B. A fornece o citoplasma e C realiza a gestação, mas nenhuma delas fornece os alelos nucleares responsáveis pela característica mencionada."
+        ],
+        "alternatives": {
+          "A": "A ovelha A fornece o óvulo, mas seu núcleo foi retirado antes da transferência. Ela contribui com citoplasma e mitocôndrias, não com o par de alelos nucleares recessivos cuja homozigose determina a característica descrita.",
+          "B": "A ovelha B fornece o núcleo diploide de uma célula somática. Esse núcleo contém os dois alelos de cada locus nuclear do clone, inclusive o par recessivo em homozigose que origina a característica indesejada.",
+          "C": "A ovelha C fornece o ambiente uterino para o desenvolvimento do embrião. A gestação pode influenciar o desenvolvimento, mas não transfere para o núcleo do clone os alelos que formam seu genótipo.",
+          "D": "A contribuição de A é o óvulo anucleado, e a de C, a gestação. Nenhuma das duas fornece o par de alelos nucleares em questão, que já está presente no núcleo somático retirado de B.",
+          "E": "Não ocorre fecundação com mistura de um núcleo de A e outro de B. O núcleo de A foi removido; portanto, a origem dos alelos nucleares não é uma alternativa entre as duas doadoras, mas especificamente B."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:123": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Adicionar água aproxima a densidade do leite da densidade da água, alterando o teste usado para detectar diluição. O amido aumenta a quantidade de material disperso na mistura e pode elevar sua densidade aparente, mascarando essa alteração. Não se trata de repor gordura ou de conservar o leite."
+        ],
+        "alternatives": {
+          "A": "A adição de água tende a diminuir a densidade do leite, aproximando-a da densidade da água. Acrescentar amido aumenta a quantidade de material disperso no líquido e pode elevar sua densidade aparente, mascarando esse indicador de diluição no teste descrito.",
+          "B": "Amido é um polissacarídeo, portanto um carboidrato, e não um lipídeo. Sua adição não repõe a fração de gordura do leite diluído nem permite explicar o mascaramento do teste por essa classificação química incorreta.",
+          "C": "O amido não é apresentado como uma base capaz de neutralizar os ácidos do leite. A adulteração mencionada atua sobre uma propriedade física ligada à diluição, não sobre uma reação de neutralização da acidez.",
+          "D": "Rancidez está relacionada à degradação de gorduras, e o amido não é um agente antimicrobiano empregado para impedir esse processo no cenário descrito. A opção atribui ao adulterante uma função diferente da alteração de densidade que mascara a água acrescentada.",
+          "E": "Não há indicação de que o amido funcione como antioxidante ou elimine sinais de conservantes. O problema é esconder a diluição do leite, e a alteração relevante é a elevação de densidade, não o mascaramento de testes para outras substâncias."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:124": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "A pesca permanece permitida, mas é regulada para respeitar o período reprodutivo e permitir a recuperação da população natural. Esse uso de um recurso silvestre sem impedir sua reposição caracteriza extrativismo sustentável. O aumento do estoque e do tamanho médio dos peixes é compatível com o manejo descrito."
+        ],
+        "alternatives": {
+          "A": "A pesca continua ocorrendo, mas em período autorizado e com interrupção durante a reprodução. Esse manejo utiliza um recurso natural respeitando sua reposição, caracterizando extrativismo sustentável e permitindo recuperar a população e o tamanho dos peixes.",
+          "B": "O texto descreve recuperação dos estoques no ambiente natural já ocupado pelo pirarucu. Não relata construção de novos hábitats; a intervenção central é regular a captura e proteger a fase reprodutiva.",
+          "C": "Seleção artificial envolveria escolher reprodutores com características desejadas para direcionar a reprodução. O aumento do tamanho médio não prova essa prática: o texto o associa ao manejo pesqueiro e à recuperação dos animais no ambiente.",
+          "D": "Não é relatada retirada de predadores nem manipulação dessa relação ecológica. A estratégia explicitamente descrita atua na pressão de pesca exercida pelas pessoas, especialmente no período de reprodução.",
+          "E": "Os peixes são capturados em uma população natural, protegida por regras de manejo. Não há descrição de manutenção de reprodutores, incubação ou produção de filhotes em cativeiro, procedimentos necessários para identificar essa alternativa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:125": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "O alagamento pode destruir hábitats e eliminar populações endêmicas. Levantar previamente as espécies e acompanhar a biodiversidade fornece uma referência para reconhecer perdas e orientar resgate, conservação e manejo após a intervenção. Essa avaliação deve abranger o conjunto da fauna e da flora locais."
+        ],
+        "alternatives": {
+          "A": "A potabilidade informa se a água atende a critérios para consumo humano, mas não identifica quais espécies perderão hábitats com o alagamento. O risco descrito é a perda de biodiversidade, sobretudo de organismos restritos àquela região.",
+          "B": "Levantar previamente as espécies e acompanhar suas populações permite identificar o que será afetado e orientar ações de manejo. Isso é decisivo para espécies endêmicas, cuja distribuição restrita pode fazer a perda local representar uma ameaça à espécie inteira.",
+          "C": "Introduzir espécies exóticas não substitui a conservação das nativas afetadas. Esses organismos podem competir, predar ou transmitir doenças, agravando o desequilíbrio que os estudos prévios deveriam ajudar a evitar.",
+          "D": "Promover maior variedade de espécies de lago não preserva automaticamente os ecossistemas terrestres ou fluviais substituídos pelo reservatório. O objetivo dos estudos deve incluir a biodiversidade existente e suas vulnerabilidades, não apenas a composição futura do ambiente lacustre.",
+          "E": "A emigração não é uma solução geral: muitas espécies não conseguem se deslocar ou encontrar hábitats adequados em outra área. É necessário conhecer a biodiversidade e suas exigências antes de decidir medidas específicas, em vez de simplesmente favorecer a saída dos animais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:126": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O Aedes aegypti tem fases imaturas aquáticas. A água acumulada entre folhas sobrepostas pode oferecer local para o desenvolvimento de suas larvas, motivo da justificativa apresentada na campanha. A relação explicativa é a disponibilidade de criadouros, e não o uso da água pelo vírus fora do mosquito."
+        ],
+        "alternatives": {
+          "A": "Embora mosquitos adultos possam repousar na vegetação, esse não é o mecanismo relacionado à água acumulada no comando. A justificativa biológica está no desenvolvimento das fases aquáticas do mosquito, especialmente das larvas.",
+          "B": "O acasalamento dos adultos não depende de ocorrer na água retida entre as folhas. A associação apresentada é entre água parada e desenvolvimento larval, não entre o formato das folhas e a cópula dos mosquitos.",
+          "C": "As larvas do Aedes aegypti se desenvolvem em ambientes aquáticos. A água acumulada entre as folhas pode oferecer um criadouro, sendo esse o fundamento biológico da medida histórica descrita no enunciado, não uma recomendação geral para eliminar bromélias.",
+          "D": "A alimentação dos adultos não consiste em consumir nutrientes dissolvidos na água dessas folhas. Essa alternativa confunde o papel do criadouro no ciclo larval com a alimentação dos mosquitos transmissores já adultos.",
+          "E": "O vírus da dengue não se espalha entre mosquitos pela água do criadouro como descrito nessa opção. O papel da água é permitir o desenvolvimento das fases imaturas do vetor, e não funcionar como meio de transmissão aquática do vírus."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:127": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "A célula 2 libera moléculas em forma de Y que se ligam às bactérias: são anticorpos. A produção e secreção intensa de anticorpos é função dos plasmócitos, derivados de linfócitos B ativados. Isso caracteriza a resposta imune humoral representada na figura."
+        ],
+        "alternatives": {
+          "A": "Basófilos participam de respostas inflamatórias e podem liberar mediadores como histamina. A célula 2 aparece secretando estruturas em Y que se ligam às bactérias, representação de anticorpos, não desses mediadores.",
+          "B": "Linfócitos T auxiliares coordenam respostas por sinais a outras células. Eles não se diferenciam na célula que secreta grandes quantidades de anticorpos mostrada na figura, função atribuída aos plasmócitos derivados de linfócitos B.",
+          "C": "Macrófagos realizam fagocitose e participam da apresentação de antígenos. A figura não mostra a célula 2 englobando bactérias: ela libera anticorpos no meio, identificando outra função imunológica.",
+          "D": "Linfócitos T citotóxicos atuam principalmente na destruição de células infectadas ou alteradas. O desenho mostra proteínas secretadas que reconhecem bactérias extracelulares, não uma célula executando citotoxicidade sobre uma célula-alvo.",
+          "E": "A ativação de um linfócito B pode gerar um plasmócito, especializado em secretar anticorpos. As estruturas em Y saindo da célula 2 e reconhecendo as bactérias tornam essa função explícita no esquema."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:128": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "A neblina contém gotículas de água suspensas no ar. Elas espalham a luz dos faróis em diversas direções, inclusive de volta ao motorista, reduzindo a iluminação útil e o contraste da pista. O fenômeno indicado na alternativa é a dispersão da luz pelas gotículas, sem necessidade de alterar a potência emitida pelo farol."
+        ],
+        "alternatives": {
+          "A": "As gotículas suspensas espalham a luz dos faróis em várias direções. Assim, menos luz útil chega à pista e retorna ao motorista, enquanto parte é espalhada em sua direção, prejudicando o contraste e a visibilidade; esse é o sentido de dispersão empregado na alternativa.",
+          "B": "Polarização é a seleção de direções de oscilação do campo elétrico da luz. O fenômeno central na neblina é o espalhamento por gotículas, e não um filtro polarizador que bloqueie uma orientação específica da onda.",
+          "C": "O enunciado localiza a água em suspensão no ar, caracterizando neblina. Uma película condensada sobre o farol poderia causar outro problema, mas não é a situação descrita nem explica o espalhamento ao longo do caminho da luz.",
+          "D": "Solubilização é um processo de dissolução de uma substância em outra. Não descreve a interação óptica entre luz e gotículas, que continuam suspensas e desviam a propagação dos raios luminosos.",
+          "E": "A presença da neblina não significa que o circuito do farol passe a emitir menor potência. A perda de visibilidade ocorre durante a propagação da luz no ar com gotículas, mesmo quando a fonte mantém sua emissão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:129": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "No grupo 1, a carbonila está ligada a um hidrogênio, caracterizando aldeído. O grupo 2 apresenta oxigênio entre dois carbonos, formando um éter. No grupo 3, a hidroxila está ligada diretamente ao anel aromático, o que caracteriza fenol, e não álcool comum."
+        ],
+        "alternatives": {
+          "A": "O grupo 1 possui carbonila ligada a hidrogênio, caracterizando aldeído. No grupo 2, um oxigênio liga dois carbonos sem carbonila adjacente, formando éter; o grupo 3 é uma hidroxila ligada diretamente ao anel aromático, característica de fenol.",
+          "B": "O grupo 1 não é cetona, pois o carbono da carbonila está ligado a um hidrogênio. O grupo 2 não tem a combinação carbonila-oxigênio exigida por um éster, e a hidroxila aromática do grupo 3 é classificada como fenol, não enol.",
+          "C": "Fenol identifica corretamente o grupo 3, mas os outros dois estão trocados. Uma cetona teria a carbonila entre dois carbonos, e um éster exigiria C(=O)-O; a figura mostra aldeído no grupo 1 e éter no grupo 2.",
+          "D": "Aldeído e éter estão corretamente reconhecidos nos grupos 1 e 2. O erro está no grupo 3: a hidroxila liga-se diretamente ao carbono aromático, definindo a função fenol, distinta da classificação de álcool sobre carbono saturado.",
+          "E": "Não há nitrogênio na fórmula C₈H₈O₃ nem na estrutura, portanto o grupo 2 não pode ser uma amina. Também estão incorretas as classificações de cetona para a carbonila terminal e de álcool para a hidroxila aromática."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:130": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "A obstrução parcial reduz a área de saída da mangueira e produz um jato de maior velocidade nas condições descritas. Ao sair mais rapidamente, a água pode alcançar uma distância horizontal maior. Isso não exige aumento de densidade nem de quantidade total de água lançada por segundo."
+        ],
+        "alternatives": {
+          "A": "Ao reduzir a abertura de saída, o jardineiro obtém um jato com maior velocidade nas condições descritas. Essa maior velocidade inicial permite à água alcançar as flores mais distantes; o fenômeno não depende de aumentar a quantidade total de água fornecida.",
+          "B": "A água pode ser tratada como praticamente incompressível nesse contexto. Obstruir parcialmente a mangueira não aumenta de forma relevante sua densidade, e o maior alcance é explicado pela velocidade de saída, não por alteração da massa por volume.",
+          "C": "Um jato pode atingir maior distância sem lançar maior volume total de água. A redução da abertura não constitui uma fonte adicional de água; a característica diretamente responsável pelo alcance é a velocidade com que ela sai.",
+          "D": "A massa lançada não determina, por si só, que cada porção alcance maior distância. O polegar altera as condições de escoamento e a velocidade de saída, não cria um aumento de massa necessário para explicar o fenômeno.",
+          "E": "Vazão é o volume que atravessa uma seção por unidade de tempo, Q = Av. Uma abertura menor pode produzir velocidade maior sem elevar a vazão, que em uma mangueira real pode até diminuir; portanto, não se deve confundir velocidade do jato com volume fornecido por segundo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:131": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "A célula a combustível consome hidrogênio e oxigênio e forma água, convertendo energia química em elétrica. Somando as semirreações, prótons e elétrons intermediários se cancelam. A equação global balanceada é 2 H₂ + O₂ → 2 H₂O, com quatro hidrogênios e dois oxigênios de cada lado."
+        ],
+        "alternatives": {
+          "A": "A dissociação da água em H⁺ e OH⁻ não representa o consumo dos gases H₂ e O₂ mostrados alimentando a célula. A reação global da célula deve combinar esses reagentes para produzir água, além de permitir transferência de elétrons pelo circuito.",
+          "B": "A expressão proposta não conserva adequadamente os átomos e as cargas e termina em íons, não no produto água representado. Os elétrons e íons envolvidos nas etapas internas devem ser cancelados ao escrever a equação global.",
+          "C": "A alternativa parte de água e apresenta elétrons entre os produtos, aproximando-se de uma decomposição, não da síntese que alimenta a célula. Na reação global, hidrogênio e oxigênio são consumidos e os elétrons transferidos entre eletrodos não permanecem como produto líquido.",
+          "D": "A equação mantém carga positiva apenas entre os reagentes e ainda apresenta H₂ como produto. Isso não corresponde ao funcionamento descrito, em que o hidrogênio fornecido ao eletrodo é consumido e os intermediários iônicos se cancelam no balanço global.",
+          "E": "A oxidação do H₂ e a redução do O₂ se combinam na formação de água. Somando as etapas e cancelando elétrons e H⁺ intermediários, obtém-se 2 H₂ + O₂ → 2 H₂O, com conservação dos átomos e da carga."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:132": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Os dois embriões foram produzidos em procedimentos distintos, cada um a partir de sua própria fecundação. Eles correspondem, portanto, a dois zigotos diferentes: são gêmeos dizigóticos. Como os gametas que os originaram são independentes, podem resultar em indivíduos do mesmo sexo ou de sexos diferentes."
+        ],
+        "alternatives": {
+          "A": "Os embriões foram produzidos em fecundações distintas, portanto são dizigóticos. Isso não obriga que tenham o mesmo sexo: cada fecundação pode formar uma combinação cromossômica sexual diferente da outra.",
+          "B": "Gêmeos monozigóticos resultam da divisão de um mesmo embrião. O procedimento relatado produziu dois embriões em ocasiões diferentes; implantá-los juntos não transforma suas origens genéticas em uma única fecundação.",
+          "C": "A origem em dois zigotos não determina sexos diferentes. Os dois embriões podem ter a mesma combinação de cromossomos sexuais ou combinações distintas, pois decorrem de fecundações independentes.",
+          "D": "Cada procedimento gerou um embrião próprio, e não duas partes de um único embrião. São, assim, gêmeos dizigóticos; as fecundações independentes permitem que sejam do mesmo sexo ou de sexos diferentes.",
+          "E": "A possibilidade de sexos distintos está de acordo com a origem independente, mas a classificação monozigótica está errada. Congelamento e implantação simultânea não alteram o fato de que houve dois zigotos, um em cada fecundação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:133": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Em uso, a TV consome 158 × 4 = 632 Wh. Nas outras 20 horas, em espera, consome 1 × 20 = 20 Wh. O consumo total diário é 652 Wh. A fração em espera é 20/652 × 100 ≈ 3,07%, cujo valor mais próximo é 3,0%."
+        ],
+        "alternatives": {
+          "A": "A comparação correta envolve energia, que depende tanto da potência quanto do tempo. Em espera, são 1×20 = 20 Wh; em uso, 158×4 = 632 Wh. A razão 20/(632+20) é próxima de 3%, não 0,2%.",
+          "B": "A razão entre potências, 1/158, vale aproximadamente 0,6%, mas não é a fração de energia diária. A televisão fica cinco vezes mais tempo em espera que em uso, e esses diferentes tempos precisam entrar no cálculo.",
+          "C": "O número 1 corresponde à potência de espera em watts, não à porcentagem de energia. A energia de espera é 20 Wh em um total de 652 Wh, o que representa cerca de três vezes a fração indicada nessa alternativa.",
+          "D": "As quatro horas de uso consomem 158×4 = 632 Wh, e as vinte horas restantes consomem 1×20 = 20 Wh. A fração em espera é 20/652×100 ≈ 3,07%, cujo valor mais próximo é 3%.",
+          "E": "As vinte horas em espera não correspondem a 20% da energia. Apesar do longo tempo, a potência de 1 W é muito menor que os 158 W em uso; calcular as duas energias dá apenas 20 Wh de espera em 652 Wh totais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:134": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O enunciado relaciona o condicionamento a maior participação da respiração aeróbica durante o esforço. Com menor dependência da via anaeróbica que converte piruvato em lactato, espera-se menor acúmulo de lactato no sangue em condições comparáveis de exercício. Esse parâmetro permite avaliar o resultado do treinamento proposto."
+        ],
+        "alternatives": {
+          "A": "A glicemia informa a quantidade de glicose circulante, mas seu aumento não demonstra que o músculo passou a obter mais energia por metabolismo aeróbico. O parâmetro mais diretamente ligado à via alternativa descrita é a produção de lactato.",
+          "B": "Uma queda genérica do teor de proteínas não identifica maior rendimento da respiração aeróbica. O texto compara o destino do piruvato e a formação de lactato, não uma redução das proteínas sanguíneas como objetivo do condicionamento.",
+          "C": "Se, em um esforço comparável, uma parcela maior do piruvato segue para a oxidação aeróbica, há menor contribuição da via que o converte em lactato. Níveis menores de lactato são, portanto, o indicador entre as opções mais diretamente relacionado ao condicionamento proposto.",
+          "D": "As hemácias transportam oxigênio por meio da hemoglobina. Reduzir seu número não seria um indício de melhor capacidade de sustentar o metabolismo aeróbico; essa opção aponta no sentido oposto à disponibilidade de oxigênio buscada no contexto.",
+          "E": "O piruvato é produzido antes da bifurcação entre os destinos metabólicos descritos. Seu aumento isolado não demonstra que ele foi oxidado de forma mais eficiente na mitocôndria; o menor acúmulo de lactato oferece o indicador mais específico pedido."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:135": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "É necessário comparar a energia liberada por mol de carbono, dividindo o módulo da entalpia pelo número de carbonos do combustível. Obtêm-se: etanol 684, metano 890, metanol 726, acetileno 650,5 e carvão 355 kJ por mol de C. O maior valor é o do metano, 890 kJ/mol de carbono."
+        ],
+        "alternatives": {
+          "A": "Um mol de etanol libera 1.368 kJ, mas contém dois mols de carbono. A comparação pedida resulta em 684 kJ por mol de C, abaixo dos 890 kJ por mol de C do metano; escolher apenas a maior energia por mol de combustível usa o denominador errado.",
+          "B": "Cada mol de metano contém um mol de carbono e libera 890 kJ. Essa razão supera as dos demais combustíveis: etanol 684, metanol 726, acetileno 650,5 e carvão 355 kJ por mol de carbono.",
+          "C": "O metanol contém um átomo de carbono por molécula, dando 726 kJ por mol de C. Essa razão é superior às de alguns concorrentes, mas ainda menor que os 890 kJ por mol de C obtidos com o metano.",
+          "D": "A combustão libera 1.301 kJ por mol de acetileno, que contém dois mols de carbono. Dividir por dois fornece 650,5 kJ por mol de C, valor menor que a razão do metano e não o maior da tabela.",
+          "E": "O carvão indicado é representado por C, de modo que a razão já é 355 kJ por mol de carbono. Esse é o menor valor entre as opções; não basta o combustível ser composto de carbono para maximizar a energia liberada por mol desse elemento."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:136": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "A medida indicada é o número misto 22 e 3/4 polegadas. Sua parte fracionária é 3 ÷ 4 = 0,75. Somando à parte inteira, obtém-se 22 + 0,75 = 22,75 polegadas. A conversão solicitada é da escrita fracionária para a decimal, sem mudar de unidade."
+        ],
+        "alternatives": {
+          "A": "A medida fornecida é 22¾ polegadas, não um comprimento a converter para centímetros. O número 25,40 não é a representação decimal dessa fração mista; deve-se apenas somar 22 a 3/4.",
+          "B": "A parte fracionária é 3/4 = 0,75. Assim, 22¾ = 22 + 0,75 = 22,75 polegadas, sem mudar a unidade nem efetuar uma conversão de comprimento.",
+          "C": "O resultado 21,25 corresponde a 22 − 0,75. Uma fração mista positiva representa soma da parte inteira com a fração, de modo que o comprimento deve ser maior que 22, e não menor.",
+          "D": "Multiplicar 22 por 3/4 produz 16,50, mas não interpreta corretamente a notação da figura. O inteiro ao lado da fração indica 22 mais três quartos, não o produto entre eles.",
+          "E": "Dividir 25 por 4 daria 6,25, mas somar o inteiro 22 ao numerador 3 antes da divisão não é válido. Para uma única fração, 22¾ = (22×4 + 3)/4 = 91/4 = 22,75."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:137": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "Se o custo de fabricação anterior é F = x, o de insumos é M = 1,5x, totalizando 2,5x. No ano atual, os insumos passam a 0,70 × 1,5x = 1,05x e a fabricação, a 1,45x. A soma continua 2,5x. Para conservar V = (M + F)(1 + L), com custo total igual, L também deve permanecer igual."
+        ],
+        "alternatives": {
+          "A": "A diferença entre as taxas de 45% e 30% é 15 pontos percentuais, mas elas incidem sobre custos diferentes. Com M = 1,5F, a queda de 30% em M equivale exatamente ao aumento de 45% em F; aumentar o lucro elevaria o preço de venda.",
+          "B": "Usar 7,5% como aumento supõe uma variação do custo total que não existe. Tomando F = 100 e M = 150, os novos valores são 145 e 105, cuja soma continua sendo 250, como antes.",
+          "C": "A redução do lucro diminuiria o preço, pois o custo total não caiu nem aumentou. O cálculo ponderado é 0,70×1,5F + 1,45F = 2,5F, igual à soma original; não há ajuste de 7,5% a compensar.",
+          "D": "Subtrair diretamente 30% de 45% não determina a mudança do custo total, porque as bases são diferentes. A redução de M é 0,45F e o acréscimo de F também é 0,45F, anulando-se exatamente sem exigir redução de lucro.",
+          "E": "O custo original é 1,5F + F = 2,5F. No ano atual, M vale 0,70×1,5F = 1,05F e a fabricação vale 1,45F, mantendo o total em 2,5F; para conservar V, o fator 1 + L também deve permanecer inalterado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:138": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Calcula-se o imposto sobre o total cobrado em cada item: leite 6 × 0,05 = R$ 0,30; margarina 5 × 0,20 = R$ 1,00; refrigerante 16 × 0,25 = R$ 4,00. Somando, o valor pago em impostos é R$ 5,30."
+        ],
+        "alternatives": {
+          "A": "R$ 2,70 equivalem a aplicar uma taxa única de 10% sobre o total de R$ 27,00. O cupom estabelece percentuais distintos para cada item; é necessário calcular as parcelas sobre suas respectivas bases antes de somá-las.",
+          "B": "Somar impostos de apenas uma unidade de cada produto resulta em 3×0,05 + 5×0,20 + 8×0,25 = R$ 3,15. A compra inclui dois leites e dois refrigerantes, de modo que esse cálculo ignora parte dos itens pagos.",
+          "C": "A média simples das taxas é aproximadamente 16,67%, que, aplicada a R$ 27,00, dá R$ 4,50. Essa média não é adequada porque os valores gastos nas categorias são diferentes; os percentuais precisam ser ponderados pelos preços efetivamente pagos.",
+          "D": "O imposto do leite é 6×0,05 = R$ 0,30; o da margarina é 5×0,20 = R$ 1,00; e o dos refrigerantes é 16×0,25 = R$ 4,00. Somando as três parcelas, obtêm-se R$ 5,30.",
+          "E": "R$ 5,40 correspondem a 20% do total da compra. Apenas a margarina tem essa alíquota; leite e refrigerantes são tributados a 5% e 25%, e a soma correta das parcelas é R$ 5,30."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:139": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Se suave e forte têm s cápsulas cada, então tradicional t ≥ 2 e extraforte e ≥ 1 satisfazem t + e = 12 − 2s. Para s = 1, 2, 3 e 4, as quantidades de pares (t,e) possíveis são, respectivamente, 8, 6, 4 e 2. Para s ≥ 5 não sobra o mínimo de três cápsulas para t e e. Portanto há 8 + 6 + 4 + 2 = 20 kits."
+        ],
+        "alternatives": {
+          "A": "Se s é a quantidade comum de suaves e fortes, t ≥ 2 e e ≥ 1, temos t + e + 2s = 12. Para s = 1, 2, 3 e 4, existem respectivamente 8, 6, 4 e 2 escolhas de t, pois e fica determinado; a soma é 20 kits.",
+          "B": "As escolhas não formam um produto de dois conjuntos independentes com cinco possibilidades. A quantidade de suaves e fortes consome duas cápsulas por incremento, reduzindo as opções de tradicionais e extrafortes; contar os casos dá 8 + 6 + 4 + 2 = 20.",
+          "C": "O valor 36 aparece ao fixar o mínimo de tradicionais e distribuir sete cápsulas adicionais entre três categorias sem impor a igualdade entre suaves e fortes. Essa restrição não pode ser descartada: os aumentos nessas duas intensidades devem ocorrer em pares.",
+          "D": "O valor 286 é o número de soluções não negativas de quatro quantidades que somam dez. Essa contagem não incorpora corretamente a cápsula mínima de cada intensidade não tradicional e, sobretudo, inclui kits em que suaves e fortes têm quantidades diferentes.",
+          "E": "Distribuir 12 cápsulas entre quatro categorias sem qualquer restrição dá C(15,3) = 455. O enunciado exige mínimos e igualdade entre duas categorias, de modo que a maioria dessas distribuições não corresponde a um kit permitido."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:140": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "A proporção do grupo O é 100% − 25% − 25% − 30% = 20%. Receptores universais AB⁺ são 0,30 × 0,60 = 0,18 da população. Doadores universais O⁻ são 0,20 × 0,40 = 0,08. Como os grupos são distintos, a probabilidade procurada é 0,18 + 0,08 = 0,26."
+        ],
+        "alternatives": {
+          "A": "A proporção 0,30 corresponde ao grupo AB antes de considerar o fator Rh. Apenas 60% desse grupo é AB⁺, e o evento pedido também inclui O⁻; usar somente a frequência de AB ignora as duas condições da classificação fornecida.",
+          "B": "O grupo O representa 1 − 0,25 − 0,25 − 0,30 = 0,20 da população. Assim, P(AB⁺) = 0,30×0,60 = 0,18 e P(O⁻) = 0,20×0,40 = 0,08; como os eventos são incompatíveis, a probabilidade da união é 0,26.",
+          "C": "O produto 0,30×0,20 = 0,06 mistura as frequências de AB e O como se uma pessoa precisasse pertencer a ambos. O comando usa 'ou', e ninguém é simultaneamente desses dois grupos; somam-se as probabilidades de AB⁺ e O⁻.",
+          "D": "A probabilidade não resulta de multiplicar sucessivamente frequências de tipos sanguíneos incompatíveis. É necessário calcular separadamente a parcela AB⁺, 0,18, e a O⁻, 0,08, e então somá-las.",
+          "E": "O valor 0,0144 é o produto 0,18×0,08. Esse cálculo trataria o evento como uma interseção; a pergunta pede a união de duas possibilidades mutuamente exclusivas, cuja probabilidade é 0,18 + 0,08 = 0,26."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:141": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Mb/s significa megabits por segundo. O numerador informa a quantidade de dados transferidos, e o denominador, o intervalo de tempo. Assim, a taxa média é o volume de dados dividido pelo tempo gasto na transferência, como ocorre com outras taxas expressas por unidade de tempo."
+        ],
+        "alternatives": {
+          "A": "Mb/s significa megabits por segundo, isto é, uma quantidade de dados dividida pelo intervalo de tempo de transferência. A razão volume de dados/tempo descreve exatamente a taxa média informada.",
+          "B": "Dividir distância por volume de dados teria unidade como metro por megabit. A unidade pesquisada não contém uma medida de espaço, mas quantidade de informação e tempo.",
+          "C": "Tempo por volume de dados mede quanto se demora por unidade de informação, como segundos por megabit. Essa razão é a inversa da taxa Mb/s apresentada e não fornece a mesma grandeza.",
+          "D": "Velocidade dividida por distância teria dimensão de inverso do tempo, se velocidade for distância por tempo. Essa razão não inclui a quantidade de dados necessária para representar megabits por segundo.",
+          "E": "Distância por tempo define uma velocidade de deslocamento, como metros por segundo. A taxa de transferência informa quantos bits são transmitidos por segundo, não a distância percorrida por um sinal nesse intervalo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:142": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Uma pirâmide de base com n lados tem n arestas na base e n laterais: 2n = 10, logo n = 5. Ela tem seis faces e o prisma pentagonal tem sete. Ao colar as bases congruentes, duas faces deixam de pertencer à superfície externa. O novo poliedro tem 6 + 7 − 2 = 11 faces."
+        ],
+        "alternatives": {
+          "A": "Uma pirâmide de base com n lados tem 2n arestas; portanto, 2n = 10 dá n = 5. Ela tem 6 faces e o prisma pentagonal tem 7; as duas bases coladas deixam de ser externas, restando 6 + 7 − 2 = 11 faces.",
+          "B": "Treze é a soma das seis faces da pirâmide com as sete do prisma antes da colagem. As duas bases coincidentes ficam no interior do pingente e não pertencem à superfície externa do novo poliedro.",
+          "C": "Esse valor não corresponde à contagem de faces dos sólidos dados. As dez arestas da pirâmide incluem cinco da base e cinco laterais; usá-las como dez lados da base confunde grandezas e superestima o número de faces.",
+          "D": "Se a base tivesse dez lados, a pirâmide teria vinte arestas, contrariando o enunciado. A base real é pentagonal; depois da união, permanecem cinco faces triangulares, cinco faces laterais do prisma e uma base pentagonal.",
+          "E": "Vinte e três seria a soma de faces de uma pirâmide e um prisma com bases decagonais antes de remover as bases internas. Além de contar superfícies coladas, essa hipótese interpreta incorretamente as dez arestas da pirâmide como lados de sua base."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:143": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "A menor circunferência que contém um quadrado é sua circunferência circunscrita. O vetor de D(5,7) a C(7,3) é (2,−4), e o lado perpendicular voltado ao interior é (−4,−2), dando A(1,5) e B(3,1). O centro é (4,4), e o raio ao quadrado é (7−4)² + (3−4)² = 10. Portanto (x−4)² + (y−4)² = 10, ou x² + y² − 8x − 8y + 22 = 0."
+        ],
+        "alternatives": {
+          "A": "A equação x² + y² = 10 tem centro na origem e raio √10. Embora o raio tenha o valor necessário, o jardim está centrado em (4,4); deslocar a circunferência para a origem impede que ela contenha os quatro vértices do quadrado.",
+          "B": "O lado CD tem vetor (2,−4), comprimento √20; o quadrado se estende para baixo e à esquerda, tendo centro em (4,4). O raio circunscrito satisfaz r² = 20/2 = 10, logo (x−4)² + (y−4)² = 10, que se expande na equação apresentada.",
+          "C": "Completar quadrados fornece (x−8)² + (y−6)² = 10. O raio é compatível com o lado do quadrado, mas o centro (8,6) está do lado oposto ao interior do jardim mostrado, produzindo uma circunferência deslocada.",
+          "D": "A expressão equivale a (x−6)² + (y−5)² = 5. O ponto (6,5) é o ponto médio do lado CD, e o raio √5 é metade desse lado; essa circunferência passa por C e D, mas não contém os outros dois vértices do quadrado.",
+          "E": "Os termos lineares positivos deslocam o centro para (−4,−4), no quadrante oposto ao jardim. Além disso, o termo constante apresentado não produz o raio quadrado 10 exigido pela circunferência circunscrita; é necessário usar centro (4,4) e r² = 10."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:144": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "Ordenando as seis quantidades, temos 44, 44, 48, 52, 56 e 62. Como há um número par de observações, a mediana é a média dos dois valores centrais, terceiro e quarto: (48 + 52)/2 = 50 tablets."
+        ],
+        "alternatives": {
+          "A": "Quarenta e quatro é o valor que se repete, portanto a moda. A mediana depende das posições centrais após ordenar os seis números, e não da frequência de repetição de um único valor.",
+          "B": "O resultado 46 corresponde à média entre 44 e 48, mas esses são o segundo e o terceiro valores na lista ordenada. Com seis observações, as posições centrais são a terceira e a quarta, ocupadas por 48 e 52.",
+          "C": "Ordenando as vendas, temos 44, 44, 48, 52, 56 e 62. Como há seis meses, a mediana é a média dos dois valores centrais: (48 + 52)/2 = 50 tablets.",
+          "D": "Somar as vendas e dividir por seis fornece 306/6 = 51, a média aritmética. O comando pede a mediana, que é obtida pelas posições centrais da sequência ordenada e vale 50.",
+          "E": "Cinquenta e dois é o quarto valor da lista ordenada, apenas um dos dois centrais. Para uma quantidade par de observações, é preciso fazer a média entre ele e o terceiro valor, 48, resultando em 50."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:145": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "A bancada mede 200 × 60 = 12 000 cm². A região sombreada deverá ter 35% disso: 4 200 cm². Como sua altura continua 60 cm, sua nova largura é 4 200/60 = 70 cm. A largura anterior era 5 cm; portanto o aumento solicitado é 70 − 5 = 65 cm."
+        ],
+        "alternatives": {
+          "A": "Vinte e um é 35% da profundidade de 60 cm, mas o retângulo sombreado mantém essa profundidade inteira. A proporção de áreas deve ser aplicada ao comprimento de 200 cm, resultando em uma largura final de 70 cm antes de descontar os 5 cm existentes.",
+          "B": "Se o aumento fosse 44 cm, a distância final seria 49 cm. Sua área seria 49×60 = 2.940 cm², apenas 24,5% dos 12.000 cm² da bancada, e não os 35% exigidos.",
+          "C": "Um aumento de 49 cm produziria largura final de 54 cm e área de 3.240 cm². Essa região corresponde a 27% da bancada, abaixo da meta; a largura final precisa ser 70 cm.",
+          "D": "A bancada tem 200×60 = 12.000 cm², e 35% disso são 4.200 cm². Como o retângulo sombreado tem profundidade 60 cm, sua largura final deve ser 4.200/60 = 70 cm; descontando os 5 cm atuais, o aumento é de 65 cm.",
+          "E": "Setenta centímetros são a distância final necessária entre o cooktop e o novo bojo. O comando pede quanto ela deve aumentar, e a separação já mede 5 cm; portanto, deve-se responder 70 − 5 = 65 cm."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:146": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "É necessário ler separadamente os extremos das duas curvas. A curva vermelha, de temperaturas máximas, tem seu ponto mais alto no dia 4. A curva azul, de temperaturas mínimas, atinge seu menor valor no dia 2. A ordem pedida é, portanto, 4 e 2."
+        ],
+        "alternatives": {
+          "A": "O dia 10 está próximo do menor valor da curva vermelha, não de sua máxima. O dia 5 contém o pico da curva azul, enquanto a pergunta pede a menor temperatura mínima; a alternativa troca os extremos relevantes nas duas séries.",
+          "B": "O dia 2 identifica corretamente o menor ponto da curva azul. Já o dia 10 está próximo do vale da curva vermelha, e não de seu pico; a maior temperatura máxima ocorre no dia 4.",
+          "C": "O dia 5 marca a maior temperatura mínima, não a maior máxima. O dia 15 também não contém o menor valor da curva azul; é necessário localizar separadamente o pico vermelho e o vale azul ao longo de todo o intervalo.",
+          "D": "O dia 4 é corretamente o pico da curva vermelha. Entretanto, no dia 5 a curva azul atinge seu maior valor, e a questão solicita sua menor temperatura, observada no dia 2.",
+          "E": "A legenda associa o vermelho à temperatura máxima e o azul à mínima. O ponto mais alto da curva vermelha está no dia 4, e o ponto mais baixo da curva azul está no dia 2, na ordem solicitada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:147": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "Como 1 dL = 0,1 L, o consumo diário de 7,5 dL equivale a 0,75 L. Em 30 dias são 0,75 × 30 = 22,5 L. Multiplicando pelo preço de R$ 1,98 por litro, o gasto mensal é 22,5 × 1,98 = R$ 44,55."
+        ],
+        "alternatives": {
+          "A": "R$ 14,85 resultam de 7,5×1,98, como se o número em decilitros fosse diretamente uma quantidade em litros e sem considerar os 30 dias. O consumo correto é 0,75 L por dia, totalizando 22,5 L no mês.",
+          "B": "Vinte e dois vírgula cinco é o volume mensal em litros: 0,75×30. A alternativa usa o número do volume como custo e deixa de multiplicar pelo preço de R$ 1,98 por litro.",
+          "C": "Como 1 L = 10 dL, o consumo diário é 0,75 L. Em 30 dias, são 22,5 L, cujo custo é 22,5×1,98 = R$ 44,55.",
+          "D": "Esse valor não resulta do volume mensal convertido corretamente. É necessário usar 0,75 L por dia, e não aplicar o preço de um litro diretamente ao valor em decilitros ou a uma quantidade de dias; o produto correto é 0,75×30×1,98.",
+          "E": "R$ 445,50 resultam de 7,5×30×1,98, tratando 7,5 dL como 7,5 L. Como cada decilitro equivale a um décimo de litro, o valor correto é dez vezes menor: R$ 44,55."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:148": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Com π = 3, os quatro círculos somam 1 200 cm². A região central é um quadrado de lado 20 menos quatro quartos de círculo: 400 − 300 = 100 cm². O tabuleiro tem 1 300 cm². Para o disco caber inteiramente em um círculo, seu centro deve ficar a até 10 − r do centro dele; a área favorável é 12(10 − r)². Para r = 1, a razão é 972/1 300, maior que 60%; para r = 2, é 768/1 300, menor que 60%. O menor inteiro é 2."
+        ],
+        "alternatives": {
+          "A": "O tabuleiro tem área 4π10² + (20² − π10²) = 1.300 cm², usando π = 3. As posições vencedoras do centro somam 4π(10−r)²; com r = 1, a probabilidade é 972/1.300 > 60%, e com r = 2 é 768/1.300 < 60%. Logo, 2 é o menor inteiro permitido.",
+          "B": "Com r = 4, a probabilidade é 4×3×6²/1.300 = 432/1.300, abaixo de 60%. Essa medida atende à desigualdade, mas não é mínima, pois r = 2 já reduz a probabilidade para menos de 60%.",
+          "C": "Com r = 5, a área favorável vale 4×3×5² = 300 cm², produzindo uma probabilidade bem menor que 60%. O enunciado exige a menor medida inteira que cumpre a condição, e ela já é atingida com r = 2.",
+          "D": "Um disco de raio 6 deixa o centro restrito a quatro círculos de raio 4 para que haja vitória. A probabilidade resultante atende ao limite, mas escolher esse valor ignora os raios inteiros menores, especialmente r = 2, que também o atendem.",
+          "E": "Um raio de 8 reduz muito as posições vencedoras, mas não é o mínimo pedido. Resolver 12(10−r)²/1.300 < 0,60 dá r > 10 − √65, aproximadamente 1,94; portanto, o primeiro inteiro válido é 2."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:149": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "O carro I gasta 20 × (1 200/48 + 1 800/32) = 20 × (25 + 56,25) = 1 625 MJ. O carro II gasta 25 × (1 200/50 + 1 800/45) = 25 × (24 + 40) = 1 600 MJ. Deve-se escolher o carro II, que consome 25 MJ a menos no percurso combinado."
+        ],
+        "alternatives": {
+          "A": "O número 81,25 é 1.200/48 + 1.800/32, isto é, a soma das quantidades de trechos de referência do carro I. Cada um desses trechos consome 20 MJ, de modo que ainda é necessário multiplicar por 20 e comparar com o carro II.",
+          "B": "A energia total do carro I é 20×1.200/48 + 20×1.800/32 = 1.625 MJ. O valor de 600 MJ não inclui corretamente os dois tipos de percurso desse modelo, e não sustenta sua escolha.",
+          "C": "O consumo de 1.625 MJ para o carro I está calculado corretamente. Porém, o carro II gasta 25×1.200/50 + 25×1.800/45 = 1.600 MJ, de modo que I não é a opção de menor consumo.",
+          "D": "O valor 64 é 1.200/50 + 1.800/45, a quantidade total de trechos de referência do carro II. Para obter energia, é preciso multiplicar por 25 MJ, chegando a 1.600 MJ; a escolha do modelo é correta, mas sua justificativa numérica não.",
+          "E": "O carro II gasta 600 MJ na cidade e 1.000 MJ na estrada, totalizando 1.600 MJ. O carro I precisa de 500 + 1.125 = 1.625 MJ; portanto, o modelo II economiza 25 MJ no percurso descrito."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:150": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "O tempo de viagem é distância dividida pela velocidade média. No trajeto I, t = 100/50 = 2 h, ou 120 minutos. No II, t = 120/80 = 1,5 h, ou 90 minutos. Mesmo sendo mais longo, o segundo trajeto é mais rápido nas velocidades informadas."
+        ],
+        "alternatives": {
+          "A": "O menor comprimento não garante o menor tempo quando as velocidades médias diferem. O trajeto I leva 100/50 = 2 h, enquanto o II, embora mais longo, leva 120/80 = 1,5 h.",
+          "B": "No trajeto I, dividir 100 km por 50 km/h dá duas horas, ou 120 minutos. Trinta minutos não correspondem ao tempo desse percurso e não justificam sua escolha como mais rápido.",
+          "C": "Somar quilômetros a quilômetros por hora combina grandezas de unidades diferentes e não fornece tempo. O critério correto é a razão entre distância e velocidade, pela qual o trajeto II é mais rápido.",
+          "D": "A diferença entre comprimento e velocidade também mistura unidades e não mede duração. A escolha de II é correta, mas a justificativa deve ser 120/80 = 1,5 h, não uma subtração entre os números fornecidos.",
+          "E": "O trajeto II exige 120/80 = 1,5 h, equivalentes a 90 minutos. O trajeto I exige duas horas; portanto, II reduz o tempo de viagem em 30 minutos apesar de sua distância maior."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:151": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O lucro deve ser proporcional ao produto capital × tempo. Os pesos são 5 000 × 6 = 30 000, 4 000 × 18 = 72 000 e 6 000 × 18 = 108 000, totalizando 210 000. O sócio que saiu recebe 30 000/210 000 = 1/7 do lucro: 21 000/7 = R$ 3 000,00."
+        ],
+        "alternatives": {
+          "A": "A parcela não é obtida apenas reduzindo uma divisão igual pelo tempo de permanência. O acordo pondera simultaneamente capital e meses: o sócio que saiu tem peso 5.000×6, que corresponde a 1/7 da soma dos três pesos.",
+          "B": "R$ 2.333,33 correspondem a um terço do lucro multiplicado por 6/18. Esse procedimento considera o tempo, mas supõe investimentos iguais; os capitais são diferentes e precisam entrar nos pesos de todos os sócios.",
+          "C": "Os pesos são 5.000×6 = 30.000, 4.000×18 = 72.000 e 6.000×18 = 108.000. O sócio que saiu recebe 30.000/210.000 = 1/7 do lucro, ou 21.000/7 = R$ 3.000,00.",
+          "D": "O valor de aproximadamente R$ 3.620,70 não corresponde à fração contratada de 30.000/210.000. É necessário ponderar cada aporte por todo o tempo de permanência e somar os três produtos antes de distribuir o lucro.",
+          "E": "Dividir R$ 21.000 igualmente entre os três sócios produz R$ 7.000 para cada um. O acordo, porém, exige proporção tanto ao investimento quanto ao tempo, e o sócio que saiu permaneceu apenas seis meses."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:152": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "O vértice da parábola tem x = −4,8/(2 × −0,24) = 10 e y = 24. Portanto D₁ = √(10² + 24²) = 26 m. No ponto de explosão x = 15, y = −0,24 × 225 + 4,8 × 15 = 18; assim D₂ = √(15² + 18²) = √549 ≈ 23,43 m. Como D₁ ≥ 25 e 23 ≤ D₂ < 25, a classificação é nível 4."
+        ],
+        "alternatives": {
+          "A": "O nível 1 exigiria D₁ < 23 e D₂ < 23. O vértice da parábola é (10,24), logo D₁ = √(10²+24²) = 26 m; no ponto x = 15, y = 18 e D₂ = √549 ≈ 23,43 m, contrariando os dois limites desse nível.",
+          "B": "O nível 2 pede D₁ entre 23 e 25 m e D₂ abaixo de 23 m. Os valores calculados, 26 m e aproximadamente 23,43 m, não pertencem a esses intervalos; as distâncias são segmentos oblíquos, não apenas coordenadas horizontais ou verticais.",
+          "C": "D₂ está entre 23 e 25 m, como exige o nível 3, mas D₁ vale 26 m. Como o primeiro parâmetro ultrapassa 25, a classificação deve avançar para o nível 4, não permanecer no intervalo inferior.",
+          "D": "O vértice ocorre em x = −4,8/(2×−0,24) = 10, com y = 24, fornecendo D₁ = 26 m. Na explosão, x = 15 e y = 18, então D₂ = √549 ≈ 23,43 m; D₁ ≥ 25 e 23 ≤ D₂ < 25 identificam o nível 4.",
+          "E": "O nível 5 exige que os dois parâmetros sejam pelo menos 25 m. D₁ atende a essa condição, mas D₂ ≈ 23,43 m não; alcançar grande altura não basta para obter a classificação máxima quando a outra distância permanece abaixo do limite."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:153": {
+      "answer": "ANULADA",
+      "solution": {
+        "paragraphs": [
+          "A questão foi anulada no gabarito oficial. Usando apenas as duas estatísticas declaradas, a média dá x = 150 − 140 = 10, e a mediana 24 exige y = 25, sugerindo soma 35. Porém, em um campeonato fechado com os seis times, o total de gols marcados deve ser igual ao de gols sofridos: os valores encontrados dão 150 marcados e 145 sofridos. Os dados são incompatíveis; nenhuma alternativa deve ser contabilizada como resposta correta."
+        ],
+        "alternatives": {
+          "A": "32 não resulta dos valores x = 10 e y = 25 inferidos pelas estatísticas declaradas; o item foi anulado.",
+          "B": "34 também não corresponde à soma inferida de 35, e não corrige a inconsistência dos totais de gols.",
+          "C": "35 seria obtido pela média e pela mediana isoladamente, mas os totais de gols ficam incompatíveis; o gabarito oficial anulou o item.",
+          "D": "42 não satisfaz simultaneamente as condições apresentadas para a média e para a mediana.",
+          "E": "47 não resolve a incompatibilidade entre gols marcados e sofridos e não é uma resposta válida ao item anulado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:154": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "À vista, sobram R$ 1 000,00, que após dois meses rendem 1 000 × 1,01² = R$ 1 020,10. Parcelando, após a entrada sobram R$ 60 000,00; em um mês viram R$ 60 600,00 e, paga a segunda parcela, restam R$ 30 600,00. No mês seguinte viram R$ 30 906,00; paga a última, sobram R$ 906,00. A melhor opção é à vista, com R$ 1 020,10."
+        ],
+        "alternatives": {
+          "A": "Mil reais são o saldo imediato após o pagamento à vista de R$ 89.000. O comando pede o saldo dois meses depois, durante os quais esse restante continua rendendo 1% ao mês.",
+          "B": "R$ 1.010 correspondem a um único mês de rendimento sobre os R$ 1.000 restantes no pagamento à vista. Como o prazo pedido é de dois meses a juros compostos, ainda se aplica mais um fator 1,01.",
+          "C": "À vista, restam R$ 1.000, que chegam a 1.000×1,01² = R$ 1.020,10. Parcelando, restam 60.000 no ato, 60.000×1,01−30.000 = 30.600 após um mês e 30.600×1,01−30.000 = R$ 906 após dois; pagar à vista deixa o maior saldo.",
+          "D": "Esse saldo não resulta de nenhuma das duas sequências de retiradas. As parcelas pagas deixam de render desde seu resgate; é necessário atualizar apenas o saldo remanescente entre os pagamentos, o que produz R$ 906 na opção parcelada.",
+          "E": "A alternativa superestima o saldo ao não representar corretamente os resgates nos meses correspondentes. O rendimento não incide por dois meses sobre recursos já pagos: a opção parcelada termina com R$ 906, inferior aos R$ 1.020,10 da compra à vista."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:155": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "A perda imediata de 10% reduz o valor de R$ 80 000,00 a 80 000 × 0,90 = R$ 72 000,00. A depreciação anual de 12% mantém 88% do valor a cada ano, isto é, multiplica por 0,88. Após t anos, o modelo é V = 72 000 × 0,88ᵗ."
+        ],
+        "alternatives": {
+          "A": "A perda inicial de 10% reduz R$ 80.000 para R$ 72.000 antes de iniciar a contagem anual. Em cada ano permanece 1−0,12 = 0,88 do valor anterior, resultando em V = 72.000×0,88ᵗ.",
+          "B": "O valor inicial de R$ 72.000 está correto, mas o fator 0,12 representa a parcela perdida, não a parcela que permanece. Usá-lo como base exponencial significaria desvalorização de 88% ao ano, muito maior que a taxa informada.",
+          "C": "A expressão ignora a perda imediata, pois em t = 0 retorna R$ 80.000. Além disso, soma indevidamente as taxas de 10% e 12% em uma perda anual de 22%, embora a primeira aconteça uma vez e a segunda se repita sobre valores sucessivos.",
+          "D": "A base 0,22 não representa o percentual de valor conservado em cada ano e o coeficiente de R$ 80.000 não incorpora a desvalorização inicial. As duas etapas devem ser 80.000×0,90 e, depois, fatores anuais de 0,88.",
+          "E": "A expressão erra tanto o valor após a saída da concessionária quanto o fator anual. O início deve ser R$ 72.000, e perder 12% ao ano significa conservar 88%, não multiplicar o valor por 0,12 em cada período."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:156": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "Um micrômetro equivale a 10⁻⁶ m, enquanto um milímetro equivale a 10⁻³ m. Logo 1 µm = 10⁻³ mm. O diâmetro é 0,75 × 10⁻³ mm = 7,5 × 10⁻⁴ mm, ao ajustar o coeficiente para a notação científica."
+        ],
+        "alternatives": {
+          "A": "O valor 7,5×10⁻¹ mm é 0,75 mm, mantendo o mesmo número apesar da mudança de unidade. Um milímetro contém mil micrômetros; por isso, a medida numérica precisa ser dividida por mil.",
+          "B": "A expressão vale 0,075 mm, que corresponde a 75 micrômetros, cem vezes a medida dada. A conversão de micrômetro para milímetro exige o fator 10⁻³, e não apenas uma casa decimal.",
+          "C": "Como 1 μm = 10⁻⁶ m e 1 mm = 10⁻³ m, temos 1 μm = 10⁻³ mm. Logo, 0,75 μm = 0,75×10⁻³ mm = 7,5×10⁻⁴ mm.",
+          "D": "O resultado 7,5×10⁻⁵ mm equivale a 0,075 micrômetro, dez vezes menor que o diâmetro informado. Ao normalizar 0,75×10⁻³, deslocar a vírgula para 7,5 exige expoente −4, não −5.",
+          "E": "Esse número é a medida em metros: 0,75×10⁻⁶ m = 7,5×10⁻⁷ m. O comando pede milímetros; multiplicar o valor em metros por 1.000 fornece 7,5×10⁻⁴ mm."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:157": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "Na nomenclatura utilizada no Brasil, um trilhão é 10¹², ou 1 000 000 000 000. Um trilionésimo é seu inverso: 1/10¹². Portanto o denominador é o algarismo 1 seguido de doze zeros, e o tempo corresponde a 10⁻¹² segundo."
+        ],
+        "alternatives": {
+          "A": "Um denominador com nove zeros é 10⁹, isto é, um bilhão na nomenclatura brasileira. Seu inverso é um bilionésimo, enquanto o comando pede o inverso de um trilhão.",
+          "B": "Onze zeros representam 10¹¹, equivalente a cem bilhões. Um trilhão vale 10¹², dez vezes esse denominador; falta um zero para escrever a fração solicitada.",
+          "C": "No sistema usado no Brasil, um trilhão é 1.000.000.000.000 = 10¹². Assim, um trilionésimo é 1/10¹², cujo denominador tem um algarismo 1 seguido de doze zeros.",
+          "D": "Um denominador com quatorze zeros vale 10¹⁴, ou cem trilhões. Seu inverso seria cem vezes menor que um trilionésimo, não a fração indicada no enunciado.",
+          "E": "Quinze zeros correspondem a 10¹⁵, um quadrilhão na nomenclatura brasileira. O inverso desse número é um quadrilionésimo; para um trilionésimo, são necessários doze zeros."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:158": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "As colunas representam as notas de cada diretor, e a escolha deve excluir candidatos já contratados. D₁ escolhe C₃, nota 4. D₂ escolhe C₁, nota 4 entre os restantes. D₃ escolhe C₅, nota 3. D₄ escolhe C₂, nota 4. Resta apenas C₄ para D₅, mesmo que sua maior nota inicial tenha sido dada a outro candidato."
+        ],
+        "alternatives": {
+          "A": "C₁ recebe nota 4 do diretor D₂ e, após a retirada de C₃ por D₁, é o melhor candidato disponível para D₂. Portanto, ele é escolhido na segunda rodada, não permanece até D₅.",
+          "B": "C₂ permanece após as escolhas dos três primeiros diretores e recebe nota 4 de D₄, superior à nota 2 de C₄. Assim, D₄ o seleciona antes da rodada final, impedindo que seja a escolha de D₅.",
+          "C": "C₃ recebe nota 4 na primeira coluna, a maior avaliação de D₁. Ele é escolhido imediatamente pelo primeiro diretor, e suas notas nas demais colunas não entram nas escolhas seguintes.",
+          "D": "Lendo cada coluna e retirando os já escolhidos, D₁ seleciona C₃, D₂ seleciona C₁, D₃ seleciona C₅ e D₄ seleciona C₂. Sobra C₄ para D₅, mesmo que esse diretor tenha atribuído nota maior a candidatos indisponíveis.",
+          "E": "C₅ tem a maior nota na coluna de D₅, mas não estará mais disponível. Na terceira rodada, D₃ o escolhe por sua nota 3, maior que as notas 2 dos outros candidatos restantes; ignorar a ordem dos diretores leva a essa resposta incorreta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:159": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "Foram vendidas x blusas e 1 800 − x vestidos. Cada blusa gera R$ 10 de lucro. Dos vestidos, um terço gera R$ 30 por peça e dois terços geram R$ 27, após redução de 10%. O lucro médio por vestido é 30/3 + 2 × 27/3 = 28 reais. Logo o lucro total é 10x + 28(1 800 − x) = 50 400 − 18x."
+        ],
+        "alternatives": {
+          "A": "A expressão implicaria lucro médio de R$ 12 por vestido quando x = 0, incompatível com os valores de R$ 30 e R$ 27 informados. O desconto incide sobre o lucro das peças pagas no cartão, não elimina a maior parte do lucro dos vestidos.",
+          "B": "O termo 48.600 é 1.800×27, como se todos os vestidos fossem pagos no cartão. Um terço é pago em dinheiro e rende R$ 30 por peça; além disso, as blusas são todas pagas em dinheiro e rendem R$ 10, exigindo contabilização separada.",
+          "C": "Há 1.800−x vestidos, dos quais um terço rende R$ 30 e dois terços rendem R$ 27. O lucro médio por vestido é 30/3 + 2×27/3 = 28; somando às blusas, L = 10x + 28(1.800−x) = 50.400−18x.",
+          "D": "Essa expressão usa lucro médio de R$ 29 por vestido, que resultaria de inverter as frações e supor dois terços em dinheiro. O enunciado afirma que apenas um terço dos vestidos foi pago dessa maneira, dando média de R$ 28.",
+          "E": "A expressão 54.000−20x equivale a 10x + 30(1.800−x). Ela trata todos os vestidos como pagos em dinheiro e ignora a redução de 10% no lucro dos dois terços vendidos no cartão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:160": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "O triângulo central é retângulo, com hipotenusa de 10 m e um cateto de 8 m. O outro mede √(10² − 8²) = 6 m. Os retângulos semelhantes construídos sobre esses lados têm áreas proporcionais aos quadrados dos comprimentos. Como I tem 80 m², II tem 80(8/10)² = 51,2 m² e III tem 80(6/10)² = 28,8 m². A diferença é 22,4 m²."
+        ],
+        "alternatives": {
+          "A": "Dez menos oito é uma diferença de comprimentos, não de áreas; também não se pode usar diretamente a área 80 para subtrair lados. A semelhança exige multiplicar as áreas pelo quadrado da razão linear de cada retângulo.",
+          "B": "A razão entre os lados maiores de III e II é 6/8, mas suas áreas não variam nessa mesma proporção simples. Aplicar a razão linear uma segunda vez às áreas já calculadas altera indevidamente a diferença; os valores corretos são 51,2 e 28,8 m².",
+          "C": "Vinte resulta de uma proporcionalidade que não incorpora corretamente as duas dimensões dos retângulos. Como o canteiro I tem lados 10 e 8, a razão menor/maior é 0,8 para todos; II tem lados 8 e 6,4, e III, 6 e 4,8.",
+          "D": "A área 80 e o lado maior 10 mostram que o outro lado de I mede 8. O triângulo tem hipotenusa 10 e um cateto 8, logo o outro cateto mede 6; pela semelhança, AII = 80(8/10)² = 51,2 e AIII = 80(6/10)² = 28,8. A diferença é 22,4 m².",
+          "E": "A diferença 28 m² não coincide com as áreas obtidas por semelhança. As razões lineares de 0,8 e 0,6 devem ser elevadas ao quadrado ao multiplicar a área de 80 m², produzindo 51,2 e 28,8, cuja subtração é 22,4."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:161": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Como todas as médias têm o mesmo denominador, quatro semestres, basta comparar as somas. I e II totalizam 25 doses; III e V, 26; IV totaliza 11 + 5 + 5 + 3 = 24. Sua média é 24/4 = 6 doses por semestre, a menor das cinco."
+        ],
+        "alternatives": {
+          "A": "A criança I recebeu 10+5+5+5 = 25 doses, com média 25/4 = 6,25 por semestre. A criança IV soma apenas 24 doses nos mesmos quatro períodos, portanto tem média menor.",
+          "B": "A criança II também soma 12+3+5+5 = 25 doses, média 6,25. A menor média depende do total nos quatro semestres, e o total da criança IV é inferior.",
+          "C": "A criança III recebeu 13+4+5+4 = 26 doses, média 6,5. Ter um semestre com apenas quatro doses não a torna a menor média, pois é necessário considerar os quatro períodos em conjunto.",
+          "D": "Os totais das crianças I a V são 25, 25, 26, 24 e 26. Como todas têm quatro semestres, o menor total também dá a menor média: a criança IV tem 24/4 = 6 doses por semestre.",
+          "E": "A criança V soma 13+3+7+3 = 26 doses, média 6,5. Apesar de dois semestres com três doses, os valores elevados dos demais aumentam a média; o critério não é o menor valor isolado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:162": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "O gráfico fornece f(0) = 30, f(1) = 31,5 e f(2) = 32. Escrevendo f(t) = at² + bt + c, temos c = 30, a + b = 1,5 e 4a + 2b = 2. Daí a = −0,5 e b = 2. Para 2026, t = 5: f(5) = −0,5 × 25 + 2 × 5 + 30 = 27,5%."
+        ],
+        "alternatives": {
+          "A": "Os pontos são f(0)=30, f(1)=31,5 e f(2)=32. A função quadrática correspondente é f(t)=−0,5t²+2t+30; substituir t=5, que representa 2026, fornece 27,5%, e não 25,5%.",
+          "B": "Escrevendo f(t)=at²+bt+c, temos c=30, a+b=1,5 e 4a+2b=2. Isso fornece a=−0,5 e b=2; em 2026, t=5, então f(5)=−12,5+10+30=27,5%.",
+          "C": "Trinta por cento é o valor inicial, em 2021, e reaparece na parábola em t=4. O ano pedido é 2026, correspondente a t=5; nesse instante a função já vale 27,5%.",
+          "D": "Projetar crescimento contínuo não respeita a concavidade definida pelos três pontos: os acréscimos passam de 1,5 para 0,5 ponto percentual. A segunda diferença é −1, e a extrapolação quadrática chega a 27,5%, não 33,5%.",
+          "E": "O valor de 35% não é compatível com a função quadrática ajustada aos dados. Ela tem concavidade para baixo e máximo em t=2, no valor de 32%; após esse ponto, a extrapolação diminui em vez de ultrapassar 32%."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:163": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "Se c e f são os preços das pizzas de calabresa e de frango, então 6c + 15f = 780 e 5c + 8f = 470. Simplificando a primeira para 2c + 5f = 260 e resolvendo o sistema, obtêm-se f = 40 e c = 30 reais. José arrecadou 4 × 30 = 120 com calabresa e 520 − 120 = 400 com frango, vendendo dez de frango. O total foi 4 + 10 = 14 pizzas."
+        ],
+        "alternatives": {
+          "A": "Quatro é apenas a quantidade conhecida de pizzas de calabresa vendidas por José. O total pedido também inclui as pizzas de frango, que devem ser calculadas a partir dos preços obtidos com as vendas de Ana e Carla.",
+          "B": "Os preços não podem ser inferidos dividindo o faturamento pelo número conhecido de uma única variedade. As duas primeiras vendas determinam calabresa a R$ 30 e frango a R$ 40; com R$ 520, José vendeu 4 e 10 unidades, não cinco no total.",
+          "C": "Treze unidades significariam nove pizzas de frango além das quatro de calabresa. Com os preços determinados pelo sistema, isso renderia 4×30+9×40 = R$ 480, abaixo dos R$ 520 registrados.",
+          "D": "Se c e f são os preços, 6c+15f=780 e 5c+8f=470 levam a c=30 e f=40. José arrecadou 520−4×30 = R$ 400 com frango, vendendo dez dessas pizzas; seu total foi 4+10 = 14.",
+          "E": "Dezoito unidades implicariam quatorze pizzas de frango além das quatro de calabresa. Elas renderiam 4×30+14×40 = R$ 680, contradizendo o faturamento de R$ 520 informado para José."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:164": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "O centro da bola deve permanecer a 3 cm das bordas, de modo que seu domínio de movimento é um quadrado de lado 200 cm. Tomando a origem a 3 cm das bordas inferior e esquerda, a bola branca está em (100,140) e a amarela em (100,200). Desdobrando as reflexões nas bordas direita, inferior e esquerda, a imagem do alvo fica em (500,−200). A reta tem inclinação −340/400 e, ao alcançar a primeira borda direita x = 200, está em y = 140 − 85 = 55. Voltando à medida desde a borda física inferior, d = 55 + 3 = 58 cm."
+        ],
+        "alternatives": {
+          "A": "40 cm não é a altura do primeiro impacto na lateral direita. Ela deve ser obtida pela trajetória refletida do centro da bola, respeitando o afastamento de 3 cm das bordas.",
+          "B": "55 cm é a altura do centro no sistema reduzido de lado 200 cm. A figura mede d desde a borda física, portanto é preciso acrescentar 3 cm.",
+          "C": "58 cm soma os 55 cm encontrados no domínio dos centros aos 3 cm do raio. Esse valor permite o alinhamento dos três rebatimentos com o alvo.",
+          "D": "61 cm acrescenta o diâmetro de 6 cm à altura reduzida de 55 cm. O ajuste necessário é somente um raio, pois a origem foi deslocada 3 cm.",
+          "E": "70 cm não satisfaz a inclinação obtida no desdobramento das três reflexões. Com essa altura, a trajetória não alcança o centro da bola amarela na posição indicada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:165": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "O raio interno é 10 cm e a altura é 100 cm. Com π = 3, o volume da manta I é 3 × 100 × (11² − 10²) = 6 300 cm³; seu custo é 6,3 × 26 = R$ 163,80. Para II, o volume é 3 × 100 × (12² − 10²) = 13 200 cm³, custando 13,2 × 12 = R$ 158,40. O material II custa R$ 5,40 a menos."
+        ],
+        "alternatives": {
+          "A": "A manta I usa menos volume por ser mais fina, mas seu preço por volume é maior. Comparar só espessuras ignora que o custo final de II é menor.",
+          "B": "Os custos calculados são R$ 163,80 para I e R$ 158,40 para II. Portanto I não é mais barato, e a diferença não é R$ 6,60.",
+          "C": "O menor preço unitário não basta para decidir, pois II exige maior volume. A escolha é confirmada apenas após comparar o custo total das duas cascas cilíndricas.",
+          "D": "A opção II é de fato mais econômica, porém a diferença correta é 163,80 − 158,40 = R$ 5,40. R$ 2,00 não resulta dos volumes e preços dados.",
+          "E": "O custo de II é R$ 158,40, contra R$ 163,80 de I. A economia de R$ 5,40 leva em conta tanto a maior espessura quanto o menor preço por volume."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:166": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "O refeitório ocupa um retângulo de um quadrado de largura e dois de altura. Cada lado da malha mede 10 cm no desenho e, na escala 1:80, corresponde a 800 cm = 8 m reais. A área original é 8 × 16 = 128 m². Reduzir 25% significa manter 75%: 128 × 0,75 = 96 m²."
+        ],
+        "alternatives": {
+          "A": "160 m² seria 25% a mais que os 128 m² originais. A solicitação é reduzir a área, não ampliá-la.",
+          "B": "150 m² supera a área inicial de 128 m². Além disso, não corresponde a manter 75% da área determinada pela escala.",
+          "C": "120 m² não aplica a redução percentual à área original de 128 m². É necessário converter os dois comprimentos pela escala antes de calcular a área.",
+          "D": "96 m² correspondem a 75% de 128 m². O resultado usa as dimensões reais de 8 m por 16 m e reduz a área em um quarto.",
+          "E": "72 m² não resulta da redução de 25% sobre 128 m². A escala atua nos comprimentos, e não como um fator único aplicado diretamente à área do desenho."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:167": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Os registros DD/MM e MM/DD só são idênticos quando o número do dia é igual ao do mês. Há uma data assim em cada mês: 01/01, 02/02, até 12/12. Todas são válidas. Em um ano não bissexto existem 365 datas equiprováveis, logo a probabilidade é 12/365."
+        ],
+        "alternatives": {
+          "A": "Há doze datas favoráveis, uma por mês, entre os 365 dias do ano. Nelas os dois blocos numéricos são iguais e a troca não altera o registro.",
+          "B": "Trinta não é a quantidade de datas invariantes. Não basta que o dia seja válido em um mês: ele precisa ter exatamente o mesmo número desse mês.",
+          "C": "144 contaria combinações entre os doze primeiros dias e os doze meses. A maioria dessas combinações muda de registro ao inverter os blocos.",
+          "D": "1/12 usa apenas os meses como espaço amostral. O sorteio é de uma data completa do ano, portanto o denominador deve considerar 365 dias.",
+          "E": "12/30 considera indevidamente um mês de trinta dias como universo do sorteio. O aplicativo escolhe entre todas as datas do ano não bissexto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:168": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "Na projeção ortogonal sobre α, as profundidades são eliminadas: blocos alinhados na direção perpendicular ao plano ficam sobrepostos. A vista deve preservar as alturas, o avanço à esquerda no nível superior intermediário e a abertura inferior entre os apoios. O contorno obtido coincide com E, sem as faces superiores visíveis na perspectiva."
+        ],
+        "alternatives": {
+          "A": "A preenche inteiramente a base, eliminando a abertura que deve permanecer entre os apoios. Uma projeção não pode completar com material uma região vazia da vista.",
+          "B": "B dispõe os recuos em lados e níveis incompatíveis com a observação perpendicular ao plano α. Ela não preserva o contorno dos blocos na orientação pedida.",
+          "C": "C mantém a abertura inferior, mas prolonga a faixa direita no estreitamento intermediário. Na vista correta, esse trecho tem posição diferente, como em E.",
+          "D": "D também não reproduz a interrupção e a largura do trecho intermediário. Considerar apenas a silhueta inferior não basta para identificar a projeção.",
+          "E": "E conserva a extensão superior, o ressalto à esquerda, o estreitamento central e a abertura inferior. A profundidade desaparece e os blocos se sobrepõem exatamente nessa vista."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:169": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "O grupo N₅ acertou todas as questões e marcou apenas D na questão 1, pois as demais alternativas têm frequência zero. Portanto D é a correta. Em N₄, sua frequência é 100% − 0% − 5% − 20% − 15% = 60%. Ponderando D pelos tamanhos dos grupos: 20% × 0% + 15% × 10% + 15% × 20% + 30% × 25% + 10% × 60% + 10% × 100% = 28%."
+        ],
+        "alternatives": {
+          "A": "10% é apenas a participação do grupo N₅, cujos integrantes certamente acertaram. Há acertos também em N₁, N₂, N₃ e N₄, que precisam ser somados.",
+          "B": "12% não resulta da média ponderada das frequências de D. Os grupos possuem tamanhos diferentes, então não se pode comparar somente uma frequência isolada.",
+          "C": "16% desconsidera parte dos grupos ou suas proporções. O grupo N₄ sozinho contribui com 6 pontos percentuais, e N₅ com outros 10, além dos demais.",
+          "D": "25% é a frequência de D dentro de N₃, não a frequência de acerto em toda a população. N₃ representa apenas 30% dos candidatos.",
+          "E": "28% soma as contribuições ponderadas de todos os grupos: 0 + 1,5 + 3 + 7,5 + 6 + 10 pontos percentuais. A correta D é identificada pelo grupo que obteve nota máxima."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:170": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "Todas as distribuições são simétricas em torno de zero. A variância é, portanto, a média ponderada dos quadrados das notas. Para os usuários 1 a 5, obtêm-se 0; 1; 0,5; 0,3; e 0,675. Como a raiz quadrada preserva essa ordem, o usuário 2 tem o maior desvio padrão: todas as suas avaliações estão nos extremos −1 e 1."
+        ],
+        "alternatives": {
+          "A": "O usuário 1 recebeu somente nota zero. Sua variância e seu desvio padrão são nulos, representando a menor dispersão, apesar de a média ser igual à dos demais.",
+          "B": "O usuário 2 divide as avaliações entre −1 e 1, ambas à distância máxima da média zero. Sua variância é 0,5 × 1² + 0,5 × 1² = 1, maior que todas as demais.",
+          "C": "O usuário 3 distribui as notas igualmente, incluindo avaliações próximas e iguais à média. Sua variância é 0,5, inferior à do usuário 2, concentrado nos extremos.",
+          "D": "O usuário 4 concentra 40% das avaliações em zero e outras 40% em ±0,5. Sua variância é apenas 0,3, pois a maior parte das notas está perto da média.",
+          "E": "O usuário 5 tem muitas avaliações extremas, mas ainda distribui 40% nas notas intermediárias. A variância 0,675 fica abaixo de 1, logo não supera o usuário 2."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:171": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "Os pontos A, B e C formam um triângulo equilátero de lado 1,20 m. A menor circunferência que contém o tampo passa por esses vértices e tem raio 1,20√3/3 ≈ 0,68 m, usando √3 ≈ 1,7. Acrescentando 0,20 m de margem, o raio necessário é 0,88 m, ou diâmetro 1,76 m: modelo II. Sua área é aproximadamente 2,43 m², menor que a dos quadrados disponíveis que atendem à cobertura."
+        ],
+        "alternatives": {
+          "A": "O círculo I tem raio 0,80 m, apenas 0,12 m além do raio mínimo de 0,68 m do tampo. Essa folga é inferior aos 0,20 m exigidos junto aos vértices.",
+          "B": "O círculo II tem raio 0,88 m, suficiente para manter a margem de 0,20 m além do tampo. Sua área aproximada de 2,43 m² é menor que 2,56 m² do quadrado III.",
+          "C": "O quadrado III tem área 1,60² = 2,56 m². Mesmo quando disposto para atender à margem, usa mais tecido que o círculo II, contrariando a exigência de menor área.",
+          "D": "O quadrado IV tem área 1,76² = 3,0976 m². Ele é ainda maior que o quadrado III e não oferece a solução de área mínima entre os modelos adequados.",
+          "E": "O triângulo V não garante a sobra de 20 cm junto aos arcos do tampo. Não basta comparar seus lados com o segmento de 1,20 m, pois a mesa tem contorno curvo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:172": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "O volume total inicial é 480 + 30 = 510 milhões de m³. O consumo atual é 510/30 = 17 milhões de m³ por dia. Ao final devem restar 25% de 480 mais 30, isto é, 150 milhões de m³; podem ser consumidos 360 milhões em trinta dias, ou 12 por dia. A redução necessária é 17 − 12 = 5 milhões de m³ diários."
+        ],
+        "alternatives": {
+          "A": "5,25 milhões não decorrem da reserva final exigida de 150 milhões de m³. A porcentagem de 25% incide apenas sobre os 480 milhões úteis, não sobre o total.",
+          "B": "5 milhões de m³ por dia reduzem o fornecimento de 17 para 12. Em trinta dias permanecem 120 milhões úteis e os 30 milhões da reserva técnica.",
+          "C": "4,25 milhões representam 25% dos 17 milhões diários, mas a meta inclui preservar toda a reserva técnica. A redução percentual do consumo não pode substituir o balanço de volumes.",
+          "D": "4 milhões preservariam 120 milhões de m³ em relação ao esgotamento previsto. Ainda faltariam os 30 milhões da reserva técnica que também devem permanecer.",
+          "E": "3 milhões reduziriam o consumo total em apenas 90 milhões de m³. Esse saldo final é inferior aos 150 milhões exigidos pelo enunciado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:173": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "Se o comprimento é x, as quatro paredes somam 2 × 2,8 × (3 + x), e o teto tem área 3x. A porta e as duas janelas somam 2,2 + 2 × 1,5 = 5,2 m², que devem ser descontados. Assim, 5,6(3 + x) + 3x − 5,2 = 41,7. Simplificando, 8,6x = 30,1, logo x = 3,5 m."
+        ],
+        "alternatives": {
+          "A": "2,8 m é a altura já informada, não o comprimento desconhecido. Substituindo-a como comprimento, a área pintável seria inferior aos 41,7 m² dados.",
+          "B": "3,5 m satisfaz a soma das quatro paredes com o teto, retiradas as aberturas. O cálculo dá 2 × 2,8 × 6,5 + 10,5 − 5,2 = 41,7 m².",
+          "C": "4,4 m produziria uma área maior que a declarada. A equação precisa incluir o teto e descontar uma porta e duas janelas, não apenas paredes.",
+          "D": "5,1 m não satisfaz 8,6x + 11,6 = 41,7. Esse comprimento exigiria pintura de uma área consideravelmente superior à contratada.",
+          "E": "5,3 m também excede a solução da equação de áreas. A área de piso não é pintada; somente o teto, junto às quatro paredes, entra na soma."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:174": {
+      "answer": "B",
+      "solution": {
+        "paragraphs": [
+          "A escala vertical do gráfico indica 500 unidades por intervalo. Janeiro teve 2 000 vendas e fevereiro, 3 000, dando média de 2 500. Para novembro, E(11) = 1 500 + 2 000 × 1,079 = 3 658; para dezembro, E(12) = 1 500 + 2 000 × 1,114 = 3 728. A média estimada é 3 693, que supera a inicial em 3 693 − 2 500 = 1 193 unidades."
+        ],
+        "alternatives": {
+          "A": "1 079 é relacionado ao valor numérico fornecido para log₁₀12, mas não é a diferença entre as médias. É necessário aplicar a função aos dois meses finais.",
+          "B": "1 193 é a diferença entre a média estimada de 3 693 no último bimestre e a média observada de 2 500 no primeiro. O cálculo considera novembro e dezembro separadamente.",
+          "C": "3 688 não corresponde à média dos valores 3 658 e 3 728 e ainda não desconta a média inicial. A pergunta pede quanto uma média supera a outra.",
+          "D": "10 000 é incompatível com a escala do gráfico, cujas vendas mensais estão em alguns milhares. Somar valores ou interpretar incorretamente a escala não fornece a diferença de médias.",
+          "E": "20 000 excede amplamente as vendas dos meses representados. O cálculo deve comparar duas médias mensais, não acumular ou multiplicar indevidamente os totais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:175": {
+      "answer": "E",
+      "solution": {
+        "paragraphs": [
+          "O limite do campo de visão é tangente à circunferência, formando ângulo reto com OP. Se θ é o ângulo percorrido desde M, então θ cresce uniformemente de 0 a π/2 e, no triângulo OPT, sen θ = OP/OT = 2/c. Portanto c(t) = 2/sen(πt/60), para 0 < t < 30. O comprimento começa arbitrariamente grande e diminui de forma não linear, aproximando-se de 2 m quando a câmera chega a N. Esse comportamento corresponde a E."
+        ],
+        "alternatives": {
+          "A": "A mostra uma linha vertical em t = 30, sem descrever os comprimentos ao longo dos instantes anteriores. O segmento visível muda continuamente durante o deslocamento.",
+          "B": "B supõe diminuição linear até zero. A velocidade angular é constante, mas o comprimento depende do inverso de um seno e tende a 2 m, não a zero.",
+          "C": "C acerta o limite final de 2 m, porém representa variação linear. O modelo trigonométrico c = 2/sen θ produz uma curva, especialmente acentuada perto do início.",
+          "D": "D representa queda não linear, mas termina com comprimento nulo. Quando a câmera se aproxima de N, o segmento OT tende ao raio ON, que mede 2 m.",
+          "E": "E representa a queda não linear de um valor inicialmente ilimitado até o limite 2 m. Ela preserva a relação trigonométrica e o desligamento ao atingir N."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:176": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "O mobiliário exige uma cozinha de pelo menos 3,5 m por 3,5 m, ampliando os 2 m por 2 m originais. O quarto deve continuar retangular: sua nova altura é 4 − 1,5 = 2,5 m, com largura 4 m, dando 10 m². A sala original tem 6,5 × 2 + 4,5 × 2 = 22 m². Ela perde 1,5 × 2 = 3 m² na faixa superior, mas recebe 0,5 × 1,5 = 0,75 m² da faixa liberada ao alinhar a nova borda do quarto. Sua área final é 22 − 3 + 0,75 = 19,75 m²."
+        ],
+        "alternatives": {
+          "A": "9,75 e 37,50 m² não preservam as dimensões e a área total da planta. O quarto, que perde espaço para a cozinha, não pode crescer de 16 para 37,50 m².",
+          "B": "Manter o quarto com 16 m² impediria o avanço de 1,5 m necessário para acomodar o móvel. A sala também não fica reduzida a 9,75 m² no arranjo mínimo.",
+          "C": "19,00 e 10,75 m² descontam só o trecho diretamente ocupado pela cozinha. Isso deixaria o quarto com um recorte, contrariando a exigência de permanecer retangular.",
+          "D": "19,75 e 10,00 m² respeitam a cozinha mínima de 3,5 m por 3,5 m e o quarto retangular de 4 m por 2,5 m. A faixa remanescente de 0,75 m² passa a compor a sala.",
+          "E": "2,00 e 3,75 m² não são as áreas finais dos ambientes. Valores relativos a faixas da reforma não devem ser confundidos com a área total da sala e do quarto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:177": {
+      "answer": "D",
+      "solution": {
+        "paragraphs": [
+          "A área original é 85 × 73 = 6 205 cm². A figurinha tem área 62,05 cm², que é 1/100 da área original. Em figuras semelhantes, a razão de áreas é o quadrado da razão dos comprimentos. Assim, a escala linear é √(1/100) = 1/10, isto é, 1:10; as dimensões passam a 8,5 cm por 7,3 cm."
+        ],
+        "alternatives": {
+          "A": "Na escala 1:2,5, a área seria dividida por 2,5² = 6,25, não por 100. A figurinha ficaria maior que o espaço de 62,05 cm².",
+          "B": "A escala 1:3,9 também não produz uma área cem vezes menor. É necessário extrair a raiz quadrada da razão de áreas para encontrar a escala linear.",
+          "C": "A escala 1:5 reduziria a área para 1/25 do original, dando 248,2 cm². Isso não caberia no espaço indicado.",
+          "D": "A escala 1:10 reduz cada comprimento por dez e a área por cem. As medidas 8,5 cm e 7,3 cm dão exatamente 62,05 cm².",
+          "E": "1:100 confunde razão de áreas com razão de comprimentos. Essa escala reduziria a área por 10 000, muito além da redução solicitada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:178": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "O número de voltas é a distância percorrida dividida pelo comprimento da roda, πd. A dianteira percorre 3 × 0,8 = 2,4 m por volta e dá 3 600/2,4 = 1 500 voltas. A traseira percorre 1,8 m por volta e dá 3 600/1,8 = 2 000. Portanto a traseira completa 2 000 − 1 500 = 500 voltas a mais."
+        ],
+        "alternatives": {
+          "A": "500 é a diferença entre as 2 000 voltas da roda traseira e as 1 500 da dianteira. A menor circunferência exige mais giros para a mesma distância.",
+          "B": "1 000 não corresponde à diferença calculada. Usar raio como se fosse diâmetro dobraria indevidamente o número de voltas e sua diferença.",
+          "C": "1 500 é o número de giros da roda dianteira, não a quantidade adicional realizada pela traseira. É necessário subtrair os dois totais.",
+          "D": "2 917 não é a diferença entre os quocientes 3 600/1,8 e 3 600/2,4. O cálculo deve usar o comprimento de cada circunferência, e não somar medidas.",
+          "E": "5 833 também não representa a diferença de giros. Os totais corretos são inteiros, 2 000 e 1 500, e sua subtração produz apenas 500."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:179": {
+      "answer": "A",
+      "solution": {
+        "paragraphs": [
+          "Há três estradas de P a Q e duas de S a T. Se x liga Q a R e y liga R a S, o princípio multiplicativo dá 3 × x × y × 2 = 30, ou xy = 5. Como x e y são inteiros positivos e x > y, só é possível x = 5 e y = 1. Assim, o número pedido pode ser escrito como 30/(3 × 2)."
+        ],
+        "alternatives": {
+          "A": "30/(3 × 2) = 5 é o número de estradas entre Q e R. A condição de ser maior que o outro trecho força a fatoração restante como 5 e 1.",
+          "B": "30/(3 + 2) = 6 soma escolhas que se combinam em etapas sucessivas. Para contar rotas, as quantidades de estradas devem ser multiplicadas.",
+          "C": "30/2 = 15 retira somente as opções entre S e T, ignorando as três escolhas de P a Q. Não é a quantidade do trecho solicitado.",
+          "D": "30 − (3 × 2) = 24 usa subtração onde se deve desfazer um produto. As rotas totais são combinações, não uma soma de estradas isoladas.",
+          "E": "30 − (3 + 2) = 25 também trata o total de rotas como uma soma. Isso não satisfaz 3xy2 = 30 para quantidades positivas nos trechos internos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    },
+    "q:180": {
+      "answer": "C",
+      "solution": {
+        "paragraphs": [
+          "A massa de 71 kg deve ser localizada na linha de 71 a 80 kg, e a altura de 1,71 m, na coluna de 1,71 a 1,80 m. A interseção apresenta D-30 ou D-33, com D-30 em negrito. Como o enunciado define o negrito como a opção mais adequada, deve-se escolher D-30."
+        ],
+        "alternatives": {
+          "A": "D-26 aparece em faixas de massa e altura diferentes da pessoa descrita. A leitura deve combinar simultaneamente a linha de 71 a 80 kg e a coluna de 1,71 a 1,80 m.",
+          "B": "D-28 seria encontrado para essa faixa de massa em colunas de menor altura. O valor 1,71 m já pertence à coluna seguinte, que recomenda D-30 ou D-33.",
+          "C": "D-30 está na célula correta e aparece em negrito. Portanto é a opção mais adequada segundo a regra expressamente definida no quadro.",
+          "D": "D-33 também está listado na célula correspondente, mas não é o valor destacado em negrito. A pergunta pede a opção mais adequada entre as recomendadas.",
+          "E": "D-36 é indicado para outras combinações, envolvendo pessoas mais altas ou pesadas. Ele não consta na interseção correspondente a 71 kg e 1,71 m."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2026_GB_impresso_D2_CD5.pdf"
+          }
+        ]
+      }
+    }
+  }
+}

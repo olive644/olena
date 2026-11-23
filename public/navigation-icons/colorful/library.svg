@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <path fill="#4d9edc" d="M5 17 14 15 16 41 7 42ZM18 7 29 6 30 41 19 41ZM32 13 40 11 45 39 36 41Z"/>
-  <path fill="#a2d8fa" d="M5 17 14 15 12 20 6 21ZM18 7 29 6 25 12 18 13ZM32 13 40 11 39 17 33 19Z"/>
-  <path fill="#FACC15" d="M20 17 27 17 27 20 20 20ZM8 31 14 30 14 33 8 34ZM36 29 41 28 42 31 37 32Z"/>
-  <path fill="#286599" d="M25 12 29 6 30 41 26 41Z"/>
-</svg>
+<path fill="#478c9f" d="m5 17 9-2 2 26-9 1z"/><path fill="#89c7cf" d="m5 17 9-2-2 5-6 1z"/>
+<path fill="#9167c6" d="m18 7 11-1 1 35H19z"/><path fill="#cdb0ed" d="m18 7 11-1-4 6-7 1z"/><path fill="#60428f" d="m25 12 4-6 1 35h-4z"/>
+<path fill="#b76a51" d="m32 13 8-2 5 28-9 2z"/><path fill="#e7af85" d="m32 13 8-2-1 6-6 2z"/>
+<path fill="#fff0c9" d="M20 17h7v3h-7zM8 31l6-1v3l-6 1zM36 29l5-1 1 3-5 1z"/></svg>

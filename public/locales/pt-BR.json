@@ -4090,5 +4090,10 @@
   "O texto mudou depois desta nota. Ela vale para a versão anterior.",
   "A nota geral ainda não está liberada. Veja o nível de cada competência.",
   "Observações por competência",
-  "Observações e comentários por competência"
+  "Observações e comentários por competência",
+  "Progresso",
+  "Não foi possível carregar as provas do Enem. Confira a conexão.",
+  "Carregando as provas do Enem…",
+  "Provas do Enem",
+  "Estimativa feita com o modelo da TRI e os parâmetros dos itens desta prova, publicados pelo Inep. Vale para a área escolhida e pode diferir da nota real."
 ]

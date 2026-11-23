@@ -1,3 +1,39 @@
+## Navegação creme e grafite, 23/11/2026
+
+Por pedido do proprietário, itens da navegação voltaram às variantes originais paper, sem colorful. Grafite no claro, creme no escuro e creme sobre o item ativo roxo, em PC e celular. Avatar preservado. Verificação no navegador nos dois temas/larguras confirmou variantes; 24 testes de app passaram. Capturas tmp/nav-restored-*.png.
+
+## Tentativas por área e redação Enem, 23/11/2026
+
+Entrega de objetiva com itens vazios exige confirmação com contagem; cancelar preserva respostas. Histórico mantém tentativas por área e compatibilidade com a tentativa antiga, permitindo reabrir a escolha e concluir áreas restantes sem sobrescrever resultados anteriores. O cartão exibe média de preenchimento das áreas e balão com percentual individual; envio de objetiva incompleta não vira 100%. A marcação manual continua independente.
+
+Redação reutiliza EssayWriting, seus bloqueios de colagem, folha móvel arrastável, revisão e materiais persistidos no workspace. Painel esquerdo localiza e renderiza somente a página da proposta, com textos motivacionais; não navega pelas questões. Tentativa enviada fica registrada na área de redação. Novas propostas usam identificador por ano e variante, sem mudar rascunhos dos temas existentes.
+
+Validação: 20 testes focados passaram, TypeScript e ESLint dos arquivos alterados sem erros. Playwright em Edge verificou confirmação, cancelamento, entrega, reabertura com áreas restantes, percentuais, proposta isolada e folha móvel em 1366 e 390px, claro/escuro, sem erros JS. Conferida também proposta 2022 no PC. Capturas tmp/enem-{confirm,progress,sections,essay,sheet}-*.png; relatório tmp/enem-new-flow-report.json. Corrigidos campo de texto estreito por seletor preso ao contêiner antigo e balão que saía da tela no celular.
+
+Build aprovado; performance: entrada 219,4 KiB preservada, total 1972,6 KiB, 6,6 KiB acima do teto existente de 1966 KiB. Limites não alterados. Verificação de desempenho permanece pendente; não declarar verify integral aprovado. Sem publicação nesta rodada.
+
+## Fechamento da cobertura, 23/11/2026
+
+Cobertura completa: 3.145 entradas nos 34 cadernos padrão de 2010 a 2026, contando os dois idiomas. Auditoria de todas as chaves sem ausências, divergências do gabarito ou falta de A a E. Estatísticas reais em 2.960 entradas de 2010 a 2025. Isso não comprova revisão humana independente nem profundidade uniforme das entradas antigas. O aprofundamento continua em 2021 e 2024; em 2023 foram ampliadas as 150 alternativas de q61 a q90 sem alterar os parágrafos existentes. Agentes foram interrompidos por limite de uso e, depois, revogação de rede, com arquivos salvos preservados.
+
+Validação: lint sem erros e com 32 avisos existentes; API e idiomas aprovados; 497 arquivos e 3.399 testes passaram na suíte geral, além de 10 testes focados de revisão. Build com TypeScript e orçamento de desempenho aprovados na sequência de verificação. JavaScript inicial 219,4 KiB e aplicação 1.963,7 KiB. Uma execução paralela redundante de build colidiu no diretório dist; a sequência principal terminou sem essa falha. A formatação integral ainda deve ser repetida após encerrar as edições dos agentes. E2E integral não executado nesta rodada; a validação de navegador anterior cobriu revisão em PC/celular e claro/escuro.
+
+## Continuação editorial e leitor PDF local, 22/11/2026
+
+Três agentes trabalham em anos distintos, enquanto a integração completa 2013 e aprofunda as alternativas de 2026. A nova rodada preservou os parágrafos existentes de 2026 e reescreveu 440 justificativas A a E em 88 questões, com leitura das páginas e figuras. As 45 questões de Humanas de 2013 receberam conteúdo original contextualizado; Ciências da Natureza segue em produção. 2020 e 2022 tiveram suas lacunas válidas completadas, e 2025 recebeu aprofundamento das 925 alternativas. A cobertura continua parcial e consta em `docs/research/enem-review-coverage.json`; quantidade de entradas não comprova revisão humana independente.
+
+O erro `Invalid workerSrc type` da prévia Vite foi reproduzido no navegador e corrigido usando a importação estática da URL do worker, preservando o carregamento opcional do renderizador PDF. Validação automatizada e inspeção de capturas confirmaram revisão de uma única página, troca de questões e conteúdo salvo para 2022 e 2026, em 1366px e 390px, claro e escuro, sem pedidos de IA. Estatísticas reais apareceram em 2022 e permaneceram indisponíveis em 2026. Capturas e relatório locais em `tmp/saved-review-*` e `tmp/enem-question-pages-browser-validation.json`.
+
+Suíte geral: 498 arquivos e 3.402 testes passaram antes do ajuste da importação do worker. Depois dele, passaram 16 testes focados, TypeScript e a validação de navegador. Build e orçamento de desempenho passaram antes desse ajuste; repetir o build na entrega. O primeiro `verify` parou na formatação de arquivos herdados e dos lotes em produção; a formatação foi corrigida, e os agentes a aplicam após publicar. Ainda não declarar o `verify` integral aprovado. Estatísticas cobrem 2.960 entradas de 2010 a 2025; 2026 depende de microdados oficiais ainda não disponíveis nesta rodada.
+
+## Questão 154 de 2022 restaurada, 22/11/2026
+
+O proprietário revogou a exclusão editorial e confirmou a alternativa E. Removidos o módulo de exclusão e seus desvios na correção, na TRI e na revisão: a questão volta a seguir diretamente o gabarito oficial e os parâmetros existentes. Salva resolução original com análise A a E, distinguindo 500.000 moedas totais e 400.000 inseridas sobre o pacote básico. A referência alternativa de dois pacotes é explicada na análise D, sem anular a questão. O acervo de 2022 passa a 185 resoluções. A dependência ts-fsrs já prevista na base foi restaurada no ambiente reutilizado, sem mudar manifesto ou lockfile.
+
+## Expansão das resoluções Enem, 22/11/2026
+
+Usuário autorizou produção original com IA e agentes em paralelo, com conteúdo salvo e gabarito oficial conferido. Estado parcial: 826 de 3.145 entradas com resolução; 2023, 2025 e 2026 completos nos cadernos padrão e dois idiomas. Estatísticas reais agregadas para 1.920 itens de 2011 a 2024, sem inventar dados para 2026. Aprofundamento das justificativas já salvas continua pendente após nova referência do usuário. Os agentes pararam por limite de uso; preservar os lotes e retomar sem prometer conclusão integral. Prévia local respondeu HTTP 200 e abertura na Biblioteca foi solicitada. TypeScript passou e 17 testes de revisão, estatísticas, índice de páginas e leitor passaram. A nova expansão textual ainda não recebeu inspeção visual integral em quatro combinações de tema e dispositivo. Gabaritos 2010 em arquivos com sufixo com_gab não foram extraídos; investigar antes de publicar resoluções desse ano.
+
 ## Apoio visual nas propostas, 19/11/2026
 
 Todas as 60 propostas incluem Texto 4 com ilustração conceitual SVG autoral, legenda, texto alternativo e pergunta interpretativa. São seis cenas por categoria, sem estatísticas fictícias nem cópia de imagens da referência. Prévia desktop escura conferida com imagem e legenda. Nove testes cobrem presença visual nas categorias e integração ao editor.
@@ -5689,6 +5725,35 @@ Reutilizados orçamento, API autenticada e medidor das PRs 686/688/689 na main. 
 
 Removida geração automática local de resumo, flashcards, quizzes e simulados na pasta. Reutilizados library-ai.ts, extração de fontes e generateWithOlena da main. Custo estimado para todas as categorias; tamanho altera custo de quiz/prova. Sem saldo desabilita, saldo insuficiente avisa sem bloquear tentativa. Backend mantém orçamento/reserva/acerto da main. 49 testes aprovados; conferência de cada modal em PC/mobile com fonte textual e saldo de teste sem gerar IA real.
 
+### Acervo oficial Enem — 2026-11-21
+
+Vestibular abre Enem dentro do app. Removidos título Provas anteriores e parágrafo sobre acervos; Fuvest permanece como link oficial. Grade original com 34 cartões (2010–2026, dias 1/2), 479 links de cadernos e gabaritos publicados, capas reais extraídas dos PDFs do Inep. Todos os links de prova encontrados nas páginas anuais estão indexados. Filtros ano/dia/progresso, salvos/conclusão e histórico de leitura neste dispositivo; não se apresentam tentativas ou notas fictícias. Seleção de variante e leitor PDF reutilizado com URL oficial; CSP permite somente download.inep.gov.br para esses arquivos. PDFs completos carregam por demanda; capas locais totalizam cerca de 2,4 MB. Scripts de atualização em scripts/fetch-enem-*.py, cache em tmp. TypeScript/ESLint focados e 8 testes aprovados; grade, filtros, variantes e renderização oficial conferidos em Edge 1366/390. Sem publicar nesta etapa.
+
+### Ampliação Enem 2000–2026 — 2026-11-21
+
+Acervo ampliado para 45 cartões e 498 versões oficiais. Edições 2000–2008 identificadas como Dia único (day=0); 2009–2026 mantêm dias 1 e 2. Cabeçalho mostra limites derivados do catálogo; filtro inclui Dia único. Capas reais das 11 edições adicionadas extraídas de PDFs oficiais. Os 498 links de prova publicados nas páginas anuais foram indexados, sem lacunas. Nove testes aprovados; geração do catálogo mantém IDs anteriores e histórico.
+
+Enem: filtros Ano/Dia/Progresso em baloes flutuantes de papel, selecao marcada, fechamento por Escape e foco fora; borda escura removida do botao compartilhado shelf-wood-button. Validacao visual desktop/mobile claro/escuro; quatro testes do acervo e TypeScript passaram.
+
+## 22/11/2026: revisão salva e estatísticas reais por questão do Enem
+
+- A revisão usa arquivos estáticos por caderno em `public/enem/reviews`, sem geração de IA ou consumo de créditos. Dez resumos curtos e justificativas A a E estão cadastrados: inglês, questões 1 a 5 dos cadernos azuis regulares de 2022 e 2026. Fontes publicadas e data de conferência aparecem na tela. Não se atribui aos professores citados uma revisão ou aprovação do OlenaStudy.
+- Caderno, URL da prova, idioma e resposta oficial precisam corresponder. Conteúdo sem fonte, com justificativa incompleta, gabarito divergente ou contagens inválidas é rejeitado. Falha de rede oferece nova tentativa, sem escolher outro caderno.
+- `build-enem-question-statistics.py` processou os 2.341.913 registros da redistribuição CC BY 4.0 de participantes de 2022 (INEP / Pedro Mantovani, DOI 10.5281/zenodo.20130840). Foram agregados 185 itens dos cadernos padrão das quatro áreas. Apenas contagens são públicas. O primeiro dia tem 575.800 participantes nesse caderno, separados em 333.698 de inglês e 242.102 de espanhol; o segundo dia tem 575.504. Essas populações não são todos os inscritos nem usuários do app.
+- Gauge, barras A a E, quantidade de participantes, marcações inválidas e fonte são exibidos somente com dados reais. Faixas de dificuldade observada por acerto são explícitas e distintas da TRI. A questão anulada 175 de 2022 preserva distribuição, sem taxa de acerto ou classificação de dificuldade.
+- A primeira questão de cada área e de cada idioma foi contada novamente numa leitura independente da base completa e coincidiu com os arquivos publicados. O teste sintético do agregador verifica isolamento entre idiomas, cadernos, ausência de nota e questões comuns. Os testes de UI verificam dados reais/salvos, ausência de conteúdo de outro gabarito, retry e anulação.
+- Validação no navegador local: 1366 e 390 px, claro e escuro, edições 2022 e 2026, abertura de página única, navegação Próxima e Ir para, resoluções, cinco barras e ausência de chamadas de geração. A página cabe inteira na área disponível. A estatística de 2026 permanece indisponível, sem dados fictícios. Relatórios em `docs/research/enem-saved-review-browser-validation.json` e `docs/research/enem-statistics-independent-check.json`.
+- Limite: a base editorial inicial contém dez questões, não o acervo completo. As demais questões continuam sinalizadas como sem resolução conferida. Estatísticas estão processadas somente para 2022 e para os cadernos mapeados. A integração está pronta para ampliar a curadoria, sem presumir licença para copiar bancos comerciais inteiros.
+
+## 22/11/2026: abertura universal das páginas no acervo padrão Enem
+
+- O pedido de resoluções e estatísticas se refere ao acervo inteiro. A entrega anterior de dez comentários e estatísticas de 2022 era uma cobertura inicial, não o cumprimento desse escopo. O proprietário informou que não possui acervo próprio. Não foi encontrado um banco completo de comentários humanos com autorização de reutilização para importar. Essa cobertura editorial permanece pendente, sem substituição por geração automática ou cópia integral de bancos de cursinhos. O índice de páginas não deve ser apresentado como aumento da cobertura editorial.
+- Corrigida a causa da página vazia na questão 9 e em outros cabeçalhos: o PDF mistura texto fragmentado, caixa mista (`QUESTãO`, `Questão`) e páginas sem texto. O leitor usa `questionPageEvents`, aceita esses formatos e consulta um índice por identidade/URL do caderno. Sem índice pré-calculado, mantém procura local e OCR Tesseract, com erro explícito se não localizar.
+- `scripts/build-enem-page-index.mjs` auditou os 34 cadernos padrão de 2010 a 2026. São 3.145 entradas esperadas e mapeadas, incluindo inglês/espanhol. Faltantes: zero. Foram necessárias 57 páginas de OCR local. Arquivos numéricos e auditoria em `public/enem/page-index`, abaixo de 100 KB; imagens e texto de OCR não são publicados. As outras versões de caderno usam fallback local e não estão incluídas nessa contagem auditada.
+- Regressão automatizada: questão 9 sem texto pesquisável usa a página indexada 7, renderiza um único canvas e não varre o restante do PDF. Testes cobrem cabeçalhos fragmentados/mistos, idioma, artigo O, divergência de caderno e todas as 3.145 entradas.
+- Navegador local: questão 9 de 2022 e 2026 abriu a página correspondente em 1366 e 390 px, com os dois temas, preservando página inteira e navegação Próxima/Ir para. Relatório em `docs/research/enem-question-pages-browser-validation.json`. A questão 9 de 2026 foi inspecionada visualmente na página 7, anteriormente vazia.
+- Limites que continuam: comentários salvos são dez e estatísticas processadas são 185 itens de 2022. As estatísticas oficiais de 2026 não aparecem na fonte de microdados consultada. Não declarar todas as resoluções/estatísticas concluídas nem inferir dados inexistentes.
+
 ## Qualidade dos flashcards, FSRS e curadoria, 17/11/2026
 
 - Filtro de entrada (`looksLikeStatement`): só frase completa vira cartão. Exige pontuação final, ao menos 6 palavras, poucas palavras com inicial maiúscula, sem linha de 4 ou mais maiúsculas seguidas, sem barra vertical ou tabulação e com verbo. Barra cabeçalho de tabela, título e linha do tempo (o caso "Início do projeto Apresentação pública Fim da operação"). A afirmação falsa também passa pelo filtro.
@@ -5932,3 +5997,28 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Medido em produção: os chunks com hash (por exemplo `/assets/pdf-DaveP19J.js`) saíam com `Cache-Control: public, max-age=0, must-revalidate`, o que obriga o navegador a revalidar cada um a cada visita. `/data/schools-inep-2024.json` (10 MB, 1,98 MB em brotli) e as fontes tinham o mesmo cabeçalho.
 - `vercel.json` passa a mandar: `/assets/(.*)` com `public, max-age=31536000, immutable` (todos os arquivos de `dist/assets` têm hash no nome, conferido no build); `/data/(.*)` com `public, max-age=86400, stale-while-revalidate=604800`; `/fonts/(.*)` com `public, max-age=2592000, stale-while-revalidate=604800` (nomes sem hash, por isso sem `immutable`). Testes em `src/security-headers.test.ts`.
 - Não verificado: o ganho de tempo em revisitas (não medido) e os cabeçalhos no deploy real até a PR ser publicada; conferir com `curl -I` em um chunk e em `/data/schools-inep-2024.json`. Risco: um arquivo em `/assets` sem hash seria servido por um ano; o build atual não tem nenhum.
+
+### PR #697 (Enem): integração com a main e correções de verificação (22/11/2026)
+
+- Merge da `main` na branch (só local até a dona autorizar o envio). Conflitos: `app-navigation.tsx` (a PR trazia barra lateral recolhível; a main decidiu por barra sempre expandida, então ficou a versão da main), `typewriter-desk.test.tsx` e dois arquivos de docs (mantidos os dois lados). O `?v=` que a PR pôs no ícone da navegação foi mantido e o teste de iconografia agora aceita o parâmetro.
+- `i18n:check` falhava em "Fuvest · USP", "Enem", "Ano", "Dia" e "Progresso": corrigido com texto em chave e catálogos.
+- O catálogo `public/enem/catalog.json` (212 KB) estava dentro do JavaScript do acervo. Passou a ser buscado por `fetch` quando o acervo abre (`src/data/enem-catalog.ts`), com carregamento, erro e "Tentar novamente"; testes ajustados e um novo. Total de JavaScript: 2114,1 para 1963,8 KiB.
+- O CSP liberava `download.inep.gov.br` em `connect-src`, mas todo PDF carrega pelo proxy do próprio domínio (`/enem-pdf`, `enemPdfUrl`): removido do CSP. A Política de Privacidade passou a descrever, sem nomes, o serviço público de provas do Enem. Não verificado: que a reescrita externa da Vercel não repasse cookies ou o IP do estudante ao serviço de origem.
+- **Aberto:** `performance:check` ainda falha: 1963,8 KiB contra o teto de 1914 KiB (autorização da dona necessária para subir; o acréscimo restante é o código do acervo, 40 KiB, e do leitor de PDF, 11,7 KiB). A suíte completa (3.396 testes), `tsc`, ESLint (0 erros), `api:check`, `i18n:check` e o build passam. Não executados: `npm run test:e2e` (822 testes) e a verificação visual das telas do Enem em claro/escuro, PC e celular nesta rodada.
+
+### Estatísticas do Enem: mapeamento sem TRI (22/11/2026)
+
+- Novo `scripts/build-enem-statistics-map.py` e diretório `public/enem/stat-map` (8 cadernos, mais auditoria). O agregador passa a completar o mapeamento da TRI com esses cadernos. Testes em `scripts/test_enem_statistics_map.py` (4 testes, mais o teste existente do agregador). Detalhes e comandos em `docs/ENEM_CONTINUACAO.md`.
+- Não verificado: as estatísticas desses cadernos ainda não foram calculadas (falta baixar os microdados), e nenhuma conferência cruzada com a distribuição real foi feita além de o gabarito dos itens coincidir 100% com o do PDF oficial.
+
+### Teto de JavaScript e limpeza local (22/11/2026)
+
+- Por autorização da dona, o teto do total de JavaScript da aplicação subiu de 1914 para 1966 KiB (e o teto absoluto junto), para o acervo do Enem (medido 1963,8 KiB; entrada inicial inalterada em 219,4 KiB).
+- Hospedagem dos PDFs do Enem: os 68 arquivos (213 MB, conferidos como PDF) foram enviados ao Vercel Blob com o mesmo caminho do Inep por `scripts/upload-enem-pdfs.mjs`, e a reescrita `/enem-pdf` do `vercel.json` aponta para a loja. Motivo: o Inep recusa pedidos de servidor com "Request Rejected". Verificado em 22/11/2026: três arquivos direto na loja e um pelo preview da Vercel responderam 200 com PDF. Só os cadernos padrão (azul no dia 1, amarelo no dia 2) estão hospedados. O token de escrita da loja é segredo da dona: não versionar e rotacionar após o envio.
+- Apagados do disco local os 11 arquivos `PARTICIPANTES_*.zip` (3,5 GB) de anos já processados e commitados.
+
+### Enem 2025 e 2022 dia 2, 22/11/2026
+
+- Estatísticas de respostas de 2025: 185 questões, 4.810.772 participantes lidos dos microdados oficiais do Inep (`RESULTADOS_2025.csv`, ZIP com compressão Deflate64 que o Python padrão não abre; extraído com `zipfile-inflate64` fora do repositório). `build-enem-question-statistics.py` agora aceita um CSV solto e detecta o separador. A fonte registrada nas questões de 2025 é o Inep, não a redistribuição do Zenodo.
+- 2022 dia 2: 80 de 90 resoluções. Ficaram de fora 118, 119, 158, 163, 165 e 178 (dependem de figuras pequenas que não foi possível conferir com segurança), 153 (só bate com o gabarito lendo a mediana dos meses de lucro positivo), 154 e 156 (as contas não chegam à letra do gabarito oficial; na 154 a maioria dos participantes marcou D) e 175 (anulada). Nenhuma delas foi forçada para a chave.
+- `docs/research/enem-review-coverage.json` recalculado. Em 2025 as resoluções já estavam completas; faltavam só as estatísticas.

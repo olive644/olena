@@ -6,6 +6,7 @@ node_modules
 coverage
 playwright-report
 test-results
+tmp
 package-lock.json
 # Código de terceiros e bundle reproduzível do renderizador da Helena.
 public/helena-assistant/rive.js
@@ -14,3 +15,8 @@ scripts/oliver-rive/layers/layers.json
 
 # Catálogos compactos gerados a partir dos microdados do Inep.
 public/data/*-inep-2024.json
+
+# Pacotes gerados pelos scripts de TRI e de mapeamento do Enem (formato compacto, reproduzível).
+public/enem/stat-map/*.json
+public/enem/tri/*.json
+src/data/fixtures/enem-tri-reference.json

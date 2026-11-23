@@ -1,3 +1,21 @@
+## Navegação creme e grafite, 23/11/2026
+
+Por pedido do proprietário, itens da navegação voltaram às variantes originais paper, sem colorful. Grafite no claro, creme no escuro e creme sobre o item ativo roxo, em PC e celular. Avatar preservado. Verificação no navegador nos dois temas/larguras confirmou variantes; 24 testes de app passaram. Capturas tmp/nav-restored-*.png.
+
+## Enem por área e editor compartilhado, 23/11/2026
+
+src/data/enem-progress.ts centraliza compatibilidade attempt/attempts, preenchimento A-E por idioma e média das áreas. Não converter enviada em 100% de objetiva; redação vale 100% quando enviada. Preservar tentativas das outras áreas ao salvar. EnemArchive recebe workspace/collectionId/dispatch do TypewriterDesk. EnemEssayWriting reutiliza EssayWriting com proposalContent e onSubmit, persistindo no workspace com tag por ano/variante; EnemEssayPrompt mostra só a página da proposta encontrada por texto ou OCR local. Estilos compartilhados da folha precisam funcionar também fora de #main-content, pois o editor Enem é portaled. Ver limite de bundle pendente em CURRENT_STATE_AUDIT.
+
+## Leitor PDF e gabarito oficial, 22/11/2026
+
+Leitor PDF: importar estaticamente a URL `pdf.worker.min.mjs?url`, mantendo `import("pdfjs-dist")` opcional. A importação dinâmica da URL produzia um valor inválido em `workerSrc` na prévia Vite, embora o build funcionasse. O navegador confirmou o erro antes e renderização depois, em PC e celular.
+
+O proprietário revogou a exclusão editorial da questão 154 do amarelo 2022. Usar o gabarito oficial E na correção e os parâmetros existentes na TRI, sem filtro editorial. A solução salva explica 10.000 gemas, 500.000 moedas totais e acréscimo de 400.000 sobre o pacote básico. Não restaurar a anulação anterior.
+
+## Resoluções originais salvas Enem, 22/11/2026
+
+Publicação de lotes: `py -3.12 scripts/publish-enem-solutions.py LOTE.json --year ANO --day DIA`. Usa `docs/research/enem-official-key-audit.json`, catálogo e índice de páginas para validar a correspondência; preserva estatísticas. Conteúdo novo tem origem `ai-authored-official-key-checked`, sem inferir revisão humana. Por solicitação do proprietário, conferência, data e referências ficam nos metadados e não aparecem abaixo das resoluções. Justificativas precisam explicar os erros e as evidências, não apenas repetir letras. Ao aprofundar conteúdo existente, preservar os parágrafos da resolução e substituir apenas `alternatives`. Estatísticas reais usam mapeamentos independentes da disponibilidade de parâmetros TRI e cobrem 2.960 entradas de 2010 a 2025. Progresso de importação em `tmp/enem-statistics-progress.json`; cobertura editorial parcial em `docs/research/enem-review-coverage.json`. Não anunciar acervo completo ou inventar estatísticas de 2026.
+
 ## Abas de redação e vestibular, 19/11/2026
 
 Catálogo ganhou abas acessíveis Redação/Vestibular, botões de madeira e oito ícones SVG recortados próprios (duas áreas e seis tópicos). Sessenta propostas autorais, dez por categoria, preservam ids dos trinta temas anteriores e seus rascunhos. Vestibular oferece links aos acervos oficiais Inep e Fuvest, sem simular provas internas. Navegação por setas/Home/End nas abas. Testes de abas, catálogo e recuperação de texto, prévia desktop escura conferida; claro e mobile específicos das abas não verificados.
@@ -2144,5 +2162,28 @@ Reutilizados orçamento, API autenticada e medidor das PRs 686/688/689 na main. 
 ### Gerações da pasta — somente Olena (2026-11-21)
 
 Removida geração automática local de resumo, flashcards, quizzes e simulados na pasta. Reutilizados library-ai.ts, extração de fontes e generateWithOlena da main. Custo estimado para todas as categorias; tamanho altera custo de quiz/prova. Sem saldo desabilita, saldo insuficiente avisa sem bloquear tentativa. Backend mantém orçamento/reserva/acerto da main. 49 testes aprovados; conferência de cada modal em PC/mobile com fonte textual e saldo de teste sem gerar IA real.
+
+### Acervo oficial Enem — 2026-11-21
+
+Vestibular abre Enem dentro do app. Removidos título Provas anteriores e parágrafo sobre acervos; Fuvest permanece como link oficial. Grade original com 34 cartões (2010–2026, dias 1/2), 479 links de cadernos e gabaritos publicados, capas reais extraídas dos PDFs do Inep. Todos os links de prova encontrados nas páginas anuais estão indexados. Filtros ano/dia/progresso, salvos/conclusão e histórico de leitura neste dispositivo; não se apresentam tentativas ou notas fictícias. Seleção de variante e leitor PDF reutilizado com URL oficial; CSP permite somente download.inep.gov.br para esses arquivos. PDFs completos carregam por demanda; capas locais totalizam cerca de 2,4 MB. Scripts de atualização em scripts/fetch-enem-*.py, cache em tmp. TypeScript/ESLint focados e 8 testes aprovados; grade, filtros, variantes e renderização oficial conferidos em Edge 1366/390. Sem publicar nesta etapa.
+
+### Ampliação Enem 2000–2026 — 2026-11-21
+
+Acervo ampliado para 45 cartões e 498 versões oficiais. Edições 2000–2008 identificadas como Dia único (day=0); 2009–2026 mantêm dias 1 e 2. Cabeçalho mostra limites derivados do catálogo; filtro inclui Dia único. Capas reais das 11 edições adicionadas extraídas de PDFs oficiais. Os 498 links de prova publicados nas páginas anuais foram indexados, sem lacunas. Nove testes aprovados; geração do catálogo mantém IDs anteriores e histórico.
+
+## 22/11/2026: conteúdo salvo da revisão Enem
+
+- `src/data/enem-question-review.ts`: carregamento por caderno e validação contra gabarito oficial, fontes, justificativas A a E e consistência de contagens. A revisão não usa a API da Olena.
+- `src/components/enem-question-explanation.tsx`: resolução e justificativas salvas, fonte/data, taxa observada, distribuição A a E, denominador, marcações inválidas, retry e anulação. Mantém navegação fixa e PDF da página isolada no resultado existente.
+- `public/enem/reviews/README.md` documenta cobertura, proveniência editorial, limites e regeneração. Dez comentários iniciais de inglês (2022/2026) e 185 estatísticas de 2022. Não misturar número de questão entre cores ou idiomas nem apresentar referência publicada como aprovação humana do app.
+- Reproduzir estatísticas: `py -3.12 scripts/build-enem-question-statistics.py CAMINHO/PARTICIPANTES_2022.zip --year 2022`. O arquivo de entrada vem da redistribuição CC BY 4.0 em https://doi.org/10.5281/zenodo.20130840 e não deve ser publicado no app. O script preserva as soluções existentes.
+- Provas focadas: `py -3.12 scripts/test_enem_question_statistics.py`; `npx vitest run src/data/enem-question-review.test.ts src/components/enem-question-explanation.test.tsx`. A auditoria de cobertura evita anunciar o acervo inteiro como comentado.
+
+## 22/11/2026: índice de páginas Enem
+
+- `enem-question-pages.ts` reconhece cabeçalhos fragmentados, caixa mista e idiomas. Índice por caderno/URL em `public/enem/page-index` resolve 3.145 entradas dos 34 cadernos padrão de 2010 a 2026; não confundir com os 479 PDFs de variantes do catálogo.
+- `build-enem-page-index.mjs` usa PDF.js e OCR Tesseract/Poppler local. Rodar `node scripts/copy-ocr-assets.mjs` antes, com PDFs oficiais em `tmp/enem-acervo`. Uso normal: `node scripts/build-enem-page-index.mjs`. O cache de texto/imagens fica em `tmp/enem-ocr-cache`. Argumentos opcionais `SHARD TOTAL` dividem a preparação; a auditoria completa deve ser consolidada após todos os grupos.
+- `LibraryPdfReader` recebe `questionKey` e `indexVariantId` na revisão; valida o índice contra a URL e mostra somente aquela página. Cadernos sem índice usam localização/OCR no aparelho, sem IA generativa. Regressão da questão 9 cobre página sem texto e um único canvas.
+- Abertura das páginas e conteúdo editorial são coberturas diferentes. Pedido do proprietário continua sendo todas as questões. Sem acervo próprio ou banco humano autorizado, a curadoria completa está pendente. Não anunciar o índice de páginas como se fossem 3.145 resoluções comentadas.
 
 Redação com a Olena: capacidade essay de /api/helena (helena-essay.ts, essay-output.ts), mesmo orçamento de créditos, nota numérica atrás de OLENA_ESSAY_SCORE (desligada até medir). Ver docs/REDACAO_IA.md.

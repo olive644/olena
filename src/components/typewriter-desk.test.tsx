@@ -76,6 +76,9 @@ it("abre textos próprios, salva por proposta e recupera ao voltar", () => {
   // A cópia entregue fica no painel "Redação", fechado e inerte até o aluno abri-lo.
   fireEvent.click(screen.getByRole("button", { name: "Redação" }));
   expect(screen.getByRole("heading", { name: "Sua redação entregue" })).toBeTruthy();
+  fireEvent.click(
+    document.querySelector<HTMLButtonElement>(".essay-review-panel > header button")!,
+  );
   expect(screen.queryByRole("textbox", { name: "Sua redação" })).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: /^Continuar$/ }));
   fireEvent.click(screen.getByRole("tab", { name: /^Redação$/ }));

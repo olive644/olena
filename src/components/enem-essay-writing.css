@@ -1,0 +1,39 @@
+.enem-essay-writing {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: var(--page);
+  color: var(--ink);
+}
+body:has(.enem-essay-writing) > .essay-proposal-controls,
+body:has(.enem-essay-writing) > .essay-submit,
+body:has(.enem-essay-writing) > .essay-results-close,
+body:has(.enem-essay-writing) > .essay-writing-options--floating {
+  z-index: 1001;
+}
+.enem-essay-prompt canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: white;
+}
+.enem-essay-prompt canvas[hidden] {
+  display: none;
+}
+.enem-essay-prompt h1 {
+  margin: 0 0 16px;
+}
+:root body .enem-essay-writing .essay-mobile-open-sheet,
+:root body:has(.enem-essay-writing) > .essay-submit {
+  border: 0;
+  border-radius: 5px 16px 5px 10px;
+  background:
+    linear-gradient(135deg, #ac78ee 0 12%, transparent 12%),
+    linear-gradient(145deg, transparent 72%, #59249e 72%), #7430d9;
+  color: white;
+  box-shadow: 0 4px #512878;
+  font: inherit;
+  font-weight: 700;
+}

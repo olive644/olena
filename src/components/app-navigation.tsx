@@ -157,11 +157,7 @@ function NavigationButton({
       aria-label={item.label}
       aria-current={active ? "page" : undefined}
     >
-      {item.view === "profile" ? (
-        <NavigationProfile />
-      ) : (
-        <NavigationIcon colorful name={item.icon} />
-      )}
+      {item.view === "profile" ? <NavigationProfile /> : <NavigationIcon name={item.icon} />}
       <span>{item.label}</span>
     </button>
   );
@@ -300,7 +296,7 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
                   aria-current={view === item.view ? "page" : undefined}
                   key={item.view}
                 >
-                  <NavigationIcon name={item.icon} colorful />
+                  <NavigationIcon name={item.icon} />
                   <span>{item.mobileLabel ?? item.label}</span>
                 </button>
               ))}
@@ -332,7 +328,7 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
               key={item.view}
             >
               <span className="mobile-nav__icon">
-                <NavigationIcon name={item.icon} colorful />
+                <NavigationIcon name={item.icon} />
               </span>
               <span>{item.mobileLabel ?? item.label}</span>
             </button>

@@ -1,10 +1,90 @@
 import { readFileSync } from "node:fs";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { handleOlena } from "./src/backend/olena-handler";
 import { createVercelHandler } from "./src/backend/vercel-adapter";
+const enemCatalog = JSON.parse(
+  readFileSync(new URL("./public/enem/catalog.json", import.meta.url), "utf8"),
+) as {
+  papers: { year: number; day: number; variants: { url: string; answerUrl: string | null }[] }[];
+};
+const enemPaths = new Set(
+  enemCatalog.papers.flatMap((p) =>
+    p.variants.flatMap((v) =>
+      [v.url, v.answerUrl]
+        .filter((url): url is string => !!url)
+        .map((url) => new URL(url).pathname),
+    ),
+  ),
+);
+async function enemPdfMiddleware(request: IncomingMessage, response: ServerResponse) {
+  const path = new URL(request.url ?? "/", "http://localhost").pathname;
+  if (!enemPaths.has(path)) {
+    response.statusCode = 404;
+    response.end();
+    return;
+  }
+  try {
+    let data: Buffer;
+    const cached = enemCatalog.papers.find(
+      (p) =>
+        new URL(p.variants[0]!.url).pathname === path ||
+        (p.variants[0]!.answerUrl && new URL(p.variants[0]!.answerUrl!).pathname === path),
+    );
+    let cachedData: Buffer | undefined;
+    if (cached) {
+      try {
+        const answer = new URL(cached.variants[0]!.url).pathname !== path;
+        cachedData = readFileSync(
+          new URL(
+            `./tmp/enem-acervo/${cached.year}-${cached.day}${answer ? "-answer" : ""}.pdf`,
+            import.meta.url,
+          ),
+        );
+      } catch {
+        /* Busca na loja de PDFs do projeto se o cache de desenvolvimento não existe. */
+      }
+    }
+    if (cachedData) data = cachedData;
+    else if (process.platform === "win32") {
+      // curl usa os certificados do Windows, como o navegador do usuário.
+      const result = await promisify(execFile)(
+        "curl.exe",
+        [
+          "--fail",
+          "--silent",
+          "--show-error",
+          "--location",
+          "--max-time",
+          "45",
+          `https://33xpxcgqh4xsmdpz.public.blob.vercel-storage.com${path}`,
+        ],
+        { encoding: "buffer", maxBuffer: 64 * 1024 * 1024, windowsHide: true },
+      );
+      data = result.stdout;
+    } else {
+      const pdf = await fetch(`https://33xpxcgqh4xsmdpz.public.blob.vercel-storage.com${path}`, {
+        signal: AbortSignal.timeout(45000),
+      });
+      if (!pdf.ok) {
+        response.statusCode = 502;
+        response.end();
+        return;
+      }
+      data = Buffer.from(await pdf.arrayBuffer());
+    }
+    response.setHeader("Content-Type", "application/pdf");
+    response.setHeader("Cache-Control", "public, max-age=86400");
+    response.end(data);
+  } catch {
+    response.statusCode = 502;
+    response.end();
+  }
+}
 
 async function helenaMiddleware(request: IncomingMessage, response: ServerResponse) {
   const { handleHelenaRuntime } = await import("./src/backend/helena-runtime");
@@ -78,6 +158,9 @@ export default defineConfig({
     {
       name: "olena-local-api",
       configureServer(server) {
+        server.middlewares.use("/enem-pdf", (request, response) => {
+          void enemPdfMiddleware(request, response);
+        });
         server.middlewares.use("/api/account-devices", (request, response) => {
           void accountDevicesMiddleware(request, response).catch(() => {
             response.statusCode = 503;
@@ -105,6 +188,9 @@ export default defineConfig({
         });
       },
       configurePreviewServer(server) {
+        server.middlewares.use("/enem-pdf", (request, response) => {
+          void enemPdfMiddleware(request, response);
+        });
         server.middlewares.use("/api/account-devices", (request, response) => {
           void accountDevicesMiddleware(request, response).catch(() => {
             response.statusCode = 503;

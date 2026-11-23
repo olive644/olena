@@ -15,10 +15,13 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
   });
   for (const theme of ["light", "dark"]) {
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
-    const icons = navigation.locator(".navigation-icon--colorful img:visible");
+    const icons = navigation.locator(".navigation-icon--brand img:visible");
     expect(await icons.count()).toBeGreaterThan(0);
     for (const icon of await icons.all()) {
-      await expect(icon).toHaveAttribute("src", /\/navigation-icons\/colorful\/.*\.svg$/);
+      await expect(icon).toHaveAttribute(
+        "src",
+        /\/navigation-icons\/paper\/(claro|roxo|escuro)\/.*\.svg$/,
+      );
       await expect
         .poll(() =>
           icon.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0),
@@ -272,7 +275,8 @@ test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, te
   await expect(navigation).toHaveCSS("color", "rgb(41, 36, 50)");
   const agendaIcon = navigation
     .getByRole("button", { name: "Agenda", exact: true })
-    .locator(".navigation-icon--colorful img");
+    .locator(".navigation-icon--brand img:visible")
+    .first();
   await expect(agendaIcon).toBeVisible();
 
   await navigation.getByRole("button", { name: "Agenda", exact: true }).click();
@@ -291,7 +295,8 @@ test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, te
   await expect(navigation).toHaveCSS("background-color", "rgb(41, 36, 50)");
   const focusIcon = navigation
     .getByRole("button", { name: "Foco", exact: true })
-    .locator(".navigation-icon--colorful img");
+    .locator(".navigation-icon--brand img:visible")
+    .first();
   await expect(focusIcon).toBeVisible();
   await expect(navigation).toHaveCSS("color", "rgb(255, 249, 239)");
 });

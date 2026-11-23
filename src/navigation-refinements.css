@@ -305,3 +305,30 @@
     color: #fff9ef;
   }
 }
+
+:root body .app-shell > .sidebar > .sidebar__brand-toggle {
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  color: inherit;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+.sidebar__brand-toggle:focus-visible {
+  outline: 2px solid #facc15;
+  outline-offset: 3px;
+}
+@media (min-width: 900px) {
+  .app-shell > .sidebar:not(.sidebar--expanded) .sidebar__brand {
+    display: none;
+  }
+  .app-shell > .sidebar:not(.sidebar--expanded) .sidebar__profile .nav-item {
+    overflow: visible;
+    isolation: auto;
+  }
+  .app-shell > .sidebar:not(.sidebar--expanded) .sidebar__profile .navigation-profile__cover {
+    display: none;
+  }
+}

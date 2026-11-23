@@ -4090,5 +4090,10 @@
   "The text changed after this score. It applies to the previous version.",
   "The overall score is not available yet. See the level of each competency.",
   "Notes by competency",
-  "Notes and comments by competency"
+  "Notes and comments by competency",
+  "Progress",
+  "Could not load the Enem exams. Check your connection.",
+  "Loading the Enem exams…",
+  "Enem exams",
+  "Estimate made with the IRT model and the item parameters of this exam, published by Inep. It applies to the chosen area and may differ from the real score."
 ]

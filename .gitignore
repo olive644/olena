@@ -44,3 +44,4 @@ artifacts/math-heart-timeout/
 
 # Cache privado de pesquisa (corpus e modelos de redação); nunca versionar.
 tmp/
+.env*
