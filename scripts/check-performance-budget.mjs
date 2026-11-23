@@ -375,10 +375,12 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // compartilhado, +0,3 KiB líquido).
 // Subiu para 1966 KiB, autorizado pela dona em 22/11/2026, para o acervo do Enem (código do acervo,
 // 40 KiB, e leitor de PDF, 11,7 KiB; o catálogo de 212 KB foi para fora do JavaScript). Medido 1963,8 KiB.
-const MAX_TOTAL_JS_BYTES = 1966 * 1024;
+// Subiu para 1976 KiB, autorizado pela dona em 23/11/2026, para o fluxo de redação do Enem e o
+// progresso por área (medido 1972,6 KiB).
+const MAX_TOTAL_JS_BYTES = 1976 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
-const HARD_CEILING_TOTAL_JS_BYTES = 1966 * 1024;
+const HARD_CEILING_TOTAL_JS_BYTES = 1976 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 // Revisão de redação no aparelho: o worker de tema (Transformers.js), o corretor ortográfico
 // (Hunspell) e o runtime ONNX só são baixados quando o aluno entrega uma redação, como o leitor de
