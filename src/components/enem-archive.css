@@ -249,9 +249,9 @@
   transform: rotate(90deg);
 }
 .enem-card-progress-balloon {
-  position: fixed;
-  left: var(--progress-left, 12px);
-  top: var(--progress-top, 100px);
+  position: absolute;
+  left: var(--progress-left, 0px);
+  top: calc(100% + 8px);
   box-sizing: border-box;
   width: min(300px, calc(100vw - 24px));
   padding: 14px;

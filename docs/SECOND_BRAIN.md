@@ -1,3 +1,7 @@
+## Balão de progresso e Beta Tester, 23/11/2026
+
+Progresso Enem ancorado ao summary por position absolute, usando coordenada horizontal relativa ao botão e limite da área do acervo. Acompanha rolagem; recalcula margem ao redimensionar. Grupo details e fechamento explícito mantêm apenas um balão aberto. Corrigido recorte do primeiro cartão junto à borda do conteúdo. Playwright confirmou três cartões, rolagem, exclusividade e limites em 1366/390px claro/escuro; capturas tmp/enem-progress-anchored-*.png. 19 testes focados passaram. Rótulo BETA TESTER adicionado ao identificador exato spyei pelo mecanismo existente profileLabelNames, sem conceder a nomes parecidos.
+
 ## Navegação creme e grafite, 23/11/2026
 
 Por pedido do proprietário, itens da navegação voltaram às variantes originais paper, sem colorful. Grafite no claro, creme no escuro e creme sobre o item ativo roxo, em PC e celular. Avatar preservado. Verificação no navegador nos dois temas/larguras confirmou variantes; 24 testes de app passaram. Capturas tmp/nav-restored-*.png.
