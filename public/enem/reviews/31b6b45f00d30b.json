@@ -23,6 +23,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os núcleos são sais constituídos por íons, enquanto as moléculas de água possuem dipolo permanente. A atração entre esses íons e as extremidades parcialmente carregadas da água é uma interação íon-dipolo, que favorece a retenção de vapor nos núcleos."
+        ],
+        "alternatives": {
+          "A": "Ligações iônicas unem os íons do sal, mas a água é molecular. A fixação da água envolve a atração entre um íon e um dipolo.",
+          "B": "Interações dipolo-dipolo ocorrem entre moléculas polares. O núcleo descrito é iônico, exigindo considerar a carga integral de seus íons.",
+          "C": "A água já possui dipolo permanente, e o sal fornece íons. Não se trata principalmente de induzir dipolo em uma molécula apolar.",
+          "D": "Os íons dos sais atraem as extremidades polares da água. Essa associação é classificada como interação íon-dipolo.",
+          "E": "A condensação não exige formar novas ligações covalentes entre a água e o sal. A atração eletrostática intermolecular explica a fixação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:101": {
@@ -43,6 +67,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para maximizar o alcance, utiliza-se o ponto de menor perda óptica do gráfico, aproximadamente 1 dB/km. O sinal pode cair de 100 dB até 10 dB, uma perda de 90 dB. Assim, a distância máxima é 90 ÷ 1 = 90 km."
+        ],
+        "alternatives": {
+          "A": "O valor 6 se relaciona a uma perda elevada no gráfico, não ao alcance máximo. O cálculo deve usar a menor atenuação disponível.",
+          "B": "A distância de 18 km resultaria de perda de 5 dB/km. O gráfico permite escolher uma faixa com atenuação menor e maior alcance.",
+          "C": "A distância de 60 km usaria 1,5 dB/km. Há uma região próxima de 1,5 µm em que a perda chega a 1 dB/km.",
+          "D": "A margem de perda é 100 − 10 = 90 dB. Dividindo pela menor perda, 1 dB/km, obtém-se o alcance de 90 km.",
+          "E": "Não se pode perder os 100 dB iniciais, pois o sinal precisa manter pelo menos 10 dB. A perda admissível é de 90 dB."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:102": {
@@ -63,6 +111,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Uma amostra viva de 30 g emitiria 15 × 30 = 450 partículas beta por minuto, ou 27 000 por hora. O fóssil emite 6 750 por hora, um quarto desse valor, indicando duas meias-vidas. Sua idade é 2 × 5 730 = 11 460 anos."
+        ],
+        "alternatives": {
+          "A": "O número 450 é a emissão por minuto esperada para 30 g de tecido vivo. Não é uma medida de idade.",
+          "B": "O valor 1 433 não corresponde a um número de meias-vidas compatível com a redução a um quarto. É preciso comparar emissões em unidades iguais.",
+          "C": "A emissão caiu de 27 000 para 6 750 por hora, isto é, a um quarto. Duas meias-vidas correspondem a 11 460 anos.",
+          "D": "Três meias-vidas produziriam um oitavo da emissão inicial, e não um quarto. O valor 17 190 anos superestima a idade.",
+          "E": "O valor 27 000 é a taxa horária da amostra viva equivalente. Não representa o tempo decorrido desde a morte."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:103": {
@@ -83,6 +155,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Parte da energia eólica é convertida em energia química do hidrogênio e armazenada. Quando falta vento, esse combustível pode ser misturado ao biogás e queimado na planta geradora, sustentando a produção de calor e eletricidade sem depender da geração eólica instantânea."
+        ],
+        "alternatives": {
+          "A": "A eletrólise consome energia para produzir hidrogênio. Não é o processo que fornece eletricidade à rede quando o vento cessa.",
+          "B": "O hidrogênio armazenado constitui uma reserva energética. Sua combustão em mistura com biogás permite manter a geração durante a ausência temporária de vento.",
+          "C": "A inércia não mantém indefinidamente velocidade e potência sob retirada de energia. Sem vento, o funcionamento anterior das turbinas não se sustenta.",
+          "D": "A combustão libera energia térmica, que precisa ser convertida para produzir eletricidade. Não gera diretamente energia elétrica como afirma a alternativa.",
+          "E": "Nenhuma máquina térmica converte integralmente o calor em eletricidade. A figura também indica um destino específico para energia térmica não convertida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:104": {
@@ -103,6 +199,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na eletrólise aquosa de NaCl, o cloreto sofre oxidação no ânodo, formando cloro. No cátodo, a água é reduzida segundo 2 H2O + 2 e⁻ → H2 + 2 OH⁻. Portanto o gás secundário é hidrogênio, enquanto os íons hidróxido tornam a solução alcalina."
+        ],
+        "alternatives": {
+          "A": "Vapor de água pode estar presente fisicamente, mas não é o produto gasoso da redução que ocorre no cátodo da célula.",
+          "B": "O oxigênio pode ser produzido em outras condições eletrolíticas. Na célula cloro-álcali descrita, o gás catódico é hidrogênio.",
+          "C": "O diafragma evita a mistura direta dos produtos que favoreceria formação de hipoclorito. O produto secundário gasoso não é um sal de sódio.",
+          "D": "A redução da água no cátodo produz H2 e OH⁻. Isso explica simultaneamente o gás secundário e a solução alcalina retirada.",
+          "E": "O meio catódico se torna alcalino pela formação de OH⁻. Não se produz cloreto de hidrogênio como gás secundário nessa etapa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:105": {
@@ -123,6 +243,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O componente destacado nos fertilizantes é o nitrato. No ciclo do nitrogênio, ele é formado pela oxidação do nitrito na etapa chamada nitratação, que integra a nitrificação realizada por microrganismos. Assim se disponibiliza uma forma de nitrogênio assimilável pelas plantas."
+        ],
+        "alternatives": {
+          "A": "A nitratação converte nitrito em nitrato. Ela produz a forma nitrogenada destacada como componente principal dos fertilizantes citados.",
+          "B": "A nitrosação forma nitrito a partir de compostos amoniacais. O nitrato surge na etapa seguinte, a nitratação.",
+          "C": "A amonificação libera amônia ou amônio a partir de matéria orgânica. Não produz diretamente o nitrato mencionado.",
+          "D": "A desnitrificação reduz nitrato a formas gasosas de nitrogênio. Ela consome, em vez de produzir, o componente procurado.",
+          "E": "A fixação transforma N2 em compostos amoniacais. Para chegar a nitrato, o nitrogênio ainda passa pelas etapas de nitrificação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:106": {
@@ -143,6 +287,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada rato ingere 100 × 3 = 300 mg de pesticida e possui massa de 0,2 kg. A dose é 300 ÷ 0,2 = 1 500 mg/kg, superior às DL50 de diazinon e malation, mas inferior à de atrazina. Pelo modelo da questão, os dois primeiros grupos atingem mortalidade mínima de metade dos vinte ratos."
+        ],
+        "alternatives": {
+          "A": "A dose de 1 500 mg/kg fica abaixo de 3 100 mg/kg, valor da atrazina. Esse grupo não é o que alcança o limiar previsto de 50%.",
+          "B": "O diazinon ultrapassa o limiar, mas não é o único. A dose administrada também supera os 1 000 mg/kg do malation.",
+          "C": "A atrazina não atinge sua DL50 na dose fornecida. Além disso, o diazinon, de maior toxicidade, não pode ser excluído.",
+          "D": "A dose de 1 500 mg/kg supera 70 e 1 000 mg/kg. Assim, diazinon e malation atendem ao critério, correspondendo a pelo menos dez ratos no modelo proposto.",
+          "E": "A dose excede as DL50 de dois pesticidas. Portanto não é correto afirmar que nenhum grupo alcance o limiar descrito."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:107": {
@@ -163,6 +331,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Antibióticos podem atingir estruturas ou processos próprios das bactérias, como a síntese de parede celular e a atividade de ribossomos bacterianos. Essa seletividade permite inibir seu crescimento ou provocar sua morte, tratando a causa bacteriana da doença."
+        ],
+        "alternatives": {
+          "A": "Ativar a imunidade é uma estratégia de vacinas e imunomoduladores. Não descreve o mecanismo antibacteriano específico pedido.",
+          "B": "Interferir na inflamação é a ação típica de anti-inflamatórios. Isso pode aliviar sintomas sem eliminar bactérias.",
+          "C": "Antibióticos não atuam principalmente removendo toxinas já liberadas. Seu alvo é a bactéria ou processos necessários à sua sobrevivência.",
+          "D": "Destruir células do hospedeiro causaria dano ao paciente. O tratamento busca alvos bacterianos com seletividade.",
+          "E": "A parede celular e outras estruturas bacterianas podem ser danificadas ou ter sua síntese bloqueada. Esse ataque específico caracteriza a ação de diversos antibióticos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:108": {
@@ -183,6 +375,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Pelo gráfico, uma tensão de 1 V produz corrente de 2 × 10⁻⁶ A. A resistência nominal vale R = U/i = 5 × 10⁵ Ω. Como a amônia quadruplica esse valor, a resistência final é 4 × 5 × 10⁵ = 2 × 10⁶ Ω."
+        ],
+        "alternatives": {
+          "A": "O valor 0,5 Ω ignora o fator 10⁻⁶ da escala de corrente. A resistência nominal está na ordem de centenas de milhares de ohms.",
+          "B": "O valor 2 Ω também ignora a escala de microampères. É preciso converter a corrente antes de calcular e quadruplicar a resistência.",
+          "C": "O valor 2,5 × 10⁵ Ω não corresponde a U/i para o gráfico e ainda fica abaixo da resistência nominal, quando ela deveria aumentar.",
+          "D": "Esse é o valor nominal de resistência, calculado por 1 V dividido por 2 microampères. Falta aplicar o aumento de quatro vezes.",
+          "E": "A resistência nominal de 5 × 10⁵ Ω é multiplicada por quatro. O resultado na presença de amônia é 2 × 10⁶ Ω."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:109": {
@@ -203,6 +419,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os nanotubos ampliam a faixa de comprimentos de onda aproveitados pelo sistema fotossintético. Sua ação direta é absorver fótons que os pigmentos normalmente não utilizariam, aumentando a entrada de energia e o transporte de elétrons nas membranas dos cloroplastos."
+        ],
+        "alternatives": {
+          "A": "A água participa da fotossíntese, mas a inovação descrita não atua diretamente em sua captação ou utilização. Ela amplia a absorção luminosa.",
+          "B": "Os nanotubos funcionam como antenas para comprimentos de onda adicionais. A absorção de fótons é a causa direta do aumento de energia disponível.",
+          "C": "A formação de oxigênio decorre da fotólise da água. Pode acompanhar a atividade fotossintética, mas não é a ação direta atribuída aos nanotubos.",
+          "D": "O texto insere nanotubos nos cloroplastos existentes, sem afirmar aumento no número dessas organelas.",
+          "E": "O dióxido de carbono é utilizado na fixação de carbono. A ação descrita incide antes, na captação de energia luminosa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:110": {
@@ -223,6 +463,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Barragens constituem barreiras físicas ao deslocamento dos peixes rio acima. Ao encurtar ou interromper o percurso migratório, prejudicam o esforço e os estímulos fisiológicos associados à maturação reprodutiva, além de dificultar o acesso às áreas de reprodução."
+        ],
+        "alternatives": {
+          "A": "A barreira impede que os peixes completem o percurso rio acima. Esse encurtamento interfere nos estímulos da piracema e no acesso aos locais reprodutivos.",
+          "B": "A redução da longevidade não é o mecanismo imediato descrito. O efeito direto da barragem é bloquear o deslocamento migratório.",
+          "C": "O texto relaciona reprodução ao movimento e à ativação hormonal. A redução de alimento não é apresentada como causa central.",
+          "D": "A barragem altera a possibilidade de percurso, sem necessariamente reduzir o período sazonal em que a espécie tenta migrar.",
+          "E": "A diminuição da diversidade pode ser consequência ambiental mais ampla. Não explica diretamente como a barreira prejudica a migração de uma espécie."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:111": {
@@ -243,6 +507,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O fusível está em série com o resistor de 120 Ω, ramo paralelo ao resistor inferior esquerdo de 60 Ω. A associação 120 || 60 vale 40 Ω e fica em série com os 40 Ω inferiores direitos. Cada trecho recebe U/2. Logo, no fusível passa (U/2)/120 = U/240. Para 0,5 A, U máximo = 120 V."
+        ],
+        "alternatives": {
+          "A": "Com 20 V, o fusível conduz apenas 20/240 A. A corrente fica bem abaixo de 0,5 A, portanto essa não é a tensão máxima.",
+          "B": "Com 40 V, a corrente do ramo de 120 Ω vale 1/6 A. O fusível ainda está abaixo do limite nominal.",
+          "C": "Com 60 V, a corrente no fusível é 0,25 A. Ainda se pode aumentar a tensão até atingir os 0,5 A permitidos.",
+          "D": "O ramo inferior divide a tensão em duas partes iguais de resistência equivalente 40 Ω. Para U = 120 V, o resistor de 120 Ω recebe 60 V e conduz 0,5 A.",
+          "E": "Com 185 V, o ramo protegido conduz 185/240 A, aproximadamente 0,77 A. Esse valor supera o limite e queima o fusível."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:112": {
@@ -263,6 +551,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Substâncias persistentes como o mercúrio podem se acumular nos organismos e aumentar de concentração ao longo da cadeia alimentar. Como predadores do topo, os botos ingerem contaminantes presentes em muitas presas, sofrendo biomagnificação."
+        ],
+        "alternatives": {
+          "A": "Os botos são predadores, não herbívoros. Consumidores de níveis iniciais também podem acumular contaminantes, mas não explicam o maior valor citado.",
+          "B": "Os botos não se alimentam principalmente de detritos. O aumento de concentração está relacionado à posição elevada na cadeia alimentar.",
+          "C": "O porte, isoladamente, não determina a concentração de contaminantes. A biomagnificação depende de dieta, persistência e transferência trófica.",
+          "D": "O texto não estabelece digestão lenta como causa. A ingestão de presas contaminadas em nível trófico elevado explica o acúmulo maior.",
+          "E": "Como predadores de topo, recebem contaminantes acumulados em diferentes níveis inferiores. A biomagnificação eleva a concentração em seus tecidos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:113": {
@@ -283,6 +595,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O caminho esquerdo tem 40 cm de extensão horizontal em cada lado, e o direito tem 30 cm. A diferença total entre percursos é 2 × (40 − 30) = 20 cm. Para o primeiro mínimo, essa diferença vale λ/2, portanto λ = 0,40 m e f = 320/0,40 = 800 Hz."
+        ],
+        "alternatives": {
+          "A": "Para 3 200 Hz, o comprimento de onda seria 0,10 m. A diferença de percurso de 0,20 m produziria interferência construtiva, não o primeiro mínimo.",
+          "B": "O valor 1 600 Hz resulta de usar a diferença de percurso como um comprimento de onda. No primeiro mínimo ela corresponde a meia onda.",
+          "C": "A diferença de 0,20 m corresponde a λ/2. Assim λ = 0,40 m e a relação v = λf fornece 800 Hz.",
+          "D": "Com 640 Hz, o comprimento de onda seria 0,50 m. Meia onda teria 0,25 m, diferente dos 0,20 m calculados pelo esquema.",
+          "E": "Com 400 Hz, meia onda seria 0,40 m. A diferença real é metade desse valor, e deve-se contar os dois segmentos de cada percurso."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:114": {
@@ -303,6 +639,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os comprimidos exigem 900 000 × 0,5 g = 450 000 g, ou 450 kg de AAS efetivamente obtido. Com rendimento de 50%, a produção teórica deve ser 900 kg. Pela proporção molar 1:1, a massa de ácido salicílico é 900 × 138/180 = 690 kg."
+        ],
+        "alternatives": {
+          "A": "O valor 293 kg não atende à proporção molar e ao rendimento. A produção efetiva de AAS já precisa ser de 450 kg.",
+          "B": "Esse valor é a massa estequiométrica para 450 kg de AAS com rendimento integral. Como o rendimento é 50%, ela deve ser duplicada.",
+          "C": "O valor 414 kg não considera corretamente a relação entre massas molares e a perda de metade do produto prevista no rendimento.",
+          "D": "A produção teórica necessária é 900 kg de AAS. A relação 138/180 entre reagente e produto fornece 690 kg de ácido salicílico.",
+          "E": "O valor 828 kg excede o cálculo estequiométrico ajustado pelo rendimento. A proporção correta é 900 × 138/180, resultando em 690 kg."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:115": {
@@ -323,6 +683,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Bromélias epífitas usam outras plantas como suporte, sem retirar delas a seiva. Muitas possuem folhas dispostas em roseta que retêm chuva, permitindo absorver água e nutrientes acumulados mesmo sem contato direto com o solo."
+        ],
+        "alternatives": {
+          "A": "Retirar água do organismo de uma planta caracteriza parasitismo. As epífitas descritas utilizam a árvore como suporte.",
+          "B": "A vida sobre os galhos não depende de raízes longas até o solo. A água pode ser retida pela própria disposição das folhas.",
+          "C": "As folhas em roseta formam reservatórios que acumulam água da chuva. Essa adaptação permite a captação hídrica na condição epífita.",
+          "D": "Captar seiva bruta do hospedeiro seria uma relação parasitária. O epifitismo não exige retirar recursos dos tecidos da árvore.",
+          "E": "Organismos que vivem na água acumulada podem fornecer nutrientes, mas a origem da água do reservatório é principalmente a chuva."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:116": {
@@ -343,6 +727,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Pela lei de Hess, multiplicam-se as equações fornecidas por 3, 2 e 1, respectivamente. A soma cancela Fe2O3 e Fe3O4 e resulta em 6 FeO + 6 CO → 6 Fe + 6 CO2. A entalpia é 3(−25) + 2(−36) + 47 = −100 kJ. Por mol de FeO, −100/6 ≈ −17 kJ."
+        ],
+        "alternatives": {
+          "A": "O valor −14 kJ não resulta da combinação que cancela os óxidos intermediários. A soma correta fornece −100 kJ para seis mols de FeO.",
+          "B": "A combinação 3 vezes a primeira reação, 2 vezes a segunda e 1 vez a terceira produz −100 kJ para seis mols de FeO. O valor molar é aproximadamente −17 kJ.",
+          "C": "O valor −50 kJ corresponderia a dividir a soma por dois. A reação somada consome seis mols de FeO, não dois.",
+          "D": "Somar coeficientes de entalpia sem ajustar as equações não preserva a reação desejada. É necessário cancelar os óxidos intermediários pela lei de Hess.",
+          "E": "O valor −100 kJ é a entalpia total da reação somada, que consome seis mols de FeO. A questão pede o valor por mol."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:117": {
@@ -363,6 +771,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A pilha Ce/Zn fornece 1,61 − (−0,76) = 2,37 V, e a pilha dicromato/Ni fornece 1,33 − (−0,25) = 1,58 V. Na montagem C, o ânodo de zinco liga-se ao cátodo de dicromato, associando as pilhas de forma aditiva. A tensão total é 3,95 V, superior aos 3,6 V exigidos."
+        ],
+        "alternatives": {
+          "A": "As pilhas Ce/Ni e dicromato/Zn fornecem 1,86 e 2,09 V, mas a conexão Ni/Zn une ânodos. As tensões se opõem e a resultante é apenas 0,23 V.",
+          "B": "As pilhas Ce/Zn e dicromato/Ni têm tensões 2,37 e 1,58 V. A ligação entre os dois ânodos faz prevalecer a diferença, 0,79 V, insuficiente.",
+          "C": "As pilhas de 2,37 e 1,58 V estão conectadas em série aditiva. A tensão de 3,95 V supera o valor necessário para acender o LED.",
+          "D": "O par Ce/dicromato fornece 0,28 V e o par Ni/Zn fornece 0,51 V. Mesmo a soma de 0,79 V não alcança 3,6 V.",
+          "E": "Os pares Ce/dicromato e Ni/Zn apresentam diferenças de 0,28 e 0,51 V. Essa configuração não produz a tensão mínima de 3,6 V, independentemente de ser inferior até mesmo na soma."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:118": {
@@ -383,6 +815,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em fêmeas de mamíferos, um dos cromossomos X é inativado em cada célula durante o desenvolvimento. Se essa inativação ocorre com padrões distintos nas gêmeas heterozigóticas, uma pode manter predominantemente ativo o X mutante nos tecidos relevantes e manifestar a doença."
+        ],
+        "alternatives": {
+          "A": "O enunciado caracteriza o alelo como recessivo. A diferença entre gêmeas com mesmo genótipo pode ser explicada pela inativação do X, sem supor dominância incompleta.",
+          "B": "Uma falha de segregação poderia alterar a constituição cromossômica, mas as duas gêmeas são descritas como heterozigóticas para o mesmo gene.",
+          "C": "Uma recombinação anterior à separação não explica adequadamente padrões distintos de expressão em duas gêmeas monozigóticas heterozigóticas.",
+          "D": "A inativação do X pode gerar padrões celulares distintos depois da separação embrionária. A atividade predominante do X mutante explica a manifestação em apenas uma gêmea.",
+          "E": "Gêmeas monozigóticas compartilham a origem dos cromossomos herdados. O mesmo alelo não passa a ter origem parental diferente em cada uma."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:119": {
@@ -403,6 +859,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As áreas vazadas do concregrama mantêm parte do solo exposta e coberta por grama, permitindo infiltração da chuva. A solução reduz a impermeabilização causada por uma placa contínua de concreto e diminui o escoamento superficial associado."
+        ],
+        "alternatives": {
+          "A": "As aberturas permitem a entrada de água no solo. Esse é o objetivo ambiental que diferencia o concregrama de um piso contínuo impermeável.",
+          "B": "O piso vegetado pode reduzir aquecimento local, mas evitar diminuição de temperatura não é o objetivo apresentado.",
+          "C": "A matéria orgânica pode beneficiar o solo e a grama. Evitar seu acúmulo não explica a manutenção de áreas vazadas permeáveis.",
+          "D": "O formato do piso não é uma medida específica de controle de pH. Sua propriedade central é permitir infiltração.",
+          "E": "A salinização envolve acúmulo de sais. O concregrama enfrenta diretamente o bloqueio físico à entrada de água no solo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:120": {
@@ -423,6 +903,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O lapachol possui uma hidroxila ácida. Uma solução básica de carbonato de sódio favorece sua desprotonação, formando uma espécie iônica mais solúvel em água. Assim o composto passa à solução e pode ser separado da serragem insolúvel por filtração."
+        ],
+        "alternatives": {
+          "A": "O carbonato atua como base e remove o próton ácido do lapachol. O sal formado apresenta maior afinidade pela fase aquosa, favorecendo a extração.",
+          "B": "O pH 4,5 é inferior ao pKa 6,0, favorecendo a forma protonada do lapachol. Essa condição é menos eficiente para sua solubilização iônica.",
+          "C": "O NaCl não oferece a basicidade necessária à desprotonação. Aumentar a força iônica não substitui a formação do sal de lapachol.",
+          "D": "O sulfato de sódio não é a base adequada para converter eficientemente a hidroxila ácida no sal pretendido. O objetivo não é apenas formar um par iônico.",
+          "E": "O ácido clorídrico favorece a forma protonada do composto. Não produz o sal aniônico solúvel que facilitaria sua extração em água."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:121": {
@@ -443,6 +947,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na osmose espontânea, a água tende a passar para o compartimento mais concentrado. A osmose reversa exige pressionar a solução salgada no sentido contrário a essa tendência, com pressão mecânica maior que a pressão osmótica, para obter água no outro compartimento."
+        ],
+        "alternatives": {
+          "A": "Pressões no mesmo sentido reforçariam o fluxo espontâneo, em vez de revertê-lo. A dessalinização exige oposição à tendência osmótica.",
+          "B": "Pressões opostas e iguais produziriam equilíbrio, sem fluxo líquido necessário à obtenção de água potável.",
+          "C": "Se a pressão osmótica prevalecer, a água seguirá a tendência espontânea para o lado mais concentrado. Não haverá reversão do fluxo.",
+          "D": "A pressão mecânica precisa se opor à osmótica. A atuação no mesmo sentido não produz osmose reversa.",
+          "E": "A pressão aplicada ao lado salgado deve superar a osmótica e atuar em sentido contrário. Assim a água atravessa a membrana para o compartimento de coleta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:122": {
@@ -463,6 +991,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Óleos essenciais contêm substâncias voláteis, que passam com facilidade para o estado gasoso. A elevação da temperatura após o nascer do sol intensifica essa perda, de modo que a coleta ao raiar do dia pode preservar uma quantidade maior desses compostos na planta."
+        ],
+        "alternatives": {
+          "A": "A volatilização aumenta com o aquecimento ao longo do dia. Coletar cedo reduz a perda dos compostos de interesse para a atmosfera.",
+          "B": "O texto não indica reação de polimerização dos óleos. A explicação comum para a perda com aquecimento é a volatilidade.",
+          "C": "Óleos essenciais não são caracterizados por alta solubilidade em água. O orvalho não é o fundamento da preservação de sua quantidade.",
+          "D": "A explicação não exige oxidação pelo oxigênio recém-produzido. O aumento de temperatura já favorece a perda de substâncias voláteis.",
+          "E": "A fotossíntese não libera óleos como produto necessário. A perda desses compostos se relaciona à passagem para o estado gasoso."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:123": {
@@ -483,6 +1035,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O comprimento ideal deve manter absorção pela melanina e minimizar a absorção pela oxi-hemoglobina e pela água. No gráfico, em 700 nm a melanina ainda absorve de modo expressivo, enquanto as outras duas curvas ficam próximas de zero, favorecendo a seletividade do tratamento."
+        ],
+        "alternatives": {
+          "A": "Em 400 nm, a oxi-hemoglobina apresenta absorção elevada. Isso ampliaria o risco de aquecer tecidos sanguíneos além dos folículos.",
+          "B": "Em 700 nm, a melanina mantém absorção considerável e as demais substâncias absorvem muito pouco. Esse contraste oferece a melhor seletividade entre as opções.",
+          "C": "Em 1 100 nm, a água apresenta absorção significativa e a melanina absorve menos. A seletividade é inferior à de 700 nm.",
+          "D": "Em 900 nm, a oxi-hemoglobina ainda absorve mais do que em 700 nm e a água começa a absorver. O comprimento não é o melhor entre os propostos.",
+          "E": "Em 500 nm, há absorção importante pela oxi-hemoglobina. O aquecimento não ficaria tão concentrado na melanina dos pelos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:124": {
@@ -503,6 +1079,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Nos pontos extremos a velocidade é nula, portanto a energia cinética também é zero. Acima da lona, só a energia gravitacional varia e Ec diminui linearmente com h. Na compressão, a energia elástica depende de h², tornando curvo esse trecho do gráfico. A opção C reúne essas características."
+        ],
+        "alternatives": {
+          "A": "O gráfico atribui energia cinética não nula aos extremos e mínima em h = 0. Nos pontos de retorno a criança está instantaneamente em repouso.",
+          "B": "O trecho acima da lona é corretamente linear, mas o trecho de compressão não pode ser apenas uma reta, pois envolve energia elástica quadrática.",
+          "C": "A curva na região de compressão representa a contribuição elástica, e a reta na região aérea representa a gravidade. A energia cinética zera nos dois extremos.",
+          "D": "O gráfico troca os comportamentos: a região aérea deve ser linear, e a região em contato com a lona deve incorporar a dependência quadrática elástica.",
+          "E": "A energia cinética não cresce até um valor positivo no ponto de máxima altura. Nesse ponto a velocidade e a energia cinética são nulas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:125": {
@@ -523,6 +1123,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Durante o segundo extra de reação, o desatento percorre 14 × 1 + 1 × 1²/2 = 14,5 m e chega a 15 m/s. As frenagens medem 15²/(2 × 5) = 22,5 m e 14²/(2 × 5) = 19,6 m. A diferença total é 14,5 + 22,5 − 19,6 = 17,4 m."
+        ],
+        "alternatives": {
+          "A": "Os 2,9 m correspondem apenas à diferença das distâncias de frenagem. É preciso somar os 14,5 m percorridos durante o atraso.",
+          "B": "Os 14 m consideram movimento uniforme no segundo de atraso. O enunciado informa aceleração, e também há aumento da distância de frenagem.",
+          "C": "Os 14,5 m são a distância percorrida antes de o desatento frear. Falta acrescentar a diferença entre as frenagens a 15 m/s e a 14 m/s.",
+          "D": "O valor 15 é a velocidade, em m/s, ao fim do atraso. Não representa a diferença total das distâncias até a parada.",
+          "E": "Somam-se 14,5 m no atraso e 2,9 m adicionais na frenagem. A distância a mais é 17,4 m."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:126": {
@@ -543,6 +1167,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O salgamento torna o ambiente externo hipertônico em relação às células. A água sai por osmose, provocando desidratação e dificultando a atividade de microrganismos que deterioram o alimento. Essa perda hídrica é o mecanismo central da conservação descrita."
+        ],
+        "alternatives": {
+          "A": "A perda de água tende a concentrar os solutos internos, e não a diminuir sua concentração. O efeito começa pela elevação da concentração externa.",
+          "B": "O mecanismo conservante não depende de destruir diretamente as membranas. A diferença de concentração promove saída de água por osmose.",
+          "C": "Não é necessário alterar propriedades da membrana para explicar o processo. Sua permeabilidade seletiva permite o fluxo osmótico de água.",
+          "D": "Íons não atravessam livremente a bicamada lipídica. A resposta central ao meio hipertônico é a movimentação de água.",
+          "E": "O meio externo concentrado em sal atrai água por osmose. A desidratação celular reduz condições para crescimento e atividade dos decompositores."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:127": {
@@ -563,6 +1211,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A tensão máxima de uma bobina girante é proporcional a N B A f. A corrente de curto depende de V/R. Ao dobrar o número de espiras, dobra-se a tensão e também o comprimento do fio, portanto a resistência. A razão V/R permanece igual, atendendo às duas condições."
+        ],
+        "alternatives": {
+          "A": "Dobrar N duplica a força eletromotriz e o comprimento do fio. A resistência também duplica, mantendo a corrente de curto constante.",
+          "B": "Dobrar a frequência duplica a tensão sem duplicar a resistência do fio. A corrente de curto também aumentaria, contrariando a condição.",
+          "C": "Dobrar o campo duplica a tensão induzida, mas mantém a resistência da bobina. Assim a corrente de curto não permaneceria constante.",
+          "D": "Dobrar a área de espiras circulares aumenta o comprimento do fio por um fator raiz de dois. A tensão dobra, mas a resistência não dobra, alterando a corrente.",
+          "E": "Dobrar o diâmetro do fio aumenta sua seção por quatro e reduz a resistência. Isso não duplica a tensão induzida e ainda modifica a corrente."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:128": {
@@ -583,6 +1255,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A estrutura é fenil-CH=C(CH3)2. Na ozonólise, cada carbono da dupla recebe uma carbonila: o carbono ligado ao fenil e a um H forma benzaldeído; o carbono ligado a dois grupos metil forma propanona. Assim surgem um aldeído aromático e uma cetona."
+        ],
+        "alternatives": {
+          "A": "O carbono fenil-CH forma fenil-CHO, o benzaldeído. O carbono com dois metis forma CH3-CO-CH3, a propanona.",
+          "B": "O lado com dois grupos metil forma cetona, não propanal. A distribuição dos substituintes da dupla deve ser preservada em cada fragmento.",
+          "C": "Não há carbono terminal CH2 na dupla para formar metanal. O grupo fenil está ligado diretamente ao carbono que se torna carbonila.",
+          "D": "O carbono ligado ao anel aromático não desaparece. Ele forma o grupo aldeído do benzaldeído, e não benzeno.",
+          "E": "O fragmento com dois metis contém três carbonos e forma propanona. Etanal exigiria um H no carbono correspondente da dupla."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:129": {
@@ -603,6 +1299,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A transfusão introduz componentes celulares sanguíneos de um doador no organismo receptor e já era empregada rotineiramente antes das novas terapias regenerativas. Por isso é o exemplo de transferência terapêutica de células preexistente ao caráter de novidade atribuído à terapia celular."
+        ],
+        "alternatives": {
+          "A": "Vacinas estimulam respostas imunes por antígenos e outras plataformas. Não correspondem à introdução rotineira de novas células sanguíneas no paciente.",
+          "B": "A biópsia retira uma amostra para análise diagnóstica. Seu sentido é oposto ao de introduzir células para tratamento.",
+          "C": "A hemodiálise filtra o sangue para remover substâncias e excesso de líquido. Não repõe células de um doador como mecanismo terapêutico.",
+          "D": "A quimioterapia utiliza substâncias para tratar doenças, frequentemente destruindo células tumorais. Não é transferência de novas células.",
+          "E": "A transfusão pode repor hemácias, plaquetas e outros componentes celulares. É uma aplicação hospitalar consolidada de introdução terapêutica de células."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:130": {
@@ -623,6 +1343,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para limitar a corrente a 0,01 A sob 10 000 V, a resistência total precisa ser pelo menos R = U/i = 1 000 000 Ω. Como o corpo tem cerca de 1 000 Ω, a resistência interna necessária é aproximadamente 999 000 Ω, quase mil vezes maior que a corporal."
+        ],
+        "alternatives": {
+          "A": "Com resistência interna quase nula, a corrente seria aproximadamente 10 000/1 000 = 10 A. Isso excede muito o limite estabelecido.",
+          "B": "Se a resistência interna fosse igual à corporal, a corrente seria cerca de 5 A. O valor ainda seria muito superior a 0,01 A.",
+          "C": "É preciso resistência total da ordem de um milhão de ohms. A resistência interna necessária fica aproximadamente mil vezes acima dos mil ohms corporais.",
+          "D": "Uma resistência interna dez vezes maior daria total de cerca de 11 000 Ω. A corrente próxima de 0,91 A ultrapassaria o limite.",
+          "E": "Uma resistência interna menor que a corporal pouco limitaria a corrente. A proteção exige resistência interna muito elevada, não reduzida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:131": {
@@ -643,6 +1387,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A fase estacionária contém água e retém mais intensamente moléculas capazes de interações polares e ligações de hidrogênio. A capsorubina possui dois grupos hidroxila e duas carbonilas, tendo maior interação com essa fase que os pigmentos hidrocarbonetos e a criptoxantina com apenas uma hidroxila."
+        ],
+        "alternatives": {
+          "A": "O licopeno é um hidrocarboneto predominantemente apolar. Interage melhor com a fase móvel rica em hexano que com a água estacionária.",
+          "B": "O alfa-caroteno não apresenta grupos oxigenados na estrutura fornecida. Sua interação com a fase aquosa é menor que a da capsorubina.",
+          "C": "O gama-caroteno também é um hidrocarboneto apolar. Não possui os grupos polares necessários à maior retenção pela água.",
+          "D": "As hidroxilas e carbonilas da capsorubina favorecem interações fortes com a água estacionária. Por isso ela migra mais lentamente.",
+          "E": "A alfa-criptoxantina possui uma hidroxila e pode interagir com água, mas a capsorubina reúne mais grupos oxigenados, aumentando a retenção."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:132": {
@@ -663,6 +1431,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Como os segmentos têm o mesmo comprimento, desnatura primeiro aquele com menos pares G-C, que formam três ligações de hidrogênio. O segmento C contém seis pares A-T e apenas dois G-C, somando 18 ligações, menos que as demais alternativas."
+        ],
+        "alternatives": {
+          "A": "O segmento A possui seis pares G-C e dois A-T, totalizando 22 ligações de hidrogênio. Sua estabilidade é maior que a do segmento C.",
+          "B": "O segmento B possui cinco pares G-C e três A-T, totalizando 21 ligações. Precisa romper mais ligações que o segmento C.",
+          "C": "O segmento C possui dois pares G-C e seis A-T. O menor número de ligações de hidrogênio favorece a desnaturação completa em menor temperatura.",
+          "D": "O segmento D tem cinco pares G-C e três A-T. Essa composição apresenta mais ligações de hidrogênio que a alternativa C.",
+          "E": "O segmento E apresenta quatro pares G-C e quatro A-T, totalizando 20 ligações. Não é o segmento menos estável entre os apresentados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:133": {
@@ -683,6 +1475,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O flúor possui elevada eletronegatividade, isto é, forte tendência a atrair elétrons em uma ligação química. Esse caráter torna-o um reagente oxidante capaz de formar compostos até com xenônio, cuja baixa reatividade dificultava combinações conhecidas até então."
+        ],
+        "alternatives": {
+          "A": "A densidade não mede a tendência de atrair elétrons ou formar ligações. Não explica a reatividade do flúor com xenônio.",
+          "B": "A condutância descreve transporte de carga elétrica. Não é a propriedade periódica que torna o flúor um reagente tão reativo.",
+          "C": "A elevada eletronegatividade permite forte atração de elétrons e favorece a combinação com xenônio. Essa é a propriedade relevante à reação química.",
+          "D": "A estabilidade nuclear trata do núcleo e da radioatividade. A reação mencionada envolve elétrons e ligações, sem transformação nuclear.",
+          "E": "A temperatura de ebulição informa uma mudança de estado físico. Não explica a capacidade química de combinar-se com um gás nobre."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:134": {
@@ -703,6 +1519,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para uma mesma vazão, a relação P = vazão mássica × c × ΔT mostra que a potência é proporcional à elevação de temperatura. No gráfico, em 3 L/min, as curvas morno e superquente indicam cerca de 12 °C e 32 °C. Assim, a fração é 12/32 = 3/8."
+        ],
+        "alternatives": {
+          "A": "A proporção não é determinada pelo fato de haver três níveis. É necessário comparar elevações de temperatura na mesma vazão.",
+          "B": "Uma razão de 1/5 exigiria que a curva morno apresentasse um quinto da elevação térmica da superquente. O gráfico mostra relação maior, próxima de 3/8.",
+          "C": "O valor 3/5 não corresponde à comparação entre as curvas 1 e 3 na mesma vazão. A elevação na condição morno é menor que essa fração.",
+          "D": "Na mesma vazão, a razão das potências é a razão entre as elevações de temperatura. Os valores aproximados 12 e 32 fornecem 3/8.",
+          "E": "O valor 5/8 se aproxima de outra relação entre níveis, mas não da razão morno/superquente. Devem ser comparadas especificamente as curvas 1 e 3."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:135": {
@@ -723,6 +1563,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os cones são fotorreceptores que respondem de modo diferente a faixas de comprimento de onda do visível. A comparação de seus sinais permite perceber cores; sua degeneração prejudica essa capacidade, mesmo que outros componentes ópticos do olho continuem funcionando."
+        ],
+        "alternatives": {
+          "A": "Os cones participam da discriminação de comprimentos de onda. Sua degeneração compromete diretamente a visão de cores.",
+          "B": "A projeção dos raios depende das estruturas transparentes e refratoras do olho. Os cones recebem e convertem a luz já projetada na retina.",
+          "C": "A imagem retiniana já é normalmente invertida devido ao sistema óptico. A degeneração dos cones não é a causa dessa inversão.",
+          "D": "A focalização de objetos próximos depende da acomodação do cristalino. Não é a função específica dos cones indicada no enunciado.",
+          "E": "A variação do diâmetro pupilar depende de músculos da íris. Cones são células receptoras da retina, não os efetores desse movimento."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:91": {
@@ -743,6 +1607,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O aquecimento excita elétrons do sódio presente no sal da água de cozimento. Quando retornam a estados de menor energia, esses elétrons emitem fótons característicos, responsáveis pela coloração amarela observada no teste de chama."
+        ],
+        "alternatives": {
+          "A": "A cor amarela não exige formação de gás cloro. O mecanismo é a emissão de luz por espécies de sódio excitadas.",
+          "B": "A chama fornece energia para a excitação eletrônica do sódio. O retorno dos elétrons a estados menos energéticos produz fótons amarelos.",
+          "C": "Não é necessário formar um composto amarelo com carboidratos. A emissão característica do sódio explica a mudança da chama.",
+          "D": "A produção de hidrogênio não explica a coloração amarela característica. O fenômeno envolve transições eletrônicas do sódio do sal.",
+          "E": "Proteínas podem sofrer alterações ao aquecer, mas não são responsáveis pela emissão amarela característica descrita no teste de chama."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:92": {
@@ -763,6 +1651,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Woese comparou sequências de RNA ribossômico para reconstruir relações de ancestralidade. As diferenças moleculares mostraram que os procariontes reunidos em Monera pertenciam a linhagens distintas, justificando os domínios Archaea e Eubacteria e o critério filogenético."
+        ],
+        "alternatives": {
+          "A": "Apenas distinguir células procarióticas e eucarióticas mantém Archaea e Eubacteria juntas. A classificação molecular evidencia diferenças evolutivas entre elas.",
+          "B": "O habitat e a função ecológica não são os critérios centrais indicados. O estudo compara sequências relacionadas ao RNA ribossômico.",
+          "C": "Semelhanças e diferenças moleculares permitem inferir ancestralidade. A nova classificação prioriza relações filogenéticas entre os organismos.",
+          "D": "Propriedades fisiológicas podem ajudar a distinguir grupos, mas o fundamento descrito é a comparação molecular para estabelecer ancestralidade.",
+          "E": "A aparência ou forma celular não explica a divisão dos antigos integrantes de Monera. A diferença foi sustentada por informação molecular."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:93": {
@@ -783,6 +1695,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Como as massas são iguais, a força sobre o ocupante é proporcional à desaceleração, pela relação F = ma. O cinto 2 apresenta o menor pico de desaceleração, distribuindo a frenagem por um intervalo maior e reduzindo a maior força aplicada ao corpo."
+        ],
+        "alternatives": {
+          "A": "O cinto 1 apresenta pico próximo de 150 m/s². Essa desaceleração máxima produz força maior que a do cinto 2.",
+          "B": "A curva do cinto 2 tem o menor valor máximo, cerca de 60 m/s². Para a mesma massa, isso corresponde ao menor pico de força e risco de lesão.",
+          "C": "O cinto 3 produz um pico próximo de 190 m/s². A força máxima sobre o tórax seria muito maior que a do modelo 2.",
+          "D": "O cinto 4 alcança cerca de 80 m/s². Embora inferior a vários outros, seu pico ainda supera o do cinto 2.",
+          "E": "O cinto 5 concentra a desaceleração perto do fim da colisão, com pico elevado. Isso implica grande força máxima sobre o ocupante."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:94": {
@@ -803,6 +1739,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A hemofilia compromete a coagulação por deficiência de fatores desse processo, favorecendo sangramentos prolongados. Um material que auxilia a formação de uma rede sobre lesões poderia beneficiar esse controle de hemorragias, que é a função descrita na proposta."
+        ],
+        "alternatives": {
+          "A": "A filariose é uma parasitose que pode comprometer vasos linfáticos. O problema central não é a deficiência de coagulação enfrentada pelo material.",
+          "B": "Pacientes com hemofilia apresentam dificuldade de coagulação e risco de hemorragias. Um recurso que favoreça o fechamento de lesões atende a essa necessidade.",
+          "C": "A aterosclerose envolve placas na parede arterial. Acelerar a coagulação não remove essas placas e não corresponde ao benefício proposto.",
+          "D": "A doença de Chagas é causada por um protozoário e pode afetar coração e sistema digestório. O material não combate seu agente causal.",
+          "E": "A aids compromete a defesa imunológica por ação do HIV. A rede pró-coagulação não recompõe o sistema imune afetado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:95": {
@@ -823,6 +1783,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O óleo é lipossolúvel e passa ao extrato etéreo na primeira etapa de extração. Ao destilar esse extrato, o éter mais volátil é recolhido como destilado 1, enquanto o óleo de maior massa molecular permanece no recipiente como resíduo 4."
+        ],
+        "alternatives": {
+          "A": "O destilado 1 corresponde principalmente ao éter removido por aquecimento. O óleo, menos volátil, permanece no resíduo da destilação.",
+          "B": "O destilado 2 vem do extrato aquoso e corresponde à água removida. O óleo já foi separado na fase orgânica.",
+          "C": "O resíduo 2 contém materiais insolúveis que não foram extraídos por éter ou água. O óleo foi dissolvido no éter desde o início.",
+          "D": "O resíduo 3 resulta da destilação da fase aquosa e concentra solutos hidrossolúveis. O óleo acompanha a fase etérea, não a água.",
+          "E": "O óleo permanece após evaporar o éter do extrato orgânico. No esquema essa fração não destilada é identificada como resíduo 4."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:96": {
@@ -843,6 +1827,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A transesterificação de triglicerídeos com metanol produz ésteres de ácidos graxos e glicerol. O biodiesel corresponde à mistura desses ésteres, identificados na estrutura pelo grupo carbonila ligado a um oxigênio que se liga também a uma cadeia carbônica."
+        ],
+        "alternatives": {
+          "A": "Um éter possui oxigênio entre carbonos sem a carbonila característica adjacente. Os produtos combustíveis mostrados contêm grupos éster.",
+          "B": "Os produtos apresentam o grupo R-C(=O)-O-CH3. Essa organização caracteriza ésteres, que constituem o biodiesel obtido com metanol.",
+          "C": "O glicerol é um álcool produzido como coproduto. Ele não representa a fração de biodiesel indicada na reação.",
+          "D": "A carbonila do éster não está ligada a dois carbonos, como ocorre em cetonas. Ela se liga também a um oxigênio.",
+          "E": "Os produtos combustíveis não apresentam a carboxila livre de um ácido. A reação forma ésteres a partir dos triglicerídeos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:97": {
@@ -863,6 +1871,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A rotação intensifica a separação de componentes com densidades diferentes. A fase mais densa tende a se deslocar para a região mais externa do recipiente, enquanto a menos densa ocupa a região interna, permitindo acelerar uma separação que seria mais lenta sob a gravidade."
+        ],
+        "alternatives": {
+          "A": "A diferença de densidade permite que os componentes se distribuam de modo distinto durante a centrifugação. Esse é o fundamento físico da separação.",
+          "B": "Os componentes ocuparem posições radiais diferentes é resultado da separação. Não é a propriedade inicial que explica sua distribuição.",
+          "C": "O recipiente gira com uma velocidade angular comum. A separação não exige que cada substância tenha uma velocidade angular própria.",
+          "D": "A quantidade influencia o volume de cada fração, mas não determina por si qual componente se separa para cada posição.",
+          "E": "A coesão molecular não é o critério operacional destacado. A centrifugação explora principalmente diferenças de densidade entre as fases."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:98": {
@@ -883,6 +1915,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Após a fusão, as proteínas de cada origem aparecem inicialmente em metades distintas e depois se misturam. O resultado evidencia mobilidade lateral de proteínas na bicamada lipídica e sustenta a fluidez da membrana no modelo do mosaico fluido."
+        ],
+        "alternatives": {
+          "A": "As marcas de ambas as origens se distribuem pela membrana ao longo do tempo. Isso demonstra deslocamento lateral das proteínas na bicamada.",
+          "B": "Se as proteínas permanecessem confinadas, as marcações continuariam separadas. O resultado observado mostra justamente a mistura.",
+          "C": "O experimento acompanha proteínas, não demonstra que sua função seja deslocar fosfolipídios. A conclusão é a própria mobilidade proteica.",
+          "D": "Os anticorpos são marcadores que permitem visualizar as proteínas. A mistura decorre da fluidez da membrana, sem exigir mobilização provocada por eles.",
+          "E": "Se os anticorpos bloqueassem o deslocamento, não ocorreria a redistribuição observada. Eles identificam proteínas sem explicar o movimento como bloqueio."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:99": {
@@ -903,6 +1959,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A lâmpada desejada deve concentrar emissão no visível e emitir pouco infravermelho, faixa associada ao aquecimento. No gráfico, o LED reúne essas características, com emissão sobreposta à sensibilidade do olho e contribuição pequena fora da faixa visível."
+        ],
+        "alternatives": {
+          "A": "O haleto metálico tem emissão em várias faixas e não concentra tão bem sua energia útil no visível quanto o LED apresentado.",
+          "B": "O tungstênio emite intensamente no infravermelho. Uma parcela elevada da energia favorece aquecimento em vez de iluminação visível.",
+          "C": "O mercúrio apresenta emissão significativa no ultravioleta e picos estreitos. O LED atende melhor ao objetivo de concentrar energia na iluminação visível.",
+          "D": "O xênon possui fortes emissões no infravermelho no gráfico. Essa energia aumenta o aquecimento sem contribuir diretamente à visão.",
+          "E": "O LED concentra a emissão na região visível e tem pequena emissão infravermelha. Essa distribuição atende melhor à iluminação com menor aquecimento radiativo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:136": {
@@ -923,6 +2003,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Um veículo está imóvel quando sua velocidade é zero, isto é, quando o gráfico coincide com o eixo do tempo. Isso ocorre do minuto 6 ao minuto 8. O intervalo total de parada é, portanto, 8 − 6 = 2 minutos."
+        ],
+        "alternatives": {
+          "A": "Trechos horizontais acima do eixo indicam velocidade constante, não repouso. Contá-los junto ao trecho de velocidade zero aumenta indevidamente o tempo parado.",
+          "B": "O intervalo sem movimento começa em 6 e termina em 8 minutos. Sua duração é 2 minutos, não 3.",
+          "C": "O gráfico permanece sobre o eixo do tempo entre 6 e 8 minutos. Nesse intervalo a velocidade é nula por 2 minutos.",
+          "D": "O trecho de repouso atravessa dois intervalos unitários do eixo temporal. Contar apenas um deles reduz indevidamente sua duração.",
+          "E": "Há um trecho inteiro com velocidade nula entre 6 e 8 minutos. Portanto o tempo parado não é zero."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:137": {
@@ -943,6 +2047,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As bordas superiores têm diâmetro 10 cm, então os centros de taças vizinhas devem distar pelo menos 10 cm. Para apoiar as bases, a bandeja precisa ter largura 8 cm e comprimento 4 + 3 × 10 + 4 = 38 cm. A área mínima é 8 × 38 = 304 cm²."
+        ],
+        "alternatives": {
+          "A": "A área 192 cm² não oferece comprimento suficiente para quatro bases alinhadas respeitando o espaçamento imposto pelas bordas superiores.",
+          "B": "Com largura mínima 8 cm, 300 cm² forneceria comprimento 37,5 cm. São necessários pelo menos 38 cm para manter todas as bases apoiadas.",
+          "C": "A largura mínima é o diâmetro da base, 8 cm. O comprimento de 38 cm considera três distâncias de 10 cm entre centros e 4 cm em cada extremidade.",
+          "D": "A área 320 cm² corresponde a uma bandeja de 40 por 8 cm. Ela funciona, mas pode ser reduzida a 38 por 8 cm sem perder apoio das bases.",
+          "E": "Uma bandeja de 40 por 10 cm apoiaria também a projeção das bordas superiores. O enunciado exige apoio apenas das bases, permitindo área menor."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:138": {
@@ -963,6 +2091,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A acerola aumenta R$ 0,60 por embalagem, mas representa apenas um terço da mistura. Se a redução do morango for x, deve valer (2/3)x = (1/3)0,60 para manter o custo. Assim 2x = 0,60 e x = R$ 0,30 por embalagem de morango."
+        ],
+        "alternatives": {
+          "A": "Uma redução de R$ 1,20 no componente que ocupa dois terços reduziria o custo muito além de compensar a alta da acerola.",
+          "B": "A redução de R$ 0,90 não respeita a proporção de duas partes de morango para uma de acerola. Compensaria mais que o aumento sofrido.",
+          "C": "Reduzir R$ 0,60 em cada embalagem de morango duplicaria a compensação necessária, pois sua participação é o dobro da acerola.",
+          "D": "R$ 0,40 geraria economia de dois terços desse valor, maior que o acréscimo de R$ 0,20 por volume unitário de mistura.",
+          "E": "O acréscimo ponderado da acerola é R$ 0,20. A redução ponderada de R$ 0,30 no morango também é R$ 0,20, equilibrando o custo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:139": {
@@ -983,6 +2135,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O cubo exige dimensões internas de pelo menos 80 cm, o que elimina a caixa 2. Entre as demais, os volumes são 636 056, 627 300, 638 780 e 646 000 cm³ para as caixas 1, 3, 4 e 5, respectivamente. A menor é a caixa 3, que minimiza o espaço livre."
+        ],
+        "alternatives": {
+          "A": "A caixa 1 comporta o cubo, mas seu volume de 636 056 cm³ supera os 627 300 cm³ da caixa 3. Portanto não minimiza o espaço livre.",
+          "B": "A caixa 2 possui uma dimensão de 75 cm, inferior à aresta do cubo. O objeto não cabe nessa caixa nas condições propostas.",
+          "C": "A caixa 3 tem todas as dimensões acima de 80 cm e volume de 627 300 cm³. É a menor caixa entre as que comportam o objeto.",
+          "D": "A caixa 4 comporta o cubo, porém seu volume de 638 780 cm³ é maior que o da caixa 3. Sobra mais espaço livre.",
+          "E": "A caixa 5 tem volume de 646 000 cm³. Embora caiba o cubo, ela deixa mais espaço livre que a caixa 3."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:140": {
@@ -1003,6 +2179,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Pelo princípio multiplicativo, as quantidades são 26 × 10⁵ = 2 600 000 na opção I, 10⁶ = 1 000 000 na II, 26² × 10⁴ = 6 760 000 na III, 10⁵ = 100 000 na IV e 26³ × 10² = 1 757 600 na V. Só V é maior que um milhão e não supera dois milhões."
+        ],
+        "alternatives": {
+          "A": "A opção I produz 2 600 000 senhas. Esse total supera o limite de dois milhões estabelecido pela empresa.",
+          "B": "A opção II produz exatamente um milhão de senhas. A condição exige quantidade estritamente superior ao número esperado de clientes.",
+          "C": "A opção III produz 6 760 000 combinações. O total excede bastante o dobro de um milhão.",
+          "D": "A opção IV produz cem mil senhas, insuficientes para o público esperado de aproximadamente um milhão.",
+          "E": "A opção V gera 1 757 600 senhas. O valor está entre um milhão, exclusivamente, e dois milhões, inclusivamente."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:141": {
@@ -1023,6 +2223,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada partida corresponde a um par não ordenado de jogadores. Com oito participantes, há 8 × 7 escolhas ordenadas, mas cada confronto foi contado duas vezes. Dividindo por dois, obtém-se 8 × 7/2 = 28 partidas."
+        ],
+        "alternatives": {
+          "A": "O valor 64 conta escolhas de dois jogadores com repetição, incluindo confrontos de alguém consigo mesmo. Essas partidas não existem.",
+          "B": "O valor 56 conta cada par em duas ordens. Como cada confronto ocorre uma única vez, é preciso dividir por dois.",
+          "C": "O valor 49 não corresponde à quantidade de pares de oito jogadores. O número deve ser calculado sem repetição e sem ordem.",
+          "D": "O valor 36 seria a quantidade de pares entre nove jogadores. Com oito, acrescentam-se sete partidas às 21 já previstas para sete jogadores.",
+          "E": "Há uma partida por par de jogadores. A combinação de oito tomados dois a dois é 28."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:142": {
@@ -1043,6 +2267,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Dividem-se os casos em chuva e ausência de chuva. A chance de atraso com chuva é 0,30 × 0,50 = 0,15; sem chuva, é 0,70 × 0,25 = 0,175. Somando os casos mutuamente exclusivos, a probabilidade total é 0,325."
+        ],
+        "alternatives": {
+          "A": "O produto 0,30 × 0,25 combina a probabilidade de chuva com uma taxa de atraso condicionada à ausência de chuva. As condições são incompatíveis.",
+          "B": "O valor 0,15 considera apenas atrasos em dias chuvosos. É preciso acrescentar os possíveis atrasos sem chuva.",
+          "C": "A soma ponderada é 0,30 × 0,50 + 0,70 × 0,25. O resultado 0,325 incorpora os dois cenários meteorológicos.",
+          "D": "O valor 0,60 não resulta da ponderação das taxas de atraso. A média das probabilidades condicionais deve ficar entre 0,25 e 0,50.",
+          "E": "Somar probabilidades de chuva e de atraso condicional não produz a probabilidade pedida. A taxa total precisa ponderar os dois cenários."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:143": {
@@ -1063,6 +2311,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A chuva eleva o nível em 20/45 = 4/9 cm por minuto. Com o ralo aberto e ainda chovendo, o nível cai 5 cm em 40 minutos, taxa líquida de 1/8 cm/min. Logo, o ralo escoa 4/9 + 1/8 = 41/72 cm/min. Sem chuva, os 15 cm restantes saem em 15 × 72/41 ≈ 26,3 minutos, terminando por volta de 19h06."
+        ],
+        "alternatives": {
+          "A": "Esse intervalo está além do fim calculado. O ralo continua com sua vazão integral após a chuva parar, esvaziando os 15 cm em aproximadamente 26 minutos.",
+          "B": "O esvaziamento não exige mais de 40 minutos após 18h40. A vazão do ralo é maior que a taxa líquida de queda durante a chuva.",
+          "C": "O instante calculado é aproximadamente 19h06, anterior a 19h10. Não se deve usar apenas a queda líquida observada enquanto ainda chovia.",
+          "D": "Somar a entrada de chuva à queda líquida permite achar a vazão do ralo. O tempo adicional de aproximadamente 26 minutos leva a um horário entre 19h e 19h10.",
+          "E": "Para esvaziar antes das 19h seriam necessários menos de 20 minutos. A divisão de 15 cm pela vazão de 41/72 cm/min fornece cerca de 26 minutos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:144": {
@@ -1083,6 +2355,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na data de pagamento da sexta parcela, essa parcela vale P sem desconto. A sétima deve ser descontada por um mês e a oitava por dois meses. Com j = i/100, a quitação é P[1 + 1/(1+j) + 1/(1+j)²], somando os valores atuais das três parcelas."
+        ],
+        "alternatives": {
+          "A": "A expressão mantém a sexta parcela integral e desconta as outras por um e dois períodos compostos. Ela avalia todas na data correta de quitação.",
+          "B": "O desconto de dois períodos deve usar (1+j)². Substituí-lo por 1+2j aplica regra linear incompatível com os juros compostos.",
+          "C": "A sétima parcela vence um mês depois, portanto seu desconto tem expoente 1. Usar expoente 2 para ambas as futuras parcelas erra suas datas.",
+          "D": "A sexta parcela vence no próprio ato de quitação, sem desconto. Além disso, os fatores futuros devem ser potências compostas, não incrementos lineares.",
+          "E": "A expressão desconta as três parcelas como se a quitação ocorresse um mês antes da sexta. Na data indicada, a primeira delas vale P integral."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:145": {
@@ -1103,6 +2399,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Impondo P ≤ 400 e chamando x = 1,013ⁿ, tem-se 65x/(x−1) ≤ 400, logo 335x ≥ 400 e x ≥ 400/335. Pelos logaritmos fornecidos, 0,005n ≥ 2,602−2,525 = 0,077. Assim n ≥ 15,4, e o menor inteiro admissível é 16."
+        ],
+        "alternatives": {
+          "A": "Doze parcelas não atingem n ≥ 15,4 obtido na desigualdade. O valor mensal ficaria acima de R$ 400.",
+          "B": "Quatorze parcelas ainda ficam abaixo do mínimo matemático de 15,4. O limite da prestação não seria atendido.",
+          "C": "Quinze é menor que 15,4. Como o número de prestações é inteiro, é preciso arredondar para cima.",
+          "D": "A desigualdade fornece n ≥ 15,4. O menor inteiro possível é 16, garantindo a prestação dentro do orçamento.",
+          "E": "Dezessete parcelas atendem ao limite, mas não são o menor número. Dezesseis já satisfazem a condição."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:146": {
@@ -1123,6 +2443,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No intervalo de 0° a 90°, o seno alcança seu máximo em 90°, com valor 1, então a intensidade máxima é k. Em 30°, sen 30° = 1/2, portanto I(30°) = k/2, correspondente a 50% da intensidade máxima."
+        ],
+        "alternatives": {
+          "A": "Comparar 30° diretamente com 90° gera 33%, mas a intensidade depende do seno, não linearmente do ângulo.",
+          "B": "O seno de 30° vale 0,5, enquanto o máximo é 1. A razão das intensidades é 0,5, isto é, 50%.",
+          "C": "O valor próximo de 57% não corresponde a sen 30°. A função fornecida exige usar o valor trigonométrico exato de um meio.",
+          "D": "Cerca de 70% corresponderia ao seno de 45°, não ao de 30°. O ângulo usado deve ser o indicado.",
+          "E": "Cerca de 86% corresponde a sen 60° ou cos 30°. A expressão dada utiliza sen 30°."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:147": {
@@ -1143,6 +2487,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O ponto B permaneceu preso e serve de centro de rotação. A direção de B até o antigo vértice A deve voltar à diagonal para cima e à esquerda. Pela orientação dos lados e da figura do peixe, o retorno mais curto corresponde a 135° no sentido horário."
+        ],
+        "alternatives": {
+          "A": "Uma rotação de 90° não recupera a orientação original dos lados e da imagem. Falta um acréscimo de 45° para completar o retorno.",
+          "B": "O giro horário de 135° restaura simultaneamente a posição da tela em torno de B e a orientação do peixe. É o menor ângulo compatível com a posição original.",
+          "C": "Uma meia-volta inverteria a posição atual, sem recuperar a disposição original da tela e de seu conteúdo. O retorno necessário é 135° horário.",
+          "D": "Um giro de 270° anti-horário equivale a 90° horário. Essa rotação não é suficiente para restabelecer a orientação inicial.",
+          "E": "Um giro de 315° horário equivale a 45° anti-horário. Ele não leva os vértices e a imagem de volta à posição inicial."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:148": {
@@ -1163,6 +2531,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A média mínima desejada é 7, com total de créditos 12 + 4 + 8 + 8 + 10 = 42. As disciplinas já avaliadas somam 8×4 + 6×8 + 5×8 + 7,5×10 = 195 pontos ponderados. Assim (12x + 195)/42 ≥ 7, levando a 12x ≥ 99 e x ≥ 8,25."
+        ],
+        "alternatives": {
+          "A": "Uma nota 7 na disciplina I gera média (84+195)/42, inferior a 7. As outras notas exigem compensação maior.",
+          "B": "A nota 7,38 não fornece os 99 pontos ponderados ainda necessários. É preciso considerar os 12 créditos da disciplina I.",
+          "C": "Uma nota 7,5 gera 90 pontos ponderados e média 285/42, inferior a 7. O aluno ainda ficaria na faixa regular.",
+          "D": "A nota 8,25 fornece 99 pontos ponderados. Somada aos 195 anteriores, produz 294/42 = 7, limite inferior de Bom.",
+          "E": "A nota 9 garante a avaliação desejada, mas não é a mínima. A igualdade da média com 7 já ocorre em 8,25."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:149": {
@@ -1183,6 +2575,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Como a posição dos carrinhos não distingue modelos, basta contar quantidades de cada cor. Reservando um carrinho para cada uma das quatro cores, restam seis para distribuir sem restrição entre elas. O número de soluções não negativas de x1+x2+x3+x4=6 é C(6+4−1,4−1) = C(9,3)."
+        ],
+        "alternatives": {
+          "A": "Escolher quatro elementos dentre seis não representa a distribuição de seis unidades entre quatro categorias. É necessário permitir várias unidades da mesma cor.",
+          "B": "O método das separações conta seis carrinhos restantes e três divisórias. Escolher as posições das divisórias entre nove lugares dá C(9,3).",
+          "C": "C(10,4) escolhe quatro carrinhos, mas o problema exige determinar quantidades de cada cor em um total fixo de dez.",
+          "D": "A potência 6⁴ não corresponde ao número de distribuições com soma seis. Ela atribuiria escolhas independentes sem garantir a quantidade total.",
+          "E": "A potência 4⁶ distingue a ordem dos seis carrinhos restantes. O enunciado afirma que mudanças de posição não geram novos modelos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:150": {
@@ -1203,6 +2619,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A profundidade efetiva da água é 1,7 − 0,5 = 1,2 m. O volume é 3 × 5 × 1,2 = 18 m³, equivalente a 18 000 L. Como são necessários 1,5 mL por 1 000 L, a dose é 18 × 1,5 = 27 mL."
+        ],
+        "alternatives": {
+          "A": "O valor 11,25 mL não corresponde ao volume de 18 000 L. A altura da água deve ser obtida subtraindo os 50 cm da profundidade.",
+          "B": "Com 18 000 L de água, há dezoito grupos de mil litros. Cada grupo recebe 1,5 mL, totalizando 27 mL.",
+          "C": "O volume de água resulta em 18 m³, e não no volume que levaria a 28,8 mL. Deve-se converter 50 cm em 0,5 m antes de subtrair.",
+          "D": "Essa dose não corresponde à profundidade efetiva de 1,2 m. O cálculo deve usar a altura preenchida, e não combinações incorretas das medidas.",
+          "E": "O valor 49,5 mL resulta de usar 2,2 m como altura. Os 50 cm estão vazios, portanto devem ser subtraídos de 1,7 m."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:151": {
@@ -1223,6 +2663,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Calcula-se a margem pelo fator 1,96σ/√N. Os valores aproximados para P1 a P5 são 0,0233, 0,0280, 0,0245, 0,0187 e 0,0245. Apenas P4 apresenta limite inferior a 0,02, atendendo à margem máxima solicitada."
+        ],
+        "alternatives": {
+          "A": "Para P1, 1,96×0,5/42 ≈ 0,0233. A margem calculada ultrapassa os dois pontos percentuais admitidos.",
+          "B": "Para P2, 1,96×0,4/28 = 0,028. O valor é superior a 0,02 e não atende ao pedido.",
+          "C": "Para P3, 1,96×0,3/24 = 0,0245. O resultado ainda supera a margem máxima.",
+          "D": "Para P4, 1,96×0,2/21 ≈ 0,0187. Essa é a única pesquisa com margem calculada abaixo de 0,02.",
+          "E": "Embora P5 tenha o menor σ, sua amostra é pequena. A margem 1,96×0,1/8 = 0,0245 excede o limite."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:152": {
@@ -1243,6 +2707,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A travessia completa dura 90 segundos. Como os bondinhos têm mesma velocidade, a soma dos tempos percorridos até o encontro é 90 segundos. Se A andou 40 segundos, B andou 50. Logo, B saiu 50 − 40 = 10 segundos antes de A."
+        ],
+        "alternatives": {
+          "A": "Cinco segundos é a diferença entre 45 segundos e o tempo de A, mas o atraso de partida altera os dois tempos em sentidos complementares.",
+          "B": "Os tempos até o encontro são 40 segundos para A e 50 para B. A diferença de 10 segundos é o intervalo entre as partidas.",
+          "C": "Um intervalo de 15 segundos faria B percorrer 55 segundos e a soma dos tempos chegar a 95, acima da travessia de 90 segundos.",
+          "D": "Um intervalo de 20 segundos produziria tempos de 40 e 60 segundos. A soma de 100 não corresponde à distância total em 90 segundos.",
+          "E": "Um intervalo de 25 segundos implicaria 65 segundos de percurso de B. Com os 40 de A, a distância somada superaria a separação das estações."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:153": {
@@ -1263,6 +2751,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Entre 15h e 16h, o gráfico mostra queda de duas unidades verticais, equivalentes a 2 m. Como essa queda corresponde a 10% da profundidade inicial do intervalo, às 15h havia 2/0,10 = 20 m. Às 16h restavam 90% desse valor, isto é, 18 m."
+        ],
+        "alternatives": {
+          "A": "A redução de 2 m equivale a 10% de 20 m. A profundidade após a queda é 20 − 2 = 18 m, como pedido para as 16h.",
+          "B": "Os 20 m correspondem à profundidade às 15h, antes da redução. A pergunta pede o valor após a diminuição de 10%.",
+          "C": "O valor 24 m não corresponde à queda de 2 m como 10%. Seria necessário um decréscimo de 2,4 m para partir desse valor.",
+          "D": "O valor 36 m pressupõe queda de 4 m a partir de 40 m. O gráfico mostra apenas duas unidades verticais de diferença no intervalo.",
+          "E": "Os 40 m resultariam de tratar uma queda de 4 m como 10%, mas a diferença entre os registros de 15h e 16h é de 2 m."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:154": {
@@ -1283,6 +2795,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A estrutura possui duas faces triangulares paralelas e congruentes nas extremidades, ligadas por três faces retangulares. As arestas laterais são perpendiculares às bases triangulares, como indicam os ângulos retos. Essas características definem um prisma triangular reto."
+        ],
+        "alternatives": {
+          "A": "Um tetraedro possui quatro faces triangulares e quatro vértices. A estrutura tem duas bases triangulares e faces laterais retangulares.",
+          "B": "Uma pirâmide retangular tem uma base de quatro lados e faces que convergem a um único vértice. A cabana não possui esse ápice comum.",
+          "C": "Um tronco de pirâmide apresenta bases paralelas de tamanhos diferentes e faces laterais trapezoidais. A estrutura ilustrada tem bases triangulares congruentes.",
+          "D": "Um prisma quadrangular teria bases com quatro lados. As extremidades da estrutura mostrada são triângulos.",
+          "E": "Duas bases triangulares congruentes e faces laterais retangulares caracterizam o prisma triangular reto. As marcações de ângulo confirmam sua condição reta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:155": {
@@ -1303,6 +2839,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os quadrados P, Q, S e T pertencem a vizinhanças sem sobreposição, com chances 2/8, 1/8, 4/8 e 3/8 de mina. Essas quatro vizinhanças contêm dez minas em 32 casas. Fora delas e das quatro casas abertas, restam 30 minas em 220 casas, incluindo R. Como 1/8 = 0,125 é menor que 30/220 e as demais probabilidades, deve-se abrir Q."
+        ],
+        "alternatives": {
+          "A": "P é vizinho da casa de número 2 e tem probabilidade 2/8 = 0,25. Esse risco supera o de Q.",
+          "B": "Q é uma das oito casas em torno do número 1. Sua chance de mina é 1/8, menor que as demais opções.",
+          "C": "R está fora das vizinhanças informadas. Restam 30 minas entre 220 casas desse tipo, chance aproximada de 0,136, ligeiramente maior que 0,125 de Q.",
+          "D": "S é vizinho de uma casa marcada com 4. A chance 4/8 = 0,5 é a maior entre as opções indicadas.",
+          "E": "T pertence à vizinhança do número 3 e tem chance 3/8 = 0,375. É mais arriscado que Q e R."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:156": {
@@ -1323,6 +2883,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Inicialmente só o reservatório 1 recebe água, e sua altura cresce linearmente com o volume. Ao chegar ao cano de ligação, essa altura permanece constante enquanto o segundo alcança o mesmo nível. Depois, os dois níveis sobem juntos: a área horizontal efetiva dobra, reduzindo a inclinação da reta à metade."
+        ],
+        "alternatives": {
+          "A": "Uma única reta ignora o período em que a água enche o reservatório 2 sem elevar o nível do primeiro.",
+          "B": "As bases são retangulares e de área constante. Por isso os trechos de subida devem ser lineares, não curvas de inclinação variável.",
+          "C": "O patamar é compatível com o enchimento inicial do segundo reservatório, mas a inclinação final não deve superar a inicial. A água passa a ocupar duas bases.",
+          "D": "O gráfico tem subida linear, patamar e nova subida com inclinação menor. Isso corresponde às três etapas do enchimento do sistema.",
+          "E": "Uma curva continuamente desacelerada não representa o patamar de transferência nem os trechos lineares dos reservatórios de área constante."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:157": {
@@ -1343,6 +2927,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os centros dos três canos formam um triângulo equilátero de lado 1,20 m. A distância vertical entre centros de baixo e de cima é 0,60√3 ≈ 1,02 m. A altura da carga é 0,60 + 1,02 + 0,60 = 2,22 m. Somando carroceria de 1,30 m e margem de 0,50 m, o vão mínimo é 4,02 m."
+        ],
+        "alternatives": {
+          "A": "A altura de 2,82 m é insuficiente até para acomodar a soma da carroceria com a carga. É preciso considerar os raios nas extremidades do empilhamento.",
+          "B": "Os 3,52 m correspondem à altura do veículo carregado. Falta acrescentar a margem de segurança de 0,50 m.",
+          "C": "O valor 3,70 m não usa corretamente a distância vertical entre centros, dada pela altura de um triângulo equilátero de lado 1,20 m.",
+          "D": "A carga mede aproximadamente 2,22 m, o conjunto com a carroceria mede 3,52 m e a folga exigida eleva o vão a 4,02 m.",
+          "E": "O valor 4,20 m não corresponde à geometria do empilhamento. O desnível dos centros é 0,60√3, e não uma soma simples de diâmetros."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:158": {
@@ -1363,6 +2971,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Partindo de X na Rua C, seguir a oeste significa andar para a esquerda até a Rua 3. Ao virar à direita, o menino segue para o norte. Na próxima rua, a Rua B, vira à esquerda para oeste. O ponto logo adiante nesse trecho é o número 1."
+        ],
+        "alternatives": {
+          "A": "O trajeto passa pela Rua 3 em direção ao norte e depois pela Rua B a oeste. Esse último trecho contém o ponto 1.",
+          "B": "O ponto 2 fica a leste da Rua 3 na Rua B. Alcançá-lo exigiria a última conversão à direita, e não à esquerda.",
+          "C": "O ponto 3 está ainda mais a leste na Rua B. Ele não está no trecho oeste obtido pelas instruções.",
+          "D": "O ponto 4 fica na Rua D, ao sul da posição inicial. A primeira virada à direita após seguir a oeste leva ao norte.",
+          "E": "O ponto 5 também fica ao sul e a leste do trajeto indicado. Não corresponde às conversões orientadas a norte e depois oeste."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:159": {
@@ -1383,6 +3015,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Somam-se as cinco notas e divide-se por cinco. X obtém 31/5 = 6,2; Y obtém 30/5 = 6,0; Z obtém 29/5 = 5,8. Como a aprovação inclui média igual a 6, X e Y são aprovados e somente Z fica reprovado."
+        ],
+        "alternatives": {
+          "A": "Y tem média exatamente 6, que satisfaz o critério maior ou igual a 6. Portanto não é o reprovado.",
+          "B": "Z soma 29 pontos e tem média 5,8. É o único com valor inferior ao mínimo de aprovação.",
+          "C": "X tem média 6,2 e Y tem média 6,0. Ambos atendem à regra de aprovação, logo não podem ser apontados como reprovados.",
+          "D": "X é aprovado com 6,2. Apenas Z, de média 5,8, não alcança o mínimo necessário.",
+          "E": "Não há reprovação geral: X e Y atingem médias de pelo menos 6. Somente Z fica abaixo desse patamar."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:160": {
@@ -1403,6 +3059,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Isolando a velocidade, obtém-se v = K/(p+a) − b. O produto das variáveis transladadas p+a e v+b é constante positiva, forma característica de uma hipérbole. As condições físicas selecionam um ramo dessa curva no plano das variáveis peso e velocidade."
+        ],
+        "alternatives": {
+          "A": "Uma semirreta oblíqua teria relação linear entre velocidade e peso. A equação possui dependência inversa, não linear.",
+          "B": "A velocidade varia com o peso por K/(p+a). Portanto o gráfico não é horizontal.",
+          "C": "Uma parábola decorre de uma relação quadrática, enquanto aqui o produto de duas variáveis transladadas é constante.",
+          "D": "Um arco de circunferência exigiria soma de quadrados das coordenadas transladadas. Essa estrutura não aparece na equação.",
+          "E": "A relação v+b = K/(p+a) define uma hipérbole com eixos transladados. A parte fisicamente admissível corresponde a um ramo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:161": {
@@ -1423,6 +3103,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Sem teleférico, subir e descer os dois mirantes custa 0,15 + 0,10 + 1,80 + 2,30 = R$ 4,35. Usando teleférico de 1 para 2, o custo é 0,15 + 2,00 + 2,30 = R$ 4,45; no sentido inverso, 1,80 + 2,50 + 0,10 = R$ 4,40. O menor é R$ 4,35."
+        ],
+        "alternatives": {
+          "A": "R$ 2,25 não inclui um percurso completo pelos dois topos com retorno ao solo. É necessário pagar todos os acessos utilizados.",
+          "B": "R$ 3,90 não resulta das combinações completas de subida, ligação e descida. A visita a ambos os topos exige os trajetos correspondentes.",
+          "C": "Visitar cada mirante separadamente pelos elevadores custa R$ 4,35. Essa soma é menor que as duas rotas que usam o teleférico.",
+          "D": "R$ 4,40 é o custo de subir pelo elevador 2, cruzar de 2 para 1 e descer pelo elevador 1. Funciona, mas supera R$ 4,35.",
+          "E": "R$ 4,45 corresponde ao teleférico de 1 para 2 com a subida e descida necessárias. É mais caro que visitar os mirantes separadamente."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:162": {
@@ -1443,6 +3147,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As distâncias sem atenção são dadas por dX = vtX e dY = vtY, com a mesma velocidade v. Assim dX/dY = tX/tY. Como o tempo de X é 25% do tempo de Y, a razão das distâncias é 0,25 = 1/4."
+        ],
+        "alternatives": {
+          "A": "A fração 5/4 indicaria que X percorre 25% a mais que Y. O enunciado afirma que seu tempo é apenas 25% do tempo de Y.",
+          "B": "Com velocidades iguais, a razão de distâncias coincide com a de tempos. Vinte e cinco por cento corresponde a um quarto.",
+          "C": "A fração 4/3 não representa 25% e seria superior a um. X permanece menos tempo sem atenção, percorrendo distância menor.",
+          "D": "A fração 4/1 inverte a razão solicitada. Ela corresponderia a Y dividido por X, e não X dividido por Y.",
+          "E": "A fração 3/4 representa 75%, a redução relativa do tempo de X perante Y. A pergunta pede a razão efetiva, de 25%."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:163": {
@@ -1463,6 +3191,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O raio desenhado é a distância entre as pontas do compasso. Pelo teorema dos cossenos no triângulo de hastes 10 cm e ângulo 120°, R² = 10² + 10² − 2×10×10 cos120° = 300. Logo R = 10√3 ≈ 17 cm, pertencente ao intervalo 15 < R ≤ 21."
+        ],
+        "alternatives": {
+          "A": "O intervalo até 5 cm não contém a abertura entre as pontas. O raio é o lado oposto ao ângulo de 120°, não uma coordenada do desenho.",
+          "B": "O comprimento de cada haste é 10 cm, mas o raio é a distância entre suas extremidades. Com abertura de 120°, essa distância supera 10 cm.",
+          "C": "O raio calculado é aproximadamente 17 cm, superior ao limite de 15 cm do material III.",
+          "D": "A lei dos cossenos fornece raio 10√3, aproximadamente 17 cm. Esse valor pertence ao intervalo do material IV.",
+          "E": "A distância entre as pontas é menor que a soma das hastes, 20 cm. Portanto não pode pertencer ao intervalo acima de 21 cm."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:164": {
@@ -1483,6 +3235,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A escolha depende da menor diferença absoluta em relação a 4 mm. As diferenças para 4,025; 4,100; 3,970; 4,080 e 3,099 mm são 0,025; 0,100; 0,030; 0,080 e 0,901 mm. A menor é 0,025 mm, correspondente à pérola de 4,025 mm."
+        ],
+        "alternatives": {
+          "A": "A diferença entre 3,099 e 4 é 0,901 mm. Esse é o maior afastamento entre as opções apresentadas.",
+          "B": "A pérola de 3,970 mm difere de 4 mm por 0,030 mm. É próxima, mas a diferença de 0,025 mm da opção C é menor.",
+          "C": "A diferença de 4,025 mm para 4 mm é apenas 0,025 mm. Esse é o menor desvio absoluto disponível.",
+          "D": "A pérola de 4,080 mm apresenta desvio de 0,080 mm. Outras opções são mais próximas do diâmetro original.",
+          "E": "A pérola de 4,100 mm difere de 4 mm por 0,100 mm. Esse desvio supera os de 4,025 e 3,970 mm."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:165": {
@@ -1503,6 +3279,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A escala 1:400 é linear, então os volumes variam pelo cubo desse fator. O volume original é 25 × 400³ = 1 600 000 000 cm³. Como 1 m³ equivale a 1 000 000 cm³, o monumento possui volume de 1 600 m³."
+        ],
+        "alternatives": {
+          "A": "O fator de escala dos volumes é 400³, e não apenas 400 ou 400². A aplicação correta e a conversão de unidades fornecem valor maior que 100 m³.",
+          "B": "O número 400 é a razão linear entre as dimensões, não o volume original. É preciso elevar a razão ao cubo.",
+          "C": "Multiplicar 25 cm³ por 400³ e dividir por um milhão resulta em 1 600 m³. A escala de volume é cúbica.",
+          "D": "O valor 6 250 m³ não resulta do fator cúbico 400³ combinado à conversão de centímetros cúbicos para metros cúbicos.",
+          "E": "O valor 10 000 corresponde a 25×400, mas essa multiplicação aplica apenas a escala linear e ainda permanece em unidade inadequada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:166": {
@@ -1523,6 +3323,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para percorrer menos distância por pedalada, deve-se minimizar a razão entre dentes da coroa e da catraca. As opções fornecem 46/24, 46/14, 36/18, 26/24 e 26/14. A menor razão é 26/24, da terceira coroa com a primeira catraca, combinação IV."
+        ],
+        "alternatives": {
+          "A": "A razão 46/24 é aproximadamente 1,92. Ela supera a razão 26/24 da combinação IV.",
+          "B": "A razão 46/14 é aproximadamente 3,29 e produz mais voltas por pedalada. É a mais rápida entre as opções, não a mais lenta.",
+          "C": "A razão 36/18 vale 2. A combinação IV produz cerca de 1,08 volta por pedalada, portanto é mais lenta.",
+          "D": "A menor coroa, com 26 dentes, e a maior catraca, com 24, minimizam a razão. Essa é a combinação IV.",
+          "E": "A razão 26/14 é aproximadamente 1,86. Embora use a menor coroa, a catraca de 14 dentes aumenta o giro em comparação à de 24."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:167": {
@@ -1543,6 +3367,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A figura pode ser dividida em seis regiões a colorir, encadeadas pelas suas vizinhanças. Escolhendo uma região inicial, há quatro cores possíveis. Para cada uma das outras cinco, a cor da região vizinha já definida fica proibida, restando três escolhas. O produto é 4×3⁵ = 972 maneiras."
+        ],
+        "alternatives": {
+          "A": "O valor 15 não contempla as escolhas independentes de cores para as seis regiões. A contagem é multiplicativa, sujeita às restrições de vizinhança.",
+          "B": "O valor 30 é insuficiente para as quatro escolhas iniciais e as três escolhas em cada região seguinte. Não representa a coloração completa.",
+          "C": "O valor 108 equivale a 4×3³ e considera apenas quatro regiões no encadeamento. A figura possui seis regiões a colorir.",
+          "D": "O valor 360 não corresponde ao produto das escolhas admissíveis por região. Não há exigência de usar cada cor apenas uma vez.",
+          "E": "São quatro escolhas para a primeira região e três para cada uma das outras cinco. A restrição é evitar a cor da vizinha, resultando em 972."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:168": {
@@ -1563,6 +3411,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os 100 metros de tela correspondem ao perímetro retangular, portanto 2X + 2Y = 100 e X+Y = 50. A área é A = X(50−X), uma parábola de máximo em X = 25. Assim Y = 25 e a base quadrada oferece área máxima de 625 m²."
+        ],
+        "alternatives": {
+          "A": "As medidas 1 e 49 usam todo o perímetro, mas produzem área de apenas 49 m². O quadrado de mesmo perímetro tem área maior.",
+          "B": "As medidas 1 e 99 somam perímetro 200 m, ultrapassando os 100 m de tela disponíveis.",
+          "C": "Um quadrado de lado 10 m utiliza somente 40 m de tela. Não atende ao uso integral previsto nem maximiza a área possível.",
+          "D": "Com perímetro fixo, o retângulo de maior área é o quadrado. Os lados de 25 m utilizam 100 m de tela e geram 625 m².",
+          "E": "Lados de 50 m exigem 200 m de tela. Não se pode tomar o perímetro inteiro como apenas a soma de dois lados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:169": {
@@ -1583,6 +3455,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O tanque cheio contém 100 kg. Após consumir quatro décimos, restam 60 kg. O reabastecimento acrescenta um terço desse restante, ou 20 kg. Como a densidade é 0,75 kg/L, o volume adicionado é massa/densidade = 20/0,75 litros."
+        ],
+        "alternatives": {
+          "A": "A conversão correta de 750 g/L é 0,75 kg/L. Usar 0,075 introduz um erro de fator dez na densidade e no volume.",
+          "B": "O reabastecimento tem massa de 20 kg e a densidade é 0,75 kg/L. Dividir a massa pela densidade fornece o volume em litros.",
+          "C": "A densidade não é 7,5 kg/L, mas 0,75 kg/L. O denominador proposto reduz indevidamente o volume em dez vezes.",
+          "D": "A densidade precisa ser usada como divisor para converter massa em volume. Além disso, 0,075 kg/L não corresponde ao dado.",
+          "E": "Multiplicar 20 kg por 0,75 kg/L não produz unidade de volume. Deve-se dividir 20 por 0,75."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:170": {
@@ -1603,6 +3499,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "São quatorze taxas mensais. Em ordem crescente, elas são 6,8; 7,5; 7,6; 7,6; 7,7; 7,9; 7,9; 8,1; 8,2; 8,5; 8,5; 8,6; 8,9; 9,0. A mediana é a média do sétimo e do oitavo valores: (7,9 + 8,1)/2 = 8,0%."
+        ],
+        "alternatives": {
+          "A": "O valor 8,1% é o oitavo termo da lista ordenada. Como há quatorze dados, ele deve ser combinado com o sétimo.",
+          "B": "Os termos centrais da lista são 7,9% e 8,1%. Sua média é 8,0%, mediana de um conjunto com quantidade par de dados.",
+          "C": "O valor 7,9% é o sétimo termo ordenado. Usá-lo sozinho ignora que o conjunto tem quantidade par de elementos.",
+          "D": "O valor 7,7% aparece abaixo das duas posições centrais. A ordem cronológica não deve ser confundida com a ordenação necessária à mediana.",
+          "E": "O valor 7,6% aparece duas vezes, mas a mediana não é determinada apenas pela frequência. É preciso localizar os dois termos centrais ordenados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:171": {
@@ -1623,6 +3543,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para um semáforo específico ser o único verde, a probabilidade é (2/3)(1/3)⁹, pela independência. Há dez escolhas possíveis para a posição desse verde. Assim a probabilidade total é 10×(2/3)×(1/3)⁹ = 10×2/3¹⁰."
+        ],
+        "alternatives": {
+          "A": "Há dez posições para o único sinal verde, cada uma com probabilidade 2/3 vezes nove fatores 1/3. O produto total é 20/3¹⁰.",
+          "B": "O fator 2⁹ corresponde a nove sinais verdes, enquanto o evento pedido exige apenas um verde e nove vermelhos.",
+          "C": "Os expoentes não decorrem de dez semáforos independentes. O denominador deve ter potência dez, uma por semáforo.",
+          "D": "A expressão com expoentes 90 e 100 não representa o evento em dez ensaios. É preciso um fator por cor observada em cada sinal.",
+          "E": "A expressão 2/3¹⁰ conta apenas uma posição específica para o verde. Faltam as dez posições possíveis ao longo da avenida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:172": {
@@ -1643,6 +3587,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A primeira fase tem 200 m² elétricos e 200 m² térmicos, economizando 200 + 0,7×200 = 340 kWh/dia. O dobro é 680. A área elétrica aumenta para 200×1,75 = 350 m², restando 330 kWh/dia para a térmica. A área térmica total deve ser 330/0,7 ≈ 471,4 m², mais próxima de 472."
+        ],
+        "alternatives": {
+          "A": "Cerca de 231 m² não fornece os 330 kWh/dia térmicos necessários após a ampliação elétrica. O rendimento térmico por metro quadrado é 0,7 kWh/dia.",
+          "B": "Uma área de 431 m² gera 301,7 kWh/dia térmicos. Com os 350 elétricos, o total fica abaixo dos 680 pretendidos.",
+          "C": "A economia-alvo é 680 kWh/dia e a parcela elétrica passa a 350. Os 330 restantes exigem aproximadamente 471,4 m² de área térmica.",
+          "D": "Uma área de 523 m² produziria 366,1 kWh/dia térmicos, ultrapassando o necessário. Não é o valor mais próximo da solução.",
+          "E": "O valor 672 m² não corresponde à divisão da necessidade térmica pelo rendimento. A área pedida é total, e não uma soma adicional de áreas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:173": {
@@ -1663,6 +3631,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os eixos verticais usam escalas diferentes: o da direita corresponde à metade dos valores do da esquerda na mesma altura. Entre 8h e 9h, A contém 30 000 L, enquanto B permanece em 30 000 L. Esse é o único intervalo de igualdade, com duração de uma hora."
+        ],
+        "alternatives": {
+          "A": "A igualdade ocorre no intervalo de 8h a 9h, totalizando uma hora. É necessário comparar valores nas escalas próprias de cada reservatório.",
+          "B": "Contar os instantes 8h e 9h como duas horas confunde extremidades com duração. O intervalo entre eles mede uma hora.",
+          "C": "As curvas se sobrepõem visualmente entre 0h e 4h, mas os eixos têm escalas distintas. Essa coincidência gráfica não representa volumes iguais.",
+          "D": "A soma de sobreposições visuais ignora que a escala de A é o dobro da de B. A igualdade efetiva ocorre apenas durante uma hora.",
+          "E": "O gráfico não mantém volumes iguais durante seis horas. A leitura correta dos eixos limita a igualdade ao patamar entre 8h e 9h."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:174": {
@@ -1683,6 +3675,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A temperatura máxima é indicada pela extremidade inferior do filete preto da coluna direita. Essa extremidade está um pouco abaixo de 20 °C, próxima de 19 °C. A escala esquerda invertida e os filetes cinza não devem ser usados para ler a máxima."
+        ],
+        "alternatives": {
+          "A": "O valor próximo de 5 °C se associa à outra coluna e não ao nível inferior do filete preto direito que registra a máxima.",
+          "B": "Cerca de 7 °C corresponde à temperatura atual indicada pelo filete cinza. A máxima do dia anterior é lida no filete preto direito.",
+          "C": "A extremidade inferior do filete preto direito está próxima de 20 °C, não de 13 °C. Deve-se usar a escala crescente de baixo para cima.",
+          "D": "O marcador da máxima está acima de 15 °C na escala direita, próximo da divisão de 19 °C.",
+          "E": "O nível inferior do filete preto direito coincide aproximadamente com 19 °C. Essa é a regra de leitura da temperatura máxima estabelecida no enunciado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:175": {
@@ -1703,6 +3719,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As torres percorrem circunferências de raios 50, 100 e 150 m, todas no mesmo período de 25 horas. Pela relação v = 2πr/T, usando π = 3, as velocidades são 300/25 = 12, 600/25 = 24 e 900/25 = 36 m/h."
+        ],
+        "alternatives": {
+          "A": "Os percursos de uma volta são 300, 600 e 900 m. Dividindo cada um por 25 h, obtêm-se 12, 24 e 36 m/h.",
+          "B": "Os valores 6, 12 e 18 usam apenas πr em vez de 2πr. Eles correspondem à metade da velocidade necessária.",
+          "C": "As velocidades 2, 4 e 6 são insuficientes para completar as circunferências em 25 horas. É preciso dividir o comprimento completo de cada volta pelo período.",
+          "D": "Os valores dados não correspondem a comprimentos de circunferência divididos por 25. A dependência da velocidade é linear com o raio, não quadrática.",
+          "E": "Esses valores são incompatíveis com trajetos de 300, 600 e 900 m em 25 horas. A velocidade deve ser percurso por tempo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:176": {
@@ -1723,6 +3763,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Colocando a origem no centro da base, a parábola pode ser escrita como y = H − ax². Ela passa por (5,0) e (4,3), então H = 25a e 3 = H−16a = 9a. Assim a = 1/3 e H = 25/3 m."
+        ],
+        "alternatives": {
+          "A": "O valor 16/3 corresponde ao termo ax² em x = 4 quando a = 1/3. A altura máxima é 25a, e não 16a.",
+          "B": "O valor 31/5 não satisfaz simultaneamente a raiz em x = 5 e a altura 3 em x = 4. A relação é quadrática, não linear.",
+          "C": "O valor 25/4 não decorre das duas condições da parábola. Subtraindo as equações, obtém-se 9a = 3.",
+          "D": "As condições H−25a = 0 e H−16a = 3 fornecem a = 1/3. Logo a altura do vértice é H = 25/3 m.",
+          "E": "O valor 75/2 não satisfaz os pontos indicados. A diferença entre os quadrados das distâncias horizontais é 25−16 = 9, usada para achar a curvatura."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:177": {
@@ -1743,6 +3807,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A taxa de aumento é a variação dividida pelo tempo inicial de cada site. Para X, Y, Z, W e U, as taxas são 9/12 = 75%, 21/30 = 70%, 1/10 = 10%, 19/38 = 50% e 16/40 = 40%. O maior aumento relativo ocorre no site X."
+        ],
+        "alternatives": {
+          "A": "X passa de 12 para 21 minutos, aumentando 9 sobre uma base de 12. Sua taxa de 75% é a maior.",
+          "B": "Y tem aumento absoluto maior que X, mas a taxa é 21/30 = 70%. Ela fica abaixo dos 75% de X.",
+          "C": "Z passa de 10 para 11 minutos, aumento de apenas 10%. Não é o maior crescimento relativo.",
+          "D": "W cresce de 38 para 57 minutos. O aumento de 19 representa 50% do tempo inicial, inferior ao de X.",
+          "E": "U cresce de 40 para 56 minutos. O acréscimo de 16 representa 40%, abaixo dos aumentos relativos de X e Y."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:178": {
@@ -1763,6 +3851,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No gráfico original, a razão das alturas B/A é 30/70 = 3/7. No gráfico cortado em 20%, as alturas visuais passam a ser 10 e 50, com razão 1/5. A diferença é 3/7 − 1/5 = (15−7)/35 = 8/35."
+        ],
+        "alternatives": {
+          "A": "Os valores numéricos não mudam, mas as alturas visuais são medidas a partir da base desenhada. O corte altera sua razão.",
+          "B": "A diferença de 1/2 não resulta das razões 3/7 e 1/5. É preciso comparar proporções, e não diferenças de percentuais isoladas.",
+          "C": "O valor 1/5 é a razão no segundo gráfico. A pergunta solicita a diferença entre essa razão e a do primeiro.",
+          "D": "O valor 2/15 não corresponde à subtração entre 30/70 e 10/50. Deve-se calcular as alturas em cada base.",
+          "E": "As razões são 3/7 e 1/5. Sua diferença é 8/35, evidenciando o efeito visual do corte do eixo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:179": {
@@ -1783,6 +3895,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A linha média é A = (120+78)/2 = 99 e a amplitude é B = (120−78)/2 = 21. Noventa batimentos por minuto equivalem a 1,5 por segundo, com período 2/3 s. Como T = 2π/k, tem-se k = 3π, resultando em P(t) = 99 + 21 cos(3πt)."
+        ],
+        "alternatives": {
+          "A": "A média entre extremos é 99, a amplitude é 21 e o fator angular 3π produz período 2/3 s. A função atende aos três dados.",
+          "B": "Com A = 78 e B = 42, a pressão mínima seria 36, não 78. O termo constante deve ser a média dos extremos.",
+          "C": "O fator 2π produz período de um segundo, equivalente a 60 batimentos por minuto. A frequência informada é de 90.",
+          "D": "O argumento t produz período de 2π segundos, incompatível com 90 batimentos por minuto, embora os extremos estejam corretos.",
+          "E": "Além de usar média e amplitude incorretas, o argumento t não representa a frequência cardíaca fornecida. A função falha nos extremos e no período."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     },
     "q:180": {
@@ -1803,6 +3939,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2017 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para preservar a maior área do melão, deve-se retirar a menor calota que assegure raio de apoio de 3 cm. O raio da esfera é 5 cm e o triângulo formado pelo centro, a seção e sua borda dá (5−h)² + 3² = 5². Assim 5−h = 4 e h = 1 cm."
+        ],
+        "alternatives": {
+          "A": "Essa expressão resulta de tratar 3 cm como diâmetro da seção, usando raio 1,5 cm. O enunciado exige raio de pelo menos 3 cm.",
+          "B": "A expressão com 10 e raiz de 91 mistura o diâmetro da esfera com a relação geométrica de uma seção de raio incorreto.",
+          "C": "Usando raio de apoio 3 e raio esférico 5, a distância do centro ao corte é 4. A menor calota tem altura 5−4 = 1 cm.",
+          "D": "Os 4 cm correspondem à distância entre o centro e o plano de corte, não à altura da calota removida. A altura pedida é 5−4.",
+          "E": "Uma calota de 5 cm retiraria metade do melão. Ela atenderia à estabilidade, mas reduziria desnecessariamente a área disponível aos doces."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2017/2017_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2017/cad_5_gabarito_amarelo_12112017.pdf"
+          }
+        ]
       }
     }
   }

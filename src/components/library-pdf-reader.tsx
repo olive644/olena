@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { PDFDocumentProxy } from "pdfjs-dist";
+import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import { uiText } from "../i18n/runtime";
 import type { StudyMaterial } from "../domain/workspace";
 import { libraryFile, pdfFingerprint } from "../data/library-files";
@@ -244,15 +245,12 @@ export default function LibraryPdfReader({
           setMissing(true);
           return;
         }
-        const [reader, worker] = await Promise.all([
-          import("pdfjs-dist"),
-          import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
-        ]);
+        const reader = await import("pdfjs-dist");
         if (!active) return;
         setError("");
         setPdf(undefined);
         setMissing(false);
-        reader.GlobalWorkerOptions.workerSrc = worker.default;
+        reader.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
         let data: ArrayBuffer;
         if (sourceUrl) {
           // Carrega o arquivo completo: servidores externos podem falhar nas requisições Range do PDF.js.

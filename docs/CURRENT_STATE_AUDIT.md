@@ -1,3 +1,35 @@
+## Navegação creme e grafite, 23/11/2026
+
+Por pedido do proprietário, itens da navegação voltaram às variantes originais paper, sem colorful. Grafite no claro, creme no escuro e creme sobre o item ativo roxo, em PC e celular. Avatar preservado. Verificação no navegador nos dois temas/larguras confirmou variantes; 24 testes de app passaram. Capturas tmp/nav-restored-*.png.
+
+## Tentativas por área e redação Enem, 23/11/2026
+
+Entrega de objetiva com itens vazios exige confirmação com contagem; cancelar preserva respostas. Histórico mantém tentativas por área e compatibilidade com a tentativa antiga, permitindo reabrir a escolha e concluir áreas restantes sem sobrescrever resultados anteriores. O cartão exibe média de preenchimento das áreas e balão com percentual individual; envio de objetiva incompleta não vira 100%. A marcação manual continua independente.
+
+Redação reutiliza EssayWriting, seus bloqueios de colagem, folha móvel arrastável, revisão e materiais persistidos no workspace. Painel esquerdo localiza e renderiza somente a página da proposta, com textos motivacionais; não navega pelas questões. Tentativa enviada fica registrada na área de redação. Novas propostas usam identificador por ano e variante, sem mudar rascunhos dos temas existentes.
+
+Validação: 20 testes focados passaram, TypeScript e ESLint dos arquivos alterados sem erros. Playwright em Edge verificou confirmação, cancelamento, entrega, reabertura com áreas restantes, percentuais, proposta isolada e folha móvel em 1366 e 390px, claro/escuro, sem erros JS. Conferida também proposta 2022 no PC. Capturas tmp/enem-{confirm,progress,sections,essay,sheet}-*.png; relatório tmp/enem-new-flow-report.json. Corrigidos campo de texto estreito por seletor preso ao contêiner antigo e balão que saía da tela no celular.
+
+Build aprovado; performance: entrada 219,4 KiB preservada, total 1972,6 KiB, 6,6 KiB acima do teto existente de 1966 KiB. Limites não alterados. Verificação de desempenho permanece pendente; não declarar verify integral aprovado. Sem publicação nesta rodada.
+
+## Fechamento da cobertura, 23/11/2026
+
+Cobertura completa: 3.145 entradas nos 34 cadernos padrão de 2010 a 2026, contando os dois idiomas. Auditoria de todas as chaves sem ausências, divergências do gabarito ou falta de A a E. Estatísticas reais em 2.960 entradas de 2010 a 2025. Isso não comprova revisão humana independente nem profundidade uniforme das entradas antigas. O aprofundamento continua em 2021 e 2024; em 2023 foram ampliadas as 150 alternativas de q61 a q90 sem alterar os parágrafos existentes. Agentes foram interrompidos por limite de uso e, depois, revogação de rede, com arquivos salvos preservados.
+
+Validação: lint sem erros e com 32 avisos existentes; API e idiomas aprovados; 497 arquivos e 3.399 testes passaram na suíte geral, além de 10 testes focados de revisão. Build com TypeScript e orçamento de desempenho aprovados na sequência de verificação. JavaScript inicial 219,4 KiB e aplicação 1.963,7 KiB. Uma execução paralela redundante de build colidiu no diretório dist; a sequência principal terminou sem essa falha. A formatação integral ainda deve ser repetida após encerrar as edições dos agentes. E2E integral não executado nesta rodada; a validação de navegador anterior cobriu revisão em PC/celular e claro/escuro.
+
+## Continuação editorial e leitor PDF local, 22/11/2026
+
+Três agentes trabalham em anos distintos, enquanto a integração completa 2013 e aprofunda as alternativas de 2026. A nova rodada preservou os parágrafos existentes de 2026 e reescreveu 440 justificativas A a E em 88 questões, com leitura das páginas e figuras. As 45 questões de Humanas de 2013 receberam conteúdo original contextualizado; Ciências da Natureza segue em produção. 2020 e 2022 tiveram suas lacunas válidas completadas, e 2025 recebeu aprofundamento das 925 alternativas. A cobertura continua parcial e consta em `docs/research/enem-review-coverage.json`; quantidade de entradas não comprova revisão humana independente.
+
+O erro `Invalid workerSrc type` da prévia Vite foi reproduzido no navegador e corrigido usando a importação estática da URL do worker, preservando o carregamento opcional do renderizador PDF. Validação automatizada e inspeção de capturas confirmaram revisão de uma única página, troca de questões e conteúdo salvo para 2022 e 2026, em 1366px e 390px, claro e escuro, sem pedidos de IA. Estatísticas reais apareceram em 2022 e permaneceram indisponíveis em 2026. Capturas e relatório locais em `tmp/saved-review-*` e `tmp/enem-question-pages-browser-validation.json`.
+
+Suíte geral: 498 arquivos e 3.402 testes passaram antes do ajuste da importação do worker. Depois dele, passaram 16 testes focados, TypeScript e a validação de navegador. Build e orçamento de desempenho passaram antes desse ajuste; repetir o build na entrega. O primeiro `verify` parou na formatação de arquivos herdados e dos lotes em produção; a formatação foi corrigida, e os agentes a aplicam após publicar. Ainda não declarar o `verify` integral aprovado. Estatísticas cobrem 2.960 entradas de 2010 a 2025; 2026 depende de microdados oficiais ainda não disponíveis nesta rodada.
+
+## Questão 154 de 2022 restaurada, 22/11/2026
+
+O proprietário revogou a exclusão editorial e confirmou a alternativa E. Removidos o módulo de exclusão e seus desvios na correção, na TRI e na revisão: a questão volta a seguir diretamente o gabarito oficial e os parâmetros existentes. Salva resolução original com análise A a E, distinguindo 500.000 moedas totais e 400.000 inseridas sobre o pacote básico. A referência alternativa de dois pacotes é explicada na análise D, sem anular a questão. O acervo de 2022 passa a 185 resoluções. A dependência ts-fsrs já prevista na base foi restaurada no ambiente reutilizado, sem mudar manifesto ou lockfile.
+
 ## Expansão das resoluções Enem, 22/11/2026
 
 Usuário autorizou produção original com IA e agentes em paralelo, com conteúdo salvo e gabarito oficial conferido. Estado parcial: 826 de 3.145 entradas com resolução; 2023, 2025 e 2026 completos nos cadernos padrão e dois idiomas. Estatísticas reais agregadas para 1.920 itens de 2011 a 2024, sem inventar dados para 2026. Aprofundamento das justificativas já salvas continua pendente após nova referência do usuário. Os agentes pararam por limite de uso; preservar os lotes e retomar sem prometer conclusão integral. Prévia local respondeu HTTP 200 e abertura na Biblioteca foi solicitada. TypeScript passou e 17 testes de revisão, estatísticas, índice de páginas e leitor passaram. A nova expansão textual ainda não recebeu inspeção visual integral em quatro combinações de tema e dispositivo. Gabaritos 2010 em arquivos com sufixo com_gab não foram extraídos; investigar antes de publicar resoluções desse ano.

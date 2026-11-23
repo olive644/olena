@@ -29,11 +29,11 @@
           "No modelo de coevolução proposto pela questão, menor letalidade permite que o hospedeiro sobreviva por mais tempo e continue participando da transmissão. A dengue, com letalidade muito inferior, é associada à relação mais longa de adaptação entre vírus e seres humanos. Trata-se da inferência solicitada, sem uma regra universal para todos os patógenos."
         ],
         "alternatives": {
-          "A": "O período de incubação isolado não mede o tempo histórico de coevolução.",
-          "B": "Uma incubação menor não demonstra por si uma relação evolutiva mais antiga.",
-          "C": "A alta mortalidade elimina rapidamente hospedeiros e não é o critério de maior eficiência adotado.",
-          "D": "A ocorrência na África não permite datar a origem da relação entre esse vírus e humanos.",
-          "E": "A baixa letalidade é o indício usado na questão para uma associação mais longa e adaptada."
+          "A": "A duração da incubação é uma característica da infecção, mas não funciona isoladamente como relógio histórico da relação patógeno-hospedeiro; o maior intervalo do ebola não prova coevolução mais antiga.",
+          "B": "Embora a dengue seja a opção esperada, a incubação menor não é a justificativa evolutiva usada na questão; a comparação proposta se apoia na menor letalidade, e não apenas no tempo até os sintomas.",
+          "C": "A alta letalidade do ebola pode eliminar rapidamente hospedeiros e não demonstra maior eficiência de uma relação antiga; na interpretação proposta, a menor mortalidade favorece a manutenção da associação parasitária.",
+          "D": "O fato de seres humanos terem origem evolutiva africana não permite datar sua associação com um vírus que hoje causa surtos no continente; distribuição geográfica atual não comprova antiguidade da infecção.",
+          "E": "Na simplificação evolutiva adotada pela questão, a letalidade menor da dengue indica uma associação mais ajustada e duradoura, que preserva hospedeiros por mais tempo; esse é o indício esperado de coevolução mais longa."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -73,11 +73,11 @@
           "A decantação exige que o esgoto permaneça em repouso para que partículas mais densas se depositem no fundo. No esquema, essa condição ocorre no tanque séptico, identificado como etapa 3. É nele que o lodo pode ser separado por sedimentação."
         ],
         "alternatives": {
-          "A": "A caixa de gordura separa principalmente óleos e gorduras da cozinha.",
-          "B": "A caixa de passagem reúne os efluentes, sem a permanência prolongada exigida.",
-          "C": "O tanque séptico permite repouso e sedimentação das partículas que formam o lodo.",
-          "D": "O filtro biológico destaca o consumo de matéria orgânica por bactérias.",
-          "E": "A caixa de inspeção facilita a distribuição dos efluentes, sem ser o tanque de decantação."
+          "A": "Na etapa 1, a caixa de gordura retém especialmente materiais gordurosos vindos da cozinha; ela não é o compartimento em que todo o esgoto permanece por tempo suficiente para sedimentar o lodo.",
+          "B": "A etapa 2 reúne os efluentes dos banheiros e da lavanderia e os conduz adiante; sua função de passagem não inclui o repouso prolongado necessário à decantação do material sólido.",
+          "C": "Na etapa 3, o tanque séptico mantém o esgoto em repouso por mais tempo, permitindo que partículas mais densas sedimentem e formem o lodo a ser separado da fase líquida.",
+          "D": "Na etapa 4, o filtro biológico abriga colônias de bactérias que consomem matéria orgânica; essa degradação biológica não corresponde ao processo físico de decantar o lodo.",
+          "E": "A etapa 5 é a caixa de inspeção que facilita a distribuição dos efluentes; ela não substitui o tanque séptico, cujo tempo de retenção permite a sedimentação do material sólido."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -117,11 +117,11 @@
           "Na estaquia, o pedaço de caule precisa formar raízes para absorver água e nutrientes e estabelecer uma nova planta. As auxinas aplicadas na base estimulam a formação de raízes adventícias, originadas em um órgão que antes era caulinar."
         ],
         "alternatives": {
-          "A": "O efeito pretendido na base da estaca é o enraizamento, e não a indução direta da floração.",
-          "B": "Auxinas mantêm a dominância apical e não são escolhidas para estimular gemas laterais.",
-          "C": "O tamanho das folhas não é o fator que permite a fixação inicial da estaca.",
-          "D": "A indução de raízes adventícias viabiliza o estabelecimento da nova roseira.",
-          "E": "A produção de compostos energéticos ocorre pelo metabolismo, sem ser o papel específico da auxina."
+          "A": "O objetivo da auxina na parte inferior da estaca é induzir raízes para estabelecer a planta no solo; a técnica descrita não depende de provocar flores imediatamente no fragmento de caule.",
+          "B": "As auxinas participam da dominância apical e, em geral, inibem o crescimento de gemas laterais; sua aplicação na base da estaca é utilizada por estimular o enraizamento.",
+          "C": "Mesmo que hormônios vegetais influenciem o crescimento, folhas maiores não resolvem a necessidade inicial de absorver água e fixar a estaca; a função relevante da auxina é induzir raízes.",
+          "D": "A auxina aplicada na base do caule estimula raízes adventícias, que surgem fora da raiz original; elas permitem a absorção de água e nutrientes e o estabelecimento da nova roseira.",
+          "E": "A energia provém do metabolismo e das reservas ou da fotossíntese da planta; a auxina atua como sinal regulador do desenvolvimento, sem produzir diretamente compostos energéticos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -161,11 +161,11 @@
           "A comparação das estruturas mostra que a formação da lumirrubina altera a conectividade do esqueleto e cria um ciclo adicional. As funções orgânicas não são simplesmente trocadas e a mudança vai além da posição espacial de grupos em uma dupla. É uma isomeria de cadeia."
         ],
         "alternatives": {
-          "A": "A transformação não é apresentada como relação entre imagens especulares.",
-          "B": "As funções principais permanecem, sem troca de função que caracterize isomeria funcional.",
-          "C": "A formação de um novo fechamento na estrutura modifica o esqueleto da cadeia.",
-          "D": "Não se trata apenas de deslocar um grupo ou uma insaturação na mesma cadeia.",
-          "E": "A conectividade é alterada, e não apenas a disposição geométrica em torno de uma dupla."
+          "A": "Isômeros ópticos mantêm a conectividade e diferem na disposição espacial, podendo ser imagens especulares; o esquema mostra alteração no esqueleto com formação de um novo anel, o que não caracteriza essa relação.",
+          "B": "As funções orgânicas principais são preservadas na conversão mostrada; a distinção não decorre de pertencerem a funções diferentes, como exige a isomeria funcional.",
+          "C": "A luz promove uma reorganização estrutural com novo fechamento de anel na lumirrubina, modificando o esqueleto da cadeia; mantendo-se a fórmula molecular, a relação é classificada como isomeria de cadeia.",
+          "D": "A estrutura não muda apenas a posição de uma função, substituinte ou dupla no mesmo esqueleto; a formação de um novo ciclo altera a organização da cadeia carbônica.",
+          "E": "A isomeria geométrica preserva a conectividade e muda a disposição de grupos em torno de uma restrição de rotação; o desenho mostra uma transformação do esqueleto, e não apenas essa mudança espacial."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -205,11 +205,11 @@
           "As versões levam o mesmo automóvel de 0 a 100 km/h, portanto produzem a mesma variação de energia cinética. A versão a álcool realiza essa transferência em 12,9 s, menos que os 13,4 s da gasolina. Como potência é energia por tempo, a versão a álcool tem maior potência média nesse intervalo."
         ],
         "alternatives": {
-          "A": "A menor duração da aceleração pertence à versão a álcool, e não à gasolina.",
-          "B": "A velocidade máxima isolada não determina a potência média na aceleração analisada.",
-          "C": "A mesma energia cinética é adquirida em menos tempo com álcool, elevando a potência.",
-          "D": "A mesma variação de velocidade não implica potência igual quando os tempos diferem.",
-          "E": "Para a mesma energia, um tempo maior corresponde a menor potência média."
+          "A": "Para atingir a mesma velocidade, a versão a gasolina leva 13,4 s e a versão a álcool, 12,9 s; portanto, a maior aceleração média pertence ao álcool, contrariando a justificativa da alternativa.",
+          "B": "A velocidade máxima da versão a gasolina é ligeiramente maior, mas potência é taxa de transferência de energia; a comparação pertinente considera o tempo para a mesma variação de energia cinética.",
+          "C": "Com a mesma massa e a mesma variação de 0 a 100 km/h, as versões adquirem igual energia cinética; a versão a álcool o faz em menos tempo, apresentando maior taxa de variação de energia e maior potência média.",
+          "D": "A mesma variação de velocidade leva a mesma variação de energia cinética para a massa considerada, mas os tempos são diferentes; dividir essa energia por tempos distintos não fornece potências iguais.",
+          "E": "Para fornecer a mesma variação de energia, gastar mais tempo significa menor potência média, não maior; os 13,4 s da gasolina superam os 12,9 s do álcool."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -249,11 +249,11 @@
           "O circuito deve permitir escolher um único caminho com lâmpada entre os polos da bateria. Em D, a primeira chave seleciona a verde ou encaminha a corrente à segunda; esta seleciona a vermelha ou a azul. Assim, três cores podem ser acionadas separadamente."
         ],
         "alternatives": {
-          "A": "A ligação entre C da primeira chave e A da segunda cria um caminho com vermelha e azul em série.",
-          "B": "A azul permanece diretamente ligada aos polos, impedindo a seleção exclusiva das demais.",
-          "C": "A azul está conectada permanentemente à bateria, independentemente das chaves.",
-          "D": "A primeira chave escolhe verde ou a segunda chave, que seleciona exclusivamente vermelha ou azul.",
-          "E": "O fio entre os terminais A conecta verde e vermelha em paralelo, permitindo acionamento simultâneo."
+          "A": "Quando a primeira chave conecta BC e a segunda conecta AB, o retorno à bateria se faz pela lâmpada vermelha e pela azul em série; essa configuração permite duas lâmpadas acesas, contrariando a seleção individual.",
+          "B": "A lâmpada azul está diretamente ligada aos dois polos da bateria e permanece acesa independentemente das chaves; ao selecionar outra lâmpada, ela não é desligada, impedindo a condição exigida.",
+          "C": "O ramo da lâmpada azul liga diretamente os polos da bateria, sem passar por interruptor; por isso, a azul não pode ser desligada para acender exclusivamente verde ou vermelha.",
+          "D": "A primeira chave em AB fecha apenas o ramo verde; em BC, conduz à segunda chave, que seleciona o retorno da vermelha ou da azul. Assim, cada configuração acende uma única cor.",
+          "E": "O fio entre os terminais A une os ramos verde e vermelho; ao conectá-los à bateria pelas chaves, as duas lâmpadas podem acender em paralelo, sem permitir a seleção exclusiva de cada uma."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -293,11 +293,11 @@
           "A escolha exige simultaneamente baixa temperatura, membrana polimérica e meio ácido. A célula PEM trabalha entre 60 e 100 °C, utiliza ácido perfluorossulfônico sólido e apresenta prótons nas semirreações. É a única tecnologia da tabela que reúne os três requisitos."
         ],
         "alternatives": {
-          "A": "A AFC opera em meio básico com hidróxido de potássio, sem atender ao meio ácido exigido.",
-          "B": "A MSFC utiliza carbonatos fundidos e temperaturas muito altas.",
-          "C": "A PEM combina baixa temperatura operacional, eletrólito polimérico e transporte de prótons.",
-          "D": "A PAFC utiliza ácido fosfórico líquido e opera em temperatura superior à PEM.",
-          "E": "A SOFC utiliza óxido sólido e exige temperaturas entre 600 e 1 000 °C."
+          "A": "A AFC opera a 90-100 °C, mas usa hidróxido de potássio aquoso, um eletrólito básico; não atende à combinação de membrana polimérica e meio ácido exigida para a aplicação.",
+          "B": "A MSFC utiliza carbonatos fundidos e funciona de 600 a 1 000 °C; falha tanto no requisito de baixo nível térmico quanto no de eletrólito constituído por membrana polimérica.",
+          "C": "A PEM opera de 60 a 100 °C, usa ácido perfluorossulfônico sólido como eletrólito polimérico e transporta prótons; reúne baixa temperatura, membrana polimérica e meio ácido.",
+          "D": "A PAFC ocorre em meio ácido, porém utiliza ácido fosfórico líquido e trabalha de 175 a 200 °C; não satisfaz o requisito de membrana polimérica e é mais quente que a PEM.",
+          "E": "A SOFC utiliza óxido de zircônio sólido e temperaturas entre 600 e 1 000 °C; o eletrólito não é polimérico e a operação exige níveis térmicos elevados."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -337,11 +337,11 @@
           "A evaporação do suor retira calor da pele. Quando o ar está úmido, a presença elevada de vapor reduz a facilidade de evaporar mais água, prejudicando esse mecanismo de resfriamento. O desconforto decorre da menor eficiência da evaporação do suor."
         ],
         "alternatives": {
-          "A": "A umidade indica quantidade de vapor, sem exigir que sua temperatura seja elevada.",
-          "B": "O ar úmido dificulta a evaporação do suor e a perda de calor associada.",
-          "C": "A absorção de radiação não é o mecanismo de desconforto indicado pela umidade.",
-          "D": "O problema principal é a evaporação, sem atribuí-lo a uma redução da condução do ar.",
-          "E": "Com a pele mais quente que o ambiente, a condensação sobre ela não explica a situação descrita."
+          "A": "Umidade elevada significa maior presença de vapor no ar, sem exigir que ele tenha temperatura superior à do corpo; o enunciado fixa o ambiente mais frio e o desconforto envolve a evaporação do suor.",
+          "B": "Quanto mais úmido o ar, menor a facilidade de evaporar o suor; como essa evaporação retira calor da pele, sua redução prejudica o resfriamento e aumenta o incômodo.",
+          "C": "O texto não indica alteração da intensidade de radiação incidente ou de sua absorção pelo corpo; o efeito térmico associado à umidade é a dificuldade de perder calor pela evaporação do suor.",
+          "D": "A baixa condutividade térmica do ar não é a mudança relevante provocada pela umidade nessa situação; a explicação do desconforto está no menor resfriamento evaporativo.",
+          "E": "A condensação requer que o vapor encontre uma superfície suficientemente fria; com o corpo mais quente que o ambiente, não é ela que explica o incômodo descrito, mas a evaporação dificultada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -381,11 +381,11 @@
           "O hidróxido de sódio identifica um composto capaz de doar próton em uma reação ácido-base. Entre as estruturas, III apresenta uma hidroxila ligada diretamente ao anel aromático, caracterizando fenol. O fenol é neutralizado pela base com formação de fenolato e água."
         ],
         "alternatives": {
-          "A": "A estrutura I apresenta grupo derivado de ureia, sem hidroxila fenólica para o teste proposto.",
-          "B": "A estrutura II não apresenta a hidroxila fenólica ácida necessária ao teste.",
-          "C": "A hidroxila fenólica de III doa próton ao hidróxido e forma o sal correspondente.",
-          "D": "O pesticida IV não possui o grupo fenólico identificado pelo reagente básico.",
-          "E": "A estrutura V não fornece a função ácida que dá o teste positivo proposto."
+          "A": "A estrutura I apresenta um derivado de ureia, com nitrogênios ligados à carbonila, mas não a hidroxila fenólica identificada pelo teste; na comparação proposta, não é a substância neutralizada como fenol pelo NaOH.",
+          "B": "A estrutura II tem grupos nitrogenados, mas não possui a hidroxila ligada diretamente a um anel aromático que fornece o próton ácido característico do teste apresentado.",
+          "C": "A estrutura III contém hidroxilas fenólicas, cujos prótons podem ser transferidos ao OH−; a reação forma água e o sal fenóxido correspondente, caracterizando neutralização ácido-base de Brønsted-Lowry.",
+          "D": "A estrutura IV apresenta um grupo sulfona e átomos de iodo, mas não a função fenol responsável pelo comportamento ácido destacado na identificação comparativa com hidróxido de sódio.",
+          "E": "A estrutura V contém ligações éter, sem hidroxila fenólica disponível para a neutralização proposta; a presença de oxigênio no éter não equivale à presença de um próton ácido em OH."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -425,11 +425,11 @@
           "A decomposição anaeróbia da matéria orgânica dos dejetos suínos em biodigestores gera uma mistura gasosa rica em metano. Esse biogás pode ser aproveitado energeticamente e reduz a carga orgânica descartada na água. É o combustível associado aos resíduos descritos."
         ],
         "alternatives": {
-          "A": "O etanol é obtido principalmente por fermentação de açúcares, sem ser o produto típico dos dejetos em biodigestão.",
-          "B": "A digestão anaeróbia dos resíduos produz biogás, cuja fração combustível principal é metano.",
-          "C": "O butano é um hidrocarboneto comum do gás liquefeito de petróleo, sem ser o produto dessa biodigestão.",
-          "D": "O metanol não é a mistura gasosa formada na degradação anaeróbia dos dejetos.",
-          "E": "O biodiesel é produzido de óleos e gorduras, sem corresponder à biodigestão dos resíduos descritos."
+          "A": "O etanol é obtido por fermentação alcoólica de açúcares, como os da cana; o aproveitamento dos dejetos suínos como combustível se associa à decomposição anaeróbia que gera uma mistura gasosa.",
+          "B": "Em biodigestores, microrganismos degradam anaerobicamente a matéria orgânica dos dejetos e produzem biogás, cuja principal fração combustível é o metano, permitindo aproveitar energeticamente esses resíduos.",
+          "C": "O butano é um componente combustível associado principalmente ao gás liquefeito de petróleo; não é o produto característico da digestão anaeróbia de resíduos orgânicos de suínos.",
+          "D": "O metanol é um álcool e não corresponde à mistura de gases produzida em biodigestores; o combustível obtido pelo tratamento anaeróbio dos dejetos é o biogás.",
+          "E": "O biodiesel é produzido normalmente pela transformação de óleos e gorduras em ésteres; a decomposição anaeróbia dos dejetos descritos gera biogás, por um processo diferente."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -469,11 +469,11 @@
           "O agente atua no criadouro aquático e precisa ser ingerido com a água, o que corresponde à fase larval do mosquito. O dano ao tubo digestório compromete a sobrevivência dessa fase. Assim, o controle impede o desenvolvimento da larva antes de ela se tornar adulta."
         ],
         "alternatives": {
-          "A": "O adulto não vive ingerindo água do criadouro como a larva descrita.",
-          "B": "Os ovos não possuem o intestino no qual a curcumina se acumula.",
-          "C": "O efeito direto é a lesão letal da larva, sem atuar especificamente na regulação da metamorfose.",
-          "D": "A ingestão e a destruição intestinal atingem a larva presente no ambiente aquático.",
-          "E": "A substância atua após ingestão, sem um mecanismo de repelência do mosquito adulto."
+          "A": "O efeito exige ingerir água do criadouro e acumular curcumina no intestino; essa é a exposição da larva aquática, e não uma ação descrita diretamente sobre o mosquito adulto.",
+          "B": "Os ovos ainda não possuem um tubo digestório funcional que ingira a água e acumule a substância; o mecanismo explicado atua depois da eclosão, sobre a fase larval.",
+          "C": "A morte pode impedir que o inseto chegue à fase adulta, mas o mecanismo relatado não é uma alteração específica da regulação da metamorfose; trata-se de lesão fatal no intestino da larva.",
+          "D": "As larvas vivem na água e ingerem partículas do criadouro; ao acumular curcumina e sofrer lesões intestinais ativadas pela luz, deixam de se desenvolver, antes de formar adultos transmissores.",
+          "E": "A substância age após ser ingerida e ativada pela luz, causando dano interno; o texto não descreve afastamento do mosquito adulto por odor, gosto ou outro mecanismo de repelência."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -513,11 +513,11 @@
           "A energia solar chega à cidade por ondas eletromagnéticas, processo de irradiação que dispensa meio material. O ar aquecido sobre a ilha de calor sobe e transporta energia para a brisa. Esse movimento de massas de ar caracteriza convecção."
         ],
         "alternatives": {
-          "A": "A radiação liga o Sol à superfície, e o movimento do ar transfere calor por convecção.",
-          "B": "A segunda transferência ocorre pelo deslocamento de ar aquecido, sem predomínio de irradiação.",
-          "C": "A energia solar atravessa o espaço sem contato material, portanto não chega por condução.",
-          "D": "O espaço entre Sol e Terra impede a convecção como mecanismo solar.",
-          "E": "A primeira transferência é radiativa, sem transporte de matéria do Sol à cidade."
+          "A": "A energia do Sol chega à cidade por ondas eletromagnéticas, caracterizando irradiação; o ar aquecido sobe e transporta energia térmica para a brisa, processo de convecção.",
+          "B": "A transferência do Sol à cidade é irradiativa, mas a interação com a brisa envolve movimento vertical de ar quente; classificá-la também como irradiação ignora o transporte de matéria.",
+          "C": "A condução requer interação material entre regiões em contato, enquanto a energia solar atravessa o espaço por radiação; além disso, a transferência à brisa é convectiva, não irradiativa.",
+          "D": "Não há transporte de matéria do Sol até a cidade, de modo que a primeira transferência não é convecção; o deslocamento vertical do ar ocorre na segunda etapa, que também foi classificada incorretamente.",
+          "E": "A subida do ar aquecido corresponde à convecção na segunda interação, mas a energia solar não chega por deslocamento de um fluido até a cidade; sua transferência é por irradiação."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -557,11 +557,11 @@
           "A folha esticada e a folha amassada têm a mesma massa e o mesmo peso, mas oferecem áreas diferentes à interação com o ar. A resistência do ar altera a queda e também afeta diferentemente pedra e rolha. No vácuo, a aceleração gravitacional não depende da massa do corpo."
         ],
         "alternatives": {
-          "A": "O peso da folha não muda ao amassá-la, mas o tempo de queda muda.",
-          "B": "A forma e a área exposta alteram a força de resistência exercida pelo ar.",
-          "C": "A massa é a mesma nos dois formatos da folha e não explica a diferença.",
-          "D": "A densidade média pode acompanhar a mudança de forma, mas a força física determinante é o arrasto do ar.",
-          "E": "A gravidade local permanece a mesma para os corpos comparados."
+          "A": "O peso varia entre pedra e rolha, mas permanece o mesmo quando a folha é amassada; por isso, não explica conjuntamente as duas observações sobre velocidades diferentes de queda.",
+          "B": "A resistência do ar depende da forma e da área exposta, além da velocidade; amassar o papel reduz sua influência, e a comparação entre pedra e rolha também é afetada por essa força.",
+          "C": "A massa da folha não muda quando ela é amassada, embora seu comportamento na queda mude; logo, a massa isolada não pode ser a explicação comum das experiências.",
+          "D": "A densidade pode distinguir materiais, mas não substitui a força de arrasto como causa da diferença de queda no ar; na folha amassada, a alteração de forma reduz a ação da resistência.",
+          "E": "Os corpos caem na mesma região, sujeitos essencialmente à mesma aceleração gravitacional; as diferenças observadas resultam da ação do ar, e não de valores diferentes de g para cada objeto."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -601,11 +601,11 @@
           "A proporção fornecida é 50 g de etanol para 100 g de glicose. Assim, 50 kg de glicose renderiam 25 kg de etanol; com conversão de 80%, obtêm-se 20 kg. A densidade de 0,80 kg/L fornece volume de 20 ÷ 0,80 = 25 litros."
         ],
         "alternatives": {
-          "A": "Dezesseis litros resultam de multiplicar pela densidade em vez de dividir a massa por ela.",
-          "B": "Vinte é a massa obtida em quilogramas, e não o volume em litros.",
-          "C": "A massa de 20 kg dividida por 0,80 kg/L corresponde a 25 L.",
-          "D": "Sessenta e quatro litros excedem o rendimento permitido pela proporção e pela conversão dadas.",
-          "E": "Cem litros ignoram tanto a proporção glicose-etanol quanto a conversão de 80%."
+          "A": "Dos 50 kg de glicose obtêm-se teoricamente 25 kg de etanol e, com 80% de conversão, 20 kg; dividir pela densidade de 0,80 kg/L dá 25 L, de modo que 16 L subestima o volume.",
+          "B": "O rendimento aplicado à produção teórica fornece 20 kg de etanol, mas esse é um valor de massa; como a densidade é 0,80 kg/L, não se pode transferir diretamente o número 20 para litros.",
+          "C": "A relação de 50 g de etanol por 100 g de glicose fornece 25 kg; com 80% de conversão, restam 20 kg. Como 0,80 g/mL = 0,80 kg/L, o volume é 20/0,80 = 25 L.",
+          "D": "Sessenta e quatro litros conteriam 51,2 kg de etanol na densidade informada, valor superior até à massa de glicose utilizada; não corresponde à razão de produção e ao rendimento dados.",
+          "E": "Cem litros equivalem a 80 kg de etanol, incompatíveis com a produção teórica de 25 kg e efetiva de 20 kg; esse resultado desconsidera a proporção da fermentação e a conversão de 80%."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -645,11 +645,11 @@
           "A madeira corresponde ao xilema, e o cerne é sua porção interna com deposição de substâncias que favorecem durabilidade e resistência. A espécie 1 apresenta grande quantidade de cerne, superior às demais. É a escolha mais adequada para a construção proposta."
         ],
         "alternatives": {
-          "A": "A espécie 1 possui muito cerne, tecido relacionado à resistência da madeira.",
-          "B": "A espécie 2 apresenta muito alburno, mas não possui cerne.",
-          "C": "A espécie 3 tem floema abundante, que não corresponde à madeira resistente procurada.",
-          "D": "A espécie 4 tem muita periderme e floema, mas não apresenta cerne.",
-          "E": "A espécie 5 possui apenas pequena quantidade de cerne, inferior à espécie 1."
+          "A": "A espécie 1 tem grande quantidade de cerne (+++), madeira interna lignificada com substâncias que elevam a resistência à degradação; essa combinação a torna a mais adequada à construção entre as opções.",
+          "B": "A espécie 2 possui muito alburno, mas não apresenta cerne; a abundância de tecido condutor ativo não fornece a resistência à degradação esperada da madeira interna rica em substâncias protetoras.",
+          "C": "A espécie 3 tem muito floema e algum esclerênquima associado, porém não apresenta cerne; essas características não superam a grande quantidade de madeira interna resistente presente na espécie 1.",
+          "D": "A espécie 4 apresenta bastante periderme e floema, tecidos que não constituem o cerne utilizado como madeira; a ausência deste reduz sua adequação ao objetivo de resistência mecânica e à degradação.",
+          "E": "A espécie 5 possui apenas pequena quantidade de cerne (+), apesar de outros tecidos abundantes; a espécie 1 oferece proporção muito maior (+++) do componente mais adequado à madeira de construção."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -689,11 +689,11 @@
           "O pigmento aparece amarelo-alaranjado porque reflete principalmente essas faixas e absorve suas complementares. No círculo apresentado, as regiões opostas ao amarelo e ao laranja são violeta e azul. Logo, os carotenos absorvem majoritariamente entre violeta e azul."
         ],
         "alternatives": {
-          "A": "Violeta e azul são complementares às cores amarelo-alaranjadas refletidas pelo caroteno.",
-          "B": "A faixa azul-verde está associada no texto à absorção das antocianinas.",
-          "C": "Absorver verde-amarelo não corresponde às complementares do amarelo-alaranjado.",
-          "D": "Amarelo e laranja são as cores percebidas e refletidas, sem predomínio de absorção.",
-          "E": "A absorção em laranja-vermelho não produziria o amarelo-alaranjado descrito."
+          "A": "O caroteno aparece amarelo-alaranjado porque reflete essa faixa e absorve principalmente sua região complementar; no círculo apresentado, ela corresponde ao intervalo entre violeta e azul.",
+          "B": "A absorção entre azul e verde é associada no texto às antocianinas, que parecem vermelho-alaranjadas; para o tom amarelo-alaranjado do caroteno, a complementar situa-se mais para violeta e azul.",
+          "C": "Absorver principalmente verde e amarelo eliminaria essas componentes da luz refletida, em vez de explicar a aparência amarelo-alaranjada; é necessário distinguir a cor absorvida daquela que observamos.",
+          "D": "Amarelo e laranja são as cores que predominam na aparência dos carotenos, portanto são majoritariamente refletidas; identificá-las como a faixa absorvida inverte o mecanismo explicado.",
+          "E": "A faixa entre laranja e vermelho é complementar a tons entre azul e verde, não ao amarelo-alaranjado característico do caroteno; ela não é a região de absorção majoritária procurada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -733,11 +733,11 @@
           "O verso decisivo afirma que o planeta é menos denso que a água. Na tabela, apenas Saturno tem densidade relativa inferior a 1, com valor 0,7. A identificação independe de interpretar a distância terrestre, que varia ao longo das órbitas."
         ],
         "alternatives": {
-          "A": "Mercúrio tem densidade relativa 5,6, muito superior à da água.",
-          "B": "Júpiter possui densidade relativa 1,3, ainda acima da água.",
-          "C": "Urano apresenta densidade relativa 1,2, sem atender à condição do verso.",
-          "D": "Saturno é o único listado com densidade relativa inferior a 1, igual a 0,7.",
-          "E": "Netuno possui densidade relativa 1,7 e não pode ser o planeta descrito."
+          "A": "Mercúrio tem densidade relativa 5,6, superior à da água, além de não corresponder ao Senhor dos Anéis referido no cordel; falha no critério explícito de densidade inferior a 1.",
+          "B": "Júpiter tem densidade relativa 1,3, maior que a da água; embora seja um gigante gasoso, não atende à propriedade física destacada nos dois últimos versos.",
+          "C": "Urano também possui anéis, mas sua densidade relativa é 1,2, superior a 1; a identificação exige combinar a referência do cordel com o dado de densidade fornecido.",
+          "D": "Saturno tem densidade relativa 0,7, a única inferior à da água entre as opções, e é conhecido por seu sistema de anéis; esses elementos identificam o planeta mencionado.",
+          "E": "Netuno apresenta densidade relativa 1,7, portanto maior que a da água; sua posição distante no Sistema Solar não compensa a incompatibilidade com a condição física indicada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -777,11 +777,11 @@
           "Pela relação R = ρL/A, com resistividade comum, basta comparar L/A. Os valores são aproximadamente 34,7 para o fio 1; 11,75 para o 2; 27 para o 3; e 106 para o 4. A ordem crescente é R2 < R3 < R1 < R4."
         ],
         "alternatives": {
-          "A": "R1 não é a menor, pois seu quociente L/A supera os de R2 e R3.",
-          "B": "A posição de R1 e R3 está invertida, já que 27 é menor que 34,7.",
-          "C": "Os quocientes 11,75, 27, 34,7 e 106 produzem essa sequência.",
-          "D": "R4 possui o maior quociente L/A, portanto não pode vir em primeiro.",
-          "E": "A sequência começa pelo maior valor e não corresponde à ordem crescente calculada."
+          "A": "Pela relação R = ρL/A, R1/ρ = 312/9 ≈ 34,7 e R2/ρ = 47/4 = 11,75; logo, R1 não pode ser menor que R2 como propõe esta ordenação.",
+          "B": "R2 é realmente a menor, mas R1/ρ ≈ 34,7 supera R3/ρ = 54/2 = 27; a alternativa inverte a posição relativa entre os fios 1 e 3.",
+          "C": "Como ρ é comum, basta ordenar L/A: 11,75 no fio 2, 27 no fio 3, aproximadamente 34,7 no fio 1 e 106 no fio 4; assim, R2 < R3 < R1 < R4.",
+          "D": "O fio 4 tem L/A = 106, o maior valor da tabela, e não a menor resistência; o fio 2, com 11,75, é o menos resistivo, contrariando os extremos propostos.",
+          "E": "A menor área do fio 4 não reduz sua resistência: em R = ρL/A, ela aumenta o resultado; seu valor é o maior, enquanto o fio 2 deve aparecer no início da ordem crescente."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -821,11 +821,11 @@
           "A degradação de matéria orgânica com menor rendimento energético e formação de produtos orgânicos ainda combustíveis caracteriza a fermentação. Na fermentação alcoólica, por exemplo, parte da energia permanece no etanol produzido, que pode ser utilizado como combustível."
         ],
         "alternatives": {
-          "A": "A fotossíntese fixa carbono e produz matéria orgânica, em vez de degradá-la com baixo rendimento.",
-          "B": "A fermentação gera produtos orgânicos energéticos, como o etanol.",
-          "C": "A quimiossíntese usa energia química para fixar carbono, sem corresponder ao catabolismo descrito.",
-          "D": "A respiração aeróbica promove oxidação mais completa, com maior rendimento energético.",
-          "E": "A fosforilação oxidativa está associada à cadeia transportadora de elétrons e não define a produção dos subprodutos citados."
+          "A": "A fotossíntese usa energia luminosa para fixar carbono em matéria orgânica, um processo de síntese; o trecho procura a degradação de compostos que deixa subprodutos combustíveis.",
+          "B": "Na fermentação, a degradação parcial de matéria orgânica rende menos energia que a respiração aeróbica e pode produzir etanol, ainda rico em energia e utilizável como combustível ambiental.",
+          "C": "A quimiossíntese utiliza energia de reações com substâncias inorgânicas para produzir matéria orgânica; não é o catabolismo de baixo rendimento descrito como origem de subprodutos combustíveis.",
+          "D": "A respiração aeróbica degrada matéria orgânica com participação de oxigênio e alto aproveitamento energético, formando principalmente CO2 e água; não corresponde à produção de combustíveis por degradação parcial.",
+          "E": "A fosforilação oxidativa produz ATP associada ao transporte de elétrons e não designa o processo que acumula subprodutos orgânicos combustíveis de menor rendimento energético."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -865,11 +865,11 @@
           "A titulação com NaOH permite determinar a quantidade de ácido acetilsalicílico pela quantidade de base consumida na reação. Massa e densidade totais incluem os excipientes, e o papel indicador apenas avalia o pH. A quantificação do princípio ativo é obtida no teste 5."
         ],
         "alternatives": {
-          "A": "A massa do comprimido inclui amido e celulose, sem isolar a quantidade de ácido.",
-          "B": "A densidade do conjunto não determina diretamente a massa do princípio ativo.",
-          "C": "O papel indicador informa uma faixa de pH, sem quantificar o ácido presente.",
-          "D": "A temperatura de fusão não fornece a dosagem do ácido na mistura proposta.",
-          "E": "A titulação relaciona o consumo de base à quantidade do ácido e permite calcular seu teor."
+          "A": "A massa total inclui ácido acetilsalicílico, amido e celulose; pesá-la não permite separar a contribuição do princípio ativo e demonstrar que havia apenas 40 mg em vez de 100 mg.",
+          "B": "A densidade caracteriza a relação entre massa e volume do comprimido inteiro, incluindo excipientes; sem uma análise específica, não determina a quantidade de ácido acetilsalicílico.",
+          "C": "O papel indicador mostra uma faixa de pH, mas não fornece a quantidade exata de ácido presente em uma mistura; a reprovação por teor de 40% exige um procedimento quantitativo.",
+          "D": "A temperatura de fusão pode ajudar na avaliação de identidade ou pureza, mas o comprimido contém diferentes substâncias; essa medida não quantifica diretamente os miligramas do ácido.",
+          "E": "Na titulação, o consumo conhecido de NaOH permite calcular a quantidade de ácido neutralizado e, pela estequiometria, sua massa no comprimido; por isso, o teste 5 identifica o teor abaixo do previsto."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -909,11 +909,11 @@
           "Substâncias tóxicas persistentes podem se acumular nos organismos e atingir concentrações maiores a cada nível trófico, processo chamado biomagnificação. Entre os seres citados, os golfinhos ocupam posição predatória mais elevada e tendem a concentrar mais desses contaminantes."
         ],
         "alternatives": {
-          "A": "As esponjas não ocupam o nível predatório mais elevado entre os organismos citados.",
-          "B": "Os golfinhos recebem contaminantes de muitas presas e apresentam maior biomagnificação.",
-          "C": "O fitoplâncton inicia cadeias alimentares, sem o acúmulo sucessivo dos níveis superiores.",
-          "D": "Os herbívoros estão abaixo dos predadores na cadeia e tendem a menor concentração.",
-          "E": "As algas são produtoras e não concentram contaminantes por sucessivas relações de predação."
+          "A": "Esponjas podem acumular contaminantes ao filtrar a água, mas não ocupam o topo da cadeia alimentar considerada; a biomagnificação leva às maiores concentrações nos predadores superiores.",
+          "B": "Golfinhos ocupam níveis tróficos elevados e incorporam contaminantes persistentes presentes em muitas presas; a biomagnificação aumenta a concentração ao longo da cadeia até esses consumidores.",
+          "C": "O fitoplâncton pode absorver contaminantes na base da cadeia, mas sua concentração é amplificada nos consumidores sucessivos; por isso, não é o grupo com os maiores valores esperados.",
+          "D": "Peixes herbívoros recebem contaminantes dos produtores que consomem, mas ainda servem de alimento a níveis superiores; a maior concentração é esperada em predadores como os golfinhos.",
+          "E": "Algas macroscópicas são produtoras e podem incorporar substâncias do ambiente, mas a biomagnificação transfere e concentra esses compostos em níveis tróficos superiores."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -953,11 +953,11 @@
           "A velocidade inicial das cargas aponta para dentro do plano da imagem e o campo magnético para a direita. Pela regra da mão direita em F = q(v × B), a força na carga positiva aponta para baixo da página. O sinal negativo inverte a força na outra esfera, que aponta para cima."
         ],
         "alternatives": {
-          "A": "A força aponta para baixo na positiva e para cima na negativa, como exige a regra da mão direita.",
-          "B": "Cargas opostas com a mesma velocidade sofrem forças magnéticas de sentidos contrários.",
-          "C": "A força magnética é perpendicular ao campo, sem apontar horizontalmente ao longo da haste.",
-          "D": "As forças não podem ter o mesmo sentido quando as cargas possuem sinais opostos.",
-          "E": "Essa configuração inverte os sentidos previstos pelo produto vetorial para as duas cargas."
+          "A": "A velocidade entra no plano da figura e o campo aponta para a direita; pela regra da mão direita em F = q(v × B), a carga positiva sofre força para baixo da página e a negativa para cima.",
+          "B": "As duas cargas têm sinais opostos e a mesma velocidade no campo, portanto as forças magnéticas têm sentidos contrários; não podem ambas apontar para baixo da página.",
+          "C": "A força magnética deve ser perpendicular ao campo e à velocidade; como o campo é horizontal, ela não aponta ao longo da haste, e sim para cima ou para baixo da página.",
+          "D": "A inversão do sinal da carga inverte o sentido de q(v × B); desse modo, duas setas para cima não representam as forças opostas que atuam sobre as esferas.",
+          "E": "As forças são opostas, mas os sentidos estão invertidos: para velocidade entrando no plano e campo à direita, a carga positiva é desviada para baixo e a negativa para cima da página."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -997,11 +997,11 @@
           "A escola já planejou sensibilização, capacitação e separação dos resíduos. Falta assegurar a etapa posterior: a retirada e o encaminhamento correto dos materiais para reciclagem. A parceria com prefeitura ou cooperativa completa o circuito de destinação."
         ],
         "alternatives": {
-          "A": "Ampliar a campanha ao bairro não resolve a retirada dos resíduos já separados.",
-          "B": "A parceria garante recolhimento e encaminhamento apropriado dos materiais recicláveis.",
-          "C": "A visita é educativa, mas não organiza a destinação dos resíduos da escola.",
-          "D": "A divulgação informa a ação, sem assegurar o transporte para reciclagem.",
-          "E": "Coletores externos aumentam a coleta, mas ainda deixam sem solução seu destino."
+          "A": "A sensibilização da comunidade escolar já está prevista e pode alcançar vizinhos, mas novas campanhas não resolvem a etapa ausente: retirar os resíduos separados e encaminhá-los à reciclagem.",
+          "B": "Depois da sensibilização, capacitação e instalação de coletores, ainda é preciso garantir retirada e destino; uma parceria com prefeitura ou cooperativa integra a separação feita na escola à cadeia de reciclagem.",
+          "C": "Uma visita ao local de disposição final pode ampliar a aprendizagem, mas não garante coleta nem destinação dos materiais separados; a execução prática do encaminhamento continua faltando.",
+          "D": "A divulgação informa a iniciativa ao público e pode ampliar a adesão, porém não assegura quem buscará os resíduos ou onde serão reciclados, etapa necessária para completar a ação.",
+          "E": "Coletores externos ampliam o volume recebido e o público atendido, mas não resolvem a falta de recolhimento e destino adequado; a escola precisa antes articular esse fluxo de materiais."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1041,11 +1041,11 @@
           "A consanguinidade aumenta a chance de dois animais portarem alelos recessivos herdados de ancestrais comuns. Antes de organizar cruzamentos, é necessário conhecer parentescos e características genéticas. O mapeamento genético permite orientar a separação e reduzir acasalamentos de risco."
         ],
         "alternatives": {
-          "A": "A transgenia insere material genético e não identifica o parentesco para organizar os grupos.",
-          "B": "A terapia gênica procura tratar alterações, sem ser o procedimento prévio de seleção de cruzamentos.",
-          "C": "Vacinas de DNA atuam na resposta imune e não corrigem a consanguinidade.",
-          "D": "A clonagem produziria indivíduos geneticamente semelhantes, sem ampliar a diversidade dos cruzamentos.",
-          "E": "A análise genética ajuda a reconhecer parentescos e alelos de risco antes do manejo reprodutivo."
+          "A": "Inserir genes de outra origem não é necessário para reconhecer parentesco e organizar os cruzamentos; a medida prévia deve identificar as relações genéticas entre os animais existentes.",
+          "B": "A terapia gênica busca alterar genes em células de um indivíduo para tratar uma condição, mas o problema exige prevenir cruzamentos consanguíneos no rebanho, não tratar geneticamente cada búfalo.",
+          "C": "Vacinas de DNA estimulam uma resposta imune contra agentes ou antígenos específicos; não identificam parentesco nem evitam a combinação de alelos recessivos herdados de ancestrais comuns.",
+          "D": "A clonagem terapêutica visa obter células ou tecidos para fins de tratamento e não fornece o levantamento do parentesco necessário para separar reprodutores do rebanho.",
+          "E": "O mapeamento genético permite reconhecer parentesco e variantes presentes nos animais, orientando a separação de reprodutores e reduzindo cruzamentos que aumentam a homozigose de alelos prejudiciais."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1085,11 +1085,11 @@
           "O cobre metálico inicia o ciclo com número de oxidação zero e passa a Cu2+ nas etapas intermediárias. Na etapa V, o zinco permite a redução dos íons cobre de volta a Cu metálico. A diminuição do número de oxidação de +2 para zero caracteriza a redução."
         ],
         "alternatives": {
-          "A": "Na etapa I, o cobre passa de zero a +2 e sofre oxidação.",
-          "B": "Na etapa II, o cobre continua com número de oxidação +2 no hidróxido.",
-          "C": "Na etapa III, a formação de CuO mantém o cobre em +2.",
-          "D": "Na etapa IV, a formação do sulfato não altera o número de oxidação do cobre.",
-          "E": "Na etapa V, Cu2+ recebe elétrons e retorna ao estado metálico de número de oxidação zero."
+          "A": "Na etapa I, o cobre metálico passa de número de oxidação 0 para +2 no nitrato de cobre; perde elétrons e sofre oxidação, processo oposto ao pedido.",
+          "B": "Na etapa II, o cobre continua com número de oxidação +2 ao passar de nitrato para hidróxido; a precipitação não representa ganho de elétrons pelo metal.",
+          "C": "Na etapa III, o aquecimento converte o hidróxido em óxido, mas o cobre mantém número de oxidação +2; a decomposição não constitui sua redução.",
+          "D": "Na etapa IV, o óxido reage com ácido sulfúrico e forma sulfato de cobre, permanecendo Cu2+; não há diminuição do número de oxidação do cobre.",
+          "E": "Na etapa V, o zinco fornece elétrons aos íons Cu2+, que retornam ao cobre metálico de número de oxidação 0; o ganho de elétrons caracteriza a redução."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1129,11 +1129,11 @@
           "O reflexo patelar é um arco reflexo medular. A informação sensorial chega à medula espinal e aciona neurônios motores que promovem a resposta muscular, sem depender de decisão consciente do encéfalo. A coordenação imediata está na medula."
         ],
         "alternatives": {
-          "A": "A ponte integra o encéfalo e não é o centro do arco reflexo patelar.",
-          "B": "A medula espinal recebe a aferência e organiza a resposta motora reflexa.",
-          "C": "O cerebelo participa da coordenação motora, mas não é o centro desse arco reflexo.",
-          "D": "O hipotálamo regula funções homeostáticas, sem coordenar diretamente o reflexo patelar.",
-          "E": "A neuro-hipófise libera hormônios e não integra o circuito reflexo do joelho."
+          "A": "A ponte pertence ao encéfalo e participa de conexões e funções específicas, mas o circuito simples do reflexo patelar se integra na medula espinhal, sem exigir processamento inicial nessa estrutura.",
+          "B": "A informação sensitiva do estiramento alcança a medula espinhal e ativa a resposta motora que contrai o músculo; esse arco reflexo coordena o movimento sem depender de uma decisão consciente.",
+          "C": "O cerebelo participa da coordenação de movimentos e do equilíbrio, mas o centro integrador do arco reflexo patelar é a medula espinhal, responsável pela resposta rápida ao estiramento.",
+          "D": "O hipotálamo regula funções como temperatura, fome e respostas endócrinas; não é a região que integra o circuito sensitivo-motor do reflexo patelar.",
+          "E": "A neuro-hipófise armazena e libera hormônios produzidos no hipotálamo, sem realizar a integração de neurônios sensitivos e motores necessária ao reflexo do joelho."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1173,11 +1173,11 @@
           "Com a mesma área, espessura e diferença de temperatura, maior condutividade implica maior economia de gás. O alumínio tem k = 20 e o ferro k = 8. Na panela composta, 1/k efetivo = (1/2)/40 + (1/2)/5, resultando em k efetivo ≈ 8,89. A ordem de maior economia é alumínio, cobre-aço e ferro."
         ],
         "alternatives": {
-          "A": "A condutividade efetiva do cobre-aço é cerca de 8,89, inferior à do alumínio.",
-          "B": "Os valores 20, 8,89 e 8 ordenam as panelas da mais para a menos econômica.",
-          "C": "O alumínio tem a maior condutividade e não pode ocupar o último lugar.",
-          "D": "O cobre-aço conduz um pouco melhor que o ferro, portanto deve precedê-lo.",
-          "E": "O ferro tem a menor taxa de condução entre as três opções, sem ser o mais econômico."
+          "A": "A panela cobre-aço tem condutividade equivalente 2/(1/40 + 1/5) ≈ 8,89 W/(m·K), inferior aos 20 do alumínio; portanto, não é a mais econômica, embora supere o ferro de valor 8.",
+          "B": "Para mesma área e espessura, maior condutividade implica maior taxa de calor e economia de gás: alumínio tem 20, cobre-aço equivale a 8,89 e ferro tem 8, nessa ordem de eficiência.",
+          "C": "O alumínio tem condutividade 20, superior às equivalentes do cobre-aço (8,89) e do ferro (8); colocá-lo como o menos econômico inverte a comparação da transferência de calor.",
+          "D": "O alumínio é o mais econômico, mas a combinação em camadas equivale a 8,89, um pouco acima do ferro de 8; por isso, o cobre-aço deve vir antes do ferro na ordem de economia.",
+          "E": "O ferro tem o menor valor de condutividade, 8, enquanto o alumínio tem o maior, 20; essa ordem põe o material menos eficiente primeiro e não corresponde à economia solicitada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1217,11 +1217,11 @@
           "A montagem contém duas pilhas eletroquímicas ligadas em série, com suas tensões somadas. O cronômetro é a carga alimentada e o voltímetro mede a diferença de potencial entre os mesmos terminais, portanto fica em paralelo com a carga. O esquema B representa essa associação."
         ],
         "alternatives": {
-          "A": "O voltímetro aparece em série e há apenas uma pilha no esquema.",
-          "B": "Duas pilhas em série alimentam a carga, com voltímetro em paralelo nos terminais.",
-          "C": "As pilhas estão em oposição, de modo que suas tensões não se somam como na montagem.",
-          "D": "Os recipientes não equivalem a quatro resistores associados a uma única pilha.",
-          "E": "O circuito representa quatro pilhas e mantém o voltímetro em série com a carga."
+          "A": "O desenho mostra duas pilhas eletroquímicas em série e o voltímetro nos terminais do conjunto; esta opção contém só uma fonte e coloca o voltímetro em série com o aparelho.",
+          "B": "Cada conjunto Cu/Zn funciona como uma pilha, e os dois estão ligados em série com polaridades que somam suas tensões; cronômetro e voltímetro ligam-se em paralelo aos terminais dessa associação.",
+          "C": "O voltímetro está corretamente em paralelo, mas as duas fontes do esquema têm polaridades opostas na associação, subtraindo tensões; a montagem real soma as tensões das duas pilhas.",
+          "D": "As quatro cubas não são quatro resistores: cada par de semicélulas constitui uma fonte eletroquímica; representar o conjunto com uma única pilha e vários resistores não reproduz a montagem.",
+          "E": "Há quatro eletrodos, mas somente duas pilhas completas, e não quatro fontes; além disso, o voltímetro real mede a tensão em paralelo, enquanto nesta opção aparece em série."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1261,11 +1261,11 @@
           "Para atingir A, a bala deve percorrer 120 m horizontalmente e subir 35 m. Com cos 53° = 0,6, t = 120/(0,6v0) = 200/v0. Substituindo em 35 = 0,8v0t − 5t², resulta 35 = 160 − 200000/v0², portanto v0² = 1600 e v0 = 40 m/s."
         ],
         "alternatives": {
-          "A": "Com 30 m/s, a trajetória fica abaixo da altura de A quando alcança os 120 m.",
-          "B": "Com 35 m/s, a altura calculada aos 120 m ainda é inferior a 35 m.",
-          "C": "A equação da trajetória para x = 120 m e y = 35 m fornece 40 m/s.",
-          "D": "Com 45 m/s, a bala passa acima da altura de A na posição horizontal indicada.",
-          "E": "Com 50 m/s, a trajetória também ultrapassa a altura do alvo e não fornece o valor solicitado."
+          "A": "Com ângulo de 53°, a trajetória obedece a y = (4/3)x − 5x²/(0,36v²); em x = 120 m e v = 30 m/s, resulta y ≈ −62,2 m, muito abaixo dos 35 m do alvo.",
+          "B": "Substituir v = 35 m/s e x = 120 m na equação da trajetória fornece y ≈ −3,3 m; essa velocidade não permite chegar à posição de A com a altura exigida de 35 m.",
+          "C": "Para x = 120 m e y = 35 m, a equação fica 35 = 160 − 200 000/v²; logo, v² = 1 600 e v = 40 m/s, compatível com a trajetória que ultrapassa o obstáculo e atinge A.",
+          "D": "Com v = 45 m/s, a altura em x = 120 m seria aproximadamente 61,2 m, superior aos 35 m de A; essa velocidade não fornece a passagem pelo alvo pedida no problema.",
+          "E": "Com v = 50 m/s, a altura na posição horizontal de A seria 80 m; o projétil passaria acima do alvo, e esse valor também excede os 40 m/s obtidos para atingi-lo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1305,11 +1305,11 @@
           "Em 35 anos transcorrem 35 ÷ 5 = 7 meias-vidas. A massa remanescente é 500 × (1/2)^7 = 500/128 = 3,90625 g. Portanto, o valor mais próximo é 3,9 g, sem uma redução linear da massa com o tempo."
         ],
         "alternatives": {
-          "A": "A divisão sucessiva por dois durante sete meias-vidas deixa aproximadamente 3,9 g.",
-          "B": "31,2 g corresponderiam a quatro meias-vidas, equivalentes a 20 anos.",
-          "C": "62,5 g são a massa após três meias-vidas, ou 15 anos.",
-          "D": "125 g restam após duas meias-vidas, ou 10 anos.",
-          "E": "250 g restam após apenas uma meia-vida, equivalente a 5 anos."
+          "A": "Em 35 anos decorrem 35/5 = 7 meias-vidas; a massa é 500 × (1/2)^7 = 500/128 ≈ 3,9 g, considerando a redução sucessiva à metade.",
+          "B": "A massa de aproximadamente 31,2 g é 500/16 e corresponde a quatro meias-vidas, ou 20 anos; ainda faltariam três meias-vidas para completar os 35 anos.",
+          "C": "Sessenta e dois vírgula cinco gramas equivalem a 500/8, isto é, três meias-vidas de 5 anos; o tempo considerado seria 15 anos, e não os 35 informados.",
+          "D": "Cento e vinte e cinco gramas são a quarta parte da massa inicial e correspondem a duas meias-vidas, totalizando 10 anos; o decaimento deve continuar por mais cinco períodos.",
+          "E": "Duzentos e cinquenta gramas representam apenas uma redução à metade, atingida após 5 anos; em 35 anos essa operação ocorre sete vezes, restando muito menos material."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1349,11 +1349,11 @@
           "A proteína mais curta será interrompida pelo códon terminal que surgir mais cedo. Substituir C por U no quarto códon transforma CAA em UAA, sinal de parada. Assim, a tradução termina após os três primeiros códons, antes do que nas outras mutações propostas."
         ],
         "alternatives": {
-          "A": "A deleção no terceiro códon desloca a leitura, mas não cria parada antes do quarto códon da opção B.",
-          "B": "A alteração CAA para UAA cria um sinal de parada na quarta posição.",
-          "C": "A troca AGU para ACU no sexto códon não produz um dos terminais indicados.",
-          "D": "A mudança UAG para UGG remove o terminal original e tende a prolongar a tradução.",
-          "E": "A deleção no quinto códon só pode afetar a sequência depois dos quatro primeiros, produzindo proteína maior."
+          "A": "Apagar um G do códon 3 desloca a leitura a partir daí, mas o terceiro códon passa a ser GUC e não um terminal; a interrupção não acontece antes do UAA criado no códon 4 pela opção B.",
+          "B": "Trocar o C inicial de CAA por U transforma o quarto códon em UAA, sinal de parada; só os três primeiros códons serão traduzidos, formando a menor proteína entre as mutações propostas.",
+          "C": "O sexto códon AGU passa a ACU com a substituição de G por C; nenhum dos dois é o terminal UAG ou UAA, portanto a tradução não é interrompida antecipadamente por essa troca.",
+          "D": "No códon 7, UAG torna-se UGG quando A é substituído por G; a mutação elimina o sinal de parada original e pode prolongar a tradução, em vez de gerar a menor proteína.",
+          "E": "A deleção no códon 5 preserva integralmente os quatro primeiros códons; por isso, não pode formar uma proteína menor que a produzida por uma parada no quarto códon, que traduz apenas os três anteriores."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1393,11 +1393,11 @@
           "Óleos vegetais contêm triglicerídeos, ésteres que reagem com a soda cáustica em meio aquoso. A hidrólise básica forma glicerol e sais de ácidos graxos, que constituem o sabão. Essa transformação é denominada saponificação."
         ],
         "alternatives": {
-          "A": "A produção de sabão não envolve uma redução dos grupos do triglicerídeo.",
-          "B": "A epoxidação forma anéis com oxigênio e não produz os sais que constituem o sabão.",
-          "C": "Substituição é uma classificação ampla que não nomeia especificamente o processo descrito.",
-          "D": "A esterificação forma ésteres, enquanto a reação empregada hidrolisa os ésteres do óleo.",
-          "E": "A hidrólise básica de triglicerídeos gera glicerol e sais de ácidos graxos, caracterizando saponificação."
+          "A": "Na reação descrita, os ésteres do óleo são hidrolisados em meio básico, sem uma redução que caracterize ganho de elétrons ou diminuição do número de oxidação como transformação principal.",
+          "B": "A epoxidação introduz um anel de três membros com oxigênio em uma ligação dupla; isso não é a transformação de triglicerídeos em glicerol e sais de ácidos graxos que produz o sabão.",
+          "C": "A hidrólise pode ser analisada por mecanismos de substituição acílica, mas a denominação específica da reação de óleos com soda cáustica para obter sabão é saponificação.",
+          "D": "A esterificação forma ésteres a partir de outros reagentes, enquanto o processo descrito rompe os ésteres já presentes nos triglicerídeos do óleo por hidrólise básica.",
+          "E": "A soda cáustica promove a hidrólise básica dos triglicerídeos, produzindo glicerol e sais de ácidos graxos que constituem o sabão; essa transformação é denominada saponificação."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1437,11 +1437,11 @@
           "No feto, a placenta realiza as trocas gasosas e os desvios circulatórios evitam a passagem obrigatória pelos pulmões ainda não funcionais. O forame oval participa dessa circulação funcionalmente simples, comparada na questão à dos peixes, com uma passagem cardíaca no circuito efetivo de oxigenação."
         ],
         "alternatives": {
-          "A": "Nas aves, a circulação dupla completa depende de circuitos pulmonar e sistêmico plenamente separados.",
-          "B": "O metabolismo lento dos répteis não explica a tolerância fetal ao desvio entre átrios.",
-          "C": "A separação ventricular não elimina a comunicação atrial mencionada no enunciado.",
-          "D": "O desvio dos pulmões aproxima funcionalmente a circulação fetal do circuito simples dos peixes.",
-          "E": "A explicação não se baseia em isolamento temporal por pressões como na alternativa sobre anfíbios."
+          "A": "Aves apresentam circuitos pulmonar e sistêmico completamente separados, enquanto o feto desvia sangue dos pulmões ainda não funcionais; a simples existência de pequena e grande circulação não explica a situação fetal.",
+          "B": "O desenvolvimento embrionário não depende de um metabolismo lento para tolerar a comunicação entre átrios; o ponto relevante é a oxigenação placentária e o desvio dos pulmões, não a explicação proposta para répteis.",
+          "C": "O enunciado trata de uma passagem entre átrios, que não é eliminada pela divisão dos ventrículos; a separação ventricular dos crocodilianos não explica a circulação fetal apresentada.",
+          "D": "Como a oxigenação fetal ocorre na placenta e o sangue desvia dos pulmões, o circuito funciona sem a passagem pulmonar própria da circulação pós-natal; nessa aproximação didática, assemelha-se à circulação simples dos peixes.",
+          "E": "O texto não atribui o funcionamento fetal à alternância temporal de sangues por diferenças de pressão; a semelhança solicitada envolve o desvio dos pulmões antes do nascimento."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1481,11 +1481,11 @@
           "A solução preparada tem pH 4,3, abaixo da faixa ideal de 5,5 a 6,5, portanto precisa receber uma base. O KOH eleva o pH e fornece potássio, nutriente que está abaixo do valor de referência. Sua adição atende à correção sem introduzir um elemento estranho ao cultivo."
         ],
         "alternatives": {
-          "A": "O ácido fosfórico diminuiria ainda mais o pH, agravando a acidez excessiva.",
-          "B": "O sulfato de cálcio fornece nutrientes, mas não é a base indicada para elevar o pH.",
-          "C": "O óxido de alumínio não fornece um nutriente da tabela e pode introduzir alumínio prejudicial.",
-          "D": "O cloreto de ferro não é a base necessária e adiciona cloreto já presente na solução preparada.",
-          "E": "O hidróxido neutraliza a acidez e acrescenta potássio, cuja concentração está deficiente."
+          "A": "A solução preparada tem pH 4,3 e precisa tornar-se menos ácida; adicionar ácido fosfórico tenderia a reduzir ainda mais o pH, afastando-o da faixa ideal de 5,5 a 6,5.",
+          "B": "O sulfato de cálcio pode fornecer cálcio e sulfato, presentes abaixo da referência, mas não fornece a quantidade de OH− necessária à neutralização da acidez e à elevação direta do pH.",
+          "C": "O óxido de alumínio não oferece o nutriente necessário indicado na solução e pode introduzir alumínio nocivo; é inferior à escolha de uma base solúvel que corrige o pH e fornece potássio.",
+          "D": "O cloreto de ferro(II) não é a base adequada para aumentar o pH e adiciona cloreto já presente na composição preparada; não atende à correção com fornecimento apropriado de nutriente.",
+          "E": "O KOH libera OH− para neutralizar a acidez e elevar o pH de 4,3 rumo à faixa ideal, além de fornecer K+, cuja concentração de 3,5 mmol/L está abaixo dos 6,0 de referência."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1525,11 +1525,11 @@
           "Barras menores do mesmo material e espessura vibram com frequência fundamental maior que barras mais longas. Já a velocidade do som emitido depende do meio de propagação, o mesmo ar para ambas. Assim, f1 > f2 e v1 = v2."
         ],
         "alternatives": {
-          "A": "A barra menor tem frequência maior, e a velocidade do som no ar não diminui por isso.",
-          "B": "A igualdade de velocidades está correta, mas a ordem das frequências está invertida.",
-          "C": "A barra menor não produz a menor frequência, e as velocidades no mesmo meio são iguais.",
-          "D": "A menor barra produz frequência maior, enquanto ambos os sons se propagam à mesma velocidade no ar.",
-          "E": "A frequência maior não provoca maior velocidade de propagação no mesmo meio."
+          "A": "A barra menor vibra com frequência fundamental maior, não menor; além disso, os sons viajam pelo mesmo ar, de modo que suas velocidades de propagação são iguais nas condições consideradas.",
+          "B": "A igualdade das velocidades está correta porque o meio é o mesmo, mas a barra de menor comprimento produz frequência maior; portanto, a comparação f1 < f2 está invertida.",
+          "C": "A barra curta produz o som mais agudo, logo f1 > f2; também não há aumento da velocidade por ela emitir frequência diferente, pois ambos os sons se propagam no mesmo meio.",
+          "D": "A barra de menor comprimento apresenta maior frequência fundamental e produz som mais agudo; após emitidos, os dois sons percorrem o mesmo ar com a mesma velocidade, logo f1 > f2 e v1 = v2.",
+          "E": "A relação f1 > f2 está correta, mas a frequência diferente não altera a velocidade de propagação no mesmo ar; o comprimento de onda se ajusta para manter v1 = v2."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1569,11 +1569,11 @@
           "Polvos com variações de cor e comportamento capazes de enganar predadores tiveram maior chance de sobreviver e deixar descendentes. Ao longo das gerações, a seleção natural favoreceu essas características. O mimetismo se estabeleceu por sua vantagem diante das pressões seletivas."
         ],
         "alternatives": {
-          "A": "A semelhança mimética não demonstra ancestralidade recente compartilhada com peixes e serpentes.",
-          "B": "Não é necessário que o polvo tenha as mesmas mutações dos animais imitados.",
-          "C": "A observação individual não explica, por si, o estabelecimento evolutivo da capacidade na população.",
-          "D": "O mimetismo defensivo não significa que o polvo tenha adquirido o mesmo modo de vida das espécies imitadas.",
-          "E": "A vantagem de sobrevivência e reprodução favorece o mimetismo por seleção natural."
+          "A": "O parentesco evolutivo remoto entre animais não explica especificamente a capacidade de um polvo imitar peixes e serpentes; o mimetismo defensivo resulta de vantagens selecionadas na sua própria linhagem.",
+          "B": "Mutações não precisam ser iguais às dos organismos imitados para produzir um comportamento mimético; variantes que aumentam proteção podem ser favorecidas independentemente da genética dessas espécies.",
+          "C": "Observar outros animais pode integrar um comportamento individual, mas não explica a origem e a manutenção evolutiva da capacidade na população; isso exige considerar variação e seleção ao longo das gerações.",
+          "D": "A semelhança temporária usada na defesa não significa que polvo, peixes e serpentes tenham convergido globalmente em estrutura ou modo de vida; a questão focaliza a seleção de um comportamento de mimetismo.",
+          "E": "Polvos capazes de assumir aparências que reduzem ataques tiveram maior chance de sobreviver e deixar descendentes; as pressões seletivas favoreceram a persistência desses comportamentos na população."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1613,11 +1613,11 @@
           "Pais sem manifestação da doença podem ter um filho afetado, e o cruzamento entre dois portadores produz risco de um quarto. Representando os pais por Aa, o cruzamento Aa × Aa gera 1 AA, 2 Aa e 1 aa. O fenótipo doente em aa caracteriza herança recessiva."
         ],
         "alternatives": {
-          "A": "O cruzamento entre heterozigotos gera um quarto de descendentes recessivos afetados.",
-          "B": "Uma condição dominante se manifesta no portador do alelo, contrariando os pais assintomáticos descritos.",
-          "C": "A codominância expressaria os dois alelos, sem explicar esse padrão de portadores não afetados.",
-          "D": "O enunciado associa a doença a um gene, sem indicar determinação por vários genes.",
-          "E": "A chance de um quarto não exige a existência de mais de dois alelos na população."
+          "A": "Pais não afetados podem ser heterozigotos Aa; no cruzamento Aa × Aa, a proporção aa é 1/4, explicando o nascimento de um filho doente e caracterizando herança autossômica recessiva.",
+          "B": "Na herança dominante simples, o alelo responsável se manifesta no heterozigoto; isso não explica os dois pais portadores sem a doença que podem gerar 1/4 de filhos afetados no padrão descrito.",
+          "C": "A codominância implica expressão dos dois alelos no heterozigoto, sem explicar a condição de portador assintomático e a manifestação em apenas 1/4 dos descendentes desse cruzamento.",
+          "D": "O enunciado localiza a condição em um gene do cromossomo 10 e informa uma proporção mendeliana de 1/4; não descreve a ação conjunta de vários genes própria de um caráter poligênico.",
+          "E": "Polialelia é a existência de mais de dois alelos de um gene na população; a proporção de afetados e os portadores assintomáticos são explicados por recessividade, sem necessidade desse fenômeno."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1657,11 +1657,11 @@
           "O iodo é reduzido no cátodo e o lítio é oxidado no ânodo. A força eletromotriz de cada pilha é 0,54 − (−3,05) = 3,59 V. Três pilhas em série fornecem 10,77 V, valor dentro da faixa de 10,5 a 10,9 V exigida pelo carrinho de controle remoto."
         ],
         "alternatives": {
-          "A": "O relógio exige até 1,5 V, muito abaixo dos 10,77 V fornecidos.",
-          "B": "O celular opera entre 3,5 e 3,8 V, faixa próxima de uma pilha, sem a associação tripla.",
-          "C": "A câmera exige até 7,8 V, abaixo da tensão total das três pilhas.",
-          "D": "Os 10,77 V calculados pertencem à faixa de operação do carrinho.",
-          "E": "O notebook exige ao menos 19,5 V, acima da tensão da bateria proposta."
+          "A": "Cada pilha fornece 0,54 − (−3,05) = 3,59 V e as três em série somam 10,77 V; esse valor supera o limite de 1,5 V do relógio de parede, tornando a bateria inadequada para ele.",
+          "B": "A faixa do celular é 3,5 a 3,8 V, compatível com uma única pilha de 3,59 V; a associação de três em série fornece 10,77 V e ultrapassa a tensão admitida pelo dispositivo.",
+          "C": "A câmera opera entre 7,5 e 7,8 V, enquanto a bateria em série fornece 3 × 3,59 = 10,77 V; a tensão total está acima da faixa indicada para esse aparelho.",
+          "D": "A diferença de potenciais de cada pilha é 3,59 V e, em série, as três produzem 10,77 V; esse valor pertence ao intervalo de 10,5 a 10,9 V exigido pelo carrinho de controle remoto.",
+          "E": "O notebook exige de 19,5 a 20,0 V, mas a associação das três pilhas fornece apenas 10,77 V; a tensão é inferior à mínima necessária para seu funcionamento."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1701,11 +1701,11 @@
           "O alcoolômetro flutua conforme a densidade do líquido. A temperatura modifica os volumes por dilatação térmica e, com isso, altera as densidades e a posição de equilíbrio do instrumento. A correção recupera a medida referente à temperatura de calibração de 20 °C."
         ],
         "alternatives": {
-          "A": "A dissociação da água não é o mecanismo que muda a flutuação do instrumento.",
-          "B": "A dilatação térmica normalmente reduz a densidade, em vez de aumentá-la.",
-          "C": "A mudança de volume por dilatação altera a densidade usada na medição.",
-          "D": "A correção térmica não pressupõe aumento real da proporção de álcool durante a leitura.",
-          "E": "A variação considerada é física, sem transformação das propriedades químicas da mistura."
+          "A": "A leitura depende do empuxo e da densidade da mistura, não de uma medida de ionização; a variação da dissociação da água não é a razão física da correção térmica apresentada.",
+          "B": "Na faixa considerada, o aquecimento dilata os líquidos e tende a reduzir sua densidade, mantendo a massa; portanto, não é um aumento de densidade que justifica corrigir a leitura.",
+          "C": "O aquecimento provoca dilatação e altera o volume e a densidade da mistura, modificando a posição de flutuação do alcoolômetro; por isso, a escala aferida a 20 °C exige correção em outras temperaturas.",
+          "D": "A tabela corrige o efeito da temperatura sobre a leitura por flutuação sem exigir que álcool seja acrescentado à mistura; a mudança aparente da medida não corresponde a um aumento real de concentração durante o exame.",
+          "E": "A dilatação e a mudança de densidade são alterações físicas; a correção não pressupõe reação química nem transformação das propriedades químicas dos componentes da mistura."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1745,11 +1745,11 @@
           "A condução depende de duplas conjugadas ao longo da cadeia, com alternância entre ligações simples e duplas que permite deslocalização eletrônica. A estrutura D corresponde ao poliacetileno e preserva essa alternância na repetição das unidades. Nas demais, a conjugação é interrompida ou lateral."
         ],
         "alternatives": {
-          "A": "O anel aromático é lateral, enquanto a cadeia principal permanece saturada.",
-          "B": "A carbonila não forma uma sequência de duplas conjugadas carbono-carbono na cadeia.",
-          "C": "As duplas ficam separadas por mais de uma ligação simples na repetição.",
-          "D": "A repetição mantém a alternância contínua entre ligações simples e duplas.",
-          "E": "O carbono saturado substituído interrompe a conjugação ao longo da cadeia principal."
+          "A": "As duplas do anel aromático pertencem a um grupo lateral, enquanto o esqueleto principal é saturado; não há conjugação estendida ao longo da cadeia principal, como exige o enunciado.",
+          "B": "A ligação dupla da carbonila está em um grupo que não produz uma sequência alternada de simples e duplas carbono-carbono no esqueleto; essa estrutura não oferece a conjugação contínua necessária.",
+          "C": "Ao repetir a unidade desenhada, as duplas ficam separadas por trechos com mais de uma ligação simples; essa interrupção impede uma sequência conjugada contínua ao longo da cadeia.",
+          "D": "A repetição dessa unidade mantém a alternância entre ligações simples e duplas carbono-carbono no esqueleto principal, permitindo a conjugação e a deslocalização eletrônica associadas à condução.",
+          "E": "O carbono saturado que apresenta substituintes interrompe a sequência de ligações duplas da cadeia principal; a presença de uma dupla isolada e de uma carbonila não garante conjugação ao longo do polímero."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1789,11 +1789,11 @@
           "As preguiças-gigantes comiam frutos e sementes e transportavam parte das sementes pelo ambiente, favorecendo sua dispersão. Com a extinção desses animais, diminuiu um agente de disseminação. Isso ajuda a explicar a menor abundância e a distribuição mais restrita da flora."
         ],
         "alternatives": {
-          "A": "A ação alimentar dos animais se relaciona à dispersão, sem indicar redução direta da produção de flores.",
-          "B": "A mudança descrita é de abundância e distribuição, sem diminuição necessária do tamanho das plantas.",
-          "C": "A perda de consumidores de frutos reduz agentes capazes de espalhar sementes.",
-          "D": "O texto não mostra alteração do número de sementes produzido por cada fruto.",
-          "E": "O desaparecimento dos dispersores limita a ocupação, sem exigir perda física dos hábitats disponíveis."
+          "A": "As preguiças consumiam frutos e sementes, de modo que sua função destacada se relaciona ao transporte de sementes; o texto não relata diminuição direta na formação de flores das plantas.",
+          "B": "A flora tornou-se menos abundante e passou a ocupar áreas menores, mas isso não implica redução do porte dos indivíduos; o efeito discutido se refere à distribuição e à dispersão das plantas.",
+          "C": "Ao consumir frutos e deslocar-se, as preguiças podiam transportar e eliminar sementes em outros locais; sua extinção reduziu agentes de disseminação, restringindo a abundância e a distribuição da flora.",
+          "D": "A perda de um animal dispersor não significa que cada fruto passe a produzir menos sementes; o mecanismo explicado pela dieta dos animais é a menor distribuição das sementes já formadas.",
+          "E": "A restrição da área ocupada pode ocorrer porque as sementes deixam de alcançar locais disponíveis; o texto não indica que os habitats tenham sido fisicamente eliminados após a extinção das preguiças."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1833,11 +1833,11 @@
           "O carro consome 110 ÷ 5,0 = 22 kWh no percurso. O carregador fornece potência P = UI = 220 × 20 = 4 400 W, ou 4,4 kW. Como é ideal, o tempo para repor a energia é 22 ÷ 4,4 = 5,0 horas."
         ],
         "alternatives": {
-          "A": "O valor 0,005 h resulta de misturar quilowatt-hora com watt sem converter a potência.",
-          "B": "Em 0,125 h o carregador forneceria apenas 0,55 kWh, muito menos que os 22 kWh necessários.",
-          "C": "Em 2,5 h seriam repostos 11 kWh, metade da energia consumida.",
-          "D": "A divisão de 22 kWh por 4,4 kW fornece exatamente 5,0 horas.",
-          "E": "Oito horas reporiam 35,2 kWh, acima da energia utilizada no percurso."
+          "A": "Os 110 km consomem 110/5 = 22 kWh; usar 4 400 W sem convertê-los em 4,4 kW gera 0,005 incorretamente, pois mistura unidades e reduz por mil o tempo de recarga.",
+          "B": "O carregador tem potência de 220 × 20 = 4 400 W = 4,4 kW; em 0,125 h forneceria só 0,55 kWh, muito abaixo dos 22 kWh consumidos no percurso.",
+          "C": "Em 2,5 horas, o carregador de 4,4 kW repõe 11 kWh, apenas metade dos 22 kWh necessários; esse intervalo não recompõe toda a energia gasta nos 110 km.",
+          "D": "A energia utilizada é 110/5 = 22 kWh e a potência ideal é 220 × 20 = 4,4 kW; portanto, t = E/P = 22/4,4 = 5,0 horas de recarga.",
+          "E": "Oito horas de operação a 4,4 kW forneceriam 35,2 kWh; como o trajeto consumiu 22 kWh, esse tempo excede o necessário para repor a energia utilizada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1877,11 +1877,11 @@
           "Na dupla fecundação das angiospermas, um núcleo espermático fecunda a oosfera e outro se une aos dois núcleos polares. A segunda união origina o endosperma triploide, tecido de reserva que nutre o embrião durante seu desenvolvimento e a germinação."
         ],
         "alternatives": {
-          "A": "O endosperma alimenta o embrião, sem ser tecido de nutrição destinado ao fruto.",
-          "B": "A fecundação dos núcleos polares forma a reserva nutritiva do embrião.",
-          "C": "O revestimento da semente deriva dos tegumentos do óvulo e não da segunda fecundação.",
-          "D": "A segunda fecundação gera endosperma, sem uma camada protetora do megagametófito.",
-          "E": "Os vasos da planta jovem se diferenciam em seu corpo, sem derivar do endosperma triploide."
+          "A": "O tecido triploide é o endosperma e sua reserva sustenta o desenvolvimento do embrião; o fruto deriva principalmente do ovário e não é o destinatário dessa reserva nutritiva.",
+          "B": "Um núcleo espermático une-se aos dois núcleos polares e forma o endosperma triploide, tecido que acumula e fornece reservas para nutrir o embrião durante seu desenvolvimento.",
+          "C": "O tegumento da semente origina-se dos tegumentos do óvulo, tecidos maternos que não resultam da segunda fecundação; o produto triploide tem função nutritiva.",
+          "D": "A segunda fecundação não forma uma camada de defesa do megagametófito, mas o endosperma que sustenta o embrião; confundir essas funções troca o destino do tecido produzido.",
+          "E": "Os tecidos vasculares da nova planta se diferenciam a partir do desenvolvimento embrionário; o endosperma triploide atua como fonte de nutrição, sem constituir sua vascularização."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1921,11 +1921,11 @@
           "Um éster derivado do ácido etanoico possui o trecho CH3COO, correspondente ao acetato. Entre os acetatos da tabela, o de isoamila apresenta apenas ligações simples entre carbonos; o de benzila contém anel aromático. Logo, a substância pedida tem aroma de banana."
         ],
         "alternatives": {
-          "A": "O benzoato de metila deriva do ácido benzoico e possui anel aromático.",
-          "B": "O acetato de isoamila deriva do ácido etanoico e tem cadeia carbônica saturada.",
-          "C": "O acetato de benzila tem origem etanoica, mas seu anel aromático torna a cadeia insaturada.",
-          "D": "O propanoato de isobutila deriva do ácido propanoico, sem atender à origem etanoica.",
-          "E": "O antranilato de metila apresenta anel aromático e não deriva do ácido etanoico."
+          "A": "O aroma de kiwi corresponde ao benzoato de metila, derivado do ácido benzoico; além de não ter origem no ácido etanoico, apresenta um anel aromático na cadeia carbônica.",
+          "B": "O acetato de isoamila, de aroma de banana, contém o grupo CH3COO derivado do ácido etanoico e apenas ligações simples entre carbonos; atende, portanto, à origem ácida e à saturação exigidas.",
+          "C": "O acetato de benzila deriva do ácido etanoico, mas o grupo benzila inclui um anel aromático, com insaturações entre carbonos; satisfaz apenas uma das duas condições solicitadas.",
+          "D": "O propanoato de isobutila apresenta cadeia saturada, mas deriva do ácido propanoico, cujo grupo acila tem três carbonos; o enunciado exige um derivado do ácido etanoico.",
+          "E": "O antranilato de metila contém um anel aromático e deriva do ácido antranílico, não do etanoico; desse modo, não atende nem à origem ácida nem à saturação da cadeia exigidas."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1965,11 +1965,11 @@
           "A escala indica 0,2 s por divisão horizontal. Entre dois picos equivalentes há cinco divisões, de modo que o período cardíaco é 1,0 s. Assim, ocorre um batimento a cada segundo, ou 60 batimentos em um minuto."
         ],
         "alternatives": {
-          "A": "Trinta batimentos por minuto exigiriam período de 2 s, maior que o observado.",
-          "B": "O intervalo de 1 s entre picos corresponde a 60 batimentos por minuto.",
-          "C": "Cem batimentos por minuto corresponderiam a 0,6 s entre picos.",
-          "D": "Cento e vinte batimentos por minuto exigiriam intervalo de 0,5 s.",
-          "E": "Cento e oitenta batimentos por minuto exigiriam intervalo próximo de 0,33 s."
+          "A": "Trinta batimentos por minuto equivaleriam a um intervalo de 60/30 = 2 segundos entre picos; a figura mostra cinco intervalos de 0,2 s, totalizando apenas 1 segundo.",
+          "B": "Entre picos sucessivos há cinco intervalos da escala de 0,2 s, logo o período é 1 s; a frequência cardíaca é 60/1 = 60 batimentos por minuto.",
+          "C": "Cem batimentos por minuto exigiriam um período de 60/100 = 0,6 s, correspondente a três intervalos da escala; a distância observada entre picos equivale a cinco intervalos, ou 1 s.",
+          "D": "Cento e vinte batimentos por minuto correspondem a um período de 0,5 s, metade do intervalo de 1 s entre os picos mostrados; essa leitura duplicaria a frequência real.",
+          "E": "Cento e oitenta batimentos por minuto implicariam picos separados por cerca de 0,33 s; o gráfico mostra intervalo de 1 s, de modo que essa frequência é três vezes a indicada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2009,11 +2009,11 @@
           "MCDLXIX corresponde a 1000 + 400 + 60 + 9 = 1469. Esse é o ano de fundação indicado na placa. A quantidade de anos completados em 2050 é 2050 − 1469 = 581, valor da alternativa D."
         ],
         "alternatives": {
-          "A": "379 não corresponde à diferença entre 2050 e o ano romano 1469.",
-          "B": "381 é duzentos anos menor que o intervalo correto de 581 anos.",
-          "C": "579 deixa de considerar corretamente a parcela IX, que representa nove.",
-          "D": "A conversão fornece 1469 e sua diferença para 2050 é 581.",
-          "E": "601 supera em vinte anos o intervalo entre 1469 e 2050."
+          "A": "MCDLXIX equivale a 1 000 + 400 + 50 + 10 + 9 = 1 469; a diferença até 2050 é 581, portanto 379 não corresponde ao aniversário calculado.",
+          "B": "A data de fundação é 1469, obtida pela regra subtrativa em CD e IX; 2050 − 1469 = 581, de modo que 381 fica duzentos anos abaixo do intervalo correto.",
+          "C": "O bloco IX vale 9, e a soma dos blocos é 1469; subtrair essa data de 2050 fornece 581, não 579, que corresponderia a uma fundação em 1471.",
+          "D": "M = 1000, CD = 400, L = 50, X = 10 e IX = 9, totalizando 1469; em 2050 a cidade completará 2050 − 1469 = 581 anos de fundação.",
+          "E": "A data 1469 resulta das adições e subtrações previstas; 601 anos em 2050 implicariam fundação em 1449, vinte anos antes da data indicada na placa."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2053,11 +2053,11 @@
           "A soma decimal é 9 + 12 = 21. Na base dois, 21 = 16 + 4 + 1 = 2^4 + 2^2 + 2^0. As posições correspondentes recebem 1, e as demais recebem 0, formando 10101."
         ],
         "alternatives": {
-          "A": "101 representa 5 em decimal, sem corresponder à soma 21.",
-          "B": "1101 representa 13, abaixo do total de 9 e 12.",
-          "C": "1111 representa 8 + 4 + 2 + 1 = 15, abaixo da soma decimal 21.",
-          "D": "10101 representa 16 + 4 + 1, que é 21.",
-          "E": "11001 representa 16 + 8 + 1 = 25, maior que a soma pedida."
+          "A": "Na base binária, 101 representa 1×4 + 0×2 + 1 = 5; esse valor é muito menor que 9 + 12 = 21 e não pode representar a soma pedida.",
+          "B": "O número binário 1101 vale 8 + 4 + 1 = 13 em decimal; a soma de 9 com 12 é 21, portanto essa sequência omite uma parcela de valor 8.",
+          "C": "A sequência 1111 representa 8 + 4 + 2 + 1 = 15, enquanto a adição decimal é 21; o resultado precisa incluir a posição de valor 16 na base binária.",
+          "D": "Somando 01001 e 01100 em binário, obtém-se 10101; a conferência decimal é 16 + 4 + 1 = 21, exatamente o resultado de 9 + 12.",
+          "E": "O número 11001 representa 16 + 8 + 1 = 25, acima de 21; a posição de valor 8 deve ser zero e a de valor 4 deve ser um no resultado correto."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2097,11 +2097,11 @@
           "Restam 3 − 0,9 = 2,1 hectares para os lotes, equivalentes a 21 000 m². Dividindo por 300 m², são 70 terrenos. Os 20 promocionais rendem 400 000 reais, e os outros 50 rendem 1 500 000 reais. A receita total é 1 900 000 reais."
         ],
         "alternatives": {
-          "A": "700 000 reais não considera os preços de 20 e 30 mil aplicados aos 70 terrenos.",
-          "B": "1 600 000 reais fica abaixo da soma de 400 000 com 1 500 000.",
-          "C": "A receita de 20 lotes a 20 mil e 50 a 30 mil totaliza 1 900 000 reais.",
-          "D": "2 200 000 reais excede a receita dos 70 lotes disponíveis após descontar ruas.",
-          "E": "2 800 000 reais não desconta corretamente a área destinada às ruas e calçadas."
+          "A": "A área comercializável é (3 − 0,9)×10 000 = 21 000 m², ou 70 terrenos; só os 20 promocionais geram 400 mil e os outros 50 geram 1,5 milhão, superando 700 mil.",
+          "B": "Depois de retirar ruas e calçadas, há 70 lotes; 20×20 000 + 50×30 000 = 1 900 000, de modo que 1 600 000 deixa de contabilizar 300 mil da receita prevista.",
+          "C": "Restam 2,1 hectares = 21 000 m², que formam 70 terrenos de 300 m²; a receita é 20×20 000 + (70−20)×30 000 = 400 000 + 1 500 000 = 1 900 000 reais.",
+          "D": "Com 70 terrenos disponíveis, mesmo vendê-los todos a 30 mil produziria 2,1 milhões; aplicar o desconto aos 20 primeiros reduz a receita para 1,9 milhão, impedindo chegar a 2,2 milhões.",
+          "E": "O valor de 2,8 milhões resulta de usar os 3 hectares inteiros para 100 terrenos, sem descontar 0,9 hectare das ruas; a área efetivamente vendável permite apenas 70 lotes."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2141,11 +2141,11 @@
           "A ordem de escolha dos materiais não muda a fantasia: escolhem-se dois tecidos entre seis e cinco pedras entre quinze. Pelo princípio multiplicativo, o total é C(6,2) × C(15,5) = [6!/(4!2!)] × [15!/(10!5!)]."
         ],
         "alternatives": {
-          "A": "O produto das duas combinações conta escolhas independentes sem considerar a ordem.",
-          "B": "A expressão utiliza uma soma, mas cada escolha de tecidos deve ser combinada com cada escolha de pedras.",
-          "C": "Dividir apenas por 2! e 5! não desconta os materiais que ficam de fora das escolhas.",
-          "D": "O produto divide pelos fatoriais dos escolhidos, mas omite 4! e 10!, supercontando escolhas equivalentes.",
-          "E": "A combinação única não separa corretamente as escolhas de tecidos e de pedras."
+          "A": "A ordem dos materiais não distingue fantasias: escolhem-se 2 entre 6 tecidos e 5 entre 15 pedras; as escolhas independentes se multiplicam, dando [6!/(4!2!)]×[15!/(10!5!)].",
+          "B": "Somar as combinações contaria escolher tecidos ou pedras separadamente, mas cada fantasia reúne os dois conjuntos; pelo princípio multiplicativo, deve-se multiplicar as quantidades de escolhas.",
+          "C": "A expressão soma as escolhas, embora cada fantasia reúna tecidos e pedras, e ainda omite os fatores 4! e 10! dos materiais não escolhidos; é preciso multiplicar duas combinações completas.",
+          "D": "Dividir 6! e 15! apenas por 2! e 5! ainda distingue permutações dos materiais não escolhidos; faltam 4! e 10! para obter as duas combinações independentes.",
+          "E": "Uma única combinação de 7 materiais entre 21 não garante exatamente 2 tecidos e 5 pedras; é necessário contar separadamente as escolhas em cada categoria e depois multiplicá-las."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2185,11 +2185,11 @@
           "Em quatro anos, o laboratório A custa 180 + 4 × 60 = 420 mil reais, ou 4,2 mil por usuário. O B custa 120 + 4 × 16 = 184 mil reais, ou 2,3 mil por usuário. A economia por usuário é 4,2 − 2,3 = 1,90 mil reais."
         ],
         "alternatives": {
-          "A": "1,31 mil não resulta da diferença entre os custos por usuário das duas capacidades.",
-          "B": "A diferença de 4,2 mil para 2,3 mil por usuário é 1,90 mil reais.",
-          "C": "2,30 mil é o custo por usuário do laboratório B, sem descontá-lo do custo de A.",
-          "D": "2,36 mil corresponde à diferença total dividida por 100, ignorando a capacidade de 80 usuários de B.",
-          "E": "2,95 mil corresponde à diferença total dividida por 80, sem calcular separadamente os custos por usuário."
+          "A": "O laboratório A custa (180 + 4×60)/100 = 4,2 mil reais por usuário e o B custa (120 + 4×16)/80 = 2,3 mil; a diferença é 1,9 mil, superior a 1,31 mil.",
+          "B": "Em quatro anos, A custa 420 mil para 100 usuários, ou 4,2 mil por usuário; B custa 184 mil para 80, ou 2,3 mil. A economia unitária é 4,2 − 2,3 = 1,90 mil reais.",
+          "C": "O valor de 2,30 mil é o custo de B por usuário, calculado por 184/80; a economia exige compará-lo com os 4,20 mil de A e tomar a diferença de 1,90 mil.",
+          "D": "A diferença entre os custos totais é 420 − 184 = 236 mil, e dividi-la por 100 gera 2,36 mil; isso usa indevidamente a mesma capacidade para laboratórios com 100 e 80 usuários.",
+          "E": "Dividir a diferença total de 236 mil por 80 gera 2,95 mil, mas ignora que A atende 100 usuários; é necessário calcular o custo unitário de cada laboratório antes de subtrair."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2449,11 +2449,11 @@
           "No triângulo equilátero, a altura é h = lado × √3/2. Com h = 8, o lado é 16/√3 e o perímetro é 48/√3 = 16√3. Usando √3 ≈ 1,7, chega-se a cerca de 27,2 cm, cujo valor mais próximo é 27,18 cm. A deformação não muda o comprimento total da barra."
         ],
         "alternatives": {
-          "A": "9,07 cm se aproxima de uma medida de lado, sem somar os três lados do triângulo. A barra corresponde ao perímetro integral.",
-          "B": "13,60 cm equivale a 8 × 1,7, mas a altura não se transforma em perímetro pela simples multiplicação por √3. O fator correto é 2√3.",
-          "C": "20,40 cm não satisfaz o perímetro 16√3. Confundir altura com lado ou deixar de considerar uma parte da barra reduz indevidamente o comprimento.",
-          "D": "O perímetro é 16√3 ≈ 27,2 cm. Entre as opções, 27,18 cm é o valor mais próximo dessa medida.",
-          "E": "36,24 cm supera o perímetro calculado. O enunciado exclui perda ou acréscimo de material, portanto não se deve acrescentar outra extensão à barra."
+          "A": "O comprimento pedido é o perímetro da peça inicial, não um lado: P = 2h√3 = 16√3 ≈ 27,2 cm. O valor de 9,07 cm é da ordem de apenas um dos três lados.",
+          "B": "Multiplicar 8 por 1,7 fornece 13,60 cm, mas o perímetro do equilátero é 2h√3, e não h√3; o resultado omite o fator 2 e reduz a barra à metade.",
+          "C": "O valor de 20,40 cm equivale a 12×1,7, mas não decorre da altura de 8 cm na relação P = 2h√3; a barra precisa medir aproximadamente 27,2 cm antes de ser deformada.",
+          "D": "A altura do equilátero satisfaz h = a√3/2, logo seu perímetro é 3a = 2h√3 = 16√3 ≈ 27,2 cm; a opção mais próxima é 27,18 cm, preservando o material na deformação.",
+          "E": "A medida de 36,24 cm excede o perímetro de aproximadamente 27,2 cm obtido da altura de 8 cm; como não há acréscimo de material, a deformação não justifica esse comprimento maior."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3461,11 +3461,11 @@
           "Ordenando os doze números, obtém-se 11, 11, 12, 13, 15, 15, 16, 16, 17, 18, 20 e 24. Como há quantidade par de dados, a mediana é a média do sexto e do sétimo: (15 + 16)/2 = 15,5 terremotos."
         ],
         "alternatives": {
-          "A": "11 é o menor valor observado e também aparece duas vezes. A mediana, porém, depende das posições centrais após ordenar todos os doze dados.",
-          "B": "15 ocupa a sexta posição, mas existe outra posição central, a sétima, com valor 16. Em uma lista de tamanho par, deve-se calcular a média das duas.",
-          "C": "Os valores centrais são 15 e 16. Sua média é 15,5, definição de mediana para os doze registros.",
-          "D": "15,7 se aproxima de uma média aritmética, sem corresponder à mediana solicitada. O critério do pesquisador não usa a soma de todos os dados.",
-          "E": "17,5 seria a média de 17 e 18, que estão mais à direita na lista ordenada. Eles não ocupam as duas posições centrais."
+          "A": "O valor 11 aparece na amostra e é seu mínimo, mas não representa o centro de uma lista de doze observações; a mediana exige considerar o sexto e o sétimo dados após a ordenação.",
+          "B": "Ordenando os dados, 15 ocupa a sexta posição e 16 a sétima; como há doze observações, tomar somente 15 desconsidera uma das duas posições centrais necessárias à mediana.",
+          "C": "Os doze dados ordenados têm 15 e 16 nas posições 6 e 7; a mediana é a média desses dois termos, (15 + 16)/2 = 15,5 terremotos por ano.",
+          "D": "A soma dos doze valores dividida por doze produz aproximadamente 15,7, uma média aritmética; o pesquisador escolheu a mediana, definida pelos dois termos centrais da lista ordenada.",
+          "E": "O número 17,5 é a média de 17 e 18, mas esses valores ocupam as posições 9 e 10 da lista ordenada; o centro de doze observações está nas posições 6 e 7, com valores 15 e 16."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3505,11 +3505,11 @@
           "É preciso multiplicar a capacidade pelo percentual ocupado. Os volumes dos reservatórios I a V são, respectivamente, 21, 30, 10, 32 e 24 bilhões de litros. O IV contém o maior volume absoluto, embora o V apresente o maior percentual de ocupação."
         ],
         "alternatives": {
-          "A": "O reservatório I tem capacidade de 105 bilhões, mas está apenas 20% ocupado. Seu volume é 21 bilhões, abaixo dos 32 do IV.",
-          "B": "O II armazena 30% de 100 bilhões, totalizando 30 bilhões. Fica dois bilhões abaixo do IV.",
-          "C": "O III está na metade da capacidade, mas sua capacidade é apenas 20 bilhões. Seu volume de dez bilhões é o menor entre os cinco.",
-          "D": "O IV contém 40% de 80 bilhões, isto é, 32 bilhões. Esse produto é o maior volume absoluto, critério pedido no enunciado.",
-          "E": "O V tem a maior porcentagem, 60%, mas uma capacidade de apenas 40 bilhões. O volume é 24 bilhões, de modo que a maior barra percentual não implica a maior quantidade de água."
+          "A": "O reservatório I tem a maior capacidade, 105 bilhões de litros, mas ocupa só 20% dela; seu volume efetivo é 0,20×105 = 21 bilhões, inferior aos 32 bilhões do IV.",
+          "B": "O reservatório II armazena 30% de uma capacidade de 100 bilhões, ou 30 bilhões de litros; apesar da capacidade elevada, esse volume é menor que os 32 bilhões do IV.",
+          "C": "O reservatório III está 50% ocupado, mas tem capacidade de apenas 20 bilhões; 0,50×20 = 10 bilhões de litros, o menor volume efetivo entre os cinco.",
+          "D": "O reservatório IV armazena 40% de 80 bilhões, totalizando 32 bilhões de litros; comparando com 21, 30, 10 e 24 bilhões dos demais, é o maior volume absoluto.",
+          "E": "O reservatório V tem o maior percentual de ocupação, 60%, mas sua capacidade é de 40 bilhões; o produto é 24 bilhões de litros, menor que os 32 bilhões do IV."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3681,11 +3681,11 @@
           "Como todos os tipos foram vendidos em três franquias, comparar médias equivale a comparar os totais. As somas para I a V são 1245, 1230, 1220, 1233 e 1280 unidades. O tipo V tem o maior total e, consequentemente, a maior média por franquia."
         ],
         "alternatives": {
-          "A": "O tipo I tem média 415, pois vendeu 415 em cada franquia. A regularidade não o torna vencedor, já que V tem média 1280/3, aproximadamente 426,7.",
-          "B": "O tipo II soma 395 + 445 + 390 = 1230, média 410. O pico de 445 em uma franquia não compensa os resultados menores nas outras.",
-          "C": "O tipo III soma 425 + 370 + 425 = 1220, média aproximada de 406,7. É o menor total entre os cinco.",
-          "D": "O tipo IV soma 430 + 370 + 433 = 1233, média 411. Mesmo com valores altos em duas franquias, o total fica abaixo de V.",
-          "E": "O tipo V soma 435 + 425 + 420 = 1280, maior total da tabela. Como o divisor é três para todos, ele também tem a maior média."
+          "A": "O lanche I vendeu 415 unidades em cada franquia, com média 415; a regularidade não supera a média do V, cujo total de 1280 dividido por três resulta em aproximadamente 426,7.",
+          "B": "O lanche II soma 395 + 445 + 390 = 1230 e tem média 410; a maior venda isolada de 445 não basta para vencer, pois o critério considera as três franquias.",
+          "C": "O lanche III soma 425 + 370 + 425 = 1220, gerando média aproximada de 406,7; esse total e essa média são inferiores aos dos outros tipos, especialmente ao V.",
+          "D": "O lanche IV soma 430 + 370 + 433 = 1233, com média 411; as duas vendas acima de 430 não compensam o total de 1280 do lanche V, distribuído pelas mesmas três franquias.",
+          "E": "O lanche V soma 435 + 425 + 420 = 1280, maior total entre os tipos; como todos foram vendidos em três franquias, o mesmo divisor mantém sua média de cerca de 426,7 como a maior."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3813,11 +3813,11 @@
           "A chance de errar todos os n lançamentos é (1/2)^n. Assim, a chance de pontuar é 1 − (1/2)^n e deve ser pelo menos 0,9. Com três dardos, vale 7/8 = 0,875; com quatro, vale 15/16 = 0,9375. Portanto, o mínimo é quatro."
         ],
         "alternatives": {
-          "A": "Com dois dardos, a chance de ao menos um acerto é 1 − 1/4 = 0,75. Ela fica abaixo dos 90% exigidos.",
-          "B": "Quatro dardos dão 1 − 1/16 = 93,75%, enquanto três dão apenas 87,5%. Isso demonstra que quatro atende ao limite e é o mínimo.",
-          "C": "Com seis dardos a chance seria 1 − 1/64, superior a 90%. Porém, não é mínimo porque quatro já satisfazem a condição.",
-          "D": "Nove dardos fornecem probabilidade muito alta, mas são desnecessários para atingir 90%. A restrição é um limite inferior de chance, sem exigir tantos lançamentos.",
-          "E": "Dez dardos também ultrapassam o limite, mas não minimizam a quantidade. Confundir o denominador dez de 9/10 com o número de dardos ignora a probabilidade complementar."
+          "A": "Com dois dardos independentes, a probabilidade de errar ambos é (1/2)² = 1/4, e a de pontuar é 3/4 = 75%; esse percentual permanece abaixo dos 90% exigidos.",
+          "B": "A chance de ao menos um acerto é 1 − (1/2)^n; com três dardos vale 87,5% e com quatro vale 93,75%. Quatro é o primeiro inteiro que atinge o mínimo de 90%.",
+          "C": "Seis dardos dariam probabilidade de pontuar igual a 1 − 1/64 = 98,4375%, superior ao limite; porém, a pergunta pede a menor quantidade e quatro já fornecem 93,75%.",
+          "D": "Com nove dardos, a chance é 1 − 1/512 ≈ 99,80%, mas o organizador não precisa chegar tão perto de 100%; quatro já atingem os 90% e usam menos lançamentos.",
+          "E": "Dez dardos fornecem 1 − 1/1024 ≈ 99,90%, ultrapassando a meta com lançamentos desnecessários; o denominador 10 da fração 9/10 não representa a quantidade mínima de dardos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",

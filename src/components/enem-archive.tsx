@@ -18,25 +18,21 @@ import { PaperCloseIcon } from "./paper-close-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { PaperDigits } from "./paper-digits";
 import type { StudyMaterial } from "../domain/workspace";
+import type { Dispatch } from "react";
+import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
+import { paperProgress, sectionAttempt, type Progress } from "../data/enem-progress";
 import "./enem-archive.css";
 const PdfReader = lazy(() => import("./library-pdf-reader"));
+const EnemEssayWriting = lazy(() =>
+  import("./enem-essay-writing").then((module) => ({ default: module.EnemEssayWriting })),
+);
 type Paper = EnemCatalog["papers"][number];
-type Progress = {
-  saved?: boolean;
-  opened?: boolean;
-  completed?: boolean;
-  variant?: string;
-  page?: number;
-  answerPage?: number;
-  bookmarks?: number[];
-  attempt?: {
-    language?: EnemLanguage;
-    submittedAt?: string;
-    section: string;
-    seconds: number;
-    instructions: boolean;
-    answers: Record<string, string>;
-  };
+type ArchiveProps = {
+  onBack(): void;
+  scope: string;
+  workspace?: WorkspaceState;
+  collectionId?: string;
+  dispatch?: Dispatch<WorkspaceAction>;
 };
 type History = Record<string, Progress>;
 function readHistory(key: string, ids: ReadonlySet<string>): History {
@@ -284,11 +280,10 @@ function EnemArchiveView({
   onBack,
   scope,
   catalog,
-}: {
-  onBack(): void;
-  scope: string;
-  catalog: EnemCatalog;
-}) {
+  workspace,
+  collectionId,
+  dispatch,
+}: ArchiveProps & { catalog: EnemCatalog }) {
   const sound = useRef<ReturnType<typeof createMathSound> | null>(null);
   useEffect(
     () => () => {
@@ -328,6 +323,7 @@ function EnemArchiveView({
   const [section, setSection] = useState<EnemSection>();
   const [resumeOpen, setResumeOpen] = useState(false);
   const [resultOpen, setResultOpen] = useState(false);
+  const [confirmSubmit, setConfirmSubmit] = useState(false);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [language, setLanguage] = useState<EnemLanguage>("english");
   const [answerOpen, setAnswerOpen] = useState(true);
@@ -356,7 +352,25 @@ function EnemArchiveView({
   const update = useCallback(
     (id: string, changes: Progress) => {
       setHistory((current) => {
-        const next = { ...current, [id]: { ...current[id], ...changes } };
+        const record = changes.attempt;
+        const next = {
+          ...current,
+          [id]: {
+            ...current[id],
+            ...changes,
+            ...(record
+              ? {
+                  attempts: {
+                    ...(current[id]?.attempt
+                      ? { [current[id].attempt.section]: current[id].attempt }
+                      : {}),
+                    ...current[id]?.attempts,
+                    [record.section]: record,
+                  },
+                }
+              : {}),
+          },
+        };
         try {
           localStorage.setItem(key, JSON.stringify(next));
         } catch {
@@ -368,12 +382,18 @@ function EnemArchiveView({
     [key],
   );
   useEffect(() => {
-    if (!reader || !started || !section) return;
+    if (!reader || !started || !section || section.id === "essay") return;
+    const previous = history[reader.id]?.attempt;
     const next = {
       ...history,
       [reader.id]: {
         ...history[reader.id],
         attempt: { section: section.id, seconds, instructions, answers, language },
+        attempts: {
+          ...(previous ? { [previous.section]: previous } : {}),
+          ...history[reader.id]?.attempts,
+          [section.id]: { section: section.id, seconds, instructions, answers, language },
+        },
       },
     };
     try {
@@ -418,7 +438,69 @@ function EnemArchiveView({
       ? Math.round((previousAnswered / previousRows.length) * 100)
       : 0;
     const activeRows = section ? answerRows(section, language) : [];
-    const answered = activeRows.filter((row) => answers[`${section?.id}:${row.key}`]).length;
+    const answered = activeRows.filter((row) =>
+      /^[A-E]$/.test(answers[`${section?.id}:${row.key}`] ?? ""),
+    ).length;
+    const submitCurrent = () => {
+      if (!section) return;
+      const attempt = {
+        language,
+        section: section.id,
+        seconds,
+        instructions: false,
+        answers: { ...answers },
+        submittedAt: new Date().toISOString(),
+      };
+      const attempts = { ...progress?.attempts, [section.id]: attempt };
+      const complete = enemSections(reader.year, reader.day).every(
+        (area) => !!(attempts[area.id] ?? sectionAttempt(progress, area.id))?.submittedAt,
+      );
+      update(reader.id, { completed: complete, attempt });
+      setConfirmSubmit(false);
+      setStarted(false);
+      setClockRunning(false);
+      setResultOpen(true);
+    };
+    if (
+      started &&
+      !instructions &&
+      section?.id === "essay" &&
+      workspace &&
+      collectionId &&
+      dispatch
+    )
+      return createPortal(
+        <Suspense fallback={<HelenaLoading label={uiText("Abrindo folha de redação")} />}>
+          <EnemEssayWriting
+            year={reader.year}
+            paperUrl={enemPdfUrl(chosen.url)}
+            variantId={chosen.id}
+            scope={scope}
+            workspace={workspace}
+            collectionId={collectionId}
+            dispatch={dispatch}
+            onClose={() => {
+              setStarted(false);
+              setChooseSection(true);
+            }}
+            onSubmit={({ text, elapsedSeconds }) => {
+              const attempt = {
+                section: "essay",
+                seconds: elapsedSeconds,
+                instructions: false,
+                answers: {},
+                essayText: text,
+                submittedAt: new Date().toISOString(),
+              };
+              const complete = enemSections(reader.year, reader.day).every(
+                (area) => area.id === "essay" || !!sectionAttempt(progress, area.id)?.submittedAt,
+              );
+              update(reader.id, { attempt, completed: complete });
+            }}
+          />
+        </Suspense>,
+        document.body,
+      );
     if (resultOpen && previousAttempt?.submittedAt && previousSection)
       return createPortal(
         <EnemSubmissionResult
@@ -618,7 +700,7 @@ function EnemArchiveView({
               className="shelf-wood-button"
               onClick={() => {
                 setSection(undefined);
-                if (previousSection && !progress?.completed) setResumeOpen(true);
+                if (previousSection && !previousAttempt?.submittedAt) setResumeOpen(true);
                 else setChooseSection(true);
               }}
             >
@@ -654,25 +736,39 @@ function EnemArchiveView({
               type="button"
               className="shelf-wood-button enem-deliver-exam"
               onClick={() => {
-                update(reader.id, {
-                  completed: true,
-                  attempt: {
-                    language,
-                    section: section.id,
-                    seconds,
-                    instructions: false,
-                    answers: { ...answers },
-                    submittedAt: new Date().toISOString(),
-                  },
-                });
-                setStarted(false);
-                setClockRunning(false);
-                setResultOpen(true);
+                if (answered < activeRows.length) setConfirmSubmit(true);
+                else submitCurrent();
               }}
             >
               {uiText("Entregar prova")}
             </button>
           </>
+        )}
+        {confirmSubmit && (
+          <LibraryDialog
+            title={uiText("Entregar com questões em branco?")}
+            className="enem-section-dialog enem-submit-confirm"
+            onClose={() => setConfirmSubmit(false)}
+          >
+            <p>
+              {uiText("Questões sem resposta:")} <strong>{activeRows.length - answered}</strong>
+            </p>
+            <p>{uiText("Você pode voltar ao cartão e responder antes de entregar.")}</p>
+            <button
+              type="button"
+              className="shelf-wood-button enem-section-start"
+              onClick={submitCurrent}
+            >
+              {uiText("Sim, entregar")}
+            </button>
+            <button
+              type="button"
+              className="shelf-wood-button"
+              onClick={() => setConfirmSubmit(false)}
+            >
+              {uiText("Voltar à prova")}
+            </button>
+          </LibraryDialog>
         )}
         {resumeOpen && previousAttempt && previousSection && (
           <LibraryDialog
@@ -758,19 +854,41 @@ function EnemArchiveView({
               aria-label={uiText("Área da prova")}
               className="enem-section-options"
             >
-              {enemSections(reader.year, reader.day).map((item) => (
-                <button
-                  type="button"
-                  key={item.id}
-                  role="radio"
-                  aria-checked={section?.id === item.id}
-                  onClick={() => setSection(item)}
-                >
-                  <SectionIcon section={item} />
-                  <span>{uiText(item.label)}</span>
-                  {section?.id === item.id && <PaperCheckIcon />}
-                </button>
-              ))}
+              {enemSections(reader.year, reader.day).map((item) => {
+                const record = sectionAttempt(progress, item.id);
+                const summary = paperProgress(reader.year, reader.day, progress).sections.find(
+                  (area) => area.section.id === item.id,
+                );
+                return (
+                  <button
+                    type="button"
+                    key={item.id}
+                    role="radio"
+                    aria-checked={section?.id === item.id}
+                    onClick={() => setSection(item)}
+                  >
+                    <SectionIcon section={item} />
+                    <span>
+                      {uiText(item.label)}
+                      <small className="enem-section-status">
+                        {uiText(
+                          record?.submittedAt
+                            ? "Entregue"
+                            : record
+                              ? "Em andamento"
+                              : "Não iniciada",
+                        )}
+                        {" · "}
+                        {summary?.percent ?? 0}%
+                        {summary &&
+                          item.id !== "essay" &&
+                          ` · ${summary.answered}/${summary.total}`}
+                      </small>
+                    </span>
+                    {section?.id === item.id && <PaperCheckIcon />}
+                  </button>
+                );
+              })}
             </div>
             {section?.id === "languages" && (
               <fieldset className="enem-language-picker">
@@ -798,17 +916,49 @@ function EnemArchiveView({
               className="shelf-wood-button enem-section-start"
               disabled={!section}
               onClick={() => {
-                update(reader.id, { opened: true, variant: chosen.id, completed: false });
+                if (!section) return;
+                const record = sectionAttempt(progress, section.id);
+                if (record?.submittedAt) {
+                  update(reader.id, { attempt: record });
+                  setChooseSection(false);
+                  if (section.id === "essay") {
+                    setInstructions(false);
+                    setClockRunning(false);
+                    setStarted(true);
+                  } else setResultOpen(true);
+                  return;
+                }
+                update(reader.id, {
+                  opened: true,
+                  variant: chosen.id,
+                  completed: false,
+                  ...(section.id === "essay"
+                    ? {
+                        attempt: {
+                          section: "essay",
+                          seconds: record?.seconds ?? 0,
+                          instructions: false,
+                          answers: {},
+                        },
+                      }
+                    : {}),
+                });
+                setAnswers(record?.answers ?? {});
+                setLanguage(record?.language ?? language);
                 setDocumentType("paper");
                 setChooseSection(false);
-                setInstructions(true);
-                setSeconds(0);
-                setClockRunning(true);
+                setInstructions(record?.instructions ?? true);
+                setSeconds(record?.seconds ?? 0);
+                setClockRunning(section.id !== "essay");
                 setAnswerOpen(true);
                 setStarted(true);
               }}
             >
-              {uiText("Iniciar prova")}
+              {uiText(
+                section && sectionAttempt(progress, section.id)?.submittedAt
+                  ? "Ver resultado"
+                  : "Iniciar prova",
+              )}
             </button>
           </LibraryDialog>
         )}
@@ -901,6 +1051,7 @@ function EnemArchiveView({
       <div className="enem-paper-grid">
         {visible.map((paper) => {
           const progress = history[paper.id];
+          const summary = paperProgress(paper.year, paper.day, progress);
           return (
             <article
               className={`enem-paper-card${progress?.completed ? " is-completed" : ""}`}
@@ -914,9 +1065,12 @@ function EnemArchiveView({
                   setVariant(progress?.variant ?? paper.variants[0]!.id);
                   setDocumentType("paper");
                   setStarted(false);
-                  setResultOpen(!!progress?.attempt?.submittedAt);
+                  setResultOpen(false);
+                  setConfirmSubmit(false);
+                  setSection(undefined);
+                  setChooseSection(!!progress?.attempt?.submittedAt);
                   setInstructions(false);
-                  if (progress?.attempt && !progress.completed) setResumeOpen(true);
+                  if (progress?.attempt && !progress.attempt.submittedAt) setResumeOpen(true);
                   else setResumeOpen(false);
                   setReader(paper);
                 }}
@@ -933,6 +1087,40 @@ function EnemArchiveView({
                   <span>{dayLabel(paper.day)}</span>
                 </h3>
               </button>
+              <details
+                className="enem-card-progress"
+                onToggle={(event) => {
+                  const element = event.currentTarget;
+                  if (!element.open) return;
+                  const rect = element.getBoundingClientRect();
+                  element.style.setProperty(
+                    "--progress-left",
+                    `${Math.max(12, Math.min(rect.left, window.innerWidth - 324))}px`,
+                  );
+                  element.style.setProperty(
+                    "--progress-top",
+                    `${Math.max(12, Math.min(rect.bottom + 8, window.innerHeight - 280))}px`,
+                  );
+                }}
+              >
+                <summary aria-label={`${uiText("Progresso da prova")}: ${summary.percent}%`}>
+                  {summary.percent}% <FocusPaperArrow />
+                </summary>
+                <div className="enem-card-progress-balloon">
+                  {summary.sections.map((area) => (
+                    <div key={area.section.id}>
+                      <SectionIcon section={area.section} />
+                      <span>
+                        {uiText(area.section.label)}
+                        <small>
+                          {uiText(area.submitted ? "Entregue" : "Respostas preenchidas")}
+                        </small>
+                      </span>
+                      <strong>{area.percent}%</strong>
+                    </div>
+                  ))}
+                </div>
+              </details>
               <footer>
                 <span>{progress?.completed ? uiText("Concluída") : ""}</span>
                 <ExamMenu
@@ -1009,7 +1197,7 @@ function EnemArchiveView({
 }
 
 /** O catálogo (cerca de 210 KB) vem do servidor quando o acervo abre, e não dentro do JavaScript. */
-export default function EnemArchive({ onBack, scope }: { onBack(): void; scope: string }) {
+export default function EnemArchive({ onBack, scope, ...essayProps }: ArchiveProps) {
   const [catalog, setCatalog] = useState<EnemCatalog>();
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -1023,7 +1211,8 @@ export default function EnemArchive({ onBack, scope }: { onBack(): void; scope: 
       active = false;
     };
   }, [attempt]);
-  if (catalog) return <EnemArchiveView onBack={onBack} scope={scope} catalog={catalog} />;
+  if (catalog)
+    return <EnemArchiveView onBack={onBack} scope={scope} catalog={catalog} {...essayProps} />;
   return (
     <section className="enem-archive" aria-label={uiText("Provas do Enem")}>
       {failed ? (

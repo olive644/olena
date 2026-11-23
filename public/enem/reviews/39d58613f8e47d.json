@@ -12,11 +12,11 @@
           "A transferência térmica que não precisa de matéria intermediária ocorre por ondas eletromagnéticas. Assim, a lâmpada pode irradiar energia absorvida pela mariposa, enquanto a convecção dependeria do movimento de um fluido."
         ],
         "alternatives": {
-          "A": "Reflexão muda a direção de uma onda e não designa esse mecanismo térmico.",
-          "B": "Refração é a mudança de propagação entre meios, não uma forma de transferir calor.",
-          "C": "A irradiação transporta energia eletromagnética mesmo através do vácuo.",
-          "D": "Dispersão separa componentes de uma onda e não é o mecanismo térmico solicitado.",
-          "E": "Convecção requer deslocamento de matéria em um fluido."
+          "A": "Reflexão muda a direção de uma onda e não designa esse mecanismo térmico. Uma superfície pode refletir a radiação da lâmpada, mas o aquecimento exige absorver energia, não apenas desviá-la.",
+          "B": "Refração é a mudança de propagação entre meios, não uma forma de transferir calor. A refração descreve a direção da propagação ao mudar de meio e não distingue um transporte de energia sem fluido.",
+          "C": "A irradiação transporta energia eletromagnética mesmo através do vácuo. A emissão térmica da lâmpada pode alcançar a mariposa por radiação, sem depender de corrente de ar intermediária.",
+          "D": "Dispersão separa componentes de uma onda e não é o mecanismo térmico solicitado. Separar frequências de uma radiação não identifica o processo de troca térmica entre lâmpada e animal.",
+          "E": "Convecção requer deslocamento de matéria em um fluido. Por exigir um líquido ou gás em movimento, não atende à condição de independência de fluidos imposta na pergunta."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -56,11 +56,11 @@
           "A toxina chega aos sapos pela cadeia alimentar: plantas são consumidas por insetos que servem de alimento aos anfíbios. No cativeiro, a dieta deixa de fornecer essas substâncias, explicando a perda de toxicidade sem exigir uma mudança genética."
         ],
         "alternatives": {
-          "A": "A umidade pode afetar a fisiologia, mas não fornece a toxina descrita.",
-          "B": "Sem os insetos da dieta natural, falta a fonte alimentar dos compostos tóxicos.",
-          "C": "Uma mudança evolutiva não é necessária para explicar a ausência imediata do veneno.",
-          "D": "O comportamento não substitui a relação química direta com a alimentação.",
-          "E": "Não há evidência de alteração dos genes dos indivíduos em cativeiro."
+          "A": "A umidade pode afetar a fisiologia, mas não fornece a toxina descrita. O texto identifica uma cadeia de transferência da substância, e não uma síntese determinada pela umidade.",
+          "B": "Sem os insetos da dieta natural, falta a fonte alimentar dos compostos tóxicos. As formigas e os cupins transportam compostos obtidos das plantas, que deixam de chegar ao anfíbio quando essa dieta é interrompida.",
+          "C": "Uma mudança evolutiva não é necessária para explicar a ausência imediata do veneno. Um animal capturado também pode perder a toxicidade, o que afasta a necessidade de uma adaptação genética ao longo de gerações.",
+          "D": "O comportamento não substitui a relação química direta com a alimentação. Uma mudança comportamental poderia alterar a dieta, mas a causa direta é a ausência do alimento que contém a substância.",
+          "E": "Não há evidência de alteração dos genes dos indivíduos em cativeiro. A explicação vale mesmo para indivíduos antes venenosos, pois depende da disponibilidade ambiental do composto."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -100,11 +100,11 @@
           "A vacina apresenta antígenos ao sistema imunológico e estimula uma resposta específica. Entre os produtos dessa resposta estão anticorpos, proteínas capazes de reconhecer estruturas do vírus e neutralizar sua ação, além da formação de memória imunológica."
         ],
         "alternatives": {
-          "A": "O antígeno não é uma substância que mata o vírus ao se ligar a ele.",
-          "B": "A aglutinação pode envolver anticorpos, mas não descreve a função inicial do antígeno vacinal.",
-          "C": "Imunoglobulinas prontas caracterizam imunização passiva, não essa vacina.",
-          "D": "A exposição ao antígeno induz o organismo a fabricar proteínas de defesa específicas.",
-          "E": "A vacinação ativa a resposta e não se limita a conservar um estoque anterior de anticorpos."
+          "A": "O antígeno não é uma substância que mata o vírus ao se ligar a ele. Quem reconhece e neutraliza estruturas virais são componentes produzidos na resposta de defesa, não a ação tóxica do antígeno.",
+          "B": "A aglutinação pode envolver anticorpos, mas não descreve a função inicial do antígeno vacinal. O componente vacinal serve como estímulo de reconhecimento e não como reagente que reúne fisicamente vírus já presentes.",
+          "C": "Imunoglobulinas prontas caracterizam imunização passiva, não essa vacina. A imunização ativa mobiliza as próprias células do indivíduo, ao contrário de um soro que oferece anticorpos preparados.",
+          "D": "A exposição ao antígeno induz o organismo a fabricar proteínas de defesa específicas. Os anticorpos resultantes podem se ligar ao vírus e dificultar sua entrada ou funcionamento nas células.",
+          "E": "A vacinação ativa a resposta e não se limita a conservar um estoque anterior de anticorpos. O contato vacinal pode aumentar e especializar a resposta, além de produzir memória para futuras exposições."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -144,11 +144,11 @@
           "O capim-gordura foi introduzido fora de sua área de origem e apresenta grande capacidade de dispersão e competição. Ao ocupar espaço e disputar recursos com a vegetação do Cerrado, pode reduzir populações de plantas nativas e a diversidade local."
         ],
         "alternatives": {
-          "A": "Uma invasão competitiva tende a reduzir a diversidade, sem garantir novos nichos.",
-          "B": "Assoreamento não é a consequência direta da competição biológica descrita.",
-          "C": "Não há informação sobre compactação que justifique a redução da infiltração.",
-          "D": "A ocupação agressiva limita os recursos disponíveis às espécies nativas.",
-          "E": "Capins invasores podem aumentar combustível para fogo, sem assegurar redução de queimadas."
+          "A": "Uma invasão competitiva tende a reduzir a diversidade, sem garantir novos nichos. Embora a introdução acrescente inicialmente uma espécie, sua expansão pode eliminar outras e simplificar a comunidade.",
+          "B": "Assoreamento não é a consequência direta da competição biológica descrita. A deposição de sedimentos exigiria explicar erosão e transporte até nascentes, elementos não desenvolvidos no caso.",
+          "C": "Não há informação sobre compactação que justifique a redução da infiltração. A capacidade de se espalhar é uma característica ecológica competitiva, diferente de uma propriedade física demonstrada do solo.",
+          "D": "A ocupação agressiva limita os recursos disponíveis às espécies nativas. Luz, espaço, água e nutrientes disputados com o invasor podem deixar de sustentar parte da vegetação original.",
+          "E": "Capins invasores podem aumentar combustível para fogo, sem assegurar redução de queimadas. A presença abundante de gramíneas pode alimentar incêndios, portanto não autoriza inferir proteção contra fogo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -188,11 +188,11 @@
           "A comparação pede um ambiente brasileiro com restrição hídrica e de alimento semelhante à situação desértica. A Caatinga, com clima semiárido e secas prolongadas, oferece a analogia ambiental mais adequada entre os biomas apresentados."
         ],
         "alternatives": {
-          "A": "O Cerrado tem sazonalidade, mas a Caatinga apresenta a analogia semiárida mais direta.",
-          "B": "Os Pampas são campos de clima subtropical e não o ambiente seco solicitado.",
-          "C": "A Caatinga reúne aridez e escassez sazonal capazes de favorecer adaptações semelhantes.",
-          "D": "A restinga é uma formação costeira que não corresponde ao semiárido interiorano.",
-          "E": "O Pantanal se caracteriza por extensas inundações sazonais."
+          "A": "O Cerrado tem sazonalidade, mas a Caatinga apresenta a analogia semiárida mais direta. A pergunta ressalta semelhança com a restrição do deserto, e o ambiente semiárido é o paralelo mais apropriado.",
+          "B": "Os Pampas são campos de clima subtropical e não o ambiente seco solicitado. A ocorrência de períodos frios e campos abertos não equivale ao regime de seca prolongada indicado para o lagarto.",
+          "C": "A Caatinga reúne aridez e escassez sazonal capazes de favorecer adaptações semelhantes. Secas e oferta sazonal de recursos criam pressões ambientais comparáveis às que favorecem economia e controle de reservas.",
+          "D": "A restinga é uma formação costeira que não corresponde ao semiárido interiorano. Solos arenosos e salinidade podem impor estresse, mas não tornam toda restinga equivalente ao deserto referido.",
+          "E": "O Pantanal se caracteriza por extensas inundações sazonais. Sua dinâmica de cheias difere do quadro de aridez, mesmo que também exista uma estação seca."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -232,11 +232,11 @@
           "A destilação envolve vaporização e posterior condensação da água, separando-a de sais não voláteis dissolvidos. A água resultante, empregada em laboratórios e outros usos técnicos, é denominada destilada, conforme a descrição do enunciado."
         ],
         "alternatives": {
-          "A": "Água dura contém concentrações apreciáveis de íons como cálcio e magnésio.",
-          "B": "Água pesada apresenta proporção elevada de deutério, não apenas ausência de sais.",
-          "C": "Água sanitária é uma solução desinfetante com hipoclorito.",
-          "D": "A água obtida pela separação dos sais por destilação recebe esse nome.",
-          "E": "Água oxigenada é uma solução de peróxido de hidrogênio."
+          "A": "Água dura contém concentrações apreciáveis de íons como cálcio e magnésio. Seu nome caracteriza abundância de sais, sendo o contrário da remoção iônica mencionada no texto.",
+          "B": "Água pesada apresenta proporção elevada de deutério, não apenas ausência de sais. A distinção envolve o isótopo de hidrogênio e não pode ser produzida apenas retirando solutos comuns.",
+          "C": "Água sanitária é uma solução desinfetante com hipoclorito. O hipoclorito é um soluto ativo, portanto essa solução não corresponde à água sem sais descrita.",
+          "D": "A água obtida pela separação dos sais por destilação recebe esse nome. Os sais permanecem predominantemente no recipiente de origem enquanto o vapor condensado forma a água destilada.",
+          "E": "Água oxigenada é uma solução de peróxido de hidrogênio. H2O2 é uma substância química diferente da água H2O, não uma denominação do produto da destilação."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -276,11 +276,11 @@
           "Em baixa luminosidade, a pupila dilata para aumentar a entrada de luz. Quando o flash ocorre nessas condições, mais luz alcança o fundo do olho e pode ser refletida pela região vascularizada, intensificando o registro avermelhado na fotografia."
         ],
         "alternatives": {
-          "A": "A dilatação amplia a passagem de luz para o interior do olho e favorece o efeito.",
-          "B": "A pupila não se retrai para aumentar a entrada de luz no escuro.",
-          "C": "A retração reduziria a passagem de luz e não explica o efeito noturno.",
-          "D": "A resposta pupilar não seleciona dessa forma as cores azul e verde.",
-          "E": "A dilatação aumenta a entrada geral de luz, sem retirar seletivamente essas cores dos bastonetes."
+          "A": "A dilatação amplia a passagem de luz para o interior do olho e favorece o efeito. O flash pode entrar e retornar pela abertura maior, tornando mais evidente a luz refletida no fundo vascularizado.",
+          "B": "A pupila não se retrai para aumentar a entrada de luz no escuro. No escuro, a resposta usual é ampliar a abertura para captar luminosidade, e não torná-la menor.",
+          "C": "A retração reduziria a passagem de luz e não explica o efeito noturno. Além do erro na abertura, o efeito não depende de fazer entrar seletivamente luz vermelha antes do flash.",
+          "D": "A resposta pupilar não seleciona dessa forma as cores azul e verde. A mudança de diâmetro regula a quantidade de luz, enquanto a cor avermelhada depende da região refletora rica em sangue.",
+          "E": "A dilatação aumenta a entrada geral de luz, sem retirar seletivamente essas cores dos bastonetes. O nome das células receptoras não muda o mecanismo de abertura da pupila nem explica uma supressão seletiva de cores."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -320,11 +320,11 @@
           "A toxina termoestável está concentrada nas gônadas e vísceras descritas. Evitar o rompimento desses órgãos durante o preparo impede que seu conteúdo contamine o filé; cozinhar não oferece a solução proposta porque a substância resiste ao aquecimento."
         ],
         "alternatives": {
-          "A": "O enunciado não garante que o simples cativeiro elimine a toxina do baiacu.",
-          "B": "O tipo de rede usado na pesca não remove a toxina dos órgãos.",
-          "C": "Por ser termoestável, a toxina não é necessariamente inativada pelo cozimento ou fritura.",
-          "D": "A higiene evita contaminações externas, mas não neutraliza a toxina própria dos órgãos.",
-          "E": "Manter íntegros os órgãos tóxicos evita espalhar seu conteúdo sobre a parte consumida."
+          "A": "O enunciado não garante que o simples cativeiro elimine a toxina do baiacu. A informação decisiva localiza a substância nos órgãos internos, e não relaciona a toxicidade ao tipo de criação.",
+          "B": "O tipo de rede usado na pesca não remove a toxina dos órgãos. A toxina permanece nas gônadas e vísceras depois da captura, independentemente da rede escolhida.",
+          "C": "Por ser termoestável, a toxina não é necessariamente inativada pelo cozimento ou fritura. Aquecer combate muitos agentes biológicos, mas a resistência térmica explicitada afasta essa solução para a molécula.",
+          "D": "A higiene evita contaminações externas, mas não neutraliza a toxina própria dos órgãos. Lavar utensílios e controlar microrganismos não impede que uma víscera rompida transfira toxina ao filé.",
+          "E": "Manter íntegros os órgãos tóxicos evita espalhar seu conteúdo sobre a parte consumida. Separar cuidadosamente as partes consumidas sem extravasar conteúdo tóxico atua diretamente na via de contaminação citada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -364,11 +364,11 @@
           "A lipase ácida participa da digestão intracelular em compartimentos com meio ácido. A deficiência impede a quebra de lipídios que se acumulam nas células, caracterizando falha de degradação associada aos lisossomos."
         ],
         "alternatives": {
-          "A": "Os lisossomos contêm hidrolases ácidas envolvidas na digestão intracelular.",
-          "B": "Ribossomos sintetizam proteínas e não são compartimentos de digestão ácida.",
-          "C": "Mitocôndrias participam principalmente da produção de ATP por respiração.",
-          "D": "Peroxissomos realizam oxidações, mas não a hidrólise lisossomal indicada.",
-          "E": "O retículo liso participa da síntese lipídica e não corresponde ao compartimento dessa degradação ácida."
+          "A": "Os lisossomos contêm hidrolases ácidas envolvidas na digestão intracelular. A ausência de uma enzima digestiva nesse compartimento permite o armazenamento anormal de substratos que deveriam ser quebrados.",
+          "B": "Ribossomos sintetizam proteínas e não são compartimentos de digestão ácida. Embora a enzima seja uma proteína produzida por ribossomos, a pergunta trata do local de degradação cuja função falha.",
+          "C": "Mitocôndrias participam principalmente da produção de ATP por respiração. O acúmulo de colesterol esterificado e triglicerídeos por falta de lipase ácida é uma falha digestiva intracelular.",
+          "D": "Peroxissomos realizam oxidações, mas não a hidrólise lisossomal indicada. A presença de lipídios não basta para escolher peroxissomos, porque o tipo de reação e o ambiente ácido identificam lisossomos.",
+          "E": "O retículo liso participa da síntese lipídica e não corresponde ao compartimento dessa degradação ácida. Produzir lipídios e degradá-los são funções distintas, e o defeito relatado está na digestão dos compostos acumulados."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -408,11 +408,11 @@
           "O crescimento das árvores incorpora carbono atmosférico em matéria orgânica por fotossíntese. Essa ação retira CO2 já presente no ar, diferindo das alternativas que principalmente evitam ou reduzem novas emissões."
         ],
         "alternatives": {
-          "A": "As árvores podem capturar CO2 pela fotossíntese e armazenar carbono na biomassa.",
-          "B": "Usinas eólicas substituem fontes emissoras, mas não capturam diretamente o CO2 atmosférico.",
-          "C": "Energia solar reduz emissões em substituição a combustíveis, sem remover diretamente o gás já emitido.",
-          "D": "Deixar combustíveis no solo evita novas emissões, sem retirar o carbono já no ar.",
-          "E": "Gerar menos resíduos pode reduzir emissões futuras, sem ser a captura direta solicitada."
+          "A": "As árvores podem capturar CO2 pela fotossíntese e armazenar carbono na biomassa. A fixação fotossintética transforma parte do carbono do gás em matéria orgânica, oferecendo uma via de remoção atmosférica.",
+          "B": "Usinas eólicas substituem fontes emissoras, mas não capturam diretamente o CO2 atmosférico. A contribuição climática da energia eólica é evitar a queima de fontes emissoras, diferente da captura pelo crescimento vegetal.",
+          "C": "Energia solar reduz emissões em substituição a combustíveis, sem remover diretamente o gás já emitido. Gerar eletricidade solar pode poupar emissões, mas não consome CO2 como reagente para produzir biomassa.",
+          "D": "Deixar combustíveis no solo evita novas emissões, sem retirar o carbono já no ar. O carbono que permanece na reserva geológica deixa de ser adicionado ao ar, sem reduzir diretamente o que já está nele.",
+          "E": "Gerar menos resíduos pode reduzir emissões futuras, sem ser a captura direta solicitada. Evitar gases de decomposição é prevenção de novas emissões e não um sumidouro direto do CO2 anteriormente liberado."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -452,11 +452,11 @@
           "A frequência e o comprimento de onda se relacionam por c = λf. Como a frequência emitida pelo sensor aumenta e a cor passa do vermelho-laranja ao verde, o pico final deve se deslocar para comprimentos de onda menores, à esquerda do pico inicial."
         ],
         "alternatives": {
-          "A": "O pico final aparece à esquerda, em comprimento menor, compatível com a maior frequência.",
-          "B": "O deslocamento à direita indicaria comprimento maior e frequência menor.",
-          "C": "Uma redução de intensidade sem deslocamento não explica a mudança de cor.",
-          "D": "O aumento da altura do pico não demonstra aumento de frequência.",
-          "E": "Curvas sobrepostas indicariam permanência do espectro, contrariando a alteração de cor."
+          "A": "O pico final aparece à esquerda, em comprimento menor, compatível com a maior frequência. Como o eixo horizontal é de comprimento de onda, uma frequência mais alta aparece em posição horizontal menor.",
+          "B": "O deslocamento à direita indicaria comprimento maior e frequência menor. O sensor passa a emitir verde, de comprimento menor que o vermelho-laranja, e não em direção a comprimentos maiores.",
+          "C": "Uma redução de intensidade sem deslocamento não explica a mudança de cor. A altura da curva informa intensidade relativa de emissão e não define sozinha qual cor predomina.",
+          "D": "O aumento da altura do pico não demonstra aumento de frequência. Aumentar a emissão mantendo o pico no mesmo comprimento preserva a frequência dominante, contrariando a informação central.",
+          "E": "Curvas sobrepostas indicariam permanência do espectro, contrariando a alteração de cor. A permanência de todos os comprimentos e intensidades não poderia representar a evolução cromática observada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -496,11 +496,11 @@
           "A primeira geração exibe simultaneamente pintas e listra, indicando expressão dos dois alelos no heterozigoto. Cruzando dois heterozigotos, obtêm-se 1/4 com pintas, 1/2 com pintas e listra e 1/4 apenas com listra, proporção fenotípica 1:2:1."
         ],
         "alternatives": {
-          "A": "Todos com pintas eliminaria as outras combinações do cruzamento heterozigoto.",
-          "B": "Todos com listra não respeitaria a segregação dos alelos observados.",
-          "C": "Todos com ambos os traços ignora a formação de homozigotos.",
-          "D": "A proporção de metade pintas e metade listra exclui os heterozigotos.",
-          "E": "A figura reúne um indivíduo de cada fenótipo parental e dois com ambos os traços."
+          "A": "Todos com pintas eliminaria as outras combinações do cruzamento heterozigoto. Os descendentes de F1 recebem combinações de dois tipos de alelo e não podem gerar apenas um dos homozigotos.",
+          "B": "Todos com listra não respeitaria a segregação dos alelos observados. Esse resultado também eliminaria a expressão conjunta que caracteriza o heterozigoto observado em F1.",
+          "C": "Todos com ambos os traços ignora a formação de homozigotos. Dois heterozigotos também produzem filhos que recebem duas cópias iguais, não só combinações diferentes.",
+          "D": "A proporção de metade pintas e metade listra exclui os heterozigotos. No quadro de cruzamento, duas das quatro combinações são heterozigotas e devem ser representadas.",
+          "E": "A figura reúne um indivíduo de cada fenótipo parental e dois com ambos os traços. A razão 1:2:1 decorre de uma combinação homozigota de cada tipo e duas combinações com os dois alelos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -540,11 +540,11 @@
           "No trecho inclinado, o atrito cinético vale μN = μmg cos θ. Como a inclinação e a rugosidade são constantes e a força aplicada é paralela ao deslocamento, a normal não muda. A redução da força de puxar não altera o módulo desse atrito."
         ],
         "alternatives": {
-          "A": "A queda e a recuperação do atrito exigiriam mudança da normal ou do coeficiente no plano.",
-          "B": "Um pico seguido de queda não resulta de forças normais constantes.",
-          "C": "A linha horizontal representa corretamente o atrito cinético constante no plano inclinado.",
-          "D": "Diminuir a força paralela não faz o atrito cinético cair progressivamente.",
-          "E": "A variação desenhada confunde a força de puxar com a força de atrito."
+          "A": "A queda e a recuperação do atrito exigiriam mudança da normal ou do coeficiente no plano. A redução da força que puxa é paralela ao plano e não muda a pressão de contato que determina μN.",
+          "B": "Um pico seguido de queda não resulta de forças normais constantes. O pico não pode ser atribuído ao atrito estático inicial porque a caixa já permanece em movimento no trecho considerado.",
+          "C": "A linha horizontal representa corretamente o atrito cinético constante no plano inclinado. Com μ, massa e inclinação fixos, μmg cosθ permanece igual, independentemente da variação de velocidade.",
+          "D": "Diminuir a força paralela não faz o atrito cinético cair progressivamente. No modelo de atrito cinético adotado, a força não acompanha proporcionalmente a força que o trabalhador escolhe aplicar.",
+          "E": "A variação desenhada confunde a força de puxar com a força de atrito. O atrito resulta das condições de contato, enquanto a força aplicada pode mudar sem alterar essas condições."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -584,11 +584,11 @@
           "A força elétrica é dada por F = qE. Como o feixe é formado por elétrons, sua carga é negativa e a força aponta para baixo, em sentido oposto ao campo desenhado para cima. Assim, o feixe se desvia ao ponto 2 da tela."
         ],
         "alternatives": {
-          "A": "O ponto 1 exigiria desvio para cima, que ocorreria para carga positiva.",
-          "B": "O ponto 2 está abaixo da trajetória central, no sentido da força sobre os elétrons.",
-          "C": "O ponto 3 envolve desvio lateral não produzido pelo campo vertical mostrado.",
-          "D": "O ponto 4 também pressupõe desvio lateral em vez do desvio vertical.",
-          "E": "O ponto 5 seria atingido sem desvio, incompatível com a força elétrica aplicada."
+          "A": "O ponto 1 exigiria desvio para cima, que ocorreria para carga positiva. A regra F = qE inverte o sentido para uma carga negativa, impedindo que os elétrons sigam as setas do campo.",
+          "B": "O ponto 2 está abaixo da trajetória central, no sentido da força sobre os elétrons. A força vertical para baixo modifica a trajetória enquanto o movimento para a tela continua.",
+          "C": "O ponto 3 envolve desvio lateral não produzido pelo campo vertical mostrado. Um campo na direção vertical não cria a componente horizontal lateral necessária para levar o feixe a esse ponto.",
+          "D": "O ponto 4 também pressupõe desvio lateral em vez do desvio vertical. Também seria preciso uma força em outro eixo para deslocar o feixe à esquerda da região central da tela.",
+          "E": "O ponto 5 seria atingido sem desvio, incompatível com a força elétrica aplicada. Como há força transversal não nula, a trajetória não pode continuar inteiramente alinhada ao eixo original."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -628,11 +628,11 @@
           "A quebra pode ocorrer quando uma componente da voz coincide com a frequência natural de vibração da taça. Na ressonância, a transferência de energia aumenta a amplitude de oscilação do cristal até exceder sua resistência mecânica."
         ],
         "alternatives": {
-          "A": "A simples reflexão do som não exige sintonia com a frequência natural da taça.",
-          "B": "A ressonância depende da correspondência entre frequência excitadora e frequência natural.",
-          "C": "A interferência não é caracterizada pela velocidade da voz nem explica a sintonia exigida.",
-          "D": "O timbre distingue a composição harmônica de sons, mas o fator decisivo é a frequência ressonante.",
-          "E": "A reflexão e a amplitude não identificam o mecanismo de excitação ressonante."
+          "A": "A simples reflexão do som não exige sintonia com a frequência natural da taça. Refletir uma onda na superfície da taça é diferente de acumular energia num modo de vibração próprio do cristal.",
+          "B": "A ressonância depende da correspondência entre frequência excitadora e frequência natural. Na sintonia, cada oscilação forçada pode acrescentar energia ao movimento, elevando a deformação até a ruptura.",
+          "C": "A interferência não é caracterizada pela velocidade da voz nem explica a sintonia exigida. A velocidade do som depende principalmente do meio, sem distinguir uma voz sintonizada com a taça de outra.",
+          "D": "O timbre distingue a composição harmônica de sons, mas o fator decisivo é a frequência ressonante. Duas vozes de timbres diferentes podem produzir uma frequência excitadora adequada; o requisito é a coincidência ressonante.",
+          "E": "A reflexão e a amplitude não identificam o mecanismo de excitação ressonante. A amplitude pode influenciar a energia fornecida, mas não identifica por si o fenômeno exigido pela pergunta."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -672,11 +672,11 @@
           "O borneol representado tem dez carbonos e fórmula C10H18O. A oxidação de um álcool secundário a cetona mantém o número de carbonos e oxigênios e retira dois hidrogênios, resultando em C10H16O para a cânfora."
         ],
         "alternatives": {
-          "A": "A oxidação não remove um carbono, portanto a fórmula com nove carbonos é inadequada.",
-          "B": "Além de perder um carbono, a fórmula não corresponde à cetona de dez carbonos formada.",
-          "C": "A retirada de dois hidrogênios de C10H18O fornece C10H16O.",
-          "D": "A formação de cetona mantém um oxigênio, sem acrescentar outro à molécula.",
-          "E": "A alternativa mantém os hidrogênios e duplica o oxigênio, contrariando a conversão indicada."
+          "A": "A oxidação não remove um carbono, portanto a fórmula com nove carbonos é inadequada. O esqueleto com dez carbonos é mantido nessa transformação de uma função oxigenada em outra.",
+          "B": "Além de perder um carbono, a fórmula não corresponde à cetona de dez carbonos formada. Uma cetona derivada do borneol preserva o mesmo total de carbonos e tem dois hidrogênios a menos.",
+          "C": "A retirada de dois hidrogênios de C10H18O fornece C10H16O. A hidroxila do carbono secundário se transforma em carbonila sem alterar o número de átomos de oxigênio.",
+          "D": "A formação de cetona mantém um oxigênio, sem acrescentar outro à molécula. O oxigênio já presente na hidroxila passa a fazer a dupla ligação da carbonila; não há necessidade de outro átomo.",
+          "E": "A alternativa mantém os hidrogênios e duplica o oxigênio, contrariando a conversão indicada. A conversão exige perda de hidrogênios e manutenção de um oxigênio, diferindo nos dois pontos da fórmula apresentada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -716,11 +716,11 @@
           "O descarte de água aquecida eleva a temperatura do ambiente aquático. Em geral, a solubilidade de gases em água diminui com o aquecimento, reduzindo a disponibilidade de oxigênio dissolvido para os organismos que realizam respiração aeróbia."
         ],
         "alternatives": {
-          "A": "A poluição térmica não determina necessariamente uma queda de pH.",
-          "B": "O problema descrito é a temperatura da água e não a emissão de gases poluentes.",
-          "C": "Não é preciso ocorrer vazamento de combustível para existir poluição térmica.",
-          "D": "A água aquecida pode afetar o ecossistema mesmo sem liberar material radioativo.",
-          "E": "A elevação de temperatura reduz a solubilidade do oxigênio na água."
+          "A": "A poluição térmica não determina necessariamente uma queda de pH. Alterar pH envolve mudança de equilíbrio ácido-base, que não é a consequência principal do simples aquecimento descrito.",
+          "B": "O problema descrito é a temperatura da água e não a emissão de gases poluentes. O circuito pode transferir energia térmica sem que seja preciso lançar uma espécie gasosa nociva.",
+          "C": "Não é preciso ocorrer vazamento de combustível para existir poluição térmica. O dano pode ocorrer mesmo com todos os materiais nucleares confinados, pois a água devolvida pode estar quente demais.",
+          "D": "A água aquecida pode afetar o ecossistema mesmo sem liberar material radioativo. Confundir poluição térmica e radioativa perde o mecanismo de risco explicitamente delimitado pelo enunciado.",
+          "E": "A elevação de temperatura reduz a solubilidade do oxigênio na água. Com menos oxigênio dissolvido, organismos aquáticos aeróbios podem ter dificuldade de manter sua respiração."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -760,11 +760,11 @@
           "A notação histórica troca o símbolo N do nitrogênio por Az, sem alterar os índices da fórmula. Assim, HNO3 se escreve HAzO3. O cálcio mantém Ca, e seu cloreto é CaCl2 para compensar Ca2+ com dois íons Cl−."
         ],
         "alternatives": {
-          "A": "HAzO3 conserva a fórmula do ácido nítrico e CaCl2 equilibra as cargas do sal.",
-          "B": "Os índices foram deslocados e a proporção Ca2Cl não neutraliza as cargas usuais.",
-          "C": "O ácido nítrico não tem três hidrogênios nem quatro oxigênios, e CaCl também está incorreto.",
-          "D": "K representa potássio, não cálcio, além do erro nos índices do ácido.",
-          "E": "HAzO2 seria outro ácido e KCl é sal de potássio."
+          "A": "HAzO3 conserva a fórmula do ácido nítrico e CaCl2 equilibra as cargas do sal. A substituição histórica afeta apenas o símbolo do nitrogênio; a estequiometria e o símbolo Ca permanecem os mesmos.",
+          "B": "Os índices foram deslocados e a proporção Ca2Cl não neutraliza as cargas usuais. O ácido exige um nitrogênio e três oxigênios, e um cátion Ca2+ requer dois cloretos para neutralidade.",
+          "C": "O ácido nítrico não tem três hidrogênios nem quatro oxigênios, e CaCl também está incorreto. H3AzO4 não conserva HNO3 e CaCl deixa um excesso de carga positiva na proporção iônica usual.",
+          "D": "K representa potássio, não cálcio, além do erro nos índices do ácido. O cloreto solicitado é de cálcio, logo sua fórmula precisa conter Ca, além da representação correta do ácido nítrico.",
+          "E": "HAzO2 seria outro ácido e KCl é sal de potássio. A forma HAzO2 corresponde ao ácido nitroso na notação moderna, enquanto o outro sal continua sem cálcio."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -804,11 +804,11 @@
           "O esquema mostra o desaparecimento do grupo carboxila do ácido anacárdico e a liberação de CO2. A remoção dessa unidade carbônica na forma de dióxido de carbono caracteriza uma reação de descarboxilação."
         ],
         "alternatives": {
-          "A": "Não há quebra pela adição de água, como em uma hidrólise.",
-          "B": "Nenhum grupo fenila é acrescentado à estrutura representada.",
-          "C": "Não se forma éster pela reação de um ácido com álcool.",
-          "D": "Não ocorre adição de hidrogênio às insaturações da molécula.",
-          "E": "A saída de CO2 com perda do grupo carboxila identifica a descarboxilação."
+          "A": "Não há quebra pela adição de água, como em uma hidrólise. O esquema apresenta aquecimento e saída de CO2, sem uso de água como reagente que corte uma ligação.",
+          "B": "Nenhum grupo fenila é acrescentado à estrutura representada. O anel aromático já existe no reagente e permanece no produto, sem introdução de um novo grupo fenila.",
+          "C": "Não se forma éster pela reação de um ácido com álcool. O grupo COOH desaparece, em vez de combinar-se a outro reagente para gerar a ligação de um éster.",
+          "D": "Não ocorre adição de hidrogênio às insaturações da molécula. A cadeia C15H31 permanece indicada e não há H2 como reagente ou redução de insaturações representada.",
+          "E": "A saída de CO2 com perda do grupo carboxila identifica a descarboxilação. Perder o carbono da carboxila na forma de gás carbônico é o traço que nomeia a reação."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -848,11 +848,11 @@
           "O tempo de 26,5 anos corresponde a 26,5/5,3 = 5 meias-vidas. A cada intervalo resta metade do cobalto-60, portanto a massa final é 2,00 × (1/2)^5 = 0,0625 mg, valor mais próximo de 0,06 mg."
         ],
         "alternatives": {
-          "A": "Manter 2,00 mg desconsidera todo o decaimento radioativo.",
-          "B": "1,00 mg seria o restante depois de uma única meia-vida.",
-          "C": "0,40 mg resulta de uma divisão linear pelo número de intervalos, inadequada ao decaimento.",
-          "D": "Cerca de 0,13 mg corresponde a quatro meias-vidas, não cinco.",
-          "E": "O cálculo exponencial produz 0,0625 mg, arredondado para 0,06 mg."
+          "A": "Manter 2,00 mg desconsidera todo o decaimento radioativo. A massa inicial seria mantida somente se não houvesse transformação do isótopo, incompatível com cinco meias-vidas transcorridas.",
+          "B": "1,00 mg seria o restante depois de uma única meia-vida. Depois desse primeiro intervalo ainda há quatro reduções pela metade até atingir o tempo total.",
+          "C": "0,40 mg resulta de uma divisão linear pelo número de intervalos, inadequada ao decaimento. Meia-vida determina divisão sucessiva por dois, e não distribuição uniforme da massa pelos cinco períodos.",
+          "D": "Cerca de 0,13 mg corresponde a quatro meias-vidas, não cinco. O valor exato após quatro intervalos é 0,125 mg, mas o quinto ainda o reduz a 0,0625 mg.",
+          "E": "O cálculo exponencial produz 0,0625 mg, arredondado para 0,06 mg. A sequência 2, 1, 0,5, 0,25, 0,125 e 0,0625 confirma o resultado após cinco intervalos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -892,11 +892,11 @@
           "O esquema aproveita as sobras da biodigestão como fertilizante. Dar destino controlado a resíduos ricos em nutrientes evita seu lançamento excessivo na água, que estimularia algas e decomposição com consumo do oxigênio dissolvido, processo de eutrofização."
         ],
         "alternatives": {
-          "A": "O esquema não trata de toxinas persistentes acumuladas em plantas.",
-          "B": "Reduzir o despejo de nutrientes impede a proliferação excessiva associada à eutrofização.",
-          "C": "A camada de ozônio é afetada por outras substâncias e processos atmosféricos.",
-          "D": "A inversão térmica depende da estrutura de temperaturas da atmosfera.",
-          "E": "A chuva ácida se relaciona a óxidos atmosféricos, não ao destino principal dessas sobras."
+          "A": "O esquema não trata de toxinas persistentes acumuladas em plantas. O foco são nutrientes de resíduos orgânicos, sem identificação de uma toxina que persista e se acumule nas cadeias.",
+          "B": "Reduzir o despejo de nutrientes impede a proliferação excessiva associada à eutrofização. Nitrogênio e fósforo em excesso podem estimular algas e elevar o consumo de oxigênio pela decomposição.",
+          "C": "A camada de ozônio é afetada por outras substâncias e processos atmosféricos. O uso adequado do adubo não atua diretamente sobre substâncias como os CFCs que degradam ozônio estratosférico.",
+          "D": "A inversão térmica depende da estrutura de temperaturas da atmosfera. Esse fenômeno retém poluentes no ar em certas condições térmicas e não é causado por nutrientes lançados na água.",
+          "E": "A chuva ácida se relaciona a óxidos atmosféricos, não ao destino principal dessas sobras. Óxidos de enxofre e nitrogênio da atmosfera participam da acidificação da chuva, problema diferente da destinação das sobras orgânicas."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -936,11 +936,11 @@
           "O betacaroteno pode ser convertido em vitamina A, necessária para componentes do sistema visual. Sua deficiência compromete a visão em baixa luminosidade, de modo que o arroz dourado contribui para prevenir a cegueira noturna de origem carencial."
         ],
         "alternatives": {
-          "A": "Hemofilia é um distúrbio genético da coagulação e não carência de vitamina A.",
-          "B": "O escorbuto se relaciona à deficiência de vitamina C.",
-          "C": "O raquitismo está associado sobretudo à deficiência de vitamina D e mineralização inadequada.",
-          "D": "A vitamina A é necessária à visão em baixa luminosidade e sua falta pode causar cegueira noturna.",
-          "E": "A anemia perniciosa está relacionada à absorção de vitamina B12."
+          "A": "Hemofilia é um distúrbio genético da coagulação e não carência de vitamina A. Fornecer o precursor de uma vitamina não corrige a mutação que altera fatores de coagulação na hemofilia.",
+          "B": "O escorbuto se relaciona à deficiência de vitamina C. A falta de ácido ascórbico compromete tecidos conjuntivos; adicionar betacaroteno não substitui essa vitamina.",
+          "C": "O raquitismo está associado sobretudo à deficiência de vitamina D e mineralização inadequada. O betacaroteno é precursor de A e não resolve por si a falta de D implicada no raquitismo nutricional.",
+          "D": "A vitamina A é necessária à visão em baixa luminosidade e sua falta pode causar cegueira noturna. A vitamina participa do sistema de pigmentos visuais, e sua carência compromete especialmente a adaptação à pouca luz.",
+          "E": "A anemia perniciosa está relacionada à absorção de vitamina B12. A causa envolve vitamina e absorção diferentes das corrigidas pela introdução de betacaroteno no arroz."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -980,11 +980,11 @@
           "Se a tensão nominal do aparelho é V e a fonte fornece 1,2V, o resistor deve absorver 0,2V em série. Como a corrente desejada é I = V/RC, tem-se RP = 0,2V/I = 0,2RC, preservando a tensão de funcionamento do equipamento."
         ],
         "alternatives": {
-          "A": "Em paralelo, o aparelho continuaria submetido à tensão excessiva da fonte.",
-          "B": "A ligação paralela não reduz a tensão aplicada ao equipamento, qualquer que seja esse resistor.",
-          "C": "Em série, 1,2RC retiraria uma parcela excessiva da tensão e reduziria demais a corrente.",
-          "D": "A resistência 2,2RC também produziria uma divisão incompatível com a tensão nominal.",
-          "E": "A associação em série com RP = 0,2RC retira exatamente o excesso de tensão."
+          "A": "Em paralelo, o aparelho continuaria submetido à tensão excessiva da fonte. Em paralelo, todos os ramos compartilham os mesmos terminais da fonte e recebem a mesma ddp.",
+          "B": "A ligação paralela não reduz a tensão aplicada ao equipamento, qualquer que seja esse resistor. Mudar o valor de um resistor em outro ramo não cria a queda em série necessária antes do equipamento.",
+          "C": "Em série, 1,2RC retiraria uma parcela excessiva da tensão e reduziria demais a corrente. Com resistência total 2,2RC, a parcela do aparelho seria 1,2V/2,2, muito abaixo de V.",
+          "D": "A resistência 2,2RC também produziria uma divisão incompatível com a tensão nominal. Uma resistência adicional maior deixa ao aparelho fração menor ainda do potencial total disponível.",
+          "E": "A associação em série com RP = 0,2RC retira exatamente o excesso de tensão. A corrente nominal V/RC gera queda de 0,2V no resistor adicional, deixando V sobre o aparelho."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1024,11 +1024,11 @@
           "A massa de 9,3 kg de Nb equivale a 100 mol. Pela equação, são necessários 10/6 mol de Al por mol de Nb, totalizando 166,7 mol ou 4,5 kg. Acrescentando 10% de excesso, obtém-se 4,95 kg, aproximadamente 5,0 kg."
         ],
         "alternatives": {
-          "A": "2,7 kg usaria uma proporção molar inadequada entre alumínio e nióbio.",
-          "B": "3,0 kg não atende à razão 10 mol de Al para 6 mol de Nb.",
-          "C": "4,1 kg é inferior até à quantidade estequiométrica calculada.",
-          "D": "4,5 kg é a massa estequiométrica e ainda falta incluir o excesso de 10%.",
-          "E": "O excesso eleva 4,5 kg a 4,95 kg, próximo de 5,0 kg."
+          "A": "2,7 kg usaria uma proporção molar inadequada entre alumínio e nióbio. A massa de 9,3 kg de Nb representa cem mols, exigindo 166,7 mols de alumínio antes mesmo do excesso.",
+          "B": "3,0 kg não atende à razão 10 mol de Al para 6 mol de Nb. A relação de massas não é 1:1: é preciso usar os coeficientes da equação e as massas molares de cada metal.",
+          "C": "4,1 kg é inferior até à quantidade estequiométrica calculada. O rendimento de 100% elimina perdas de produção, mas não permite usar menos que os 4,5 kg estequiométricos.",
+          "D": "4,5 kg é a massa estequiométrica e ainda falta incluir o excesso de 10%. A instrução de usar dez por cento além do necessário deve ser aplicada depois de converter a razão molar em massa.",
+          "E": "O excesso eleva 4,5 kg a 4,95 kg, próximo de 5,0 kg. O fator 1,10 aplicado à quantidade estequiométrica acrescenta 0,45 kg ao alumínio empregado."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1068,11 +1068,11 @@
           "O gabarito oficial registra esta questão como anulada. Como estudo do modelo ideal, somam-se as intensidades de 10 000 fontes independentes: o nível aumenta em 10 log10(10 000) = 40 dB sobre os 100 dB iniciais, resultando em 140 dB. Isso não atribui uma letra válida à questão anulada."
         ],
         "alternatives": {
-          "A": "60 dB implicaria diminuição de intensidade ao acrescentar fontes sonoras.",
-          "B": "104 dB soma 4 diretamente ao nível, sem o fator 10 da expressão logarítmica.",
-          "C": "140 dB é o resultado do modelo de soma de intensidades, embora a questão não tenha resposta oficial válida.",
-          "D": "400 dB confunde multiplicação de níveis em decibel com soma de intensidades físicas.",
-          "E": "800 dB não decorre da relação logarítmica para 10 000 fontes independentes."
+          "A": "60 dB implicaria diminuição de intensidade ao acrescentar fontes sonoras. No modelo aditivo de intensidades, mais fontes não reduziriam o nível de 100 dB para um valor de conversa comum.",
+          "B": "104 dB soma 4 diretamente ao nível, sem o fator 10 da expressão logarítmica. O logaritmo de dez mil é quatro e ainda precisa ser multiplicado por dez antes de somar ao nível inicial.",
+          "C": "140 dB é o resultado do modelo de soma de intensidades, embora a questão não tenha resposta oficial válida. O resultado de 140 dB é apenas a análise do modelo matemático, sem revogar a anulação registrada no gabarito.",
+          "D": "400 dB confunde multiplicação de níveis em decibel com soma de intensidades físicas. Decibel é uma escala logarítmica; somar fontes requer somar intensidades e só então calcular o nível.",
+          "E": "800 dB não decorre da relação logarítmica para 10 000 fontes independentes. Uma intensidade dez mil vezes maior acrescenta quarenta decibéis, sem produzir o aumento de setecentos decibéis sugerido."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1112,11 +1112,11 @@
           "O esquema mostra o surfactante como a camada externa em contato inicial com a mistura. Essa superfície funcionalizada controla a interação com água e óleo e impede a passagem do óleo, enquanto as camadas inferiores sustentam e fixam o revestimento."
         ],
         "alternatives": {
-          "A": "A camada externa de surfactante constitui a interface responsável pela retenção do óleo.",
-          "B": "O polímero superior fixa a camada funcional, mas não é a interface externa indicada.",
-          "C": "A sílica compõe uma camada intermediária, protegida pelo revestimento superior.",
-          "D": "O polímero inferior fica junto ao suporte e não recebe primeiro o óleo.",
-          "E": "A malha serve de suporte mecânico e não explica sozinha a seletividade do filtro."
+          "A": "A camada externa de surfactante constitui a interface responsável pela retenção do óleo. O revestimento mais externo define a interação de molhamento com a mistura e produz o efeito seletivo indicado.",
+          "B": "O polímero superior fixa a camada funcional, mas não é a interface externa indicada. Ele faz parte da arquitetura de fixação, mas o óleo primeiro encontra as cadeias da camada final.",
+          "C": "A sílica compõe uma camada intermediária, protegida pelo revestimento superior. As nanopartículas ajudam a compor o suporte do recobrimento e não constituem a camada exposta à mistura no desenho.",
+          "D": "O polímero inferior fica junto ao suporte e não recebe primeiro o óleo. A separação exige olhar a ordem das camadas da superfície para a malha, e não apenas a carga do polímero.",
+          "E": "A malha serve de suporte mecânico e não explica sozinha a seletividade do filtro. A resistência e os poros da malha sustentam o conjunto, enquanto a química da superfície modifica sua afinidade com os líquidos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1156,11 +1156,11 @@
           "As estruturas possuem núcleos carbônicos semelhantes, mas diferem nos grupos polares. O estriol tem três hidroxilas, permitindo mais ligações de hidrogênio com a água e favorecendo a maior solubilidade relativa entre as moléculas apresentadas."
         ],
         "alternatives": {
-          "A": "O estradiol possui duas hidroxilas, menos do que o estriol.",
-          "B": "As três hidroxilas do estriol favorecem maior interação com a água.",
-          "C": "A estrona possui uma hidroxila e uma carbonila, sem a quantidade de grupos OH do estriol.",
-          "D": "O novestrol tem menos hidroxilas e uma porção hidrocarbônica adicional.",
-          "E": "A noretindrona apresenta menos grupos capazes de doar ligações de hidrogênio à água."
+          "A": "O estradiol possui duas hidroxilas, menos do que o estriol. Num esqueleto semelhante, a diferença de um OH altera a possibilidade de interações favoráveis com o solvente.",
+          "B": "As três hidroxilas do estriol favorecem maior interação com a água. Esses grupos podem doar e receber ligações de hidrogênio, aumentando a afinidade relativa por meio aquoso.",
+          "C": "A estrona possui uma hidroxila e uma carbonila, sem a quantidade de grupos OH do estriol. Uma carbonila aceita ligação de hidrogênio, mas não oferece o mesmo conjunto de doadores presente no triol.",
+          "D": "O novestrol tem menos hidroxilas e uma porção hidrocarbônica adicional. A porção adicional apolar e a menor quantidade de OH não superam a vantagem hidrofílica do estriol.",
+          "E": "A noretindrona apresenta menos grupos capazes de doar ligações de hidrogênio à água. A comparação deve incluir o grande esqueleto hidrocarbônico comum e a quantidade de grupos polares que compensam sua baixa afinidade com água."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1200,11 +1200,11 @@
           "Para cobrir a passagem completa, soma-se a espessura de 20 cm ao diâmetro de 15 cm do feixe. O caso mais rápido tem 5,0 m/s, então o intervalo limite é 0,35/5,0 = 0,07 s = 70 ms, necessário para não perder essa travessia."
         ],
         "alternatives": {
-          "A": "30 ms considera apenas os 15 cm do feixe, ignorando a espessura corporal.",
-          "B": "70 ms corresponde ao tempo para 35 cm de travessia na velocidade máxima.",
-          "C": "300 ms é maior que o intervalo do movimento mais rápido e não garante sua detecção.",
-          "D": "400 ms também excede a duração de obstrução no caso mais veloz.",
-          "E": "700 ms corresponde a uma passagem muito mais lenta e perderia o caso de 5 m/s."
+          "A": "30 ms considera apenas os 15 cm do feixe, ignorando a espessura corporal. Para completar a passagem, o deslocamento deve incluir o feixe e a espessura do corpo, não só o diâmetro óptico.",
+          "B": "70 ms corresponde ao tempo para 35 cm de travessia na velocidade máxima. O caso de 5 m/s é o mais exigente, pois produz o menor tempo de bloqueio entre os movimentos indicados.",
+          "C": "300 ms é maior que o intervalo do movimento mais rápido e não garante sua detecção. Um detector que precisasse esperar esse tempo poderia não registrar um bloqueio que termina em setenta milissegundos.",
+          "D": "400 ms também excede a duração de obstrução no caso mais veloz. A duração adotada não acompanha o caso mais rápido, condição necessária para garantir todos os movimentos.",
+          "E": "700 ms corresponde a uma passagem muito mais lenta e perderia o caso de 5 m/s. O valor de 700 ms combina 35 cm com 0,5 m/s e atende apenas a um dos casos lentos, sem ser a regulagem adequada ao mais veloz."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1244,11 +1244,11 @@
           "A dimetilamina é uma base que pode receber um próton de um ácido. O ácido acético do vinagre forma um sal de dimetilamônio menos volátil, reduzindo a passagem da substância para a fase gasosa no modelo químico proposto pela questão."
         ],
         "alternatives": {
-          "A": "A água pode diluir, mas não oferece a neutralização ácida mais eficiente entre as opções.",
-          "B": "O ácido do vinagre protona a amina e favorece uma forma iônica menos volátil.",
-          "C": "O óleo não neutraliza a basicidade da amina nem a converte em sal.",
-          "D": "O cloreto de sódio não fornece o ácido necessário à protonação da amina.",
-          "E": "O bicarbonato é básico e não constitui a opção ácida para neutralizar a amina."
+          "A": "A água pode diluir, mas não oferece a neutralização ácida mais eficiente entre as opções. Diluição pode reduzir concentração, mas não converte necessariamente a espécie volátil em um sal iônico de menor pressão de vapor.",
+          "B": "O ácido do vinagre protona a amina e favorece uma forma iônica menos volátil. A transferência de H+ ao nitrogênio transforma a dimetilamina neutra em cátion dimetilamônio, menos propenso a escapar como gás.",
+          "C": "O óleo não neutraliza a basicidade da amina nem a converte em sal. Dissolver uma base orgânica numa fase oleosa não oferece o reagente ácido que realiza a neutralização pretendida.",
+          "D": "O cloreto de sódio não fornece o ácido necessário à protonação da amina. O sal comum fornece Na+ e Cl−, sem um próton ácido disponível para reter a amina como cátion.",
+          "E": "O bicarbonato é básico e não constitui a opção ácida para neutralizar a amina. Sua ação mais típica é neutralizar ácidos, portanto não responde à necessidade de protonar uma base."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1288,11 +1288,11 @@
           "O fluxo magnético variável através do fundo metálico da panela induz correntes elétricas. A resistência do material à circulação dessas correntes converte energia elétrica em calor por efeito Joule, aquecendo diretamente a panela."
         ],
         "alternatives": {
-          "A": "A simples magnetização não descreve o mecanismo principal de aquecimento solicitado.",
-          "B": "Não há transporte macroscópico de átomos de ferro pelo campo até uma região da panela.",
-          "C": "O processo descrito é indução de correntes, sem aquecimento por radiação transmitida pelo vidro.",
-          "D": "O campo variável induz correntes no metal e sua dissipação produz calor.",
-          "E": "O aquecimento direto da panela não depende de correntes de convecção no ar sob o vidro."
+          "A": "A simples magnetização não descreve o mecanismo principal de aquecimento solicitado. A função do campo variável é criar uma força eletromotriz, e não somente deixar o material magnetizado.",
+          "B": "Não há transporte macroscópico de átomos de ferro pelo campo até uma região da panela. São cargas elétricas que circulam no metal; não é necessário deslocar seus átomos como um conjunto até o fundo.",
+          "C": "O processo descrito é indução de correntes, sem aquecimento por radiação transmitida pelo vidro. O vidro não precisa primeiro absorver e transferir radiação térmica para que as correntes induzidas aqueçam a panela.",
+          "D": "O campo variável induz correntes no metal e sua dissipação produz calor. A dissipação resistiva das correntes no fundo transforma energia elétrica em calor no próprio utensílio.",
+          "E": "O aquecimento direto da panela não depende de correntes de convecção no ar sob o vidro. O contato energético por campo magnético não depende de aquecer o ar para transportar energia por circulação."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1332,11 +1332,11 @@
           "O gabarito oficial registra a questão como anulada. No conteúdo biológico, H2S pode doar elétrons na fotossíntese anoxigênica; a função análoga na fotossíntese oxigênica cabe à água, cuja oxidação fornece elétrons e libera oxigênio. Essa análise didática não cria uma alternativa oficial válida."
         ],
         "alternatives": {
-          "A": "ATP transfere energia química e não substitui a fonte inicial de elétrons citada.",
-          "B": "NADPH carrega poder redutor, mas não é a substância oxidada em função análoga à água.",
-          "C": "O oxigênio é liberado na fotossíntese oxigênica, sem atuar como o doador inicial comparado.",
-          "D": "A clorofila capta energia luminosa e não é o reagente doador equivalente ao H2S.",
-          "E": "A água fornece elétrons na fotossíntese oxigênica; ainda assim, o item permanece oficialmente anulado."
+          "A": "ATP transfere energia química e não substitui a fonte inicial de elétrons citada. No processo comparado, a pergunta busca a substância que fornece elétrons, papel diferente de transportar energia entre etapas.",
+          "B": "NADPH carrega poder redutor, mas não é a substância oxidada em função análoga à água. O NADPH recebe e conduz elétrons ao longo do metabolismo, enquanto H2S e água são reagentes de origem desses elétrons.",
+          "C": "O oxigênio é liberado na fotossíntese oxigênica, sem atuar como o doador inicial comparado. A liberação de O2 decorre da oxidação da água, sendo um produto e não o reagente análogo.",
+          "D": "A clorofila capta energia luminosa e não é o reagente doador equivalente ao H2S. O pigmento participa da captação de luz, mas não ocupa o lugar químico de água ou sulfeto como fonte inicial comparada.",
+          "E": "A água fornece elétrons na fotossíntese oxigênica; ainda assim, o item permanece oficialmente anulado. A analogia é entre doadores de elétrons; essa explicação de conteúdo não transforma a alternativa em gabarito oficial de um item anulado."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1376,11 +1376,11 @@
           "As cangas apresentam condições ambientais muito específicas e abrigam espécies de distribuição restrita. A adaptação a essas condições locais favorece organismos encontrados apenas nessas áreas, característica que define o endemismo."
         ],
         "alternatives": {
-          "A": "Exóticas são espécies introduzidas de outra região, não definidas por adaptação local restrita.",
-          "B": "Migração é deslocamento periódico e não distribuição limitada a uma área.",
-          "C": "Espécies endêmicas possuem ocorrência geográfica restrita ao ambiente ou região.",
-          "D": "Dominância trata de abundância relativa, sem implicar distribuição geográfica limitada.",
-          "E": "Generalistas usam ampla variedade de condições, em contraste com a especialização destacada."
+          "A": "Exóticas são espécies introduzidas de outra região, não definidas por adaptação local restrita. Exótica é uma classificação de origem biogeográfica externa, sem relação necessária com sobreviver às condições locais por evolução.",
+          "B": "Migração é deslocamento periódico e não distribuição limitada a uma área. Espécies migratórias mudam de região em certos períodos e não são definidas por ocorrência exclusiva num ambiente.",
+          "C": "Espécies endêmicas possuem ocorrência geográfica restrita ao ambiente ou região. A adaptação a solos e temperaturas particulares pode restringir a ocorrência a essas ilhas ambientais.",
+          "D": "Dominância trata de abundância relativa, sem implicar distribuição geográfica limitada. Uma espécie pode ser numerosa e dominante em uma área ampla; abundância não é o mesmo que endemismo.",
+          "E": "Generalistas usam ampla variedade de condições, em contraste com a especialização destacada. A tolerância ampla seria mais compatível com generalistas, mas o enunciado destaca um habitat muito particular e distribuição limitada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1420,11 +1420,11 @@
           "O aumento da pressão parcial de Cl2 adiciona reagente ao equilíbrio e favorece seu consumo, deslocando a reação para formar TiCl4. Há dois mols gasosos em cada lado; o sólido puro não altera a expressão do equilíbrio enquanto estiver presente."
         ],
         "alternatives": {
-          "A": "O número de mols gasosos é igual nos dois lados, portanto a pressão total não favorece um deles.",
-          "B": "Como a reação direta é endotérmica, diminuir a temperatura favorece os reagentes.",
-          "C": "Adicionar O2 aumenta um produto e desloca o equilíbrio no sentido contrário.",
-          "D": "Elevar a pressão parcial do reagente Cl2 favorece a formação dos produtos.",
-          "E": "A atividade do sólido puro é constante e sua quantidade não desloca o equilíbrio enquanto houver fase sólida."
+          "A": "O número de mols gasosos é igual nos dois lados, portanto a pressão total não favorece um deles. Ao comprimir, os fatores de pressão afetam igualmente os dois mols gasosos em cada lado da equação.",
+          "B": "Como a reação direta é endotérmica, diminuir a temperatura favorece os reagentes. O calor funciona como reagente numa reação direta endotérmica, então seu decréscimo não aumenta o produto desejado.",
+          "C": "Adicionar O2 aumenta um produto e desloca o equilíbrio no sentido contrário. O sistema tende a consumir o oxigênio acrescentado, favorecendo a reação inversa que reduz TiCl4.",
+          "D": "Elevar a pressão parcial do reagente Cl2 favorece a formação dos produtos. A perturbação eleva a disponibilidade de um reagente e desloca a composição para consumi-lo.",
+          "E": "A atividade do sólido puro é constante e sua quantidade não desloca o equilíbrio enquanto houver fase sólida. O sólido participa da reação, mas sua atividade não varia proporcionalmente à massa como a pressão de um gás."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1464,11 +1464,11 @@
           "O peso armazenado é ρAhg e a pressão sobre a laje vale P = ρgh, pois a área se cancela. Portanto, h = 10^4/(1250 × 10) = 0,80 m. A área de 50 m² não altera esse limite para empilhamento uniforme."
         ],
         "alternatives": {
-          "A": "0,16 m decorre de usar indevidamente a área na expressão que já se simplifica.",
-          "B": "0,50 m não atende à relação entre pressão, densidade e gravidade fornecidas.",
-          "C": "Com 0,80 m, a pressão calculada é exatamente 10 000 Pa.",
-          "D": "1,60 m produziria 20 000 Pa, o dobro do limite da laje.",
-          "E": "8,00 m geraria pressão dez vezes maior que a máxima permitida."
+          "A": "0,16 m decorre de usar indevidamente a área na expressão que já se simplifica. Usar 50 m² além de P = ρgh contaria a área novamente depois de ela já ter sido cancelada entre peso e superfície.",
+          "B": "0,50 m não atende à relação entre pressão, densidade e gravidade fornecidas. A pressão seria 1250 × 10 × 0,50 = 6250 Pa, ainda abaixo do limite e sem maximizar a altura.",
+          "C": "Com 0,80 m, a pressão calculada é exatamente 10 000 Pa. O peso por área produzido pela coluna de produto coincide com a pressão estrutural máxima da laje.",
+          "D": "1,60 m produziria 20 000 Pa, o dobro do limite da laje. Como a pressão cresce proporcionalmente à altura, dobrar 0,8 m excede a capacidade de suporte.",
+          "E": "8,00 m geraria pressão dez vezes maior que a máxima permitida. A densidade está em kg/m³ e a gravidade em m/s², de modo que não há conversão que autorize esse fator dez na altura."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1508,11 +1508,11 @@
           "Cada placa tem resistência interna r = (40 − 34)/7,5 = 0,8 Ω. Para obter tensão entre 95 e 105 V, usam-se três placas em série: 102 V em operação. O equivalente tem força eletromotriz de 120 V e resistência interna de 2,4 Ω."
         ],
         "alternatives": {
-          "A": "136 V é tensão operacional de quatro placas e não a força eletromotriz do mínimo necessário.",
-          "B": "Três placas em série fornecem ε = 120 V e resistência interna de 2,4 Ω.",
-          "C": "A resistência interna de três placas é 3 × 0,8 = 2,4 Ω e não 5,3 Ω.",
-          "D": "102 V é a tensão em carga, não a força eletromotriz equivalente.",
-          "E": "O esquema erra tanto a força eletromotriz de circuito aberto quanto a resistência interna."
+          "A": "136 V é tensão operacional de quatro placas e não a força eletromotriz do mínimo necessário. O mínimo de três placas visa uma tensão operacional perto de 100 V, e não quatro placas de 34 V cada.",
+          "B": "Três placas em série fornecem ε = 120 V e resistência interna de 2,4 Ω. A perda interna de 6 V em cada placa a 7,5 A revela 0,8 Ω, que se soma com as demais na ligação em série.",
+          "C": "A resistência interna de três placas é 3 × 0,8 = 2,4 Ω e não 5,3 Ω. O valor de 5,3 Ω não decorre de (40 − 34)/7,5 nem da soma de três dessas resistências.",
+          "D": "102 V é a tensão em carga, não a força eletromotriz equivalente. A especificação equivalente precisa separar força eletromotriz e tensão sob carga, pois o modelo contém resistência interna.",
+          "E": "O esquema erra tanto a força eletromotriz de circuito aberto quanto a resistência interna. Além da força eletromotriz errada, a resistência não representa a associação de três geradores de 0,8 Ω."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1552,11 +1552,11 @@
           "No escurecimento, a prata é oxidada enquanto o oxigênio é reduzido: E° = 1,23 − (−0,69) = 1,92 V. No clareamento, Ag2S é reduzido e o alumínio oxidado: E° = −0,69 − (−1,68) = 0,99 V. Potenciais não são multiplicados pelos coeficientes."
         ],
         "alternatives": {
-          "A": "Os valores não resultam da diferença correta entre os potenciais de redução.",
-          "B": "As duas diferenças corretas são 1,92 V para escurecer e 0,99 V para clarear.",
-          "C": "Os potenciais não devem ser multiplicados por coeficientes de balanceamento.",
-          "D": "A dupla indicada não corresponde às semirreações de oxidação e redução adequadas.",
-          "E": "O clareamento espontâneo com alumínio tem potencial positivo de 0,99 V, não o negativo apresentado."
+          "A": "Os valores não resultam da diferença correta entre os potenciais de redução. É necessário identificar qual semirreação é invertida em cada processo, preservando a convenção de potenciais de redução.",
+          "B": "As duas diferenças corretas são 1,92 V para escurecer e 0,99 V para clarear. No escurecimento, oxigênio reduz e prata oxida; no clareamento, o alumínio fornece os elétrons para recuperar prata metálica.",
+          "C": "Os potenciais não devem ser multiplicados por coeficientes de balanceamento. Ajustar elétrons multiplica quantidade de matéria e não a energia por carga medida pelo potencial eletroquímico.",
+          "D": "A dupla indicada não corresponde às semirreações de oxidação e redução adequadas. Os números não são obtidos por E°cátodo − E°ânodo com os pares envolvidos nos dois fenômenos.",
+          "E": "O clareamento espontâneo com alumínio tem potencial positivo de 0,99 V, não o negativo apresentado. Um valor negativo no clareamento previsto contrariaria o mecanismo espontâneo entre alumínio e a camada de sulfeto nas condições ideais."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1596,11 +1596,11 @@
           "A quantidade total de gás desejada é n = PV/RT = 4/(0,082 × 453), aproximadamente 0,108 mol. Cada mol de bicarbonato produz três mols de gás e o rendimento é 80%, então a massa necessária é 0,108 × 79/(3 × 0,80), cerca de 3,5 g."
         ],
         "alternatives": {
-          "A": "2,3 g é insuficiente quando se consideram os três gases e o rendimento de 80%.",
-          "B": "A equação dos gases e a relação estequiométrica com rendimento dão aproximadamente 3,5 g.",
-          "C": "5,9 g não corresponde à conversão de três mols gasosos por mol de fermento.",
-          "D": "6,8 g superestima a massa exigida pelos dados do modelo ideal.",
-          "E": "8,9 g se aproxima de tratar um único gás por mol, ignorando os três produtos gasosos."
+          "A": "2,3 g é insuficiente quando se consideram os três gases e o rendimento de 80%. O fermento deve compensar a fração que não se converte em gás, portanto a massa precisa superar a calculada para rendimento integral.",
+          "B": "A equação dos gases e a relação estequiométrica com rendimento dão aproximadamente 3,5 g. A conta divide a demanda total de gás por três e por 0,8 antes de converter mols de bicarbonato em gramas.",
+          "C": "5,9 g não corresponde à conversão de três mols gasosos por mol de fermento. Cada mol do sal libera três espécies gasosas, portanto tratar apenas parte delas superestima a massa necessária.",
+          "D": "6,8 g superestima a massa exigida pelos dados do modelo ideal. O valor não segue a equação PV = nRT aplicada aos quatro litros e à produção estequiométrica de três gases.",
+          "E": "8,9 g se aproxima de tratar um único gás por mol, ignorando os três produtos gasosos. Ignorar que amônia e vapor de água também ocupam volume faz parecer necessária uma quantidade excessiva de sal."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1640,11 +1640,11 @@
           "Seis minutos equivalem a 0,1 h. A velocidade em relação ao solo deve ter componentes de 200 km/h a leste, 200 km/h a norte e 10 km/h para cima. Subtraindo o vento, obtêm-se 170 a leste, 220 a norte e 11 para cima."
         ],
         "alternatives": {
-          "A": "As direções sul e para baixo afastam o avião do destino proposto.",
-          "B": "Os valores somam o vento a leste e não compensam corretamente a componente para o sul.",
-          "C": "A componente para oeste contradiz o deslocamento desejado e ainda não compensa o vento.",
-          "D": "A subtração vetorial do vento fornece exatamente as três componentes indicadas.",
-          "E": "180 km/h para norte não compensa os 20 km/h de vento para sul."
+          "A": "As direções sul e para baixo afastam o avião do destino proposto. O destino tem componentes a norte e para cima, e o vento não elimina essa exigência da velocidade resultante.",
+          "B": "Os valores somam o vento a leste e não compensam corretamente a componente para o sul. Somar as componentes do vento à velocidade-alvo em vez de subtraí-las produz erro na compensação.",
+          "C": "A componente para oeste contradiz o deslocamento desejado e ainda não compensa o vento. A componente para oeste faria o avião seguir em sentido contrário ao deslocamento horizontal solicitado.",
+          "D": "A subtração vetorial do vento fornece exatamente as três componentes indicadas. Ao somar o vento de (30, −20, −1) às componentes do piloto, recuperam-se (200, 200, 10) em km/h.",
+          "E": "180 km/h para norte não compensa os 20 km/h de vento para sul. O resultado ao solo ficaria em 160 km/h para norte e não nos 200 km/h necessários para vinte quilômetros em seis minutos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1684,11 +1684,11 @@
           "Uma enzima oferece um caminho de reação com menor energia de ativação e acelera o processo. Ela não altera as energias dos reagentes e produtos nem a variação energética total, de modo que apenas a barreira intermediária deve ser menor."
         ],
         "alternatives": {
-          "A": "O desenho altera a energia do reagente A, que não depende da presença do catalisador.",
-          "B": "A energia do produto B é alterada indevidamente.",
-          "C": "Os níveis inicial e final permanecem iguais e a barreira enzimática é menor.",
-          "D": "A barreira na presença da enzima aparece maior, contrariando a catálise.",
-          "E": "O esquema modifica os níveis de reagente e produto, o que não é efeito da enzima."
+          "A": "O desenho altera a energia do reagente A, que não depende da presença do catalisador. O estado inicial deve ser o mesmo nos dois caminhos, porque a enzima modifica o percurso e não a natureza do reagente.",
+          "B": "A energia do produto B é alterada indevidamente. Uma mudança no patamar final alteraria a variação de energia e o equilíbrio, efeitos que o catalisador não causa.",
+          "C": "Os níveis inicial e final permanecem iguais e a barreira enzimática é menor. O pico menor representa redução da energia de ativação sem modificar a diferença entre A e B.",
+          "D": "A barreira na presença da enzima aparece maior, contrariando a catálise. Elevar a barreira dificultaria a reação, em oposição à aceleração catalítica descrita.",
+          "E": "O esquema modifica os níveis de reagente e produto, o que não é efeito da enzima. Uma enzima não fornece um reagente com energia inicial nova nem transforma B em outro estado energético."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1728,11 +1728,11 @@
           "A sensibilidade é a variação de resistência por grau de temperatura, dada pelo coeficiente angular B da reta. Comparando inclinações, as retas dos sensores 2 e 5 são as mais inclinadas; o valor absoluto inicial da resistência não determina a sensibilidade."
         ],
         "alternatives": {
-          "A": "O sensor 1 tem resistência alta, mas sua inclinação é muito pequena.",
-          "B": "As retas de 1 e 3 variam pouco com a temperatura.",
-          "C": "O sensor 3 tem inclinação menor que a do sensor 5.",
-          "D": "O sensor 4 é menos inclinado que o sensor 5.",
-          "E": "Os sensores 2 e 5 apresentam as maiores taxas de variação de resistência por temperatura."
+          "A": "O sensor 1 tem resistência alta, mas sua inclinação é muito pequena. Uma grande resistência inicial não garante grande variação ao aquecer, que é o que permite distinguir temperaturas próximas.",
+          "B": "As retas de 1 e 3 variam pouco com a temperatura. O sensor 1 é quase horizontal e o 3 também responde pouco comparados às retas 2 e 5.",
+          "C": "O sensor 3 tem inclinação menor que a do sensor 5. A reta 2 é adequada, mas a 3 varia menos por grau que a 5.",
+          "D": "O sensor 4 é menos inclinado que o sensor 5. A reta 4 tem inclinação menor que a 5, portanto sua sensibilidade não ocupa a segunda posição.",
+          "E": "Os sensores 2 e 5 apresentam as maiores taxas de variação de resistência por temperatura. Comparar ΔR/ΔT, e não apenas os valores de R, identifica corretamente as duas maiores respostas por temperatura."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1772,11 +1772,11 @@
           "O teste mostra maior eficiência sobre moluscos aquáticos adultos. Esses animais podem ser hospedeiros intermediários do Schistosoma; controlá-los interrompe parte do ciclo da esquistossomose, mesmo que o produto não mate diretamente os platelmintos."
         ],
         "alternatives": {
-          "A": "O controle de caramujos hospedeiros intermediários ajuda a reduzir a esquistossomose.",
-          "B": "A baixa eficiência contra Aedes não torna o composto a melhor opção para febre amarela.",
-          "C": "O agente da coqueluche não é o alvo de alta eficiência no quadro.",
-          "D": "Há eficiência apenas média contra o bacilo da tuberculose.",
-          "E": "A dengue depende de Aedes, cujas larvas mostraram baixa sensibilidade ao composto."
+          "A": "O controle de caramujos hospedeiros intermediários ajuda a reduzir a esquistossomose. O ciclo do parasita depende de caramujos, de modo que o alvo de maior eficiência pode controlar a doença indiretamente.",
+          "B": "A baixa eficiência contra Aedes não torna o composto a melhor opção para febre amarela. Controlar essa virose exigiria agir com eficiência sobre o mosquito vetor, o que o quadro não demonstra.",
+          "C": "O agente da coqueluche não é o alvo de alta eficiência no quadro. O teste não fornece alta eficiência contra Bordetella pertussis, agente bacteriano dessa doença.",
+          "D": "Há eficiência apenas média contra o bacilo da tuberculose. O resultado intermediário contra o bacilo é inferior à alta eficiência sobre moluscos do ciclo da esquistossomose.",
+          "E": "A dengue depende de Aedes, cujas larvas mostraram baixa sensibilidade ao composto. Aedes aparece com baixa eficiência, tornando inadequado escolhê-lo quando o critério é o melhor alvo do composto."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1816,11 +1816,11 @@
           "A ativação aumenta a porosidade e a área superficial disponível no carvão. Como a adsorção ocorre na superfície, uma área de contato maior oferece mais locais para reter substâncias, explicando a eficiência sem exigir maior massa de material."
         ],
         "alternatives": {
-          "A": "A massa não explica por si a maior adsorção quando a estrutura interna é diferente.",
-          "B": "A dureza é propriedade mecânica e não determina a quantidade de sítios de adsorção.",
-          "C": "A densidade não é a característica diretamente responsável pela retenção superficial.",
-          "D": "A porosidade amplia a superfície e a quantidade de locais de adsorção.",
-          "E": "A condutividade elétrica não constitui o mecanismo de purificação descrito."
+          "A": "A massa não explica por si a maior adsorção quando a estrutura interna é diferente. Duas amostras de mesma massa podem ter capacidades diferentes se uma expõe muito mais área interna.",
+          "B": "A dureza é propriedade mecânica e não determina a quantidade de sítios de adsorção. Maior resistência mecânica não cria necessariamente mais locais de ligação para contaminantes.",
+          "C": "A densidade não é a característica diretamente responsável pela retenção superficial. Um material pode ser menos denso por conter poros e adsorver mais; o mecanismo explicativo é a área acessível.",
+          "D": "A porosidade amplia a superfície e a quantidade de locais de adsorção. Os poros tornam disponível grande área interna na qual moléculas e íons podem ficar aderidos.",
+          "E": "A condutividade elétrica não constitui o mecanismo de purificação descrito. A captura ocorre por interações na superfície e não por condução de uma corrente no carvão."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1860,11 +1860,11 @@
           "O organismo receptor continua sendo E. coli e mantém seus genes metabólicos. A modificação acrescenta genes do relógio circadiano de S. elongatus, sem transferir todo o metabolismo da espécie doadora nem criar genes circadianos originalmente de E. coli."
         ],
         "alternatives": {
-          "A": "Os genes inseridos também estarão presentes, portanto não haverá apenas os genes originais.",
-          "B": "E. coli é descrita como não circadiana e não fornece os genes transferidos.",
-          "C": "Foram transferidos genes circadianos de S. elongatus, não todo seu metabolismo.",
-          "D": "O receptor conserva o metabolismo de E. coli e recebe o relógio de S. elongatus.",
-          "E": "Não há no enunciado um relógio circadiano original de E. coli a ser combinado com outro."
+          "A": "Os genes inseridos também estarão presentes, portanto não haverá apenas os genes originais. O DNA doador acrescenta informação e deixa uma combinação genética, não apenas a manutenção do genoma receptor original.",
+          "B": "E. coli é descrita como não circadiana e não fornece os genes transferidos. O enunciado apresenta E. coli como não circadiana e localiza a origem dos genes do relógio na cianobactéria.",
+          "C": "Foram transferidos genes circadianos de S. elongatus, não todo seu metabolismo. Transferir genes selecionados não equivale a substituir todos os sistemas metabólicos do receptor pelos do doador.",
+          "D": "O receptor conserva o metabolismo de E. coli e recebe o relógio de S. elongatus. O transgene confere a informação circadiana de S. elongatus sobre a base celular e metabólica da E. coli.",
+          "E": "Não há no enunciado um relógio circadiano original de E. coli a ser combinado com outro. A modificação não cria retroativamente um conjunto de genes de relógio nativo na espécie que foi descrita como não circadiana."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1904,11 +1904,11 @@
           "A glândula uropigial produz secreção oleosa que as aves espalham sobre as penas, contribuindo para sua impermeabilização. Uma redução dessa secreção favorece o encharcamento, prejudica a manutenção do ar na plumagem e dificulta a flutuação."
         ],
         "alternatives": {
-          "A": "O papo participa do armazenamento de alimento e não da impermeabilização da plumagem.",
-          "B": "A troca de penas das asas não explica diretamente a perda geral de proteção oleosa.",
-          "C": "Menor secreção uropigial reduz a impermeabilização e favorece o encharcamento das penas.",
-          "D": "A membrana natatória auxilia a propulsão na água, mas não impede absorção de água pelas penas.",
-          "E": "A pneumaticidade óssea não explica a causa do encharcamento observada pelos biólogos."
+          "A": "O papo participa do armazenamento de alimento e não da impermeabilização da plumagem. Uma dificuldade digestiva ou de armazenamento alimentar não explicaria penas molhadas observadas durante semanas.",
+          "B": "A troca de penas das asas não explica diretamente a perda geral de proteção oleosa. Reposição pode renovar a plumagem, mas o problema do encharcamento se relaciona à manutenção de suas propriedades impermeáveis.",
+          "C": "Menor secreção uropigial reduz a impermeabilização e favorece o encharcamento das penas. A camada oleosa distribuída ao limpar as penas ajuda a evitar que a água ocupe a plumagem e comprometa flutuação.",
+          "D": "A membrana natatória auxilia a propulsão na água, mas não impede absorção de água pelas penas. Membranas entre dedos favorecem nado, sem fornecer óleo ou revestir as penas contra a entrada de água.",
+          "E": "A pneumaticidade óssea não explica a causa do encharcamento observada pelos biólogos. O relato aponta perda de impermeabilização, não alteração de desenvolvimento na estrutura dos ossos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1948,11 +1948,11 @@
           "A potência máxima é P = UI = 110 × 20 = 2200 W. Computador e ar-condicionado consomem 1350 W. Com a impressora, o total é 2010 W, permitido; com a cafeteira, chega a 2250 W e queima o fusível. Assim, somente a primeira atividade é realizada."
         ],
         "alternatives": {
-          "A": "A segunda atividade já supera a potência máxima e impede completar as quatro.",
-          "B": "Após queimar o fusível na segunda tentativa, não é possível realizar três atividades.",
-          "C": "A cafeteira excede o limite, portanto nem a segunda atividade é concluída.",
-          "D": "Apenas imprimir ocorre antes da sobrecarga causada pela cafeteira.",
-          "E": "A impressão totaliza 2010 W e não excede os 2200 W disponíveis."
+          "A": "A segunda atividade já supera a potência máxima e impede completar as quatro. O limite depende da potência total simultânea, e os aparelhos permanentes deixam somente 850 W disponíveis.",
+          "B": "Após queimar o fusível na segunda tentativa, não é possível realizar três atividades. A impressão funciona primeiro, mas a cafeteira de 900 W supera os 850 W que ainda restavam.",
+          "C": "A cafeteira excede o limite, portanto nem a segunda atividade é concluída. Realizar só uma atividade adicional de cada vez não basta quando essa única atividade já ultrapassa a margem de potência.",
+          "D": "Apenas imprimir ocorre antes da sobrecarga causada pela cafeteira. A impressora usa 660 W e cabe no limite; a tentativa seguinte faz 1350 + 900 = 2250 W, interrompendo o circuito.",
+          "E": "A impressão totaliza 2010 W e não excede os 2200 W disponíveis. Os dois aparelhos fixos e a impressora consomem 2010 W, portanto há uma atividade que é realizada antes de o fusível romper."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1992,11 +1992,11 @@
           "O comprimento da ciclovia é 2πr = 2 × 3 × 1000 = 6000 m. Cada policial cobre 200 m para cada lado de sua posição, formando um trecho de 400 m. Distribuindo-os sem lacunas, a quantidade mínima é 6000/400 = 15 policiais."
         ],
         "alternatives": {
-          "A": "Quatro policiais cobririam apenas cerca de 1600 m, insuficientes para a volta.",
-          "B": "Oito policiais não cobririam os 6000 m da ciclovia.",
-          "C": "Quinze posições com espaçamento de 400 m cobrem toda a circunferência.",
-          "D": "Trinta considera apenas 200 m por policial e ignora a cobertura dos dois lados.",
-          "E": "Sessenta usa uma extensão coberta ainda menor que a indicada e não é o mínimo."
+          "A": "Quatro policiais cobririam apenas cerca de 1600 m, insuficientes para a volta. Cada posição oferece proteção num intervalo maior que a distância unilateral de 200 m, mas quatro posições ainda deixam grandes lacunas.",
+          "B": "Oito policiais não cobririam os 6000 m da ciclovia. Mesmo somando trechos sem sobreposição, oito vezes 400 m ficam abaixo dos 6000 m necessários.",
+          "C": "Quinze posições com espaçamento de 400 m cobrem toda a circunferência. A distribuição regular separa policiais por 400 m, fazendo as extremidades de cobertura se encontrarem.",
+          "D": "Trinta considera apenas 200 m por policial e ignora a cobertura dos dois lados. O raio de proteção vale para os dois sentidos da ciclovia, portanto contar só um deles duplica o efetivo sem necessidade.",
+          "E": "Sessenta usa uma extensão coberta ainda menor que a indicada e não é o mínimo. Um efetivo maior poderia proteger a via, mas não satisfaz a exigência de quantidade mínima."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2036,11 +2036,11 @@
           "A substância S2 corresponde inicialmente a 0,05% de 10 L, ou 0,005 L. Na solução final, essa mesma quantidade será 0,10% do total, então o volume final será 0,005/0,001 = 5 L. Como só S1 é retirada, removem-se 5 L de S1."
         ],
         "alternatives": {
-          "A": "0,005 L é o volume de S2 presente, não a quantidade de S1 retirada.",
-          "B": "0,010 L confunde o percentual final com uma quantidade removida.",
-          "C": "Retirar meio litro não duplica a concentração de S2.",
-          "D": "4,9775 L não atende ao volume final de 5 L exigido pela concentração.",
-          "E": "A solução deve cair de 10 L a 5 L mantendo S2, o que exige retirar 5 L de S1."
+          "A": "0,005 L é o volume de S2 presente, não a quantidade de S1 retirada. Os 0,005 L de S2 devem continuar na solução; é a proporção dessa pequena quantidade que permite achar o novo volume.",
+          "B": "0,010 L confunde o percentual final com uma quantidade removida. O percentual de S2 dobra ao passar de 0,05% a 0,10%, exigindo reduzir à metade o volume total.",
+          "C": "Retirar meio litro não duplica a concentração de S2. Uma retirada de 0,5 L deixaria 9,5 L, com concentração de S2 ainda muito próxima da inicial.",
+          "D": "4,9775 L não atende ao volume final de 5 L exigido pela concentração. A conta correta não aplica uma redução percentual direta ao volume de S1, pois o denominador da concentração também muda.",
+          "E": "A solução deve cair de 10 L a 5 L mantendo S2, o que exige retirar 5 L de S1. Como o volume de S2 fica invariável, sua fração duplicada mostra que o total final deve ser metade dos dez litros."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2080,11 +2080,11 @@
           "Na primeira viagem, foram enviados 10 200 L e entregues 9900 L, portanto o descarte fixo é de 300 L. O novo pedido é o dobro dos 10 000 L encomendados, isto é, 20 000 L. Para entregá-los, devem ser enviados 20 300 L."
         ],
         "alternatives": {
-          "A": "20 100 L entregariam 19 800 L após o descarte fixo.",
-          "B": "20 200 L entregariam apenas 19 900 L.",
-          "C": "Somar os 300 L perdidos aos 20 000 L pedidos fornece 20 300 L.",
-          "D": "20 400 L seria suficiente, mas excede o volume mínimo necessário.",
-          "E": "20 600 L duplica indevidamente a perda, que é fixa por transporte."
+          "A": "20 100 L entregariam 19 800 L após o descarte fixo. A primeira entrega prova que a perda não foi de 200 L: o posto recebeu 300 L a menos do que foi carregado.",
+          "B": "20 200 L entregariam apenas 19 900 L. É necessário distinguir a compensação inicialmente tentada pela distribuidora da perda real observada de 300 L.",
+          "C": "Somar os 300 L perdidos aos 20 000 L pedidos fornece 20 300 L. O dobro é do pedido de 10 000 L e a perda de uma nova viagem continua valendo 300 L.",
+          "D": "20 400 L seria suficiente, mas excede o volume mínimo necessário. Usar a capacidade total ou duplicar a compensação inicial não melhora a condição de ser o menor envio suficiente.",
+          "E": "20 600 L duplica indevidamente a perda, que é fixa por transporte. O enunciado afirma independência entre perda e quantidade transportada, impedindo multiplicá-la por dois com o pedido."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2124,11 +2124,11 @@
           "Ordenando as velocidades, obtém-se 320, 340, 350, 360, 380, 380, 390, 390, 390 e 400. Com dez valores, a mediana é a média do quinto e do sexto: (380 + 380)/2 = 380 MB/s."
         ],
         "alternatives": {
-          "A": "360 é o quarto valor ordenado, anterior à região central.",
-          "B": "370 seria média de 360 e 380, que não ocupam as duas posições centrais.",
-          "C": "O quinto e o sexto valores são ambos 380, portanto essa é a mediana.",
-          "D": "390 é a moda, pois aparece três vezes, mas não a mediana.",
-          "E": "400 é o maior valor, sem representar o centro da distribuição."
+          "A": "360 é o quarto valor ordenado, anterior à região central. Com dez observações, o centro fica entre a quinta e a sexta posições, não na quarta.",
+          "B": "370 seria média de 360 e 380, que não ocupam as duas posições centrais. Esse resultado costuma surgir ao escolher posições antes de concluir a ordenação completa dos dez valores.",
+          "C": "O quinto e o sexto valores são ambos 380, portanto essa é a mediana. A repetição de 380 nas duas posições centrais torna desnecessário qualquer arredondamento da média.",
+          "D": "390 é a moda, pois aparece três vezes, mas não a mediana. A frequência de ocorrência determina moda, uma medida diferente da posição central pedida.",
+          "E": "400 é o maior valor, sem representar o centro da distribuição. O extremo superior é útil para amplitude, mas não para calcular a mediana dos dez municípios."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2168,11 +2168,11 @@
           "É preciso multiplicar o sódio por porção pelo número de porções no pacote. Os totais são 510 mg para chips, 2004 mg para palitos, 2112 mg para multigrãos, 1050 mg para polvilho e 830 mg para água e sal. O menor total é 510 mg."
         ],
         "alternatives": {
-          "A": "Três porções de 170 mg totalizam 510 mg, o menor valor por pacote.",
-          "B": "Quatro porções de 501 mg somam 2004 mg, acima do mínimo.",
-          "C": "Oito porções de 264 mg somam 2112 mg.",
-          "D": "Seis porções de 175 mg somam 1050 mg.",
-          "E": "Embora tenha 166 mg por porção, cinco porções somam 830 mg, mais que os chips."
+          "A": "Três porções de 170 mg totalizam 510 mg, o menor valor por pacote. O pacote tem apenas três porções, e essa quantidade menor compensa ter mais sódio por porção do que o biscoito de água e sal.",
+          "B": "Quatro porções de 501 mg somam 2004 mg, acima do mínimo. Comparar só o número de porções não basta: cada uma já contém 501 mg, total elevado.",
+          "C": "Oito porções de 264 mg somam 2112 mg. A presença de grãos no nome não muda os dados quantitativos do rótulo e o pacote reúne oito porções.",
+          "D": "Seis porções de 175 mg somam 1050 mg. Apesar de 175 mg por porção parecer próximo ao chips, o dobro de porções eleva o total.",
+          "E": "Embora tenha 166 mg por porção, cinco porções somam 830 mg, mais que os chips. O menor teor por porção pode enganar quando se desconsidera que há cinco porções no pacote."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2212,11 +2212,11 @@
           "A base de contato entre os sólidos fica interna e não é pintada. Na superfície aparecem quatro classes de faces: retângulos do prisma, trapézios do tronco, o hexágono inferior maior e o hexágono superior menor. Cada classe exige uma cor distinta."
         ],
         "alternatives": {
-          "A": "Nove cores separariam faces congruentes que devem receber a mesma cor.",
-          "B": "Oito cores também excedem as quatro classes de congruência da superfície.",
-          "C": "Seis confunde a quantidade de faces laterais de cada sólido com as classes de formato e tamanho.",
-          "D": "Há quatro tipos não congruentes de faces externas, portanto quatro cores.",
-          "E": "Três trataria indevidamente os dois hexágonos de tamanhos diferentes como congruentes."
+          "A": "Nove cores separariam faces congruentes que devem receber a mesma cor. As seis faces laterais de cada sólido se agrupam por congruência, em vez de receberem cores separadas.",
+          "B": "Oito cores também excedem as quatro classes de congruência da superfície. A contagem deve excluir a base coincidente interna e agrupar faces externas do mesmo formato e tamanho.",
+          "C": "Seis confunde a quantidade de faces laterais de cada sólido com as classes de formato e tamanho. O número de lados de uma base não define o número de cores, que depende de tipos de faces não congruentes.",
+          "D": "Há quatro tipos não congruentes de faces externas, portanto quatro cores. São uma classe de retângulos, uma de trapézios e duas de hexágonos de tamanhos distintos.",
+          "E": "Três trataria indevidamente os dois hexágonos de tamanhos diferentes como congruentes. Ter a mesma forma hexagonal não torna as bases congruentes, pois o tronco tem base superior menor."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2256,11 +2256,11 @@
           "A curva fica em f1 até a meditação começar, depois decresce de modo não linear entre t1 e t2. A partir de t2, a linha horizontal indica que a frequência se estabiliza em f2, abaixo do valor inicial."
         ],
         "alternatives": {
-          "A": "A frequência muda entre t1 e t2, portanto não permanece constante em todo o período.",
-          "B": "Uma grandeza diretamente proporcional ao tempo aumentaria linearmente, o que não ocorre.",
-          "C": "O gráfico não representa uma hipérbole de proporcionalidade inversa e tem trecho constante.",
-          "D": "A descrição reproduz a queda até t2 e a estabilização após esse instante.",
-          "E": "A curva não tem queda linear contínua e deixa de diminuir depois de t2."
+          "A": "A frequência muda entre t1 e t2, portanto não permanece constante em todo o período. A estabilidade só aparece depois de t2; entre o início da prática e esse instante há redução visível.",
+          "B": "Uma grandeza diretamente proporcional ao tempo aumentaria linearmente, o que não ocorre. Uma proporcionalidade direta teria gráfico retilíneo crescente passando pela origem, distinto da curva mostrada.",
+          "C": "O gráfico não representa uma hipérbole de proporcionalidade inversa e tem trecho constante. Decrescer não basta para ser inversamente proporcional: o produto entre tempo e frequência precisaria ser constante.",
+          "D": "A descrição reproduz a queda até t2 e a estabilização após esse instante. O gráfico apresenta transição decrescente e depois um patamar horizontal de frequência mais baixa.",
+          "E": "A curva não tem queda linear contínua e deixa de diminuir depois de t2. O trecho após t2 é horizontal e, antes disso, a queda também não se dá com taxa constante."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2300,11 +2300,11 @@
           "Alinhando as casas decimais, basta subtrair o tempo obtido por Bolt da referência: 10,00 − 9,58 = 0,42 s. O resultado representa quarenta e dois centésimos de segundo abaixo dos dez segundos."
         ],
         "alternatives": {
-          "A": "0,02 s não é a diferença entre 10,00 e 9,58.",
-          "B": "A subtração decimal correta resulta em 0,42 s.",
-          "C": "0,52 s resulta de erro na subtração com reagrupamento.",
-          "D": "1,02 s supera um segundo, embora as marcas estejam a menos de meio segundo.",
-          "E": "1,42 s também é incompatível com a proximidade entre os tempos apresentados."
+          "A": "0,02 s não é a diferença entre 10,00 e 9,58. A diferença entre os centésimos requer subtrair de 1000 centésimos os 958 do recorde.",
+          "B": "A subtração decimal correta resulta em 0,42 s. Os 42 centésimos calculados quantificam exatamente quanto Bolt ficou abaixo da referência.",
+          "C": "0,52 s resulta de erro na subtração com reagrupamento. Ao fazer a subtração, a passagem de 10,00 para 9,58 exige reagrupamento e não produz 52 centésimos.",
+          "D": "1,02 s supera um segundo, embora as marcas estejam a menos de meio segundo. A marca de 9,58 já é superior a 9 s e por isso está a menos de um segundo de 10 s.",
+          "E": "1,42 s também é incompatível com a proximidade entre os tempos apresentados. Um resultado acima de um segundo tornaria o recorde inferior a 9 s, contradizendo o valor informado."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2344,11 +2344,11 @@
           "A distância ao plano yz depende de x; aproximar-se dele reduz x em 3. Afastar-se do plano xz aumenta y em 5, e aproximar-se de xy reduz z em 4. As projeções devem registrar simultaneamente essas três alterações, como na figura E."
         ],
         "alternatives": {
-          "A": "As projeções não combinam a redução correta de x com a nova posição em altura.",
-          "B": "A projeção no plano yz não se desloca suficientemente no sentido positivo de y.",
-          "C": "A posição projetada em y não corresponde ao acréscimo das cinco unidades indicadas.",
-          "D": "As projeções não representam o conjunto exato dos três deslocamentos pedidos.",
-          "E": "O desenho combina x menor em 3, y maior em 5 e z menor em 4."
+          "A": "As projeções não combinam a redução correta de x com a nova posição em altura. A figura mantém uma combinação de posições projetadas incompatível com as três variações coordenadas exigidas.",
+          "B": "A projeção no plano yz não se desloca suficientemente no sentido positivo de y. Afastar-se de xz significa aumentar y, que deve ser refletido também na posição da projeção sobre a base.",
+          "C": "A posição projetada em y não corresponde ao acréscimo das cinco unidades indicadas. As projeções em planos diferentes precisam concordar no mesmo valor de cada coordenada compartilhada.",
+          "D": "As projeções não representam o conjunto exato dos três deslocamentos pedidos. Não basta aproximar a projeção de um eixo: é necessário respeitar simultaneamente a redução de quatro unidades de altura.",
+          "E": "O desenho combina x menor em 3, y maior em 5 e z menor em 4. As projeções resultam do mesmo cubo após a atualização coordenada x − 3, y + 5 e z − 4."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2388,11 +2388,11 @@
           "Dos internautas, 90% acessam redes sociais. Nesse grupo, 60% são mulheres, logo 40% são homens. A probabilidade de um internauta ser homem e acessar uma rede é 0,90 × 0,40 = 0,36, isto é, 36/100."
         ],
         "alternatives": {
-          "A": "30/90 não resulta dos percentuais condicionais fornecidos.",
-          "B": "O produto dos 90% de acesso pelos 40% de homens entre usuários é 36%.",
-          "C": "40% é a proporção de homens entre usuários de redes, não entre todos os internautas.",
-          "D": "Dividir 40 por 90 não calcula a interseção pedida.",
-          "E": "46/90 não decorre do complemento de 60% nem da multiplicação necessária."
+          "A": "30/90 não resulta dos percentuais condicionais fornecidos. Não se obtém a interseção subtraindo percentuais que usam bases distintas e formando uma razão por noventa.",
+          "B": "O produto dos 90% de acesso pelos 40% de homens entre usuários é 36%. Em cada cem internautas, noventa usam redes e quarenta por cento desses noventa são homens, total de trinta e seis.",
+          "C": "40% é a proporção de homens entre usuários de redes, não entre todos os internautas. O grupo de referência da pergunta são todos os internautas, portanto a fração de usuários precisa ser aplicada antes.",
+          "D": "Dividir 40 por 90 não calcula a interseção pedida. A razão pedida não é condicionada aos noventa usuários, mas ao total de cem internautas.",
+          "E": "46/90 não decorre do complemento de 60% nem da multiplicação necessária. Os dados fornecem 60% de mulheres entre usuários; seu complemento é 40%, sem origem para o numerador 46."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2432,11 +2432,11 @@
           "Em uma semana, o carro percorre 30 × 7 = 210 km. O volume necessário é 210/13, aproximadamente 16,15 m³. O cilindro de 17 m³ é o menor dos disponíveis que comporta essa quantidade e, por proporcionalidade, tem o menor preço adequado."
         ],
         "alternatives": {
-          "A": "10 m³ permitem apenas 130 km, menos que a distância semanal.",
-          "B": "14 m³ permitem 182 km, ainda insuficientes.",
-          "C": "17 m³ ultrapassam o consumo semanal e representam a menor opção suficiente.",
-          "D": "21 m³ atendem, mas custam mais que a opção de 17 m³.",
-          "E": "25 m³ também atendem, porém não são a alternativa de menor preço."
+          "A": "10 m³ permitem apenas 130 km, menos que a distância semanal. Um tanque de dez metros cúbicos exigiria novo abastecimento antes de completar os sete dias.",
+          "B": "14 m³ permitem 182 km, ainda insuficientes. Mesmo sendo mais barato, o tanque de quatorze não atende a condição de autonomia de 210 km.",
+          "C": "17 m³ ultrapassam o consumo semanal e representam a menor opção suficiente. O consumo estimado de cerca de 16,15 m³ cabe nesse reservatório e não cabe no imediatamente menor.",
+          "D": "21 m³ atendem, mas custam mais que a opção de 17 m³. O preço proporcional exige evitar capacidade maior do que a primeira suficiente entre as ofertadas.",
+          "E": "25 m³ também atendem, porém não são a alternativa de menor preço. A margem adicional não foi solicitada, e pagar por 25 m³ contraria a busca de menor custo semanalmente suficiente."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2476,11 +2476,11 @@
           "No quadrado, a diagonal SU é a mediatriz da diagonal VT e mantém o herói equidistante dos vilões. De S(6,2) a V(8,6), o vetor é (2,4); girando-o 90°, chega-se a T(2,4). A diagonal SU tem direção (−2,6), inclinação −3, e passa por S, então y = −3x + 20."
         ],
         "alternatives": {
-          "A": "A reta tem inclinação −3 e contém S(6,2), pois −18 + 20 = 2.",
-          "B": "O termo 16 faria a reta passar por y = −2 quando x = 6, fora de S.",
-          "C": "O termo negativo −20 não permite a passagem pela posição inicial.",
-          "D": "A inclinação positiva contraria a direção descendente da mediatriz VT.",
-          "E": "Embora passe por S, a reta com inclinação 3 não é a mediatriz entre os vilões."
+          "A": "A reta tem inclinação −3 e contém S(6,2), pois −18 + 20 = 2. A diagonal que passa por S e U bissecta a distância entre os vértices opostos onde estão os vilões.",
+          "B": "O termo 16 faria a reta passar por y = −2 quando x = 6, fora de S. Uma reta segura desde a partida precisa conter S, condição já violada pelo intercepto 16 nessa inclinação.",
+          "C": "O termo negativo −20 não permite a passagem pela posição inicial. O valor em x = 6 não se aproxima de y = 2, portanto o herói nem iniciaria nessa trajetória.",
+          "D": "A inclinação positiva contraria a direção descendente da mediatriz VT. A mediatriz é perpendicular a VT e sua orientação no desenho é descendente da esquerda para a direita.",
+          "E": "Embora passe por S, a reta com inclinação 3 não é a mediatriz entre os vilões. Conter o ponto inicial é necessário, mas insuficiente: a reta também deve preservar igualdade das duas distâncias."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2520,11 +2520,11 @@
           "Somando os estoques de autores brasileiros e estrangeiros, há 200 livros de ficção, 130 de autoajuda, 145 de romance e 95 de biografia. As demandas são 160, 135, 140 e 80. Apenas autoajuda apresenta falta, de cinco livros."
         ],
         "alternatives": {
-          "A": "A demanda de ficção é maior, mas seu estoque de 200 supera os 160 pedidos.",
-          "B": "Biografia tem demanda baixa e estoque suficiente de 95 para 80.",
-          "C": "Autoajuda dispõe de 130 livros para demanda de 135, exigindo reposição.",
-          "D": "Ter estoque menor não exige compra se ainda supera a demanda, como ocorre em biografia.",
-          "E": "O estoque total de romance é 145 e atende aos 140 solicitados, independentemente da nacionalidade."
+          "A": "A demanda de ficção é maior, mas seu estoque de 200 supera os 160 pedidos. Uma demanda alta pode ser plenamente atendida por um estoque ainda maior, como os 200 exemplares de ficção.",
+          "B": "Biografia tem demanda baixa e estoque suficiente de 95 para 80. A diferença de 15 exemplares a favor do estoque elimina a necessidade de encomenda de biografia.",
+          "C": "Autoajuda dispõe de 130 livros para demanda de 135, exigindo reposição. A falta de cinco exemplares é a única diferença negativa entre estoque somado e demanda observada.",
+          "D": "Ter estoque menor não exige compra se ainda supera a demanda, como ocorre em biografia. A decisão depende da diferença estoque menos procura, não da comparação isolada dos estoques dos gêneros.",
+          "E": "O estoque total de romance é 145 e atende aos 140 solicitados, independentemente da nacionalidade. O gerente pode vender também obras estrangeiras; por isso deve usar os 40 + 105 exemplares de romance."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2564,11 +2564,11 @@
           "O total de matrículas em 2024 é 280 + 80 + 20 + 20 = 400. Francês representava 10% em 2023. Aplicando essa participação ao total previsto para 2025, obtêm-se 0,10 × 400 = 40 matrículas."
         ],
         "alternatives": {
-          "A": "Dois resulta de aplicar 10% apenas às 20 matrículas anteriores de francês.",
-          "B": "Doze não corresponde a 10% do total de 400 matrículas.",
-          "C": "Vinte repete a quantidade de 2024 e ignora a redistribuição percentual.",
-          "D": "Vinte e dois aplica um crescimento de 10% ao dado de francês, o que não foi solicitado.",
-          "E": "A participação de 10% sobre 400 resulta em 40 matrículas."
+          "A": "Dois resulta de aplicar 10% apenas às 20 matrículas anteriores de francês. Aplicar o percentual ao curso isolado repetiria uma base errada: a distribuição vale para a matrícula total da escola.",
+          "B": "Doze não corresponde a 10% do total de 400 matrículas. A soma de 280, 80, 20 e 20 é quatrocentos e um décimo disso não é doze.",
+          "C": "Vinte repete a quantidade de 2024 e ignora a redistribuição percentual. A previsão conserva o total de 2024, mas troca sua distribuição pelos percentuais de 2023.",
+          "D": "Vinte e dois aplica um crescimento de 10% ao dado de francês, o que não foi solicitado. O texto pede uma participação de 10% no conjunto, não um aumento de 10% do número anterior do curso.",
+          "E": "A participação de 10% sobre 400 resulta em 40 matrículas. O planejamento combina corretamente o total mais recente com a fatia histórica de francês."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2608,11 +2608,11 @@
           "O comprimento real é o comprimento na tela multiplicado pelo denominador da escala. Para I a V, obtêm-se respectivamente 900, 1500, 3000, 2100 e 2000 cm. Assim, o deslocamento III é o maior, mesmo sem a maior imagem na tela."
         ],
         "alternatives": {
-          "A": "A imagem de 9 cm em 1:100 representa somente 900 cm reais.",
-          "B": "O deslocamento II vale 5 × 300 = 1500 cm.",
-          "C": "O deslocamento III vale 5 × 600 = 3000 cm, maior que os demais.",
-          "D": "O deslocamento IV mede 3 × 700 = 2100 cm.",
-          "E": "A escala maior em denominador não basta: 2 × 1000 resulta em 2000 cm."
+          "A": "A imagem de 9 cm em 1:100 representa somente 900 cm reais. O desenho mais longo não garante o maior percurso quando cada tela usa uma escala diferente.",
+          "B": "O deslocamento II vale 5 × 300 = 1500 cm. Seus cinco centímetros são multiplicados por trezentos, produzindo metade do percurso de III.",
+          "C": "O deslocamento III vale 5 × 600 = 3000 cm, maior que os demais. Comparar os produtos entre medida gráfica e denominador da escala permite ordenar todos na mesma unidade real.",
+          "D": "O deslocamento IV mede 3 × 700 = 2100 cm. Cada centímetro gráfico vale setecentos centímetros reais; mesmo assim, os três centímetros da imagem representam um trajeto menor que os 3000 cm do deslocamento III.",
+          "E": "A escala maior em denominador não basta: 2 × 1000 resulta em 2000 cm. Ainda que a escala seja 1:1000, a medida gráfica é de apenas dois centímetros e fica abaixo dos 3000 cm de III."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2652,11 +2652,11 @@
           "Contando a planificação, há 25 triângulos, cinco quadrados, um pentágono e um decágono, total de 32 faces. A soma dos lados das faces é 110, logo há 55 arestas. Pela relação de Euler, V − 55 + 32 = 2, portanto V = 25."
         ],
         "alternatives": {
-          "A": "21 corresponde a uma contagem incompleta dos vértices distribuídos nos anéis do sólido.",
-          "B": "A relação de Euler com 55 arestas e 32 faces fornece 25 vértices.",
-          "C": "55 é a quantidade de arestas, não a de vértices.",
-          "D": "80 não satisfaz a relação de Euler para as faces e arestas do poliedro.",
-          "E": "110 conta incidências de lados nas faces, com cada aresta aparecendo duas vezes."
+          "A": "21 corresponde a uma contagem incompleta dos vértices distribuídos nos anéis do sólido. Os vértices compartilhados por faces não podem ser contados por uma observação parcial de apenas uma vista.",
+          "B": "A relação de Euler com 55 arestas e 32 faces fornece 25 vértices. A soma dos lados fornece duas incidências por aresta; usar E = 55 e F = 32 em V − E + F = 2 confirma o resultado.",
+          "C": "55 é a quantidade de arestas, não a de vértices. Arestas são segmentos de encontro de faces, enquanto os vértices são seus pontos extremos e interseções.",
+          "D": "80 não satisfaz a relação de Euler para as faces e arestas do poliedro. O resultado excede os vértices possíveis nos níveis da peça e não decorre da equação de Euler.",
+          "E": "110 conta incidências de lados nas faces, com cada aresta aparecendo duas vezes. A soma das bordas de todas as faces ainda conta cada segmento compartilhado duas vezes, sem contar vértices distintos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2696,11 +2696,11 @@
           "A produção inicial de 720 unidades usa 3 × 6 = 18 horas de trabalho somadas, portanto a taxa é 40 tijolos por funcionário-hora. Na nova situação são 5 × 9 = 45 horas somadas, gerando 45 × 40 = 1800 tijolos por dia."
         ],
         "alternatives": {
-          "A": "800 não aplica simultaneamente os aumentos de trabalhadores e horas.",
-          "B": "1080 considera apenas a mudança de 6 para 9 horas.",
-          "C": "1200 considera apenas o aumento de três para cinco funcionários.",
-          "D": "Multiplicar 720 por 5/3 e por 9/6 resulta em 1800 unidades.",
-          "E": "2520 superestima a produção, que cresce pelo fator 2,5."
+          "A": "800 não aplica simultaneamente os aumentos de trabalhadores e horas. Como ambos os fatores aumentam, a produção precisa crescer por 5/3 vezes 9/6, e não por pequeno acréscimo arbitrário.",
+          "B": "1080 considera apenas a mudança de 6 para 9 horas. Essa opção manteria três funcionários, embora a fábrica tenha passado a cinco.",
+          "C": "1200 considera apenas o aumento de três para cinco funcionários. Essa opção manteria a jornada de seis horas e ignora as três horas adicionais por pessoa.",
+          "D": "Multiplicar 720 por 5/3 e por 9/6 resulta em 1800 unidades. São quarenta tijolos por hora de cada funcionário, multiplicados por quarenta e cinco horas-pessoa diárias.",
+          "E": "2520 superestima a produção, que cresce pelo fator 2,5. O fator correto é 45/18 = 2,5, de modo que 2520 excede a capacidade diária prevista pelo modelo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2740,11 +2740,11 @@
           "O código deve concatenar os campos sem alterar seus tamanhos: andar 2, setor 08, funcionário 109 e turno da manhã 0. A sequência resultante é 2 08 109 0, ou 2081090, com sete dígitos."
         ],
         "alternatives": {
-          "A": "A sequência começa com 0 e não identifica o segundo andar.",
-          "B": "A ordem inicial 028 não corresponde a andar 2 seguido de setor 08.",
-          "C": "O primeiro dígito 1 identifica um andar diferente do informado.",
-          "D": "A concatenação 2, 08, 109 e 0 produz exatamente 2081090.",
-          "E": "A retirada do zero do setor desloca os campos e não preserva a estrutura exigida."
+          "A": "A sequência começa com 0 e não identifica o segundo andar. O código é uma concatenação de campos e o início precisa ser o número de andar, não outro grupo de informação.",
+          "B": "A ordem inicial 028 não corresponde a andar 2 seguido de setor 08. O setor deve ocupar exatamente dois caracteres após o primeiro dígito e não pode ser redistribuído com o andar.",
+          "C": "O primeiro dígito 1 identifica um andar diferente do informado. O funcionário 109 não substitui o campo inicial do andar, que é 2.",
+          "D": "A concatenação 2, 08, 109 e 0 produz exatamente 2081090. Cada bloco ocupa a posição prevista e o zero final identifica o período da manhã.",
+          "E": "A retirada do zero do setor desloca os campos e não preserva a estrutura exigida. Os zeros não são descartáveis, porque preservam o tamanho dos blocos e tornam o código interpretável."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2784,11 +2784,11 @@
           "A devolução aleatória dos quatro envelopes corresponde às 4! = 24 permutações possíveis entre candidatos. Apenas uma delas entrega simultaneamente cada celular a seu proprietário, portanto a probabilidade é 1/24."
         ],
         "alternatives": {
-          "A": "Há mais de duas distribuições possíveis, logo não cabe usar 1/2.",
-          "B": "Dez não é a quantidade de permutações de quatro objetos distintos.",
-          "C": "1/16 trata escolhas como independentes, sem respeitar que os envelopes não se repetem.",
-          "D": "Entre as 24 permutações equiprováveis, somente uma é inteiramente correta.",
-          "E": "1/256 considera quatro escolhas independentes entre quatro opções, o que permitiria repetições impossíveis."
+          "A": "Há mais de duas distribuições possíveis, logo não cabe usar 1/2. Apenas acertar ou errar não torna esses dois eventos equiprováveis; há 24 distribuições elementares diferentes.",
+          "B": "Dez não é a quantidade de permutações de quatro objetos distintos. Quatro escolhas sem reposição geram 4 × 3 × 2 × 1 e não uma soma de possibilidades.",
+          "C": "1/16 trata escolhas como independentes, sem respeitar que os envelopes não se repetem. As chances condicionais sucessivas de acerto são 1/4, 1/3, 1/2 e 1, cujo produto é 1/24.",
+          "D": "Entre as 24 permutações equiprováveis, somente uma é inteiramente correta. Há uma correspondência perfeita única entre quatro candidatos identificáveis e seus quatro aparelhos.",
+          "E": "1/256 considera quatro escolhas independentes entre quatro opções, o que permitiria repetições impossíveis. A contagem de 4^4 permitiria atribuir o mesmo envelope a mais de uma pessoa, o que a distribuição real não permite."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2828,11 +2828,11 @@
           "No gráfico de barras, as unidades de altura somam 18 para futebol, 10 para vôlei e 8 para basquete. Como o gráfico circular informa 80 alunos no basquete, cada unidade representa dez. O total é (18 + 10 + 8) × 10 = 360 estudantes."
         ],
         "alternatives": {
-          "A": "720 dobra o total obtido ao relacionar as oito unidades de basquete aos 80 alunos.",
-          "B": "A proporção de basquete é 8/36 e corresponde a 80 de um total de 360.",
-          "C": "320 não preserva a razão entre as alturas das três modalidades.",
-          "D": "288 confunde a proporção do basquete com o número de alunos por unidade gráfica.",
-          "E": "240 corresponde a somar parcelas sem respeitar a razão total de 36 unidades."
+          "A": "720 dobra o total obtido ao relacionar as oito unidades de basquete aos 80 alunos. O basquete tem oito unidades gráficas para oitenta alunos, portanto uma unidade vale dez e não vinte.",
+          "B": "A proporção de basquete é 8/36 e corresponde a 80 de um total de 360. As 36 unidades totais das barras correspondem a dez alunos cada, produzindo 360.",
+          "C": "320 não preserva a razão entre as alturas das três modalidades. Um total de 320 faria os oitenta de basquete corresponderem a um quarto do conjunto, diferente das barras.",
+          "D": "288 confunde a proporção do basquete com o número de alunos por unidade gráfica. A leitura deve primeiro calibrar a unidade vertical com o dado absoluto conhecido antes de somar modalidades.",
+          "E": "240 corresponde a somar parcelas sem respeitar a razão total de 36 unidades. Esse total implicaria participação de um terço para basquete, que o gráfico não apresenta."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2872,11 +2872,11 @@
           "Os dois percursos finais para leste são iguais, então TR equivale à diferença entre os primeiros deslocamentos de quatro horas. O triângulo formado tem lados 4v e ângulo 130°, logo TR² = 32v²(1 + cos50°) = 52,48v². O tempo é cerca de 7,24 h, ou 7 h 15 min, rumo sudeste, direção 135."
         ],
         "alternatives": {
-          "A": "A direção sudeste é 135 e o comprimento calculado exige aproximadamente 7 h 15 min.",
-          "B": "45 aponta para nordeste, em sentido errado na componente norte-sul.",
-          "C": "Doze horas superestimam o comprimento encontrado pelo triângulo.",
-          "D": "Seis horas ficam abaixo das aproximadamente 7,24 h calculadas.",
-          "E": "Além do tempo insuficiente, 45 aponta para a direção oposta à correção necessária em latitude."
+          "A": "A direção sudeste é 135 e o comprimento calculado exige aproximadamente 7 h 15 min. Os trechos idênticos para leste se cancelam na diferença, deixando a correção retilínea apontada para sudeste.",
+          "B": "45 aponta para nordeste, em sentido errado na componente norte-sul. O ponto de chegada correto fica ao sul do ponto em que o erro foi percebido, impossibilitando rumo nordeste.",
+          "C": "Doze horas superestimam o comprimento encontrado pelo triângulo. A diferença vetorial dos dois primeiros deslocamentos é menor que a soma simples de todas as durações da viagem.",
+          "D": "Seis horas ficam abaixo das aproximadamente 7,24 h calculadas. A lei dos cossenos com o ângulo correto fornece um percurso equivalente a aproximadamente 7,24 horas de velocidade constante.",
+          "E": "Além do tempo insuficiente, 45 aponta para a direção oposta à correção necessária em latitude. O erro combina uma duração curta demais e direção para o lado norte em vez do destino ao sul."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2916,11 +2916,11 @@
           "O grupo 4 tem média 25 e desvio padrão 1. Seis ou mais idades fora do intervalo de 20 a 30 exigiriam uma dispersão muito maior, pois cada uma estaria a pelo menos cinco anos da média. Portanto, a pequena dispersão garante maioria no intervalo."
         ],
         "alternatives": {
-          "A": "Média 25 com desvio 10 permite muitas idades afastadas do intervalo.",
-          "B": "Mediana 25 e desvio 9 não garantem maioria entre 20 e 30.",
-          "C": "Moda 25 pode ocorrer sem que a maioria esteja próxima dessa idade.",
-          "D": "A média central e o desvio padrão muito pequeno garantem concentração das idades no intervalo.",
-          "E": "Apenas mínimo 20 e máximo 35 não permitem saber quantas idades superam 30."
+          "A": "Média 25 com desvio 10 permite muitas idades afastadas do intervalo. Um desvio tão alto admite observações muito distantes de 25, sem permitir assegurar seis mulheres no intervalo.",
+          "B": "Mediana 25 e desvio 9 não garantem maioria entre 20 e 30. A mediana só fixa o termo central da lista ordenada e não controla quantos extremos ficam fora do intervalo.",
+          "C": "Moda 25 pode ocorrer sem que a maioria esteja próxima dessa idade. A idade mais frequente pode pertencer a poucas pessoas se as demais idades forem variadas.",
+          "D": "A média central e o desvio padrão muito pequeno garantem concentração das idades no intervalo. Qualquer idade a mais de cinco anos da média contribuiria excessivamente ao somatório de quadrados para um desvio de apenas um.",
+          "E": "Apenas mínimo 20 e máximo 35 não permitem saber quantas idades superam 30. É possível que muitas participantes estejam entre 31 e 35 anos, mantendo o mínimo e máximo informados."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2960,11 +2960,11 @@
           "Para repetir o pace de 281 s/km em cinco quilômetros, o tempo total deve ser 5 × 281 = 1405 s. Como os quatro primeiros quilômetros consumiram 1132 s, o último deve durar 273 s, que são 288 − 273 = 15 s a menos que o quarto trecho."
         ],
         "alternatives": {
-          "A": "Reduzir um segundo deixaria o total acima de 1405 s.",
-          "B": "Uma redução de dois segundos também não compensaria o tempo já acumulado.",
-          "C": "Oito segundos não bastam para levar o último trecho aos 273 s necessários.",
-          "D": "Nove segundos produziriam 279 s no último trecho, ainda acima da meta.",
-          "E": "A redução de 15 s transforma os 288 s do quarto trecho nos 273 s exigidos."
+          "A": "Reduzir um segundo deixaria o total acima de 1405 s. O último quilômetro duraria 287 s e o total chegaria a 1419 s, acima da meta de 1405.",
+          "B": "Uma redução de dois segundos também não compensaria o tempo já acumulado. Com 286 s no fim, o tempo total seria 1418 s e o pace ficaria mais lento que o melhor.",
+          "C": "Oito segundos não bastam para levar o último trecho aos 273 s necessários. Uma redução de oito daria 280 s no trecho e total de 1412 s, ainda sete segundos acima do alvo.",
+          "D": "Nove segundos produziriam 279 s no último trecho, ainda acima da meta. O total de 1411 s após esse corte não reproduz o pace de 281 s/km.",
+          "E": "A redução de 15 s transforma os 288 s do quarto trecho nos 273 s exigidos. Os 1132 s já gastos deixam exatamente 273 para completar 1405, exigindo corte de quinze em relação ao trecho anterior."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3004,11 +3004,11 @@
           "O ponto central da tangente é (2,5; 30), então k = 30 e o deslocamento horizontal é T − 2,5. As assíntotas distam 2π no eixo T; como o período da tangente é π, o fator é 1/2. Assim, D = 30 + tg[(T − 5/2)/2]."
         ],
         "alternatives": {
-          "A": "A expressão troca a altura central 30 pelo tempo 2,5 e usa fator horizontal incorreto.",
-          "B": "A altura central 4 e o fator 30 não correspondem ao gráfico.",
-          "C": "A função desloca o centro e altera incorretamente a distância entre as assíntotas.",
-          "D": "O termo T − 5 colocaria o centro em T = 5, em vez de 2,5.",
-          "E": "A expressão tem centro em T = 2,5 e D = 30 e assíntotas separadas por 2π."
+          "A": "A expressão troca a altura central 30 pelo tempo 2,5 e usa fator horizontal incorreto. A translação vertical determina a altura central e não pode ser substituída pelo valor da abscissa do ponto.",
+          "B": "A altura central 4 e o fator 30 não correspondem ao gráfico. O nível de referência é 30 cm, e a distância entre assíntotas exige fator angular 1/2, não 30.",
+          "C": "A função desloca o centro e altera incorretamente a distância entre as assíntotas. Para reproduzir as assíntotas simétricas em torno de 2,5, o argumento precisa zerar nesse tempo e ter a escala correta.",
+          "D": "O termo T − 5 colocaria o centro em T = 5, em vez de 2,5. Com centro no tempo cinco, as assíntotas também se deslocariam e não coincidiriam com as desenhadas.",
+          "E": "A expressão tem centro em T = 2,5 e D = 30 e assíntotas separadas por 2π. As condições de centro e distância entre assíntotas são atendidas por 30 + tg[(T − 2,5)/2]."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3048,11 +3048,11 @@
           "Para localizar a origem, pode-se inverter o trajeto a partir da casa A: voltar dois quarteirões para leste, depois três para sul e finalmente um para leste até a esquina nordeste da casa inicial. A sequência aponta o quarteirão P."
         ],
         "alternatives": {
-          "A": "Partindo da esquina nordeste de P, o percurso oeste, norte e oeste alcança A.",
-          "B": "Q está ao norte do destino e não permite o deslocamento de três quarteirões para norte descrito.",
-          "C": "R fica a oeste e não reproduz o trajeto final de dois quarteirões a oeste até A.",
-          "D": "S está na mesma faixa horizontal de A e não atende ao deslocamento norte de três quarteirões.",
-          "E": "T fica uma coluna além da origem necessária e alteraria a posição final."
+          "A": "Partindo da esquina nordeste de P, o percurso oeste, norte e oeste alcança A. O último deslocamento leva da coluna de origem até a coluna de A, depois da subida de três quarteirões.",
+          "B": "Q está ao norte do destino e não permite o deslocamento de três quarteirões para norte descrito. A direção norte inicial exigida faria uma partida em Q se afastar ainda mais da fileira do amigo.",
+          "C": "R fica a oeste e não reproduz o trajeto final de dois quarteirões a oeste até A. Daquela coluna, os deslocamentos para oeste não produziriam a posição indicada do destino.",
+          "D": "S está na mesma faixa horizontal de A e não atende ao deslocamento norte de três quarteirões. Uma origem em S, após andar para norte, terminaria numa fileira acima da casa A.",
+          "E": "T fica uma coluna além da origem necessária e alteraria a posição final. A posição inicial é a esquina nordeste de P; deslocá-la para T desloca todo o trajeto uma coluna a leste."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3092,11 +3092,11 @@
           "Se R$ 500 representam 5% do custo virgem, este custa R$ 10 000 por tonelada. O custo inicial é 110 × 10 000 + 80 × 500 = R$ 1 140 000. Para 190 t com x recicladas: 10 000(190 − x) + 500x ≤ 570 000, resultando em x ≥ 140 t."
         ],
         "alternatives": {
-          "A": "Com 135 t recicladas, o custo ainda seria R$ 617 500, acima da metade.",
-          "B": "140 t recicladas produzem custo de R$ 570 000 e atingem exatamente o limite.",
-          "C": "155 t atendem à redução, mas não representam a quantidade mínima.",
-          "D": "160 t também reduzem o custo além da meta mínima necessária.",
-          "E": "175 t são suficientes, porém excedem as 140 t que já atendem à condição."
+          "A": "Com 135 t recicladas, o custo ainda seria R$ 617 500, acima da metade. A exigência é custo de no máximo R$ 570 000, portanto os R$ 47 500 excedentes impedem atingir a meta.",
+          "B": "140 t recicladas produzem custo de R$ 570 000 e atingem exatamente o limite. A condição 1 900 000 − 9500x ≤ 570 000 fornece igualdade exatamente em x = 140.",
+          "C": "155 t atendem à redução, mas não representam a quantidade mínima. Com 155 recicladas, só 35 seriam virgens, mas uma reciclagem menor de 140 já satisfaz a desigualdade.",
+          "D": "160 t também reduzem o custo além da meta mínima necessária. O enunciado pede mínimo, portanto uma economia adicional possível com 160 não torna esse o limite correto.",
+          "E": "175 t são suficientes, porém excedem as 140 t que já atendem à condição. Uma escolha suficiente deixa de ser ótima se outra menor também cumpre a redução de cinquenta por cento."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3136,11 +3136,11 @@
           "Há 20 pessoas para a presidência. Escolhida uma, excluem-se ela e seu par, restando 18 para a secretaria. Depois, excluem-se as duas pessoas desse segundo casal, ficando 16 para a tesouraria. Pelo princípio multiplicativo, são 20 × 18 × 16 diretorias."
         ],
         "alternatives": {
-          "A": "10 × 9 × 8 escolhe casais, mas ignora qual integrante ocupa cada cargo.",
-          "B": "As escolhas sucessivas têm 20, 18 e 16 possibilidades, respeitando a restrição por casal.",
-          "C": "20 × 19 × 18 permite escolher duas pessoas do mesmo casal.",
-          "D": "Multiplicar a seleção de casais por apenas dois não contempla as escolhas de integrante dos três.",
-          "E": "O produto 20 × 18 × 16 já distingue todos os integrantes e não exige outro fator dois."
+          "A": "10 × 9 × 8 escolhe casais, mas ignora qual integrante ocupa cada cargo. Também é preciso escolher qual das duas pessoas de cada casal ocupa o cargo, gerando fatores adicionais.",
+          "B": "As escolhas sucessivas têm 20, 18 e 16 possibilidades, respeitando a restrição por casal. Cada nome exclui seu par das opções dos cargos seguintes, retirando dois candidatos por etapa.",
+          "C": "20 × 19 × 18 permite escolher duas pessoas do mesmo casal. Excluir apenas a pessoa já escolhida deixa disponível seu parceiro, proibido pela regra de representatividade.",
+          "D": "Multiplicar a seleção de casais por apenas dois não contempla as escolhas de integrante dos três. A seleção de três casais admite 2³ maneiras de escolher integrantes, e não um único fator dois.",
+          "E": "O produto 20 × 18 × 16 já distingue todos os integrantes e não exige outro fator dois. A primeira multiplicação já começa em vinte pessoas e reduz os casais completos, sem lacuna que exija corrigir o total."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3180,11 +3180,11 @@
           "O esboço apresenta 20 cm de largura e altura, que correspondem a 30 m na obra. Convertendo 30 m para 3000 cm, a razão desenho/real é 20/3000 = 1/150. A escala linear é, portanto, 1:150."
         ],
         "alternatives": {
-          "A": "1:1,5 resulta de comparar centímetros com metros sem converter as unidades.",
-          "B": "1:2,25 não corresponde à razão linear entre 20 cm e 3000 cm.",
-          "C": "1:10 representaria 200 cm, não 30 m.",
-          "D": "1:100 ampliaria 20 cm a 20 m, abaixo do tamanho previsto.",
-          "E": "A razão entre 20 cm e 3000 cm simplifica para 1:150."
+          "A": "1:1,5 resulta de comparar centímetros com metros sem converter as unidades. Escalas exigem a mesma unidade para desenho e dimensão real, antes de simplificar a razão.",
+          "B": "1:2,25 não corresponde à razão linear entre 20 cm e 3000 cm. O problema é de semelhança linear e não de razão entre áreas, portanto não se eleva o fator ao quadrado.",
+          "C": "1:10 representaria 200 cm, não 30 m. Multiplicar vinte centímetros por dez produz dois metros, muito abaixo dos trinta metros da obra.",
+          "D": "1:100 ampliaria 20 cm a 20 m, abaixo do tamanho previsto. Multiplicar vinte por cem produz dois mil centímetros, ainda faltando dez metros de tamanho real.",
+          "E": "A razão entre 20 cm e 3000 cm simplifica para 1:150. O denominador cento e cinquenta indica que cada centímetro do desenho corresponde a cento e cinquenta da obra."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3224,11 +3224,11 @@
           "Dizer que a concentração no trabalho é 1,59 vezes a concentração na folga significa T = 1,59F. Dividindo ambos os lados por F, a relação equivalente é T/F = 1,59, que expressa uma razão multiplicativa."
         ],
         "alternatives": {
-          "A": "Somar 1,59 representa um acréscimo absoluto, não um fator multiplicativo.",
-          "B": "A expressão inverte o sentido e ainda usa adição em lugar de multiplicação.",
-          "C": "A razão T/F = 1,59 equivale exatamente a T = 1,59F.",
-          "D": "A razão inversa F/T deveria ser 1/1,59.",
-          "E": "Um produto constante indicaria outro tipo de relação, sem representar o fator informado."
+          "A": "Somar 1,59 representa um acréscimo absoluto, não um fator multiplicativo. Uma adição igual aumentaria sempre a mesma quantidade absoluta, diferente de aumentar proporcionalmente à concentração de folga.",
+          "B": "A expressão inverte o sentido e ainda usa adição em lugar de multiplicação. O valor T é maior que F por um fator dado, e não F maior que T por uma diferença fixa.",
+          "C": "A razão T/F = 1,59 equivale exatamente a T = 1,59F. A expressão fornece um valor de trabalho cinquenta e nove por cento superior ao de folga.",
+          "D": "A razão inversa F/T deveria ser 1/1,59. Trocar numerador e denominador exige tomar o inverso do fator, que é menor que um.",
+          "E": "Um produto constante indicaria outro tipo de relação, sem representar o fator informado. Uma relação de produto constante faria T variar inversamente com F e não expressa o que foi observado."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3268,11 +3268,11 @@
           "O seguro reajustado custa 36 × 1,20 = R$ 43,20 por carro. Para 120 carros, são R$ 5184; com manutenção, as despesas chegam a R$ 19 424. Acrescentando R$ 10 000 de lucro e dividindo por 120 vagas, a mensalidade é R$ 245,20."
         ],
         "alternatives": {
-          "A": "R$ 185,60 arrecadariam menos que o necessário para despesas e lucro pretendido.",
-          "B": "R$ 226,09 não cobrem o total de R$ 29 424 exigido.",
-          "C": "R$ 245,20 multiplicados por 120 totalizam despesas mais o lucro de R$ 10 000.",
-          "D": "R$ 268,93 excedem a mensalidade necessária para o lucro especificado.",
-          "E": "R$ 285,60 também gerariam arrecadação acima da quantia calculada."
+          "A": "R$ 185,60 arrecadariam menos que o necessário para despesas e lucro pretendido. A receita requerida é R$ 19 424 de despesas mais R$ 10 000 de lucro, que precisa ser dividida pelas 120 vagas.",
+          "B": "R$ 226,09 não cobrem o total de R$ 29 424 exigido. O produto de R$ 226,09 pelas vagas não alcança o montante necessário depois do aumento do seguro.",
+          "C": "R$ 245,20 multiplicados por 120 totalizam despesas mais o lucro de R$ 10 000. A conta inclui manutenção sem reajuste, seguro individual multiplicado por 1,20 e lucro líquido pretendido.",
+          "D": "R$ 268,93 excedem a mensalidade necessária para o lucro especificado. Esse preço produziria receita superior à estritamente calculada para o lucro de dez mil reais.",
+          "E": "R$ 285,60 também gerariam arrecadação acima da quantia calculada. O reajuste de vinte por cento vale só para o seguro de R$ 36 e não para todas as parcelas que compõem a mensalidade."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3312,11 +3312,11 @@
           "Um centímetro cúbico corresponde a um mililitro. Assim, o pote armazena 20 000 mL e cada taça usa 250 mL. Dividindo o volume total pelo volume de uma porção, obtém-se 20 000/250 = 80 taças completas."
         ],
         "alternatives": {
-          "A": "Cinco taças consumiriam apenas 1250 mL, uma pequena parte do pote.",
-          "B": "Oito resulta de um erro de fator dez na conversão ou divisão.",
-          "C": "Cinquenta taças usariam 12 500 mL, deixando volume suficiente para outras trinta.",
-          "D": "O quociente entre 20 000 e 250 é exatamente 80.",
-          "E": "Oitocentas taças exigiriam 200 000 mL, dez vezes o volume disponível."
+          "A": "Cinco taças consumiriam apenas 1250 mL, uma pequena parte do pote. Ainda restariam 18 750 mL disponíveis, suficientes para muitas outras porções de 250 mL.",
+          "B": "Oito resulta de um erro de fator dez na conversão ou divisão. Como 1 cm³ = 1 mL, a conversão não introduz divisão por dez que reduza o pote a dois mil mililitros.",
+          "C": "Cinquenta taças usariam 12 500 mL, deixando volume suficiente para outras trinta. A capacidade deve ser integralmente dividida em porções iguais, e não interrompida depois de cinquenta.",
+          "D": "O quociente entre 20 000 e 250 é exatamente 80. O mesmo resultado pode ser visto por vinte litros divididos por um quarto de litro em cada taça.",
+          "E": "Oitocentas taças exigiriam 200 000 mL, dez vezes o volume disponível. A conversão entre mililitro e centímetro cúbico é de um para um, sem multiplicar o volume por dez."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3356,11 +3356,11 @@
           "Para cada safra, multiplica-se área por produtividade e por 50 kg por saca, dividindo por 1000 para obter toneladas. Os resultados são 400, 330, 562,5, 562,5 e 500 t, sequência representada pelo gráfico A."
         ],
         "alternatives": {
-          "A": "O gráfico apresenta exatamente a sequência calculada de produção em toneladas.",
-          "B": "Os valores reproduzem a produtividade em sacas por hectare, sem converter em produção total.",
-          "C": "Os números são as áreas cultivadas, não a massa produzida.",
-          "D": "Somar área e produtividade não tem significado de produção e gera os valores incorretos.",
-          "E": "Os valores equivalem ao número de sacas em milhares, sem aplicar os 50 kg por saca."
+          "A": "O gráfico apresenta exatamente a sequência calculada de produção em toneladas. Os produtos área × sacas por hectare × 0,05 t por saca geram as cinco ordenadas da linha.",
+          "B": "Os valores reproduzem a produtividade em sacas por hectare, sem converter em produção total. Produtividade por hectare só se torna massa total após multiplicar pela extensão efetivamente cultivada.",
+          "C": "Os números são as áreas cultivadas, não a massa produzida. A área mede superfície e não pode assumir diretamente o eixo rotulado em toneladas.",
+          "D": "Somar área e produtividade não tem significado de produção e gera os valores incorretos. Somar hectare e sacas por hectare combina unidades incompatíveis e não representa massa.",
+          "E": "Os valores equivalem ao número de sacas em milhares, sem aplicar os 50 kg por saca. A passagem de sacas a toneladas exige cinquenta quilogramas por saca, fator ausente nessa série."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3400,11 +3400,11 @@
           "A área circular é 3,1 × 3² = 27,9 cm². O quadrado inscrito tem diagonal 6 cm e área 6²/2 = 18 cm². A região de ouro tem 9,9 cm²; multiplicando pela espessura de 0,3 cm e por 100 medalhas, o volume é 297 cm³."
         ],
         "alternatives": {
-          "A": "288 não resulta da diferença correta entre as áreas circular e quadrada.",
-          "B": "(27,9 − 18) × 0,3 × 100 fornece 297 cm³.",
-          "C": "567 corresponde ao dobro do volume do prisma quadrado, não à região externa.",
-          "D": "990 omite a multiplicação pela espessura de 0,3 cm.",
-          "E": "1134 não corresponde ao volume da região de ouro calculada."
+          "A": "288 não resulta da diferença correta entre as áreas circular e quadrada. A área do quadrado inscrito deve ser obtida pela diagonal e não por uma aproximação sem relação com os seis centímetros.",
+          "B": "(27,9 − 18) × 0,3 × 100 fornece 297 cm³. Cada peça usa 2,97 cm³; cem peças multiplicam esse volume e produzem o total indicado.",
+          "C": "567 corresponde ao dobro do volume do prisma quadrado, não à região externa. Calcular o prisma central fornece volume do material excluído do ouro, diferente da região externa pedida.",
+          "D": "990 omite a multiplicação pela espessura de 0,3 cm. A diferença de áreas em cem faces ainda deve ser transformada em volume pela espessura de três milímetros.",
+          "E": "1134 não corresponde ao volume da região de ouro calculada. O total precisa refletir ouro apenas fora do quadrado e a conversão correta de milímetros a centímetros."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3444,11 +3444,11 @@
           "João vence quando seu número é maior ou igual aos dois números de Artur. Para cada resultado j de João, há j² pares favoráveis; a soma de 1² a 6² é 91 em 216 trios possíveis. Artur vence nos outros 125, logo tem probabilidade 125/216 e a maior chance."
         ],
         "alternatives": {
-          "A": "Dois dados não garantem simplesmente dois terços de chance, pois há empates e repetição de resultados.",
-          "B": "A chance de João é 91/216 e não 4/9.",
-          "C": "91/216 é a probabilidade de João, não de Artur.",
-          "D": "A fração de João está correta, mas ele não tem a maior probabilidade.",
-          "E": "Artur vence no complemento de 91/216, isto é, 125/216."
+          "A": "Dois dados não garantem simplesmente dois terços de chance, pois há empates e repetição de resultados. Ter dois dados favorece Artur, mas a chance exata também depende de repetição e da regra de vitória de João nos empates.",
+          "B": "A chance de João é 91/216 e não 4/9. A soma dos quadrados 1 a 6 resulta em noventa e uma combinações favoráveis a João, não noventa e seis.",
+          "C": "91/216 é a probabilidade de João, não de Artur. A conta de 91 inclui todas as ocasiões em que João iguala ou supera ambos os dados adversários.",
+          "D": "A fração de João está correta, mas ele não tem a maior probabilidade. Noventa e um é menor que metade de duzentos e dezesseis, portanto João é o jogador menos favorecido.",
+          "E": "Artur vence no complemento de 91/216, isto é, 125/216. A complementaridade incorpora a regra dos empates e identifica 125 casos favoráveis para Artur entre os 216 equiprováveis."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3488,11 +3488,11 @@
           "O enunciado define a grandeza como intensidade luminosa dividida pelo quadrado da distância. Substituindo apenas as unidades, a razão é candela por metro quadrado, cd/m², sem necessidade de alterar a definição fornecida."
         ],
         "alternatives": {
-          "A": "A razão indicada produz unidade cd dividida por m².",
-          "B": "m²/cd inverte numerador e denominador da definição.",
-          "C": "cd/m usa a distância simples, sem o quadrado exigido.",
-          "D": "m/cd inverte a razão e ainda omite o quadrado.",
-          "E": "m/cd² eleva a grandeza errada ao quadrado e inverte a relação."
+          "A": "A razão indicada produz unidade cd dividida por m². A operação definida divide uma intensidade em candela por uma área dimensional em metros ao quadrado.",
+          "B": "m²/cd inverte numerador e denominador da definição. A unidade invertida corresponderia ao inverso da grandeza que foi definida no enunciado.",
+          "C": "cd/m usa a distância simples, sem o quadrado exigido. O quadrado da distância é essencial: dobrá-la quadruplica o denominador, não apenas o duplica.",
+          "D": "m/cd inverte a razão e ainda omite o quadrado. A definição mantém candela no numerador e usa dois fatores de metro no denominador.",
+          "E": "m/cd² eleva a grandeza errada ao quadrado e inverte a relação. Não há quadrado da intensidade na definição, apenas da distância até o foco de luz."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3532,11 +3532,11 @@
           "Em cada rodada, o jogador 1 entrega uma moeda e recebe quatro do jogador 4. Seu saldo aumenta, portanto, em três moedas por rodada. Partindo de 100, ao fim de n rodadas possui 100 + 3n moedas."
         ],
         "alternatives": {
-          "A": "A expressão começa em 103 e ainda soma quatro por rodada, contando incorretamente o saldo.",
-          "B": "O termo inicial 103 já inclui uma rodada antes de n começar a ser contado.",
-          "C": "Somar quatro por rodada ignora a moeda que o jogador transfere.",
-          "D": "O valor inicial 100 acrescido do saldo líquido de três por rodada dá 100 + 3n.",
-          "E": "99 + 4n desconta a moeda enviada uma única vez, embora ela seja enviada em todas as rodadas."
+          "A": "A expressão começa em 103 e ainda soma quatro por rodada, contando incorretamente o saldo. Quando n = 0, deveria haver cem moedas, e o ganho líquido de cada rodada também não é quatro.",
+          "B": "O termo inicial 103 já inclui uma rodada antes de n começar a ser contado. O valor de 103 corresponde ao fim da primeira rodada e não pode ser tomado como o estado anterior a todas elas.",
+          "C": "Somar quatro por rodada ignora a moeda que o jogador transfere. O jogador recebe quatro, mas simultaneamente precisa descontar a moeda que entrega ao próximo.",
+          "D": "O valor inicial 100 acrescido do saldo líquido de três por rodada dá 100 + 3n. A cada rodada completa, a variação é 4 − 1 = 3 e se acumula linearmente a partir das cem moedas.",
+          "E": "99 + 4n desconta a moeda enviada uma única vez, embora ela seja enviada em todas as rodadas. A transferência de saída é recorrente e deve ser multiplicada também por n, não descontada só no início."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3576,11 +3576,11 @@
           "A 60 km/h, os gráficos mostram rendimento de 10 km/m³ para GNV e 8 km/L para gasolina. Cada combustível é usado em 120 km: são 12 m³ de gás, ao custo de R$ 24, e 15 L de gasolina, ao custo de R$ 45. A diferença é R$ 21."
         ],
         "alternatives": {
-          "A": "R$ 4 não é a diferença entre os gastos de R$ 45 e R$ 24.",
-          "B": "R$ 8 também não corresponde aos consumos lidos para 60 km/h.",
-          "C": "R$ 14 resulta de combinar rendimentos ou distâncias diferentes dos indicados.",
-          "D": "O custo da gasolina supera o do gás em 45 − 24 = R$ 21.",
-          "E": "R$ 30 não respeitam simultaneamente os rendimentos e os preços fornecidos."
+          "A": "R$ 4 não é a diferença entre os gastos de R$ 45 e R$ 24. Os custos precisam ser calculados separadamente com preços e rendimentos distintos, antes de fazer sua diferença.",
+          "B": "R$ 8 também não corresponde aos consumos lidos para 60 km/h. O GNV usa doze unidades a dois reais e a gasolina quinze a três, dados que não produzem essa diferença.",
+          "C": "R$ 14 resulta de combinar rendimentos ou distâncias diferentes dos indicados. A leitura correta do gráfico em sessenta, e não no pico em cem quilômetros por hora, fixa os consumos.",
+          "D": "O custo da gasolina supera o do gás em 45 − 24 = R$ 21. A comparação leva em conta 120 km em cada metade e o preço por unidade de cada combustível.",
+          "E": "R$ 30 não respeitam simultaneamente os rendimentos e os preços fornecidos. Usar toda a distância de 240 km para um dos combustíveis distorce o modelo de metades iguais da viagem."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3620,11 +3620,11 @@
           "Calculando os pacotes completos, a escola I cobra 20 × 10 + 10 × 80 + 400 = R$ 1400. A II cobra 600 + 500 + 200 = R$ 1300. A III cobra 400 + 400 + 400 = R$ 1200, o menor total."
         ],
         "alternatives": {
-          "A": "O total da escola I é correto, mas existem opções mais baratas.",
-          "B": "R$ 280 somam preços unitários e aluguel, sem multiplicar pelas quantidades de aulas.",
-          "C": "R$ 1300 é o total da escola II, acima do cobrado pela III.",
-          "D": "R$ 460 ignoram as quantidades dos dois pacotes de aulas.",
-          "E": "A escola III custa R$ 1200 e oferece o menor preço completo."
+          "A": "O total da escola I é correto, mas existem opções mais baratas. O mínimo deve ser escolhido após calcular os três pacotes, e R$ 1400 ficam acima dos R$ 1200 da III.",
+          "B": "R$ 280 somam preços unitários e aluguel, sem multiplicar pelas quantidades de aulas. O custo unitário de uma aula não equivale ao pacote de vinte teóricas e dez práticas exigido.",
+          "C": "R$ 1300 é o total da escola II, acima do cobrado pela III. Embora abaixo da I, o preço da II ainda excede em cem reais o total completo da III.",
+          "D": "R$ 460 ignoram as quantidades dos dois pacotes de aulas. Somar uma teórica, uma prática e aluguel elimina as quantidades obrigatórias e subestima o orçamento.",
+          "E": "A escola III custa R$ 1200 e oferece o menor preço completo. O cálculo compara R$ 1400, R$ 1300 e R$ 1200 para exatamente o mesmo conjunto de serviços."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3664,11 +3664,11 @@
           "O volume até a boia é 2,5 × 1,5 × 2 = 7,5 dm³, ou 7,5 L. Podem ser deslocados no máximo 2,5 L para manter pelo menos 5 L de água. Cada garrafa desloca 0,3 L; o máximo inteiro abaixo de 2,5/0,3 é oito garrafas."
         ],
         "alternatives": {
-          "A": "Dez garrafas deslocariam 3 L e deixariam apenas 4,5 L de água.",
-          "B": "Oito garrafas deslocam 2,4 L e deixam 5,1 L, respeitando o limite.",
-          "C": "Quatro são permitidas, mas não representam a quantidade máxima.",
-          "D": "Três também atendem, porém há espaço para mais sem comprometer os 5 L.",
-          "E": "Duas ficam muito abaixo do máximo de deslocamento permitido."
+          "A": "Dez garrafas deslocariam 3 L e deixariam apenas 4,5 L de água. Esse restante fica meio litro abaixo do mínimo de cinco litros para funcionar adequadamente.",
+          "B": "Oito garrafas deslocam 2,4 L e deixam 5,1 L, respeitando o limite. Uma nona garrafa deslocaria 2,7 L e deixaria 4,8 L, o que demonstra que oito é o máximo permitido.",
+          "C": "Quatro são permitidas, mas não representam a quantidade máxima. O volume restante ainda excederia o necessário e permitiria acrescentar outras quatro garrafas.",
+          "D": "Três também atendem, porém há espaço para mais sem comprometer os 5 L. A condição não pede apenas uma quantidade segura, e sim a maior inteira que não faça cair abaixo de cinco litros.",
+          "E": "Duas ficam muito abaixo do máximo de deslocamento permitido. O deslocamento de 0,6 L deixa margem de 1,9 L, portanto ainda não esgota a redução permitida."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3708,11 +3708,11 @@
           "A maior torta tem raio de 16 cm, portanto diâmetro de 32 cm. Para haver 1 cm livre em cada lateral, a base quadrada precisa ter lado mínimo de 34 cm. Comparada ao lado original de 14 cm, a ampliação é de 20 cm."
         ],
         "alternatives": {
-          "A": "Aumentar quatro centímetros deixaria o lado em 18 cm, menor que o diâmetro da torta.",
-          "B": "O acréscimo de 12 cm dá 26 cm, que não comportam a maior torta.",
-          "C": "O acréscimo de 16 cm resulta em 30 cm, ainda abaixo dos 32 cm de diâmetro.",
-          "D": "Dezoito centímetros a mais dão exatamente 32 cm e eliminam a folga lateral obrigatória.",
-          "E": "O lado necessário é 34 cm, vinte centímetros maior que os 14 cm originais."
+          "A": "Aumentar quatro centímetros deixaria o lado em 18 cm, menor que o diâmetro da torta. A caixa deve comportar o maior raio do intervalo, e não apenas uma torta menor.",
+          "B": "O acréscimo de 12 cm dá 26 cm, que não comportam a maior torta. Para a torta de dezesseis centímetros de raio, vinte e seis de lado nem chegam ao diâmetro.",
+          "C": "O acréscimo de 16 cm resulta em 30 cm, ainda abaixo dos 32 cm de diâmetro. Além de atingir os trinta e dois centímetros do diâmetro, ainda é preciso acrescentar duas folgas de um centímetro.",
+          "D": "Dezoito centímetros a mais dão exatamente 32 cm e eliminam a folga lateral obrigatória. Há uma folga de um centímetro em cada uma das duas faces laterais opostas, exigindo dois centímetros adicionais.",
+          "E": "O lado necessário é 34 cm, vinte centímetros maior que os 14 cm originais. A altura de sete já oferece a folga superior de um centímetro, deixando como ajuste necessário o lado da base."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3752,11 +3752,11 @@
           "O argumento do logaritmo é K(−t² + 18t + 19), cujo máximo em 0 ≤ t ≤ 10 ocorre no vértice t = 9 e vale 100K. Exigir 4 log(100K) ≤ 10 dá 100K ≤ 10^2,5, logo K ≤ 10^0,5."
         ],
         "alternatives": {
-          "A": "O valor 10^0,5 faz a pressão máxima no intervalo atingir exatamente 10 atmosferas.",
-          "B": "10^8 produz pressão muito acima do limite.",
-          "C": "Dividir 10^2,5 por 84 usa um valor abaixo do máximo 100 da parábola.",
-          "D": "O denominador 99 corresponde a t = 10 e ignora o pico em t = 9.",
-          "E": "0,25 respeitaria o teto, mas não é o maior parâmetro possível."
+          "A": "O valor 10^0,5 faz a pressão máxima no intervalo atingir exatamente 10 atmosferas. O ponto mais exigente é o máximo da parábola no intervalo de funcionamento, e não necessariamente a última hora.",
+          "B": "10^8 produz pressão muito acima do limite. A substituição no máximo daria 4 log(100 × 10^8) = 40 atm, quatro vezes a recomendação.",
+          "C": "Dividir 10^2,5 por 84 usa um valor abaixo do máximo 100 da parábola. Usar um denominador menor permite um K grande demais, que excede o teto quando o argumento atinge 100K.",
+          "D": "O denominador 99 corresponde a t = 10 e ignora o pico em t = 9. A pressão no último instante é ligeiramente menor que a de nove horas, portanto não basta testar somente o final.",
+          "E": "0,25 respeitaria o teto, mas não é o maior parâmetro possível. O critério de segurança aceita esse valor, mas a otimização ainda permite aumentá-lo até a raiz quadrada de dez."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3796,11 +3796,11 @@
           "No projeto 1, os raios são 6 e 3 m, então a área total é (3/2)(6² + 3²) = 67,5 m². No projeto 2, o diâmetro é 18 m e o raio 9 m, dando (3/2)9² = 121,5 m². O primeiro exige retirar menos material."
         ],
         "alternatives": {
-          "A": "O projeto 1 tem área de 67,5 m², menor que os 121,5 m² do segundo.",
-          "B": "O projeto 2 tem essa área, mas ela é maior que a do projeto 1.",
-          "C": "135 m² seriam o dobro da área correta dos dois semicírculos do projeto 1.",
-          "D": "243 m² corresponde à área de um círculo inteiro de raio 9 m, não à seção semicircular.",
-          "E": "Os quadrados dos raios tornam as áreas diferentes, apesar de somarem a mesma largura."
+          "A": "O projeto 1 tem área de 67,5 m², menor que os 121,5 m² do segundo. A soma de semicírculos de raios seis e três é menor que a seção única de raio nove.",
+          "B": "O projeto 2 tem essa área, mas ela é maior que a do projeto 1. Escolher um projeto por apresentar sua área correta não basta; é preciso comparar qual das duas áreas é menor.",
+          "C": "135 m² seriam o dobro da área correta dos dois semicírculos do projeto 1. O fator um meio é obrigatório porque os túneis têm seções semicirculares e não círculos completos.",
+          "D": "243 m² corresponde à área de um círculo inteiro de raio 9 m, não à seção semicircular. Além de o valor estar dobrado, a seção do segundo projeto já é maior mesmo depois da correção.",
+          "E": "Os quadrados dos raios tornam as áreas diferentes, apesar de somarem a mesma largura. A área depende quadraticamente do raio, então somar larguras não conserva a área de dois arcos separados."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3840,11 +3840,11 @@
           "O gabarito oficial registra esta questão como anulada. Para estudar a equação proposta, 60000/n − 60000/(n + 6) = 500 leva a n(n + 6) = 720, ou n² + 6n − 720 = 0. A raiz positiva é 24. Essa conta não altera o status oficial de anulação."
         ],
         "alternatives": {
-          "A": "Com 18 parcelas, a diferença para 24 parcelas seria maior que R$ 500.",
-          "B": "n = 24 satisfaz a equação do enunciado, mas o item segue sem letra válida no gabarito final.",
-          "C": "Com 30 parcelas, a diferença para 36 seria de cerca de R$ 333,33.",
-          "D": "42 não satisfaz n(n + 6) = 720.",
-          "E": "48 também não satisfaz a condição de redução de R$ 500 por parcela."
+          "A": "Com 18 parcelas, a diferença para 24 parcelas seria maior que R$ 500. 60000/18 − 60000/24 dá aproximadamente R$ 833,33, fora da diferença definida no enunciado.",
+          "B": "n = 24 satisfaz a equação do enunciado, mas o item segue sem letra válida no gabarito final. As parcelas seriam R$ 2500 e R$ 2000, diferença de R$ 500; essa verificação é didática e não revoga a anulação.",
+          "C": "Com 30 parcelas, a diferença para 36 seria de cerca de R$ 333,33. A diferença entre R$ 2000 e cerca de R$ 1666,67 não chega aos R$ 500 pedidos.",
+          "D": "42 não satisfaz n(n + 6) = 720. A substituição produz 42 × 48 = 2016, enquanto a equação exige produto igual a 720.",
+          "E": "48 também não satisfaz a condição de redução de R$ 500 por parcela. Nesse caso, as parcelas em 48 e 54 meses teriam diferença muito menor que R$ 500."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3884,11 +3884,11 @@
           "O mais velho deve receber um dos dois presentes especiais, escolha de duas maneiras, e outros dois entre os seis comuns, escolha C(6,2) = 15. Dos cinco presentes restantes, escolhem-se três para o mais novo de C(5,3) = 10 maneiras. O produto é 2 × 15 × 10 = 300."
         ],
         "alternatives": {
-          "A": "36 não conta todas as escolhas dos dois presentes comuns e da distribuição restante.",
-          "B": "53 não resulta da aplicação do princípio multiplicativo às escolhas independentes.",
-          "C": "O produto de duas escolhas especiais, quinze pares comuns e dez trios restantes é 300.",
-          "D": "360 usa uma contagem diferente das combinações exigidas de presentes distintos.",
-          "E": "560 é a contagem sem impor corretamente a restrição de exatamente um presente especial ao mais velho."
+          "A": "36 não conta todas as escolhas dos dois presentes comuns e da distribuição restante. É necessário escolher os presentes comuns do mais velho e ainda decidir a quem vão os restantes, escolhas ausentes nessa contagem.",
+          "B": "53 não resulta da aplicação do princípio multiplicativo às escolhas independentes. As etapas de seleção devem ser multiplicadas porque cada escolha da primeira pode combinar com cada resultado da seguinte.",
+          "C": "O produto de duas escolhas especiais, quinze pares comuns e dez trios restantes é 300. Após escolher exatamente um especial e dois comuns para o mais velho, a escolha do trio do mais novo determina automaticamente os dois do meio.",
+          "D": "360 usa uma contagem diferente das combinações exigidas de presentes distintos. A ordem interna dos presentes de cada filho não conta; devem ser usadas combinações e a restrição de um só especial.",
+          "E": "560 é a contagem sem impor corretamente a restrição de exatamente um presente especial ao mais velho. A contagem irrestrita C(8,3)C(5,3) inclui casos com nenhum ou com os dois especiais para o mais velho, proibidos pelo enunciado."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3928,11 +3928,11 @@
           "O jogador atuou durante os 45 minutos do segundo tempo e os 30 da prorrogação, total de 75 minutos. Sua velocidade média foi 4,5/45 = 0,1 km/min; mantida por todo esse período, a distância total é 7,5 km."
         ],
         "alternatives": {
-          "A": "4,5 km ignora os 30 minutos da prorrogação.",
-          "B": "6,0 km corresponderiam a apenas 60 minutos nessa velocidade média.",
-          "C": "Em 75 minutos a 0,1 km/min, percorrem-se 7,5 km.",
-          "D": "9,0 km corresponderiam a 90 minutos, mas o jogador não atuou no primeiro tempo.",
-          "E": "12,0 km corresponderiam a 120 minutos e incluiriam indevidamente toda a partida."
+          "A": "4,5 km ignora os 30 minutos da prorrogação. A informação de 4,5 é apenas a leitura ao fim do período regulamentar, antes de ele continuar correndo.",
+          "B": "6,0 km corresponderiam a apenas 60 minutos nessa velocidade média. O jogador participa de quarenta e cinco mais trinta minutos, não apenas uma hora.",
+          "C": "Em 75 minutos a 0,1 km/min, percorrem-se 7,5 km. A prorrogação acrescenta três quilômetros aos quatro e meio anteriores, totalizando sete e meio.",
+          "D": "9,0 km corresponderiam a 90 minutos, mas o jogador não atuou no primeiro tempo. A entrada só no início do segundo tempo impede contar os noventa minutos regulamentares completos.",
+          "E": "12,0 km corresponderiam a 120 minutos e incluiriam indevidamente toda a partida. Contar a final inteira ignora que ele passou os primeiros quarenta e cinco minutos fora do jogo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",

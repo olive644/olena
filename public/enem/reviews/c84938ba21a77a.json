@@ -815,6 +815,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As linhas de campo de um fio retilíneo são circunferências centradas no fio. Pela regra da mão direita, polegar para cima no sentido da corrente, os dedos indicam circulação anti-horária vista de cima. As agulhas devem ser tangentes a essas linhas, com o polo norte apontando no sentido do campo, como no esquema D."
+        ],
+        "alternatives": {
+          "A": "As agulhas não acompanham de modo consistente as tangentes à circunferência. A bússola deve indicar o campo circular, e não apontar em direção ao fio como se ele fosse um polo magnético.",
+          "B": "A orientação apresentada não respeita a circulação determinada pela regra da mão direita. É preciso usar o polo norte da agulha, a ponta escura da legenda, para conferir o sentido em cada posição.",
+          "C": "As agulhas aparecem paralelas entre si, embora ocupem pontos distintos de uma linha circular. O campo muda de direção ao redor do fio, portanto cada bússola deve alinhar-se com sua tangente local.",
+          "D": "As três agulhas são tangentes e seus polos norte obedecem à circulação anti-horária vista de cima. Isso corresponde à corrente dirigida para cima pela regra da mão direita.",
+          "E": "As direções tangentes estão representadas, mas o sentido das pontas escuras é o contrário do exigido para corrente ascendente. O esquema corresponderia à inversão do sentido da corrente."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:119": {
@@ -835,6 +859,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Com pele molhada, a resistência é 1000 Ω. Para chegar à faixa de parada respiratória, de 20 a 100 mA, as baterias devem fornecer mais que 20 V. Em A, a ligação em série soma 12+12=24 V, produzindo I=24/1000=0,024 A=24 mA."
+        ],
+        "alternatives": {
+          "A": "O terminal negativo de uma bateria liga-se ao positivo da outra, somando as tensões. Os 24 V geram 24 mA no corpo molhado, dentro da faixa de parada respiratória.",
+          "B": "Os terminais negativos estão ligados entre si e os pontos externos são ambos positivos. As forças eletromotrizes iguais se opõem e não fornecem os 24 V necessários entre A e B.",
+          "C": "Os fios ligam terminais de mesma polaridade, configurando paralelo. A tensão permanece 12 V e a corrente no corpo seria 12 mA, abaixo da faixa citada.",
+          "D": "Os terminais positivos estão unidos e os pontos externos são negativos. As tensões iguais se opõem entre A e B, em vez de se somarem.",
+          "E": "A ligação coloca polaridades contrárias em paralelo, provocando conflito entre as fontes e corrente no próprio circuito. Não representa a associação em série de 24 V que explica o acidente descrito."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:120": {
@@ -2736,6 +2784,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Consideram-se apenas os meses com receita maior que despesa. Os lucros são janeiro 3, março 1, maio 5, junho 3, julho 2, setembro 4, novembro 1 e dezembro 4 milhões. Em ordem crescente: 1,1,2,3,3,4,4,5. Com oito valores, a mediana é a média do quarto e do quinto, ambos iguais a 3."
+        ],
+        "alternatives": {
+          "A": "O valor 1,5 não corresponde aos dois termos centrais dos meses lucrativos. Incluir prejuízos ou confundir receita com lucro muda o conjunto que a pergunta pede.",
+          "B": "Dois milhões é um dos lucros observados, mas ocupa a terceira posição da lista ordenada. A mediana de oito lucros depende das posições quatro e cinco.",
+          "C": "Dois vírgula nove aproxima a média aritmética dos lucros, que é 23/8=2,875. A questão pede mediana, calculada pelas posições centrais.",
+          "D": "Os oito lucros ordenados têm 3 nas duas posições centrais. Sua média é 3 milhões de reais, a mediana solicitada.",
+          "E": "Cinco vírgula cinco pode resultar de olhar apenas barras de receita, sem subtrair despesas. O lucro deve ser calculado mês a mês antes de ordenar os valores."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:154": {
@@ -2756,6 +2828,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada pacote básico oferece 2.000 gemas e 100.000 moedas, razão de 50 moedas por gema. Com R$ 100, o cliente compraria dois pacotes básicos e receberia 4.000 gemas. O pacote especial oferece 6.000 gemas a mais que esses dois pacotes, portanto contém 10.000 gemas. Para manter a proporção, precisa conter 10.000·50=500.000 moedas no total. A quantidade a inserir sobre as 100.000 moedas do pacote básico é 500.000-100.000=400.000 moedas, alternativa E do gabarito oficial. A comparação com dois pacotes determina a quantidade de gemas; o acréscimo de moedas solicitado é medido sobre o conteúdo do pacote básico."
+        ],
+        "alternatives": {
+          "A": "50.000 moedas correspondem às moedas associadas a apenas 1.000 gemas na proporção original. Esse acréscimo elevaria o total a 150.000 moedas, insuficiente para acompanhar as 10.000 gemas do pacote especial.",
+          "B": "100.000 moedas apenas duplicariam as moedas de um pacote básico, produzindo 200.000 no total. Isso manteria a proporção para 4.000 gemas, mas o pacote especial contém 10.000 após o bônus informado.",
+          "C": "200.000 moedas adicionadas às 100.000 originais produziriam 300.000 moedas, suficientes para 6.000 gemas. Os 6.000 do enunciado são gemas adicionais às 4.000 obtidas com dois pacotes, e não o total do pacote especial.",
+          "D": "300.000 moedas são o aumento entre as 200.000 moedas de dois pacotes básicos e as 500.000 necessárias no especial. Essa conta usa os dois pacotes como referência do acréscimo de moedas; a interpretação adotada no gabarito mede a inserção sobre as 100.000 moedas de um pacote básico.",
+          "E": "400.000 moedas, somadas às 100.000 do pacote básico, completam as 500.000 necessárias para as 10.000 gemas. Assim, conserva-se a razão de 50 moedas por gema, seguindo a referência de acréscimo adotada pelo gabarito oficial E."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:155": {
@@ -2821,6 +2917,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na primeira divulgação, A gera 3000×0,10×0,03=9 compradores e B gera 1000×0,30×0,02=6, total de 15. Com novos investimentos de R$300, a segunda divulgação gera 27 em A e 9 em B, total de 36. O aumento relativo é (36−15)/15=1,4=140%, classificado como bom."
+        ],
+        "alternatives": {
+          "A": "A diferença é de 21 compradores sobre uma base de 15, ou 140%. Comparar só taxas de clique ou usar 21 como porcentagem levaria a uma classificação abaixo da real.",
+          "B": "Regular abrange aumentos de até 100%, mas a segunda divulgação gera 36 compradores contra 15 na primeira. O acréscimo de 21 supera integralmente a base anterior.",
+          "C": "A segunda divulgação produz 36 compradores, e o aumento de 21 equivale a 140% dos quinze iniciais. Esse resultado está entre 100% e 150%, intervalo bom.",
+          "D": "A faixa muito bom começa acima de 150%. O aumento calculado é 140%; não se deve confundir o total de 240% da base com o acréscimo percentual.",
+          "E": "O investimento de A triplica e o de B aumenta uma vez e meia, mas isso não implica aumento global de 200%. As conversões ponderadas resultam em 140%."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:157": {
@@ -2886,6 +3006,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os dois quadrados escuros do topo da planificação já compartilham uma extremidade da aresta comum. Ao dobrar sucessivamente as faces em ângulos retos, o terceiro quadrado precisa alcançar esse mesmo vértice do cubo. Isso ocorre quando está no canto inferior direito da última face da faixa, posição mostrada em D."
+        ],
+        "alternatives": {
+          "A": "O terceiro quadrado está no canto superior direito da última face. Ao dobrar a rede, esse canto não coincide com o vértice comum aos dois quadrados do topo.",
+          "B": "A marca da face intermediária superior está em um vértice que não se reúne ao encontro das duas marcas do topo. A proximidade na planificação não basta: é preciso verificar a coincidência após dobrar.",
+          "C": "A terceira marca fica no canto inferior direito da penúltima face, diferente do vértice que encontra as duas marcas superiores. Ela forma outro encontro de arestas no cubo montado.",
+          "D": "O canto inferior direito da última face encontra a extremidade superior da aresta compartilhada pelas duas primeiras faces. Assim, os três quartos pintados têm exatamente um vértice comum.",
+          "E": "A marca no canto inferior esquerdo da penúltima face alcança outro vértice. A montagem não produz o encontro único entre os três quadrados exigido pela figura."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:159": {
@@ -3086,6 +3230,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As dobras ocorrem nas diagonais do quadrado, deixando quatro camadas sobrepostas. Ao desdobrar, o arco recortado se reflete nas duas diagonais. Como seu centro R está deslocado de O para o meio de um lado, as quatro cópias têm centros distintos e formam quatro saliências voltadas aos meios dos lados, como em C."
+        ],
+        "alternatives": {
+          "A": "As saliências estão orientadas para as diagonais, como se os eixos de reflexão fossem os meios dos lados. As dobras efetivas são diagonais e produzem a orientação da alternativa C.",
+          "B": "Um círculo exigiria um único centro para todo o contorno. Como R não coincide com O, as reflexões criam quatro centros distintos e o furo não é circular.",
+          "C": "O recorte é reproduzido simetricamente pelas duas diagonais. O deslocamento de R gera quatro arcos com saliências em direção aos meios dos lados, preservando a simetria de um quarto de volta.",
+          "D": "Uma elipse teria eixos de comprimentos diferentes e não manteria a simetria de 90 graus do recorte nas quatro camadas. As operações produzem quatro arcos congruentes.",
+          "E": "A figura mantém apenas duas regiões cortadas e deixa divisões retas internas. Ao abrir ambas as dobras, o recorte deve repetir-se nas quatro partes em torno do centro."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:164": {
@@ -3151,6 +3319,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na projeção sobre um plano paralelo ao Equador, os polos Norte e Sul coincidem com o centro do círculo projetado. Cada trecho de meridiano vira um segmento radial, e as partes do Equador preservam arcos circulares. Como os planos dos meridianos são perpendiculares, surgem dois setores opostos de 90 graus, como em E."
+        ],
+        "alternatives": {
+          "A": "As curvas internas não podem ser projeções dos meridianos sobre o plano equatorial. Esses meridianos se projetam em linhas retas que passam pelo centro.",
+          "B": "Os arcos externos representam corretamente partes do Equador, mas os limites internos curvos contradizem a projeção radial dos meridianos. Eles devem se encontrar em ângulo reto.",
+          "C": "A forma de duas pétalas mantém curvaturas nos trechos que deveriam ser radiais. A projeção ortogonal elimina a altura dos meridianos e os transforma em segmentos retos.",
+          "D": "O círculo completo acrescenta trechos do Equador que não pertencem às duas trajetórias destacadas. A projeção contém somente dois quartos de circunferência opostos.",
+          "E": "Os meridianos geram raios perpendiculares e os trechos equatoriais geram dois arcos de um quarto de círculo. O resultado são os dois setores opostos mostrados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:166": {
@@ -3576,6 +3768,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O gabarito oficial registra esta questão como ANULADA, sem alternativa A-E correta. A análise matemática a seguir é didática e não atribui ao Inep uma justificativa para a anulação. Pelas regras impressas, S(q)=675+5q para q≤50. Para q>50, as primeiras cinquenta peças rendem R$250 e as demais rendem 7(q−50), logo S(q)=675+250+7(q−50)=575+7q. Nenhuma opção reproduz simultaneamente essas duas expressões."
+        ],
+        "alternatives": {
+          "A": "A questão foi anulada oficialmente, portanto A não é uma resposta oficial válida. Didaticamente, somar 5 e 7 para pagar R$12 em todas as peças ignora as faixas: para q=1, a regra dá R$680, enquanto A dá R$687.",
+          "B": "B não foi validada pelo gabarito, que registra anulação. Além de pagar uma taxa única de R$12 por peça, a fórmula troca a parcela fixa de R$675 por R$325; com nenhuma venda, já não atende ao enunciado.",
+          "C": "A anulação oficial impede considerar C como resposta correta. Como verificação didática, pagar R$7 desde a primeira peça contraria a comissão de R$5 até a quinquagésima; para q=50, daria R$1025 em vez de R$925.",
+          "D": "D também não é resposta oficial, pois o item foi anulado. Suas duas faixas têm problemas: a primeira usa fixo de R$625 em vez de R$675, e a segunda deveria ser 575+7q, preservando a comissão menor das cinquenta primeiras peças.",
+          "E": "O gabarito anulado não valida E. A segunda expressão, 575+7q, corresponde à regra impressa para q>50; porém a primeira deveria começar por 675, e não 625, razão pela qual o par de expressões não descreve todo o salário."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:176": {
@@ -3686,6 +3902,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2022 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O robô percorre sucessivamente as faces superior, direita, frontal, inferior, esquerda e posterior, retornando à superior. Na projeção, os movimentos verticais nas faces laterais colapsam em pontos. Os segmentos restantes formam os contornos de dois quadrados em quadrantes diagonalmente opostos da base, conforme A."
+        ],
+        "alternatives": {
+          "A": "A alternância entre virar à esquerda e à direita leva o trajeto pelas seis faces. Ao eliminar a altura, os trechos horizontais delimitam os dois quadrantes opostos mostrados nessa alternativa.",
+          "B": "Essa figura acrescenta um segmento que fecha um terceiro quadrante. A alternância de giros não produz esse contorno extra na projeção do percurso completo.",
+          "C": "Os dois quadrados ficam adjacentes no mesmo lado da base. O trajeto alternado passa por faces opostas e projeta quadrantes em diagonal, não lado a lado.",
+          "D": "A figura concentra o percurso na metade posterior da base. O robô visita também a face frontal e a inferior, cuja projeção exige o quadrante diagonalmente oposto.",
+          "E": "Os contornos mostrados incluem três quadrantes da base. O trajeto projetado fecha apenas dois quadrados opostos, sem o segmento adicional que completa o terceiro."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/enem/provas_e_gabaritos/2022_GB_impresso_D2_CD5.pdf"
+          }
+        ]
       }
     },
     "q:179": {

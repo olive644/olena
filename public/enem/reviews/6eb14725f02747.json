@@ -23,6 +23,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O aviso informa que a mala do passageiro esteve entre as selecionadas para inspeção física. Os verbos no passado indicam um procedimento já realizado, e as explicações sobre fechaduras e objetos devolvidos esclarecem o que pode ter ocorrido durante essa revista."
+        ],
+        "alternatives": {
+          "A": "O passageiro não está sendo convocado a apresentar a bagagem: o documento comunica uma inspeção já feita.",
+          "B": "O aviso não acusa o passageiro de transportar material proibido; explica que a revista procura esse tipo de item.",
+          "C": "A informação de que a mala foi selecionada e inspecionada identifica o objetivo central do aviso.",
+          "D": "As sugestões de organização aparecem apenas por remissão ao site e não prometem evitar inspeções obrigatórias.",
+          "E": "O texto manifesta pesar pela possível quebra de fechaduras, mas não afirma dano ocorrido durante a viagem como objetivo principal."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "english:92": {
@@ -43,6 +67,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O poema chama estrela, terra, sol e lua de membros da família e pede beleza, força, paz e sabedoria. Essa aproximação entre vida humana e elementos naturais revela a importância da natureza para a visão de mundo e a tradição cultural representadas."
+        ],
+        "alternatives": {
+          "A": "A menção ao milho não descreve transmissão de receitas ou hábitos alimentares entre gerações.",
+          "B": "Os mais velhos recebem um pedido de sabedoria, mas a organização do poema envolve principalmente vínculos com a natureza.",
+          "C": "O corpo aparece no pedido de força, sem descrição de sua representação em cerimônias rituais.",
+          "D": "Os astros e a terra são tratados como parentes e fontes de qualidades essenciais à vida, evidenciando a centralidade da natureza.",
+          "E": "Os termos familiares funcionam como metáforas dos elementos naturais, e não como defesa de uma estrutura familiar específica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "english:93": {
@@ -63,6 +111,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Uma personagem afirma detestar aquela 'season'. A amiga interpreta a palavra como estação do ano e elogia o outono. A primeira esclarece que falava da temporada de futebol. O desencontro decorre dos dois sentidos possíveis do mesmo termo em inglês."
+        ],
+        "alternatives": {
+          "A": "A amiga responde sobre o outono, de modo que não se estabelece uma divergência entre opiniões sobre futebol.",
+          "B": "O problema não é ignorar deliberadamente uma preferência, mas interpretar de outra maneira a palavra utilizada.",
+          "C": "O conhecimento do calendário esportivo não é o foco; o mal-entendido decorre da polissemia de 'season'.",
+          "D": "A reação ríspida acompanha o esclarecimento do tema, mas não é a causa inicial da falha de comunicação.",
+          "E": "'Season' significa estação do ano para uma personagem e temporada esportiva para a outra, criando o equívoco."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "english:94": {
@@ -83,6 +155,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A pergunta inicial indaga por que a autora se sente impelida a escrever. A repetição de 'Because' introduz respostas que apresentam a escrita como resistência, preservação da própria identidade, compensação e organização da experiência, compondo um conjunto de motivos para escrever."
+        ],
+        "alternatives": {
+          "A": "A pergunta inicial e a sequência de justificativas explicitam as razões que levam a autora à escrita.",
+          "B": "A compensação é apenas uma das razões citadas; a alternativa não abrange o propósito global da passagem.",
+          "C": "A autora fala de criar um mundo na escrita, sem limitar sua reflexão a possibilidades concretas de mudar o mundo real.",
+          "D": "O medo da acomodação integra a explicação, mas não resume os vários motivos para escrever apresentados.",
+          "E": "Ordenar o mundo é um dos efeitos da escrita, sem abranger a resistência e a preservação de si também destacadas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "english:95": {
@@ -103,6 +199,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A reportagem descreve fotografias manipuladas capazes de gerar lembranças de acontecimentos inexistentes. No estudo citado, pessoas chegaram a recordar um passeio de balão inventado depois de ver imagens editadas, mostrando que a alteração visual interfere na memória."
+        ],
+        "alternatives": {
+          "A": "A manipulação de fotografias leva parte dos participantes a aceitar como lembrança um evento que não aconteceu.",
+          "B": "A experiência não exige uma vivência geral no mundo virtual: o fator específico é a apresentação de imagens alteradas.",
+          "C": "A simples aquisição de informações novas não explica o experimento, baseado em evidências visuais falsas de um passado pessoal.",
+          "D": "O fascínio por programas não é indicado como causa; os participantes são influenciados pelo conteúdo das imagens.",
+          "E": "Embora a mídia possa difundir montagens, o mecanismo estudado é a influência de imagens manipuladas sobre a recordação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:100": {
@@ -123,6 +243,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os dados sobre lixo nas rodovias sustentam uma advertência: o descarte incorreto ameaça o ambiente, a circulação e a segurança, além de desperdiçar materiais recicláveis. A finalidade é conscientizar o leitor para uma destinação adequada dos resíduos e para a preservação ambiental."
+        ],
+        "alternatives": {
+          "A": "As estatísticas quantificam o lixo recolhido nas rodovias e servem à conscientização, sem constituir um panorama nacional da reciclagem.",
+          "B": "O texto aponta problemas do descarte, e não riscos econômicos ou falta de sustentabilidade do mercado de recicláveis.",
+          "C": "O material retirado das rodovias é lixo que poderia ser reciclado, não uma quantidade de produtos já reciclados.",
+          "D": "Acidentes são citados como possível consequência, mas não se apresentam séries estatísticas de seus índices.",
+          "E": "A enumeração de riscos e possibilidades de reciclagem procura conscientizar sobre descarte responsável e preservação ambiental."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:101": {
@@ -143,6 +287,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A sequência 'vai ser bom, não foi?' passa da expectativa futura para uma pergunta sobre algo já concluído. Essa compressão verbal do tempo sugere que o serviço é executado tão rapidamente que termina enquanto ainda se anuncia sua realização."
+        ],
+        "alternatives": {
+          "A": "'Fácil' destaca a facilidade, mas não produz o salto temporal que representa a rapidez do serviço.",
+          "B": "A qualidade e a nitidez valorizam o resultado da impressão, sem representar diretamente sua velocidade.",
+          "C": "A passagem de 'vai ser' para 'foi' sugere conclusão imediata e constrói a promessa de rapidez.",
+          "D": "'Menos do que' integra uma avaliação da qualidade, sem criar o efeito temporal da execução veloz.",
+          "E": "'Do mundo' amplia a comparação de qualidade e não quantifica a velocidade da impressão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:102": {
@@ -163,6 +331,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A amarelinha passou de treinamento militar a brincadeira infantil, ganhou dimensões menores e numeração e continua variando em desenho e quantidade de casas. Essas mudanças mostram que práticas lúdicas podem ser apropriadas e reinventadas conforme o contexto social e histórico."
+        ],
+        "alternatives": {
+          "A": "O texto não afirma continuidade de uma competição militar; destaca transformações na forma e no uso da prática.",
+          "B": "A variação de casas e desenhos contradiz a ideia de regras que permanecem sempre iguais.",
+          "C": "Não há um número fixo de grupos determinado antecipadamente como característica da brincadeira.",
+          "D": "O treinamento físico pertence à origem militar, mas a adaptação infantil não se reduz a esse objetivo.",
+          "E": "As sucessivas adaptações de finalidade, tamanho e desenho mostram a possibilidade de reinventar a brincadeira."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:103": {
@@ -183,6 +375,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os pretéritos perfeitos marcam eventos da trajetória do narrador, como embarcar e escolher o sanatório. Formas como 'falara' e 'passara' indicam ações anteriores a esses eventos. Essa alternância permite organizar planos temporais distintos dentro do relato de memória."
+        ],
+        "alternatives": {
+          "A": "O texto contém períodos desenvolvidos e a ordenação temporal não depende de uma sequência de frases breves.",
+          "B": "Indicações de lugar situam a viagem, mas não estabelecem sozinhas a anterioridade entre os acontecimentos.",
+          "C": "Pretérito perfeito e mais-que-perfeito distinguem ações narradas e ações anteriores a elas, ordenando os fatos.",
+          "D": "As avaliações sobre o soneto expressam preferências, sem organizar a sequência temporal da viagem.",
+          "E": "As pessoas mencionadas contextualizam a lembrança, mas a relação cronológica é marcada principalmente pelos tempos verbais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:104": {
@@ -203,6 +419,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A pergunta sobre as formigas funciona como entrada para explicar o que são micro-ondas e como interagem com materiais que contêm água. O texto apresenta exemplos de uso e diferencia intensidades de exposição, cumprindo uma finalidade de divulgação e explicação de informações científicas."
+        ],
+        "alternatives": {
+          "A": "O texto não considera todas as ondas inofensivas: menciona que o corpo humano aqueceria em um forno adequado ao seu tamanho.",
+          "B": "Não há apresentação de uma pesquisa recente específica e de seus resultados, mas explicação geral de um fenômeno.",
+          "C": "A resposta informa sobre a natureza das micro-ondas, seu efeito térmico e situações em que estão presentes.",
+          "D": "O objetivo não é produzir um alerta geral contra o uso cotidiano, mas explicar o funcionamento das ondas.",
+          "E": "A comparação fisiológica serve de exemplo para a explicação das micro-ondas e não resume o objetivo principal."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:105": {
@@ -223,6 +463,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A pesquisa examina fotos, postagens, interesses e relações para inferir características como afabilidade e estabilidade emocional. Esses dados permitem uma avaliação de aspectos pessoais e comportamentais, sem constituir uma certificação direta de competências técnicas ou intelectuais."
+        ],
+        "alternatives": {
+          "A": "O procedimento relatado não mede capacidade física nem desempenho corporal dos candidatos.",
+          "B": "A correlação encontrada não equivale a certificar competência profissional, sobretudo em tarefas técnicas específicas.",
+          "C": "Analisar informações não significa controlar efetivamente o comportamento do candidato dentro ou fora da internet.",
+          "D": "Os perfis fornecem pistas de personalidade e comportamento, que foram comparadas às avaliações no trabalho.",
+          "E": "Não se aplicam testes de raciocínio ou resolução de problemas que afeririam capacidade intelectual."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:106": {
@@ -243,6 +507,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O fragmento explica que histórias, lembranças e conhecimentos técnicos foram conservados e transmitidos oralmente entre gerações. A domesticação de plantas é um exemplo de saber acumulado e desenvolvido por essa via, demonstrando que a preservação cultural não depende exclusivamente da escrita."
+        ],
+        "alternatives": {
+          "A": "A ênfase não recai sobre conservar grupos detentores exclusivos do saber, mas sobre transmitir o patrimônio cultural dos povos.",
+          "B": "A tradição oral preserva histórias e conhecimentos e permite sua continuidade entre gerações.",
+          "C": "O texto associa a estratificação ao surgimento da escrita, sem dizer que a oralidade mantém uma estrutura social de classes.",
+          "D": "A oralidade é apresentada como via de continuidade e desenvolvimento de conhecimentos, e não de sua limitação deliberada.",
+          "E": "O reconhecimento da importância da fala é uma conclusão geral; a função específica destacada é preservar e transmitir memória e saberes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:107": {
@@ -263,6 +551,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em 'tarvez' e 'sorto', o som representado por l nas formas 'talvez' e 'solto' é substituído pelo som de r na mesma posição silábica. As duas ocorrências exemplificam a mesma regularidade fonológica da variedade regional representada na canção."
+        ],
+        "alternatives": {
+          "A": "'Vorta' troca l por r, enquanto 'veve' modifica a vogal de 'vive', portanto são processos diferentes.",
+          "B": "'Tarvez' e 'sorto' apresentam a mesma substituição de l por r, em relação a 'talvez' e 'solto'.",
+          "C": "'Furaro' e 'cantá' alteram terminações distintas: a primeira modifica uma forma verbal flexionada e a segunda perde o r do infinitivo.",
+          "D": "As expressões não exemplificam a mesma alteração de pronúncia ou de flexão pedida pelo enunciado.",
+          "E": "'Ignorança' modifica a sequência final de 'ignorância', enquanto 'avuá' envolve alterações em 'voar', sem a mesma regra única."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:108": {
@@ -283,6 +595,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O relatório ultrapassa a impessoalidade esperada de uma prestação de contas. Expressões coloquiais, avaliações irônicas e exemplos satíricos criticam os gastos de prefeitos com telegramas, fazendo aparecer claramente a atitude subjetiva do autor perante a administração pública."
+        ],
+        "alternatives": {
+          "A": "A pontuação organiza a enumeração crítica, mas seu suposto excesso não é a transgressão central do gênero oficial.",
+          "B": "A diferença decorre sobretudo da ironia e da coloquialidade, não do emprego de palavras antigas ou em desuso.",
+          "C": "A primeira pessoa pode ocorrer em relatórios e não indica necessariamente intimidade com o governador.",
+          "D": "O trecho privilegia imagens populares e críticas, em vez de uma terminologia técnica especializada.",
+          "E": "As avaliações e expressões irônicas tornam a linguagem subjetiva e afetivamente marcada em um documento de caráter oficial."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:109": {
@@ -303,6 +639,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A imagem de uma profissional de saúde com vestimenta e instrumentos associados à medicina reforça a credibilidade das orientações. Esse elemento visual combina-se às recomendações preventivas para mobilizar a autoridade social do saber médico como estratégia de persuasão."
+        ],
+        "alternatives": {
+          "A": "O jogo visual com as letras existe, mas a relação de confiança é especialmente sustentada pela figura do profissional de saúde.",
+          "B": "A representação da profissional evoca conhecimento especializado e dá autoridade às recomendações de prevenção.",
+          "C": "O texto não reproduz uma conversa médica específica; suas orientações são apoiadas pela representação visual de autoridade.",
+          "D": "A preocupação social não permite concluir que um anunciante deixa de se promover; essa conclusão não decorre da peça.",
+          "E": "As recomendações têm finalidade informativa e orientadora, sem depender da projeção subjetiva de uma cena de ensino."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:110": {
@@ -323,6 +683,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A fragmentação das palavras e a repetição do sinal & rompem a organização convencional do verso. Termos que remetem a prisão, escravização, afogamento e enforcamento recriam a opressão do contexto dos inconfidentes e permitem relacioná-la ao momento histórico de produção do poema, em 1975."
+        ],
+        "alternatives": {
+          "A": "A organização visual não elimina a dimensão social; ela participa da representação de violência e opressão.",
+          "B": "O poema não se limita a registrar fatos e personalidades como memória histórica: sua ruptura formal atualiza a experiência repressiva.",
+          "C": "A palavra 'esconso' participa do espaço de aprisionamento e não comprova, isoladamente, uma renúncia à utopia.",
+          "D": "A fragmentação contemporânea não representa mera continuidade das técnicas barrocas; transforma o modo de compor o poema.",
+          "E": "A linguagem fragmentada recria a opressão dos inconfidentes e a aproxima do contexto autoritário vivido na produção de 1975."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:111": {
@@ -343,6 +727,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O colégio é comparado a um estabelecimento comercial que renova a aparência para atrair clientes. A propaganda e a circulação de livros promovem especialmente o nome do diretor. O narrador critica, assim, a educação tratada como mercadoria e instrumento de prestígio pessoal."
+        ],
+        "alternatives": {
+          "A": "A comparação com comerciantes e a promoção do nome de Aristarco revelam mercantilização da educação e vaidade pessoal.",
+          "B": "O trecho mostra a publicidade dirigida aos pais, sem atribuir às relações afetivas a determinação do processo pedagógico.",
+          "C": "A produção de livros é descrita de modo irônico e apressado, sem elogio ao pioneirismo ou à qualidade didática.",
+          "D": "Não há negociação de mensalidades ou prova de ampliação democrática do acesso ao ensino.",
+          "E": "O narrador denuncia estratégias de reputação e mercado, não uma união ideal entre famílias e professores pelo progresso coletivo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:112": {
@@ -363,6 +771,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A biografia apresenta nascimento, ofícios, publicações, mudança para São Paulo e atividades de divulgação do cordel. A localização temporal desses acontecimentos organiza o percurso de Jota Barros e destaca sua atuação como artista e difusor da cultura popular nordestina."
+        ],
+        "alternatives": {
+          "A": "A passagem apresenta dados biográficos diretamente, sem evidenciar uma estilização ficcional dos acontecimentos.",
+          "B": "As datas e atividades compõem uma trajetória histórica que valoriza a atuação artística e cultural do biografado.",
+          "C": "A quantidade de folhetos e as entrevistas registram a carreira, mas não demonstram por análise a qualidade estética das obras.",
+          "D": "O texto não transforma o biografado em modelo moral; concentra-se em fatos de sua atividade profissional e artística.",
+          "E": "Não aparecem acontecimentos inventados ou mistura explícita de ficção com os dados apresentados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:113": {
@@ -383,6 +815,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A terra é descrita como naturalmente abundante e capaz de recompensar quem trabalha. Essa idealização associa esforço individual a felicidade e enriquecimento, sem discutir estruturas sociais ou políticas públicas. Desse modo, a prosperidade é apresentada como decorrência do trabalho em um país generoso."
+        ],
+        "alternatives": {
+          "A": "A paisagem é idealizada, mas não recebe necessariamente características surreais ou impossíveis.",
+          "B": "A natureza abundante e o trabalho individual são apresentados como suficientes para prosperar, deixando ausente a mediação das políticas de governo.",
+          "C": "A metáfora materna existe, porém a tese central relaciona grandeza da terra e recompensa individual pelo esforço.",
+          "D": "O poema não demonstra riqueza efetivamente distribuída naquele momento: constrói uma imagem ideal do país.",
+          "E": "A valorização do trabalho não comprova a existência de bem-estar social, que o texto não descreve como política ou realidade coletiva."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:114": {
@@ -403,6 +859,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O homem aparece de costas diante do espelho, mas o reflexo também mostra suas costas, em vez do rosto esperado. O livro tem um reflexo coerente, intensificando o estranhamento dessa associação entre uma situação cotidiana e uma impossibilidade visual, característica do Surrealismo."
+        ],
+        "alternatives": {
+          "A": "O encontro entre a cena cotidiana e o reflexo impossível justapõe elementos incompatíveis com a lógica comum.",
+          "B": "A imagem não apresenta como tema uma rejeição do passado; o efeito está na contradição visual do espelho.",
+          "C": "A perspectiva contribui para o espaço da pintura, mas não é o traço surrealista que produz o estranhamento central.",
+          "D": "A repetição do homem não comprova criação automática ou ausência de controle racional durante a composição.",
+          "E": "O livro está pintado e refletido, sem evidência de uso material da técnica de colagem."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:115": {
@@ -423,6 +903,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As palavras em iorubá e os nomes de orixás incorporam referências de matrizes africanas à canção brasileira. Sua convivência com o português evidencia a permanência e a transformação dessa herança cultural na música, sem exigir hierarquia ou separação entre as culturas."
+        ],
+        "alternatives": {
+          "A": "O uso dos nomes religiosos não estabelece uma crítica depreciativa às religiões de matriz africana.",
+          "B": "O vocabulário e as referências religiosas de origem africana mostram a vitalidade dessa cultura na produção musical brasileira.",
+          "C": "A presença do iorubá não afirma superioridade cultural sobre outros grupos.",
+          "D": "A mistura de idiomas evidencia interação cultural, em vez de uma separação rígida entre componentes da sociedade brasileira.",
+          "E": "A canção recria referências culturais e não pode ser tomada, apenas pelo idioma, como reprodução integral e mais autêntica de um ritual africano."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:116": {
@@ -443,6 +947,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A máscara reduz traços do rosto a volumes e contornos essenciais, sem buscar reproduzir a anatomia de maneira naturalista. Essa sintetização das formas foi uma referência para artistas modernos interessados em novas maneiras de representar figuras e organizar volumes."
+        ],
+        "alternatives": {
+          "A": "A máscara não procura preservar as proporções anatômicas de um rosto naturalista.",
+          "B": "Não há uma figura em deslocamento cujo movimento seja o elemento plástico principal.",
+          "C": "A estrutura facial apresenta organização aproximadamente simétrica, e não uma assimetria que explique sua influência.",
+          "D": "A simplificação e a síntese dos traços do rosto oferecem uma alternativa à representação naturalista.",
+          "E": "Valorização estética é uma formulação geral que não identifica o procedimento formal específico observado na máscara."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:117": {
@@ -463,6 +991,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto reconhece diferenças entre os modos de sentir e pensar das sociedades, mas considera suas artes equivalentes por nascerem de impulsos humanos comuns. A base compartilhada é, portanto, antropológica: a capacidade humana de produzir significados e expressá-los artisticamente."
+        ],
+        "alternatives": {
+          "A": "Materiais e suportes podem variar entre sociedades e não constituem a equivalência defendida.",
+          "B": "O texto admite diferenças técnicas, recusando transformá-las em hierarquia de valor artístico.",
+          "C": "A origem em impulsos e formas de expressão humanos comuns constitui a base antropológica compartilhada.",
+          "D": "As concepções estéticas podem ser diferentes, pois expressam modos próprios de sentir e pensar.",
+          "E": "Os temas também podem variar entre povos, sem impedir o reconhecimento de valor equivalente das manifestações."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:118": {
@@ -483,6 +1035,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A obra acontece no encontro silencioso entre a artista e cada visitante. O sentido não está pronto em um objeto isolado: é produzido pelas reações, pela duração e pela troca de olhares entre os participantes. Essa construção compartilhada caracteriza sua dimensão relacional."
+        ],
+        "alternatives": {
+          "A": "A entrada no museu não é a característica decisiva nem comprova que toda a proposta de arte relacional tenha começado nessa exposição.",
+          "B": "A interação não é apresentada como aula ou transmissão de um conteúdo educativo definido.",
+          "C": "O relato não destaca uma redistribuição arquitetônica ou uma integração de várias linguagens como seu elemento central.",
+          "D": "A troca de olhares torna artista e visitante participantes da produção dos sentidos da performance.",
+          "E": "A aproximação existe, mas não demonstra, por si só, que a obra rompe a elitização do sistema artístico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:119": {
@@ -503,6 +1079,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A formação de 'sambódromo' reutiliza um elemento existente em palavras como 'hipódromo' e amplia seu uso para um novo espaço cultural. A circulação de 'camelódromo' e outras criações mostra que esse modelo se tornou produtivo, independentemente da crítica etimológica feita no segundo texto."
+        ],
+        "alternatives": {
+          "A": "A adaptação de um elemento a novos sentidos e a criação de outras palavras exemplificam o dinamismo da língua.",
+          "B": "A nova realidade cultural amplia as possibilidades de criação, em vez de impedir novos vocábulos.",
+          "C": "A criação de palavras não é reservada a especialistas, e sua produtividade não depende dessa autorização.",
+          "D": "O segundo autor faz um julgamento, mas ele não transforma todos os neologismos em formações semanticamente impróprias.",
+          "E": "Os exemplos posteriores mostram expansão produtiva do elemento, e não restrição à formação de novas palavras."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:120": {
@@ -523,6 +1123,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A frase sobre muitos rostos que apagam o rosto do eu é fragmentada em pequenos segmentos dispostos numa coluna estreita. O estreitamento gráfico e a quebra das palavras incorporam visualmente o apagamento gradual da lembrança, articulando forma e significado."
+        ],
+        "alternatives": {
+          "A": "A interrupção da leitura não é um teste abstrato da razão; relaciona-se à representação do apagamento da memória.",
+          "B": "O estranhamento existe como efeito, mas a alternativa não explica o vínculo específico entre a forma estreita e as lembranças.",
+          "C": "As unidades não se espalham pela página: concentram-se em uma coluna estreita que sugere redução.",
+          "D": "A fragmentação em segmentos curtos estreita a composição e representa a redução progressiva da lembrança do eu.",
+          "E": "O poema utiliza recursos concretistas, sem apresentar como objetivo a fundação de uma nova vanguarda."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:121": {
@@ -543,6 +1167,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto situa informação e conhecimento como elementos estratégicos na economia, na política e na cultura. A mudança não se limita aos equipamentos: inclui organizações, normas e práticas sociais, formando um modelo em que a informação é intensamente utilizada em diferentes esferas."
+        ],
+        "alternatives": {
+          "A": "A melhoria da qualidade de vida pode ser uma expectativa, mas não define o modelo de organização social descrito.",
+          "B": "O texto não afirma que todos recebem informação instantaneamente em qualquer lugar, condição que apagaria desigualdades de acesso.",
+          "C": "O comércio é apenas parte do campo econômico, enquanto as transformações também alcançam política e cultura.",
+          "D": "As redes sociais são uma manifestação possível, mas não abrangem o conjunto de transformações apresentado.",
+          "E": "A centralidade da informação nos setores econômico, político e sociocultural caracteriza a amplitude do novo modelo social."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:122": {
@@ -563,6 +1211,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto defende que o registro linguístico depende do contexto, do suporte e do destinatário. A escola deve ampliar a capacidade de escolha do aluno, permitindo reconhecer diferenças entre situações e empregar os códigos adequados, inclusive nos diversos ambientes digitais."
+        ],
+        "alternatives": {
+          "A": "Impor linguagem formal a todo contexto digital desconsidera a adequação ao suporte e à situação defendida no texto.",
+          "B": "Melhorar contatos on-line não resume a tarefa educativa de compreender e dominar registros diferentes.",
+          "C": "Uma única norma para todos os suportes contradiz a variação contextual e as limitações próprias de cada meio.",
+          "D": "Compreender textos da web é uma habilidade importante, mas a proposta inclui também reconhecer e escolher formas de expressão.",
+          "E": "Identificar as especificidades de cada ambiente permite usar registros adequados e ampliar o domínio de diferentes códigos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:123": {
@@ -583,6 +1255,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A garrafa funciona como imagem do trabalho com a palavra: conter e conter-se, organizar dentro e fora e submeter-se a uma forma. O estilhaçamento final converte essa contenção em uma 'explosão de diamantes', sugerindo a transformação criativa da linguagem em poesia."
+        ],
+        "alternatives": {
+          "A": "A transparência da garrafa estabelece relações entre interior e exterior, sem reduzir o poema à confissão de incapacidade criativa.",
+          "B": "A forma é trabalhada e depois rompida, não obedecida de maneira inteiramente subserviente.",
+          "C": "A imagem final de diamantes indica produção de valor expressivo, e não impossibilidade absoluta de criar poesia.",
+          "D": "A contenção inicial e a transformação final figuram o processo de elaboração da palavra poética.",
+          "E": "A ruptura da garrafa não exige abandonar a poesia: ela é parte da criação de uma nova expressão poética."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:124": {
@@ -603,6 +1299,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O autor relaciona o abandono de 'pinchar' à identificação da palavra com o ambiente rural e com grupos vistos como pouco escolarizados. Ao evitar uma forma linguística para afastar-se de um grupo social estigmatizado, o falante reproduz preconceitos que podem contribuir para sua extinção."
+        ],
+        "alternatives": {
+          "A": "O título é crítico e não prescreve retirar de dicionários as palavras que perderam frequência.",
+          "B": "A comparação com animais questiona a indiferença à perda lexical, sem estabelecer uma prioridade obrigatória entre preservações.",
+          "C": "A associação de palavras a grupos socialmente desvalorizados favorece seu abandono pelos falantes.",
+          "D": "A transmissão entre gerações existe, mas o texto analisa justamente sua interrupção no caso de certos vocábulos.",
+          "E": "O autor não apresenta a inovação como exigência que deva substituir ou eliminar palavras tradicionais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:125": {
@@ -623,6 +1343,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Ao imprimir poemas em embalagens de pão, o projeto leva a literatura a uma situação cotidiana que não depende da compra de livros ou da procura prévia por poesia. A circulação nas padarias amplia o contato de públicos variados com escritores consagrados e iniciantes."
+        ],
+        "alternatives": {
+          "A": "O projeto reúne iniciantes e autores conhecidos, sem excluir os consagrados para privilegiar os novatos.",
+          "B": "O texto não informa que os autores conhecidos tenham perdido outros espaços de publicação.",
+          "C": "A ampla distribuição não implica ausência de critérios; os novos autores inclusive participaram de oficinas.",
+          "D": "As embalagens inserem a leitura na rotina das padarias e oferecem acesso à poesia a pessoas de diferentes perfis.",
+          "E": "Os prêmios reconhecem o projeto, mas promover premiações não é sua finalidade descrita."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:126": {
@@ -643,6 +1387,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O nome 'Itaorna', traduzido como 'pedra podre', registrava uma percepção indígena da fragilidade local. Conhecer e valorizar esse patrimônio linguístico permitiria incorporar tal informação ao reconhecimento dos riscos, articulando a memória do território aos estudos de construção."
+        ],
+        "alternatives": {
+          "A": "O topônimo guardava conhecimento sobre o lugar que poderia ter alertado para a instabilidade do solo.",
+          "B": "Substituir línguas apagaria referências e não garantiria a compreensão do conhecimento contido no nome local.",
+          "C": "O problema narrado envolve ignorar um saber indígena, sem afirmar falta de prioridade ao conhecimento acadêmico.",
+          "D": "A língua já tinha expressão capaz de informar sobre o terreno; os responsáveis é que desconheciam seu significado.",
+          "E": "O texto não apresenta infração a uma lei ambiental específica como explicação para o acidente."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:127": {
@@ -663,6 +1431,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A expressão 'por trás de encrencas' apresenta de maneira coloquial uma relação de causa. 'Causadora de problemas' conserva essa relação e adota vocabulário mais neutro e formal, diferentemente das demais substituições, que mantêm informalidade ou alteram o sentido."
+        ],
+        "alternatives": {
+          "A": "'Manda embora' continua sendo uma expressão coloquial e não aumenta significativamente a formalidade.",
+          "B": "'Esquentar a cabeça' indica preocupação, enquanto 'quebrar a cabeça' sugere esforço para solucionar algo, além de continuar informal.",
+          "C": "'É um show' mantém o tom informal do elogio, sem converter o trecho em registro formal.",
+          "D": "'Misturadinhos' também é coloquial e acrescenta a ideia de mistura, não necessariamente equivalente ao uso no mesmo dia.",
+          "E": "'Causadora de problemas' preserva a relação causal e substitui uma formulação figurada por outra mais formal."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:128": {
@@ -683,6 +1475,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A abordagem associa obesidade a mortalidade, agravamento de doenças e risco de infarto. O problema é apresentado em termos clínicos e de saúde pública, sem apoiar a avaliação em padrões de aparência ou na discriminação social."
+        ],
+        "alternatives": {
+          "A": "A argumentação não usa um ideal de beleza corporal para caracterizar a obesidade como problema.",
+          "B": "O texto não se concentra em autoestima ou equilíbrio psicológico, mas em doenças e mortalidade.",
+          "C": "A ligação com complicações e mortes situa o excesso de peso como fator de risco no quadro clínico da população.",
+          "D": "A discriminação contra pessoas obesas não é o tema desenvolvido na passagem.",
+          "E": "A limitação de atividades cotidianas não é a evidência utilizada, que enfatiza condições de saúde e riscos clínicos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:129": {
@@ -703,6 +1519,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O guia recomenda selecionar destinatários e vagas compatíveis e escrever uma apresentação curta no e-mail. O exemplo mostra assunto e mensagem de encaminhamento, instruindo o leitor a realizar o envio de modo apropriado e eficiente, em vez de disparar currículos indiscriminadamente."
+        ],
+        "alternatives": {
+          "A": "Trata-se de recomendações práticas, sem indicação de uma norma oficial obrigatória para todo envio.",
+          "B": "O exemplo é uma mensagem de encaminhamento e não o conteúdo ou a estrutura completa de um currículo.",
+          "C": "A seleção do destinatário e a apresentação sucinta orientam o uso eficiente do e-mail na candidatura.",
+          "D": "A pergunta do título organiza o guia, mas não aparece uma carta de assinante à qual o texto responda especificamente.",
+          "E": "O texto critica o envio indiscriminado ao maior número de pessoas e recomenda direcionar a candidatura."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:130": {
@@ -723,6 +1563,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A repetição de amor, tristeza, dúvida e desejo apresenta a existência como mudança contínua. As pequenas mortes e renovações emocionais permitem ultrapassar o medo de acabar, em um percurso de transcendência expresso pela possibilidade de tornar-se eterno."
+        ],
+        "alternatives": {
+          "A": "As experiências emocionais transformam continuamente o sujeito e orientam uma superação espiritual do medo da morte.",
+          "B": "A repetição não encerra o sujeito no desalento; o poema enfatiza renovação e superação do medo.",
+          "C": "O interlocutor é convidado a perceber uma condição existencial, sem defender uma dúvida cética sobre toda ação humana.",
+          "D": "O poema não fala de manter a adolescência, mas de mudanças e renovações ao longo da existência.",
+          "E": "O medo de acabar é o ponto de partida a ser ultrapassado, não uma recomendação de receio diante do imprevisível."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:131": {
@@ -743,6 +1607,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Expressões como 'nossa novela', 'vou penar' e 'já valeu a pena' aproximam a canção da conversa cotidiana. Esse repertório popular contribui para a apresentação íntima e informal da relação amorosa entre pessoas que vivem o tempo de maneiras diferentes."
+        ],
+        "alternatives": {
+          "A": "O trecho em inglês aparece na canção, mas o coloquialismo não depende de empréstimos necessariamente inusitados no português.",
+          "B": "Expressões de uso cotidiano dão naturalidade à fala e aproximam o enunciador do público.",
+          "C": "A polissemia é um recurso possível em muitos registros e não define a variedade coloquial desta letra.",
+          "D": "Pronomes de primeira pessoa marcam subjetividade, mas também aparecem em textos formais e não bastam para caracterizar coloquialidade.",
+          "E": "Rimas estruturam a musicalidade e podem ocorrer em registros formais ou informais, sem definir a variedade linguística."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:132": {
@@ -763,6 +1651,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O endereço, a referência a um destinatário conhecido e a expressão 'meu amigo' aproximam a letra de uma carta. As lembranças de encontros e da antiga paisagem de Ipanema são contrapostas à cidade transformada, estabelecendo uma comunicação de tom nostálgico."
+        ],
+        "alternatives": {
+          "A": "A lembrança idealizada da cidade e do amor não constitui uma descrição predominantemente realista e objetiva.",
+          "B": "A interlocução com o amigo recupera o passado e comenta com saudade as transformações do espaço urbano.",
+          "C": "O trecho não comprova que ambos tenham deixado o Rio; a distância central é temporal e afetiva.",
+          "D": "O tom é emotivo e memorialístico, distante de uma discussão pragmática de soluções para a cidade.",
+          "E": "A canção lamenta perdas e deseja reinventar o amor, sem simplesmente aceitar as mudanças turísticas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:133": {
@@ -783,6 +1695,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As cores verde, amarela, azul e branca remetem à bandeira brasileira, mas surgem do sangue de um corpo torturado. O negro repetido rompe essa composição e intensifica a imagem de morte. O poema transforma o símbolo nacional em denúncia da violência do regime militar."
+        ],
+        "alternatives": {
+          "A": "O título e o cavalete evocam pintura, mas a denúncia se organiza sobretudo pela transformação das cores da bandeira.",
+          "B": "O pássaro é metáfora do corpo agonizante, e o alvo não se limita à degradação da natureza.",
+          "C": "As referências patrióticas são reelaboradas, mas não há silêncio: o poema faz uma denúncia explícita por imagens.",
+          "D": "As cores do emblema nacional se misturam ao sangue e à escuridão, denunciando medo, tortura e violência.",
+          "E": "Matas e ouro aparecem como referências das cores nacionais, sem uma exposição específica de exploração econômica dos recursos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:134": {
@@ -803,6 +1739,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A narradora inicialmente aceita a imagem perfeita da família, sustentada pela avó. As revelações de Margarida expõem casamentos por interesse e desejos ocultados; a reação preconceituosa contra quem conta os fatos protege o ideal familiar. O trecho revela valores mantidos por ocultação e hipocrisia."
+        ],
+        "alternatives": {
+          "A": "Há relações de dependência e interesse, mas o conflito central é entre a imagem idealizada e os fatos ocultos.",
+          "B": "A matriarca sustenta a versão oficial, porém a revelação desmonta esse equilíbrio aparente e evidencia suas omissões.",
+          "C": "A reputação de perfeição depende de silenciar motivações e comportamentos incompatíveis com os valores proclamados.",
+          "D": "O conflito não se reduz à diferença entre gerações, pois envolve a denúncia de segredos e a posição social de Margarida.",
+          "E": "O preconceito racial aparece na reação à mestiça Margarida, mas não se define apenas pela procura de parceiros europeus."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:135": {
@@ -823,6 +1783,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O retrato evidencia rugas, marcas da idade e particularidades da fisionomia, sem substituir o indivíduo por um modelo de beleza. Isso corresponde à intenção de registrar um corpo específico em determinado momento, rompendo com a exigência acadêmica de idealização e perfeição."
+        ],
+        "alternatives": {
+          "A": "A imagem individualizada não procura glorificar uma masculinidade ideal ou heroica.",
+          "B": "A precisão dos traços não é acompanhada de idealização; as marcas físicas particulares permanecem visíveis.",
+          "C": "Simetria e proporção acadêmicas não constituem a finalidade central do retrato descrita pelo texto.",
+          "D": "O artista não estabelece um novo padrão obrigatório de beleza, mas registra a singularidade do retratado.",
+          "E": "A representação conserva aspectos concretos do corpo e do envelhecimento sem submetê-los a um ideal de perfeição."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:96": {
@@ -843,6 +1827,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O break integra uma cultura formada em espaços urbanos e utiliza combinações criativas de gestos, giros e deslocamentos. A improvisação permite responder à música e ao encontro com outros dançarinos, expressando a dinâmica das ruas e as experiências da juventude urbana."
+        ],
+        "alternatives": {
+          "A": "O break não se define por movimentos retilíneos nem por uma crítica necessariamente dirigida a indivíduos alienados.",
+          "B": "A improvisação e a criação corporal no espaço urbano expressam a dinâmica contemporânea associada à cultura hip hop.",
+          "C": "Suavidade e rotina não caracterizam a variedade de movimentos vigorosos e criativos dessa dança.",
+          "D": "A percussão feita pela sola dos sapatos caracteriza mais diretamente o sapateado, não o break.",
+          "E": "A cadência não constitui por si só uma contestação às mudanças culturais e não explica a especificidade urbana da dança."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:97": {
@@ -863,6 +1871,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A narrativa condensa acontecimentos da humanidade em uma sequência rápida e irreverente. Filosofia, história, ciência e vida cotidiana aparecem em formulações irônicas, culminando na falta de orientação expressa por 'cada um se vira como pode'. Esse tratamento humorístico apresenta uma experiência humana marcada pelo caos."
+        ],
+        "alternatives": {
+          "A": "A organização lembra a criação bíblica, mas é reelaborada de modo irônico, sem apresentar um modelo inspirador à humanidade.",
+          "B": "A filosofia é um elemento do painel satírico, e a discussão do dever não resume o percurso da narrativa.",
+          "C": "A história também é ironizada como organização de eventos sem sentido, sem recuperação de sua metodologia como solução.",
+          "D": "A sequência acelerada e as formulações irônicas constroem um painel bem-humorado da desordem da experiência cotidiana.",
+          "E": "Matemática e medicina integram a enumeração, mas o alvo não se restringe a desmistificar esses saberes científicos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:98": {
@@ -883,6 +1915,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A propaganda afirma que sem entrada de informação não há saída de opinião. A imagem associa essa relação ao cérebro e à comunicação, defendendo o acesso à informação como condição para o cidadão formar e expressar uma opinião fundamentada."
+        ],
+        "alternatives": {
+          "A": "O anúncio não pede converter opiniões em fatos; sustenta que informações são necessárias para formar opiniões.",
+          "B": "A mensagem enfatiza fazer a informação chegar às pessoas, e não selecionar conteúdos como forma de democratizar a opinião.",
+          "C": "A democratização da informação é uma responsabilidade ligada à imprensa; o foco é a condição necessária para o cidadão opinar.",
+          "D": "A relação causal está invertida: a informação deve alimentar a formação da opinião, e não depender dela para existir.",
+          "E": "A entrada de informação é apresentada como condição para produzir opinião, destacando a função social da imprensa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:99": {
@@ -903,6 +1959,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A função referencial concentra a mensagem em informações sobre o mundo. O texto explica que resíduos podem contaminar a água e provocar entupimentos, identifica materiais e indica destinações. Essas informações objetivas complementam os comandos dirigidos ao leitor, ligados à função conativa."
+        ],
+        "alternatives": {
+          "A": "Despertar sentimentos não é o procedimento principal das explicações sobre poluição, entupimentos e descarte.",
+          "B": "As consequências do descarte incorreto e as orientações sobre destinação fornecem informações objetivas ao leitor.",
+          "C": "Não há relato subjetivo de hábitos pessoais do autor; a mensagem apresenta recomendações gerais e seus motivos.",
+          "D": "Verificar o contato ou a compreensão do interlocutor corresponderia à função fática, sem ser o foco das informações apresentadas.",
+          "E": "Definir termos da própria linguagem seria um uso metalinguístico, enquanto o texto informa sobre resíduos e ambiente."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:136": {
@@ -923,6 +2003,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A função T(h) = −h² + 22h − 85 tem concavidade voltada para baixo e atinge o máximo no vértice, h = −22/(−2) = 11. Nesse horário, T(11) = −121 + 242 − 85 = 36 °C. Como 36 está entre 30 e 43 °C, a classificação é alta."
+        ],
+        "alternatives": {
+          "A": "A faixa muito baixa exige temperatura negativa, enquanto o máximo calculado é 36 °C.",
+          "B": "A faixa baixa chega a 17 °C e não contém o máximo de 36 °C.",
+          "C": "A faixa média termina antes de 30 °C, abaixo da temperatura máxima encontrada.",
+          "D": "O valor 36 °C pertence ao intervalo de 30 a 43 °C, classificado como alta.",
+          "E": "A classificação muito alta exige valor acima de 43 °C, superior ao máximo da função."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:137": {
@@ -943,6 +2047,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os comprimentos horizontal e vertical são 2a e 2b. A condição dada significa 2a − 2b = (2b)/2 = b, logo a = 3b/2. Substituindo na expressão aproximada do volume, V = 4ab² = 4 × (3b/2) × b² = 6b³."
+        ],
+        "alternatives": {
+          "A": "O volume 8b³ exigiria a = 2b, o que não satisfaz a diferença de comprimentos fornecida.",
+          "B": "A relação a = 3b/2 leva diretamente a V = 6b³.",
+          "C": "O volume 5b³ corresponderia a a = 5b/4, menor que o valor imposto pela condição.",
+          "D": "O volume 4b³ pressupõe a = b, isto é, comprimentos iguais, contrariando o formato e a relação dada.",
+          "E": "O volume 2b³ exigiria a = b/2, invertendo a relação entre o eixo maior e o menor."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:138": {
@@ -963,6 +2091,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O preço permanece em R$ 12 até 100 ligações. Entre 100 e 300, vale 12 + 0,10(n − 100), crescendo linearmente até R$ 32. A partir de 300, mantém-se em R$ 32. Portanto, o gráfico tem um trecho horizontal, um crescente e outro horizontal."
+        ],
+        "alternatives": {
+          "A": "O gráfico A começa em zero e cobra crescimento antes de 100 ligações, sem respeitar a mensalidade fixa inicial.",
+          "B": "O gráfico B mantém R$ 12 até 100 ligações, cresce até R$ 32 em 300 e depois permanece constante.",
+          "C": "O gráfico C continua crescendo após 300 ligações, embora o preço devesse permanecer fixo.",
+          "D": "O gráfico D aumenta o valor desde o início, desconsiderando as primeiras 100 ligações incluídas nos R$ 12.",
+          "E": "O gráfico E começa em zero e continua crescendo depois de 300, contrariando os dois patamares fixos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:139": {
@@ -983,6 +2135,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O investidor vende metade ao superar Vi pela primeira vez, compra quando o preço cai abaixo de Vm e volta a vender metade ao ultrapassar Vi novamente. Na subida seguinte que atinge Vo, vende todas as ações restantes. Depois dessa quarta operação, não possui ações e não volta a ocorrer queda abaixo de Vm."
+        ],
+        "alternatives": {
+          "A": "Três operações ignoram a venda de metade na segunda passagem ascendente por Vi antes de alcançar Vo.",
+          "B": "Há duas vendas de metade, uma compra e a venda total ao superar Vo, somando quatro operações.",
+          "C": "Cinco operações contariam uma passagem posterior por Vi mesmo depois de o investidor ter vendido todas as ações.",
+          "D": "Nem todo cruzamento de linha gera compra ou venda; após Vo não restam ações para novas vendas.",
+          "E": "Sete confunde oscilações do gráfico com operações válidas, ignorando os critérios e o esgotamento das ações."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:140": {
@@ -1003,6 +2179,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O menor círculo que cobre o triângulo equilátero é sua circunferência circunscrita. O raio corresponde a dois terços da altura: R = (2/3)(30√3/2) = 10√3 ≈ 17 cm. Entre os raios disponíveis, 18 cm é o menor que supera esse valor."
+        ],
+        "alternatives": {
+          "A": "O raio 18 cm cobre o raio mínimo aproximado de 17 cm e é a menor opção disponível.",
+          "B": "O raio 26 cm cobre a base, mas há o de 18 cm que também a cobre com menor diâmetro.",
+          "C": "O lado de 30 cm não é o raio necessário; escolher 30 cm produz um tampo maior que o mínimo disponível.",
+          "D": "O raio 35 cm ultrapassa o necessário, sendo desnecessário diante da opção de 18 cm.",
+          "E": "O raio 60 cm cobre o suporte, mas é muito maior que a menor medida suficiente."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:141": {
@@ -1023,6 +2223,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para comparar os preços, observa-se onde a curva Q fica abaixo ou coincide com a linha P. Isso ocorre do início até a primeira interseção, em 20 km, e novamente da interseção em 100 km até 160 km. Entre 20 e 100 km, Q fica acima de P."
+        ],
+        "alternatives": {
+          "A": "Entre 20 e 100 km, Q cobra mais que P, exceto nos pontos de interseção.",
+          "B": "De 80 a 100 km, Q ainda está acima de P, portanto esse intervalo não atende integralmente.",
+          "C": "De 100 a 160 km atende, mas a opção omite o intervalo inicial de 0 a 20 km.",
+          "D": "Os intervalos de 0 a 20 km e de 100 a 160 km correspondem às regiões em que Q está abaixo ou sobre P.",
+          "E": "Entre 40 e 80 km, Q fica acima de P, tornando incorreto o primeiro intervalo indicado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:142": {
@@ -1043,6 +2267,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Só as escolas II e IV podem vencer: as demais chegam no máximo a 65 pontos. Se b e c são suas notas restantes, II vence quando 66 + b ≥ 68 + c, pois ganha o desempate em Enredo e Harmonia por 20 a 19. Os pares possíveis são (8,6), (9,6), (9,7), (10,6), (10,7), (10,8), totalizando 6. Para as outras três escolas, há 5³ escolhas. Total: 6 × 125 = 750."
+        ],
+        "alternatives": {
+          "A": "O número 21 não considera corretamente os seis pares de notas decisivos nem as escolhas independentes das demais escolas.",
+          "B": "Noventa não inclui as 125 combinações possíveis para as três escolas que não disputam o título.",
+          "C": "Seis pares permitem a vitória da escola II, e cada um admite 125 configurações das outras notas: 750.",
+          "D": "O resultado 1 250 consideraria dez pares favoráveis, mas a diferença inicial de dois pontos permite apenas seis.",
+          "E": "O valor 3 125 é 5⁵, contando todas as atribuições de notas, inclusive aquelas em que a escola IV vence."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:143": {
@@ -1063,6 +2311,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada contêiner ocupa base de 6,4 × 2,5 = 16 m². A área de 10 × 32 = 320 m² comporta 20 unidades por camada, com quatro larguras de 2,5 m e cinco comprimentos de 6,4 m. Para 100 contêineres são necessárias cinco camadas, cuja altura é 5 × 2,5 = 12,5 m."
+        ],
+        "alternatives": {
+          "A": "Vinte contêineres por camada exigem cinco camadas, totalizando 12,5 m de altura.",
+          "B": "Dezessete metros e meio correspondem a sete camadas, mais que as cinco necessárias.",
+          "C": "Vinte e cinco metros correspondem a dez camadas e não aproveitam a capacidade de vinte unidades por camada.",
+          "D": "Vinte e dois metros e meio representam nove camadas, sem ser a altura mínima.",
+          "E": "Trinta e dois metros e meio equivalem a treze camadas e excedem largamente o empilhamento necessário."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:144": {
@@ -1083,6 +2355,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A caneta real mede 16,8 cm e sua imagem mede 1,4 cm, então o fator de ampliação da fotografia para o real é 16,8/1,4 = 12. A largura da pegada é 2,2 × 12 = 26,4 cm e seu comprimento é 3,4 × 12 = 40,8 cm."
+        ],
+        "alternatives": {
+          "A": "Esses valores não aplicam o fator 12 determinado pela comparação entre a caneta real e sua imagem.",
+          "B": "As medidas 8,6 e 9,8 são pequenas demais para a escala de redução indicada pela caneta.",
+          "C": "O fator deve multiplicar as medidas da pegada, e não ser combinado com elas por adição ou subtração.",
+          "D": "A aplicação da mesma escala às duas dimensões fornece 26,4 cm de largura e 40,8 cm de comprimento.",
+          "E": "Esses valores não mantêm o fator exato 12 entre as medidas da imagem e as medidas reais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:145": {
@@ -1103,6 +2399,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em cada módulo quadrado de lado d, a abertura tem lado d − 1, pois as fitas medem 1 mm. Cobertura de 75% significa abertura de 25%, logo (d − 1)²/d² = 1/4. Como d > 1, temos (d − 1)/d = 1/2, obtendo d = 2 mm."
+        ],
+        "alternatives": {
+          "A": "Com d = 2, a abertura tem lado 1 e ocupa 1/4 do módulo, deixando 75% coberto.",
+          "B": "Com d = 1, não há abertura entre as fitas e a cobertura chega a 100%.",
+          "C": "Com d = 11/3, a fração aberta é 64/121, muito maior que os 25% solicitados.",
+          "D": "Com d = 4/3, a fração aberta é 1/16 e a cobertura é 93,75%, acima da requerida.",
+          "E": "O valor 2/3 é menor que a largura da fita e tornaria negativa a distância d − 1 entre elas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:146": {
@@ -1123,6 +2443,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O comprimento de cada peça deve dividir 540, 810 e 1 080 cm. O máximo divisor comum é 270 cm, mas supera 2 m; o maior divisor de 270 menor que 200 é 135 cm. O total é 40(540/135) + 30(810/135) + 10(1 080/135) = 160 + 180 + 80 = 420 peças."
+        ],
+        "alternatives": {
+          "A": "O total 105 corresponderia a peças de 540 cm, que não dividem as tábuas de 810 cm sem sobra e excedem o limite.",
+          "B": "Cento e vinte peças não resultam do maior comprimento comum permitido, que é 135 cm.",
+          "C": "Duzentas e dez peças são obtidas com cortes de 270 cm, mas essas peças ultrapassam os 2 m estabelecidos.",
+          "D": "Duzentas e quarenta e três peças não podem repartir o comprimento total em peças comuns de 135 cm.",
+          "E": "Cortes de 135 cm atendem às três medidas, respeitam o limite e produzem 420 peças."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:147": {
@@ -1143,6 +2487,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O refil contém 3/0,01 = 300 unidades. Cada aplicação consome 10 unidades administradas e 2 descartadas, num total de 12. Portanto, o número máximo de aplicações completas é 300/12 = 25, independentemente de serem realizadas duas por dia."
+        ],
+        "alternatives": {
+          "A": "Vinte e cinco aplicações consomem exatamente 25 × 12 = 300 unidades, incluindo os descartes.",
+          "B": "Quinze corresponde ao número de dias calculado ao ignorar o descarte, e não ao total correto de aplicações.",
+          "C": "Treze aplicações utilizariam apenas 156 unidades, deixando quantidade suficiente para outras doses completas.",
+          "D": "Doze se aproxima do número de dias completos com duas doses, mas a pergunta pede aplicações individuais.",
+          "E": "Oito aplicações consumiriam apenas 96 unidades e não representam o máximo disponível no refil."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:148": {
@@ -1163,6 +2531,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A dobra cria um eixo de simetria na futura bandeirinha. Ao abrir a folha, o corte que vai de N até O é refletido e forma uma reentrância central que sobe até a metade da altura. Os cortes junto a M deixam as bordas laterais a um quarto da altura inferior, produzindo a figura simétrica da alternativa E."
+        ],
+        "alternatives": {
+          "A": "Na figura A, as pontas chegam abaixo do nível de N e a posição dos cortes não reproduz as proporções dadas.",
+          "B": "Na figura B, a reentrância central é baixa demais para corresponder a O, situado no meio de FG.",
+          "C": "A figura C não respeita a simetria produzida pela abertura da folha dobrada.",
+          "D": "A figura D mantém apenas uma ponta central e não espelha os dois segmentos recortados.",
+          "E": "A figura E apresenta simetria, reentrância central até a meia altura e os recortes laterais determinados por M."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:149": {
@@ -1183,6 +2575,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Basta que pelo menos um dos três alunos compreenda e fale inglês. Usando o complemento e a independência assumida no modelo, a chance de nenhum atender a essa condição é 0,7³ = 0,343. Portanto, a probabilidade desejada é 1 − 0,343 = 0,657, ou 65,7%."
+        ],
+        "alternatives": {
+          "A": "O valor 23,7% não corresponde ao complemento de nenhum dos três alunos saber inglês.",
+          "B": "Trinta por cento é a probabilidade individual e desconsidera que qualquer um dos três pode responder.",
+          "C": "Quarenta e quatro vírgula um por cento correspondem a exatamente um aluno saber inglês, excluindo os casos com dois ou três.",
+          "D": "A probabilidade de pelo menos um responder é 1 − 0,7³ = 65,7%.",
+          "E": "Somar 30% três vezes conta sobreposições entre eventos e não fornece a probabilidade da união."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:150": {
@@ -1203,6 +2619,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Do total de 282 kton, 37,8% foram destinados ao setor têxtil. Desse subtotal, 30% foram empregados em tecidos e malhas. A quantidade procurada é 282 × 0,378 × 0,30 = 31,9788 kton, aproximadamente 32,0 kton."
+        ],
+        "alternatives": {
+          "A": "Dezesseis kton representam aproximadamente metade do valor obtido pelas duas porcentagens sucessivas.",
+          "B": "Vinte e dois vírgula nove kton não resultam da aplicação de 37,8% e depois 30% sobre as 282 kton.",
+          "C": "As porcentagens sucessivas fornecem aproximadamente 32,0 kton para tecidos e malhas.",
+          "D": "O valor 84,6 aplica 30% diretamente ao total e ignora que essa porcentagem se refere apenas ao setor têxtil.",
+          "E": "O valor 106,6 corresponde ao total destinado a todos os usos têxteis, sem separar tecidos e malhas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:151": {
@@ -1223,6 +2663,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada círculo antigo tem raio 2 km, e seu centro fica a 2 km do ponto O. Para alcançar a borda mais distante, o novo círculo deve ter raio 4 km. Sua área é 16π, enquanto as duas áreas antigas, tangentes sem sobreposição de área, somam 8π. O aumento é 8π km²."
+        ],
+        "alternatives": {
+          "A": "A diferença entre 16π da cobertura nova e 8π da antiga é 8π km².",
+          "B": "Doze π corresponderia a descontar apenas um dos círculos antigos, em vez das duas áreas já atendidas.",
+          "C": "Dezesseis π é toda a área nova, não o acréscimo em relação à cobertura anterior.",
+          "D": "Trinta e dois π excede a área total do círculo novo e não pode representar o aumento.",
+          "E": "Sessenta e quatro π usaria indevidamente 8 km como raio, confundindo-o com o diâmetro da nova cobertura."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:152": {
@@ -1243,6 +2707,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Antes da décima prestação, já foram amortizados nove pagamentos de R$ 500, totalizando R$ 4 500. O saldo é R$ 175 500, e os juros do décimo mês são 1% desse valor, R$ 1 755. Somando a amortização de R$ 500, a prestação é R$ 2 255."
+        ],
+        "alternatives": {
+          "A": "O valor R$ 2 075 não corresponde a 1% do saldo após nove amortizações somado aos R$ 500 fixos.",
+          "B": "R$ 2 093 também não resulta da redução linear do saldo em R$ 500 por pagamento.",
+          "C": "R$ 2 138 exigiria um saldo devedor diferente dos R$ 175 500 existentes antes da décima parcela.",
+          "D": "Os juros de R$ 1 755 somados aos R$ 500 de amortização produzem R$ 2 255.",
+          "E": "R$ 2 300 é o valor da primeira prestação, quando os juros incidem sobre os R$ 180 000 iniciais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:153": {
@@ -1263,6 +2751,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A quantidade indicada é 4,129 milhões de toneladas, isto é, 4,129 × 10⁶ toneladas. Como uma tonelada equivale a 10³ kg, multiplica-se por mais 10³: 4,129 × 10⁶ × 10³ = 4,129 × 10⁹ kg."
+        ],
+        "alternatives": {
+          "A": "O expoente 3 não incorpora o fator milhão e fica seis ordens de grandeza abaixo do valor em quilogramas.",
+          "B": "O expoente 6 expressa a quantidade em toneladas, sem converter cada tonelada em mil quilogramas.",
+          "C": "Somar os expoentes 6 e 3 fornece 9, resultando em 4,129 × 10⁹ kg.",
+          "D": "O expoente 12 acrescenta um fator mil além do necessário na conversão para quilogramas.",
+          "E": "O expoente 15 superestima a conversão ao introduzir fatores de milhão não presentes no enunciado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:154": {
@@ -1283,6 +2795,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para a mesma criança, a fração idade/(idade + 12) é igual nos dois medicamentos. A dose de Y foi 14/42 = 1/3 da dose adulta. Portanto, a dose infantil de X também deve ser um terço de 60 mg, resultando em 20 mg, conforme a fórmula dada no problema."
+        ],
+        "alternatives": {
+          "A": "Quinze mg representam um quarto da dose adulta, diferente da fração de um terço inferida do medicamento Y.",
+          "B": "A proporção infantil é 1/3, logo a dose de X calculada pelo modelo é 60/3 = 20 mg.",
+          "C": "Trinta mg representam metade da dose adulta e não preservam a proporção 14/42.",
+          "D": "Trinta e seis mg correspondem a 60% da dose adulta, acima da fração determinada no enunciado.",
+          "E": "Quarenta mg representam dois terços da dose adulta, o dobro da fração correta para essa criança."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:155": {
@@ -1303,6 +2839,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os grupos extremos têm o mesmo tamanho, 10% da população. Por isso, suas médias equivalem a 44,5%/10% = 4,45 e 1,1%/10% = 0,11 vezes a média geral. A diferença é (4,45 − 0,11) × 1 202 = 4,34 × 1 202 = R$ 5 216,68."
+        ],
+        "alternatives": {
+          "A": "R$ 240,40 não considera as participações de 44,5% e 1,1% no total de rendimentos.",
+          "B": "R$ 548,11 não resulta da diferença entre as médias de dois grupos com o mesmo tamanho populacional.",
+          "C": "R$ 1 723,67 não aplica a divisão de cada participação na renda pelos 10% de pessoas do grupo.",
+          "D": "R$ 4 026,70 fica abaixo da diferença de R$ 5 216,68 calculada a partir das duas médias extremas.",
+          "E": "A renda média dos mais ricos é R$ 5 348,90 e a dos mais pobres R$ 132,22, com diferença de R$ 5 216,68."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:156": {
@@ -1323,6 +2883,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O cubo tem seis faces e oito vértices. Cada corte de um vértice acrescenta uma nova face triangular, enquanto as seis faces originais permanecem, agora com os cantos cortados. Como os cortes são pequenos, não se encontram: o total é 6 + 8 = 14 faces e, portanto, 14 cores."
+        ],
+        "alternatives": {
+          "A": "Seis conta apenas as faces originais do cubo e ignora as criadas pelos cortes.",
+          "B": "Oito conta as novas faces triangulares, mas exclui as seis faces que já existiam.",
+          "C": "As seis faces originais e as oito novas somam quatorze faces distintas.",
+          "D": "Vinte e quatro se relaciona à quantidade de novos vértices, não ao número de faces a pintar.",
+          "E": "Trinta corresponde ao número de arestas do sólido truncado, e não ao total de faces."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:157": {
@@ -1343,6 +2927,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A receita é R(p) = p(400 − 100p). Exigir ao menos R$ 300 dá −100p² + 400p ≥ 300, ou (p − 1)(p − 3) ≤ 0. Logo, 1 ≤ p ≤ 3. A quantidade q diminui quando p aumenta, então a maior venda ocorre no menor preço permitido: R$ 1,00."
+        ],
+        "alternatives": {
+          "A": "O preço ótimo de R$ 1,00 pertence ao intervalo de R$ 0,50 até menos de R$ 1,50.",
+          "B": "Preços nesse intervalo podem manter receita, mas vendem menos pães que o preço de R$ 1,00.",
+          "C": "Perto do preço original de R$ 3,00, a quantidade vendida é menor que a obtida no limite inferior viável.",
+          "D": "Preços a partir de R$ 3,50 não atendem à receita mínima no modelo, além de não ampliarem as vendas.",
+          "E": "Preços acima de R$ 4,50 produzem quantidade negativa na expressão, fora do uso viável do modelo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:158": {
@@ -1363,6 +2971,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Se x é a fração vacinada, a parcela protegida é 0,98x. No modelo do enunciado, o risco total é 0,50(1 − 0,98x). Exigir no máximo 0,059 dá 1 − 0,98x ≤ 0,118, portanto x ≥ 0,882/0,98 = 0,90. A menor cobertura proposta que atende é 90%."
+        ],
+        "alternatives": {
+          "A": "A cobertura de 90% leva o risco a 0,50 × 0,118 = 5,9%, atingindo exatamente a meta.",
+          "B": "A cobertura de 55,8% deixa risco aproximado de 22,7%, superior ao máximo de 5,9%.",
+          "C": "A cobertura de 88,2% é menor que o mínimo de 90% e deixa risco de aproximadamente 6,78%.",
+          "D": "A cobertura de 49% deixa risco de aproximadamente 26%, muito acima da meta.",
+          "E": "A cobertura de 95,9% atende, mas vacina mais pessoas do que a proposta I e não minimiza o custo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:159": {
@@ -1383,6 +3015,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Crescer 50% a cada ano equivale a multiplicar a produção anterior por 1,5. Como o primeiro ano já tem 8 000 unidades, são feitas t − 1 multiplicações até o ano t. A função é P(t) = 8 000(1,5)^(t − 1), uma progressão geométrica."
+        ],
+        "alternatives": {
+          "A": "A expressão soma um valor linear e não aplica crescimento de 50% sobre a produção do ano anterior.",
+          "B": "Somar 50 por ano confunde porcentagem com quantidade absoluta de unidades.",
+          "C": "Somar 4 000 todo ano repete apenas o aumento inicial, sem atualizar a base para os 50% seguintes.",
+          "D": "Multiplicar por 0,5 reduziria a produção pela metade a cada ano, em vez de aumentá-la.",
+          "E": "O fator 1,5 e o expoente t − 1 preservam 8 000 no primeiro ano e o crescimento anual de 50%."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:160": {
@@ -1403,6 +3059,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Ordenando os tempos: 20,50; 20,60; 20,60; 20,80; 20,90; 20,90; 20,90; 20,96. Como há oito valores, a mediana é a média entre o quarto e o quinto: (20,80 + 20,90)/2 = 20,85 segundos."
+        ],
+        "alternatives": {
+          "A": "20,70 é a média de dois valores que não ocupam as posições centrais da lista ordenada.",
+          "B": "20,77 aproxima a média aritmética de todos os tempos, não a mediana.",
+          "C": "20,80 é o quarto valor ordenado; como a quantidade é par, ainda é necessário combiná-lo com o quinto.",
+          "D": "A média dos dois valores centrais, 20,80 e 20,90, é 20,85 segundos.",
+          "E": "20,90 é a moda e o quinto valor ordenado, mas não a média dos dois termos centrais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:161": {
@@ -1423,6 +3103,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O garrafão antigo tem área de trapézio: (600 + 360) × 580/2 = 278 400 cm². O novo retângulo mede 490 × 580 = 284 200 cm². A diferença é 284 200 − 278 400 = 5 800 cm², um aumento por garrafão."
+        ],
+        "alternatives": {
+          "A": "A área retangular supera a antiga em exatamente 5 800 cm².",
+          "B": "75 400 cm² decorrem de comparar 490 com a base menor 360, ignorando a base média do trapézio.",
+          "C": "214 600 cm² não correspondem à diferença entre o trapézio e o retângulo com altura de 580 cm.",
+          "D": "Comparar apenas a base maior 600 com 490 sugere queda indevida; a área antiga depende das duas bases.",
+          "E": "272 600 cm² não são a redução observada, pois a nova área é maior que a antiga."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:162": {
@@ -1443,6 +3147,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para minimizar o número de escolas, cada uma deve receber a maior quantidade que divida tanto 400 quanto 320, pois não pode misturar sessões. Esse número é o MDC, 80. Assim, cinco escolas recebem ingressos vespertinos e quatro recebem noturnos: 5 + 4 = 9 escolas."
+        ],
+        "alternatives": {
+          "A": "Duas escolas receberiam 400 e 320 ingressos, quantidades diferentes, violando o segundo critério.",
+          "B": "Quatro escolas não permitem repartir 720 ingressos em grupos iguais sem misturar as duas sessões.",
+          "C": "Grupos de 80 ingressos geram cinco escolas para a tarde e quatro para a noite, totalizando nove.",
+          "D": "Quarenta é um divisor comum possível por escola, mas produziria dezoito escolas, sem minimizar a quantidade.",
+          "E": "Oitenta é o número de ingressos por escola, não o total mínimo de escolas contempladas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:163": {
@@ -1463,6 +3191,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O raio antigo é 1 m, pois o diâmetro é 2 m. Na nova cisterna, V = πr²h fornece 81 = 3 × r² × 3, logo r² = 9 e r = 3 m. O aumento no raio é 3 − 1 = 2 m."
+        ],
+        "alternatives": {
+          "A": "Um aumento de 0,5 m daria raio de 1,5 m e volume de apenas 20,25 m³.",
+          "B": "Um aumento de 1 m daria raio de 2 m e volume de 36 m³, insuficiente.",
+          "C": "O raio passa de 1 para 3 m, aumentando 2 m e atingindo 81 m³.",
+          "D": "Aumentar 3,5 m daria raio de 4,5 m, acima do necessário para o volume desejado.",
+          "E": "O aumento de 8 m confunde a relação quadrática entre volume e raio e produz capacidade excessiva."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:164": {
@@ -1483,6 +3235,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O pentágono regular pode ser dividido, pelo centro, em cinco triângulos de mesma área. No desenho, carboidratos ocupam três desses triângulos, 60%; proteínas ocupam metade de um triângulo, 10%; gorduras ocupam um triângulo e meio, 30%. Essa distribuição atende às três porcentagens."
+        ],
+        "alternatives": {
+          "A": "No triângulo, as divisões iguais dos lados não produzem faixas de áreas iguais: a região superior tem 1/9 do total, não 10%.",
+          "B": "No losango, a região dos carboidratos ocupa metade da área, e não os 60% exigidos.",
+          "C": "No pentágono, as regiões correspondem a três, meio e um e meio dos cinco triângulos iguais, obtendo 60%, 10% e 30%.",
+          "D": "No hexágono, a região dos carboidratos ocupa metade do polígono, abaixo dos 60% requeridos.",
+          "E": "No octógono, as regiões indicadas não correspondem a 60%, 10% e 30%; a divisão em setores iguais revela frações diferentes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:165": {
@@ -1503,6 +3279,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Se a e b são as abscissas esquerda e direita, temos b − a = n. Como as alturas são simétricas em relação ao eixo x, log b = −log a, logo ab = 1. Substituindo a = b − n, resulta b² − nb − 1 = 0, com raiz positiva b = (n + √(n² + 4))/2. A altura total é h = 2log b."
+        ],
+        "alternatives": {
+          "A": "O segundo logaritmo tem argumento (n − √(n² + 4))/2 negativo, portanto não define uma expressão real para a altura.",
+          "B": "A forma 1 ± n/2 pressupõe simetria horizontal em torno de x = 1, que a curva logarítmica não possui.",
+          "C": "A soma dos logaritmos não representa a diferença vertical entre os extremos e parte de abscissas incorretas.",
+          "D": "Essa expressão fornece apenas a metade superior da altura, log b, faltando multiplicar por dois.",
+          "E": "A expressão 2log((n + √(n² + 4))/2) representa a altura inteira e respeita a simetria vertical indicada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:166": {
@@ -1523,6 +3323,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A média das quatro etapas deve ser multiplicada por quatro antes de incluir a quinta nota. As médias finais são A: 84; B: 85; C: 83; D: 66; E: 68. Em ordem decrescente, a classificação é B, A, C, E, D, sem necessidade de desempate."
+        ],
+        "alternatives": {
+          "A": "A alternativa coloca A antes de B, embora B tenha média final 85 e A, 84.",
+          "B": "As médias 85, 84, 83, 68 e 66 estabelecem a ordem B, A, C, E, D.",
+          "C": "C tem média final 83 e não supera B ou A; a quinta nota não substitui a soma das quatro anteriores.",
+          "D": "Além de promover C indevidamente, essa ordem coloca A por último apesar de sua média 84.",
+          "E": "E tem a maior quinta nota, mas média final 68; o desempate não se aplica quando as médias são diferentes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:167": {
@@ -1543,6 +3367,31 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O cálculo associado ao gabarito oficial é: V = (1/3) × 3 × 300² × 1 200 = 108 000 000 mm³, ou 0,108 m³. Distribuir esse volume sobre 1 m² fornece altura de 0,108 m = 108 mm, alternativa D.",
+          "Há uma inconsistência física no enunciado: a lata possui área de captação de 0,27 m², e um terço de sua altura é 400 mm. Uma medição pluviométrica normalizada pela própria área coletora daria 400 mm, valor ausente das alternativas. Portanto, 108 mm registra o procedimento pretendido pela prova, sem eliminar essa limitação."
+        ],
+        "alternatives": {
+          "A": "10,8 mm não correspondem ao volume de 0,108 m³ dividido por 1 m² no cálculo associado ao gabarito.",
+          "B": "12 mm não resultam da terça parte do volume cilíndrico e de sua conversão no procedimento esperado.",
+          "C": "32,4 mm introduzem um fator extra de 0,3 e não correspondem à divisão do volume por 1 m².",
+          "D": "108 mm são obtidos ao distribuir os 108 litros calculados sobre 1 m², procedimento que fundamenta o gabarito, com a ressalva física indicada.",
+          "E": "324 mm correspondem ao volume total da lata distribuído sobre 1 m², ignorando que ela estava a um terço da capacidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:168": {
@@ -1563,6 +3412,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O percurso de P a Q segue primeiro pela rua A, de x = 30 a x = 550, totalizando 520 unidades, e depois pela rua B, de y = 20 a y = 320, mais 300. Metade do percurso de 820 é 410. Partindo de P, essa distância ainda fica na rua A, em x = 30 + 410 = 440 e y = 20."
+        ],
+        "alternatives": {
+          "A": "(290,20) é o ponto médio apenas do trecho horizontal, sem incluir a subida de 300 unidades até Q.",
+          "B": "A distância de 410 é o que deve ser percorrido desde P, não a coordenada x, e a rua A está em y = 20.",
+          "C": "A coordenada x deve somar os 30 iniciais de P aos 410 percorridos, resultando em 440.",
+          "D": "A abscissa 440 está correta, mas o ponto deve permanecer na rua A, em y = 20, não no eixo x.",
+          "E": "O ponto (440,20) deixa 410 unidades percorridas de cada lado ao longo da rota."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:169": {
@@ -1583,6 +3456,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Comparam-se as distâncias absolutas até 3 mm: 3,10 difere 0,10; 3,021 difere 0,021; 2,96 difere 0,04; 2,099 difere 0,901; e 3,07 difere 0,07. A menor diferença é 0,021 mm, correspondente à lente de 3,021 mm."
+        ],
+        "alternatives": {
+          "A": "2,099 mm está a 0,901 mm de 3, a maior diferença entre as medidas disponíveis.",
+          "B": "2,96 mm está a 0,04 mm de 3, distância maior que 0,021 mm.",
+          "C": "3,021 mm apresenta a menor distância absoluta a 3 mm, de apenas 0,021 mm.",
+          "D": "3,07 mm está a 0,07 mm do alvo, mais longe que 3,021 mm.",
+          "E": "3,10 mm difere em 0,10 mm, portanto não é a espessura mais próxima."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:170": {
@@ -1603,6 +3500,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A figura mostra nove poltronas disponíveis para sete pessoas distintas. Há nove escolhas para a primeira pessoa, oito para a segunda, até três para a sétima. O total é o arranjo de nove posições tomadas sete a sete: 9 × 8 × 7 × 6 × 5 × 4 × 3 = 9!/2!."
+        ],
+        "alternatives": {
+          "A": "O arranjo 9!/2! distingue tanto as poltronas escolhidas quanto a distribuição das sete pessoas nelas.",
+          "B": "A combinação 9!/(7!2!) escolhe somente as sete poltronas e não distribui os familiares entre elas.",
+          "C": "7! distribuiria as pessoas em sete lugares já fixados, ignorando a escolha entre nove vagas.",
+          "D": "O produto proposto impõe uma divisão em grupos de assentos que o enunciado não exige.",
+          "E": "Esse produto conta escolhas separadas de poucas posições, sem acomodar todas as sete pessoas distintas nas nove vagas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:171": {
@@ -1623,6 +3544,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada setor de 60° tem área πR²/6. Os três setores somam πR²/2, ou 1,5R² usando π = 3. A piscina atual ocupa 50 × 24 = 1 200 m². Exige-se 1,5R² < 1 200, logo R² < 800 e R < 28,3 aproximadamente. O maior raio natural permitido é 28 m."
+        ],
+        "alternatives": {
+          "A": "16 m atendem à restrição, mas não são o maior inteiro possível para o raio.",
+          "B": "28 m produzem 1 176 m², abaixo de 1 200, e 29 m já ultrapassariam esse limite.",
+          "C": "29 m produziriam 1 261,5 m², área maior que a da piscina existente.",
+          "D": "31 m resultariam em 1 441,5 m², excedendo a área permitida.",
+          "E": "49 m produziriam 3 601,5 m², muito acima dos 1 200 m² disponíveis na comparação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:172": {
@@ -1643,6 +3588,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em dez horas há vinte intervalos de meia hora. No modelo do problema, são vinte copos de 150 mL, totalizando 3 000 mL = 3 L. Como serão compradas duas garrafas iguais e todo o conteúdo será consumido, cada uma deve ter 1,50 L."
+        ],
+        "alternatives": {
+          "A": "Duas garrafas I fornecem 0,30 L, apenas um décimo do volume calculado.",
+          "B": "Duas garrafas II fornecem 0,60 L, insuficientes para os vinte copos.",
+          "C": "Duas garrafas III fornecem 1,50 L, metade do volume necessário.",
+          "D": "Duas garrafas IV de 1,50 L totalizam exatamente 3 L, conforme a quantidade do enunciado.",
+          "E": "Duas garrafas V totalizam 6 L, o dobro do volume que deve ser consumido no problema."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:173": {
@@ -1663,6 +3632,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para a massa de 3,0 kg, a tabela informa área corporal de 0,208 m². Multiplicando pela dosagem prescrita no problema, obtém-se 250 mg/m² × 0,208 m² = 52 mg por dia. A massa serve para consultar a área, não para multiplicar diretamente a dose por quilograma."
+        ],
+        "alternatives": {
+          "A": "0,624 é o produto de 3 por 0,208 e não aplica a taxa de 250 mg por metro quadrado.",
+          "B": "O produto 250 × 0,208 fornece a dose diária de 52,0 mg no modelo apresentado.",
+          "C": "156 mg multiplicam novamente o resultado por 3 kg, embora o peso já tenha sido usado para determinar a área.",
+          "D": "750 mg resultam de multiplicar 250 pela massa, confundindo dose por metro quadrado com dose por quilograma.",
+          "E": "1 201,9 mg decorrem aproximadamente de dividir 250 por 0,208, quando a dose deve ser multiplicada pela área."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:174": {
@@ -1683,6 +3676,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As dez pessoas consomem juntas 10 × 0,08 = 0,8 m³ de água por dia. Em vinte dias, o volume é 20 × 0,8 = 16 m³. Convertendo para litros, 16 × 1 000 = 16 000 L, a capacidade mínima solicitada."
+        ],
+        "alternatives": {
+          "A": "16 é o volume em metros cúbicos, ainda sem conversão para litros.",
+          "B": "800 L correspondem ao consumo diário de toda a família, sem multiplicar pelos vinte dias.",
+          "C": "1 600 L abastecem uma pessoa por vinte dias, mas a família possui dez pessoas.",
+          "D": "8 000 L equivalem a metade da demanda de 16 000 L calculada para a família.",
+          "E": "O consumo de 0,8 m³ por dia durante vinte dias corresponde a 16 000 litros."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:175": {
@@ -1703,6 +3720,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Há 200 atletas. No modo I, a chance de um atleta específico estar entre os três é 3/200. No modo II, é (1/20)(3/10) = 3/200. No modo III, a equipe é escolhida com chance 3/20 e o atleta com 1/10, dando novamente 3/200. As três probabilidades são iguais."
+        ],
+        "alternatives": {
+          "A": "O modo II não favorece o atleta específico: a chance de sua equipe ser escolhida compensa a escolha de três entre dez.",
+          "B": "O modo III não apresenta vantagem sobre os outros; (3/20)(1/10) também vale 3/200.",
+          "C": "O modo I tem probabilidade 3/200, igual, e não inferior, às dos modos II e III.",
+          "D": "O modo III mantém a mesma probabilidade individual dos demais, sem aumento.",
+          "E": "Todos os modos sorteiam três atletas com a mesma chance individual, produzindo 3/200 em cada caso."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:176": {
@@ -1723,6 +3764,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A produção máxima corresponde ao menor preço. Em P(x) = 8 + 5cos((πx − π)/6), o mínimo ocorre quando o cosseno vale −1. No intervalo anual, (πx − π)/6 = π fornece x − 1 = 6, portanto x = 7, correspondente a julho."
+        ],
+        "alternatives": {
+          "A": "Em janeiro, o argumento é zero e o preço é máximo, R$ 13, não mínimo.",
+          "B": "Em abril, o argumento é π/2 e o preço é R$ 8, acima do mínimo de R$ 3.",
+          "C": "Em junho, o cosseno ainda é maior que −1, e o preço ainda não atingiu o mínimo anual.",
+          "D": "Em julho, o argumento é π e o preço chega a R$ 3, identificando a produção máxima da safra.",
+          "E": "Em outubro, o argumento é 3π/2 e o preço volta a R$ 8, não ao mínimo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:177": {
@@ -1743,6 +3808,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A carta da mesa apresenta 6/8, que simplifica para 3/4 e equivale a 0,75 e 75%. Entre as cartas da mão, apenas 75%, 0,75 e 3/4 representam esse valor. As demais são outros decimais ou a fração inversa 4/3. Portanto, existem três pares possíveis."
+        ],
+        "alternatives": {
+          "A": "Nove contaria todas as cartas, embora seis delas representem valores diferentes de 6/8.",
+          "B": "Sete inclui representações não equivalentes, como 3,4 ou 34%, que não valem 0,75.",
+          "C": "Cinco ainda inclui cartas com valores distintos e não corresponde às três equivalências exatas.",
+          "D": "Quatro pode decorrer de contar também a carta da mesa, mas a pergunta considera apenas as cartas da mão.",
+          "E": "As três cartas 75%, 0,75 e 3/4 são equivalentes ao valor 6/8 da mesa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:178": {
@@ -1763,6 +3852,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No grupo A/B, a maior participação é via internet, com 40%. No grupo C/D, a maior barra é a dos Correios, com 33%. Para maximizar o alcance separadamente em cada grupo, devem ser escolhidas essas duas categorias, nessa ordem."
+        ],
+        "alternatives": {
+          "A": "Correios não têm o máximo em A/B, e SMS não têm o máximo em C/D.",
+          "B": "Internet lidera em A/B com 40%, e Correios lideram em C/D com 33%.",
+          "C": "Internet alcança somente 24% em C/D, abaixo dos 33% dos Correios.",
+          "D": "Mídias sociais têm 20% em C/D, proporção inferior à categoria Correios.",
+          "E": "Rádio/TV têm 28% em ambos os grupos e não lideram nenhum deles."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:179": {
@@ -1783,6 +3896,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A embalagem comporta 10 × 20 × 10 = 2 000 cm³. O chocolate passa de 1 000 a 1 250 cm³ após aumentar 25%, restando 750 cm³ para o morango já congelado. Se v é seu volume líquido, 1,25v = 750, então v = 600 cm³."
+        ],
+        "alternatives": {
+          "A": "450 cm³ expandiriam para 562,5 cm³ e deixariam espaço vazio na embalagem.",
+          "B": "500 cm³ expandiriam para 625 cm³, ainda abaixo dos 750 cm³ restantes.",
+          "C": "600 cm³ aumentam 25% e ocupam exatamente 750 cm³, completando a embalagem.",
+          "D": "750 cm³ já correspondem ao volume final disponível; colocá-los líquidos provocaria expansão além da capacidade.",
+          "E": "1 000 cm³ de morango expandiriam para 1 250 cm³ e causariam transbordamento junto com o chocolate."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:180": {
@@ -1803,6 +3940,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Há cem senhas igualmente prováveis, numeradas de 1 a 100. O conjunto de 1 a 20 inclui vinte números, pois os dois extremos são contados. A probabilidade é a razão entre casos favoráveis e possíveis: 20/100 = 20%."
+        ],
+        "alternatives": {
+          "A": "1/100 é a chance de uma senha específica, não de um conjunto com vinte senhas.",
+          "B": "19/100 exclui indevidamente um dos extremos do intervalo de 1 a 20.",
+          "C": "Vinte senhas favoráveis entre cem possíveis fornecem probabilidade 20/100.",
+          "D": "21/100 conta uma senha além das vinte que pertencem ao intervalo solicitado.",
+          "E": "80/100 é a probabilidade complementar de sortear uma senha de 21 a 100."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "spanish:91": {
@@ -1823,6 +3984,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto reúne indígenas, mestiços, estrangeiros e outros grupos no entorno do lago, destacando sua convivência. Na conclusão, esse mosaico é apresentado como símbolo da Hispano-América, tornando a multiculturalidade o fundamento da relevância social da região."
+        ],
+        "alternatives": {
+          "A": "O patrimônio e a paisagem são mencionados, mas a relevância social central é a convivência de culturas distintas.",
+          "B": "O turismo aparece como uma das atividades, sem resumir a diversidade de grupos e modos de vida apresentada.",
+          "C": "A existência de negócios não é tomada como prova de prosperidade geral nem como síntese da importância social do lago.",
+          "D": "A convivência de etnias, idiomas e costumes compõe o mosaico cultural que o texto associa à identidade hispano-americana.",
+          "E": "A cultura indígena é importante, porém o texto enfatiza sua interação com outras culturas, ampliando o alcance da descrição."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "spanish:92": {
@@ -1843,6 +4028,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A expressão 'puro floro' caracteriza a celebração como discurso bonito e vazio diante da continuidade da violência. O contraste entre o dia dedicado ao amor e os numerosos casos de agressão sugere que a comemoração pode encobrir uma realidade incompatível com sua mensagem."
+        ],
+        "alternatives": {
+          "A": "A proteção é o objetivo da campanha citada depois, mas 'puro floro' critica a distância entre a comemoração e a realidade.",
+          "B": "O tom da expressão é crítico e não serve para destacar a eficácia já comprovada das ações governamentais.",
+          "C": "A celebração aparece como aparência de amor e amizade que pode camuflar a persistência da violência de gênero.",
+          "D": "A expressão não minimiza a gravidade das agressões; o restante do texto apresenta números para denunciá-las.",
+          "E": "Não se celebra um sucesso: os casos denunciados justificam a necessidade de enfrentar um problema persistente."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "spanish:93": {
@@ -1863,6 +4072,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As posições espaciais expressam hierarquias sociais: o trabalhador negro está junto ao canavial, o norte-americano aparece sobre ele, em posição de domínio, e a terra permanece sob a plantação. A metáfora denuncia relações de exploração associadas à produção açucareira."
+        ],
+        "alternatives": {
+          "A": "A disposição dos elementos não descreve desorganização técnica da lavoura, mas uma ordem social desigual.",
+          "B": "A figura do 'yanqui' sugere poder econômico, sem apresentar negociações ou relações diplomáticas entre Estados.",
+          "C": "As preposições não localizam países ou regiões: estabelecem posições simbólicas em torno do canavial.",
+          "D": "As relações espaciais figuram a hierarquia entre trabalhador, dominador e terra no sistema de produção da cana.",
+          "E": "O poema não distribui tarefas profissionais específicas; denuncia posições sociais e exploração."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "spanish:94": {
@@ -1883,6 +4116,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O cartaz associa o símbolo de acessibilidade ao pedido de que quem ocupa a vaga também assuma a deficiência de quem depende dela. Essa formulação provocativa chama atenção para o prejuízo causado pela ocupação indevida de estacionamento reservado a pessoas cadeirantes."
+        ],
+        "alternatives": {
+          "A": "O destinatário da cobrança é quem ocupa indevidamente a vaga, não o cadeirante que deveria superar barreiras sozinho.",
+          "B": "A referência a tomar o estacionamento alheio denuncia o uso indevido da vaga reservada e exige respeito a esse direito.",
+          "C": "O símbolo já identifica a vaga; o problema abordado é desrespeitar a reserva, e não a ausência de sinalização.",
+          "D": "A mensagem não trata genericamente de remover obstáculos das vias, mas de impedir a apropriação de uma vaga específica.",
+          "E": "O foco não está no deslocamento dentro do estacionamento, e sim na disponibilidade da vaga a quem necessita dela."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "spanish:95": {
@@ -1903,6 +4160,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O espanhol só recebe tradução sistemática quando a fala importa ao argumento; em outros casos, é omitido ou reduzido à indicação de que alguém fala espanhol. Essa seleção impede parte do público de conhecer o conteúdo e revela tratamento desigual da língua dentro da diversidade linguística dos Estados Unidos."
+        ],
+        "alternatives": {
+          "A": "A legendagem seletiva atribui tratamento desigual ao conteúdo em espanhol e o torna menos acessível conforme sua função narrativa.",
+          "B": "O texto parte da presença crescente do espanhol e de personagens latino-americanos, sem apontar sua escassez como explicação.",
+          "C": "O público hispânico compreende as falas; a discussão se refere ao tratamento do espanhol na versão original voltada ao público geral.",
+          "D": "Não se atribui a escolha de legendagem à falta de formação dos roteiristas ou dos tradutores.",
+          "E": "A reportagem apresenta uma pesquisa sobre o tema, e a ausência de legendas não é explicada pela falta de estudos científicos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     }
   }

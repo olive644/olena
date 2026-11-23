@@ -29,11 +29,11 @@
           "O trabalhador continua acessível às mensagens da empresa após o fim do turno e retorna ao serviço durante o jantar. O celular estende as demandas profissionais ao tempo doméstico. A prática amplia atividades extras e enfraquece a separação entre trabalho e vida privada."
         ],
         "alternatives": {
-          "A": "O trabalho invade o jantar, portanto a vida privada perde proteção.",
-          "B": "A consulta e a resposta a mensagens prolongam as atividades além do turno.",
-          "C": "Não se descreve aumento de etapas administrativas formais.",
-          "D": "O tempo familiar é substituído por trabalho, sem diversificação do lazer.",
-          "E": "As obrigações domésticas permanecem, mesmo quando recebem menos atenção."
+          "A": "O contato profissional entra no espaço do jantar e desvia a atenção da família, mostrando uma invasão da vida privada; a prática descrita não protege os limites entre trabalho e vida pessoal.",
+          "B": "Ao verificar mensagens profissionais depois do fim do turno, o indivíduo volta a se envolver com o trabalho durante o tempo doméstico; a conectividade amplia atividades extras para além do expediente.",
+          "C": "O relato não descreve documentos, autorizações ou novas etapas administrativas; o problema é a continuidade da disponibilidade profissional no tempo privado, e não o aumento de procedimentos burocráticos.",
+          "D": "O jantar e o convívio familiar perdem espaço para preocupações com mensagens da empresa; a prática reduz a dedicação ao tempo livre, sem criar novas opções de lazer recreativo.",
+          "E": "A atenção dispensada ao trabalho não elimina a responsabilidade por tarefas ou relações domésticas; o texto mostra que elas ficam em segundo plano, sem qualquer desobrigação formal do indivíduo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -73,11 +73,11 @@
           "Se a riqueza herdada cresce mais depressa que a renda e a produção, a posição econômica depende fortemente do patrimônio recebido. Isso contraria a ideia de que resultados correspondem ao esforço e ao mérito individuais. A lógica descrita enfraquece a ideologia meritocrática."
         ],
         "alternatives": {
-          "A": "A vantagem dos herdeiros independe de seu trabalho e põe em questão a explicação pelo mérito.",
-          "B": "O privilégio de nascimento é reforçado, e não enfraquecido, pela dinâmica apresentada.",
-          "C": "O texto não avalia uma lei específica nem sua execução.",
-          "D": "A remuneração do capital sustenta ganhos, sem indicar enfraquecimento de financeiras.",
-          "E": "O problema discutido é a legitimação da desigualdade, sem medir eficiência dos mercados."
+          "A": "Quando a herança cresce mais rapidamente do que a renda produzida pelo trabalho, a posição econômica depende fortemente do patrimônio recebido; isso enfraquece a explicação de que a riqueza resulta do mérito individual.",
+          "B": "O mecanismo favorece quem nasce em famílias detentoras de patrimônio, ampliando sua vantagem sobre quem depende do trabalho; os privilégios de nascimento são reforçados, e não enfraquecidos.",
+          "C": "O trecho compara remuneração do capital e crescimento econômico sem examinar a aplicação de uma norma jurídica; não oferece elementos para concluir que uma legislação esteja perdendo eficácia.",
+          "D": "A taxa elevada de remuneração do capital sustenta o enriquecimento de seus proprietários; o argumento não trata de redução de ganhos de instituições financeiras, mas da concentração da riqueza herdada.",
+          "E": "A comparação mostra que herdeiros podem acumular mais do que trabalhadores sem esforço equivalente, questionando a legitimação meritocrática da desigualdade; não avalia a eficiência operacional dos mercados."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -117,11 +117,11 @@
           "O melhoramento e o manejo procuram viabilizar uvas em condições como o semiárido nordestino, áreas tropicais e a Serra Gaúcha. A diversidade dos locais exige cultivares e técnicas adequados a seus ambientes. O programa adapta o cultivo a características ambientais singulares."
         ],
         "alternatives": {
-          "A": "O texto trata de variedades cultivadas, sem um programa de proteção de espécies nativas ameaçadas.",
-          "B": "A autonomia das cadeias econômicas não é apresentada como objetivo do melhoramento.",
-          "C": "O tamanho e a tradição da propriedade não substituem a adaptação aos ambientes de cultivo.",
-          "D": "As condições climáticas e ambientais distintas orientam a adaptação das uvas.",
-          "E": "Parte da produção se destina à exportação, sem foco exclusivo no mercado interno."
+          "A": "O programa seleciona e cruza materiais de uva para atender produtores e modalidades de cultivo; não se apresenta como uma ação de conservação de espécies nativas que estejam ameaçadas de extinção.",
+          "B": "Os projetos atendem produtores com necessidades diferentes, mas não propõem tornar suas cadeias econômicas independentes; o melhoramento adapta plantas e manejo às condições específicas de produção.",
+          "C": "A presença de pequenos produtores familiares é uma das demandas citadas, sem que o tamanho ou a tradição das propriedades constitua o alvo técnico do melhoramento; as condições regionais de cultivo são determinantes.",
+          "D": "A produção no semiárido, em regiões tropicais e na Serra Gaúcha envolve condições ambientais distintas; seleção, hibridação e ajustes de manejo buscam adaptar o cultivo a essas particularidades.",
+          "E": "O texto inclui explicitamente uvas de mesa destinadas à exportação, além de sucos e vinhos; portanto, a adaptação não se dirige exclusivamente a mercados consumidores internos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -161,11 +161,11 @@
           "A Carta de Veneza defende a transmissão autêntica dos monumentos às futuras gerações. O segundo texto questiona mecanismos de proteção que isolam o monumento da realidade socioeconômica e favorecem seu abandono. Divergem, portanto, sobre as políticas de conservação do patrimônio cultural."
         ],
         "alternatives": {
-          "A": "A comercialização de imagens sacras não é objeto dos argumentos.",
-          "B": "A substituição de materiais artísticos não é o ponto discutido no segundo texto.",
-          "C": "Os textos confrontam princípios e limites das formas de preservar bens culturais.",
-          "D": "Nenhum dos trechos defende privatização de sítios arqueológicos.",
-          "E": "A discussão recai sobre monumentos e tombamento, sem se limitar a peças de museu."
+          "A": "Os textos discutem preservação de monumentos e efeitos do tombamento, sem tratar de compra e venda de imagens religiosas; a circulação comercial dessas peças não explica a divergência apresentada.",
+          "B": "A Carta de Veneza defende a autenticidade, e o segundo texto examina efeitos socioeconômicos da proteção; não há confronto específico sobre trocar materiais de uma obra por outros de valor artístico.",
+          "C": "O primeiro texto afirma o dever coletivo de conservar monumentos autênticos; o segundo critica o tombamento quando ignora a realidade socioeconômica e favorece abandono, contrapondo perspectivas sobre políticas de conservação cultural.",
+          "D": "Nenhum dos fragmentos propõe transferir sítios arqueológicos para proprietários privados; a discussão se refere à responsabilidade de preservar e aos limites dos instrumentos legais de proteção.",
+          "E": "As obras monumentais e sua relação com a cidade são o objeto dos argumentos; reduzir o confronto a peças guardadas em museus exclui o problema do tombamento e da transformação urbana destacado no Texto II."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -205,11 +205,11 @@
           "Os países industrializados evitam o custo de reciclar e enviam resíduos para Gana, onde jovens executam a desmontagem em condições poluentes. O arranjo distribui de modo desigual ganhos, tarefas e danos ambientais. Ele expressa uma divisão internacional do trabalho."
         ],
         "alternatives": {
-          "A": "A intoxicação e a precariedade contradizem uma situação de exercício pleno de direitos.",
-          "B": "A repartição desigual das etapas e dos riscos entre países caracteriza a divisão internacional do trabalho.",
-          "C": "Não há descrição de gestão toyotista, produção enxuta ou organização fabril correspondente.",
-          "D": "A transferência dos danos e a queima a céu aberto não são práticas sustentáveis.",
-          "E": "As importações de lixo são facilitadas por disfarces comerciais, sem caracterizar proteção alfandegária."
+          "A": "A intoxicação de jovens e a exportação de resíduos para reduzir custos mostram desigualdade e transferência de riscos; essas práticas não representam o exercício pleno dos direitos de cidadania.",
+          "B": "Países industrializados transferem a desmontagem poluente e de baixo custo para um país periférico, enquanto concentram recursos e tecnologia; essa distribuição desigual de funções expressa a divisão internacional do trabalho.",
+          "C": "O toyotismo envolve organização produtiva flexível e gestão industrial; os textos focalizam a distribuição internacional dos resíduos e dos riscos ambientais, sem descrever esse sistema de produção.",
+          "D": "A queima a céu aberto polui o ar e intoxica os trabalhadores, contrariando os princípios de proteção ambiental e social necessários a uma concepção sustentável da economia.",
+          "E": "A exportação de lixo disfarçado de material usado mostra circulação internacional de resíduos em busca de menores custos; não há referência a barreiras alfandegárias de proteção dos mercados nacionais."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -249,11 +249,11 @@
           "O relatório propõe preços e autorizações que considerem tanto a grande indústria e a irrigação quanto a agricultura pequena e de subsistência. A segurança hídrica deve acomodar necessidades diferentes com eficiência e sustentabilidade. O princípio é uma distribuição equitativa do acesso à água."
         ],
         "alternatives": {
-          "A": "O atendimento a usuários com escalas e necessidades distintas expressa equidade na distribuição.",
-          "B": "O texto inclui atividades rurais e industriais, sem se limitar ao fornecimento urbano.",
-          "C": "Não se propõe reduzir obrigatoriamente a capacidade dos rios por racionamento.",
-          "D": "A recuperação dos solos não é o mecanismo apresentado no relatório.",
-          "E": "A gestão do uso e do retorno de água não equivale à geração de produtos recicláveis."
+          "A": "A proposta procura conciliar usos industriais, irrigação de grande escala e agricultura de subsistência mediante preços e autorizações adequados; pauta-se por atender necessidades diferentes com distribuição equitativa da água.",
+          "B": "O trecho inclui atividades industriais e agrícolas de escalas distintas, sem restringir a proposta às cidades; o acompanhamento de uma rede urbana não corresponde ao alcance dos usos discutidos.",
+          "C": "O texto propõe regular retiradas de água e retorno de efluentes de maneira eficiente, não reduzir a capacidade dos rios; a regulação do uso não equivale a racionamento da capacidade fluvial.",
+          "D": "A recuperação de solos pode relacionar-se à gestão ambiental, mas não é o objeto do trecho; a proposta trata diretamente de autorizações, preços e atendimento aos diferentes usuários da água.",
+          "E": "Não há referência à fabricação ou ao reaproveitamento de produtos; a sustentabilidade apresentada depende de adequar usos e devolução da água às necessidades dos setores atendidos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -293,11 +293,11 @@
           "A Lei Aberdeen dava à Grã-Bretanha instrumentos contra o tráfico atlântico de escravizados. O receio de que sua revogação permitisse a retomada dos velhos hábitos brasileiros mostra a intenção britânica de manter a proibição desse comércio, ainda que por outro tratado."
         ],
         "alternatives": {
-          "A": "O impasse envolve a continuidade da repressão ao tráfico, sem uma jurisdição conciliadora.",
-          "B": "O objetivo não é repartir os lucros ou os negócios marítimos com o Brasil.",
-          "C": "A discussão diplomática não trata de saúde pública ou de higienismo.",
-          "D": "O temor da retomada do tráfico explica a busca britânica de preservar sua proibição.",
-          "E": "O tráfico é questão de comércio internacional, sem defesa de um empreendimento familiar."
+          "A": "O receio britânico era perder um instrumento de repressão ao tráfico sem obter um tratado substituto; não se propõe uma instância conciliadora para mediar igualmente os interesses em disputa.",
+          "B": "Embora mencione interesses livre-cambistas, o trecho focaliza a continuidade da repressão ao tráfico de africanos; não descreve um acordo para dividir negócios de transporte marítimo.",
+          "C": "A Lei Aberdeen e o receio de retomada dos antigos hábitos brasileiros se relacionam ao tráfico de escravizados; não há discussão de saneamento, saúde pública ou políticas higienistas.",
+          "D": "A Inglaterra receava que revogar a Lei Aberdeen sem um tratado satisfatório permitisse ao Brasil retomar o tráfico; sua posição buscava manter efetiva a proibição dessa atividade comercial.",
+          "E": "O conflito diplomático envolve Estados, legislação e tráfico transatlântico, sem referência à organização doméstica ou familiar de empreendimentos que os britânicos pretendessem favorecer."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -337,11 +337,11 @@
           "A lembrança de colocar pratos emborcados e rezar para prolongar a chuva une práticas cotidianas a crenças transmitidas pela avó. Essa memória de Zé de Sila registra formas populares de lidar com o clima e compõe o patrimônio cultural da região."
         ],
         "alternatives": {
-          "A": "O apelido de encantador de viúvas não torna o relato um ritual matrimonial.",
-          "B": "As orações e os gestos para interferir na chuva expressam práticas místicas de valor cultural.",
-          "C": "A comparação com Chicó não converte a memória relatada em manifestação de teatro político.",
-          "D": "O texto não descreve uma narrativa cinematográfica sobre o clima.",
-          "E": "O relato de práticas populares não é uma argumentação literária sobre catástrofes."
+          "A": "A fama de encantador de viúvas caracteriza o contador de histórias, mas o episódio desenvolvido descreve a avó tentando prolongar a chuva; não apresenta um ritual de casamento ou uma aliança matrimonial.",
+          "B": "A oração da avó e o costume de colocar pratos emborcados para conter o vento constituem crenças e práticas transmitidas na experiência local, vinculando vivência mística e patrimônio cultural regional.",
+          "C": "A comparação com Chicó aproxima Zé de Sila de um personagem teatral, mas a prática narrada é uma crença familiar sobre a chuva; não se estabelece ligação com manifestações do imaginário político.",
+          "D": "O relato oral e a referência a uma personagem conhecida não constituem uma narrativa fílmica; a questão destaca os costumes e crenças que articulam a experiência popular aos fenômenos climáticos.",
+          "E": "A lembrança da chuva e dos pratos não desenvolve uma tese literária sobre catástrofes ambientais; registra um saber e uma prática cultural familiar ligados ao desejo de prolongar as chuvas."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -381,11 +381,11 @@
           "O texto associa a modernização tecnológica a terceirização, precarização e flexibilização. Esses efeitos mostram que a inovação também reorganiza o controle do trabalho e reduz a estabilidade das relações laborais. A crítica dirige-se à fragilização dessas relações."
         ],
         "alternatives": {
-          "A": "A execução técnica das tarefas não resume os efeitos sociais criticados.",
-          "B": "A qualificação é mencionada, mas a crítica se concentra na precarização.",
-          "C": "Terceirização e flexibilização podem enfraquecer vínculos e garantias de trabalho.",
-          "D": "Não se analisa uma hierarquia específica entre cargos executivos.",
-          "E": "O texto não rejeita a ciência em si, mas seus usos na reorganização empresarial do trabalho."
+          "A": "O texto reconhece mudanças técnicas na produção, mas a crítica incide sobre seus efeitos sociais, como precarização e terceirização; executar tarefas com tecnologia não é, isoladamente, o problema apontado.",
+          "B": "A qualificação da mão de obra é mencionada como parte da reorganização empresarial, sem crítica específica à formação de profissionais liberais; o resultado problematizado é a fragilidade dos vínculos laborais.",
+          "C": "Terceirização, precarização e flexibilização são apresentadas como efeitos recorrentes da modernização associada ao controle empresarial; elas tornam as relações de trabalho menos protegidas e mais frágeis.",
+          "D": "O trecho trata de controle do capital, processo produtivo e mão de obra, sem descrever a posição relativa de diretores ou executivos; a hierarquia desses cargos não explica a crítica formulada.",
+          "E": "O uso de conhecimentos científicos integra a mudança tecnológica, mas não é condenado por si; a crítica dirige-se à forma de gestão que acompanha essa mudança e precariza as relações de trabalho."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -425,11 +425,11 @@
           "O refugiado mantém laços culturais com a origem sem pertencer plenamente à comunidade receptora. Também deixa de exercer direitos no país de origem e depende de um novo estatuto jurídico. A transitoriedade combina desenraizamento cultural e insegurança legal."
         ],
         "alternatives": {
-          "A": "O trecho não pressupõe ascensão social nem a reduz a procedimentos burocráticos.",
-          "B": "O problema de pertencimento não decorre necessariamente de miscigenação étnica.",
-          "C": "Não são apresentados perda de qualificação ou policiamento como causas centrais.",
-          "D": "A situação pode envolver renda, mas o texto destaca pertencimento e direitos.",
-          "E": "A marginalidade cultural e a mudança incerta de estatuto jurídico sustentam a condição transitória."
+          "A": "O texto não descreve uma trajetória de ascensão social nem reduz a transitoriedade a trâmites burocráticos; focaliza o pertencimento cultural incompleto e a condição jurídica entre dois países.",
+          "B": "As referências aos códigos culturais de origem não significam miscigenação étnica, e o problema não se resume à fronteira física; os refugiados enfrentam falta de pertencimento e incerteza no exercício da cidadania.",
+          "C": "Não há menção a perda de qualificação ou a intervenção policial como causa da condição descrita; a marginalidade analisada é identitária e jurídica, decorrente do deslocamento entre países.",
+          "D": "Dificuldades econômicas podem acompanhar o refúgio, mas não são a explicação fornecida pelo trecho; a associação solicitada reúne a ruptura de vínculos culturais e a situação legal provisória.",
+          "E": "A pessoa mantém códigos da origem sem pertencer plenamente à comunidade receptora e deixa de exercer sua cidadania anterior sob um estatuto provisório; combinam-se desenraizamento cultural e insegurança legal."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -469,11 +469,11 @@
           "As naturalistas do século XIX aparecem subordinadas ao papel de esposas e aos deslocamentos dos maridos, sem autonomia equivalente para realizar projetos científicos. A atividade científica reproduzia hierarquias e estratificações sociais de gênero presentes na sociedade."
         ],
         "alternatives": {
-          "A": "A subordinação aos projetos dos maridos contradiz uma situação de igualdade de gênero.",
-          "B": "As viagens e coletas não são descritas como transformação de espaços de lazer.",
-          "C": "O vínculo ao papel de esposa evidencia permanência do patriarcado, sem sua superação.",
-          "D": "A hierarquia entre homens e mulheres é incorporada ao acesso e à atuação no campo científico.",
-          "E": "A coleta eventual não elimina o papel doméstico atribuído às mulheres."
+          "A": "As mulheres viajavam sobretudo como esposas e não como responsáveis por projetos próprios, evidenciando oportunidades desiguais; o texto não apresenta uma afirmação histórica da igualdade de gênero.",
+          "B": "A coleta de espécies botânicas integra a questão da participação na ciência, não uma mudança em equipamentos ou ambientes de lazer; a dependência em relação aos maridos é o aspecto enfatizado.",
+          "C": "A subordinação dos deslocamentos e atividades científicas femininas aos projetos dos maridos mostra a persistência de papéis patriarcais, sem demonstrar sua superação no contexto descrito.",
+          "D": "O papel de esposa condicionava a presença feminina nas viagens e restringia a autonomia de pesquisa; o campo científico incorporava, assim, as hierarquias de gênero existentes na sociedade.",
+          "E": "A coleta eventual de espécimes não é apresentada como abandono ou substituição dos deveres domésticos; as naturalistas continuavam enquadradas no papel social de esposas coloniais."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -513,11 +513,11 @@
           "Marcuse afirma que as pessoas reconhecem sua alma nos bens que possuem. As necessidades sociais do capitalismo passam a ser sentidas como desejos pessoais. Essa adesão se realiza por mecanismos subjetivos de identificação entre o indivíduo e as mercadorias."
         ],
         "alternatives": {
-          "A": "O texto não atribui a formação dos desejos especificamente a políticas do Estado.",
-          "B": "Não se descreve um incentivo material controlado, mas uma incorporação subjetiva.",
-          "C": "As prescrições coletivas são interiorizadas, porém o destaque recai sobre a identificação com os bens.",
-          "D": "O reconhecimento de si nas mercadorias revela o mecanismo subjetivo de identificação.",
-          "E": "O narcisismo não é apresentado como reprimido pelo consumo."
+          "A": "O trecho não atribui as necessidades pessoais a campanhas governamentais; descreve como a identificação dos indivíduos com bens materiais converte necessidades sociais em desejos vividos como próprios.",
+          "B": "A expansão do consumo está no contexto, mas não se descrevem incentivos específicos ou mecanismos de controle de compras; o ponto central é a identificação subjetiva da pessoa com suas mercadorias.",
+          "C": "Não se trata de regras coletivas explícitas para organizar a vida social: a influência se torna eficaz justamente porque desejos socialmente produzidos passam a ser sentidos como necessidades individuais.",
+          "D": "Ao encontrar sua “alma” no automóvel, na casa ou nos utensílios, o indivíduo reconhece a si mesmo nos bens que possui; esses mecanismos subjetivos de identificação orientam a satisfação de seus desejos.",
+          "E": "O argumento mostra investimento da identidade nas mercadorias, sem descrever a supressão do amor a si ou uma repressão racionalizada do narcisismo como origem dos desejos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -557,11 +557,11 @@
           "A substituição de árvores e praças por concreto e a transformação de partes da cidade em mercadorias alteram os lugares de convivência. A mudança material da paisagem retira referências e modifica práticas cotidianas. O processo decorre da reorganização da paisagem geográfica urbana."
         ],
         "alternatives": {
-          "A": "As formas de convívio diminuem ou mudam, sem manutenção dos modos anteriores.",
-          "B": "O espaço público é transformado e reduzido, sem preservação de sua essência.",
-          "C": "O cenário descrito não é explicado pela ampliação de controles ambientais.",
-          "D": "As regras de participação política não aparecem como causa no texto.",
-          "E": "As intervenções materiais reorganizam a paisagem e as referências da vida urbana."
+          "A": "A redução dos encontros, festas e brincadeiras nas ruas mostra transformação dos modos de convivência, não sua manutenção; as mudanças materiais da cidade alteram também as referências dos habitantes.",
+          "B": "Praças convertidas em concreto e espaços vendidos como mercadorias indicam perda de funções e referências do espaço público; o texto não descreve sua preservação.",
+          "C": "A destruição de árvores e a rapidez das obras não são apresentadas como efeito de normas ambientais mais abrangentes; o argumento focaliza a transformação material contínua do espaço urbano.",
+          "D": "Não há discussão sobre regras de voto ou participação em decisões públicas; as consequências sociais descritas estão associadas à reorganização física e funcional da cidade.",
+          "E": "A substituição de árvores, praças e lugares de encontro por obras e mercadorias transforma a paisagem urbana; essa reorganização espacial modifica o convívio e as referências cotidianas dos habitantes."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -601,11 +601,11 @@
           "A previsão sertaneja é construída pela observação acumulada de astros, nuvens e chuvas. Os sinais são interpretados com base em experiências transmitidas ao longo do tempo. Trata-se de conhecimento produzido pela experiência perceptiva do ambiente."
         ],
         "alternatives": {
-          "A": "O texto não descreve testes controlados nem procedimentos próprios de uma técnica científica.",
-          "B": "A observação sensível repetida da natureza fundamenta os sinais interpretados pelos sertanejos.",
-          "C": "O saber é transmitido pela tradição, sem negá-la.",
-          "D": "As observações são regionais e situadas, sem padronizar culturas distintas.",
-          "E": "A interpretação local dos sinais não implica uniformização universal das informações."
+          "A": "A previsão relatada deriva de observações acumuladas e crenças locais, sem descrição de instrumentos, testes ou procedimentos próprios da técnica científica; trata-se de conhecimento da experiência sertaneja.",
+          "B": "O sertanejo aprende a relacionar a aparência da Lua, das nuvens e de outros sinais naturais à expectativa de chuva ou seca; o saber se constitui pela percepção e observação repetida do ambiente.",
+          "C": "O conhecimento sertanejo descrito preserva observações e interpretações transmitidas na experiência regional; ele se apoia nas tradições, em vez de se constituir pela negação delas.",
+          "D": "O relato valoriza um saber regional relacionado ao ambiente semiárido, sem propor sua imposição a outras populações; a diversidade de experiências não se transforma em padronização das culturas.",
+          "E": "A associação entre sinais percebidos e expectativa de chuva constitui uma interpretação local da natureza; não se apresenta um sistema que uniformize informações para todos os lugares e observadores."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -645,11 +645,11 @@
           "A vida de gado representa uma massa que caminha, trabalha e dá mais do que recebe, mas permanece descrita ironicamente como feliz. A imagem do povo marcado critica a aceitação das condições impostas. O comportamento coletivo questionado é a passividade social."
         ],
         "alternatives": {
-          "A": "A massa é descrita como conduzida, sem militância política ativa.",
-          "B": "A metáfora do gado e a felicidade irônica denunciam a aceitação passiva da exploração.",
-          "C": "O fragmento não atribui a submissão a uma prática de altruísmo religioso.",
-          "D": "O alvo não é o controle individual da moral, mas a submissão coletiva.",
-          "E": "Não se menciona uma reação inconformada expressa pelo voto."
+          "A": "A massa que caminha e oferece mais do que recebe é descrita como marcada e, ironicamente, feliz; não se narra sua organização ativa em movimentos ou sua atuação militante.",
+          "B": "A imagem do gado representa uma coletividade conduzida e submetida, que suporta a desigualdade sem reagir; a justaposição entre povo marcado e povo feliz critica a passividade social.",
+          "C": "A entrega de mais do que se recebe descreve exploração, sem vinculá-la à fé ou ao auxílio desinteressado ao próximo; a crítica não se dirige ao altruísmo religioso.",
+          "D": "O trecho não discute a disciplina de impulsos individuais ou regras morais pessoais; focaliza a submissão coletiva diante de uma condição social desigual.",
+          "E": "A canção não menciona eleições nem protesto por seus resultados; a coletividade aparece conformada com a condição que lhe é imposta, e não mobilizada por inconformismo eleitoral."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -689,11 +689,11 @@
           "O Porto Maravilha procura substituir a antiga paisagem portuária por torres de serviços, consumo e lazer, tomando outras cidades internacionais como referência. O projeto busca inserir o Rio em circuitos competitivos de investimento e serviços globais."
         ],
         "alternatives": {
-          "A": "O polo internacional de serviços e a comparação com outras cidades evidenciam competição global.",
-          "B": "A valorização imobiliária prevista não corresponde à contenção da especulação.",
-          "C": "Os novos moradores não são apresentados como beneficiários de habitação popular.",
-          "D": "O objetivo é substituir funções e paisagens antigas por usos novos.",
-          "E": "O texto não apresenta mecanismos de gestão participativa como eixo das intervenções."
+          "A": "A comparação com áreas portuárias de cidades internacionais e a busca de tornar o Rio um polo de serviços mostram que a reconfiguração pretende inseri-lo mais intensamente na competição global entre cidades.",
+          "B": "Torres comerciais, novos espaços de consumo e atração de moradores tendem a valorizar a área e o mercado imobiliário; o texto não apresenta medidas destinadas a conter a especulação.",
+          "C": "A instalação de novas funções e a previsão de moradores não indicam garantia de acesso habitacional às camadas populares; não se descreve uma política de democratização da moradia.",
+          "D": "O projeto pretende deixar para trás a paisagem associada ao início do século passado e criar funções inéditas; sua orientação não é priorizar a manutenção das atividades tradicionais.",
+          "E": "A operação urbana é descrita por seus objetivos econômicos e espaciais, sem informação sobre mecanismos de decisão dos moradores; não é possível atribuir-lhe prioridade à gestão participativa."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -733,11 +733,11 @@
           "A baixa incorporação de tecnologias de maior produtividade mantém o país dependente de commodities e de setores industriais com menor capacidade de inovação. Essa posição limita sua autonomia na divisão internacional do trabalho e o subordina aos fluxos globais de produção e valor."
         ],
         "alternatives": {
-          "A": "O trecho não demonstra queda de preços da cesta básica.",
-          "B": "A estatização não é consequência indicada da defasagem tecnológica.",
-          "C": "A limitação de produtividade não fundamenta uma ampliação necessária do consumo.",
-          "D": "A especialização pouco inovadora mantém dependência e subordinação na economia global.",
-          "E": "A modernização insuficiente é o problema descrito, sem incentivo comprovado a uma nova política."
+          "A": "A baixa inserção em novas tecnologias e a produtividade limitada não implicam necessariamente redução do preço dos alimentos; o texto não apresenta dados de custos ou abastecimento da cesta básica.",
+          "B": "O diagnóstico trata da especialização produtiva brasileira e de sua posição tecnológica; não informa transferência de empresas ao Estado nem um retorno a políticas de estatização econômica.",
+          "C": "A limitação das inovações reduz o potencial de crescimento sustentado da produtividade, sem demonstrar expansão da renda disponível ou do consumo; esse aumento não pode ser deduzido do cenário descrito.",
+          "D": "A concentração em commodities e setores de baixo dinamismo inovador mantém o país em posição dependente diante das economias que comandam novas tecnologias, subordinando-o aos fluxos globais.",
+          "E": "O texto constata inserção tecnológica ínfima e limitações do padrão produtivo existente; não descreve a efetivação de estímulos à modernização como consequência já verificada para a sociedade."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -777,11 +777,11 @@
           "A mineração altera territórios de comunidades tradicionais e prejudica a reprodução de seus modos de vida. Mesmo indenizações podem não recompor identidades e relações sociais. A atividade econômica aparece ligada ao rompimento de vínculos locais e territoriais."
         ],
         "alternatives": {
-          "A": "O problema não se resume à falta de financiamento de atividades culturais.",
-          "B": "A reconstrução abrupta das identidades e a perda das dinâmicas territoriais rompem vínculos locais.",
-          "C": "A presença de grandes empreendimentos não é descrita como carência geral de investimento.",
-          "D": "As práticas agroecológicas não são apresentadas como resultado da mineração.",
-          "E": "O texto ressalta perdas e insuficiência de compensações, sem enriquecimento das comunidades."
+          "A": "A dificuldade descrita não resulta da falta de apoio a eventos ou iniciativas culturais, mas de impactos diretos da mineração sobre territórios e formas de vida das comunidades.",
+          "B": "A instalação da mineração interfere nas dinâmicas territoriais e desgasta relações sociais, mesmo quando há compensação financeira; a atividade econômica provoca rompimento de vínculos locais.",
+          "C": "O texto indica que dinheiro e indenizações podem ser insuficientes para reparar os impactos; por isso, o problema não se reduz à falta de investimento financeiro nas comunidades.",
+          "D": "As práticas citadas são atingidas pela atividade mineradora, sem relato de implantação de sistemas agroecológicos; essa alternativa não corresponde ao processo de desestruturação territorial descrito.",
+          "E": "A ausência de reconhecimento dos impactos e a ruptura de relações sociais mostram perdas para os moradores; o trecho não caracteriza a mineração como fonte de enriquecimento das comunidades autóctones."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -821,11 +821,11 @@
           "Para os autores, maioria significa a posição que define o padrão e exerce dominação, independentemente da quantidade de pessoas. Minoria designa uma relação de subordinação a esse padrão. Sua definição decorre de relações arbitrárias de poder, e não de inferioridade numérica ou biológica."
         ],
         "alternatives": {
-          "A": "Uma minoria pode ser numerosa, sem estar ameaçada de extinção.",
-          "B": "O conceito não depende da existência de programas de incentivo do Estado.",
-          "C": "A classificação se apoia em padrões e relações de dominação socialmente estabelecidos.",
-          "D": "A dominação pressupõe assimetria, e não conexões equivalentes entre os grupos.",
-          "E": "A referência a mulheres e crianças não transforma a hierarquia social em determinação biológica."
+          "A": "Ser minoritário, na definição apresentada, não significa necessariamente estar prestes a desaparecer; mulheres e crianças são citadas para mostrar uma posição subordinada em relação a um padrão dominante.",
+          "B": "As relações de dominação definem os grupos minoritários no trecho, sem referência à existência ou ausência de programas de apoio do Estado; incentivos estatais não constituem o critério adotado.",
+          "C": "A maioria estabelece um padrão e exerce dominação sobre quem dele difere, independentemente da quantidade de pessoas; a minoria decorre dessas relações socialmente impostas, de natureza arbitrária.",
+          "D": "Uma conexão simétrica pressupõe posições equivalentes, enquanto o texto define maioria por um estado de dominação; a caracterização de minoria depende justamente da assimetria de poder.",
+          "E": "Os exemplos de mulheres, crianças e animais não fundamentam uma superioridade natural: o critério é a relação com um padrão dominante, e não uma hierarquia determinada pela biologia."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -865,11 +865,11 @@
           "Engels afirma que os interesses da classe média são opostos aos dos trabalhadores, ainda que ela proclame simpatia por eles. O antagonismo entre classes explica a divergência entre palavras e ações. A passagem corresponde ao conceito de luta de classes."
         ],
         "alternatives": {
-          "A": "A oposição de interesses entre grupos sociais organiza a noção de luta de classes.",
-          "B": "O trecho não analisa o valor produzido pelo trabalhador e apropriado pelo empregador.",
-          "C": "Não se discute uma regra geral de construção do método científico.",
-          "D": "A passagem formula um conflito social, sem se concentrar em etapas de investigação.",
-          "E": "O fetichismo envolve relações sociais ocultadas nas mercadorias, tema diferente do antagonismo explícito entre classes."
+          "A": "Engels apresenta os interesses de trabalhadores e classe média como diametralmente opostos e desmente a promessa de ajuda entre eles; esse antagonismo de interesses corresponde ao conceito de luta de classes.",
+          "B": "A mais-valia envolve a apropriação do valor produzido pelo trabalho além do que é pago ao trabalhador; o trecho não explica esse mecanismo, mas destaca o conflito entre classes de interesses opostos.",
+          "C": "O autor avalia a conduta de uma classe em relação a outra, sem expor procedimentos de observação, teste ou validação do conhecimento; não se trata de formular fundamentos do método científico.",
+          "D": "O trecho não apresenta etapas de uma investigação ou regras para formular perguntas; sua argumentação concentra-se no antagonismo social e na incompatibilidade de interesses entre classes.",
+          "E": "O fetichismo da mercadoria envolve relações sociais que aparecem como propriedades dos produtos; aqui, o argumento explicita diretamente a oposição entre grupos sociais, sem analisar essa aparência das mercadorias."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -909,11 +909,11 @@
           "A concentração do encarceramento entre jovens negros de baixa escolaridade evidencia desigualdades sociais que atravessam o sistema penal. Políticas de acesso à educação, oportunidades e direitos podem enfrentar esses fatores. A inclusão social é a resposta pública coerente com o diagnóstico."
         ],
         "alternatives": {
-          "A": "O Código Civil não é o instrumento que define crimes e penas.",
-          "B": "A ampliação de oportunidades e direitos enfrenta a exclusão associada ao perfil apresentado.",
-          "C": "Reduzir a idade penal amplia o alcance da prisão, sem resolver os fatores de exclusão.",
-          "D": "A corrupção política não é o fator identificado pelos dados sobre escolaridade e perfil dos presos.",
-          "E": "Aumentar o tempo de prisão não minimiza o encarceramento e suas desigualdades."
+          "A": "O Código Civil rege relações privadas e sua flexibilização não enfrenta diretamente a vulnerabilidade de jovens negros de baixa escolaridade, perfil predominante no encarceramento descrito.",
+          "B": "O predomínio de jovens negros com baixa escolarização aponta desigualdades de acesso a direitos e oportunidades; políticas de inclusão social podem enfrentar essas vulnerabilidades e contribuir para reduzir o encarceramento.",
+          "C": "Reduzir a idade penal amplia o alcance da punição sobre jovens, sem resolver as condições sociais associadas ao perfil apresentado; não constitui uma política de redução da problemática descrita.",
+          "D": "O texto não relaciona a expansão carcerária a delitos de corrupção, mas destaca crimes patrimoniais e vulnerabilidade educacional; combater corrupção política não responde diretamente ao diagnóstico apresentado.",
+          "E": "Aumentar o tempo de prisão tende a manter mais pessoas encarceradas por períodos maiores; essa medida amplia a população prisional, sem enfrentar as desigualdades que o perfil dos presos evidencia."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -953,11 +953,11 @@
           "Depois dos incêndios, as autoridades não apenas reparavam edifícios: também modificavam a topografia e as práticas sociais. A catástrofe abria espaço para reorganizar a cidade e suas relações. O impacto descrito é a reconfiguração dos espaços ocupados e das dinâmicas comunitárias."
         ],
         "alternatives": {
-          "A": "O texto não concentra o impacto em normas sanitárias e prevenção de incêndios.",
-          "B": "A explicação não atribui as catástrofes a um diagnóstico de descaso e degradação ambiental.",
-          "C": "As crenças interpretavam o fogo, mas não são apresentadas como o principal objeto de transformação.",
-          "D": "Não se descreve substituição de regimes políticos ou de administrações locais.",
-          "E": "A reconstrução modifica simultaneamente a configuração urbana e as práticas da comunidade."
+          "A": "Os incêndios podem motivar medidas preventivas, mas a conclusão do texto enfatiza mudanças na topografia e nas práticas sociais; não se limita à correção de regras sanitárias e métodos de prevenção.",
+          "B": "A narrativa não atribui as chamas a omissão administrativa ou danos ambientais anteriores; destaca como a reconstrução após a catástrofe permitia modificar o espaço e a vida comunitária.",
+          "C": "As crenças apocalípticas são citadas para caracterizar o modo de perceber o incêndio, mas o impacto desenvolvido no final do texto consiste na transformação das áreas urbanas e das práticas sociais.",
+          "D": "As autoridades proclamavam medidas de reconstrução, porém o trecho não indica troca de regime ou remodelação da administração; o efeito destacado é a reorganização espacial e comunitária.",
+          "E": "Além de reparar danos materiais, as autoridades aproveitavam a reconstrução para expandir ou alterar a topografia urbana e as práticas sociais; os incêndios proporcionavam reconfiguração do espaço e da comunidade."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -997,11 +997,11 @@
           "A divulgação da carta Guarani-Kaiowá mobilizou pessoas que não pertenciam à comunidade e adotaram sua causa nas redes. A estratégia deu visibilidade à defesa do território e ampliou alianças. Seu efeito foi obter apoio de segmentos étnicos externos ao povo indígena."
         ],
         "alternatives": {
-          "A": "A mobilização em rede ampliou a militância em torno da causa.",
-          "B": "A afirmação pública da identidade Guarani-Kaiowá fortaleceu seu reconhecimento.",
-          "C": "Não se trata de comercialização nem de inserção em mercados internacionais.",
-          "D": "A rede apoia a permanência no território, sem afastamento da cultura local.",
-          "E": "Pessoas externas à comunidade aderiram à defesa de seus direitos territoriais."
+          "A": "A carta e sua circulação levaram milhares de pessoas a se posicionar e divulgar a causa indígena; o efeito foi ampliar a mobilização, em vez de enfraquecer a militância política.",
+          "B": "O uso público dos nomes Guarani-Kaiowá e a defesa do território deram visibilidade à identidade coletiva; a estratégia não é descrita como dissolução ou abalo dessa identidade.",
+          "C": "O objetivo da divulgação era obter apoio diante da ameaça de expulsão territorial, sem promoção de produtos ou inserção comercial; acesso a redes digitais não equivale a entrada no mercado global.",
+          "D": "As novas tecnologias foram mobilizadas para defender a permanência na terra e os vínculos coletivos; o texto não apresenta um afastamento dos indígenas em relação às culturas locais.",
+          "E": "A circulação da carta e das hashtags levou pessoas de fora da comunidade a aderirem à causa e adotarem seu nome nos perfis; a estratégia angariou apoio de segmentos étnicos externos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1041,11 +1041,11 @@
           "Os conselhos de geografia, cartografia e estatística e o IBGE foram criados para fornecer dados confiáveis à ação do Estado. O conhecimento sistemático do território e de suas diferenças regionais permitiria planejar e integrar o país. Essa era a estratégia política descrita."
         ],
         "alternatives": {
-          "A": "A coleta de dados não é apresentada como uma política específica de preservação paisagística.",
-          "B": "Conhecer a população não equivale a controlar seu crescimento.",
-          "C": "As instituições produzem conhecimento científico sobre o território e suas diversidades.",
-          "D": "O trecho não apresenta contenção da migração como objetivo direto.",
-          "E": "Não há proposta de criar unidades federativas como finalidade dessas instituições."
+          "A": "Os órgãos produziriam dados para orientar a ação do Estado sobre o território nacional; não são apresentados como instituições cuja finalidade principal fosse conservar paisagens dos sertões.",
+          "B": "Estatísticas demográficas podem integrar os dados coletados, mas o texto não estabelece uma política de controle da natalidade nem qualifica o crescimento populacional como o alvo dessas instituições.",
+          "C": "Conselhos de geografia, cartografia e estatística e o IBGE forneciam dados confiáveis sobre o país; conhecer cientificamente as diferenças regionais ajudava o governo a orientar sua ação territorial.",
+          "D": "A coleta de informações poderia subsidiar políticas variadas, mas o fragmento não aponta a contenção do êxodo rural como objetivo específico; sua ênfase é produzir conhecimento sobre o território.",
+          "E": "A existência dos órgãos de pesquisa não implica um projeto de criar estados ou territórios; o trecho os vincula ao fornecimento de dados para a ação governamental sobre o espaço nacional."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1085,11 +1085,11 @@
           "Os Xavante conheciam as condições que faziam diferentes sementes germinar, incluindo fogo e passagem pelo sistema digestivo de animais. A associação desses saberes à pesquisa da cidade permitiu recuperar o Cerrado. O relato evidencia o valor do conhecimento tradicional para a conservação ambiental."
         ],
         "alternatives": {
-          "A": "A recuperação do Cerrado não se apresenta como uma questão de logística agrícola nacional.",
-          "B": "Não há cultivo de hortaliças voltado ao consumo das cidades.",
-          "C": "Os conhecimentos indígenas de germinação contribuem diretamente para restaurar o ambiente.",
-          "D": "Os animais são mencionados pela dispersão e germinação de sementes, sem melhoramento de gado.",
-          "E": "A restauração ambiental não é descrita como reflorestamento comercial orgânico."
+          "A": "O episódio trata da recuperação de uma área do Cerrado a partir de conhecimentos sobre germinação; não descreve produção agrícola destinada à circulação de mercadorias ou à logística nacional.",
+          "B": "As espécies mencionadas se relacionam à regeneração do ambiente e à ação de animais silvestres, sem descrição de hortas ou abastecimento de mercados urbanos.",
+          "C": "O conhecimento indígena sobre fogo, sementes e animais permitiu compreender como quebrar a dormência e recuperar o Cerrado; o caso evidencia a importância do saber tradicional para a conservação ambiental.",
+          "D": "Antas e lobos aparecem como dispersores ou agentes da germinação, não como rebanhos selecionados; não há um programa de criação pecuária ou de aprimoramento genético no episódio.",
+          "E": "A área foi recuperada pela articulação de conhecimentos sobre a vegetação nativa, sem descrição de plantio comercial ou de produção orgânica voltada à venda."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1129,11 +1129,11 @@
           "O trecho encadeia destruição das rochas, transporte dos fragmentos e deposição em áreas mais baixas, onde novos pacotes rochosos podem se formar. Essa sequência corresponde ao ciclo sedimentar, que transforma materiais expostos na superfície e origina rochas sedimentares."
         ],
         "alternatives": {
-          "A": "Intemperismo, erosão, transporte e deposição compõem o ciclo sedimentar descrito.",
-          "B": "Os agentes citados não indicam abalos sísmicos ou instabilidade tectônica.",
-          "C": "A ação biológica é apenas uma possibilidade de intemperismo e não abrange a sequência inteira.",
-          "D": "Não existe emissão ou resfriamento de lava basáltica no processo relatado.",
-          "E": "A compactação pode ocorrer depois da deposição, mas não nomeia todo o ciclo apresentado."
+          "A": "A destruição de rochas, o transporte de seus fragmentos por agentes externos e a deposição em áreas baixas constituem etapas do ciclo sedimentar, que pode resultar na formação de novas rochas.",
+          "B": "A instabilidade sísmica envolve movimentos e liberação de energia no interior da Terra; o trecho descreve desgaste, transporte e deposição de materiais na superfície, acionados por agentes externos.",
+          "C": "O intemperismo biológico é a alteração de rochas pela ação de organismos; além de não focalizar seres vivos, o texto abrange transporte e sedimentação, etapas que ultrapassam o intemperismo.",
+          "D": "Derramamentos basálticos resultam da chegada de magma à superfície e sua solidificação; o processo descrito utiliza fragmentos de rochas preexistentes e não material vulcânico fundido.",
+          "E": "A compactação pode atuar sobre sedimentos já depositados, mas é apenas uma etapa possível posterior; não abrange a sequência completa de destruição, transporte e acumulação apresentada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1173,11 +1173,11 @@
           "O planejamento participativo exige que grupos menos favorecidos consigam formular demandas e se fazer representar. Associações de bairro organizam interesses locais e criam canais coletivos de intervenção. Fortalecê-las amplia a participação social na gestão urbana."
         ],
         "alternatives": {
-          "A": "A redução de impostos, por si, não cria representação dos interesses sociais.",
-          "B": "A privatização pode restringir o acesso e não assegura voz no planejamento.",
-          "C": "O adensamento comercial altera o uso do solo, sem garantir participação popular.",
-          "D": "Condomínios fechados não representam necessariamente as camadas menos favorecidas.",
-          "E": "As associações articulam demandas comunitárias e fortalecem a representação dos moradores."
+          "A": "Diminuir tributos municipais pode afetar as finanças locais, mas não assegura canais de representação para grupos menos favorecidos; o problema do texto é a participação nas decisões sobre a cidade.",
+          "B": "Privatizar espaços públicos restringe seu controle coletivo e não cria representação política para as camadas populares; a medida não responde à necessidade de ampliar a participação social.",
+          "C": "A concentração de atividades comerciais altera o uso do solo, mas não garante que moradores excluídos participem do planejamento urbano; adensamento econômico e representação social são processos distintos.",
+          "D": "Condomínios fechados segmentam o espaço e sua valorização não assegura voz às camadas populares; essa medida não promove a inclusão dos diferentes interesses no plano diretor.",
+          "E": "Associações de bairro organizam demandas locais e permitem que moradores atuem coletivamente no debate urbano; fortalecê-las amplia os canais de representação dos grupos que o texto identifica como pouco ouvidos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1217,11 +1217,11 @@
           "O suicídio de Vargas provocou comoção e manifestações populares que alteraram o curso da crise e pressionaram seus adversários. É esse movimento que o texto contrapõe ao silêncio esperado de uma derrota. A repercussão imediata foi uma reação popular intensa."
         ],
         "alternatives": {
-          "A": "A comoção e as manifestações de apoio a Vargas frustraram a expectativa de silêncio dos adversários.",
-          "B": "Não houve uma intervenção militar imediata como consequência direta do suicídio.",
-          "C": "O país já tinha instituições democráticas, sem uma abertura inaugurada pelo episódio.",
-          "D": "O texto não apresenta uma campanha anticomunista como repercussão imediata.",
-          "E": "A reação popular constrangeu a oposição, em vez de representar sua radicalização vitoriosa."
+          "A": "O suicídio de Vargas provocou manifestações de comoção e protestos populares, impedindo que seu afastamento fosse interpretado apenas como derrota; essa reação imediata contrariou as expectativas de seus adversários.",
+          "B": "A pressão militar integrava a crise anterior, mas o desfecho de agosto de 1954 não foi uma tomada imediata do poder pelas Forças Armadas; a repercussão salientada foi a mobilização popular.",
+          "C": "O país já vivia o período constitucional iniciado em 1946, de modo que o suicídio não inaugurou uma abertura democrática; sua repercussão imediata envolveu comoção e protestos nas ruas.",
+          "D": "O anticomunismo fazia parte de disputas políticas do período, mas não constitui o efeito imediato do suicídio que o texto contrapõe ao silêncio esperado pelos inimigos de Vargas.",
+          "E": "A morte mobilizou apoio popular ao presidente e atingiu politicamente seus adversários; não representou, de imediato, a ampliação vitoriosa da campanha oposicionista que exigia sua saída."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1261,11 +1261,11 @@
           "A Coroa determina o banimento dos ciganos e proíbe o ensino de sua língua às crianças para fazê-la desaparecer. A medida impõe a norma cultural dominante e reprime a continuidade de uma identidade coletiva. Seu objetivo é suprimir formas divergentes de interação social."
         ],
         "alternatives": {
-          "A": "A ordem citada proíbe a língua e não determina conversão religiosa.",
-          "B": "Eliminar o uso e a transmissão da língua reprime uma forma própria de interação cultural.",
-          "C": "O documento não se refere à participação econômica de potências estrangeiras.",
-          "D": "Os ciganos não são apresentados como participantes de revoltas nativistas.",
-          "E": "O grupo é deportado do reino e a proibição não se limita à produção artística de povos autóctones."
+          "A": "A ordem trata da deportação dos ciganos e da proibição de sua língua, sem determinar a conversão a uma religião; a repressão apresentada tem como alvo uma prática cultural de identificação do grupo.",
+          "B": "Proibir o uso da língua e impedir sua transmissão aos filhos visava fazer desaparecer uma forma de expressão coletiva divergente do padrão imposto pela Coroa, suprimindo diferenças de interação social.",
+          "C": "O documento não menciona comércio externo, capitais ou controle de negócios; a condição de grupo deslocado para a colônia serve a uma política de repressão cultural e linguística.",
+          "D": "A justificativa de comportamento escandaloso não identifica participação em revoltas coloniais; o ato reprime o grupo e sua língua, e não descreve punição a um movimento nativista.",
+          "E": "A medida atinge a transmissão de uma língua de ciganos deportados, sem se referir a manifestações artísticas de povos originários da América; grupo, prática cultural e objetivo não correspondem à alternativa."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1305,11 +1305,11 @@
           "Os jesuítas articularam práticas médicas europeias ao uso indígena da flora e aprenderam funções de cura no cotidiano. A medicina colonial descrita é híbrida porque conjuga saberes empíricos de origens diferentes, em vez de substituir integralmente uma tradição pela outra."
         ],
         "alternatives": {
-          "A": "O trecho destaca terapias e aprendizado prático, sem definir a medicina por rituais místicos.",
-          "B": "Os religiosos continuam jesuítas, sem rejeição dos dogmas cristãos.",
-          "C": "O conhecimento indígena é incorporado, sem simples superação da tradição popular.",
-          "D": "A flora nativa se combina às práticas europeias, sem imposição exclusiva.",
-          "E": "A associação de experiências europeias e indígenas forma a prática híbrida de cura."
+          "A": "O texto explica a prática médica pelo encontro de recursos europeus e conhecimentos indígenas sobre plantas, sem descrever cerimônias mágicas ou religiosas como elemento definidor dessa composição.",
+          "B": "Os agentes eram religiosos jesuítas, e o trecho não afirma que tenham abandonado crenças cristãs; aprender tratamentos indígenas não equivale à rejeição dos dogmas de sua religião.",
+          "C": "A terapêutica indígena foi incorporada à atuação dos religiosos, em vez de ser substituída ou superada; a prática híbrida resulta da convivência de tradições e experiências de cura.",
+          "D": "A flora nativa tinha importância, mas não eliminou a referência à medicina europeia; a caracterização como híbrida impede interpretar o processo como imposição exclusiva da farmacologia indígena.",
+          "E": "Religiosos articulavam conhecimentos médicos europeus, uso indígena da flora e aprendizagem cotidiana das funções de cura; a prática resultava da conjugação de saberes empíricos de origens diferentes."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1349,11 +1349,11 @@
           "A mensagem acessível e a valorização da língua vulgar aproximam Francisco das preocupações de movimentos heréticos que criticavam a riqueza e o distanciamento social da Igreja. Essa afinidade temática não significa que Francisco tenha rompido com a instituição, mas que compartilhava críticas presentes em seu tempo."
         ],
         "alternatives": {
-          "A": "Os senhores feudais se vinculavam à ordem social hierárquica, sem a mesma preocupação renovadora.",
-          "B": "Os movimentos heréticos também criticavam características da Igreja e desigualdades sociais.",
-          "C": "As Cruzadas se voltavam à expansão e defesa militar da cristandade.",
-          "D": "As corporações organizavam ofícios urbanos, sem representar a crítica religiosa indicada.",
-          "E": "As universidades preservavam o latim como língua acadêmica e não definem essa contestação social."
+          "A": "Senhores feudais ocupavam posições de domínio na ordem medieval e não constituem, no contexto indicado, o movimento que compartilhava a crítica às características da Igreja e às desigualdades sociais.",
+          "B": "Movimentos heréticos também questionavam práticas e a riqueza da Igreja e expressavam insatisfação com desigualdades; por isso, compartilhavam preocupações renovadoras presentes na atuação de Francisco de Assis.",
+          "C": "As Cruzadas se organizavam como expedições religiosas e militares de defesa ou expansão da cristandade; não representam o movimento de crítica às práticas e desigualdades da Igreja enfatizado na questão.",
+          "D": "As corporações de ofício regulavam atividades produtivas e relações profissionais urbanas; sua função não corresponde à contestação religiosa e social associada à preocupação descrita.",
+          "E": "As universidades medievais integravam a cultura erudita e utilizavam o latim, mas o texto destaca uma crítica religiosa e social compartilhada por movimentos heréticos, não uma característica geral dessas instituições."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1393,11 +1393,11 @@
           "José Murilo de Carvalho atribui à formação universitária local um papel na fragmentação da América espanhola. Alfredo Ávila relativiza esse papel e destaca a circulação dos impressos. A divergência diz respeito à importância das instituições de ensino na construção das identidades e regionalismos."
         ],
         "alternatives": {
-          "A": "Os historiadores atribuem pesos diferentes às universidades na formação de identidades políticas.",
-          "B": "O segundo autor fala da circulação de impressos, sem atribuir à imprensa centralização administrativa.",
-          "C": "Não se discute abandono de comunidades de professores.",
-          "D": "As associações acadêmicas e agremiações estudantis não são o objeto da comparação.",
-          "E": "O debate não se formula como desenvolvimento de nações alfabetizadas, mas como formação de identidades territoriais."
+          "A": "Carvalho associa a fragmentação espanhola à formação universitária local, enquanto Rueda relativiza esse papel e destaca os impressos; divergem sobre a importância das instituições de ensino para produzir identidades políticas distintas.",
+          "B": "Rueda aponta a circulação de jornais, livros e panfletos como fator de regionalização, mas não descreve grupos de imprensa centralizando administrações; a divergência central é sobre o peso das universidades.",
+          "C": "O texto compara explicações para unidade e fragmentação política, sem afirmar que docentes foram abandonados; não se discute assistência às comunidades de professores.",
+          "D": "Não há descrição de associações acadêmicas ou agremiações estudantis; o argumento contrasta a influência das universidades com a circulação de impressos na construção de regionalismos.",
+          "E": "A relevância dos impressos aparece em uma das explicações, mas não se debate genericamente o desenvolvimento de nações alfabetizadas; a comparação se concentra nas instituições de ensino e nas identidades políticas."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1437,11 +1437,11 @@
           "O primeiro texto enfatiza a luta parlamentar pela liberdade contra a tirania real. O segundo acrescenta camponeses, tecelões e grupos religiosos com reivindicações próprias. Sua concepção destaca a pluralidade de demandas sociais que compuseram a Revolução Inglesa."
         ],
         "alternatives": {
-          "A": "A enumeração de grupos e reivindicações mostra a diversidade de demandas na revolução.",
-          "B": "As lutas envolvem religião, terra e condições de vida, sem homogeneidade religiosa.",
-          "C": "Os próprios textos mostram interpretações distintas, sem uma abordagem histórica única.",
-          "D": "Os interesses apresentados são conflitos concretos, sem caracterização como superficiais.",
-          "E": "As demandas religiosas continuam relevantes, sem superioridade exclusiva da economia."
+          "A": "O Texto II reúne camponeses contrários aos cercamentos, tecelões afetados pela miséria e crentes com expectativas religiosas; essa diversidade amplia a explicação para além da luta parlamentar por liberdades destacada no Texto I.",
+          "B": "Além de reivindicações religiosas, Hill menciona demandas agrárias e condições econômicas dos tecelões; seu argumento evidencia heterogeneidade de participantes e objetivos, não homogeneidade das lutas.",
+          "C": "A própria apresentação de duas interpretações mostra que a Revolução pode ser analisada de perspectivas diferentes; o Texto II não defende a existência de uma abordagem histórica única.",
+          "D": "O Texto II relaciona conflitos a transformações profundas da sociedade, sem qualificar as motivações políticas como superficiais; sua diferença está em incorporar variadas demandas sociais.",
+          "E": "Cercamentos e miséria são fatores econômicos relevantes, mas a expectativa religiosa de instaurar o reino de Cristo também integra a explicação; não há hierarquia que faça a economia superar todos os demais aspectos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1481,11 +1481,11 @@
           "O enclave industrial mantém poucos vínculos com o entorno e articula sua atuação a escalas externas. Ao trazer trabalhadores qualificados de fora em vez de incorporá-los localmente, a empresa reduz sua integração com a região. Essa ação corresponde à territorialização descrita."
         ],
         "alternatives": {
-          "A": "Vilas operárias criam relações residenciais próximas e não exemplificam o distanciamento do entorno.",
-          "B": "Eventos comunitários ampliam a interação com a população local.",
-          "C": "A recuperação de áreas degradadas é uma intervenção no entorno, sem indicar isolamento produtivo.",
-          "D": "A incorporação de saberes tradicionais fortalece vínculos com o território.",
-          "E": "A contratação de mão de obra externa reduz a articulação com recursos humanos locais."
+          "A": "Vilas operárias vinculam habitação e serviços dos trabalhadores ao espaço da empresa; não exemplificam tão diretamente a dependência de recursos externos e as escassas relações com o entorno descritas como enclave.",
+          "B": "Eventos comunitários aproximariam a empresa da população local e fortaleceriam relações com o entorno; essa ação contrasta com a baixa integração territorial que caracteriza o enclave apresentado.",
+          "C": "A recuperação de áreas degradadas constitui intervenção no ambiente e não demonstra, por si, pouca ligação com a sociedade local ou influência econômica extralocal; não define o enclave industrial.",
+          "D": "Incorporar saberes tradicionais pressupõe intercâmbio com práticas e conhecimentos do território; essa aproximação contraria a escassez de relações com o entorno enfatizada no texto.",
+          "E": "Ao trazer trabalhadores qualificados de fora em vez de mobilizar a população local, a empresa mantém vínculos produtivos externos e fraca integração com o entorno, reproduzindo a configuração de enclave industrial."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1525,11 +1525,11 @@
           "A convivência entre estruturas tradicionais em declínio e novas estruturas em expansão permite posições políticas opostas e adia decisões. A modernização ocorre com tensões e ritmos desiguais. O diagnóstico aponta descompassos na construção de instituições modernas."
         ],
         "alternatives": {
-          "A": "O texto destaca indecisão e ambivalência, sem radicalidade contínua das elites.",
-          "B": "Não se examina especificamente a execução de planos econômicos ortodoxos.",
-          "C": "A coexistência de padrões antigos e novos cria descompassos institucionais na modernização.",
-          "D": "A legitimidade dos movimentos de classe não é o objeto da análise.",
-          "E": "A instabilidade não se limita à velocidade de aperfeiçoamento de programas partidários."
+          "A": "A coexistência de orientações contrárias e o adiamento de decisões não indicam uma agenda radical unificada das elites; o diagnóstico destaca ambivalência e conflito entre padrões antigos e emergentes.",
+          "B": "O texto não examina a aplicação de um plano econômico ortodoxo específico; suas considerações abrangem a organização social e política durante a transição para padrões modernos.",
+          "C": "A coexistência do padrão tradicional em declínio com outro emergente gera ambivalência, inércia e mudanças bruscas; esse descompasso marca a construção de instituições modernas no desenvolvimento brasileiro.",
+          "D": "Não há avaliação de que sindicatos ou outros movimentos classistas sejam ilegítimos; o argumento descreve padrões estruturais de transição que afetam o processo político como um todo.",
+          "E": "O adiamento das decisões é efeito da tensão entre padrões sociais, não de um exame restrito à elaboração de programas partidários; a alternativa reduz indevidamente o alcance do diagnóstico."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1569,11 +1569,11 @@
           "O Manifesto propõe oportunidades educacionais abertas a todos os grupos e uma hierarquia baseada em capacidades, em lugar do privilégio oligárquico. A defesa articula a democratização do acesso à escola à valorização do mérito revelado pela formação."
         ],
         "alternatives": {
-          "A": "O trecho aborda formação integral e igualdade de oportunidades, sem se limitar ao ensino técnico.",
-          "B": "As mesmas oportunidades de educação deveriam permitir selecionar capacidades, em vez de origem social.",
-          "C": "Não se restringe a finalidade da ampliação escolar à formação de gestores.",
-          "D": "Financiamento de pesquisa avançada não é o tema da proposta citada.",
-          "E": "Remuneração docente e alfabetização não constituem a relação explícita do fragmento."
+          "A": "O manifesto defende oportunidades educacionais em todos os grupos sociais e formação integral; não limita a função escolar à preparação técnica para ocupar postos no mercado de trabalho.",
+          "B": "Ao abrir as mesmas oportunidades de educação a todos os grupos e propor uma hierarquia fundada nas capacidades, o manifesto associa democratização do acesso escolar à valorização do mérito.",
+          "C": "A igualdade de oportunidades é central, mas o trecho não define formação de gestores como destino dessa expansão; o objetivo declarado é o desenvolvimento integral das capacidades humanas.",
+          "D": "Não há discussão de financiamento da pesquisa ou de seus níveis avançados; o argumento trata de acesso à educação e reconhecimento de capacidades em oposição às vantagens oligárquicas.",
+          "E": "O trecho não estabelece vínculo entre salários docentes e alfabetização; a relação expressa é entre oportunidades educacionais amplas e seleção por capacidades, independentemente da origem social."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1613,11 +1613,11 @@
           "Sócrates questiona Mênon para mostrar que não é possível atribuir qualidades a algo sem antes saber o que esse algo é. A pergunta sobre a virtude conduz a interlocução à busca de uma definição. O conhecimento é examinado pelo diálogo, procedimento característico do método dialético."
         ],
         "alternatives": {
-          "A": "A passagem é uma interlocução, sem estrutura de carta.",
-          "B": "As perguntas e o confronto de noções orientam a busca dialógica de uma definição.",
-          "C": "Não há desenvolvimento de uma ação trágica nem linguagem voltada a esse gênero.",
-          "D": "O filósofo investiga um conceito ético, sem explicá-lo por fenômenos físicos.",
-          "E": "A finalidade é aprofundar a definição, e não suspender permanentemente o juízo."
+          "A": "A escrita epistolar pressupõe uma comunicação em forma de carta, enquanto o excerto representa uma interlocução de perguntas e respostas entre Sócrates e Mênon.",
+          "B": "Sócrates questiona a possibilidade de atribuir características a algo sem antes conhecer sua essência e conduz Mênon à definição de virtude; esse exame dialogado exemplifica o método dialético.",
+          "C": "A passagem não organiza um conflito trágico ou a representação de um destino inevitável; utiliza perguntas racionais para esclarecer o conceito que será discutido.",
+          "D": "Uma explicação fisicalista reduziria o objeto a propriedades ou processos materiais; Sócrates busca definir a virtude por meio do diálogo, sem recorrer à constituição física das coisas.",
+          "E": "O filósofo exige investigação conceitual e solicita uma definição, sem recomendar a suspensão permanente de todo julgamento; sua atitude é conduzir o exame dialético da questão."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1657,11 +1657,11 @@
           "As tampas esculpidas transmitem aos filhos conselhos sobre escolha do cônjuge e vida conjugal. Os signos convertem objetos cotidianos em veículos de orientação entre gerações. Eles cumprem uma função pedagógica de transmissão de costumes e valores sociais."
         ],
         "alternatives": {
-          "A": "Os objetos ensinam orientações e costumes relativos à convivência e ao casamento.",
-          "B": "O texto descreve formas de transmitir mensagens, sem uma imposição de um único meio comunicativo.",
-          "C": "Os conselhos orientam os jovens, sem desvalorizar genericamente seus comportamentos.",
-          "D": "A preocupação com a vida conjugal preserva valores do matrimônio, sem destituí-los.",
-          "E": "Os artefatos tratam de relações sociais, sem constituir um estudo de celebrações religiosas."
+          "A": "As tampas apresentam signos e cenas com conselhos sobre escolha do cônjuge e vida conjugal, transmitidos pelos pais aos filhos; os objetos cumprem uma função educativa dos costumes sociais.",
+          "B": "Os signos codificados constituem uma forma de comunicação, mas o texto não descreve sua imposição contra outras linguagens; o propósito destacado é orientar condutas no casamento.",
+          "C": "A entrega de conselhos sobre a vida conjugal não significa depreciar os jovens; o costume busca transmitir experiência e orientações entre gerações, sem desqualificação de seus comportamentos.",
+          "D": "Os objetos ajudam a preparar e orientar a relação conjugal, preservando sua importância na vida coletiva; portanto, não se destinam a destituir ou desvalorizar o matrimônio.",
+          "E": "O relato descreve práticas de orientação para o casamento, não um registro sistemático de ritos religiosos; a função dos artefatos é transmitir ensinamentos sociais, e não produzir uma etnografia."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1701,11 +1701,11 @@
           "O torém reúne parentes e pessoas próximas em uma celebração associada ao tempo do caju e ao compartilhamento do mocororó. Ao proporcionar encontro e participação coletiva, reforça relações de pertencimento. Sua função é estimular a coesão social do grupo."
         ],
         "alternatives": {
-          "A": "O ritual se organiza pela experiência comunitária, sem celebração de uma história oficial.",
-          "B": "A reunião de parentes e conhecidos fortalece vínculos e pertencimento coletivo.",
-          "C": "Não há intenção de substituir ou superar práticas artesanais.",
-          "D": "A memória é compartilhada na prática social, sem manipulação individual indicada.",
-          "E": "O consumo da bebida não é apresentado como estratégia de modernização comercial."
+          "A": "A reunião é motivada pela época do caju e pelos vínculos de parentesco e afinidade; não há cerimônia de exaltação de fatos ou personagens reconhecidos por uma história oficial.",
+          "B": "O torém reúne parentes, pessoas próximas e convidados da região para entretenimento e partilha da bebida de caju; sua realização reforça vínculos e estimula a coesão social do grupo.",
+          "C": "O texto não descreve abandono ou substituição do artesanato, nem associa a manifestação a uma mudança técnica de produção; o foco está na convivência organizada pela celebração.",
+          "D": "A celebração é uma experiência coletiva de parentes e conhecidos, sem descrição de controle ou alteração de recordações pessoais; sua função social ultrapassa e não se confunde com manipular memórias individuais.",
+          "E": "O consumo compartilhado de mocororó integra a reunião festiva, sem relato de compra, venda ou modernização de circuitos comerciais; a função enfatizada é fortalecer relações sociais."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1745,11 +1745,11 @@
           "O anúncio informa que José fugia, apresentava-se como livre e chegou a trabalhar contratado como camarada em outra fazenda. Ao construir uma relação de trabalho fora do domínio do senhor, procurava sustentar uma condição de liberdade. Essa é a estratégia de resistência registrada."
         ],
         "alternatives": {
-          "A": "Apresentar-se como livre e conseguir contratação criava uma relação de trabalho autônoma em relação ao senhor.",
-          "B": "O documento não relata participação na fundação de um quilombo.",
-          "C": "O senhor ameaça quem o acolher, sem suavização das normas escravistas.",
-          "D": "A contratação foi usada na fuga, sem regularização oficial de funções pelo proprietário.",
-          "E": "Não se descreve cultivo ou organização de uma economia de subsistência."
+          "A": "Ao se apresentar como livre e contratar-se como camarada em uma fazenda, José procurava inserir-se em uma relação de trabalho reconhecida socialmente para sustentar sua fuga e resistir à escravização.",
+          "B": "O anúncio informa a contratação em uma fazenda e não a formação de uma comunidade autônoma de fugitivos; não há evidência de criação ou ingresso em um território quilombola.",
+          "C": "A recompensa por captura e a ameaça a quem o contratasse mostram a manutenção da repressão; a resistência de José não resulta de normas suavizadas, mas de uma iniciativa para escapar a elas.",
+          "D": "O relato de uma contratação não demonstra reconhecimento legal e regularização de direitos trabalhistas do fugitivo; trata-se de uma estratégia concreta de inserção no trabalho para viver como livre.",
+          "E": "José buscou trabalho como camarada em uma fazenda, sem notícia de produção própria destinada à sobrevivência; a constituição de uma economia autônoma de subsistência não aparece no documento."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1789,11 +1789,11 @@
           "A árvore de Descartes liga metafísica, física e ciências práticas como partes de um mesmo organismo. A moral mais elevada pressupõe o saber das demais áreas. A alegoria sustenta a unidade essencial do conhecimento e a dependência entre seus fundamentos e aplicações."
         ],
         "alternatives": {
-          "A": "Raízes, tronco e ramos pertencem à mesma árvore, representando a unidade articulada do saber.",
-          "B": "A metáfora apresenta a metafísica como fundamento, sem refutar genericamente as crenças.",
-          "C": "O pensamento especulativo é apenas parte da imagem, que inclui ciências práticas.",
-          "D": "O texto não define a experiência como método exclusivo de conhecimento.",
-          "E": "A árvore organiza afirmações e fundamentos, sem propor suspensão de todos os juízos."
+          "A": "Raízes, tronco e ramos fazem parte da mesma árvore: metafísica, física e demais ciências se articulam em uma estrutura comum; a alegoria sustenta a unidade essencial do conhecimento.",
+          "B": "A metafísica aparece como raiz que sustenta o conjunto das ciências, sem refutação de uma crença específica; o objetivo da comparação é estabelecer vínculos entre os campos do saber.",
+          "C": "A metáfora inclui ciências de aplicação prática, como medicina e mecânica, e define relações entre todas elas; não propõe apenas estimular a especulação desvinculada do restante do conhecimento.",
+          "D": "O texto não apresenta experimentos ou critérios de teste empírico; a organização da árvore explica a integração e a dependência entre saberes, e não a adoção de um método experimental.",
+          "E": "A alegoria dispõe conhecimentos em uma estrutura afirmativa e articulada, sem recomendar abstenção de julgar; a moral é apresentada como grau elevado que pressupõe os demais saberes."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1833,11 +1833,11 @@
           "O amor fati propõe amar a vida tal como é, em vez de apenas suportá-la ou desejar outra existência. A realização deve ser buscada na própria realidade vivida. Essa orientação critica a transferência da plenitude humana para um plano transcendente, associada à tradição cristã."
         ],
         "alternatives": {
-          "A": "A crítica não se dirige às relações afetivas ou à afetividade social.",
-          "B": "O avanço científico moderno não é discutido na formulação citada.",
-          "C": "Não se analisa a relação entre paganismo e natureza.",
-          "D": "A passagem não consiste em condenar os filósofos da Antiguidade.",
-          "E": "A afirmação desta vida contrasta com uma realização reservada ao além transcendente."
+          "A": "Nietzsche propõe amar o que é e assumir a vida, mas o trecho não identifica a crítica ao cristianismo com uma proibição de vínculos afetivos ou de práticas sociais baseadas no afeto.",
+          "B": "Não há referência ao ritmo de descobertas ou à oposição da religião à ciência moderna; o contraste envolve afirmar a existência concreta em vez de projetar a realização para além dela.",
+          "C": "A fórmula do amor fati não discute a interpretação cristã de cultos pagãos; seu foco é a relação do indivíduo com o destino e com a vida tal como se apresenta.",
+          "D": "O trecho não examina a recepção de escolas da Antiguidade pela tradição cristã; opõe a afirmação desta vida ao deslocamento da realização humana para uma dimensão transcendente.",
+          "E": "Amar integralmente a existência, sem desejar outra realidade, contrasta com situar a realização humana em um além transcendente; essa projeção cristã é o alvo da crítica indicada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1877,11 +1877,11 @@
           "O texto recomenda disciplinar e castigar a carne para submetê-la ao espírito, aceitando desconfortos e reduzindo desejos. Essa oposição atribui menor valor às necessidades e prazeres corporais. É uma expressão do ascetismo medieval e da desvalorização da materialidade do corpo."
         ],
         "alternatives": {
-          "A": "A passagem trata de disciplina corporal, sem destacar cerimônias litúrgicas.",
-          "B": "A orientação se baseia na submissão da carne ao espírito, sem centralidade da razão.",
-          "C": "O trabalho não é desqualificado no trecho, que recomenda esforço disciplinador.",
-          "D": "A simplicidade alimentar não é apresentada por uma classificação de alimentos impuros.",
-          "E": "O castigo e a sujeição do corpo expressam a prioridade espiritual sobre a materialidade corpórea."
+          "A": "O texto recomenda dominar os sentidos e sujeitar a carne ao espírito, sem descrever cerimônias, calendários ou atos litúrgicos; sua ênfase não está na exaltação do ritual.",
+          "B": "A recomendação de castigar a carne não se baseia em um programa de investigação racional, mas em uma disciplina espiritual de renúncia; não corresponde à afirmação do pensamento racional.",
+          "C": "“Trabalhando por sujeitá-la” indica esforço de disciplina da carne, sem condenar o trabalho produtivo como atividade; a renúncia ascética não é apresentada como desqualificação laboral.",
+          "D": "Contentar-se com pouco faz parte da disciplina dos sentidos, mas não há classificação de alimentos em puros e impuros nem proibição alimentar específica no trecho.",
+          "E": "A carne deve ser castigada e submetida ao espírito, e o conforto sensorial deve ceder à simplicidade; essa hierarquia expressa a desvalorização da materialidade corpórea no ascetismo apresentado."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1921,11 +1921,11 @@
           "No solstício de junho, a maior incidência solar desloca-se para o hemisfério norte. Em Brasília, situada ao sul do Equador, o Sol ao meio-dia está ao norte do observador. Como a sombra se projeta no sentido oposto à fonte de luz, aponta para o sul."
         ],
         "alternatives": {
-          "A": "O norte é a direção do Sol ao meio-dia nessa data, e não da sombra.",
-          "B": "A posição do Sol ao norte determina a projeção da sombra para o sul.",
-          "C": "A sombra não aponta para leste ao meio-dia solar, quando o Sol está no meridiano.",
-          "D": "O oeste seria associado a uma posição solar a leste, sem corresponder ao meio-dia indicado.",
-          "E": "O componente leste da direção nordeste não corresponde ao alinhamento meridiano do meio-dia."
+          "A": "Em 21 de junho, o Sol incide verticalmente próximo ao Trópico de Câncer e fica ao norte de Brasília ao meio-dia; como a sombra se projeta no sentido oposto, ela não aponta para o norte.",
+          "B": "No solstício de junho, o Sol ao meio-dia encontra-se ao norte de Brasília, situada no Hemisfério Sul; a sombra do prédio se projeta para o lado oposto, na direção sul.",
+          "C": "A direção leste é associada ao lado do nascer do Sol, mas ao meio-dia o posicionamento solar é analisado no meridiano local; em junho, a oposição norte-sul determina a direção da sombra em Brasília.",
+          "D": "A direção oeste seria compatível com uma sombra lançada no início do dia pelo Sol a leste; a questão fixa o meio-dia, quando o Sol está ao norte de Brasília e a sombra se projeta ao sul.",
+          "E": "Ao meio-dia, a sombra se alinha aproximadamente ao meridiano norte-sul, e o Sol de junho fica ao norte da cidade; não há componente leste que justifique uma projeção para nordeste."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1965,11 +1965,11 @@
           "O transporte de dejetos era atribuído a escravizados de menor valor ou ao único escravizado da família. A distribuição da tarefa degradante reproduzia posições de poder, status e subordinação. A prática evidencia a reiteração das hierarquias sociais no cotidiano urbano."
         ],
         "alternatives": {
-          "A": "A atribuição aos indivíduos de menor status mostra desvalorização, sem prestígio do trabalho braçal.",
-          "B": "A tarefa degradante reproduz a hierarquia entre senhores, escravizados e diferentes posições no cativeiro.",
-          "C": "O transporte de dejetos não é apresentado como uma atividade sagrada.",
-          "D": "A escravidão e a desigualdade são reproduzidas, sem superação da exclusão econômica.",
-          "E": "O trecho não estabelece uma mudança de significado das tradições religiosas."
+          "A": "A tarefa repugnante era reservada ao escravizado de menor valor ou status, evidenciando desprestígio e coerção; sua execução não demonstra valorização social do trabalho braçal.",
+          "B": "A atribuição do transporte de dejetos a pessoas escravizadas, sobretudo às de posição inferior dentro da própria escravaria, reproduzia a desigualdade de status e reiterava hierarquias sociais.",
+          "C": "O texto descreve uma tarefa urbana de limpeza imposta a escravizados, sem significado religioso ou rito de consagração; não há sacralização da atividade laboral.",
+          "D": "A distribuição da tarefa pelo baixo status do trabalhador confirma sua posição subordinada; a prática mantém exclusões e não constitui sua superação econômica.",
+          "E": "O transporte de resíduos domésticos é explicado pela organização escravista do trabalho, sem referência a transformação de crenças ou rituais religiosos; a alternativa não corresponde ao registro apresentado."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1992,11 +1992,11 @@
           "O artigo transfere a responsabilidade pelo culto às celebridades para a sociedade: os consumidores aceitam imagens fabricadas e deixam de pensar por si. Ao dizer que há demanda por esse culto, o autor convoca os fãs a examinar suas próprias escolhas."
         ],
         "alternatives": {
-          "A": "Os talentos são citados como valores substituídos pela imagem, sem exaltação dos famosos.",
-          "B": "O alvo é o consumo dos admiradores, não os hábitos de compra das celebridades.",
-          "C": "A perda de pensamento autônomo fundamenta o convite à reflexão dos fãs.",
-          "D": "O texto afirma expressamente que as celebridades não podem receber toda a culpa.",
-          "E": "O marketing é descrito criticamente como fabricação de imagem comercial."
+          "A": "O artigo menciona talento, coragem e inteligência como critérios de admiração que perderam espaço para dinheiro e imagem; essa oposição sustenta uma crítica, sem destacar os méritos das celebridades.",
+          "B": "O consumo criticado é o dos admiradores que compram produtos associados aos famosos para compartilhar sua suposta felicidade; o texto não examina os hábitos de compra das próprias celebridades.",
+          "C": "Ao afirmar que a sociedade perdeu a capacidade de pensar por si e alimenta a demanda por celebridades, o autor convida os fãs a refletirem sobre sua participação nesse mecanismo de consumo e admiração.",
+          "D": "O autor afirma que as celebridades não podem ser responsabilizadas por todos os aspectos negativos da sociedade e atribui aos consumidores a demanda que mantém esse culto; portanto, não concentra a culpa nos famosos.",
+          "E": "Consultores de imagem e estratégias comerciais aparecem como componentes de um esquema de marketing sofisticado que manipula a admiração do público; descrevê-los criticamente não equivale a valorizar o marketing pessoal."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2036,11 +2036,11 @@
           "O poema apresenta a formação britânica como uma receita: povos diversos entram como ingredientes, misturam suas línguas e devem receber justiça e respeito iguais. A receita transforma a diversidade histórica em riqueza coletiva, sem hierarquizar os grupos."
         ],
         "alternatives": {
-          "A": "A mistura de ingredientes representa a contribuição igualmente importante das várias culturas.",
-          "B": "A receita reúne povos de diferentes origens, sem restringir a formação a um legado geográfico.",
-          "C": "As referências históricas servem à valorização da mistura, e não apenas à descrição de um impacto.",
-          "D": "O poema recomenda igualdade, sem explicar uma estrutura de classes sociais.",
-          "E": "O florescimento das línguas é desejado, não apresentado como intolerância linguística."
+          "A": "A receita reúne povos de diferentes épocas como ingredientes, manda misturar suas línguas e declara todos igualmente importantes; esse procedimento evidencia a riqueza cultural que constitui a sociedade britânica.",
+          "B": "Embora mencione povos com diferentes procedências, a receita enfatiza sua combinação e o respeito entre eles; não identifica um legado pertencente a uma única origem geográfica.",
+          "C": "As invasões e migrações dão à receita uma sequência histórica, mas o efeito procurado é representar a convivência dos ingredientes culturais; a simples constatação de um impacto histórico não explica essa escolha de gênero.",
+          "D": "A advertência contra o tratamento desigual defende justiça para todos os ingredientes da receita; o poema não descreve a divisão da população em estratos ou classes sociais.",
+          "E": "O verso que permite o florescimento das línguas valoriza a diversidade linguística, enquanto o inglês funciona como ligação entre os grupos; não se apresenta uma situação de intolerância contra essas línguas."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2080,11 +2080,11 @@
           "Unthinkable qualifica a possibilidade de uma mulher negra chegar a primeira-dama. A passagem lembra o tratamento humilhante dispensado às mulheres negras e contrapõe essa exclusão ao lugar alcançado por Michelle Obama, ressaltando a improbabilidade histórica de tal ascensão."
         ],
         "alternatives": {
-          "A": "A posição de primeira-dama parecia inconcebível diante da exclusão racial e social narrada.",
-          "B": "Dar à filha o nome Miss foi uma estratégia efetivamente adotada pelos pais.",
-          "C": "A origem racial e regional é central para compreender o tratamento discriminatório.",
-          "D": "O trabalho feminino existia, mas era limitado a posições subalternizadas.",
-          "E": "A decisão parental aparece como resistência à humilhação, sem censura por irresponsabilidade."
+          "A": "A possibilidade de uma mulher negra ser primeira-dama seria inconcebível no contexto em que mulheres negras sequer recebiam títulos de respeito; “unthinkable” ressalta a improbabilidade histórica dessa ascensão social.",
+          "B": "O casal efetivamente chamou a filha de Miss para obrigar pessoas brancas a usarem uma forma respeitosa; “unthinkable” se refere à condição de primeira-dama, não à escolha desse nome.",
+          "C": "A origem negra e sulista é justamente o elemento que explica a discriminação narrada e torna extraordinária a posição alcançada por Michelle Obama; o texto não trata essa origem como irrelevante.",
+          "D": "O trecho reconhece que mulheres negras trabalhavam no campo e na cozinha, posições socialmente subordinadas; o que parecia impensável era sua chegada à posição de primeira-dama, não o trabalho feminino.",
+          "E": "A decisão de nomear a filha Miss aparece como resposta ao desrespeito racial e tentativa de garantir tratamento digno; o vocábulo analisado não atribui irresponsabilidade aos pais."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2124,11 +2124,11 @@
           "A expressão at odds with significa estar em conflito com algo. No cartum, o desejo de se manter bem informado entra em choque com o desejo de preservar a sanidade, pois as notícias produzem sofrimento. O humor depende desses dois anseios simultâneos e incompatíveis."
         ],
         "alternatives": {
-          "A": "A fala trata do efeito das notícias, sem discutir a confiabilidade das fontes.",
-          "B": "Estar informado e permanecer são são desejos apresentados como conflitantes.",
-          "C": "Não há dificuldade de aprender a utilizar aparelhos ou novas tecnologias.",
-          "D": "A personagem fala de equilíbrio emocional, não de neutralidade diante dos fatos.",
-          "E": "Ela deseja preservar a sanidade, sem formular uma preferência explícita por notícias positivas."
+          "A": "A personagem contrapõe o desejo de estar bem informada ao de preservar a sanidade; ela não questiona a veracidade das notícias nem a confiabilidade dos veículos que as divulgam.",
+          "B": "A expressão “at odds with” estabelece conflito entre dois desejos simultâneos: acompanhar as informações e manter a sanidade. O humor nasce da dificuldade de satisfazer ambos diante do conteúdo das notícias.",
+          "C": "A fala não apresenta obstáculos ao uso de aparelhos ou plataformas: o conflito está no efeito emocional de se informar, sem qualquer indicação de dificuldade para dominar novas tecnologias.",
+          "D": "Permanecer sã diz respeito ao equilíbrio mental da personagem, enquanto imparcialidade seria ausência de favorecimento na avaliação dos fatos; a oposição do cartum envolve o primeiro sentido.",
+          "E": "A personagem expressa o desejo de conservar a sanidade ao se informar, mas não pede notícias favoráveis nem afirma que escolheria ler apenas acontecimentos positivos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2168,11 +2168,11 @@
           "Céline considera a beleza e a história europeias opressivas, enquanto Jesse presume que sua preferência por Los Angeles se deve ao caráter feio da cidade. Ela corrige essa leitura e fala em neutralidade. O diálogo mostra que a avaliação do lugar depende da perspectiva de quem o visita."
         ],
         "alternatives": {
-          "A": "A mesma beleza pode ser vista como agradável ou opressiva, portanto não determina sozinha a avaliação.",
-          "B": "A divergência entre os personagens evidencia que o olhar do visitante orienta o julgamento.",
-          "C": "A história do local aparece como objeto de uma avaliação subjetiva, sem explicar todos os juízos.",
-          "D": "O diálogo não compara estadias longas e curtas para explicar as preferências.",
-          "E": "A lua de mel é um exemplo no argumento de Céline, e não a condição geral da avaliação."
+          "A": "Céline interpreta a beleza europeia como opressiva e a neutralidade de Los Angeles como atraente; assim, a beleza física do local não produz uma avaliação única ou necessariamente favorável.",
+          "B": "Jesse supõe que Céline prefere Los Angeles por considerá-la feia, mas ela explica que valoriza sua neutralidade; a divergência mostra que o julgamento de um lugar depende da perspectiva de quem o visita.",
+          "C": "A história europeia importa porque Céline a sente como um peso que reduz o indivíduo, enquanto outros a admiram; o fator que explica essas avaliações diferentes é a interpretação do visitante.",
+          "D": "O roteiro contrapõe interpretações de cidades e comenta uma viagem de lua de mel, mas não compara durações de estadia nem atribui as preferências ao tempo passado em cada local.",
+          "E": "A lua de mel ilustra a opinião de Céline sobre a beleza que distrai casais; esse exemplo integra seu ponto de vista e não estabelece a finalidade da viagem como explicação geral para avaliar um lugar."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2212,11 +2212,11 @@
           "As declarações selecionadas de García Lorca insistem no humano, na problemática social e na injustiça presente no mundo. A resenha usa essas falas para caracterizar o compromisso social do poeta, que não separa sua arte do sofrimento das pessoas."
         ],
         "alternatives": {
-          "A": "A menção ao além é subordinada à preocupação com a dor humana e a injustiça.",
-          "B": "O trecho não apresenta reações emocionais das elites às obras de Lorca.",
-          "C": "As falas vinculam a criação artística ao humano e aos problemas sociais.",
-          "D": "A seleção trata dos compromissos do escritor, sem comparar sua obra com questões atuais.",
-          "E": "A atenção à vida humana é valorizada, em vez de criticada pela resenha."
+          "A": "Lorca menciona a possibilidade de uma vida após a morte, mas afirma que o sofrimento humano e a injustiça o impedem de se afastar do mundo concreto; a resenha não destaca uma atração predominante pelo misticismo.",
+          "B": "A declaração de que nunca foi poeta de minoria e procurou o humano permanente contraria a ideia de uma poesia voltada à comoção das elites; o trecho destaca seu compromisso com problemas compartilhados.",
+          "C": "As entrevistas associam a obra de arte ao humano e afirmam que a problemática social é indispensável; ao finalizar com a dor e a injustiça do mundo, a resenha evidencia o compromisso social de Lorca.",
+          "D": "O texto apresenta concepções de Lorca acerca da criação artística e de sua responsabilidade diante da injustiça; não analisa a recepção atual de seus poemas e peças para demonstrar sua contemporaneidade.",
+          "E": "A resenha reproduz com destaque a defesa do humano como elemento fundamental da arte, sem censurar o poeta por esse interesse; a finalidade é salientar sua orientação social."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2256,11 +2256,11 @@
           "Auxilio descreve o tom espanhol dos escritores e individualiza sons, como os de zetas, ces e eses. Ao registrar essa musicalidade peculiar, a narradora percebe diferenças de pronúncia entre falantes da mesma língua. O tema é a variação do espanhol."
         ],
         "alternatives": {
-          "A": "A descrição dos sons e da musicalidade destaca uma variedade de pronúncia do espanhol.",
-          "B": "A poeira aparece na fala dos escritores, mas não constitui a reflexão sobre sua linguagem.",
-          "C": "Os anfitriões mencionados são espanhóis, sem comparação entre formas mexicanas de acolher.",
-          "D": "Os pedidos para parar a limpeza funcionam como ocasião para observar a pronúncia.",
-          "E": "Auxilio compreende os escritores, e o trecho não relata um impasse comunicativo."
+          "A": "Auxilio comenta a musicalidade espanhola dos escritores e a maneira como pronunciavam zetas, ces e esses; essa atenção às diferenças de pronúncia entre falantes da mesma língua constitui reflexão sobre variação linguística.",
+          "B": "A poeira e a limpeza fazem parte da convivência de Auxilio com os autores, mas o comentário desenvolvido sobre suas falas focaliza os sons do espanhol; não se discute a sujeira dos livros como tema principal.",
+          "C": "Os dois escritores com quem Auxilio convive são espanhóis residentes no México; as observações sobre sua fala não descrevem diferentes formas de acolhimento próprias dos mexicanos.",
+          "D": "Os escritores pedem que Auxilio deixe o chão e os papéis em paz, mas a narradora se detém na pronúncia dessas falas; o trecho não funciona como uma exposição de procedimentos de limpeza doméstica.",
+          "E": "Auxilio compreende e reproduz o que os escritores lhe dizem, inclusive comentando seu modo peculiar de falar; a variação de pronúncia não é apresentada como impedimento à comunicação entre eles."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2300,11 +2300,11 @@
           "A guilhotina sugere a capacidade de derrubar figuras e instituições. No texto, gravações de celulares revelam acordos e chantagens, desencadeiam investigações e até ajudam a libertar um inocente. A metáfora destaca o uso desses registros como instrumentos de consequência jurídica."
         ],
         "alternatives": {
-          "A": "A multiplicidade de funções é o contexto inicial, mas não explica a imagem de derrubada.",
-          "B": "A reunião de pessoas com ideias comuns aparece antes, sem ser o foco da guilhotina.",
-          "C": "A rapidez da divulgação não abrange as investigações e decisões legais destacadas.",
-          "D": "A Primavera Árabe ilustra mobilização, mas a metáfora enfatiza provas e consequências legais.",
-          "E": "Os registros podem alimentar investigações, responsabilizações e a revisão de uma prisão injusta."
+          "A": "A multiplicidade de funções dos celulares aparece no contexto, porém a metáfora da guilhotina destaca um efeito específico: registros que expõem condutas e permitem responsabilizações de natureza jurídica.",
+          "B": "A reunião de pessoas com ideias comuns é uma capacidade atribuída às redes sociais no início do texto; a expressão analisada se relaciona depois às denúncias documentadas por aparelhos celulares.",
+          "C": "A rapidez dos registros ajuda a divulgar acontecimentos, mas a imagem da guilhotina é explicada pelos processos legais e investigações que derrubaram autoridades e até libertaram um inocente.",
+          "D": "A Primavera Árabe exemplifica a mobilização possibilitada pelas redes sociais; a metáfora dos celulares como guilhotina se desenvolve a partir da exposição de acordos, chantagens e outros fatos investigáveis.",
+          "E": "Gravações e filmagens revelam condutas que dão origem a investigações e processos legais, podendo derrubar governos e provar inocência; nesse sentido, os celulares assumem utilidade jurídica."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2344,11 +2344,11 @@
           "O narrador compara o desgaste do velho à pedra reduzida e polida pelas águas. Assim como a ação contínua da água modifica a pedra, a passagem dos anos alterou o corpo da personagem. A analogia torna sensível o trabalho prolongado do tempo sobre o homem."
         ],
         "alternatives": {
-          "A": "A água que desgasta a pedra corresponde aos anos que reduziram e poliram o homem.",
-          "B": "A comparação descreve a personagem, e não transforma o ambiente em objeto.",
-          "C": "A sensação de estar fora do tempo aparece depois e não é o núcleo da analogia.",
-          "D": "O foco recai sobre os efeitos dos anos no corpo, não sobre o espaço físico do conto.",
-          "E": "A imagem sugere transformação e desgaste, sem afirmar que a velhice seja eterna."
+          "A": "Assim como a água desgasta e modifica uma pedra ao longo do tempo, os muitos anos reduziram e poliram o homem; a comparação torna expressiva a ação prolongada do tempo sobre a personagem.",
+          "B": "A comparação tem como referente o homem muito velho e as transformações sofridas por seu corpo; não descreve uma transformação dos elementos do ambiente em objetos.",
+          "C": "A personagem é descrita como se estivesse fora do tempo, mas a analogia específica com a pedra explica o desgaste provocado pelos anos; não se aponta um deslocamento cronológico dos acontecimentos narrados.",
+          "D": "O chão e o balcão situam o homem no espaço, enquanto a imagem da água sobre a pedra caracteriza os efeitos da idade nele; a função da analogia não é detalhar o cenário do conto.",
+          "E": "A passagem destaca as marcas deixadas por muitos anos sobre aquele homem, sem afirmar que a velhice seja eterna; a comparação representa um processo de desgaste, não a perenidade dessa etapa da vida."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2388,11 +2388,11 @@
           "Diante de guerra, miséria e violência, a personagem pergunta o que aconteceu com o mundo e recebe a resposta nosotros. A resposta inclui os próprios seres humanos como agentes dos problemas. O humor converte o espanto diante do caos em reconhecimento da responsabilidade coletiva."
         ],
         "alternatives": {
-          "A": "Nosotros devolve aos humanos a responsabilidade pelos males que eles próprios lamentam.",
-          "B": "A exclamação religiosa expressa espanto, mas a resposta final não propõe uma saída pela religião.",
-          "C": "A charge não identifica um grupo de trabalhadores nem limita a crítica às relações de trabalho.",
-          "D": "As palavras sobre os males do mundo não configuram uma crítica específica a telejornais.",
-          "E": "O desfecho responsabiliza a humanidade, sem apresentar uma manipulação das notícias."
+          "A": "Ao perguntar o que aconteceu com o mundo e receber como resposta “nós”, a personagem identifica a humanidade como causa do caos que a assombra; o humor está nessa responsabilização inesperadamente direta.",
+          "B": "A exclamação religiosa expressa espanto, mas a resposta que produz o humor desloca a explicação para os próprios seres humanos; a crítica não consiste em recomendar ou censurar a busca de auxílio religioso.",
+          "C": "A charge apresenta uma avaliação da condição do mundo e responsabiliza coletivamente os seres humanos; não identifica um grupo de trabalhadores nem uma reivindicação específica contra injustiças laborais.",
+          "D": "O contexto de notícias pode motivar o espanto, mas a resposta “nós” transforma a humanidade em responsável pela situação; a mera divulgação de tragédias não explica a virada humorística.",
+          "E": "Não se acusa a mídia de falsificar acontecimentos ou manipular informações: a resposta atribui o estado do mundo à ação humana, que é o alvo da crítica construída pelo diálogo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2432,11 +2432,11 @@
           "O asteroide não colidiu com a Terra, mas a notícia desenvolve uma série de cenários condicionais: se fosse capturado, se caísse no continente e se desabasse no oceano. A descrição insistente dessas catástrofes possíveis produz o tom alarmante do texto."
         ],
         "alternatives": {
-          "A": "A velocidade informa uma característica do asteroide, sem constituir a estratégia recorrente do relato.",
-          "B": "As várias condições hipotéticas acumulam imagens de destruição apesar de não ter ocorrido colisão.",
-          "C": "A referência aos astrônomos dá credibilidade aos cálculos, mas não explica a sequência alarmante.",
-          "D": "No mínimo intensifica um dado isolado, enquanto a construção do alarme envolve vários cenários.",
-          "E": "A distância lunar situa a passagem, sem desenvolver por si a visão de catástrofe."
+          "A": "A velocidade de 288 mil quilômetros por hora dimensiona o movimento do asteroide, mas o caráter alarmante se constrói sobretudo na sequência de desastres imaginados caso tivesse ocorrido uma colisão.",
+          "B": "As construções “se ele tivesse sido capturado”, “se caísse” e “se desabasse” encadeiam consequências catastróficas de uma colisão que não ocorreu, produzindo o tom alarmante da notícia.",
+          "C": "A menção aos astrônomos e aos computadores da Nasa confere autoridade às estimativas apresentadas; a estratégia que desenvolve o alarme, porém, é acumular consequências hipotéticas do impacto.",
+          "D": "A locução “no mínimo” amplia a impressão causada pela extensão da cratera, mas aparece em um ponto isolado; a notícia produz alarme de modo recorrente ao formular diferentes cenários de destruição.",
+          "E": "A comparação com a distância entre a Terra e a Lua situa a proximidade da passagem em escala cósmica; o efeito alarmante se intensifica com a enumeração posterior das catástrofes possíveis."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2476,11 +2476,11 @@
           "Manoel de Barros ironiza o literato que troca pega por captura para supostamente purificar a língua. Ao oferecer ao dicionário expressões já usadas pelo povo, inverte essa hierarquia: a legitimidade da língua nasce também do uso popular, que merece reconhecimento."
         ],
         "alternatives": {
-          "A": "O contraste não visa separar fala e escrita, mas questionar o desprezo pela forma popular.",
-          "B": "A ironia recai sobre o purismo do literato, sem ridicularizar quem usa formas populares.",
-          "C": "A substituição de pega por captura é justamente a atitude censurada pelo poeta.",
-          "D": "O pedido de registro reconhece o valor das expressões consagradas pelo uso do povo.",
-          "E": "O poema propõe acolher usos existentes, sem formular um novo conjunto de regras gramaticais."
+          "A": "O contraste entre “pega” e “captura” não estabelece uma separação obrigatória entre fala e escrita; o poeta critica o literato por rejeitar a forma popular e deseja vê-la também reconhecida nos dicionários.",
+          "B": "O alvo da ironia é o literato que pretende não macular sua língua com a forma coloquial; o poeta acolhe os modos populares de expressão, em vez de ridicularizar quem os utiliza.",
+          "C": "Trocar “Mário-pega-sapo” por “Mário-Captura-Sapo” é justamente o preciosismo censurado no poema; o pedido de registro das expressões locais segue a direção oposta à substituição por formas mais formais.",
+          "D": "Ao defender o apelido coloquial e oferecer ao dicionarista expressões que o povo já registrou no uso, o poeta reconhece a legitimidade e o valor cultural das variedades populares da língua.",
+          "E": "A proposta consiste em reconhecer usos populares que já existem, como “estar na draga”; não há formulação de novas regras de concordância, regência ou outras normas gramaticais."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2520,11 +2520,11 @@
           "A observação de que o documentário foi o único finalista feito fora do eixo Estados Unidos-Europa destaca a excepcionalidade da conquista. Uma história do interior nordestino alcançou reconhecimento em uma disputa internacional dominada por outras regiões, o que amplia a dimensão da premiação."
         ],
         "alternatives": {
-          "A": "A homenagem a Luiz Gonzaga é apresentada depois e não é o aspecto reforçado pela comparação geográfica.",
-          "B": "A existência de outros finalistas mostra que houve concorrência na disputa.",
-          "C": "A posição excepcional entre os finalistas ressalta a conquista da narrativa ambientada no Nordeste.",
-          "D": "O trecho não apresenta valores nem dados sobre investimentos em cinema brasileiro.",
-          "E": "A parceria é mencionada, mas o recurso citado enfatiza o reconhecimento fora do eixo dominante."
+          "A": "A criação do museu por Pedro Lucas aparece em outro momento da reportagem; ser o único finalista de fora do eixo Estados Unidos-Europa destaca o reconhecimento obtido pelo documentário, não a originalidade da homenagem.",
+          "B": "O trecho afirma que o documentário estava entre os finalistas, o que pressupõe a existência de trabalhos concorrentes; sua excepcionalidade é geográfica, e não a ausência de competição pelo prêmio.",
+          "C": "Destacar que a produção foi a única de fora do eixo Estados Unidos-Europa entre as finalistas dimensiona a conquista de um documentário sobre o interior nordestino em uma premiação internacional.",
+          "D": "A referência ao eixo de origem das equipes não apresenta dados sobre financiamento ou valores investidos; por isso, não fundamenta uma conclusão acerca da escassez de recursos no cinema brasileiro.",
+          "E": "A colaboração entre brasileiros e britânicos é informada na abertura, mas a citação compara a posição do trabalho com a dos demais finalistas e reforça a dimensão de sua conquista."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2564,11 +2564,11 @@
           "Expressões como quem não tem brio engorda e a imagem de que para alguns até boi dá cria condensam interpretações coletivas da vida e da sorte. Ao incorporá-las ao diálogo literário, Guimarães Rosa preserva modos populares de dizer e os saberes transmitidos por esses ditados."
         ],
         "alternatives": {
-          "A": "A nevralgia serve à justificativa do atraso, sem representar o valor patrimonial central.",
-          "B": "As tarefas rurais mencionadas não são apresentadas como profissões extintas.",
-          "C": "Os nomes participam da narrativa, mas não explicam a preservação de saberes coletivos.",
-          "D": "Os provérbios registram formas populares de interpretar experiências compartilhadas.",
-          "E": "O trecho não procura desfazer crenças ou superstições por meio da descrição de costumes."
+          "A": "A nevralgia integra a justificativa apresentada por Lalino para chegar atrasado; a menção à doença não demonstra falta de cuidado pessoal nem constitui o principal registro de saberes culturais coletivos.",
+          "B": "O trabalho com pedras e ferramentas caracteriza o meio rural, mas o trecho não afirma que essas atividades ou profissões tenham desaparecido; essa suposta extinção não explica seu valor patrimonial.",
+          "C": "Os nomes ajudam a individualizar personagens da narrativa, porém não são explicados como traduções de seus temperamentos; o patrimônio linguístico destacado se manifesta especialmente nos provérbios populares.",
+          "D": "Ditados como “Quem não tem brio engorda” e “p’ra outros até boi pega a parir” condensam interpretações coletivas sobre trabalho e sorte, preservando memórias e saberes transmitidos na cultura popular.",
+          "E": "Os comentários dos trabalhadores reproduzem modos populares de interpretar a experiência, sem apresentar explicações destinadas a desfazer crenças ou superstições regionais."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2608,11 +2608,11 @@
           "Ao afirmar que premiar Son of Saul seria um passo à frente, o crítico pressupõe que a Academia precisa avançar em suas escolhas. A avaliação favorável ao filme vem acompanhada dessa opinião indireta sobre os votantes. As outras passagens apenas informam ou descrevem aspectos da obra."
         ],
         "alternatives": {
-          "A": "A premiação em Cannes é uma informação verificável sobre a trajetória do filme.",
-          "B": "A identificação de Saul e de sua função apresenta elementos do enredo.",
-          "C": "A descrição da câmera explica uma escolha técnica de filmagem.",
-          "D": "A procura do rabino relata uma ação da personagem ao longo da narrativa.",
-          "E": "Passo à frente pressupõe uma avaliação crítica do estágio atual das escolhas da Academia."
+          "A": "O prêmio recebido em Cannes constitui um dado verificável sobre a trajetória do filme e de seu diretor; a passagem não contém a avaliação implícita sobre as escolhas da Academia pedida na questão.",
+          "B": "Identificar Saul, o ator que o interpreta e sua participação nas execuções apresenta informações da história narrada; esse trecho não formula um julgamento implícito sobre a instituição que premia os filmes.",
+          "C": "O acompanhamento da personagem pela câmera descreve um procedimento de filmagem que sustenta a análise da resenha; a opinião implícita solicitada aparece na avaliação do que seria um avanço para os votantes.",
+          "D": "A procura de um rabino informa a ação que move Saul ao longo do enredo; isoladamente, esse relato não implica uma avaliação crítica das escolhas feitas pela Academia.",
+          "E": "Chamar a eventual premiação de “passo à frente” pressupõe que os votantes precisariam avançar em suas escolhas; o elogio à abordagem ousada do filme contém, assim, uma avaliação implícita da Academia."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2652,11 +2652,11 @@
           "O eu lírico se defende de uma acusação de olhar Sinhá enquanto enfrenta a ameaça do tronco, da mutilação e da perda da visão. As formas de tratamento marcam a desigualdade entre senhor e escravizado; a referência ao iorubá e a Jesus integra essa experiência histórica de violência física e simbólica."
         ],
         "alternatives": {
-          "A": "O tronco, a ameaça aos olhos e a submissão verbal remetem à violência da escravidão.",
-          "B": "A influência africana aparece na língua mencionada, mas a situação central é a violência sofrida.",
-          "C": "A coexistência de iorubá e Jesus é registrada sem relativizar a importância do sincretismo.",
-          "D": "O eu lírico nega ter olhado Sinhá, sem narrar uma relação amorosa entre os dois.",
-          "E": "O conflito retratado é uma relação de dominação concreta, mais específica que uma diferença de visões."
+          "A": "As referências ao tronco, ao corpo talhado e aos olhos ameaçados, junto às formas submissas de tratamento, recuperam a violência física e simbólica exercida contra pessoas escravizadas no Brasil.",
+          "B": "A menção ao iorubá registra uma referência africana, mas o núcleo da situação é o apelo de alguém ameaçado de castigo; a canção não se organiza como valorização da contribuição africana à música nacional.",
+          "C": "A aproximação entre chorar em iorubá e orar por Jesus evidencia referências culturais coexistentes, mas não relativiza o sincretismo; o apelo religioso aparece dentro de uma situação de violência e submissão.",
+          "D": "O eu lírico nega ter olhado Sinhá e tenta evitar a punição que lhe impõem; o fragmento não narra um vínculo amoroso entre os dois nem seus possíveis impedimentos sociais.",
+          "E": "A relação representada tem agentes e castigos concretos ligados à escravidão; reduzi-la a diferentes visões de mundo perde o aspecto central de dominação e violência registrado pela letra."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2696,11 +2696,11 @@
           "A campanha explora dois sentidos de pet: a sigla da garrafa descartável e o animal de estimação, que não pode ser descartado. A aproximação visual torna o abandono do cão moralmente chocante e busca sensibilizar o público para sua responsabilidade com os animais domésticos."
         ],
         "alternatives": {
-          "A": "A denúncia pode decorrer da conscientização, mas não é o pedido central da associação entre as imagens.",
-          "B": "A peça aproxima criticamente o descarte do abandono, sem desvincular os dois conceitos.",
-          "C": "A campanha não apresenta um convite específico para adotar animais em situação de rua.",
-          "D": "O contraste entre a garrafa descartável e o cão mobiliza a sensibilidade contra o abandono.",
-          "E": "A lei reforça a mensagem, mas não são detalhadas punições ou sanções penais."
+          "A": "A indicação de que o abandono é crime reforça a campanha, mas a peça não pede que o público denuncie casos nem fornece um canal de denúncia; a associação visual procura sensibilizar contra o abandono.",
+          "B": "O anúncio usa a palavra “pet” para contrastar a garrafa descartável com o animal que não deve ser descartado; essa aproximação critica a negligência com o cão, em vez de desvinculá-la da ideia de descarte.",
+          "C": "A imagem do cão e a frase sobre o abandono não apresentam um convite à adoção nem anunciam uma campanha para animais de rua; o apelo é pela responsabilidade de quem já cuida de um animal.",
+          "D": "A garrafa pode ser descartada, mas o cão não: o contraste visual e verbal aproxima os dois sentidos de “pet” para despertar sensibilidade e responsabilidade diante do abandono de animais domésticos.",
+          "E": "A lei e a frase “abandono é crime” dão apoio à mensagem, porém não especificam multas ou penas; o recurso central é o contraste entre o objeto descartável e o animal, e não a explicação de sanções legais."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2740,11 +2740,11 @@
           "A tirinha contrapõe as renúncias anunciadas diante da chegada do bebê. O contraste entre o que se espera da mulher e do homem expõe uma divisão desigual de encargos. A declaração final sobre a emancipação ganha sentido irônico porque a suposta igualdade convive com sacrifícios diferentes."
         ],
         "alternatives": {
-          "A": "O foco é a desigualdade no cotidiano familiar, sem conclamar diretamente à luta por direitos civis.",
-          "B": "As renúncias impostas à mulher põem em questão sua autonomia, em vez de comprová-la.",
-          "C": "A diferença de sacrifícios torna irônica a aparência de igualdade entre mulher e homem.",
-          "D": "A perda da vida social é objeto da crítica, sem ser recomendada como escolha desejável.",
-          "E": "A maternidade contextualiza a desigualdade, mas a crítica compara os papéis atribuídos aos dois adultos."
+          "A": "A conclusão menciona a emancipação feminina de modo irônico, depois de mostrar apenas a mulher enumerando renúncias; a tirinha denuncia a desigualdade cotidiana, sem realizar uma convocação direta à luta por direitos civis.",
+          "B": "A personagem anuncia que abrirá mão do prazer, da felicidade, da vida social e de projetos individuais, enquanto o homem permanece calado; essa assimetria questiona sua autonomia, em vez de apresentá-la como conquista.",
+          "C": "Depois de uma sequência de renúncias feitas somente pela mulher, a fala final celebra um capítulo da emancipação feminina; a contradição entre a celebração e os sacrifícios ironiza as condições reais de igualdade.",
+          "D": "A renúncia à vida social integra a lista que expõe a sobrecarga atribuída à mulher; a conclusão irônica não recomenda essa abdicação como uma conduta desejável para a futura mãe.",
+          "E": "A chegada do bebê desencadeia as falas, mas o contraste entre a mulher que renuncia e o homem silencioso aponta para a desigualdade entre ambos; a crítica não recai simplesmente sobre a existência de deveres maternos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2784,11 +2784,11 @@
           "A reportagem relaciona a instalação à crise dos refugiados e afirma que sua força dispensa palavras. A obra preserva a memória de um drama humano e convida a refletir sobre ele. Assim, o texto destaca a arte como meio de lembrar acontecimentos dolorosos e evitar sua repetição."
         ],
         "alternatives": {
-          "A": "A localização do museu contextualiza a instalação, sem converter a reportagem em promoção turística.",
-          "B": "O tema são os refugiados contemporâneos, e não um levantamento de naufrágios ao longo dos séculos.",
-          "C": "A novidade do museu submarino é secundária diante da função memorial e crítica da obra.",
-          "D": "O texto não define todo o museu como memorial exclusivo dos mortos nas travessias.",
-          "E": "A escultura materializa a memória de um drama humano e sustenta sua reflexão pública."
+          "A": "A localização em Lanzarote situa o leitor geograficamente, mas o destaque às expressões de abandono e à criança sem esperança dirige a reportagem para a crise humanitária, sem promover o turismo na ilha.",
+          "B": "O texto relaciona a instalação à crise contemporânea de refugiados e às tentativas de chegar à Europa; não apresenta um panorama de perdas em embarcações precárias ao longo de vários séculos.",
+          "C": "A informação de que se trata do primeiro museu submarino europeu contextualiza a obra; o comentário final sobre a força da imagem ressalta sua função humana e memorial, para além da inovação do museu.",
+          "D": "A balsa é uma das instalações do acervo, e a reportagem não define todo o Museu Atlântico como memorial exclusivo de imigrantes mortos; generalizar essa finalidade para o conjunto ultrapassa o texto.",
+          "E": "Ao registrar o abandono e a desesperança dos refugiados em uma instalação duradoura, a arte preserva a memória de um drama humano e promove reflexão para que episódios dessa natureza não se repitam."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2828,11 +2828,11 @@
           "Pestana produz com espontaneidade músicas populares dançantes, mas deseja a consagração ligada aos modelos clássicos europeus. Seu talento e sua ambição se desencontram. O conflito individual representa a tensão entre o erudito prestigiado e o popular associado à formação mestiça da música brasileira."
         ],
         "alternatives": {
-          "A": "A oposição não se explica por uma demonstração de menor complexidade das polcas.",
-          "B": "O texto enfatiza a tensão com os modelos europeus, sem afirmar prevalência africana no imaginário.",
-          "C": "A popularidade das composições já é reconhecida, embora não satisfaça a ambição erudita do músico.",
-          "D": "O desejo de criar música clássica contrasta com a produção espontânea de peças populares.",
-          "E": "O prestígio da música clássica compõe apenas um dos polos do conflito apresentado."
+          "A": "Os textos contrapõem a ambição erudita de Pestana à facilidade com que produz música dançante, mas não demonstram que suas polcas sejam musicalmente simples; a tensão envolve prestígio e pertencimento cultural.",
+          "B": "A associação do maxixe à escravidão e à mestiçagem participa do contexto, mas o conflito analisado é a relação entre a criação popular e os modelos clássicos europeus; não se afirma uma predominância africana no imaginário.",
+          "C": "Pestana já é célebre nos salões, bailes e ruas por suas composições; sua insatisfação decorre de buscar a consagração clássica apesar desse sucesso, e não de uma atribuição de prestígio que ainda estivesse apenas começando.",
+          "D": "O compositor aspira à grande obra clássica, simbolizada por Mozart e pelas sonatas vienenses, mas cria espontaneamente polcas populares; o impasse representa a relação tensa entre o erudito e o popular na música brasileira.",
+          "E": "O prestígio dos modelos clássicos explica parte da ambição de Pestana, mas a questão pede o conflito representado por ela; é necessário considerar também a força da criação popular que contraria seu projeto."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2872,11 +2872,11 @@
           "O artigo critica a pressa que empobrece as relações e cita uma conversa de Sinal fechado na qual os interlocutores mal conseguem se encontrar. A cena torna concreta a comunicação superficial descrita pelo autor e ajuda o leitor a reconhecer o problema em uma experiência cotidiana."
         ],
         "alternatives": {
-          "A": "A canção ilustra o esvaziamento do contato, sem apresentar uma advertência sobre riscos específicos.",
-          "B": "A conversa apressada exemplifica concretamente a superficialidade criticada no artigo.",
-          "C": "A letra citada desenvolve a correria, sem mostrar em paralelo uma situação de serenidade.",
-          "D": "O autor utiliza a pressa como problema real, em vez de questionar sua condição de clichê.",
-          "E": "As propostas de desacelerar surgem no comentário do autor, e não como soluções oferecidas pela letra."
+          "A": "A conversa da canção mostra a pressa e a dificuldade de um encontro mais profundo, mas não enumera perigos ou consequências concretas do ritmo acelerado; sua função argumentativa é oferecer um exemplo da crítica.",
+          "B": "Os dois conhecidos trocam respostas rápidas e promessas de um encontro futuro sem efetivar um diálogo próximo; essa cena concreta exemplifica a comunicação vazia e superficial que o artigo atribui à correria cotidiana.",
+          "C": "Ambos os interlocutores estão apressados, e a promessa de se reencontrarem não se transforma em uma cena serena; a canção ilustra a aceleração, sem apresentar dois modos de vida em contraste.",
+          "D": "O autor toma a pressa e a superficialidade como problemas efetivos e usa a canção para torná-los perceptíveis; não procura desmontar a ideia de aceleração da vida moderna como se fosse apenas um clichê.",
+          "E": "A proposta de desacelerar e reeducar os sentidos surge na apresentação do movimento slow life; a letra citada retrata a correria e não oferece os meios para solucioná-la."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2916,11 +2916,11 @@
           "Paulo César Lima rompe o silêncio ao nomear o racismo que afirma sentir até na seleção. Ao contestar o papel de bom negro e assumir causas coletivas, o jogador torna visível a discriminação negada pelo discurso oficial. Essa atitude enfraquece a narrativa de democracia racial."
         ],
         "alternatives": {
-          "A": "A culpabilização dos jogadores em 1950 revela o racismo, mas o texto destaca a contestação posterior.",
-          "B": "A projeção internacional do futebol não impede que o preconceito permaneça presente.",
-          "C": "A depreciação inicial do esporte é parte do contexto, sem ser o gesto que rompe o mito.",
-          "D": "A interdição da palavra ajuda a sustentar o mito; sua denúncia é que o enfraquece.",
-          "E": "A reação de Paulo César e a nomeação pública do racismo desafiam a versão oficial."
+          "A": "A responsabilização de Barbosa e Bigode pela derrota de 1950 comprova a existência de práticas racistas, mas o enfraquecimento do mito é associado à reação posterior de quem se recusou a silenciar sobre elas.",
+          "B": "O poder de representar a nação internacionalmente aparece como um dos polos do paradoxo do futebol brasileiro; essa projeção convivia com o racismo e não constitui, por si, uma contestação da democracia racial.",
+          "C": "A associação inicial do futebol aos pobres, negros e marginais contextualiza o preconceito social; o gesto que desafia a versão oficial é a denúncia explícita do racismo por Paulo César Lima.",
+          "D": "Impedir que o racismo seja nomeado protege o mito da democracia racial, pois oculta a discriminação; o texto destaca justamente a ruptura dessa interdição promovida pelo jogador.",
+          "E": "Paulo César Lima reage à condenação racista e afirma publicamente que o racismo existe até na Seleção; ao pronunciar a palavra que o discurso oficial evitava, contesta e enfraquece o mito da democracia racial."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -2960,11 +2960,11 @@
           "Moema aparece como uma figura indígena idealizada, inserida em uma cena de grande carga dramática. A pintura retoma o indianismo romântico ao conferir beleza e intensidade emocional à personagem. A filiação estética depende dessa elaboração idealizante, e não apenas da existência de uma fonte literária."
         ],
         "alternatives": {
-          "A": "A beleza é construída segundo uma idealização artística, sem pretensão de retrato fiel.",
-          "B": "A morte integra a cena, mas seu tema isolado não identifica especificamente o Romantismo.",
-          "C": "A referência a Caramuru contextualiza a obra, sem definir por si a linguagem romântica.",
-          "D": "A idealização do corpo indígena e a dramaticidade correspondem à sensibilidade romântica.",
-          "E": "A natureza participa da composição, sem estabelecer o antagonismo indicado na alternativa."
+          "A": "A figura de Moema apresenta beleza idealizada e tratamento artístico dramático, próprios da representação romântica; o efeito não depende de fidelidade documental à aparência de uma mulher real.",
+          "B": "A morte está presente na cena, mas é tema de obras de diversas correntes artísticas; o vínculo específico com o Romantismo se encontra no modo dramático e idealizado de representar a personagem indígena.",
+          "C": "A relação com o poema Caramuru identifica o assunto da tela, mas adaptar um texto literário não define uma estética; a filiação romântica depende das escolhas expressivas empregadas na representação.",
+          "D": "A exposição idealizada do corpo indígena e a dramaticidade da cena de morte articulam o indianismo à intensidade emocional, aspectos característicos da sensibilidade romântica brasileira.",
+          "E": "A natureza compõe o cenário da personagem, mas a tela não constrói um confronto entre humanidade e natureza primitiva; o destaque recai sobre a representação dramática e idealizada de Moema."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3004,11 +3004,11 @@
           "O estudo relata menos tempo de lazer, menos brincadeiras com outras crianças nos espaços públicos e mais interação individual com aparelhos em casa. Essa substituição reduz oportunidades de movimento e de experiência corporal compartilhada. Por isso, indica uma infância corporalmente menos ativa."
         ],
         "alternatives": {
-          "A": "O crescimento do jogo solitário aponta redução, e não estímulo, da convivência entre crianças.",
-          "B": "O estudo relata que o tempo disponível para o lazer diminuiu.",
-          "C": "A passagem dos espaços públicos para dentro de casa não indica criação de novos espaços de brincar.",
-          "D": "A troca de brincadeiras coletivas ao ar livre por aparelhos favorece menor atividade corporal.",
-          "E": "As atividades e deveres extras sobrecarregam as crianças e reduzem o tempo para brincar."
+          "A": "O estudo descreve crianças brincando menos com outras crianças e mais sozinhas diante de aparelhos eletrônicos; essa transformação reduz oportunidades de convivência, em vez de fomentar as relações sociais.",
+          "B": "O aumento das tarefas e atividades extracurriculares é apresentado como causa de menor tempo de lazer; o texto não relata ampliação ou maior difusão dessa prática entre as crianças.",
+          "C": "Parques, ruas e praças perdem espaço para brincadeiras dentro de casa, muitas vezes solitárias; essa mudança de uso dos ambientes não indica que novos espaços coletivos de diversão tenham sido criados.",
+          "D": "A redução das brincadeiras em parques, ruas e praças e o predomínio do jogo individual com aparelhos eletrônicos indicam uma experiência lúdica com menor movimentação e interação corporal.",
+          "E": "A comparação com os anos 1990 informa explicitamente que crianças atuais dispõem de menos lazer e dedicam menos tempo a brincar; as transformações descritas contrariam a ideia de aumento desse tempo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3048,11 +3048,11 @@
           "Mini@tures reúne dança, vídeo, computação gráfica e internet. A criação considera inclusive tamanho de arquivo e tempo de download, explorando o espaço e o tempo da rede como parte da obra. A inovação consiste nessa combinação de linguagens para ampliar a expressão estética."
         ],
         "alternatives": {
-          "A": "O texto destaca a mistura de meios, sem propor oposição conceitual aos grandes espetáculos.",
-          "B": "Não são descritos mecanismos de financiamento da produção artística.",
-          "C": "A computação participa da criação, mas não substitui o corpo por movimentos exclusivamente digitais.",
-          "D": "A articulação entre corpo, imagem e rede amplia as possibilidades expressivas da dança.",
-          "E": "As limitações de acesso orientam escolhas técnicas, sem redefinir a obra por perfis individuais."
+          "A": "O projeto é apresentado pela combinação de dança, vídeo, computação e internet, sem que o texto o defina como uma reação conceitual contra a tradição dos grandes espetáculos presenciais.",
+          "B": "A internet aparece como espaço de criação e acesso às miniaturas, mas não há descrição de cobrança, patrocínio ou outra modalidade de financiamento que constitua a inovação do trabalho.",
+          "C": "A computação gráfica se articula ao corpo e ao movimento na criação das miniaturas; a novidade não consiste em dispensar o bailarino e privilegiar apenas movimentos produzidos digitalmente.",
+          "D": "A combinação entre corpo, dança, vídeo, computação gráfica e internet cria uma linguagem multimodal e explora o espaço e o tempo da rede, ampliando as possibilidades de expressão estética da dança.",
+          "E": "Os ajustes no tamanho dos arquivos e no tempo de download facilitam o acesso de mais espectadores; isso não significa que a duração ou a finalidade da obra sejam redefinidas para perfis individuais de usuários."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3092,11 +3092,11 @@
           "O primeiro texto afirma que o ciclo hidrológico repõe indefinidamente os estoques continentais. O segundo mostra um limite para essa reposição: sedimentos impermeáveis dificultam a infiltração, e a água evaporada pode precipitar em outro lugar. A divergência está na garantia de manutenção dos estoques de água doce."
         ],
         "alternatives": {
-          "A": "A reposição indefinida afirmada no primeiro texto é problematizada pelas restrições descritas no segundo.",
-          "B": "O segundo texto admite expressamente a utilização da água superficial no consumo.",
-          "C": "A discussão não se concentra em métodos de reposição específicos para regiões áridas.",
-          "D": "Nenhum dos textos propõe reduzir artificialmente precipitação e evaporação.",
-          "E": "O primeiro texto reconhece a distribuição desigual, sem defender sua equalização."
+          "A": "O Texto I afirma que o ciclo hidrológico repõe indefinidamente os estoques continentais; o Texto II mostra que a impermeabilização do fundo de um lago pode impedir a recarga de aquíferos, problematizando essa manutenção.",
+          "B": "O Texto II admite que a água superficial seja usada no consumo antes de evaporar; não há oposição entre os textos quanto à possibilidade desse uso, mas quanto às condições de reposição dos estoques.",
+          "C": "O Texto I reconhece o déficit de reposição em regiões áridas, e o Texto II discute uma barreira à infiltração em reservatórios; a divergência não é sobre uma técnica específica para reabastecer áreas áridas.",
+          "D": "Os processos de evaporação e precipitação são mobilizados para explicar a circulação da água; nenhum dos textos sustenta como proposta a redução dessas taxas para resolver a situação dos reservatórios.",
+          "E": "O Texto I reconhece expressamente que a água não se distribui de maneira equitativa pelo planeta; o Texto II não apresenta uma defesa de equalização regional, portanto esse não é o ponto de divergência."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3136,11 +3136,11 @@
           "O emprego de tu e você varia conforme a região e também se modifica ao longo do tempo. A expansão da informalidade e a coexistência regional das duas formas mostram que a língua admite diferentes usos. A diversidade linguística não desaparece com a difusão de um pronome."
         ],
         "alternatives": {
-          "A": "A idade aparece no depoimento, mas a distribuição apresentada também depende de região e época.",
-          "B": "A coexistência de formas de tratamento exemplifica a diversidade dos usos da língua.",
-          "C": "O texto enumera cidades em que você predomina, contrariando a generalização de tu por todo o país.",
-          "D": "A coexistência não elimina nuances de formalidade, como mostra a comparação histórica.",
-          "E": "As mudanças entre cartas antigas e usos atuais demonstram transformação linguística."
+          "A": "A idade do professor ajuda a exemplificar a mudança no tratamento, mas as diferenças entre cidades e entre cartas antigas e usos atuais mostram que a escolha também varia conforme região, época e contexto.",
+          "B": "A coexistência de “tu” e “você”, com distribuições regionais e graus de formalidade que se transformam no tempo, evidencia a diversidade dos usos da língua portuguesa no Brasil.",
+          "C": "O texto informa que “você” predomina em São Paulo, Curitiba, Belo Horizonte e Salvador; portanto, não autoriza estender a todas as regiões do país o emprego de “tu” como tratamento informal.",
+          "D": "As cartas antigas distinguiam um “tu” mais próximo de um “você” mais formal, e o depoimento do professor também envolve formalidade; a presença das duas formas não elimina essas diferenças de tratamento.",
+          "E": "A comparação histórica mostra que “você” passou a ocupar situações antes marcadas por tratamentos mais formais; sua ocorrência em documentos escritos não demonstra imobilidade, e sim integra um quadro de mudança."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3180,11 +3180,11 @@
           "John Lennon da Silva retoma uma coreografia do balé clássico e a interpreta pelo popping, com roupas e movimentos ligados à dança de rua. O resultado inovador nasce do encontro de referências de contextos sociais diferentes. A releitura amplia a obra sem exigir a reprodução do modelo original."
         ],
         "alternatives": {
-          "A": "O figurino integra a releitura, mas não é apresentado como sua causa exclusiva.",
-          "B": "A aproximação entre balé e dança de rua produz uma nova criação artística.",
-          "C": "O texto valoriza a inovação, sem ordenar as manifestações em uma hierarquia.",
-          "D": "Não se informa a formação do dançarino nem se conclui que ele só conheça a estética popular.",
-          "E": "O destaque recai sobre a troca de linguagem da dança, sem discutir uma adaptação obrigatória de gênero."
+          "A": "Jeans, camiseta e tênis caracterizam a releitura, mas o texto apresenta também a substituição da linguagem do balé pelo popping; não atribui a composição coreográfica apenas à escolha do figurino.",
+          "B": "Ao reinterpretar uma coreografia consagrada do balé com recursos do popping e da dança de rua, John Lennon da Silva mostra o potencial criativo do encontro entre modelos de diferentes realidades socioculturais.",
+          "C": "A apresentação é elogiada como inovadora e torna-se popular na internet; o texto não estabelece que balé ou dança de rua ocupem posições superiores ou inferiores em uma hierarquia artística.",
+          "D": "O trecho não informa que o dançarino não teve acesso à formação erudita nem que conhece apenas arte popular; sua releitura de uma obra clássica contraria a limitação de repertório suposta pela alternativa.",
+          "E": "A mudança destacada envolve figurino e linguagem corporal, do balé ao popping; o texto não descreve dificuldades ou adaptações obrigatórias decorrentes de um homem interpretar uma obra antes dançada por uma mulher."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3224,11 +3224,11 @@
           "A sucessão de espancamentos, lesões e ordens arbitrárias apresenta uma prisão em que o detento perde a proteção de direitos. Ele apanha sem conhecer a razão e aprende apenas a obedecer. A representação faz emergir práticas de um estado de exceção, marcado pela violência que suspende garantias legais."
         ],
         "alternatives": {
-          "A": "A exposição da violência não constitui defesa nem perpetuação de um senso comum sobre os presos.",
-          "B": "A agressão arbitrária e a ausência de garantias revelam práticas próprias de um estado de exceção.",
-          "C": "O preso é narrado em terceira pessoa, sem uma interlocução efetiva com grupos silenciados.",
-          "D": "A empatia pode ocorrer na leitura, mas não define a situação política representada no fragmento.",
-          "E": "A narrativa registra violência material reiterada, sem organizar uma lógica fantástica do absurdo."
+          "A": "A descrição minuciosa dos ferimentos e da submissão do preso expõe uma violência arbitrária, sem tratá-la como normal ou justificá-la por opiniões correntes sobre a população encarcerada.",
+          "B": "O detento é espancado sem conhecer os motivos, abandonado para morrer e reduzido à obediência; a suspensão prática de garantias e a violência arbitrária tornam visíveis atitudes próprias de um estado de exceção.",
+          "C": "O sofrimento do preso ganha representação literária, mas não se estabelece uma troca de falas com grupos silenciados; a força do fragmento está em expor a arbitrariedade das práticas que o submetem.",
+          "D": "O leitor pode sentir empatia pela vítima, porém o trecho não apresenta uma ação reparadora ou um processo de justiça; seu aspecto central é a exposição da violência sistemática sem garantias para o preso.",
+          "E": "As agressões são extremas, mas são narradas como violência concreta e reiterada dentro da prisão; não há ruptura fantástica ou construção de uma lógica absurda que organize a representação."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3268,11 +3268,11 @@
           "O delegado intimida o estrangeiro em nome da autoridade militar, mas muda de postura quando a esposa revela parentesco com oficiais. A pergunta final, sobre o general estar na ativa, expõe sua submissão oportunista. Essa inversão encerra o episódio como uma anedota sobre o uso das relações de poder."
         ],
         "alternatives": {
-          "A": "A xenofobia integra a fala inicial, mas o desfecho cômico depende também da mudança diante do parentesco militar.",
-          "B": "A reversão da arrogância em humildade e a pergunta final conferem tom anedótico à cena.",
-          "C": "As falas expõem claramente o abuso de autoridade, sem ocultar a avaliação construída pela narrativa.",
-          "D": "A hostilidade não permanece constante: o delegado se torna submisso ao final.",
-          "E": "A inversão ridiculariza o privilégio e o autoritarismo, em vez de exaltá-los."
+          "A": "O uso depreciativo de “gringo” expõe xenofobia, mas o efeito do fragmento inclui a brusca submissão do delegado diante dos parentes militares da mulher; a crítica não se limita à hostilidade contra estrangeiros.",
+          "B": "O delegado começa ameaçando com a autoridade militar e termina humilde ao descobrir o parentesco da mulher com oficiais; a pergunta “Da ativa?” arremata essa inversão de posições com um efeito anedótico.",
+          "C": "O contraste entre a ameaça inicial e o recuo final torna perceptível a crítica ao abuso de autoridade e à submissão ao poder militar; as falas não escondem esse efeito avaliativo da narrativa.",
+          "D": "A ameaça inicial é hostil, mas o delegado termina espantado e submisso diante da mulher; a mudança de comportamento, e não a simples intensificação da hostilidade, explica o efeito final da cena.",
+          "E": "A reversão cômica mostra que o delegado ajusta seu tratamento à posição social e militar dos envolvidos; a narrativa ridiculariza essa relação de poder, em vez de celebrá-la como modelo desejável."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3312,11 +3312,11 @@
           "Depois de citar os versos que homenageiam Pedro, o texto explica que o Pedro mencionado é o imperador Dom Pedro II. O gigante do Brasil está dentro do trecho retomado e ganha identificação histórica na explicação seguinte. Essa dependência de sentido une a expressão do hino à retomada textual."
         ],
         "alternatives": {
-          "A": "É assim retoma o modo de descoberta descrito, sem identificar especificamente os velhos papéis.",
-          "B": "Sobre o qual retoma um nome antigo, e não algo novo.",
-          "C": "Por exemplo introduz a informação seguinte, sem funcionar como retomada referencial de um nome.",
-          "D": "A explicação sobre Pedro identifica o homenageado dos versos em que aparece o gigante do Brasil.",
-          "E": "O bruxo do Cosme Velho designa Machado de Assis, enquanto Dom Pedro II é outra pessoa."
+          "A": "“É assim” retoma a situação de documentos antigos revelarem informações do passado, e não apenas o referente nominal “os velhos papéis”; a relação não identifica duas expressões que nomeiam a mesma pessoa.",
+          "B": "O pronome relativo em “sobre o qual” se refere a “um nome antigo”, apresentado em seguida como Machado de Assis; “algo novo” designa a informação descoberta e não é o antecedente desse relativo.",
+          "C": "“Por exemplo” introduz a descoberta da letra do hino como caso da informação nova anunciada; a expressão não substitui nem identifica o referente de “um nome antigo”, que é Machado de Assis.",
+          "D": "“O gigante do Brasil” qualifica Pedro nos versos do hino, e “O Pedro mencionado” retoma esse personagem para identificá-lo como Dom Pedro II; as expressões se esclarecem por uma relação de retomada referencial.",
+          "E": "“O imperador Dom Pedro II” identifica a pessoa homenageada, enquanto “O bruxo do Cosme Velho” designa Machado de Assis, autor da letra; como têm referentes diferentes, as duas expressões não formam essa retomada."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3356,11 +3356,11 @@
           "A reportagem opõe o mobiliário de gosto colonial rebuscado ao desenho contemporâneo associado a Brasília. As linhas retas e curvas suaves das peças reduzem a ornamentação e organizam formas simples. A estética brasiliense aparece, assim, na simplificação visual das composições."
         ],
         "alternatives": {
-          "A": "As linhas retas participam das peças, mas o texto também destaca curvas suaves.",
-          "B": "O desenho contemporâneo abandona o gosto rebuscado mencionado como referência anterior.",
-          "C": "A assimetria não é apresentada como traço necessário ou central das peças.",
-          "D": "Há vários materiais, entre madeiras, couro e palhinha, portanto não existe unidade exclusiva de matéria-prima.",
-          "E": "A redução da ornamentação e o desenho de formas simples caracterizam a renovação estética."
+          "A": "As linhas retas participam do desenho dos móveis, mas o texto também destaca curvas suaves; restringir a estética brasiliense apenas às linhas retas deixa de reconhecer a simplificação do conjunto visual.",
+          "B": "A reportagem afirma que os designers abandonaram o gosto colonial rebuscado para criar mobiliário contemporâneo; portanto, o desenho dos móveis não exemplifica a manutenção desse rebuscamento.",
+          "C": "O trecho menciona curvas suaves, mas não caracteriza os móveis pela assimetria; a fotografia e a descrição apontam sobretudo para a redução dos ornamentos e a clareza das formas.",
+          "D": "O texto relaciona diferentes madeiras e revestimentos, como jacarandá, peroba, couro e palhinha; não há uma única matéria-prima que explique a unidade estética dos móveis apresentados.",
+          "E": "O abandono do gosto colonial rebuscado em favor de linhas retas e curvas suaves aparece nos móveis com menos ornamentos e formas mais claras; essa simplificação visual traduz a estética vinculada a Brasília."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3400,11 +3400,11 @@
           "O Facebook desloca a atenção do feed para grupos depois de observar que muitos usuários já frequentam essas comunidades. A mudança incorpora práticas existentes no uso da plataforma. O projeto das tecnologias de comunicação se ajusta, portanto, aos comportamentos de seu público."
         ],
         "alternatives": {
-          "A": "A privacidade é prometida sem detalhes, de modo que não explica a mudança de design descrita.",
-          "B": "Os números de acesso aos grupos mostram que a plataforma adapta o desenho a hábitos dos usuários.",
-          "C": "A interação pode aumentar, mas o texto enfatiza a incorporação de uma preferência já observada.",
-          "D": "A monetização aparece como possibilidade futura, sem ser a explicação única da alteração.",
-          "E": "A lembrança do Orkut é comparativa e irônica, sem demonstrar uma evolução geral para a semelhança."
+          "A": "A privacidade aparece como promessa mencionada sem detalhes e acompanhada de crítica aos vazamentos; ela não explica a mudança de design, que se orienta pelo uso intenso dos grupos e de outros serviços.",
+          "B": "Os números de usuários que frequentam grupos e o Marketplace fundamentam a decisão de dar mais destaque a essas áreas; a reformulação mostra que a plataforma incorpora padrões de comportamento de seus usuários.",
+          "C": "As novas ferramentas podem favorecer interações, mas o relato explica a mudança pelo espaço que grupos e Marketplace já ocupam no uso da rede; a adaptação aos hábitos observados é o aspecto evidenciado.",
+          "D": "A monetização é apresentada como possibilidade futura da segmentação, não como lucro já obtido ou garantido; a reformulação descrita parte da frequência e das preferências observadas entre os usuários.",
+          "E": "A referência ao Orkut é um comentário sobre a valorização dos grupos, mas o texto não apresenta a aproximação visual entre redes como finalidade da evolução tecnológica; destaca a resposta aos hábitos dos usuários."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3444,11 +3444,11 @@
           "O autor distingue a desconfiança passiva da investigação ativa das notícias. Como não existe isenção absoluta, recomenda confrontar perspectivas, estudar e procurar elementos ocultos. Seu objetivo é formar uma leitura crítica das informações recebidas."
         ],
         "alternatives": {
-          "A": "O autor recomenda investigar as informações, sem garantir uma fonte plenamente isenta.",
-          "B": "Não se estabelece preferência por jornais de grande circulação.",
-          "C": "A busca de vários lados e das entrelinhas caracteriza a postura crítica defendida.",
-          "D": "A internet contextualiza a mudança, mas a proposta se dirige à leitura atual.",
-          "E": "O texto afirma que objetividade e isenção absolutas não existem."
+          "A": "O autor afirma que não existem objetividade e isenção absolutas e propõe investigar diferentes lados dos fatos; não limita sua orientação a encontrar uma fonte que possa ser aceita como garantia suficiente da verdade.",
+          "B": "Não se estabelece preferência por jornais de grande circulação: a recomendação vale para jornais, revistas e noticiários em geral e exige examinar criticamente qualquer informação recebida.",
+          "C": "Ao distinguir a desconfiança passiva da investigação de entrelinhas, elementos ocultos e diferentes versões, o autor procura convencer o leitor a adotar uma postura crítica e ativa diante das informações.",
+          "D": "A comparação com o período anterior à internet introduz uma mudança nas exigências da leitura, mas a finalidade do artigo é orientar a conduta atual do leitor, não julgar a prática jornalística do passado.",
+          "E": "O texto nega a existência de imparcialidade absoluta e recomenda comparar perspectivas; por isso, não apresenta a valorização de reportagens supostamente isentas como solução suficiente para se informar."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3488,11 +3488,11 @@
           "Pelino corrige os interlocutores mesmo em conversas informais e avalia pessoas pelo uso de palavras que desaprova. Seu purismo aplica uma única régua normativa a qualquer contexto. Assim, ignora que os usos linguísticos variam conforme a situação e o grau de formalidade."
         ],
         "alternatives": {
-          "A": "Pelino impõe as regras, sem contestar sua prioridade sobre o conteúdo.",
-          "B": "A defesa de valores patrióticos não é o critério linguístico evidenciado nas cenas.",
-          "C": "Ele intervém a cada suposta incorreção, sem complacência.",
-          "D": "As correções afirmam a gramática normativa, em vez de invalidá-la.",
-          "E": "A vigilância constante ignora a adequação dos usos a diferentes situações comunicativas."
+          "A": "Pelino interrompe conversas para corrigir palavras e expressões, relegando o conteúdo ao segundo plano; sua conduta impõe regras, em vez de contestar o privilégio dado a elas sobre a informação.",
+          "B": "O “apostolado de vernaculismo” expressa purismo linguístico, mas o comportamento retratado se define pela aplicação indiscriminada da norma; a questão focaliza a inadequação dessa postura às diferentes situações comunicativas.",
+          "C": "A personagem corrige até pequenas ocorrências na conversa da botica e afasta interlocutores com suas interrupções; isso demonstra rigor intransigente, sem complacência diante do que considera desvio.",
+          "D": "Pelino se apoia em gramáticos e censura o que entende como incorreção; portanto, invalida usos que fogem ao padrão que defende, e não aqueles orientados pelos preceitos da gramática normativa.",
+          "E": "Ao impor o mesmo policiamento a escritores e à conversa informal da botica, Pelino ignora que contextos diferentes admitem níveis distintos de formalidade e modos diversos de usar a língua."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3532,11 +3532,11 @@
           "A melhoria das rodas aumentou a aderência, possibilitou novas manobras e permitiu que mais iniciantes praticassem skate. Campeonatos, lojas e fábricas acompanharam a expansão. Esses fatores ampliaram o acesso e a participação na modalidade, democratizando sua prática."
         ],
         "alternatives": {
-          "A": "O aumento da segurança e do acesso levou mais pessoas a praticar skate.",
-          "B": "As demandas comerciais são consequência parcial da expansão, sem resumir o processo.",
-          "C": "O texto inclui iniciantes e lazer, sem restringir a história à profissionalização.",
-          "D": "A origem ligada ao surfe não implica substituição geral das práticas de lazer.",
-          "E": "A dependência de materiais e inovações não demonstra autonomia dos praticantes."
+          "A": "As rodas mais flexíveis e aderentes facilitaram a aprendizagem e permitiram que mais pessoas inexperientes começassem a praticar; somadas às mudanças materiais e organizacionais, contribuíram para democratizar o acesso ao skate.",
+          "B": "Marcas, fábricas e lojas surgem como resultado da expansão da prática; o percurso histórico apresentado não se limita a registrar reivindicações de consumo ou demandas comerciais feitas pelos skatistas.",
+          "C": "O texto menciona campeonatos e expansão do mercado, mas não descreve requisitos, formação ou etapas de uma carreira profissional; destaca principalmente o aumento do número de praticantes.",
+          "D": "O skate surgiu como alternativa de lazer em períodos de poucas ondas, mas não há afirmação de que tenha substituído o surfe; a origem associada a outro esporte não implica seu desaparecimento.",
+          "E": "A importância do uretano e de quem o desenvolveu mostra a relação da prática com transformações tecnológicas; o texto não sustenta uma independência dos skatistas em relação a materiais ou estruturas externas."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3576,11 +3576,11 @@
           "Ao comparar o notebook ao antigo estojo, o narrador mobiliza lembranças, cheiros e juízos pessoais. O comentário final de que piorou de estojo e de vida sintetiza sua atitude afetiva diante da mudança. Predomina a função emotiva, centrada no enunciador."
         ],
         "alternatives": {
-          "A": "Há elaboração literária, mas a função predominante evidencia a experiência pessoal do narrador.",
-          "B": "O texto não toma o próprio código linguístico como assunto.",
-          "C": "Os dados sobre aparelhos são subordinados à avaliação afetiva do narrador.",
-          "D": "As memórias e os juízos sobre os dois objetos expõem a atitude do enunciador.",
-          "E": "O interlocutor não determina a narrativa nem recebe ordens do narrador."
+          "A": "Há imagens sensoriais e trabalho expressivo na crônica, mas o centro é a experiência pessoal do narrador diante do computador e da memória da infância; a função poética não é a predominante indicada.",
+          "B": "O narrador compara objetos e sensações de sua vida, sem analisar o código linguístico usado para contá-los; o texto não tem a própria linguagem como tema, como ocorreria na função metalinguística.",
+          "C": "As características dos objetos servem à lembrança e à avaliação subjetiva de quem narra; as informações sobre computador e estojo não são apresentadas como dados objetivos que constituam a finalidade principal.",
+          "D": "A primeira pessoa, a recordação do cheiro prazeroso do estojo e o juízo de que piorou “de estojo e de vida” destacam a atitude e os sentimentos do enunciador, caracterizando a função emotiva.",
+          "E": "A crônica compartilha uma experiência com o leitor, mas não o convoca a agir nem lhe atribui o rumo da narrativa; quem organiza as lembranças e formula os julgamentos é o próprio enunciador."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3620,11 +3620,11 @@
           "Os quadrinhos explicam ao leitor como o livro foi produzido e introduzem o trabalho que ele encontrará. Mesmo usando linguagem visual e humor, o texto cumpre uma função introdutória. Essa apresentação da obra permite reconhecê-lo como prefácio."
         ],
         "alternatives": {
-          "A": "A apresentação do livro ao leitor é a função que define o prefácio.",
-          "B": "O apelo emocional pode existir em vários gêneros e não define um prefácio.",
-          "C": "O processo criativo é o conteúdo utilizado para cumprir a função de apresentação.",
-          "D": "A combinação de técnicas descreve a produção, mas não determina o gênero textual.",
-          "E": "Elementos gráficos para um público também ocorrem em outros gêneros."
+          "A": "O texto introduz o livro ao mostrar suas etapas de produção e terminar com o convite à leitura; essa função de apresentar a obra ao público permite reconhecê-lo como prefácio, mesmo escrito em quadrinhos.",
+          "B": "As imagens e o humor aproximam o leitor das autoras, mas um apelo emocional também poderia ocorrer em outros gêneros; o que define o prefácio é sua função de introduzir a obra.",
+          "C": "A descrição da pesquisa, do roteiro e do desenho integra a apresentação do livro, mas relatar um processo criativo também pode ocorrer fora de prefácios; a finalidade introdutória é o critério decisivo.",
+          "D": "O trabalho à tinta e a edição digital informam como o livro foi produzido, sem constituir uma característica necessária de prefácio; a mescla de técnicas é conteúdo da apresentação, não definição do gênero.",
+          "E": "Os elementos gráficos tornam a apresentação coerente com a linguagem dos quadrinhos, mas também aparecem em vários outros textos; o reconhecimento como prefácio decorre de sua função de apresentar o livro."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3664,11 +3664,11 @@
           "O infográfico relaciona telas antes de dormir a problemas de sono e consequências para a saúde infantil. Ao final, apresenta recomendações práticas, como reduzir o brilho e interromper o uso antes de deitar. As informações procuram provocar mudança de hábitos de quem cuida das crianças."
         ],
         "alternatives": {
-          "A": "A divulgação científica sustenta a orientação, mas o objetivo inclui mudar condutas.",
-          "B": "Os riscos e as recomendações visam alterar hábitos prejudiciais ao sono infantil.",
-          "C": "O mecanismo destacado é a interferência no sono, sem atribuição à falta de exercício.",
-          "D": "O foco é o uso antes de dormir, sem defender o abandono completo dos telefones.",
-          "E": "Não se indica substituir o aparelho por atividades lúdicas específicas."
+          "A": "As explicações sobre sono e hormônios dão base científica ao infográfico, mas a seção final “O que fazer?” mostra que seu objetivo ultrapassa informar: pretende modificar hábitos associados ao uso de telas antes de dormir.",
+          "B": "A associação entre celular, alterações do sono e prejuízos à saúde prepara as recomendações de reduzir a luz e ficar sem telas antes de dormir; o conjunto procura influenciar atitudes prejudiciais às crianças.",
+          "C": "O mecanismo explicado envolve luz, estímulos cerebrais, hormônios e sono; o texto não desenvolve uma relação causal entre uso do celular e falta de exercícios físicos.",
+          "D": "As recomendações limitam o uso de telas em determinado período e reduzem sua luminosidade; não propõem desestimular toda utilização de telefones por crianças, independentemente da situação.",
+          "E": "O infográfico recomenda um intervalo sem telas e menor intensidade luminosa, mas não sugere atividades lúdicas específicas para substituir os dispositivos; essa proposta não pode ser atribuída ao texto."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3708,11 +3708,11 @@
           "Os homens procuram definir a mulher a partir de sua idade, estado civil, aparência e possível profissão. O diálogo a enquadra segundo categorias masculinas de respeitabilidade e deixa sua atividade apenas subentendida. A identidade feminina é referendada pelo olhar e pelo julgamento dos homens."
         ],
         "alternatives": {
-          "A": "A esmola introduz a observação, sem explicar toda a identidade atribuída à mulher.",
-          "B": "Não se estabelece uma causa entre estilo de vida e conservação da aparência.",
-          "C": "O bem-estar da mulher não é descrito como dependente de casamento estável.",
-          "D": "O julgamento masculino classifica e delimita o lugar social da personagem.",
-          "E": "A atividade profissional é inferida pelos homens, sem haver relato de uma renúncia ao trabalho."
+          "A": "A esmola serve para localizar a mulher observada e iniciar o diálogo, mas os interlocutores não afirmam que a caridade a dignifique; passam a classificá-la por aparência, estado civil e posição social.",
+          "B": "A aparência conservada provoca uma observação dos interlocutores, mas o diálogo não explica essa juventude por hábitos ou estilo de vida; a questão central é o olhar masculino que define quem a mulher é.",
+          "C": "As perguntas sobre viuvez e casamento revelam critérios masculinos de classificação, sem demonstrar que a mulher dependa de estabilidade conjugal para sentir bem-estar; sua própria avaliação não aparece.",
+          "D": "Os homens descrevem o corpo, estimam a idade, perguntam pelo estado civil e definem indiretamente a ocupação de Marocas; a identidade e o lugar social da mulher são referendados por esse olhar masculino.",
+          "E": "A exclusão de ocupações como costureira ou mestra insinua a condição de Marocas, mas não relata que ela tenha abandonado um emprego nem apresenta uma escolha de renunciar ao mercado de trabalho."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3752,11 +3752,11 @@
           "Hazoumé transforma recipientes plásticos descartados em formas que lembram rostos e máscaras. O objeto deixa a função utilitária e passa a funcionar como criação estética e crítica ao consumo. A mudança de função reposiciona artisticamente materiais antes tratados como lixo."
         ],
         "alternatives": {
-          "A": "A combinação de materiais produz significado artístico, sem indicar empobrecimento da obra.",
-          "B": "A transformação dos recipientes em máscaras atribui aos objetos outra função e valor estético.",
-          "C": "As obras não são apresentadas como inacabadas nem dependentes de intervenção do espectador.",
-          "D": "A crítica ao lixo existe, mas não se descreve uma militância ecológica como definição formal da obra.",
-          "E": "O uso de descartes é escolha expressiva, sem prova de precariedade material do artista."
+          "A": "A reunião de plástico descartado e tecido constitui o procedimento criativo da obra e produz sua força crítica; não há argumento de que a diversidade de materiais diminua seu valor artístico.",
+          "B": "Recipientes descartados deixam de funcionar como embalagens e passam a assumir formas de rostos em objetos artísticos; essa mudança de função reposiciona esteticamente materiais da sociedade de consumo.",
+          "C": "As máscaras são apresentadas como obras constituídas a partir de recipientes, sem instrução para que o público acrescente elementos ou finalize sua composição; não se trata de uma proposta de completar peças inacabadas.",
+          "D": "A quantidade de lixo e a crítica ao consumo dão à obra uma dimensão ambiental, mas o procedimento que a caracteriza é transformar recipientes em formas antropomórficas; a alternativa desloca o foco para uma militância continental.",
+          "E": "A utilização do refugo é uma escolha estética e crítica dirigida à sociedade de consumo; o texto não a explica pela falta de recursos ou por condições materiais precárias da produção do artista."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3796,11 +3796,11 @@
           "A repetição de você deve simula ordens para aceitar desemprego, agradecer e obedecer. O exagero da promessa de recompensa no juízo final expõe o absurdo dessa submissão. A canção ironiza o conformismo e a disciplina que fazem o indivíduo aceitar injustiças."
         ],
         "alternatives": {
-          "A": "As ordens e recompensas absurdas ironizam a obediência conformista.",
-          "B": "A voz que recomenda deveres é construída ironicamente, sem adesão do compositor.",
-          "C": "O juízo final satiriza a promessa de compensação, sem propor solução religiosa.",
-          "D": "O carnaval integra a ironia da acomodação, sem ser o valor central questionado.",
-          "E": "A canção denuncia a submissão, sem defender indiferença coletiva."
+          "A": "Ordens para sorrir, agradecer e rezar pelo patrão mesmo no desemprego entram em choque com a realidade sofrida; essa contradição constrói a ironia contra a aceitação disciplinada e conformista da ordem social.",
+          "B": "A repetição de “você deve” imita um discurso de obediência, mas as situações contraditórias e a recompensa caricata do “fuscão no juízo final” o desautorizam; a canção não procura ensinar civismo.",
+          "C": "A oração pelo patrão e o juízo final integram a ironia sobre promessas usadas para manter a submissão; a letra não apresenta a prática religiosa como meio efetivo de resolver os problemas sociais.",
+          "D": "Cerveja, samba e carnaval aparecem como parte das compensações e distrações oferecidas ao sujeito obediente; o alvo abrangente é o conformismo, e não uma avaliação isolada do valor das festas populares.",
+          "E": "O tom irônico denuncia a aceitação passiva dos valores e das ordens dominantes; ao expor suas contradições, a canção não defende que a coletividade permaneça indiferente a eles."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3840,11 +3840,11 @@
           "O eu lírico pede sinais do outro e recupera imagens de marés, peixes e pés molhados para imaginar o reencontro. A memória sustenta o desejo de realização amorosa e aproxima simbolicamente o paraíso. O sonho de plenitude é desenhado por essas lembranças compartilhadas."
         ],
         "alternatives": {
-          "A": "A insistência em pedir contato mantém a possibilidade do reencontro, sem ceticismo predominante.",
-          "B": "A monotonia é atribuída condicionalmente ao outro, sem resumir a voz lírica.",
-          "C": "As imagens lembradas alimentam o desejo de realização e reencontro amoroso.",
-          "D": "Os pedidos não constituem uma acusação direta contra atitudes de afastamento.",
-          "E": "O poema expressa desejo de contato, sem discutir conceitualmente o significado do amor."
+          "A": "Os pedidos para receber notícias, ser buscada e voltar a ver a pessoa amada mantêm aberta a expectativa de reencontro; a voz poética não se organiza pela descrença na possibilidade dessa aproximação.",
+          "B": "O eu lírico pergunta se o outro vê monotonia na ausência e evoca lembranças luminosas; não afirma estar simplesmente entediado pela distância, mas projeta a realização de seu desejo amoroso.",
+          "C": "As lembranças do rosto, das marés e dos pés molhados alimentam a expectativa de receber um sinal e reencontrar o ser amado; a memória desenha, assim, um desejo de realização pessoal e afetiva.",
+          "D": "A repetição dos pedidos de comunicação e as imagens da experiência partilhada revelam desejo de aproximação; não há acusação ou julgamento de condutas atribuídas a quem está distante.",
+          "E": "O poema pede notícias e reencontro e mobiliza cenas lembradas para realizar esse desejo; não se desenvolve como uma discussão abstrata sobre a definição ou o significado do amor ausente."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3884,11 +3884,11 @@
           "Falação é uma escolha lexical coloquial e pros é a contração informal de para os. Na letra, as duas formas aproximam a linguagem do registro da conversa cotidiana, coerente com a interpelação direta ao falso moralista."
         ],
         "alternatives": {
-          "A": "Falação e a contração pros são marcas identificáveis de informalidade.",
-          "B": "Teatro de revista é uma designação de gênero artístico, sem marca coloquial por si.",
-          "C": "Perfeito e Carnaval são palavras correntes também em textos formais.",
-          "D": "Oculista é um termo neutro de profissão, sem caracterizar registro informal.",
-          "E": "Curar e falso moralista não possuem, por si, a redução e a coloquialidade solicitadas."
+          "A": "“Falação” é uma formação expressiva frequente na conversa informal, e “pros” contrai “para os” em “pros bailes”; as duas escolhas registram marcas coloquiais na linguagem da letra.",
+          "B": "“Você” pode ocorrer em situações de diferentes níveis de formalidade, e “teatro de revista” nomeia um gênero de espetáculo; esse par não reúne marcas informais tão específicas quanto “falação” e “pros”.",
+          "C": "“Perfeito” é um adjetivo usual também em textos formais, e “Carnaval” é o nome de uma manifestação cultural; sua presença não caracteriza, por si, informalidade linguística.",
+          "D": "“Bebe bem” descreve a intensidade do consumo de bebida e “oculista” designa uma profissão; nenhuma dessas expressões constitui necessariamente uma forma coloquial ou uma redução típica da oralidade.",
+          "E": "O verbo “curar” e a expressão “falso moralista” são compatíveis com usos formais da língua; o juízo crítico que exprimem não é suficiente para identificá-los como marcas de informalidade."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3928,11 +3928,11 @@
           "O narrador se contrapõe à desumanização de Alda afirmando que a ama. Ao converter o hospital em palácio e a mulher em princesa, cria imagens líricas dentro do espaço de violência e segregação. Essa imersão poética sustenta seu olhar afetivo sobre a interna."
         ],
         "alternatives": {
-          "A": "A voz narra o abandono com compaixão, sem ironia predominante.",
-          "B": "A violência do hospital é denunciada, sem resignação diante dos métodos praticados.",
-          "C": "As imagens de princesa, palácio e caminhos da dor poeticamente atravessam o espaço de exclusão.",
-          "D": "A descrição não busca investigar um universo mental desconhecido em chave explicativa.",
-          "E": "A linguagem é imagética e afetiva, sem apresentar a lucidez como objetivo do tratamento."
+          "A": "O abandono familiar é descrito com sofrimento e contrastado com a declaração de amor do narrador; a linguagem não procura produzir um distanciamento irônico diante dessa experiência.",
+          "B": "A descrição de gritos, agressões e confinamento torna visível a violência do ambiente, sem aceitá-la como terapêutica inevitável; a postura afetiva do narrador também contraria a resignação.",
+          "C": "O lugar de confinamento se transforma em palácio e reino, e a mulher em princesa que chegou pelos caminhos da dor; essa elaboração lírica permite ao narrador mergulhar afetivamente no espaço de segregação.",
+          "D": "O narrador se concentra em sua relação afetiva com a mulher e nas imagens com que a percebe; não apresenta uma exploração de mecanismos desconhecidos da mente humana como explicação de seu quadro.",
+          "E": "As metáforas de princesa, reino e lanças constroem um olhar poético sobre a experiência da internação; o texto não se orienta pela busca de uma linguagem clínica ou de uma demonstração de lucidez."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -3972,11 +3972,11 @@
           "O soneto identifica a alegria com um pavão vermelho que ocupa o quintal e faz os pavões anteriores desaparecerem. O esplendor da cor e da ave traduz a intensidade de uma felicidade alcançada. A imagem funciona como metáfora da plena realização do eu lírico."
         ],
         "alternatives": {
-          "A": "O quintal é cenário da alegria, sem representar desejo de isolamento.",
-          "B": "A ave simboliza um estado subjetivo, sem se limitar a exaltar a natureza.",
-          "C": "Há sinestesia na cor sonora, mas esse recurso participa da metáfora mais ampla da alegria.",
-          "D": "O pavão vermelho representa a alegria plena que supera as experiências anteriores.",
-          "E": "As imagens de luz e cor não configuram necessariamente uma visão mística."
+          "A": "O quintal constitui o espaço em que a alegria se instala, mas a permanência do pavão não expressa desejo de isolamento; simboliza a intensidade de uma experiência que afasta os estados anteriores.",
+          "B": "Embora use o pavão e a aurora para compor imagens belas, o poema começa identificando o pavão vermelho com a alegria; sua finalidade ultrapassa descrever ou exaltar a natureza por si mesma.",
+          "C": "O verso em que a cor se torna sonora produz uma fusão sensorial, mas esse recurso local integra uma imagem mais ampla: a alegria conquistada, representada pelo pavão vermelho que substitui os outros.",
+          "D": "O pavão vermelho é explicitamente associado à alegria, domina o quintal e faz os pavões anteriores irem embora; a imagem de esplendor metaforiza a conquista de uma experiência de plena realização pelo eu lírico.",
+          "E": "As cores e imagens grandiosas intensificam uma experiência afetiva identificada como alegria; não há referência a crenças, ritos ou transcendência que fundamente uma visão mística do mundo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -4016,11 +4016,11 @@
           "A erotização do corpo feminino envolve normas sociais que ensinam maneiras de posar, mover-se, desejar e se apresentar. A obra permite discutir o corpo como construção histórica. Por isso, o processo se liga à educação do gesto, da vontade e do comportamento."
         ],
         "alternatives": {
-          "A": "Exercícios excessivos são uma prática específica e não explicam a construção social da erotização.",
-          "B": "Medicamentos e cosméticos não abrangem as normas de gesto e apresentação do corpo.",
-          "C": "A modelagem social dos gestos e comportamentos participa da erotização histórica do corpo feminino.",
-          "D": "A existência de espaços de prática corporal não determina por si a erotização.",
-          "E": "Experiências de lazer podem ocorrer sem constituir os padrões sociais de sensualidade."
+          "A": "A figura feminina em situação de lazer não demonstra uma rotina de exercícios excessivos; a questão trata de padrões sociais que modelam a apresentação do corpo, não de um programa de treinamento físico.",
+          "B": "Medicamentos e cosméticos podem integrar intervenções corporais, mas a reprodução dos preceitos de erotização envolve também posturas e condutas socialmente aprendidas; não depende especificamente desses produtos.",
+          "C": "Os valores de cada época orientam como a mulher deve gesticular, desejar e se comportar para corresponder a padrões de beleza e sensualidade; a erotização é reproduzida pela educação social do gesto, da vontade e da conduta.",
+          "D": "Criar espaços de práticas corporais amplia possibilidades de atividade, mas não explica como padrões de sensualidade são incorporados à apresentação do corpo; a questão focaliza a aprendizagem social de comportamentos.",
+          "E": "Novas experiências de movimento no lazer podem alterar práticas culturais, porém a reprodução de preceitos de erotização depende da formação de gestos e comportamentos, e não simplesmente de experimentar movimentos novos."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -4060,11 +4060,11 @@
           "O casal recorre a referências ancestrais como Calunga e Nsanga para imaginar uma união em outra terra, longe da escravidão. Essas imagens poéticas coexistem com a violência das cenas. A permanência desse repertório cultural enfatiza a resistência identitária das pessoas escravizadas."
         ],
         "alternatives": {
-          "A": "O desejo de união persiste, portanto os afetos não são apresentados apenas como impossíveis.",
-          "B": "A brutalidade está presente, mas o lirismo depende especialmente das referências ancestrais.",
-          "C": "A evocação de outra terra expressa uma resposta imaginativa, sem se reduzir ao abatimento.",
-          "D": "A memória cultural e a imaginação de liberdade afirmam a identidade sob a violência da escravidão.",
-          "E": "As referências preservadas mostram vínculo com a ancestralidade, sem simples apagamento pelo exílio."
+          "A": "A conversa preserva o desejo de permanecerem juntos e de alcançar outra terra, mesmo sob a escravidão; os afetos alimentam a esperança, em vez de serem apresentados como uma relação impossível de manter.",
+          "B": "As marcas da violência colonial integram a representação, mas o lirismo da sequência se articula à memória de calunga e à imaginação de outro destino; somente identificar corpos feridos não explica essa conjugação.",
+          "C": "As personagens evocam a memória transmitida pelo antepassado e imaginam estar juntas em outro lugar; essa projeção mantém uma resposta subjetiva à violência, sem se reduzir à expressão de abatimento.",
+          "D": "A referência ancestral a calunga e o desejo de alcançar outra terra preservam memória, identidade e esperança no interior da situação escravista; o lirismo constitui, assim, uma forma de resistência identitária.",
+          "E": "A própria conversa mostra conhecimentos e lembranças ancestrais ainda compartilhados pelas personagens; o exílio e a escravidão não aparecem como apagamento completo desses vínculos culturais."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -4104,11 +4104,11 @@
           "O vereador anuncia repetidamente uma habilidade que não possui, e a confiança na matraca leva moradores a afirmar que viram suas façanhas. A ironia mostra que a repetição e a credibilidade do meio podem fazer circular como verdade uma informação falsa."
         ],
         "alternatives": {
-          "A": "O vereador é um exemplo, mas o anúncio não apresenta uma campanha eleitoral.",
-          "B": "Os anúncios comerciais fazem parte do sistema, sem explicar o caso falso destacado.",
-          "C": "O interesse popular não garante a veracidade que a ironia põe em questão.",
-          "D": "O narrador declara falsa a façanha e mostra como o sistema a torna acreditada.",
-          "E": "O caso central não constitui orientação ou serviço de utilidade pública."
+          "A": "Embora um vereador apareça no exemplo, o que a matraca divulga é sua suposta habilidade com animais, não uma candidatura ou proposta eleitoral; a ironia incide sobre a credibilidade de uma informação falsa.",
+          "B": "Remédios, terras e tesouras exemplificam anúncios que podiam circular pela matraca, mas a confiança destacada no caso do vereador explica como um relato inventado se converte em algo aceito como verdadeiro.",
+          "C": "A facilidade de atrair ouvintes ajuda a explicar o alcance da matraca, mas a ironia está no fato de pessoas afirmarem ter visto uma façanha inexistente; o ponto decisivo é a falta de veracidade da informação.",
+          "D": "O narrador afirma que o vereador nunca domesticou os animais e que os supostos testemunhos eram falsos; a confiança absoluta no meio de divulgação sustenta, portanto, a circulação de informações não fidedignas.",
+          "E": "O sistema podia transmitir mensagens variadas, mas a história central trata de uma reputação fabricada e de testemunhos falsos; ela não exemplifica a prestação de um serviço de utilidade pública."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -4148,11 +4148,11 @@
           "A trajetória de Abel Ferreira, a parceria com Pixinguinha e os elogios à sua sonoridade sustentam uma valorização do choro. A dificuldade de divulgação aparece em contraste com essa riqueza. O argumento principal destaca a relevância histórica e estética do gênero na música brasileira."
         ],
         "alternatives": {
-          "A": "A escola é um fator de divulgação citado, sem ser responsabilizada sozinha pelo desconhecimento do músico.",
-          "B": "A falta de incentivo é apontada, mas o texto não se limita a reivindicar verbas de preservação.",
-          "C": "Os exemplos biográficos e os juízos de valor fundamentam a importância histórica e estética do choro.",
-          "D": "Os dados de vida servem à valorização do gênero, sem constituir a finalidade única do texto.",
-          "E": "A baixa divulgação é problematizada em contraste com a riqueza do choro, sem simples constatação de impopularidade."
+          "A": "A pouca divulgação nas escolas é um dos fatores mencionados para explicar a situação do gênero; o texto não atribui apenas ao ensino musical o desconhecimento da obra de Abel Ferreira.",
+          "B": "A falta de incentivos oficiais aparece entre os obstáculos vencidos pelo choro, mas não há uma reivindicação específica de verbas como finalidade central; os argumentos procuram valorizar o gênero historicamente e esteticamente.",
+          "C": "Os elogios à sonoridade, as referências a Abel Ferreira e Pixinguinha e a permanência do choro apesar dos obstáculos sustentam a relevância histórica e a riqueza estética dessa manifestação musical brasileira.",
+          "D": "Os dados da trajetória de Abel Ferreira funcionam como exemplos da riqueza do choro; a intenção não se limita a informar uma biografia, pois o texto discute também divulgação, reconhecimento e vitalidade do gênero.",
+          "E": "A preferência por samba, pagode e axé ajuda a contextualizar dificuldades de divulgação, mas a autora contrapõe a elas a vivacidade e o valor do choro; não se limita a constatar sua menor popularidade."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",

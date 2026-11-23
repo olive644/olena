@@ -60,8 +60,8 @@ it("filtra ano e dia e oferece as versões e gabaritos publicados", async () => 
     "disabled",
     true,
   );
-  expect(within(chooser).getByRole("radio", { name: "Redação" })).toBeTruthy();
-  fireEvent.click(within(chooser).getByRole("radio", { name: "Matemática e suas Tecnologias" }));
+  expect(within(chooser).getByRole("radio", { name: /^Redação/ })).toBeTruthy();
+  fireEvent.click(within(chooser).getByRole("radio", { name: /^Matemática e suas Tecnologias/ }));
   fireEvent.click(within(chooser).getByRole("button", { name: "Iniciar prova" }));
   expect(screen.queryByRole("button", { name: "Começar prova" })).toBeNull();
   expect(screen.getByRole("tab", { name: "Prova" }).getAttribute("aria-selected")).toBe("true");
@@ -108,7 +108,7 @@ it("retoma uma prova iniciada com a área e as respostas preservadas", async () 
   await openArchive("resume");
   fireEvent.click(screen.getByRole("button", { name: "Enem 2026, 1º dia" }));
   fireEvent.click(screen.getByRole("button", { name: "Começar prova" }));
-  fireEvent.click(screen.getByRole("radio", { name: "Ciências Humanas e suas Tecnologias" }));
+  fireEvent.click(screen.getByRole("radio", { name: /^Ciências Humanas e suas Tecnologias/ }));
   fireEvent.click(screen.getByRole("button", { name: "Iniciar prova" }));
   fireEvent.click(screen.getByRole("button", { name: /^Continuar$/ }));
   fireEvent.click(
@@ -125,13 +125,78 @@ it("retoma uma prova iniciada com a área e as respostas preservadas", async () 
       .getAttribute("aria-pressed"),
   ).toBe("true");
   fireEvent.click(screen.getByRole("button", { name: "Entregar prova" }));
+  const confirmation = screen.getByRole("dialog", { name: "Entregar com questões em branco?" });
+  expect(within(confirmation).getByText("44")).toBeTruthy();
+  expect(screen.queryByRole("heading", { name: "Prova entregue!" })).toBeNull();
+  fireEvent.click(within(confirmation).getByRole("button", { name: "Sim, entregar" }));
   expect(screen.getByRole("heading", { name: "Prova entregue!" })).toBeTruthy();
   expect(
     screen.queryByRole("button", { name: "Ciências Humanas e suas Tecnologias, Questão 46, A" }),
   ).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: /^Continuar$/ }));
   fireEvent.click(screen.getByRole("button", { name: "Enem 2026, 1º dia" }));
-  expect(screen.getByRole("heading", { name: "Prova entregue!" })).toBeTruthy();
+  const chooser = screen.getByRole("dialog", { name: "Por qual área você quer começar?" });
+  const submitted = within(chooser).getByRole("radio", { name: /^Ciências Humanas/ });
+  expect(submitted.textContent).toContain("Entregue");
+  expect(submitted.textContent).toContain("2%");
+  expect(submitted.textContent).toContain("1/45");
+  fireEvent.click(within(chooser).getByRole("radio", { name: /^Linguagens/ }));
+  fireEvent.click(within(chooser).getByRole("button", { name: "Iniciar prova" }));
+  fireEvent.click(screen.getByRole("button", { name: /^Continuar$/ }));
+  const paper = catalog.papers.find((item) => item.year === 2026 && item.day === 1)!;
+  const history = JSON.parse(localStorage.getItem("olena.enem.history.v1:resume")!);
+  expect(history[paper.id].attempts.humanities.answers["humanities:q:46"]).toBe("A");
+  expect(history[paper.id].attempts.humanities.submittedAt).toEqual(expect.any(String));
+  expect(history[paper.id].attempt.section).toBe("languages");
+});
+
+it("cancela a entrega sem respostas e mantém a área em andamento", async () => {
+  await openArchive("empty-submit");
+  fireEvent.click(screen.getByRole("button", { name: "Enem 2026, 1º dia" }));
+  fireEvent.click(screen.getByRole("button", { name: "Começar prova" }));
+  fireEvent.click(screen.getByRole("radio", { name: /^Ciências Humanas/ }));
+  fireEvent.click(screen.getByRole("button", { name: "Iniciar prova" }));
+  fireEvent.click(screen.getByRole("button", { name: /^Continuar$/ }));
+  expect(screen.getByText(/0\/45/)).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Entregar prova" }));
+  const confirmation = screen.getByRole("dialog", { name: "Entregar com questões em branco?" });
+  expect(within(confirmation).getByText("45")).toBeTruthy();
+  fireEvent.click(within(confirmation).getByRole("button", { name: "Voltar à prova" }));
+  expect(screen.queryByRole("dialog", { name: "Entregar com questões em branco?" })).toBeNull();
+  expect(screen.queryByRole("heading", { name: "Prova entregue!" })).toBeNull();
+  const paper = catalog.papers.find((item) => item.year === 2026 && item.day === 1)!;
+  const history = JSON.parse(localStorage.getItem("olena.enem.history.v1:empty-submit")!);
+  expect(history[paper.id].attempt.submittedAt).toBeUndefined();
+  expect(history[paper.id].attempt.answers).toEqual({});
+  expect(screen.getByRole("button", { name: "Entregar prova" })).toBeTruthy();
+});
+
+it("mostra no cartão a média das áreas e os percentuais no dropdown", async () => {
+  const paper = catalog.papers.find((item) => item.year === 2026 && item.day === 1)!;
+  const record = {
+    section: "humanities",
+    seconds: 120,
+    instructions: false,
+    answers: { "humanities:q:46": "A" },
+    submittedAt: "2026-11-23T12:00:00Z",
+  };
+  localStorage.setItem(
+    "olena.enem.history.v1:card-progress",
+    JSON.stringify({
+      [paper.id]: { completed: true, attempt: record, attempts: { humanities: record } },
+    }),
+  );
+  await openArchive("card-progress");
+  const card = screen.getByRole("button", { name: "Enem 2026, 1º dia" }).closest("article")!;
+  const summary = within(card).getByLabelText("Progresso da prova: 1%");
+  fireEvent.click(summary);
+  expect(summary.closest("details")?.open).toBe(true);
+  const humanities = within(card).getByText("Ciências Humanas e suas Tecnologias").parentElement!;
+  expect(humanities.textContent).toContain("Entregue");
+  expect(humanities.textContent).toContain("2%");
+  const languages = within(card).getByText("Linguagens, Códigos e suas Tecnologias").parentElement!;
+  expect(languages.textContent).toContain("0%");
+  expect(within(card).getByText("Redação").parentElement!.textContent).toContain("0%");
 });
 
 it("mostra o carregamento e permite tentar de novo quando o catálogo falha", async () => {

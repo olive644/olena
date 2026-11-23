@@ -23,6 +23,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O site propõe transformar o valor de uma refeição em alimentação para crianças com fome. Kate informa o preço do sushi e escolhe três porções, totalizando uma contribuição de 60 dólares para alimentar 240 crianças. O contexto é de doação, e não de compra do prato para consumo próprio."
+        ],
+        "alternatives": {
+          "A": "A referência ao sushi serve para calcular o valor compartilhado, sem anunciar uma promoção de comida.",
+          "B": "Não há disputa, prêmio ou inscrição em concurso na página apresentada.",
+          "C": "O valor associado às refeições é destinado à alimentação de crianças, caracterizando doação para caridade.",
+          "D": "Os campos da página calculam uma contribuição financeira, e não recolhem opinião em uma pesquisa.",
+          "E": "Não se oferece trabalho presencial ou tempo voluntário; a participação mostrada é uma contribuição em dinheiro."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "english:92": {
@@ -43,6 +67,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O criador define Globish como ferramenta de comunicação, não como idioma portador de uma cultura própria. A proposta simplifica o inglês e estabelece regras para torná-lo utilizável entre pessoas de nacionalidades distintas, como os dois não nativos que conversam no aeroporto."
+        ],
+        "alternatives": {
+          "A": "O criador nega que se trate de uma língua cultural autônoma e o define como ferramenta.",
+          "B": "O exemplo mostra justamente um nativo incapaz de compreender a conversa entre os dois usuários de Globish.",
+          "C": "O texto diferencia explicitamente Globish de projetos utópicos como o esperanto.",
+          "D": "A simplificação e as regras adaptadas do inglês visam facilitar a comunicação internacional.",
+          "E": "O Globish não reproduz integralmente a variedade dos nativos, pois se apresenta como inglês simplificado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "english:93": {
@@ -63,6 +111,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto apresenta um arranha-céu cuja fachada funcionaria como uma tela, reproduzindo a paisagem que está atrás do prédio. Esse recurso faria a torre parecer invisível e representa a inovação tecnológica que organiza a matéria, em lugar de uma simples competição pela maior altura."
+        ],
+        "alternatives": {
+          "A": "O tema é a tecnologia de uma torre em Seul projetada para desaparecer visualmente por meio de imagens na fachada.",
+          "B": "A declaração do arquiteto introduz a proposta, mas suas confissões pessoais não constituem o tema principal.",
+          "C": "A Califórnia aparece na trajetória profissional do arquiteto, não como local do edifício inovador descrito.",
+          "D": "O arquiteto rejeita explicitamente a corrida para erguer mais uma torre mais alta que as outras.",
+          "E": "O texto se concentra em uma torre específica e em sua inovação, sem panorama de construção de apartamentos asiáticos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "english:94": {
@@ -83,6 +155,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A canção dirige a acusação a quem fabrica armas e toma decisões protegido por paredes e escritórios, enquanto põe a arma na mão de outros. O protesto denuncia os agentes e interesses que sustentam a guerra e transferem o risco aos combatentes, não o comportamento desses soldados."
+        ],
+        "alternatives": {
+          "A": "A expansão territorial dos Estados Unidos não é especificada como motivo no fragmento apresentado.",
+          "B": "Os soldados aparecem como pessoas usadas pelo sistema, enquanto a crítica se dirige aos responsáveis por armas e guerras.",
+          "C": "A oposição entre fabricantes protegidos e pessoas armadas para combater denuncia o sistema de interesses que alimenta o recrutamento para guerras.",
+          "D": "O texto não desenvolve o atendimento às famílias dos mortos como centro do protesto.",
+          "E": "O despreparo técnico dos soldados não é mencionado como problema principal da canção."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "english:95": {
@@ -103,6 +199,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No fragmento selecionado, o caminho menos percorrido funciona como metáfora de uma escolha de vida pouco convencional. A afirmação de que isso fez toda a diferença confere relevância à decisão tomada, leitura associada à ousadia da escolha no recorte proposto pela questão."
+        ],
+        "alternatives": {
+          "A": "A escolha do caminho menos utilizado representa uma decisão ousada à qual o eu lírico atribui importância em sua vida.",
+          "B": "O fragmento não expressa lamento pela quantidade de bifurcações, mas destaca uma escolha particular.",
+          "C": "'Less traveled' caracteriza o caminho, não a frequência com que o autor realiza viagens.",
+          "D": "Não se afirma que todas as dificuldades tenham sido superadas, apenas que a opção tomada teve consequências.",
+          "E": "O trecho relata escolher uma entre duas estradas, e não percorrer sucessivamente todas elas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:100": {
@@ -123,6 +243,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Possenti compara contratos, manuais, decisões judiciais e textos jornalísticos para mostrar que os usos legítimos variam conforme a situação. Dominar a língua exige reconhecer essas diferenças e escolher formas apropriadas ao gênero, ao objetivo e aos interlocutores."
+        ],
+        "alternatives": {
+          "A": "A informalidade pode ser adequada a certos textos e não precisa ser descartada em todas as situações.",
+          "B": "A norma-padrão não se define apenas pela amplitude de circulação de um texto, mas pela situação comunicativa.",
+          "C": "O próprio jornal apresenta estilos diferentes, portanto não fornece um único molde universal de correção.",
+          "D": "A adequação às características do texto e do contexto corresponde à pluralidade de usos defendida pelo autor.",
+          "E": "Reconhecer variação não significa desprezar a norma-padrão; o texto rejeita explicitamente essa conclusão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:101": {
@@ -143,6 +287,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A campanha transforma o agressor em um pesadelo que existe para a criança, usando uma imagem ameaçadora para dimensionar o sofrimento causado pela violência. O pedido de denúncia articula essa sensibilização a uma ação de proteção, sem afirmar que o abuso se limita à noite ou ao sono."
+        ],
+        "alternatives": {
+          "A": "O anúncio se dirige a quem pode denunciar e não apenas às crianças para informar perigos.",
+          "B": "A peça não relata um caso particular contra meninas nem se limita ao objetivo de encarceramento.",
+          "C": "A metáfora expressa o horror vivido pela criança e reforça a importância de denunciar a violência.",
+          "D": "Pesadelo é uma metáfora do sofrimento, sem indicar predominância estatística de ocorrências noturnas.",
+          "E": "A campanha não sugere que a vítima confunda um sonho com um fato ocorrido durante o sono."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:102": {
@@ -163,6 +331,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A repetição de 'né' solicita ou pressupõe o acompanhamento do interlocutor e ajuda a manter o contato durante a narrativa. Trata-se de um marcador interacional comum da oralidade, não de prova de baixa escolaridade ou de um traço exclusivo de determinada região."
+        ],
+        "alternatives": {
+          "A": "Marcadores de interação aparecem em falantes de diferentes escolaridades e não permitem esse diagnóstico.",
+          "B": "'Né' mantém a interlocução e busca o acompanhamento ou a confirmação do ouvinte durante a fala.",
+          "C": "A expressão não estabelece por si só relações lógicas como causa, consequência ou oposição entre conteúdos.",
+          "D": "O marcador é amplamente utilizado no português e não é exclusivo da fala nordestina.",
+          "E": "Ele aparece em diversos pontos da narrativa, sem selecionar apenas a informação mais relevante."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:103": {
@@ -183,6 +375,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A definição de regras e o acompanhamento médico limitam práticas que poderiam causar danos e afastam a imagem de vale-tudo. Esse processo de esportivização organiza o confronto como competição regulada e produto de espetáculo, preservando condições mínimas de integridade dos atletas."
+        ],
+        "alternatives": {
+          "A": "O texto descreve competição profissional e espetáculo, não uma atividade lúdica inclusiva para todas as populações.",
+          "B": "As regras são apresentadas como limites à violência, em sentido contrário à intensificação proposta.",
+          "C": "A inserção em academias para promoção da saúde não é o objetivo destacado na passagem sobre o UFC.",
+          "D": "O aprimoramento de técnicas de defesa pessoal não explica a regulamentação do evento esportivo descrito.",
+          "E": "Os limites e cuidados médicos regulam a violência e enquadram a modalidade como esporte de espetáculo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:104": {
@@ -203,6 +419,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A passagem destaca o investimento publicitário da indústria e a difusão midiática de um corpo ideal. Na adolescência, essa imagem pode estimular a compra e o uso excessivo de suplementos, embora os benefícios apontados se restrinjam a grupos específicos e condições particulares."
+        ],
+        "alternatives": {
+          "A": "O texto afirma benefício possível para um grupo pequeno, sem considerar a suplementação indispensável a todos os praticantes.",
+          "B": "A propaganda e o ideal corporal são apresentados como estímulos ao consumo por adolescentes.",
+          "C": "Não há recomendação geral de suplementos para a musculação voltada à saúde.",
+          "D": "O texto não restringe o consumo observado a adolescentes com distúrbios metabólicos.",
+          "E": "Não se garante melhora da saúde a quem não pratica atividade física e tem dieta desequilibrada apenas por consumir suplementos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:105": {
@@ -223,6 +463,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os personagens enfrentam pobreza, dificuldade de emprego e passagem pela prisão. As duas narrativas ligam a marginalização econômica à inserção em práticas criminosas e à dificuldade de reintegração, ampliando o antigo contraste entre campo e cidade com a questão da falta de oportunidades."
+        ],
+        "alternatives": {
+          "A": "Os textos situam a criminalidade em circunstâncias sociais e não a apresentam como essência natural do ser humano.",
+          "B": "A primeira cidade é pequena, o que impede reduzir o problema à violência própria das grandes metrópoles.",
+          "C": "A pobreza e a ausência de oportunidades urbanas se articulam à criminalidade e à exclusão dos personagens.",
+          "D": "O nível de escolaridade não é indicado como explicação comum para os destinos narrados.",
+          "E": "Os personagens não são descritos como simplesmente inertes; um deles procura trabalho em muitos lugares."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:106": {
@@ -243,6 +507,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A expressão 'quadro dramático' pode nomear tanto uma pintura marcada pelo sofrimento quanto uma situação grave. O chargista combina o cenário visual de Guernica ao trânsito no feriado, usando essa polissemia para relacionar a destruição da obra original à violência dos acidentes brasileiros."
+        ],
+        "alternatives": {
+          "A": "'Trânsito no feriadão' identifica apenas o contexto da charge, não o bombardeio representado por Picasso.",
+          "B": "O verbo no presente situa a afirmação, mas não produz sozinho o diálogo específico com a obra pictórica.",
+          "C": "'Trânsito' não é necessariamente pejorativo; o efeito crítico resulta da cena e do duplo sentido da expressão.",
+          "D": "'Sempre' reforça recorrência, mas não estabelece tão diretamente a relação entre pintura e situação social.",
+          "E": "'Quadro' significa obra pictórica e situação, ligando a referência a Guernica ao drama do trânsito."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:107": {
@@ -263,6 +551,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em cada sequência, a experiência difícil é seguida de 'mas avisar aos outros'. A conjunção desloca o peso argumentativo da mera resistência individual para a denúncia coletiva, apresentada como tarefa decisiva para tornar possível a transformação de um mundo injusto."
+        ],
+        "alternatives": {
+          "A": "Os verbos não são apenas semanticamente semelhantes; a conjunção hierarquiza posições na argumentação.",
+          "B": "Sofrer e denunciar não são inconciliáveis: o poema propõe justamente realizá-los conjuntamente.",
+          "C": "A oração introduzida por 'mas' recebe maior força argumentativa ao destacar a necessidade de avisar e mobilizar os outros.",
+          "D": "A conjunção não estabelece causa, mas oposição com valorização da orientação seguinte.",
+          "E": "Os problemas sociais compõem o tema, porém a função argumentativa do conector é dar relevo à denúncia."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:108": {
@@ -283,6 +595,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A linotipo tornou a composição mais rápida e reduziu o custo de jornais, revistas e livros. A consequência social ressaltada é ampliar a disponibilidade desses materiais a públicos antes afastados pelo preço, democratizando informação e educação."
+        ],
+        "alternatives": {
+          "A": "A máquina venceu a lentidão, em vez de promover produção vagarosa de materiais didáticos.",
+          "B": "O aperfeiçoamento técnico é um meio, mas o impacto social está na maior acessibilidade dos impressos.",
+          "C": "A montagem rápida explica a redução de custos, mas não é por si só a consequência social solicitada.",
+          "D": "A produção mais barata tornou materiais informacionais acessíveis a um público mais amplo.",
+          "E": "O texto trata da composição de textos, e não destaca técnicas de reprodução de imagens como efeito central."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:109": {
@@ -303,6 +639,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As oficinas mantêm composição manual e xilogravura por uma escolha ligada à filosofia de seu trabalho. Conservar essas técnicas preserva modos de fazer associados ao cordel e sua identidade cultural, mesmo diante da disponibilidade de processos gráficos informatizados."
+        ],
+        "alternatives": {
+          "A": "O texto relaciona duas técnicas tradicionais sem estabelecer competição para provar superioridade da xilogravura ao clichê.",
+          "B": "A ênfase recai na permanência do fazer tradicional, não em sua atualização por novas tecnologias.",
+          "C": "A hipótese de origem missionária da xilogravura não define o uso atual dos cordéis como catequese.",
+          "D": "Buscar as origens pode ser relevante, mas a manutenção das técnicas tem sentido identitário imediato.",
+          "E": "O uso continuado da impressão manual e da xilogravura conserva traços constitutivos dessa tradição popular."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:110": {
@@ -323,6 +683,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A crônica contrapõe expressões que soam antigas a palavras mais correntes, como 'fita' e 'filme', 'defluxo' e 'resfriado'. Essa comparação mostra a mudança do vocabulário ao longo do tempo e permite reconhecer diferenças entre gerações de falantes."
+        ],
+        "alternatives": {
+          "A": "O texto descreve mudanças com humor, sem impor a eliminação das palavras antigas como norma.",
+          "B": "O contraste entre vocábulos antigos e atuais evidencia renovação lexical percebida entre gerações.",
+          "C": "A oposição apresentada é temporal, não uma comparação de regiões geográficas.",
+          "D": "A passagem se concentra no envelhecimento lexical, sem analisar a pronúncia ou classificar socialmente os falantes.",
+          "E": "Não se apresenta pesquisa de todas as regiões; o exemplo sustenta uma observação sobre variação histórica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:111": {
@@ -343,6 +727,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As placas articuladas do Bicho podem ser manipuladas, alterando a configuração do objeto. O espectador deixa de apenas contemplar uma forma fixa e participa de sua realização, aproximando a experiência artística da ação corporal e da vida cotidiana."
+        ],
+        "alternatives": {
+          "A": "A manipulação efetiva transforma o espectador em participante da obra e aproxima arte e experiência vivida.",
+          "B": "O objeto foi construído com placas articuladas, sem depender de reaproveitamento de objetos cotidianos prontos.",
+          "C": "A questão não enfatiza preservação de valores artesanais, mas a relação ativa com o público.",
+          "D": "A obra é escultórica e manipulável, não uma investigação de imagens obtidas por aparelhos ópticos.",
+          "E": "A produção em série não é o procedimento que explica a participação do espectador na obra apresentada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:112": {
@@ -363,6 +771,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto destaca a combinação de cavaquinho e violão em tradições musicais ligadas à presença portuguesa. No repertório brasileiro, esses instrumentos são centrais em formações de choro e samba, acompanhando melodias, harmonias e a organização rítmica."
+        ],
+        "alternatives": {
+          "A": "Maracatu e ciranda têm formações marcadas principalmente por percussão e não são o par típico de cavaquinho e violão solicitado.",
+          "B": "Carimbó e baião mobilizam outros conjuntos instrumentais característicos, sem corresponder ao exemplo mais direto.",
+          "C": "Choro e samba utilizam tradicionalmente cavaquinho e violão em seus conjuntos e acompanhamentos.",
+          "D": "Chula e siriri não constituem o par representativo do uso conjunto desses instrumentos indicado na questão.",
+          "E": "Xote é fortemente associado à sanfona e frevo a bandas de sopro, não ao par cavaquinho e violão como núcleo comum."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:113": {
@@ -383,6 +815,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O ser retratado atravessa uma vida dura em silêncio, carregando sofrimento que os demais não percebem. A voz poética reconhece essa dor oculta e os limites impostos a uma existência humilde, leitura que, no contexto de Cruz e Sousa, se vincula à discriminação e à exclusão."
+        ],
+        "alternatives": {
+          "A": "A repetição de imagens de silêncio, obscuridade e prisão revela sofrimento não expresso diante de limitações sociais e discriminatórias.",
+          "B": "A referência a prazeres não sustenta uma trajetória dominada pelo vício como resposta ao isolamento.",
+          "C": "Os deveres integram a opressão, mas o poema ultrapassa o cansaço físico de uma rotina de trabalho.",
+          "D": "Não há relação amorosa frustrada identificada como origem dos sentimentos descritos.",
+          "E": "A cruz funciona como imagem de sofrimento e aprisionamento, sem demonstrar vocação religiosa do personagem."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:114": {
@@ -403,6 +859,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A narrativa do nascimento de Jesus e dos reis magos é recontada por gírias e referências de entretenimento contemporâneo. O contraste entre o tema tradicionalmente solene e a linguagem informal e anacrônica produz o efeito de humor da crônica."
+        ],
+        "alternatives": {
+          "A": "A linguagem é coloquial e repleta de gírias, não rebuscada.",
+          "B": "As perguntas ajudam na cena cômica, mas o mecanismo geral é o contraste de registro e de épocas.",
+          "C": "Os lugares bíblicos situam a história, sem serem a principal fonte do humor.",
+          "D": "Os termos bíblicos permanecem reconhecíveis; o deslocamento cômico vem da forma coloquial de recontar o episódio.",
+          "E": "A história religiosa solene é apresentada como conversa informal contemporânea, criando contraste humorístico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:115": {
@@ -423,6 +903,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As rubricas sugerem ações, gestos e estados emocionais para a encenação, como bater o pé e demonstrar raiva. Elas orientam a leitura dramática, mas uma montagem pode reinterpretar essas indicações junto a cenário, ritmo e atuação, preservando a autonomia criativa da cena."
+        ],
+        "alternatives": {
+          "A": "A montagem não precisa seguir toda indicação de maneira literal; o teatro admite interpretação das rubricas.",
+          "B": "As rubricas oferecem possibilidades de atuação que podem ser recriadas na encenação, assim como outros elementos.",
+          "C": "As indicações são relevantes para compreender a ação e o estado da personagem, sem serem mero detalhe inútil.",
+          "D": "Embora típicas do texto dramático, não funcionam como exigência imutável que define toda realização teatral.",
+          "E": "As rubricas orientam a encenação e não anulam a autonomia do diretor e dos atores."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:116": {
@@ -443,6 +947,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O poema conserva soneto, métrica e rimas vinculados a tradições anteriores, mas incorpora vocabulário científico e imagens de decomposição em uma expressão existencial singular. Essa coexistência de forma herdada e inovação expressiva caracteriza sua posição de transição pré-modernista."
+        ],
+        "alternatives": {
+          "A": "Soneto e métrica regular não são inovações que antecipam a estética modernista; são formas herdadas.",
+          "B": "Há ecos simbolistas, mas a particularidade do poema não se reduz ao resgate desse movimento.",
+          "C": "O léxico científico é relevante, porém a descrição não se limita a restituir uma visão naturalista, pois contém angústia e construção subjetiva.",
+          "D": "A preservação de elementos formais anteriores convive com linguagem inovadora e desconcerto existencial, marcando a transição.",
+          "E": "O poema não se organiza principalmente como defesa de valores morais depois renovados pelo Modernismo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:117": {
@@ -463,6 +991,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A repetição de 'como é o negócio?' encobre os encontros amorosos em uma fórmula aparentemente comercial. O vizinho observa, copia o sinal e tenta obter o mesmo resultado por ameaça. O narrador expõe com malícia esse jogo de desejos e aparências, produzindo ironia."
+        ],
+        "alternatives": {
+          "A": "O relato não desenvolve uma reflexão filosófica sistemática sobre os males dos vizinhos.",
+          "B": "Não há evocação nostálgica e afetiva de uma convivência perdida, mas uma situação de malícia e oportunismo.",
+          "C": "A linguagem insinuante e a tentativa do vizinho de imitar Abílio revelam uma visão irônica da convivência.",
+          "D": "Pode haver crítica implícita, mas a expressão predominante não é uma condenação direta e depreciativa.",
+          "E": "A narrativa não oferece uma instrução moral explícita sobre como os vizinhos devem agir."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:118": {
@@ -483,6 +1035,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O editorial parte de uma reportagem e avalia o descarte inadequado, questionando a conduta dos moradores e seus exemplos às crianças. Sua função é interpretar e posicionar-se criticamente sobre fatos de interesse público, ultrapassando o relato informativo da notícia."
+        ],
+        "alternatives": {
+          "A": "Reapresentar fatos é apenas o ponto de partida; o editorial acrescenta avaliação e argumentação.",
+          "B": "O início informa que o jornal volta ao assunto, portanto não se trata de tema raramente abordado.",
+          "C": "A indignação pode ser um efeito, mas não define tão precisamente a função de análise crítica própria do gênero.",
+          "D": "O texto interpreta e avalia um fato já noticiado para participar da formação da opinião pública.",
+          "E": "O editorial não precisa reproduzir o ponto de vista do repórter; apresenta uma posição editorial sobre a notícia."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:119": {
@@ -503,6 +1079,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A crônica discute a busca de assunto e as dificuldades do próprio gênero que está sendo escrito. A linguagem volta-se à sua produção e aos procedimentos do cronista, caracterizando função metalinguística: uma crônica que explica e problematiza o ato de fazer crônicas."
+        ],
+        "alternatives": {
+          "A": "A distinção entre cronista e ficcionista integra a reflexão, mas não define sozinha a função da linguagem predominante.",
+          "B": "As fontes de inspiração são exemplos dentro da análise que a crônica faz de sua própria construção.",
+          "C": "Os assuntos possíveis aparecem como parte do processo, sem substituir o caráter autorreflexivo do texto.",
+          "D": "A vida pessoal é uma fonte entre outras e não o fundamento exclusivo da função metalinguística.",
+          "E": "Usar uma crônica para discutir as dificuldades de escrevê-la faz a linguagem tomar a si própria como objeto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:120": {
@@ -523,6 +1123,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na formulação 'a água potável deve acabar', o verbo dever marca uma expectativa ou probabilidade futura, atribuída às teorias mais pessimistas. Ele não indica obrigação da água, mas apresenta uma previsão de escassez e suas consequências trágicas no cenário hipotético do texto."
+        ],
+        "alternatives": {
+          "A": "O verbo projeta uma possibilidade futura, sem constatar diretamente um hábito atual de administração da água.",
+          "B": "Não expressa uma habilidade das comunidades em enfrentar dificuldades.",
+          "C": "A capacidade de substituir recursos não está no sentido modal de 'deve acabar'.",
+          "D": "A construção apresenta como provável uma previsão pessimista de falta de água potável.",
+          "E": "Embora o texto desenvolva hipótese, o sentido específico de dever é previsão, não uma classificação geral da narrativa como ficção."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:121": {
@@ -543,6 +1167,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A abertura anuncia que a televisão permitirá assistir ao que cada pessoa quiser e quando quiser, com integração a tablet e smartphone. O destaque é a personalização do consumo por tecnologias avançadas e a participação do usuário, deslocando o foco da audiência indiferenciada."
+        ],
+        "alternatives": {
+          "A": "A troca dos aparelhos pode ser consequência comercial, mas a promessa central é escolher conteúdos e horários.",
+          "B": "Os recursos tecnológicos permitem adaptar a experiência televisiva a desejos e escolhas individuais.",
+          "C": "O texto integra redes sociais à experiência, sem transformar necessariamente a TV no principal acesso a elas.",
+          "D": "Não se detalham técnicas de gravação ou apresentação de programas como objetivo da novidade.",
+          "E": "A transformação da ferramenta não implica afirmar sua perda de importância comunicativa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:122": {
@@ -563,6 +1211,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O soneto compara uma autoridade local a Deus que liberta os hebreus e chama o governante removido de Faraó. Sob a forma de elogio ao libertador, denuncia o poder anterior como tirania e cativeiro, produzindo uma crítica política indireta por analogia bíblica."
+        ],
+        "alternatives": {
+          "A": "O texto assume uma condenação da tirania, e não uma dúvida generalizada sobre a possibilidade de relações sociais.",
+          "B": "A referência ao povo brasileiro integra o contexto colonial, sem construir principalmente um programa de identidade nacional.",
+          "C": "A analogia entre o governante e o Faraó critica de modo velado o exercício tirânico do governo.",
+          "D": "As referências religiosas servem à argumentação política, sem propor discussão teológica dos dogmas.",
+          "E": "O poema não denuncia rituais pagãos; emprega a narrativa bíblica para avaliar autoridades coloniais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:123": {
@@ -583,6 +1255,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O autor contrapõe opiniões sobre gêneros representativos do país aos resultados de uma pesquisa do Ibope. Os dados sobre a liderança do sertanejo e a posição dos demais estilos funcionam como evidência para sustentar a mudança do gosto musical, em vez de depender apenas de impressões pessoais."
+        ],
+        "alternatives": {
+          "A": "A pesquisa fornece base empírica para afirmar que as preferências atuais diferem das imagens ligadas aos anos 1970.",
+          "B": "Chamar opiniões de estereótipos é um posicionamento, mas a comprovação principal vem dos resultados pesquisados.",
+          "C": "Os estrangeirismos nomeiam gêneros e não constituem a prova da mudança de preferência.",
+          "D": "A ironia reforça o tom, sem substituir os dados como sustentação da tese.",
+          "E": "Citar artistas conhecidos contextualiza a oposição, mas não demonstra sozinho o perfil popular encontrado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:124": {
@@ -603,6 +1299,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O anúncio pergunta se o leitor já foi chamado de nerd, pensa em assuntos desconhecidos pelos amigos e gosta de tecnologias. As respostas implícitas delineiam o perfil desejado e convidam o leitor a reconhecer-se nele, tornando interativa a estratégia de recrutamento."
+        ],
+        "alternatives": {
+          "A": "Apesar da frase inclusiva, as perguntas delimitam características e não afirmam contratação de qualquer pessoa talentosa.",
+          "B": "As perguntas direcionadas constroem um perfil e estimulam o leitor a comparar suas características com ele.",
+          "C": "A descrição institucional é secundária em relação à convocação direta e ao perfil traçado pelas perguntas.",
+          "D": "O anúncio valoriza positivamente as características associadas ao nerd, em vez de rejeitá-las.",
+          "E": "As imagens ajudam no tema tecnológico, mas o mecanismo verbal central de recrutamento está nas perguntas ao destinatário."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:125": {
@@ -623,6 +1343,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Segundo o texto, o blog deixa de ser apenas diário pessoal e permite publicar opiniões, compartilhar informações e receber comentários. A interação em torno de interesses comuns transforma-o em espaço de circulação e discussão pública de ideias."
+        ],
+        "alternatives": {
+          "A": "Amizades podem resultar da interação, mas o texto enfatiza a troca de informações e opiniões.",
+          "B": "Publicação de ideias e debate por comentários caracterizam a função ampliada atribuída ao blog.",
+          "C": "A exposição pessoal permanece possível; não se afirma que o blog substitua todos os diários tradicionais.",
+          "D": "O objetivo destacado não é ensinar a escrever melhor, mas permitir expressão e debate acessíveis.",
+          "E": "A rotina diária é a função inicial ultrapassada, e a ajuda mútua não resume a ampliação descrita."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:126": {
@@ -643,6 +1387,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O poema transforma brinquedos baratos, pregões e vendedores de rua em matéria lírica. A enumeração cotidiana ganha imagens de criação e infância, permitindo ver poesia em objetos sem prestígio e em ações comuns, característica do projeto modernista."
+        ],
+        "alternatives": {
+          "A": "Há enumeração de brinquedos, mas o efeito não se reduz a inventariar tradições infantis.",
+          "B": "A precariedade existe no cenário, porém o foco lírico é a alegria e o poder imaginativo trazidos pelos camelôs.",
+          "C": "O conjunto de objetos e gestos corriqueiros é recriado poeticamente como experiência de alegria e imaginação.",
+          "D": "A fala citada integra o cotidiano, mas interlocução não é o mecanismo exclusivo de toda a expressividade.",
+          "E": "A tristeza dos passantes é contraposta à lição de infância, sem dominar a visão do poema."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:127": {
@@ -663,6 +1431,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Brás Cubas defende a honra de Cotrim enquanto descreve avareza, tráfico e violência contra escravizados. A desculpa de que a crueldade é mero efeito das relações sociais revela a ironia: o discurso de defesa naturaliza a barbárie e expõe a moral seletiva da elite escravista."
+        ],
+        "alternatives": {
+          "A": "A avareza é justificada como excesso de virtude, sem uma confissão de injustiça sofrida na herança constituir o núcleo irônico.",
+          "B": "Atribuir tortura e crueldade ao costume social tenta absolver Cotrim e evidencia ironicamente a naturalização da violência escravista.",
+          "C": "O sofrimento pela filha pode ser sincero, mas não elimina a contradição moral que estrutura a caracterização.",
+          "D": "O narrador não declara desprezo por participar de irmandades; apresenta isso como suposta prova de virtude.",
+          "E": "A vaidade do retrato reforça a ironia, mas é menos central que a justificativa da tortura como efeito normal de um negócio."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:128": {
@@ -683,6 +1475,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Constança recorre a frases consideradas sábias para interpretar como vontade divina aquilo que deseja realizar. Os ditados conferem autoridade tradicional às suas decisões e providências, servindo de justificativa para suas ações dentro da situação narrada."
+        ],
+        "alternatives": {
+          "A": "A repetição não é apenas hábito mecânico: o narrador explicita sua utilidade para legitimar desejos.",
+          "B": "O trecho mostra uso interessado das máximas, sem demonstrar aceitação desinteressada de todas como verdades absolutas.",
+          "C": "Os ditados ajudam a apresentar seus próprios desejos e atos como coerentes com uma sabedoria superior.",
+          "D": "A personagem já toma providências e utiliza os ditados para legitimá-las, não como um método que determine objetivamente a solução.",
+          "E": "A associação ao divino existe, mas o narrador destaca a transformação de desejos particulares em supostos desígnios de Deus."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:129": {
@@ -703,6 +1519,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os bailes articulam música, roupas e penteados para valorizar a cultura negra entre jovens das periferias. Essa apropriação produz pertencimento e reconhecimento coletivo, caracterizando afirmação de identidade, embora dialogue com referências musicais norte-americanas."
+        ],
+        "alternatives": {
+          "A": "O lazer é parte da experiência, mas a valorização da cultura negra evidencia uma função identitária mais específica.",
+          "B": "A indústria identifica posteriormente um movimento já existente, sem inventar os bailes e sua cultura.",
+          "C": "Não se afirma que os primeiros bailes tenham traído uma proposta original do hip-hop.",
+          "D": "As práticas estéticas e musicais fortalecem pertencimento e valorização da identidade dos jovens participantes.",
+          "E": "Há influência norte-americana, mas a apropriação brasileira envolve criação de sociabilidades e identidades locais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:130": {
@@ -723,6 +1563,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O vocabulário incorporado de línguas indígenas, africanas e de imigrantes registra contatos ocorridos na história do Brasil. A mudança na mediação portuguesa após 1808 e a Independência também influencia os empréstimos, mostrando que a língua guarda marcas de experiências históricas específicas."
+        ],
+        "alternatives": {
+          "A": "Os empréstimos registram contatos e processos históricos como colonização, imigração e autonomia política brasileira.",
+          "B": "Incorporar palavras não significa fundir integralmente todas as línguas de origem em um único idioma.",
+          "C": "A acessibilidade para todos os grupos não é garantida pela existência de empréstimos e não é a tese da passagem.",
+          "D": "O texto destaca diferenças crescentes entre Brasil e Portugal, em vez de uma identidade lexical preservada sem mudanças.",
+          "E": "Não há uma escala objetiva de complexidade que coloque o português brasileiro acima de outras variedades."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:131": {
@@ -743,6 +1607,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A imagem combina o corpo de uma arma ao formato de megafone. O instrumento de violência é transformado em meio de amplificar a voz, articulando-se ao lema sobre conseguir paz com voz. A fusão visual apresenta a palavra como alternativa de ação e transformação social."
+        ],
+        "alternatives": {
+          "A": "A clareza dos tons não comunica por si só a substituição da violência pelo diálogo.",
+          "B": "A fusão entre arma e megafone converte simbolicamente violência em expressão pela palavra.",
+          "C": "A inicial maiúscula destaca uma palavra, mas não é o mecanismo principal que transforma a arma em comunicação.",
+          "D": "A mão contextualiza o uso do objeto, enquanto a crítica depende de reconhecer a combinação de dois instrumentos.",
+          "E": "As ondas sonoras reforçam a comunicação, mas não bastam para representar a superação da violência armada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:132": {
@@ -763,6 +1651,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Riobaldo generaliza a experiência da vida por contrastes breves, como esquentar e esfriar, apertar e afrouxar. A conclusão de que ela exige coragem sintetiza uma percepção existencial em poucas palavras, aproximando o trecho de um aforismo."
+        ],
+        "alternatives": {
+          "A": "Não se relata um dia datado ou uma lembrança particular organizada como diário.",
+          "B": "Uma fábula pressuporia uma narrativa exemplar, ausente na formulação breve e reflexiva do trecho.",
+          "C": "Não há fato recente apresentado com finalidade informativa, como em uma notícia.",
+          "D": "A reflexão condensada e generalizante sobre a vida constitui uma máxima de caráter aforístico.",
+          "E": "O trecho pertence ao romance e, nesse recorte, expressa uma sentença geral, sem narrar um episódio cotidiano como crônica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:133": {
@@ -783,6 +1695,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A forma 'nisso' aponta para uma explicação que aparece logo em seguida: expor-se em crônica de jornal. Trata-se de referência catafórica, em que o sentido de um elemento é completado por informação posterior no texto, garantindo a articulação do início da passagem."
+        ],
+        "alternatives": {
+          "A": "'Nisso' antecipa o conteúdo explicitado em 'botar a cara na janela em crônica de jornal'.",
+          "B": "'Assim' indica o estado da autora e não equivale semanticamente à comparação posterior sobre receber acolhimento.",
+          "C": "'Isso' retoma a atividade de se expor na crônica, e não o esconderijo em poesia e ficção.",
+          "D": "'Alguns' retoma pessoas que comentam os textos, sem antecipar especificamente uma das falas citadas.",
+          "E": "'Essa' em 'essa é uma das maravilhas' retoma a relação entre seriedade e brincadeira ao escrever, não simplesmente a janela do jornal."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:134": {
@@ -803,6 +1739,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A referência a John Cage amplia o conjunto do que pode integrar uma composição. Ao acolher ruídos da rua, o compositor incorpora sons antes classificados como externos à música, questionando definições restritas e ampliando suas possibilidades de organização sonora."
+        ],
+        "alternatives": {
+          "A": "A abertura é uma imagem de incorporação sonora e não prova que todo acesso social à arte tenha deixado de ser elitizado.",
+          "B": "O sentido é trazer os ruídos para a composição, e não apenas fazer o concerto ser ouvido na rua.",
+          "C": "A experiência representa exploração de vanguarda, não uma postura contrária à inovação moderna em nome do conformismo.",
+          "D": "Os ruídos externos ao repertório musical tradicional passam a integrar a própria obra.",
+          "E": "A estratégia é estética e conceitual, sem ser apresentada como publicidade destinada a aumentar o público."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:135": {
@@ -823,6 +1783,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A autora apresenta o discurso recorrente de crise e, depois, introduz pesquisas que reconhecem leituras desconsideradas pelos levantamentos tradicionais. Essa mudança questiona a generalização de que os brasileiros não leem, usando resultados acadêmicos como contraponto ao diagnóstico habitual."
+        ],
+        "alternatives": {
+          "A": "O incentivo por professores não é a proposta específica desenvolvida nesse fragmento.",
+          "B": "A crítica não se limita à causalidade entre bibliotecas e leitura, mas à insuficiência de pesquisas que excluem certos livros.",
+          "C": "O texto menciona investimento educacional e não afirma sua ineficácia como tese principal.",
+          "D": "Os dados de pesquisas acadêmicas permitem relativizar ou questionar a existência da crise de leitura anunciada.",
+          "E": "A autora se afasta da acusação simples de desinteresse juvenil e da seleção moral de livros considerados de qualidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:96": {
@@ -843,6 +1827,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A notícia informa resultados do aumento das doações em alguns estados, enquanto o cartaz convida as pessoas a doar e avisar a família. As funções são diferentes e compatíveis: um texto apresenta um avanço e o outro incentiva a continuidade da ação que o torna possível."
+        ],
+        "alternatives": {
+          "A": "Zerar uma fila específica em seis estados não significa superar todas as necessidades nacionais de transplante.",
+          "B": "A notícia registra crescimento das doações e o cartaz reforça a participação necessária, estabelecendo complementaridade.",
+          "C": "A notícia tem propósito informativo, enquanto o cartaz busca persuadir; não repetem exatamente a mesma intenção.",
+          "D": "A notícia é compreensível por si e não depende obrigatoriamente do cartaz para completar seus dados.",
+          "E": "Os textos não divergem quanto à importância de doar; o resultado positivo é compatível com o incentivo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:97": {
@@ -863,6 +1871,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O uso de 'cabras' para designar pessoas, especialmente homens, identifica um item lexical ligado ao falar popular nordestino. Outras formas da canção também são coloquiais, mas esse vocábulo singulariza a marca regional solicitada pela questão."
+        ],
+        "alternatives": {
+          "A": "'Desaforo' é utilizado em muitas regiões e não singulariza o falar regional indicado.",
+          "B": "'Tou' é uma redução coloquial amplamente difundida e não a marca regional mais específica entre os versos.",
+          "C": "'Cabras', empregado para pessoas, constitui um traço lexical associado ao repertório popular regional nordestino.",
+          "D": "A convocação de Maria e Luzia não contém por si só um item linguístico característico de uma região.",
+          "E": "A chita é referência cultural de vestimenta, mas o verso não apresenta a marca lexical regional decisiva da alternativa C."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:98": {
@@ -883,6 +1915,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto propõe mobilizar universidades e empresas inovadoras e usar as compras públicas para estimular a produção nacional de segurança digital. A necessidade apontada vai além de alertar usuários: envolve construir uma cadeia de tecnologia e fortalecer a indústria de segurança da informação."
+        ],
+        "alternatives": {
+          "A": "O alerta faz parte do diagnóstico, mas a proposta central é desenvolver capacidade tecnológica e produtiva nacional.",
+          "B": "O incentivo a empresas, pesquisa e compras públicas visa fortalecer uma indústria nacional de segurança da informação.",
+          "C": "Não se propõe organizar o enfrentamento principalmente em fóruns diplomáticos internacionais.",
+          "D": "Canais de denúncia são uma medida mencionada, mas não abrangem o desenvolvimento da cadeia produtiva defendida.",
+          "E": "O treinamento pode contribuir, porém não resume a proposta de produção própria de equipamentos e programas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:99": {
@@ -903,6 +1959,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Espera-se que a primeira fotografia do robô mostre informações relevantes sobre Marte, mas a imagem é um autorretrato. Ao transferir ao explorador espacial o hábito de fazer selfies, a charge ironiza a circulação excessiva de imagens de si nas redes digitais."
+        ],
+        "alternatives": {
+          "A": "A charge não apresenta valores de investimento ou estabelece que o gasto espacial seja exagerado.",
+          "B": "O foco é o tipo de fotografia enviada, e não uma denúncia de exploração de recursos de outros planetas.",
+          "C": "O autorretrato do robô parodia o hábito de produzir e divulgar selfies em excesso.",
+          "D": "A pesquisa espacial fornece o cenário, mas a crítica específica se dirige à autorrepresentação digital.",
+          "E": "A existência do robô não é questionada; o humor depende de ele reproduzir um comportamento humano de exposição pessoal."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "spanish:91": {
@@ -923,6 +2003,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O emigrante é descrito como alguém ligado a dois mundos, sem conseguir integrar-se totalmente a um e excluir o outro. Seu dilema não se reduz a escolher uma cultura: reside na posição intermediária entre vínculos de origem e experiências no destino, condição de entrelugar."
+        ],
+        "alternatives": {
+          "A": "Sentir-se parte de dois mundos sem pertencer exclusivamente a um deles caracteriza a existência no entrelugar.",
+          "B": "A instabilidade material em outro país não é o núcleo da reflexão, centrada no pertencimento cultural.",
+          "C": "As referências do passado permanecem fortes e produzem nostalgia, em vez de estarem ausentes.",
+          "D": "Assimilar valores novos é uma possibilidade, mas o drama decorre da impossibilidade de adotá-los de forma exclusiva.",
+          "E": "A ruptura completa com a origem aparece como ideal quase impossível, e não como solução efetivamente realizada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "spanish:92": {
@@ -943,6 +2047,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O autor descreve a fertilidade como força que sufoca o agricultor e a vegetação e as inundações como agentes que apagam caminhos. As imagens são introduzidas como coisas tristes e apresentam o ambiente de modo adverso, transmitindo desalento diante dessas dificuldades."
+        ],
+        "alternatives": {
+          "A": "O tom triste e as imagens de sufocamento, inundação e abandono expressam desalento diante das adversidades naturais.",
+          "B": "A enumeração não identifica espécies ou demonstra conhecimento botânico detalhado da flora.",
+          "C": "A terra produz muitas plantas, portanto não há impossibilidade absoluta de cultivo.",
+          "D": "Os caminhos abandonados compõem a descrição, mas o texto não formula um programa de construção de novas vias.",
+          "E": "A dificuldade de reconhecer a planta cultivada não basta para reduzir o quadro geral a despreparo do agricultor."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "spanish:93": {
@@ -963,6 +2091,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Formas como 'podemos' e 'nuestros hijos' colocam a voz da campanha no mesmo grupo das mulheres a quem se dirige. Essa escolha produz identificação e proximidade entre enunciador e leitoras, apresentando a amamentação como experiência compartilhada."
+        ],
+        "alternatives": {
+          "A": "A primeira pessoa plural cria proximidade, não um efeito principal de formalidade.",
+          "B": "O texto não impõe valores por acumulação de vozes, mas busca identificação com o público.",
+          "C": "A adesão pode ser favorecida, porém não é garantida pela criação de uma voz coletiva.",
+          "D": "O 'nós' aproxima quem enuncia das mulheres destinatárias ao incluí-las em uma experiência comum.",
+          "E": "As marcas pessoais remetem às mulheres e aos filhos, sem funcionar principalmente como fala institucional de especialistas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "spanish:94": {
@@ -983,6 +2135,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A expressão 'sudar la gota gorda' equivale a suar muito ou trabalhar com grande esforço. Junto à menção a meses e anos de elaboração e a períodos de bloqueio, ela apresenta a escrita como atividade que exige dedicação intensa, mesmo sendo fonte de prazer."
+        ],
+        "alternatives": {
+          "A": "Memória e fantasia participam da criação, mas não são o sentido da expressão idiomática destacada.",
+          "B": "A imaginação é mencionada, porém 'suar a gota grossa' enfatiza esforço, não inspiração espontânea.",
+          "C": "Experiências vividas fornecem material narrativo, sem explicar o significado específico da expressão.",
+          "D": "Entusiasmo pode acompanhar a atividade, mas o trecho selecionado sublinha seu trabalho árduo.",
+          "E": "A expressão caracteriza o esforço e a dedicação exigidos para transformar uma ideia em narrativa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "spanish:95": {
@@ -1003,6 +2179,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A amplitude do dia infantil contrasta com a percepção adulta de tempo comprimido e veloz. Amanhecer, meio-dia e anoitecer parecem suceder-se sem intervalo, e o suposto ladrão rouba a própria vida. A imagem expressa angústia diante da fugacidade do tempo."
+        ],
+        "alternatives": {
+          "A": "As ruas são metáforas da experiência temporal e não uma descrição de crianças abandonadas.",
+          "B": "O poema não identifica uma jornada profissional como causa única da sensação de tempo perdido.",
+          "C": "A passagem acelerada dos dias e a vida aparentemente roubada expressam angústia com a brevidade do tempo.",
+          "D": "O ladrão é uma metáfora do tempo, não uma ocorrência de violência urbana relatada.",
+          "E": "O tema não é proibição de sentimentos ou liberdade, mas a percepção de que a vida passa depressa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:136": {
@@ -1023,6 +2223,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Após retirar 3 cm de cada borda, restam 36 cm de largura e 24 cm de altura. A gravura tem proporção 8:6; ao usar os 24 cm de altura, a largura será 32 cm e caberá na área disponível. A escala é 24 cm para 600 cm, ou 1:25."
+        ],
+        "alternatives": {
+          "A": "A escala 1:3 produziria altura de 200 cm, incompatível com a folha.",
+          "B": "A escala 1:4 ainda produziria altura de 150 cm, superior à área disponível.",
+          "C": "A escala 1:20 daria altura de 30 cm e invadiria as margens superior e inferior.",
+          "D": "A escala 1:25 fornece 32 × 24 cm e ocupa a maior altura possível sem deformação.",
+          "E": "A escala 1:32 caberia, mas produziria uma gravura menor que a máxima permitida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:137": {
@@ -1043,6 +2267,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Uma volta completa em um cilindro de diâmetro d percorre o comprimento πd de sua circunferência. Como o papel realiza cinco voltas e a espessura é desprezível, o lado enrolado mede cinco vezes esse comprimento, isto é, 5πd centímetros."
+        ],
+        "alternatives": {
+          "A": "πd corresponde a uma volta, enquanto o papel dá cinco voltas completas.",
+          "B": "2πd representa somente duas voltas para o diâmetro informado.",
+          "C": "4πd contabiliza quatro voltas e deixa uma das cinco fora do cálculo.",
+          "D": "Cinco comprimentos de circunferência πd resultam em lado de 5πd.",
+          "E": "10πd usa d como se fosse raio, embora o enunciado o defina como diâmetro."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:138": {
@@ -1063,6 +2311,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O apoio central recebe 60% de 12 t, ou 7,2 t. Restam 40%, equivalentes a 4,8 t, divididos igualmente entre dois apoios laterais: 2,4 t para cada um. A ordem é lateral, central e lateral, portanto 2,4; 7,2; 2,4 t."
+        ],
+        "alternatives": {
+          "A": "8,4 t no centro representam 70% da carga total, acima dos 60% estabelecidos.",
+          "B": "6 t no centro correspondem a 50%, não aos 60% exigidos.",
+          "C": "7,2 t no centro e 2,4 t em cada lateral respeitam as proporções e somam 12 t.",
+          "D": "4,8 t no centro invertem a participação central de 60% com os 40% restantes.",
+          "E": "3,6 t no centro representam apenas 30% e não atendem à distribuição dada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:139": {
@@ -1083,6 +2355,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Com vazão constante, a altura sobe mais rápido quando a seção horizontal é menor. No tronco inferior, a área diminui e a inclinação de h(t) aumenta; no cilindro, a inclinação é constante; no tronco superior, a área aumenta e a inclinação diminui. Essa sequência corresponde ao gráfico D."
+        ],
+        "alternatives": {
+          "A": "A reta pressupõe área horizontal constante em toda a escultura, ignorando os troncos de cone.",
+          "B": "O gráfico B começa com inclinação decrescente e termina crescente, invertendo a geometria do recipiente.",
+          "C": "O gráfico C aumenta continuamente sua inclinação e não representa a desaceleração no tronco superior.",
+          "D": "O gráfico D reúne aceleração inicial da altura, trecho central linear e desaceleração final.",
+          "E": "O gráfico E também inverte a concavidade nos troncos, prevendo subida rápida na base larga e aceleração no topo largo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:140": {
@@ -1103,6 +2399,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A parte revestida é a superfície lateral de um tronco de cone. Ao planificá-la, as circunferências de baixo e de cima tornam-se arcos concêntricos, e as duas laterais tornam-se segmentos radiais. O adesivo deve, portanto, ter formato de setor de coroa circular."
+        ],
+        "alternatives": {
+          "A": "O triângulo não apresenta os arcos que correspondem às circunferências da superfície cônica.",
+          "B": "O trapézio tem bases retas, enquanto a planificação exige duas bordas curvas.",
+          "C": "A figura C tem somente uma borda em arco, sem o arco interno da seção à meia altura.",
+          "D": "Um setor circular completo corresponderia ao cone até o vértice, que não será revestido.",
+          "E": "O setor de coroa circular possui arcos interno e externo, adequados à faixa de tronco de cone."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:141": {
@@ -1123,6 +2443,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em junho de 2012, a taxa oculta indicada é 2,2%. Sua metade é 1,1%, a taxa oculta hipotética de dezembro. Como o total de dezembro deve igualar os 9,0% de dezembro de 2011, a taxa aberta será 9,0 − 1,1 = 7,9%."
+        ],
+        "alternatives": {
+          "A": "1,1% é a taxa oculta hipotética, não a taxa aberta pedida.",
+          "B": "3,5% não resulta da diferença entre total de 9,0% e oculto de 1,1%.",
+          "C": "4,5% é a metade do total de dezembro de 2011, mas a hipótese reduz pela metade apenas a taxa oculta de junho.",
+          "D": "6,8% subtrai os 2,2% de junho sem aplicar a redução pela metade.",
+          "E": "A taxa aberta é o total 9,0% menos o oculto 1,1%, resultando em 7,9%."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:142": {
@@ -1143,6 +2487,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Repetir a variação percentual significa repetir o fator multiplicativo 1,90/2,38, não a mesma queda absoluta. A projeção é 1,90 × (1,90/2,38) = 3,61/2,38 ≈ 1,517. O valor mais próximo é 1,52, no cenário hipotético apresentado."
+        ],
+        "alternatives": {
+          "A": "1,14 representa uma queda muito maior que a repetição do fator aproximado de 0,798.",
+          "B": "1,42 repete a redução absoluta de 0,48, em vez de repetir a variação percentual.",
+          "C": "A aplicação do mesmo fator percentual fornece aproximadamente 1,52.",
+          "D": "1,70 reduz apenas cerca de 10,5%, menos que a redução percentual do primeiro período.",
+          "E": "1,80 representa redução ainda menor e não mantém o fator observado de 2000 a 2010."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:143": {
@@ -1163,6 +2531,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O critério inclui regiões com percentual menor ou igual ao nacional de 1,9%. Norte e Nordeste têm 1,5%, e Sudeste tem 1,9%, portanto as três são selecionadas. Sul e Centro-Oeste, com 2,5% e 2,6%, ficam acima do limite."
+        ],
+        "alternatives": {
+          "A": "Centro-Oeste e Sul ultrapassam 1,9% e não atendem ao critério da campanha.",
+          "B": "Norte, Nordeste e Sudeste apresentam percentuais menores ou iguais aos 1,9% nacionais.",
+          "C": "O Sul deve ser excluído e o Sudeste incluído, por estar exatamente no limite permitido.",
+          "D": "A opção inclui indevidamente o Sul e omite o Norte, de 1,5%.",
+          "E": "Centro-Oeste e Sul estão acima do percentual nacional, embora o Sudeste deva participar."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:144": {
@@ -1183,6 +2575,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Há 5 × 4 = 20 catracas operando simultaneamente. Cada uma atende 45 000/20 = 2 250 pessoas. A dois segundos por pessoa, são 4 500 segundos, equivalentes a 75 minutos, ou 1 hora e 15 minutos."
+        ],
+        "alternatives": {
+          "A": "Em uma hora, as vinte catracas atenderiam 36 000 pessoas, faltando 9 000.",
+          "B": "Os 4 500 segundos calculados equivalem a 1 hora e 15 minutos.",
+          "C": "Cinco horas ignoram a operação simultânea de quatro catracas em cada portão.",
+          "D": "Seis horas excedem os 75 minutos necessários para dividir o público entre todas as catracas.",
+          "E": "6 horas e 15 minutos resultam de usar apenas quatro catracas no cálculo, ignorando os cinco portões."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:145": {
@@ -1203,6 +2619,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na planificação, uma dimensão da base é 24 cm e a outra é x. As duas tampas acrescentam 24 cm cada à medida vertical total de 90 cm, então a altura é 90 − 48 = 42 cm. A soma das dimensões é x + 24 + 42 ≤ 115, fornecendo x ≤ 49 cm."
+        ],
+        "alternatives": {
+          "A": "25 cm cabem no limite, mas não são o maior valor permitido para x.",
+          "B": "33 cm também atendem, porém deixam margem desnecessária na soma das dimensões.",
+          "C": "42 cm são a altura da caixa calculada pela planificação, não o máximo de x.",
+          "D": "45 cm ainda ficam abaixo do máximo de 49 cm.",
+          "E": "Com x = 49, a soma 49 + 24 + 42 atinge exatamente 115 cm."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:146": {
@@ -1223,6 +2663,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Aumentar as duas dimensões da base em 25% multiplica sua área por 1,25² = 1,5625. Para manter o volume, a altura deve ser dividida por esse fator: hnova/hatual = 1/1,5625 = 0,64. Ela passa a 64% da anterior, portanto a redução é 36%."
+        ],
+        "alternatives": {
+          "A": "14,4 é a redução em centímetros da altura de 40 cm, não o percentual de redução.",
+          "B": "20% compensariam aumentar somente uma dimensão da base em 25%, e não as duas.",
+          "C": "32% não correspondem ao fator inverso de 1,25² necessário à conservação do volume.",
+          "D": "A altura fica com 64% do valor original, representando diminuição de 36%.",
+          "E": "64% são a parcela da altura que permanece, não a que deve ser retirada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:147": {
@@ -1243,6 +2707,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Se 36% são tratados, os 8 bilhões de litros sem tratamento representam 64% do total. Reduzir esse volume à metade, com total gerado constante, reduz a parcela não tratada para 32%. Logo, a parcela tratada passa a 100% − 32% = 68%."
+        ],
+        "alternatives": {
+          "A": "Dobrar diretamente os 36% tratados dá 72%, mas a meta é reduzir à metade o volume não tratado.",
+          "B": "A parcela não tratada cai de 64% para 32%, de modo que o tratamento alcança 68%.",
+          "C": "64% é o percentual inicialmente não tratado, e não a parcela tratada após a meta.",
+          "D": "54% acrescenta metade dos 36% iniciais, sem usar a redução indicada dos 8 para 4 bilhões.",
+          "E": "18% seriam metade do percentual tratado inicial, em sentido oposto ao aumento pretendido."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:148": {
@@ -1263,6 +2751,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A folha de R$ 400 mil destina R$ 50 mil ao fundamental, R$ 300 mil ao médio e R$ 50 mil ao superior. Dividindo pelos 50, 150 e 10 funcionários de 2013, os salários são R$ 1 mil, R$ 2 mil e R$ 5 mil. Em 2014 entram mais 20, 30 e 10 pessoas: o acréscimo é 20 mil + 60 mil + 50 mil = R$ 130 mil, que deve ser compensado na receita."
+        ],
+        "alternatives": {
+          "A": "R$ 114 285 não resultam dos salários por categoria e das diferenças de pessoal mostradas no gráfico.",
+          "B": "O aumento salarial total de R$ 130 000 deve ser acompanhado pelo mesmo aumento da receita para manter o lucro.",
+          "C": "R$ 160 000 superestimam o custo adicional das novas contratações, calculado por categoria.",
+          "D": "R$ 210 000 excedem a soma dos acréscimos de 20 mil, 60 mil e 50 mil reais.",
+          "E": "R$ 213 333 não correspondem ao aumento da folha com remunerações constantes em cada categoria."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:149": {
@@ -1283,6 +2795,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O desempenho é uma proporção, e não apenas o total de acertos. Os valores são I: 50/85 ≈ 58,8%; II: 40/65 ≈ 61,5%; III: 20/65 ≈ 30,8%; IV: 30/40 = 75%; V: 48/90 ≈ 53,3%. A maior razão pertence ao jogador IV."
+        ],
+        "alternatives": {
+          "A": "O jogador I tem o maior número absoluto de acertos, mas sua taxa de 58,8% é menor que 75%.",
+          "B": "A taxa de aproximadamente 61,5% do jogador II não supera a do jogador IV.",
+          "C": "O jogador III tem cerca de 30,8%, a menor proporção do grupo.",
+          "D": "O jogador IV derruba todos os pinos em 75% das jogadas, o melhor desempenho.",
+          "E": "Os 48 acertos do jogador V equivalem a cerca de 53,3% das noventa tentativas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:150": {
@@ -1303,6 +2839,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As somas ponderadas dos candidatos I e III são 4 × 20 + 6 × 23 = 218 e 4 × 21 + 6 × 18 = 192. O candidato II deve superar 218: 4X + 6 × 25 > 218, logo 4X > 68 e X > 17. Como a nota é inteira, o mínimo é 18."
+        ],
+        "alternatives": {
+          "A": "Com 18, a soma ponderada é 222, superando os 218 do melhor concorrente.",
+          "B": "19 também venceria, mas é maior que a menor nota inteira necessária.",
+          "C": "22 excede o mínimo e não responde ao pedido de menor nota.",
+          "D": "25 produziria vantagem maior que a necessária, pois 18 já garante a vitória.",
+          "E": "26 também é suficiente, porém não é o menor valor possível."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:151": {
@@ -1323,6 +2883,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Há oito visitas, cada uma com um filme de ação. A ordem desses filmes pode ser escolhida de 8! maneiras. Nas cinco primeiras visitas, as comédias podem ser ordenadas de 5! formas; nas três últimas, os dramas de 3! formas. Como essas escolhas são independentes, o total é 8! × 5! × 3!."
+        ],
+        "alternatives": {
+          "A": "A expressão soma parcelas sem representar a combinação independente das três sequências de filmes.",
+          "B": "O produto das permutações de ação, comédia e drama respeita a estratégia e distingue a ordem das visitas.",
+          "C": "Dividir por 2⁸ retiraria distinções inexistentes, pois cada par tem gêneros diferentes e posições já determinadas.",
+          "D": "A divisão por quatro não corresponde a qualquer simetria da estratégia fixada.",
+          "E": "16!/2⁸ permite misturas e ordens de gêneros proibidas, como dramas antes de esgotar as comédias."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:152": {
@@ -1343,6 +2927,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para terminar na quinta pergunta, deve haver exatamente um erro nas quatro primeiras e um erro na quinta. Há quatro posições possíveis para o erro inicial. Assumindo independência, a chance é 4 × 0,2 × 0,8³ × 0,2 = 0,08192."
+        ],
+        "alternatives": {
+          "A": "0,02048 é a probabilidade de uma ordem específica e não inclui as quatro posições possíveis do primeiro erro.",
+          "B": "A soma das quatro ordens iniciais seguida do segundo erro na quinta fornece 0,08192.",
+          "C": "0,24 não inclui corretamente os três acertos e os dois erros nas posições exigidas.",
+          "D": "0,40960 corresponde à chance de um erro nas quatro primeiras, sem exigir o erro final que encerra o teste.",
+          "E": "0,49152 não representa a ocorrência do segundo erro precisamente na quinta pergunta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:153": {
@@ -1363,6 +2971,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O tempo mínimo é 1 minuto e 24 segundos, ou 84 s. A distância é 2 100 m, então a velocidade máxima média é 2 100/84 = 25 m/s. Convertendo para km/h, multiplica-se por 3,6: 25 × 3,6 = 90 km/h."
+        ],
+        "alternatives": {
+          "A": "25 é a velocidade em metros por segundo e não pode ser mantida numericamente ao escrever km/h.",
+          "B": "69 km/h seria seguro, mas não é o maior valor permitido pelos 84 segundos mínimos.",
+          "C": "90 km/h equivalem a 25 m/s e permitem percorrer 2,1 km em exatamente 84 segundos.",
+          "D": "102 km/h produziriam tempo menor que 84 segundos e excederiam o limite calculado.",
+          "E": "110 km/h também reduziriam o tempo abaixo do mínimo considerado seguro no teste."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:154": {
@@ -1383,6 +3015,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O corrimão completa uma volta entre A e E, que se alinham verticalmente, e os quatro intervalos AB, BC, CD e DE são iguais. O percurso de A a D cobre três desses quatro intervalos, ou três quartos de uma volta. Sua projeção no piso é um arco de circunferência de 270°."
+        ],
+        "alternatives": {
+          "A": "O arco A mostra aproximadamente um quarto de volta, menor que os três quartos percorridos.",
+          "B": "O arco B representa meia volta, correspondente a apenas dois dos quatro intervalos.",
+          "C": "A projeção circular de três quartos de volta corresponde ao caminho de A até D.",
+          "D": "A curva aberta com retorno não é a projeção de uma hélice de raio constante sobre o piso.",
+          "E": "A curva com cruzamento não corresponde ao arco circular gerado pela projeção ortogonal do corrimão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:155": {
@@ -1403,6 +3059,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As médias dos reagentes são 6; 4,8; 6,8; 6,6; 6,6. Contando apenas resultados estritamente acima delas, obtemos 1, 4, 3, 3 e 3. O reagente 2 reúne a maior quantidade: os valores 6, 7, 6 e 5 superam sua média 4,8."
+        ],
+        "alternatives": {
+          "A": "No reagente 1, os três valores 6 igualam a média e não contam; somente 11 a supera.",
+          "B": "O reagente 2 apresenta quatro resultados acima de 4,8, mais que os demais.",
+          "C": "O reagente 3 tem três valores acima de 6,8: 8, 10 e 11.",
+          "D": "O reagente 4 tem três valores acima de 6,6: 7, 8 e 12.",
+          "E": "O reagente 5 tem três valores acima de 6,6: 9, 10 e 11."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:156": {
@@ -1423,6 +3103,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A conta atual é 150 × 0,50 + 4,50 = R$ 79,50. Reduzir ao menos 10% exige no máximo R$ 71,55. Na faixa até 140 kWh, a Cosip é R$ 3, então 0,50x + 3 ≤ 71,55 fornece x ≤ 137,1 kWh, resultado coerente com a própria faixa."
+        ],
+        "alternatives": {
+          "A": "134,1 kWh atingiriam a meta, mas resultam de manter indevidamente a Cosip de R$ 4,50 da faixa anterior.",
+          "B": "135 kWh representam reduzir 10% do consumo, mas o pedido permite usar a mudança da Cosip para maximizar o consumo.",
+          "C": "137,1 kWh geram R$ 68,55 de energia mais R$ 3 de Cosip, totalizando o limite de R$ 71,55.",
+          "D": "138,6 kWh geram conta de R$ 72,30, acima do limite necessário à redução de 10%.",
+          "E": "143,1 kWh permanecem na faixa com Cosip de R$ 4,50 e não garantem a economia pretendida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:157": {
@@ -1443,6 +3147,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para um gasto fixo de R$ 30, deve-se comparar as interseções das curvas com a horizontal de ordenada 30. O plano C permite o maior tempo, cerca de 30 minutos. Os planos A e E alcançam esse valor antes, D já parte de R$ 30 e B cobra R$ 50."
+        ],
+        "alternatives": {
+          "A": "O plano A chega a R$ 30 com tempo inferior ao permitido pelo plano C.",
+          "B": "O plano B tem valor fixo de R$ 50 e não atende ao gasto exato de R$ 30.",
+          "C": "A interseção do plano C com R$ 30 apresenta a maior abscissa, garantindo mais minutos nesse orçamento.",
+          "D": "O plano D já começa em R$ 30 e cresce, sem oferecer o tempo positivo alcançado por C nesse valor.",
+          "E": "O plano E cresce mais rapidamente e atinge R$ 30 antes de C, permitindo menos minutos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:158": {
@@ -1463,6 +3191,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As duas semiesferas juntas formam uma esfera. Com π = 3, o volume é V(r) = 30r² + 4r³, pois o cilindro mede 10 mm. Para r = 5, V = 750 + 500 = 1 250 mm³; para r = 4, V = 480 + 256 = 736 mm³. A redução é 1 250 − 736 = 514 mm³."
+        ],
+        "alternatives": {
+          "A": "168 mm³ não representam a diferença entre os volumes completos, que incluem cilindro e duas semiesferas.",
+          "B": "304 mm³ não resultam da soma das reduções cilíndrica de 270 e esférica de 244 mm³.",
+          "C": "306 mm³ subestimam a alteração ao não considerar corretamente as duas partes da cápsula.",
+          "D": "378 mm³ também não correspondem ao volume inicial de 1 250 menos o final de 736 mm³.",
+          "E": "A diferença total de volume é 514 mm³, considerando o cilindro e a esfera equivalente às duas extremidades."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:159": {
@@ -1483,6 +3235,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A agricultura ocupa 80 milhões de hectares e o território possui 853 milhões. O percentual pedido usa o território inteiro como base: 80/853 × 100 ≈ 9,38%, cujo valor mais próximo é 9,4%. As pastagens não devem ser somadas à área agrícola nessa pergunta."
+        ],
+        "alternatives": {
+          "A": "32,8% aproximam a participação de toda a agropecuária, 280/853, não apenas da agricultura.",
+          "B": "28,6% correspondem a 80/280, usando a área agropecuária como base em vez do território nacional.",
+          "C": "10,7% não resultam da razão entre os 80 milhões agrícolas e os 853 milhões totais.",
+          "D": "A razão 80/853 fornece aproximadamente 9,4% do território brasileiro.",
+          "E": "8,0% confundem a quantidade de 80 milhões com um percentual sem usar a área total correta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:160": {
@@ -1503,6 +3279,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A escala 1:100 multiplica cada comprimento do projeto por 100. As dimensões reais são 300, 100 e 200 cm. O volume é 300 × 100 × 200 = 6 000 000 cm³. Equivalentemente, os 6 cm³ do desenho devem ser multiplicados por 100³."
+        ],
+        "alternatives": {
+          "A": "6 cm³ são o volume calculado diretamente nas dimensões do projeto, sem ampliação.",
+          "B": "600 aplica o fator 100 apenas uma vez, embora o volume dependa de três dimensões.",
+          "C": "6 000 ainda não utiliza o fator cúbico de escala exigido para volume.",
+          "D": "60 000 aplica 100², fator adequado a áreas, e não 100³ para volumes.",
+          "E": "O fator volumétrico é 100³, resultando em 6 000 000 cm³."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:161": {
@@ -1523,6 +3323,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A numeração mais frequente é a moda, 38, e não a média ou a mediana. Na codificação das cores, a média 0,45 indica 45% de registros 1, pretos, e 55% de registros 0, brancos. Assim, a cor com mais reclamações é branca e o número é 38."
+        ],
+        "alternatives": {
+          "A": "A moda identifica o número 38, e a maior frequência de zeros identifica a cor branca.",
+          "B": "37 é a mediana e não a numeração mais frequente, apesar de a cor estar correta.",
+          "C": "36 é a média das numerações e não indica a maior frequência de reclamações.",
+          "D": "Preto representa apenas 45% dos registros, menos que os 55% de branco.",
+          "E": "A opção erra tanto a cor predominante quanto o uso da mediana em lugar da moda."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:162": {
@@ -1543,6 +3367,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Sensibilidade é a probabilidade de teste positivo entre os pacientes que têm a doença. Há 95 positivos e 5 negativos entre os doentes, totalizando 100. Portanto, a sensibilidade é 95/(95 + 5) = 95%, sem incluir pessoas sadias no denominador."
+        ],
+        "alternatives": {
+          "A": "47,5% divide 95 por todos os duzentos participantes, em vez de condicionar à presença da doença.",
+          "B": "85% usam os negativos sadios e se relacionam à especificidade, não à sensibilidade.",
+          "C": "86,3% aproximam 95/(95 + 15), a proporção de doentes entre testes positivos, outra probabilidade condicional.",
+          "D": "94,4% aproximam 85/(85 + 5), valor preditivo do resultado negativo, não a sensibilidade.",
+          "E": "Entre cem pacientes doentes, 95 apresentam resultado positivo, fornecendo sensibilidade de 95%."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:163": {
@@ -1563,6 +3411,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Reservando 3 m das bordas, a região para os centros das covas mede 5,5 por 8 m. Em cada fila paralela ao lado de 14 m cabem três mudas separadas por 3 m. Filas alternadas podem ser deslocadas 1,5 m: a distância perpendicular mínima fica √(3² − 1,5²) ≈ 2,60 m. Três filas ocupam cerca de 5,20 m, cabendo na largura útil e permitindo nove mudas."
+        ],
+        "alternatives": {
+          "A": "Quatro mudas não aproveitam as três posições possíveis em cada fila nem o arranjo alternado entre filas.",
+          "B": "Oito é inferior ao arranjo possível de três filas com três mudas cada.",
+          "C": "O deslocamento entre filas permite três linhas com três mudas, respeitando as distâncias e totalizando nove.",
+          "D": "Quatro filas exigiriam largura útil maior que os 5,5 m disponíveis para manter a separação mínima.",
+          "E": "Cinco mudas numa mesma fila não cabem nos 8 m úteis com espaçamento de 3 m entre elas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:164": {
@@ -1583,6 +3455,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Escrevendo f(x) = ax² + bx + c, a condição f(0) = 0 dá c = 0. De f(10) = 10, resulta 10a + b = 1; de f(5) = 6, resulta 25a + 5b = 6. Substituindo b = 1 − 10a, obtemos a = −1/25 e b = 7/5, como na alternativa A."
+        ],
+        "alternatives": {
+          "A": "A expressão dá f(0) = 0, f(10) = 10 e f(5) = 6, satisfazendo todas as condições.",
+          "B": "A expressão B transforma a nota 5 em 7,5, diferente de 6.",
+          "C": "A expressão C preserva 0 e 10, mas transforma 5 em aproximadamente 3,96.",
+          "D": "A função linear D transforma zero em 2, contrariando a primeira condição.",
+          "E": "A identidade mantém 5 como 5 e não realiza a compensação exigida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:165": {
@@ -1603,6 +3499,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada divisor de N escolhe um expoente de 0 até x para o fator 2, de 0 até y para 5 e de 0 até z para 7. Há (x + 1)(y + 1)(z + 1) divisores positivos. Como o próprio N deve ser excluído, subtrai-se um. A condição de não ser múltiplo de 7 apenas impõe z = 0."
+        ],
+        "alternatives": {
+          "A": "Multiplicar os expoentes ignora a escolha de expoente zero e, com z = 0, daria indevidamente nenhum divisor.",
+          "B": "Como z = 0, a expressão conta todos os divisores, mas ainda inclui o próprio N que deveria ser retirado.",
+          "C": "A fórmula não usa as quantidades corretas de escolhas dos expoentes e daria valor negativo quando z = 0.",
+          "D": "Multiplicar por z em lugar de z + 1 faz a contagem desaparecer apesar de N possuir divisores.",
+          "E": "O produto de um a mais em cada expoente conta os divisores, e a subtração de um exclui N."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:166": {
@@ -1623,6 +3543,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Fixando um lado em 6, os outros lados inteiros a e b somam 11. Para não contar congruentes, tome a ≤ b. A desigualdade triangular exige b < a + 6; com b = 11 − a, resulta a > 2,5. As possibilidades são (3,8), (4,7) e (5,6), formando três triângulos diferentes."
+        ],
+        "alternatives": {
+          "A": "As combinações 6-3-8, 6-4-7 e 6-5-6 são as três possibilidades não congruentes.",
+          "B": "Cinco conta pares que violam a desigualdade triangular, como 1 e 10 ou 2 e 9.",
+          "C": "Seis contam novamente as mesmas medidas ao trocar a ordem dos lados a e b.",
+          "D": "Oito incluem repetições ou conjuntos sem possibilidade de formar triângulo.",
+          "E": "Dez contam quase todos os pares ordenados de soma 11, desconsiderando congruência e desigualdade triangular."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:167": {
@@ -1643,6 +3587,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O assento permanece a 2 m do ponto de suspensão, origem do sistema. Sua trajetória satisfaz x² + y² = 4. Como o assento fica abaixo do eixo X, y é negativo: y = −√(4 − x²). A restrição de não atingir a horizontal seleciona apenas um trecho dessa semicircunferência inferior."
+        ],
+        "alternatives": {
+          "A": "A expressão A descreve raio √2, menor que o comprimento de 2 m da corda.",
+          "B": "Além de usar raio √2, a expressão B representa a metade superior, acima do suporte.",
+          "C": "Uma parábola não mantém distância constante de 2 m à origem.",
+          "D": "A expressão D representa a semicircunferência inferior de raio 2, compatível com o balanço.",
+          "E": "A expressão E representa a semicircunferência superior, enquanto o assento permanece abaixo da suspensão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:168": {
@@ -1663,6 +3631,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A nova altura é 1 + 1/8 = 9/8 da anterior. Como o material e a espessura permanecem iguais, conservar o custo exige conservar a área da porta. Logo, a largura deve ser multiplicada pelo inverso, 8/9, para que (9/8)(8/9) = 1."
+        ],
+        "alternatives": {
+          "A": "Uma largura de 1/8 reduziria o volume muito além do necessário para compensar o aumento de altura.",
+          "B": "Reduzir a largura em 1/8 não compensa exatamente o aumento de 1/8, pois os fatores se multiplicam.",
+          "C": "8/7 aumentaria a largura, elevando ainda mais a quantidade de material.",
+          "D": "O fator inverso 8/9 compensa o fator 9/8 aplicado à altura e conserva o volume.",
+          "E": "9/8 repetiria o aumento da altura na largura, em vez de conservar o material."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:169": {
@@ -1683,6 +3675,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As demais atividades mantêm 15% de 200 L, ou 30 L. As atividades do quadro passam a consumir 24 + 18 + 3,2 + 2,4 + 22 = 69,6 L. O novo total é 99,6 L, e a economia é 200 − 99,6 = 100,4 L por pessoa por dia."
+        ],
+        "alternatives": {
+          "A": "30 L são o consumo mantido nas demais atividades, não a economia total.",
+          "B": "69,6 L representam apenas o novo consumo das atividades listadas na tabela.",
+          "C": "A redução do total de 200 para 99,6 L corresponde à economia de 100,4 L.",
+          "D": "130,4 L surgem ao subtrair apenas 69,6 de 200, esquecendo os 30 L mantidos nas outras atividades.",
+          "E": "170 L são o consumo inicial das atividades listadas, antes das mudanças propostas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:170": {
@@ -1703,6 +3719,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para quatro notas, a mediana é a média das duas centrais após ordenar. As medianas são K: 33; L: 33,5; M: 35; N: 36; P: 31. Para N, a ordem é 24, 35, 37, 40 e a mediana vale (35 + 37)/2 = 36, a maior."
+        ],
+        "alternatives": {
+          "A": "K tem mediana 33, abaixo de outros candidatos.",
+          "B": "L apresenta valores centrais 33 e 34, cuja média é 33,5.",
+          "C": "M tem mediana 35, inferior aos 36 de N.",
+          "D": "N apresenta a maior mediana, 36, e deve ser aprovado pelo critério informado.",
+          "E": "P tem mediana (26 + 36)/2 = 31, apesar da maior nota isolada em informática."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:171": {
@@ -1723,6 +3763,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Com altura de 2 m, a diferença entre larguras é 2 × 0,5 = 1 m, então a base inferior mede 5 m. A seção trapezoidal tem área (6 + 5) × 2/2 = 11 m². O volume é 11 × 20 = 220 m³. Como cada tonelada ocupa 2 m³, cabem 220/2 = 110 toneladas."
+        ],
+        "alternatives": {
+          "A": "O volume de 220 m³ dividido por 2 m³ por tonelada fornece 110 toneladas.",
+          "B": "125 toneladas exigiriam 250 m³, acima do volume do silo calculado.",
+          "C": "130 toneladas decorrem de usar largura inferior maior que a superior, invertendo a condição do texto.",
+          "D": "220 é o volume em metros cúbicos, ainda sem converter pela ocupação de 2 m³ por tonelada.",
+          "E": "260 toneladas superestimam tanto a seção trapezoidal quanto a conversão volumétrica indicada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:172": {
@@ -1743,6 +3807,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "É necessário somar as duas espécies em cada dia. Os totais são segunda 1 600; terça 1 900; quarta 1 750; quinta 1 500; sexta 1 700; sábado 1 290; domingo 1 350. O máximo de 1 900 ocorre na terça-feira, não no dia do pico isolado de uma espécie."
+        ],
+        "alternatives": {
+          "A": "Terça-feira reúne 800 bactérias I e 1 100 II, totalizando o máximo de 1 900.",
+          "B": "Quarta tem o pico da espécie I, mas soma 1 450 + 300 = 1 750, abaixo de terça.",
+          "C": "Quinta apresenta 650 + 850 = 1 500, menor que o máximo.",
+          "D": "Sexta soma 300 + 1 400 = 1 700 e não supera terça.",
+          "E": "Domingo tem 0 + 1 350 = 1 350, inferior a vários outros dias."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:173": {
@@ -1763,6 +3851,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Se o cubo superior tem volume v, o inferior, de aresta dupla, tem volume 8v. Metade da parte inferior corresponde a 4v e demora 8 minutos, portanto a vazão é v a cada 2 minutos. Restam 4v da parte de baixo e v de cima, total 5v, preenchidos em 10 minutos."
+        ],
+        "alternatives": {
+          "A": "Oito minutos enchem somente a metade restante do cubo inferior, sem completar o superior.",
+          "B": "O restante de 5v leva 10 minutos na vazão de v a cada 2 minutos.",
+          "C": "Dezesseis minutos são o tempo para encher todo o cubo inferior desde vazio, não o restante solicitado.",
+          "D": "Dezoito minutos são o tempo total para o depósito inteiro, incluindo os oito já transcorridos.",
+          "E": "Vinte e quatro minutos superestimam o volume restante, desconsiderando a razão cúbica 8:1."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:174": {
@@ -1783,6 +3895,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A diagonal de uma célula mede √(6² + 8²) = 10 cm. Cada uma produz 24 × 10 = 240 Wh por dia. Para obter 20 160 Wh, são necessárias 20 160/240 = 84 células. Como existem cem, devem ser retiradas 16."
+        ],
+        "alternatives": {
+          "A": "Retirar 16 deixa 84 células, que produzem exatamente 20 160 Wh diários.",
+          "B": "Retirar 40 deixaria apenas 60 células e produção de 14 400 Wh, insuficiente.",
+          "C": "Acrescentar células aumentaria uma produção que já excede o consumo desejado.",
+          "D": "Mais vinte células produziriam 28 800 Wh, acima da meta.",
+          "E": "Mais quarenta células produziriam 33 600 Wh, ainda mais distantes do valor exato."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:175": {
@@ -1803,6 +3939,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Se n é a quantidade habitual, a pessoa leva 10n + 6 reais. Com aumento de 20%, cada unidade passa a R$ 12, e esse dinheiro compra n − 2 unidades: 10n + 6 = 12(n − 2). Logo, 2n = 30 e n = 15. A quantia levada é 150 + 6 = R$ 156."
+        ],
+        "alternatives": {
+          "A": "R$ 166 corresponderiam a dezesseis unidades habituais mais a reserva, mas não satisfazem a equação do reajuste.",
+          "B": "R$ 156 compram antes quinze unidades com R$ 6 extras e depois treze unidades a R$ 12.",
+          "C": "R$ 84 compram sete unidades ao novo preço, sem corresponder à quantidade habitual indicada pelas condições.",
+          "D": "R$ 46 não são múltiplos de R$ 12 e não podem ser a quantia exata após o reajuste.",
+          "E": "R$ 24 compram duas unidades novas, mas não atendem à relação com a compra habitual e a reserva."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:176": {
@@ -1823,6 +3983,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Partindo de A às 15h e viajando seis horas, a chegada ocorre às 21h no horário de A, mas às 18h em B. Portanto, B está três horas atrás de A. Para chegar a A às 13h, deve sair seis horas antes, às 7h de A, equivalentes a 4h de B."
+        ],
+        "alternatives": {
+          "A": "Sair de B às 16h levaria a chegada às 1h de A do outro dia após essa partida, além do prazo indicado.",
+          "B": "Sair às 10h de B corresponde a 13h em A antes mesmo de iniciar as seis horas de viagem.",
+          "C": "7h são o horário de saída convertido para A, mas a pergunta pede o horário local de B.",
+          "D": "Às 4h de B são 7h de A; seis horas depois, a chegada ocorre às 13h de A.",
+          "E": "1h de B permitiria chegar antes, mas não é o último horário possível."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:177": {
@@ -1843,6 +4027,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na segunda figura, os nós indicam três milhares, nenhum nó na posição das centenas, seis dezenas e quatro unidades. Como a ausência de nó representa zero naquela posição, o número é 3 000 + 0 + 60 + 4 = 3 064."
+        ],
+        "alternatives": {
+          "A": "364 elimina a posição das centenas vazias e desloca os três milhares para centenas.",
+          "B": "463 inverte a leitura e não respeita as posições de milhares, centenas, dezenas e unidades.",
+          "C": "Três milhares, zero centenas, seis dezenas e quatro unidades representam 3 064.",
+          "D": "3 640 desloca seis dezenas para centenas e quatro unidades para dezenas.",
+          "E": "4 603 troca a quantidade de milhares e unidades e também altera a posição vazia."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:178": {
@@ -1863,6 +4071,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Um hectômetro mede 100 m. Logo, um hectômetro quadrado é a área de um quadrado de 100 por 100 m, equivalente a 10 000 m². Oito hectares correspondem a 8 × 10 000 = 80 000 m²."
+        ],
+        "alternatives": {
+          "A": "8 mantém apenas o número de hectares e não converte a unidade de área.",
+          "B": "80 aplica um fator dez, insuficiente para converter hectares em metros quadrados.",
+          "C": "800 multiplica por 100, fator linear de hectômetro para metro, sem elevá-lo ao quadrado.",
+          "D": "8 000 utiliza fator mil, diferente dos 10 000 m² de um hectare.",
+          "E": "Oito vezes 10 000 m² resultam em 80 000 m²."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:179": {
@@ -1883,6 +4115,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os dezesseis galões contêm 16 × 4 = 64 L de álcool em gel. Serão 10 × 20 = 200 recipientes iguais. Para usar todo o volume e encher cada recipiente, sua capacidade deve ser 64/200 = 0,320 L, correspondente ao tipo III."
+        ],
+        "alternatives": {
+          "A": "Duzentos recipientes I comportam 25 L, deixando parte dos 64 L sem distribuição.",
+          "B": "Duzentos recipientes II comportam 50 L, ainda abaixo do volume disponível.",
+          "C": "A capacidade de 0,320 L multiplicada por 200 utiliza exatamente os 64 L.",
+          "D": "Duzentos recipientes IV exigiriam 100 L, mais que os 64 L disponíveis.",
+          "E": "Duzentos recipientes V exigiriam 160 L, sem possibilidade de abastecimento completo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     },
     "q:180": {
@@ -1903,6 +4159,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2014 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As transparências são aplicadas sucessivamente: a película deixa passar uma fração da luz que já atravessou o vidro. O mínimo é 0,70 × 0,50 = 0,35, e o máximo é 0,90 × 0,70 = 0,63. Assim, P varia de 35% a 63%."
+        ],
+        "alternatives": {
+          "A": "O produto dos limites mínimos e máximos fornece o intervalo de 35% a 63%.",
+          "B": "40% excluem combinações possíveis, como vidro de 70% com película de 50%, que resultam em 35%.",
+          "C": "O intervalo considera apenas a película e ignora a atenuação anterior pelo vidro.",
+          "D": "O limite de 90% não pode ocorrer após acrescentar uma película que também retém parte da luz.",
+          "E": "Esse intervalo descreve somente o vidro isolado, antes da instalação da película."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2014/2014_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2014/CADERNO_5_AMARELO_DOMINGO.pdf"
+          }
+        ]
       }
     }
   }

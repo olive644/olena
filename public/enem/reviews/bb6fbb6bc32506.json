@@ -1613,11 +1613,11 @@
           "Ao percorrer uma extensão maior de barbante, a onda perde mais energia por dissipação. A redução energética diminui a amplitude e, consequentemente, a intensidade percebida, sem alterar a frequência imposta pela voz ou as propriedades do meio mantidas constantes."
         ],
         "alternatives": {
-          "A": "A altura depende da frequência da voz e não da extensão percorrida.",
-          "B": "O período é o inverso da frequência e permanece definido pela fonte.",
-          "C": "A dissipação no percurso maior reduz a energia e a amplitude da oscilação.",
-          "D": "A velocidade depende do meio e de sua tensão, condições mantidas no experimento.",
-          "E": "Sem mudar frequência ou velocidade, o comprimento de onda não diminui."
+          "A": "Altura distingue sons graves e agudos e depende da frequência da fonte. Alongar o percurso, mantendo as demais condições, não implica reduzir essa frequência.",
+          "B": "O período é o inverso da frequência de oscilação. A atenuação ao longo do barbante não altera necessariamente o intervalo entre as oscilações produzidas pela voz.",
+          "C": "O percurso maior favorece perdas de energia na propagação, diminuindo a amplitude recebida e a intensidade do som. Esse enfraquecimento é diferente de tornar o som mais grave.",
+          "D": "A velocidade depende das propriedades do meio e, no barbante, de condições como tensão e densidade linear. Com essas condições inalteradas, aumentar a distância não a reduz por si só.",
+          "E": "O comprimento de onda resulta de velocidade dividida pela frequência. Mantidas fonte e condições do meio, ele não precisa mudar quando o som percorre um trecho maior."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1657,11 +1657,11 @@
           "Para distinguir cavidades menores é preciso diminuir o comprimento de onda do laser, reduzindo a limitação associada à difração. Entre as regiões listadas, o violeta possui o menor comprimento de onda e oferece maior resolução espacial."
         ],
         "alternatives": {
-          "A": "O violeta tem menor comprimento de onda entre as opções e distingue detalhes menores.",
-          "B": "O azul tem comprimento de onda maior que o violeta e menor resolução potencial.",
-          "C": "O verde tem comprimento de onda intermediário no visível, maior que o violeta.",
-          "D": "O vermelho possui o maior comprimento de onda visível e exige detalhes maiores.",
-          "E": "O infravermelho tem comprimento de onda ainda maior que o vermelho, piorando a resolução."
+          "A": "O violeta apresenta o menor comprimento de onda entre as regiões listadas. Isso reduz o limite espacial associado à difração e permite distinguir cavidades menores na mesma área.",
+          "B": "O azul permite detalhes menores que verde ou vermelho, mas ainda tem comprimento de onda maior que o violeta. Portanto não é o melhor entre os candidatos apresentados.",
+          "C": "O verde tem comprimento de onda intermediário no visível. Comparado ao violeta, impõe uma escala de difração maior e limita mais a redução das cavidades.",
+          "D": "O vermelho tem comprimento de onda maior que azul e violeta. Isso dificulta distinguir detalhes tão pequenos quanto os alcançados por essas regiões de menor comprimento de onda.",
+          "E": "O infravermelho tem comprimento de onda ainda maior que o vermelho. Seu uso não minimiza a escala de difração exigida para maximizar a densidade de dados no modelo."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1701,11 +1701,11 @@
           "A intensidade na distância máxima é I = P/(4πr²). Convertendo 2,4 mW em 2,4 × 10⁻³ W e usando r = 10 m e π = 3, resulta I = 2,4 × 10⁻³/1200 = 2,0 × 10⁻⁶ W/m²."
         ],
         "alternatives": {
-          "A": "O quociente entre 2,4 × 10⁻³ W e 1200 m² é 2,0 × 10⁻⁶ W/m².",
-          "B": "O valor é dez vezes maior que o obtido com a área esférica correta.",
-          "C": "A conta deve dividir a potência por 4πr², alterando também o coeficiente 2,4.",
-          "D": "Esse número corresponde à potência em watts, sem divisão pela área.",
-          "E": "O resultado superestima a intensidade por várias ordens de grandeza e ignora o espalhamento."
+          "A": "A área da esfera a 10 m é 4πr²≈1200 m². Dividindo 2,4×10⁻³ W por essa área, obtém-se 2,0×10⁻⁶ W/m², intensidade mínima no alcance máximo.",
+          "B": "2,0×10⁻⁵ W/m² resulta de uma área dez vezes menor, como ao usar o raio sem elevar ao quadrado. A emissão esférica exige 4π·10².",
+          "C": "2,4×10⁻⁵ W/m² são obtidos dividindo apenas por r²=100. Falta o fator 4π da superfície esférica sobre a qual a potência se distribui.",
+          "D": "2,4×10⁻³ é a potência transmitida em watts, não a intensidade em watts por metro quadrado. É necessário distribuí-la pela área correspondente à distância de 10 m.",
+          "E": "2,4×10⁻¹ W/m² não é compatível com a potência de poucos miliwatts espalhada por 1200 m². A propagação reduz a potência por unidade de área, em vez de produzir esse aumento."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1745,11 +1745,11 @@
           "O caráter iônico aumenta quando cresce a diferença de eletronegatividade entre os elementos envolvidos. Como o oxigênio tem 3,44, o metal de menor eletronegatividade produz a maior diferença: para o potássio, 3,44 − 0,82 = 2,62."
         ],
         "alternatives": {
-          "A": "O potássio tem a menor eletronegatividade e a maior diferença em relação ao oxigênio.",
-          "B": "Para o cálcio, a diferença é 2,44, menor que a diferença do potássio.",
-          "C": "A diferença para o magnésio é 2,13, insuficiente para superar o potássio.",
-          "D": "O zinco tem diferença 1,79, indicando caráter iônico menor na comparação proposta.",
-          "E": "O ferro é o mais eletronegativo da lista e produz a menor diferença, 1,61."
+          "A": "O potássio tem a menor eletronegatividade, 0,82, e a maior diferença em relação ao oxigênio: 3,44-0,82=2,62. Pelo critério de Pauling adotado na questão, isso indica maior caráter iônico.",
+          "B": "O cálcio tem diferença de eletronegatividade 2,44 em relação ao oxigênio, menor que a do potássio. Sua carga +2 não substitui o critério de caráter iônico explicitamente solicitado.",
+          "C": "Para o magnésio, a diferença é 3,44-1,31=2,13. É menor que a de K e Ca, portanto não maximiza o caráter iônico na comparação proposta.",
+          "D": "O zinco tem diferença de 1,79, inferior à dos três metais anteriores. Pelo critério fornecido, maior eletronegatividade do metal reduz a diferença e não favorece a resposta.",
+          "E": "O ferro tem a maior eletronegatividade metálica da lista e a menor diferença para o oxigênio, 1,61. É a opção oposta ao máximo de caráter iônico pedido."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",
@@ -1789,11 +1789,11 @@
           "O vapor entra a 120 °C e chega à condição de condensação a 100 °C, cedendo calor sensível durante o resfriamento. Ao passar de vapor a líquido, também libera calor latente de condensação. Ambas as parcelas aquecem o produto no tacho."
         ],
         "alternatives": {
-          "A": "A vaporização absorve energia; o vapor da parede está esfriando e condensando.",
-          "B": "A condensação fornece energia, mas há também resfriamento de 120 °C a 100 °C.",
-          "C": "O calor sensível está presente, porém a mudança na parede é condensação, não vaporização.",
-          "D": "O vapor cede calor ao esfriar e ao condensar, somando as duas contribuições.",
-          "E": "A evaporação do produto consome energia recebida e não é uma segunda fonte externa de calor."
+          "A": "A vaporização absorve energia e ocorre no produto que será concentrado. Não é a origem da energia cedida pelo vapor que atravessa a parede oca.",
+          "B": "A condensação fornece uma parcela importante, mas não a única. O vapor também esfria de 120 °C para 100 °C, liberando calor sensível antes ou durante o processo descrito.",
+          "C": "O calor sensível é pertinente, mas a mudança de fase da fonte quente é condensação, não vaporização. A opção identifica incorretamente a parcela latente que fornece energia ao tacho.",
+          "D": "O vapor libera calor sensível ao esfriar e calor latente ao condensar. Essas duas contribuições atravessam a parede e sustentam a evaporação da água do doce de leite.",
+          "E": "Condensação e vaporização ocorrem em partes diferentes: a primeira cede energia, a segunda a consome no produto. A opção omite o resfriamento sensível do vapor e inclui como fonte um processo que recebe calor."
         },
         "verification": "ai-authored-official-key-checked",
         "checkedAt": "2026-11-22",

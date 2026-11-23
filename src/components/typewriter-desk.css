@@ -249,7 +249,11 @@
 .essay-line-numbers span {
   line-height: 30px;
 }
-:root .app-shell #main-content .essay-writing-sheet .essay-ruled-area textarea {
+:root
+  :is(.app-shell #main-content, .enem-essay-writing)
+  .essay-writing-sheet
+  .essay-ruled-area
+  textarea {
   box-sizing: border-box;
   width: 100%;
   min-height: 900px;
@@ -315,7 +319,10 @@
   transition: none;
 }
 
-:root .app-shell #main-content .essay-writing-sheet textarea::placeholder {
+:root
+  :is(.app-shell #main-content, .enem-essay-writing)
+  .essay-writing-sheet
+  textarea::placeholder {
   color: #897996;
   opacity: 1;
 }
@@ -830,7 +837,12 @@
   }
 }
 /* A paper editor must not inherit the generic focus brightness: it washes out ruled lines. */
-:root body #main-content .essay-writing-sheet .essay-ruled-area textarea:focus-visible {
+:root
+  body
+  :is(#main-content, .enem-essay-writing)
+  .essay-writing-sheet
+  .essay-ruled-area
+  textarea:focus-visible {
   filter: none !important;
 }
 .essay-proposal-controls .essay-writing-clock {

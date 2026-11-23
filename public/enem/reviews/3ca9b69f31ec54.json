@@ -23,6 +23,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A menor deformação de A sob o mesmo esforço indica maior pressão interna, portanto pA > pB. Como seu pneu é mais estreito, possui menor volume; pela proporcionalidade entre massa e volume expressamente admitida no problema, mA < mB."
+        ],
+        "alternatives": {
+          "A": "A massa menor está de acordo com o menor volume de A. Porém sua menor deformação indica pressão maior, e não menor.",
+          "B": "A maior pressão de A explica sua resistência à deformação. Seu menor volume implica menor massa de ar conforme a hipótese fornecida.",
+          "C": "A pressão maior está correta, mas as massas não são iguais. Pela proporcionalidade adotada, o pneu mais estreito de A contém menor massa.",
+          "D": "A pressão menor não explica a menor deformação de A. Além disso, volumes diferentes implicam massas diferentes na hipótese do enunciado.",
+          "E": "A pressão maior está correta, porém não se deve inferir massa maior a partir dela. O problema estabelece massa proporcional ao volume, que é menor em A."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:101": {
@@ -43,6 +67,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As três estruturas apresentam sequências extensas de ligações simples e duplas alternadas. Essa conjugação permite deslocalização eletrônica e absorção de luz na região visível, conferindo cor às substâncias."
+        ],
+        "alternatives": {
+          "A": "A alternância de ligações simples e duplas forma um sistema conjugado extenso. Ele permite transições eletrônicas associadas à absorção de luz visível.",
+          "B": "Ramificações não garantem absorção na região visível. Muitos compostos ramificados são incolores quando não possuem um sistema conjugado adequado.",
+          "C": "A presença de carbonos terciários não produz, por si, o sistema eletrônico necessário à cor. O aspecto comum relevante é a conjugação das insaturações.",
+          "D": "A cor não depende de todas as duplas estarem em configuração cis. Os corantes apresentados compartilham conjugação, independentemente dessa exigência geométrica.",
+          "E": "Carbonos sp3 interrompem a conjugação e não são, isoladamente, responsáveis pela cor. O sistema de elétrons deslocalizados se associa principalmente aos carbonos sp2 das duplas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:102": {
@@ -63,6 +111,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As cutias disputam sementes armazenadas, um recurso alimentar limitado, e uma pode retirar o estoque de outra. Como a disputa ocorre entre indivíduos da mesma espécie, trata-se de competição intraespecífica."
+        ],
+        "alternatives": {
+          "A": "Sinfilia envolve uma associação de benefício ligada a substâncias ou secreções entre espécies. O episódio descreve disputa direta por alimento entre cutias.",
+          "B": "Não há uma cutia matando e consumindo outra. O objeto da disputa é a semente guardada, não o corpo de um animal capturado.",
+          "C": "A cutia não vive no corpo da outra retirando nutrientes continuamente. A retirada de um estoque alimentar caracteriza disputa por recurso.",
+          "D": "Indivíduos da mesma espécie competem pelas mesmas sementes. A transferência dos estoques evidencia essa competição intraespecífica.",
+          "E": "No comensalismo, uma espécie se beneficia sem prejuízo relevante à outra. Aqui há perda do alimento armazenado e competição entre indivíduos da mesma espécie."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:103": {
@@ -83,6 +155,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na representação proposta, azul depende apenas da ativação dos receptores para essa cor. Como a protanopia compromete a percepção do componente vermelho, cartões sem esse componente podem manter a identificação; entre as opções, isso ocorre com o azul."
+        ],
+        "alternatives": {
+          "A": "O cartão vermelho depende justamente do tipo de receptor comprometido. Portanto, sua percepção difere entre os voluntários.",
+          "B": "Magenta combina luz vermelha e azul. A perda severa do componente vermelho altera a cor percebida no modelo apresentado.",
+          "C": "Amarelo resulta da combinação de vermelho e verde. A deficiência do vermelho modifica a percepção desse cartão.",
+          "D": "Branco corresponde à combinação dos três componentes. A redução da resposta ao vermelho altera o equilíbrio necessário à percepção normal.",
+          "E": "Azul não exige a contribuição dos receptores vermelhos. Como esse componente permanece disponível, os dois voluntários identificam a mesma cor no modelo da questão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:104": {
@@ -103,6 +199,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A pectina e os açúcares fornecem matéria orgânica rica em carbono, enquanto os alcaloides contêm nitrogênio. A decomposição desses resíduos devolve elementos ao solo e favorece os ciclos de carbono e nitrogênio, contribuindo para a fertilidade."
+        ],
+        "alternatives": {
+          "A": "Carboidratos contêm carbono, e os compostos aminados contêm nitrogênio. Sua decomposição permite reciclar esses elementos e incorporá-los à dinâmica do solo.",
+          "B": "O texto não apresenta substâncias destinadas a remover ou neutralizar alumínio. A contribuição descrita está ligada à matéria orgânica e aos nutrientes.",
+          "C": "A presença de pectina não justifica afirmar que a compactação seja o benefício principal. A fertilidade pode melhorar pela reciclagem dos elementos orgânicos.",
+          "D": "A decomposição não garante aumento do pH em qualquer solo. A alternativa atribui um efeito químico uniforme que não decorre dos dados fornecidos.",
+          "E": "Inibir o crescimento da maioria das plantas não explica um uso fertilizante. O benefício esperado resulta da decomposição e da disponibilização de nutrientes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:105": {
@@ -123,6 +243,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na produção orgânica, o controle biológico utiliza predadores ou outros inimigos naturais para reduzir as populações de insetos-praga. Essa estratégia dispensa o uso de inseticidas sintéticos como principal meio de controle e reduz impactos ambientais."
+        ],
+        "alternatives": {
+          "A": "Adubação verde utiliza plantas para melhorar o solo e sua nutrição. Não é a técnica diretamente responsável por controlar insetos-praga no contexto descrito.",
+          "B": "A compostagem converte resíduos em adubo orgânico. Seu objetivo principal é fornecer matéria orgânica e nutrientes, não predar insetos.",
+          "C": "A irrigação controla a disponibilidade de água para as plantas. Seu manejo não corresponde ao mecanismo biológico de controle de insetos solicitado.",
+          "D": "Predadores naturais consomem os insetos-praga e ajudam a manter suas populações reduzidas. Trata-se de controle biológico compatível com o sistema descrito.",
+          "E": "Rhizobium favorece a fixação biológica de nitrogênio em associação com leguminosas. Essa função nutricional não equivale ao controle de insetos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:106": {
@@ -143,6 +287,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A segregação independente é esperada para genes em cromossomos diferentes ou suficientemente distantes. Genes próximos no mesmo cromossomo apresentam ligação gênica e têm menor chance de ser separados por permuta, tendendo a passar juntos aos descendentes."
+        ],
+        "alternatives": {
+          "A": "Dominância influencia a expressão fenotípica dos alelos, não sua posição cromossômica. A exceção decorre da ligação física entre genes próximos.",
+          "B": "A herança de um alelo de cada genitor não explica a associação entre pares de genes. O problema trata da distribuição conjunta de loci no mesmo cromossomo.",
+          "C": "Alterações cromossômicas podem provocar problemas, mas não são necessárias à ligação gênica. A proximidade normal entre genes já limita a segregação independente.",
+          "D": "Genes fisicamente próximos são menos separados por crossing-over. Por isso, sua transmissão tende a ocorrer em conjunto, contrariando a independência estrita.",
+          "E": "A não disjunção é uma falha na separação cromossômica e pode gerar aneuploidia. A ligação gênica ocorre mesmo em meioses normais e explica a exceção solicitada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:107": {
@@ -163,6 +331,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A velocidade antes do choque é v = √(2gh) = √(2·10·5) = 10 m/s. Considerando a força impulsiva média pela variação da quantidade de movimento, F = mΔv/Δt = 2,5·10/0,5 = 50 N. Como cada tijolo pesa 25 N, essa força equivale ao peso de dois tijolos."
+        ],
+        "alternatives": {
+          "A": "O impulso necessário para parar o tijolo é 25 N·s. Em 0,5 s, a força impulsiva média é 50 N, equivalente a dois pesos de 25 N.",
+          "B": "Cinco tijolos pesariam 125 N, acima dos 50 N calculados. O tempo de impacto deve dividir a variação de quantidade de movimento.",
+          "C": "Dez tijolos corresponderiam a 250 N. Esse resultado não decorre de mΔv/Δt com a velocidade de queda de 10 m/s.",
+          "D": "Vinte tijolos corresponderiam a 500 N, dez vezes a força impulsiva média. A energia de queda não pode ser dividida diretamente pelo tempo para obter força.",
+          "E": "Cinquenta tijolos pesariam 1250 N. O cálculo correto do impulso resulta em apenas 50 N, mantendo as unidades de força e peso coerentes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:108": {
@@ -183,6 +375,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os hidrocarbonetos da fração 4 têm cadeias maiores e mais elétrons, o que aumenta sua polarizabilidade e a intensidade das forças de dispersão. É necessário fornecer mais energia para separar as moléculas e vaporizá-las, elevando a temperatura de ebulição."
+        ],
+        "alternatives": {
+          "A": "Densidade maior pode acompanhar o tamanho molecular, mas não é a causa direta da ebulição mais alta. É preciso superar interações entre moléculas.",
+          "B": "O número de ramificações não é dado na tabela. Além disso, maior ramificação costuma reduzir a área de contato e a ebulição entre isômeros.",
+          "C": "A afinidade com o petróleo não explica a temperatura necessária para vaporizar a fração. O fator relevante é a intensidade de suas forças intermoleculares.",
+          "D": "Cadeias maiores apresentam forças de dispersão mais intensas. Separar essas moléculas requer mais energia, justificando a ebulição em temperaturas superiores.",
+          "E": "Na destilação não se rompem as ligações covalentes da cadeia carbônica. O processo separa moléculas por mudança de estado, superando interações intermoleculares."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:109": {
@@ -203,6 +419,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No movimento circular perpendicular ao campo, qvB = mv²/r, portanto ω = v/r = qB/m. Em N voltas, ωt = 2πN; substituindo, a massa é m = qBt/(2πN), independentemente da velocidade inicial."
+        ],
+        "alternatives": {
+          "A": "A relação entre força magnética e força centrípeta fornece ω = qB/m. Como N voltas correspondem a 2πN radianos, resulta m = qBt/(2πN).",
+          "B": "O denominador πN conta apenas metade do ângulo total de N voltas. Isso produziria uma massa duas vezes maior que a correta.",
+          "C": "Além de não usar corretamente o ângulo 2πN, a expressão aumenta o numerador. Ela resulta em quatro vezes a massa obtida pela relação angular correta.",
+          "D": "N é número de voltas, não ângulo em radianos. É necessário multiplicá-lo por 2π ao relacioná-lo à velocidade angular.",
+          "E": "O fator 2 deve integrar a conversão de voltas em radianos no denominador. A expressão omite π e coloca o fator no sentido errado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:110": {
@@ -223,6 +463,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os antirretrovirais atuam sobre etapas do ciclo dos retrovírus, como a síntese de DNA a partir de RNA ou o processamento de proteínas virais. Ao dificultar a multiplicação do agente no organismo, contribuem para tratar a infecção."
+        ],
+        "alternatives": {
+          "A": "O enunciado destaca retrovírus que não dependem de vetores biológicos. Controlar vetores não atua sobre o mecanismo dessas infecções.",
+          "B": "Soros mutagênicos não constituem a estratégia descrita de tratamento. Provocar mutações inespecíficas não equivale a bloquear a reprodução viral.",
+          "C": "Equipamentos de proteção podem prevenir exposição em certas situações. Não são medicamentos que tratem uma infecção já instalada.",
+          "D": "Vacinação é uma estratégia preventiva, e não o tratamento medicamentoso solicitado. O texto pede avanços que dificultem a manutenção da infecção viral.",
+          "E": "Antirretrovirais interferem em processos necessários à multiplicação desses vírus. Por isso, são os medicamentos associados ao tratamento referido."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:111": {
@@ -243,6 +507,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A proposta substitui o particulado rochoso graúdo pelo concreto reciclado moído. Esse agregado graúdo é a brita, de modo que seu reaproveitamento reduz a necessidade de extrair e fragmentar novas rochas para produzir esse componente."
+        ],
+        "alternatives": {
+          "A": "A brita é o agregado rochoso graúdo que será substituído pelo material reciclado. Logo, sua extração pode diminuir diretamente.",
+          "B": "A areia corresponde ao agregado miúdo, que não é o componente substituído na proposta. Não há indicação de redução direta de sua extração.",
+          "C": "O resíduo reciclado substitui um agregado sólido, não a água de preparo. O texto não afirma redução do consumo hídrico.",
+          "D": "A proposta mantém a fabricação e o uso de concreto, alterando sua composição. Não implica diminuir a quantidade total de concreto consumida.",
+          "E": "O cimento é o aglomerante e não o agregado graúdo. Não se afirma que sua fabricação seja reduzida pela substituição da brita."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:112": {
@@ -263,6 +551,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A bicamada II apresenta caudas curtas e insaturadas, cujas dobras dificultam a aproximação entre fosfolipídios. Menor contato entre as cadeias enfraquece as interações e favorece o movimento das moléculas, tornando essa membrana a mais fluida."
+        ],
+        "alternatives": {
+          "A": "A bicamada I tem caudas retas que se aproximam com maior facilidade. Seu empacotamento é mais intenso que o das caudas dobradas de II.",
+          "B": "II combina menor comprimento das caudas com insaturações. Esses fatores reduzem as interações e conferem maior fluidez entre as opções.",
+          "C": "III mistura caudas retas e dobradas, permitindo mais contato que II. A presença de partes saturadas aumenta o empacotamento relativo.",
+          "D": "IV apresenta caudas longas e retas, favoráveis a interações mais intensas. Essa organização produz menor fluidez, e não a maior.",
+          "E": "V possui insaturações, mas suas cadeias são mais longas que as de II. O maior contato entre segmentos aumenta as interações e reduz a fluidez comparativamente."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:113": {
@@ -283,6 +595,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A energia total de 2,5 g é (2,5/10)·70 = 17,5 kcal. Como a água aproveita 50%, recebe 8,75 kcal = 8750 cal. Pela relação Q = mcΔT, ΔT = 8750/(350·1) = 25 °C; somando os 20 °C iniciais, a temperatura final é 45 °C."
+        ],
+        "alternatives": {
+          "A": "A temperatura de 25 °C é a variação térmica calculada, não o valor final. É preciso somar os 20 °C de temperatura inicial.",
+          "B": "Uma elevação de 7 °C não corresponde aos 8750 cal aproveitados. O cálculo deve considerar a proporção de 2,5 g e converter quilocalorias em calorias.",
+          "C": "A água aquece 25 °C a partir dos 20 °C iniciais. Portanto, a leitura final é 45 °C.",
+          "D": "50 °C não resulta do balanço de energia fornecido. Os 50% de aproveitamento devem ser aplicados à energia, e não interpretados como uma temperatura.",
+          "E": "70 é o valor energético em quilocalorias por porção, não uma temperatura. A massa queimada e a eficiência reduzem a energia efetivamente transferida à água."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:114": {
@@ -303,6 +639,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O ânodo é o eletrodo no qual ocorre oxidação. Na bateria, o zinco metálico perde elétrons e reage com hidroxilas, formando zincato: Zn + 4 OH⁻ → Zn(OH)4²⁻ + 2 e⁻. Assim, a espécie produzida no ânodo é Zn(OH)4²⁻."
+        ],
+        "alternatives": {
+          "A": "A liberação de hidrogênio envolveria redução de água, não a oxidação do zinco no ânodo. O esquema indica a formação do complexo de zinco.",
+          "B": "O oxigênio entra pelo eletrodo poroso e é consumido na reação catódica. Não é o produto formado no eletrodo de zinco.",
+          "C": "A água participa do meio e da reação de redução do oxigênio. Ela não é o produto que identifica a oxidação anódica do zinco apresentada.",
+          "D": "As hidroxilas são geradas na região catódica e consumidas junto ao zinco. A espécie produzida no ânodo é o complexo zincato.",
+          "E": "A oxidação do zinco em meio alcalino gera Zn(OH)4²⁻ e libera elétrons. O esquema mostra esse produto saindo do eletrodo de zinco."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:115": {
@@ -323,6 +683,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A coleta convencional não garante a remoção de moléculas farmacêuticas estáveis, que podem persistir após o tratamento. Desenvolver processos específicos de remoção ou degradação nas estações de efluentes reduz sua permanência e seu lançamento nos recursos hídricos."
+        ],
+        "alternatives": {
+          "A": "O esterco pode conter resíduos de medicamentos veterinários. Seu uso não assegura remoção dos fármacos e pode introduzi-los no ambiente.",
+          "B": "Coletar o esgoto evita lançamentos dispersos, mas não remove por si os fármacos estáveis. São necessários processos de tratamento capazes de atuar sobre essas moléculas.",
+          "C": "Lixões permitem que contaminantes alcancem o solo e as águas por lixiviação. Esse descarte aumenta o risco em vez de minimizar a permanência ambiental.",
+          "D": "Novos processos podem degradar ou retirar fármacos que resistem às etapas convencionais. Assim, atuam diretamente na redução dos contaminantes antes do lançamento do efluente.",
+          "E": "O lodo pode concentrar contaminantes retirados do esgoto. Reutilizá-lo sem tratamento específico pode apenas transferir fármacos para o solo e a água."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:116": {
@@ -343,6 +727,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A chama fornece energia que excita elétrons a níveis mais elevados. A luz característica é emitida quando esses elétrons retornam a níveis de menor energia, liberando fótons com energias correspondentes às diferenças entre os níveis."
+        ],
+        "alternatives": {
+          "A": "A fusão é uma mudança de estado e não explica as linhas de emissão características dos elementos. A cor do teste depende das transições eletrônicas.",
+          "B": "A emissão não exige combustão dos cátions com oxigênio. O aquecimento provoca excitação eletrônica, seguida de retorno a níveis inferiores.",
+          "C": "Os níveis atômicos são quantizados, e a emissão envolve passagem entre níveis. Não se explica pela diminuição contínua de energia numa mesma órbita.",
+          "D": "Ao passar de um nível mais energético e externo para outro menos energético e interno, o elétron emite um fóton. Essa radiação produz a cor observada.",
+          "E": "A promoção ao estado excitado exige absorção de energia. A luz observada é produzida na transição inversa, quando o elétron retorna a menor energia."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:117": {
@@ -363,6 +771,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No ponto médio, as duas trações têm o mesmo módulo e suas componentes horizontais se cancelam. As componentes verticais equilibram o peso: 2T·sen10° = 80·10. Assim, T = 800/(2·0,17) ≈ 2353 N, aproximadamente 2,4 × 10³ N em cada árvore."
+        ],
+        "alternatives": {
+          "A": "400 N é a componente vertical de cada tração, não seu módulo. Como a fita faz apenas 10° com a horizontal, a tração é muito maior.",
+          "B": "Dividir metade do peso por cos10° usa a componente errada. Para equilibrar o peso, deve-se usar T·sen10° em cada lado.",
+          "C": "800 N é o peso total da atleta. A inclinação pequena da fita exige trações maiores para que suas componentes verticais somem esse valor.",
+          "D": "A condição de equilíbrio é 2T·0,17 = 800 N. O resultado de cerca de 2353 N se aproxima de 2,4 × 10³ N.",
+          "E": "Esse valor resulta de dividir o peso por sen10° sem considerar os dois lados da fita. Cada lado sustenta apenas metade do peso por sua componente vertical."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:118": {
@@ -383,6 +815,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os náuplios se deslocam na direção da fonte de luz colocada na boca da garrafa. Entre as alternativas, esse comportamento corresponde ao fototropismo positivo, por ser orientado pela luz e dirigido para ela; mais precisamente, em organismos móveis, fala-se em fototaxia positiva."
+        ],
+        "alternatives": {
+          "A": "O estímulo que orienta o movimento é a lâmpada, e não a gravidade. Além disso, subir se oporia a um deslocamento positivo em direção ao centro da Terra.",
+          "B": "A direção é determinada pela luz, e os organismos se aproximam dela. Isso corresponde à resposta positiva indicada pela alternativa, denominada mais precisamente fototaxia.",
+          "C": "Não há fuga da água nem um gradiente hídrico indicado. O deslocamento dentro da garrafa é explicado pela fonte luminosa.",
+          "D": "O texto não descreve mudança de temperatura como estímulo. A aproximação do gargalo ocorre em resposta à iluminação.",
+          "E": "Nenhuma substância química repelente é apresentada. O estímulo identificado é luminoso e provoca aproximação, não afastamento."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:119": {
@@ -403,6 +859,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O xenônio fornece oito elétrons de valência, e os dois átomos de flúor fornecem mais quatorze, totalizando 22. Na estrutura de Lewis, o Xe forma duas ligações simples e mantém três pares isolados, ficando rodeado por 4 elétrons ligantes e 6 não ligantes, total de 10."
+        ],
+        "alternatives": {
+          "A": "Seis elétrons correspondem apenas aos três pares isolados do xenônio. É preciso contar também os quatro elétrons compartilhados nas duas ligações.",
+          "B": "O xenônio é uma exceção à regra do octeto nesse composto. Os três pares isolados e os dois pares ligantes colocam dez elétrons ao seu redor.",
+          "C": "A estrutura tem cinco pares eletrônicos em torno do Xe: três isolados e dois de ligação. Assim, sua camada de valência contém dez elétrons na contagem de Lewis.",
+          "D": "Doze elétrons exigiriam seis pares ao redor do xenônio. A distribuição correta de XeF2 apresenta apenas cinco pares nessa contagem.",
+          "E": "Quatorze elétrons é a contribuição total dos dois flúores ao conjunto antes da distribuição. Não corresponde ao número de elétrons ao redor do xenônio."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:120": {
@@ -423,6 +903,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O foguete em órbita descreve movimento angular rápido em comparação com a rotação diária da Terra. Na situação apresentada, seu deslocamento tem o mesmo sentido da rotação, mas sua velocidade angular é maior; por isso não permanece sobre um mesmo ponto da superfície e o instante de reentrada altera o local de queda."
+        ],
+        "alternatives": {
+          "A": "Velocidades angulares iguais e no mesmo sentido manteriam a posição relativa, como no princípio de uma órbita geoestacionária. Isso não corresponde à rápida mudança do ponto de queda descrita.",
+          "B": "O movimento orbital no mesmo sentido da rotação e com maior velocidade angular permite o deslocamento relativo sobre a superfície. Essa é a relação indicada para o foguete na reentrada.",
+          "C": "A alternativa inverte tanto a relação de rapidez quanto o sentido do movimento da situação. A dinâmica orbital descrita corresponde a movimento mais rápido e no mesmo sentido.",
+          "D": "Igualar os módulos das velocidades angulares não corresponde à rapidez do movimento orbital do foguete. O sentido oposto também não é o adotado na situação.",
+          "E": "A velocidade angular maior é compatível com o movimento orbital, mas o sentido indicado está invertido. Na situação da questão, o foguete acompanha o sentido de rotação terrestre."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:121": {
@@ -443,6 +947,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os eritrócitos transportam oxigênio principalmente pela hemoglobina. Ao estimular sua maturação, a EPO pode aumentar a capacidade de entrega de oxigênio aos músculos, favorecendo a respiração aeróbia e a produção de ATP durante esforço de resistência."
+        ],
+        "alternatives": {
+          "A": "O aumento de eritrócitos não tem como função principal transportar lipídios. A vantagem pretendida se relaciona à oferta de oxigênio aos tecidos.",
+          "B": "ATP não é distribuído pelo sangue como principal combustível direto das células. Ele é produzido localmente, e o oxigênio favorece sua formação por respiração aeróbia.",
+          "C": "Mais eritrócitos podem ampliar o transporte de oxigênio pela hemoglobina. Isso favorece a produção aeróbia de ATP exigida durante o esforço.",
+          "D": "A EPO não atua principalmente aumentando o transporte de proteínas ou a hipertrofia. Seu alvo descrito é a maturação dos eritrócitos.",
+          "E": "A integridade vascular por vitamina C não explica a ação da EPO. O hormônio interfere na linhagem celular responsável pelo transporte de oxigênio."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:122": {
@@ -463,6 +991,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As áreas internas são SA = 6·40·40 = 9600 cm² e SB = 2(60·40 + 60·40 + 40·40) = 12800 cm². Como QB = 2QA e as demais condições são iguais, kB·SB = 2kA·SA. Logo, kA/kB = SB/(2SA) = 12800/19200 ≈ 0,67."
+        ],
+        "alternatives": {
+          "A": "0,50 seria obtido ignorando a diferença de área e atribuindo toda a duplicação do calor à condutividade. O recipiente B possui área maior.",
+          "B": "A razão entre áreas é 4/3, e o calor transferido a B é o dobro. Portanto, kA/kB = (4/3)/2 = 2/3, aproximadamente 0,67.",
+          "C": "0,75 é a razão SA/SB, mas não considera que B recebeu duas vezes o calor. É preciso combinar a área com a massa fundida.",
+          "D": "1,33 representa SB/SA. Essa comparação geométrica sozinha não incorpora a duplicação da energia transferida.",
+          "E": "2,00 confunde a razão das massas fundidas com a razão inversa das condutividades. A área maior de B também contribui para o fluxo de calor."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:123": {
@@ -483,6 +1035,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na primeira reação, a glicose é oxidada a ácido glucônico e o oxigênio é reduzido a peróxido. Na segunda, o iodeto é oxidado a tri-iodeto e o peróxido participa de transformações com variação de número de oxidação; portanto, ambas são reações de oxirredução."
+        ],
+        "alternatives": {
+          "A": "Reações de análise decompõem um reagente em substâncias mais simples. As equações apresentadas envolvem diversos reagentes e variação de estados de oxidação.",
+          "B": "Não ocorre apenas união de reagentes em um único produto. Há transformação de espécies com transferência de elétrons nas duas etapas.",
+          "C": "A oxidação da glicose e a mudança do oxigênio na primeira etapa mostram transferência eletrônica. Na segunda, a conversão de iodeto em tri-iodeto também evidencia oxirredução.",
+          "D": "Não se descreve a formação de um complexo metálico nas duas etapas. A classificação comum é dada pelas mudanças de número de oxidação.",
+          "E": "A formação de um ácido na primeira etapa não basta para classificá-la como ácido-base. O mecanismo comum das duas equações é a transferência de elétrons."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:124": {
@@ -503,6 +1079,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Calor é energia transferida por diferença de temperatura, enquanto frio não é uma substância que entra. A porta reduz trocas entre a casa e o exterior, e o cobertor diminui a perda de calor do corpo; nenhum deles produz calor por si."
+        ],
+        "alternatives": {
+          "A": "Porta e cobertores não são fontes de energia térmica. Eles reduzem trocas, preservando por mais tempo a energia dos ambientes e dos corpos.",
+          "B": "Frio não é um fluido que penetra no ambiente ou no corpo. O que ocorre é transferência de energia da região mais quente para a mais fria.",
+          "C": "A porta minimiza a perda de calor da casa e os cobertores reduzem a perda dos corpos. Essa formulação descreve corretamente o isolamento térmico.",
+          "D": "A primeira função ainda supõe a entrada de uma substância chamada frio. A segunda também atribui ao cobertor uma produção de calor que ele não realiza.",
+          "E": "A função do cobertor está correta, mas a porta não aquece a casa. Ela apenas reduz trocas térmicas com o exterior."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:125": {
@@ -523,6 +1123,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Pela lei de Hess, somamos a combustão da glicose à inversa de duas combustões do ácido lático. A transformação glicose → 2 ácidos láticos tem ΔH = −2800 + 2·1344 = −112 kJ/mol. Portanto, libera somente 112 kJ por mol de glicose, muito menos que a oxidação completa."
+        ],
+        "alternatives": {
+          "A": "A diferença entre 2800 kJ e 2688 kJ é 112 kJ liberados. Essa é a energia da conversão anaeróbica da glicose em duas moléculas de ácido lático.",
+          "B": "467 kJ se aproxima de 2800/6, mas dividir pela quantidade de oxigênio não fornece a entalpia da conversão anaeróbica. É preciso aplicar a lei de Hess.",
+          "C": "2688 kJ correspondem à energia ainda liberável pela combustão dos dois ácidos láticos formados. Não é o que foi liberado na etapa anaeróbica.",
+          "D": "A conversão não absorve 1344 kJ. Esse módulo corresponde à combustão de um mol de ácido lático, reação diferente da solicitada.",
+          "E": "2800 kJ são liberados na combustão completa da glicose, e não absorvidos na via anaeróbica. O balanço correto desta última é exotérmico de 112 kJ/mol."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:126": {
@@ -543,6 +1167,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Uma área recém-desmatada oferece condições instáveis e espaço para colonização. Espécies da estratégia 1 têm reprodução precoce, muitos descendentes e elevado potencial biótico, características que favorecem a ocupação rápida inicial e o começo da recuperação ecológica."
+        ],
+        "alternatives": {
+          "A": "A estratégia indicada é adequada, mas o pequeno tamanho dos descendentes não garante menor competição. A vantagem decisiva é a elevada capacidade de multiplicação e colonização.",
+          "B": "A estratégia 2 apresenta poucos descendentes e reprodução tardia. Portanto, não favorece a produção rápida e abundante alegada na alternativa.",
+          "C": "A alta taxa reprodutiva permite ocupar rapidamente uma área perturbada. Essas espécies são mais compatíveis com a fase inicial de recolonização.",
+          "D": "Uma área recém-desmatada é perturbada e instável, em oposição ao ambiente associado à estratégia 2. A premissa ambiental da alternativa está errada.",
+          "E": "Populações constantes se associam a ambientes já estáveis, não necessariamente à colonização inicial. O baixo potencial biótico torna a estratégia 2 menos adequada ao início da recuperação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:127": {
@@ -563,6 +1211,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na transesterificação, um álcool reage com o éster e substitui seu grupo alcoxi. Como o produto é tereftalato de metila, o grupo incorporado é metoxi, proveniente do metanol; o etanodiol é liberado da cadeia original de PET."
+        ],
+        "alternatives": {
+          "A": "Metano é um hidrocarboneto sem grupo hidroxila. Ele não fornece o álcool necessário à transesterificação.",
+          "B": "O metanol fornece o grupo OCH3 presente no éster metílico final. Sua reação com o PET permite liberar etanodiol e formar o tereftalato de metila.",
+          "C": "Éter metílico não possui a hidroxila do álcool empregado nessa reação. Não é o reagente que explica a introdução dos grupos metila nos ésteres.",
+          "D": "Ácido etanoico forneceria um grupo derivado de acetato, não o grupo metoxi indicado. O produto especificado exige metanol como álcool reagente.",
+          "E": "Anidrido etanoico atua em acilações, introduzindo grupos acetila. Não corresponde à transesterificação que forma o éster metílico mostrado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:128": {
@@ -583,6 +1255,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O tubo polínico conduz os gametas masculinos até o gameta feminino sem exigir água líquida externa para seu deslocamento. Essa independência reprodutiva da água permite a conquista definitiva de ambientes terrestres, correspondendo à característica 3."
+        ],
+        "alternatives": {
+          "A": "A proteção do embrião é uma adaptação terrestre importante, mas também está nas briófitas. Esses grupos ainda dependem de água para a fecundação.",
+          "B": "Tecidos condutores ampliam transporte e porte das plantas, mas pteridófitas vascularizadas ainda precisam de água para os gametas. Não eliminam essa dependência reprodutiva.",
+          "C": "O tubo polínico permite levar o gameta masculino ao feminino internamente. A fecundação deixa de depender de água externa, justificando a conquista definitiva do ambiente terrestre.",
+          "D": "A dispersão de pólen pelo vento não garante, sozinha, o deslocamento do gameta até a oosfera. O mecanismo decisivo para a fecundação independente da água é o tubo polínico.",
+          "E": "Os frutos protegem sementes e auxiliam sua dispersão, mas surgiram nas angiospermas. As gimnospermas já haviam alcançado independência reprodutiva da água antes deles."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:129": {
@@ -603,6 +1299,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Ao contrair a pupila, o olho reduz a entrada de raios mais afastados do eixo óptico. Os raios admitidos ficam mais próximos da direção axial e sofrem menores desvios na refração, reduzindo o borramento da imagem subaquática."
+        ],
+        "alternatives": {
+          "A": "A pupila menor realmente deixa entrar menos luz, mas isso não explica diretamente a maior nitidez. O efeito relevante é selecionar raios próximos ao eixo e diminuir os desvios.",
+          "B": "Uma abertura menor tende a aumentar efeitos de difração, e não a reduzi-los. Esse fenômeno não é a explicação indicada para a melhora de acuidade.",
+          "C": "A pupila não funciona como filtro polarizador que seleciona uma orientação de vibração. Sua contração restringe geometricamente os raios que entram.",
+          "D": "O orifício menor privilegia raios próximos ao eixo óptico e menos desviados. Essa redução dos desvios contribui para diminuir o embaçamento.",
+          "E": "A contração não atua principalmente eliminando reflexões internas. A explicação fornecida pelo enunciado se relaciona à direção dos raios e à refração."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:130": {
@@ -623,6 +1343,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os rins filtram o sangue e eliminam resíduos nitrogenados, entre eles a ureia, por meio da urina. Um dispositivo que substitui funções renais e reduz a dependência de hemodiálise deve promover diretamente essa remoção do sangue."
+        ],
+        "alternatives": {
+          "A": "A ureia é um resíduo nitrogenado removido pelos rins. Sua retirada do sangue é uma função diretamente relacionada à substituição renal e à hemodiálise.",
+          "B": "Lipídios não são excretados normalmente em grande quantidade pelos rins. Não constituem o principal resíduo a ser removido pelo dispositivo.",
+          "C": "A vasopressina é sintetizada no hipotálamo e liberada pela neuro-hipófise. Os rins respondem a ela, mas não são seu local de síntese.",
+          "D": "A transformação da amônia em ureia ocorre principalmente no fígado. O rim atua na eliminação dos resíduos, não substitui essa função hepática.",
+          "E": "A aldosterona é produzida no córtex das glândulas suprarrenais. Não é fabricada pelos rins, embora controle parte de sua atividade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:131": {
@@ -643,6 +1387,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O papel contém poros estreitos, nos quais a adesão do etanol às fibras, associada à coesão do líquido, permite sua ascensão. Esse fenômeno de capilaridade pode superar a ação gravitacional até que se estabeleça equilíbrio."
+        ],
+        "alternatives": {
+          "A": "A evaporação transforma líquido em vapor e não explica sua subida contínua pelos poros. A movimentação observada decorre da interação com as fibras do papel.",
+          "B": "A diferença de densidades não fornece o mecanismo de ascensão contra a gravidade no papel. O comportamento depende da geometria dos poros e da adesão.",
+          "C": "Não é necessário ocorrer uma reação química entre etanol e celulose. A subida pode ocorrer por interações físicas entre o líquido e o sólido.",
+          "D": "Poros do papel funcionam como pequenos capilares que atraem o líquido por adesão e coesão. Esse mecanismo explica a ascensão observada.",
+          "E": "A resistência ao escoamento se opõe ao movimento, em vez de gerá-lo. O deslocamento para cima é favorecido pela capilaridade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:132": {
@@ -663,6 +1431,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Huygens rejeita a ideia de que a luz seja transportada por corpos materiais comparáveis a flechas ou balas. Essa crítica se dirige ao modelo corpuscular, associado a Newton, e usa a travessia de raios sem colisões perceptíveis como argumento."
+        ],
+        "alternatives": {
+          "A": "O trecho não critica a necessidade de um meio para propagação. Huygens desenvolveu uma interpretação ondulatória, historicamente associada à ideia de meio propagador.",
+          "B": "A passagem é compatível com a defesa ondulatória, não uma crítica a ela. O alvo é a luz concebida como transporte de corpúsculos materiais.",
+          "C": "A comparação com flechas e balas explicita o modelo de partículas materiais. Huygens contesta essa concepção corpuscular do comportamento luminoso.",
+          "D": "O texto menciona a grande velocidade, mas seu argumento principal não procura demonstrar que ela seja finita. A crítica recai sobre a natureza material corpuscular.",
+          "E": "O autor se refere a algo que viria do objeto até o observador, não a emissões saindo dos olhos. Portanto, a teoria visual grega citada não é o alvo direto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:133": {
@@ -683,6 +1475,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A base consumida contém 0,01·0,024 = 2,4 × 10⁻⁴ mol de OH⁻. Como o ácido é triprótico, havia 8,0 × 10⁻⁵ mol, ou 0,01536 g de ácido cítrico em 2,2 g de polpa. Isso corresponde a aproximadamente 0,698 g/100 g, suficiente para os mínimos de caju (0,3) e graviola (0,6), mas inferior aos demais."
+        ],
+        "alternatives": {
+          "A": "A amostra supera tanto o mínimo do caju quanto o da graviola. Portanto, não se pode restringir sua identificação apenas ao caju.",
+          "B": "O maracujá exige pelo menos 2,5 g/100 g, muito acima dos aproximadamente 0,698 calculados. A amostra não atende a esse mínimo.",
+          "C": "A acidez obtida é maior que 0,3 e 0,6 g/100 g, mas menor que 0,8. Assim, entre as opções listadas, atende aos padrões de caju ou graviola.",
+          "D": "A acerola requer 0,8 e o cupuaçu 1,5 g/100 g. A acidez calculada não alcança nenhum desses valores mínimos.",
+          "E": "A graviola é compatível com o resultado, mas o cupuaçu exige acidez maior. Incluir cupuaçu torna a alternativa incorreta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:134": {
@@ -703,6 +1519,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os íons do sal se deslocam da região de maior concentração no caldo para regiões menos concentradas da batata. Esse transporte a favor do gradiente é difusão; a osmose se refere ao movimento do solvente, não à entrada do soluto salino."
+        ],
+        "alternatives": {
+          "A": "Osmose descreve o deslocamento de água através de membrana semipermeável. A questão pergunta pela entrada do sal, que é o soluto.",
+          "B": "O sal está dissolvido em íons, e sua entrada não exige englobamento de partículas sólidas. Fagocitose não explica esse transporte.",
+          "C": "Exocitose libera conteúdo de vesículas para fora da célula. A situação envolve entrada passiva de sal no alimento, não secreção vesicular.",
+          "D": "Pinocitose envolve formação de vesículas celulares para incorporar líquido. A migração de íons pelo gradiente de concentração não exige esse processo.",
+          "E": "O sal migra do caldo mais concentrado para a batata menos concentrada. Esse deslocamento passivo a favor do gradiente caracteriza difusão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:135": {
@@ -723,6 +1563,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Com abertura de 90°, cada lado do campo faz 45° e alcança horizontalmente H·tg45° = 1000 m. A imagem cobre 2000 m; para sobrepor 20%, o vant avança apenas 80%, ou 1600 m. A 50 m/s, o intervalo é 1600/50 = 32 segundos."
+        ],
+        "alternatives": {
+          "A": "40 s correspondem a percorrer os 2000 m totais, deixando imagens sem sobreposição. Deve-se reduzir o avanço para 80% dessa distância.",
+          "B": "O terreno fotografado mede 2000 m no sentido de avanço. Como 400 m devem se repetir, o deslocamento é 1600 m e o tempo é 32 s.",
+          "C": "28 s correspondem a 1400 m de deslocamento e 30% de sobreposição. A encomenda exige 20%, não 30%.",
+          "D": "16 s resultam de aplicar 80% a apenas 1000 m, metade da largura fotografada. É preciso considerar os dois lados da abertura da câmera.",
+          "E": "8 s correspondem aos 400 m da faixa sobreposta, não ao avanço entre fotos. O deslocamento necessário é a parte restante, de 1600 m."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:91": {
@@ -743,6 +1607,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Com n lâmpadas em paralelo com a TV, a condutância da casa é 1/50 + n/200 = (4+n)/200. O cabo de 10 Ω provoca queda de tensão, dando U = 120/[1 + 10(4+n)/200] = 2400/(24+n). Exigir U ≥ 90 resulta em n ≤ 2,66; portanto, no máximo duas lâmpadas podem ser ligadas."
+        ],
+        "alternatives": {
+          "A": "Com uma lâmpada, a tensão é 2400/25 = 96 V, permitindo funcionamento. Porém duas também são possíveis, de modo que um não é o máximo.",
+          "B": "Com duas lâmpadas, a TV recebe 2400/26, aproximadamente 92,3 V. Com três receberia cerca de 88,9 V, logo duas é o máximo permitido.",
+          "C": "Três lâmpadas reduzem a tensão para 2400/27, aproximadamente 88,9 V. Esse valor está abaixo dos 90 V exigidos pela TV.",
+          "D": "Quatro lâmpadas produzem tensão de 2400/28, aproximadamente 85,7 V. O aumento da corrente no cabo derruba a tensão abaixo do mínimo.",
+          "E": "Cinco lâmpadas resultam em aproximadamente 82,8 V nos aparelhos. A ligação em paralelo não elimina a queda de tensão no cabo em série."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:92": {
@@ -763,6 +1651,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O DNP dissipa o gradiente de prótons ao permitir seu retorno à matriz sem passar pela ATP sintase. A energia da oxidação deixa de ser convertida eficientemente em ATP e se dissipa em calor; para atender à demanda energética, aumenta o consumo de nutrientes."
+        ],
+        "alternatives": {
+          "A": "O DNP não obstrui diretamente o fluxo de elétrons da cadeia respiratória. Ele desacopla esse fluxo da síntese de ATP ao dissipar o gradiente de prótons.",
+          "B": "O ciclo de Krebs não é bloqueado pelo mecanismo apresentado. O efeito decorre do retorno de prótons sem produzir ATP na membrana interna.",
+          "C": "Não se descreve a redução da formação de acetil-CoA como alvo do composto. O problema está na eficiência da fosforilação oxidativa.",
+          "D": "A glicólise não é o processo diretamente inibido. O texto localiza a ação na membrana mitocondrial interna e no gradiente de prótons.",
+          "E": "O retorno de prótons sem ATP sintase reduz o rendimento de ATP. A célula precisa oxidar mais nutrientes para suprir energia, favorecendo perda de reservas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:93": {
@@ -783,6 +1695,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O modelo atual reconhece partículas subatômicas, isótopos e transformações nucleares, o que invalida diferentes afirmações absolutas de Dalton. Mantém-se, no contexto dos compostos químicos, a combinação de átomos em proporções numéricas inteiras, representada pelos índices das fórmulas."
+        ],
+        "alternatives": {
+          "A": "O átomo possui elétrons, prótons e nêutrons, portanto não é indivisível. A descoberta da estrutura interna superou esse postulado.",
+          "B": "Isótopos do mesmo elemento têm diferentes números de nêutrons e massas. Assim, seus átomos não são todos idênticos em massa e propriedades.",
+          "C": "Elementos são definidos pelo número de prótons, e átomos de elementos distintos podem ter o mesmo número de massa. A afirmação de massas necessariamente diferentes não é mantida como regra geral.",
+          "D": "A identidade atômica se conserva nas reações químicas comuns, mas átomos podem ser transformados em processos nucleares. A afirmação absoluta de indestrutibilidade não permanece válida.",
+          "E": "Fórmulas de compostos expressam razões inteiras entre quantidades de átomos, como 2:1 na água. Esse princípio estequiométrico do modelo de Dalton continua válido no contexto proposto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:94": {
@@ -803,6 +1739,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para liberar H2, a água deve ser reduzida e a outra substância deve ser oxidada espontaneamente. O alumínio metálico tem potencial de redução de −2,33 V, de modo que sua oxidação combinada à redução da água fornece E° = −0,83 − (−2,33) = +1,50 V, o maior valor adequado entre as opções."
+        ],
+        "alternatives": {
+          "A": "O alumínio pode oxidar-se a aluminato em meio básico enquanto a água é reduzida a hidrogênio. O potencial positivo de 1,50 V indica a reação espontânea desejada.",
+          "B": "A combinação da oxidação do cobalto com a redução da água dá −0,83 − (−0,73) = −0,10 V. O valor negativo não favorece a reação nas condições padrão.",
+          "C": "O hidróxido de cobre apresentado já é a espécie oxidada do par da tabela. Não fornece o metal que se oxidaria para sustentar a redução da água.",
+          "D": "O hidróxido de ferro é a espécie oxidada do par, e não ferro metálico. Não deve ser confundido com o metal que poderia doar elétrons.",
+          "E": "A oxidação do chumbo com redução da água produziria −0,83 − (−0,58) = −0,25 V. O potencial negativo não favorece a liberação espontânea de H2."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:95": {
@@ -823,6 +1783,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O campo magnético variável da rede pode induzir tensão na cerca mesmo sem contato com os cabos. Aterrar seus arames oferece um caminho para dissipar cargas e mantém seu potencial próximo ao da terra, reduzindo a diferença de potencial aplicada ao corpo de quem a toca."
+        ],
+        "alternatives": {
+          "A": "O aterramento atua diretamente no objeto que pode ser tocado. Ele reduz a diferença de potencial entre os arames e o solo, minimizando o choque.",
+          "B": "Um fusível interrompe corrente acima de seu limite, mas não mantém a cerca no potencial do solo. A corrente perigosa para uma pessoa pode não provocar sua abertura.",
+          "C": "Aterrar condutores ativos da transmissão não é uma solução para a cerca e pode causar curto-circuito. A medida adequada é o aterramento dos próprios arames.",
+          "D": "Fusíveis na rede protegem contra sobrecorrentes do circuito de transmissão. Não eliminam a tensão induzida numa cerca próxima em funcionamento normal.",
+          "E": "O revestimento isolante elétrico evita contato direto, mas não bloqueia o campo magnético variável. A indução nos arames continuaria possível."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:96": {
@@ -843,6 +1827,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A vacina prepara o sistema imune para reconhecer antígenos do esquistossomo antes da infecção. Em um contato posterior, a resposta pode combater o parasita no organismo com rapidez suficiente para impedir o estabelecimento da doença e de seus sintomas."
+        ],
+        "alternatives": {
+          "A": "A vacina não cria uma barreira física impenetrável na pele. Seu efeito depende do reconhecimento imunológico do parasita após o contato com o organismo.",
+          "B": "O alvo da imunização é o sistema imune humano, não o caramujo no ambiente. Ela não elimina o hospedeiro intermediário.",
+          "C": "A resposta imune não atua apenas impedindo um trajeto específico até o fígado. Ela reconhece antígenos do parasita e pode combater sua presença no organismo.",
+          "D": "Anticorpos e células de memória do vacinado não eliminam previamente o verme no ambiente. A proteção depende de contato do agente com o organismo imunizado.",
+          "E": "A memória imunológica permite resposta mais rápida após a exposição. Isso pode eliminar o parasita antes de sua multiplicação ou instalação produzir sintomas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:97": {
@@ -863,6 +1871,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A descida corresponde a 2/3 da altura de 410 mm, ou (2/3)·0,410 m. Desprezando a energia de translação e as perdas, a energia cinética de rotação é a perda de energia potencial: E = 0,030·10·(2/3)·0,410 = 0,082 J = 8,20 × 10⁻² J."
+        ],
+        "alternatives": {
+          "A": "Esse valor corresponde a usar apenas um terço da altura. O esquema mostra que a descida é de dois terços, portanto a energia é o dobro.",
+          "B": "Usando massa de 0,030 kg e queda de 0,2733 m, obtém-se 0,082 J. A conservação da energia fornece esse valor para a rotação desprezada a translação.",
+          "C": "O valor 0,123 J usa a altura inteira de 0,410 m. O disco para com o topo a um terço da altura, de modo que não percorre toda essa distância.",
+          "D": "O resultado é um milhão de vezes maior que o correto. É necessário converter tanto gramas em quilogramas quanto milímetros em metros.",
+          "E": "Além de usar a altura total, esse valor mantém unidades inadequadas. As conversões de massa e comprimento levam a uma energia da ordem de centésimos de joule."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:98": {
@@ -883,6 +1915,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O enunciado informa que o sabonete favorece a transformação química da alicina e não se desgasta com o uso. A atuação sem consumo permanente caracteriza um catalisador, que facilita uma reação sem ser consumido em seu balanço global."
+        ],
+        "alternatives": {
+          "A": "Não se informa doação de prótons ou alteração ácida do meio. A propriedade decisiva é favorecer a conversão sem desgaste.",
+          "B": "Um agente redutor estequiométrico perderia elétrons e seria transformado no processo. O sabonete é descrito como não consumido, o que aponta para catálise.",
+          "C": "Eletrólitos fornecem íons móveis em solução, mas isso não explica a transformação sem consumo do material. O enunciado destaca sua ação catalítica.",
+          "D": "Tensoativos promovem a dispersão de substâncias por suas regiões de afinidade diferentes. O objeto descrito altera quimicamente a substância responsável pelo odor.",
+          "E": "A estrutura do composto é transformada, e o material que promove a reação não se desgasta. Essa combinação de função e permanência caracteriza um catalisador."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:99": {
@@ -903,6 +1959,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O estrôncio e o cálcio pertencem ao mesmo grupo da tabela periódica e apresentam comportamento químico semelhante. Como grande parte do cálcio corporal se encontra na matriz mineral dos ossos, o estrôncio pode substituí-lo e acumular-se predominantemente no tecido ósseo."
+        ],
+        "alternatives": {
+          "A": "A cartilagem tem matriz rica em componentes orgânicos e não é o principal depósito de cálcio do organismo. O acúmulo preferencial indicado pela analogia química ocorre nos ossos.",
+          "B": "O sangue transporta íons, mas não é o principal reservatório mineral de cálcio. A incorporação duradoura do estrôncio se dá preferencialmente na matriz óssea.",
+          "C": "O cálcio participa da contração muscular, porém não está armazenado predominantemente nesse tecido. Sua grande reserva estrutural é o osso.",
+          "D": "A sinalização nervosa utiliza cálcio, mas isso não torna o tecido nervoso seu maior depósito. A substituição química favorece o acúmulo na matriz mineral óssea.",
+          "E": "Os ossos contêm grande quantidade de sais de cálcio em sua matriz. A semelhança química permite que o estrôncio ocupe posições desse elemento e ali se acumule."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:136": {
@@ -923,6 +2003,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A dose diária máxima é 500 mg/kg·20 kg = 10000 mg = 10 g. Em cinco dias, a massa total é 50 g; como cada grama ocupa 1 cm³, equivalente a 1 mL, o tratamento requer exatamente 50 mL."
+        ],
+        "alternatives": {
+          "A": "10 mL correspondem à dose de apenas um dia. O tratamento completo dura cinco dias e exige cinco vezes esse volume.",
+          "B": "A criança recebe 10 g por dia e 50 g ao todo. Pela equivalência fornecida, isso corresponde a um frasco de 50 mL.",
+          "C": "100 mL fornecem o dobro da necessidade de 50 mL. Haveria sobra, contrariamente à decisão dos pais.",
+          "D": "250 mL equivalem a cinco vezes o volume necessário. O cálculo total do tratamento leva a apenas 50 mL.",
+          "E": "500 mL confundem o número 500 da dose em miligramas por quilograma com volume final. É necessário considerar massa corporal, duração e conversão de unidades."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:137": {
@@ -943,6 +2047,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Escolhem-se 4 das 12 posições para os vagões vermelhos; depois, 3 das 8 restantes para os azuis, 3 das 5 restantes para os verdes e as 2 finais para os amarelos. Pelo princípio multiplicativo, o total é C(12,4)·C(8,3)·C(5,3)·C(2,2)."
+        ],
+        "alternatives": {
+          "A": "Escolher cada cor novamente entre as 12 posições permite sobreposição de escolhas. O conjunto disponível deve diminuir a cada cor distribuída.",
+          "B": "As escolhas das cores devem ocorrer conjuntamente, e não como alternativas somadas. Por isso, aplica-se o produto das combinações sucessivas.",
+          "C": "Depois de escolher os azuis, restam apenas cinco posições para os verdes. Multiplicar uma escolha por dois não substitui a combinação correta entre essas cinco posições.",
+          "D": "A expressão soma etapas que precisam ocorrer simultaneamente e repete conjuntos de 12 posições. Não conta as distribuições válidas sem sobreposição.",
+          "E": "As combinações usam sucessivamente 12, 8, 5 e 2 posições disponíveis. Seu produto contabiliza todas as colorações com as quantidades exigidas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:138": {
@@ -963,6 +2091,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A média de julho a novembro é (700 + 2500 + 2500 + 2800 + 2700)/5 = 2240 unidades, valor de dezembro. A queda mensal projetada é 2700 − 2240 = 460. As vendas seriam 1780 em janeiro, 1320 em fevereiro, 860 em março e 400 em abril, primeiro mês abaixo de 700."
+        ],
+        "alternatives": {
+          "A": "Em janeiro, a projeção é 2240 − 460 = 1780 unidades. Esse total ainda supera as 700 unidades de julho.",
+          "B": "Em fevereiro, a projeção é 1320 unidades. As vendas ainda permanecem acima do mínimo de julho.",
+          "C": "Em março, a projeção chega a 860 unidades. Embora próximo de 700, esse valor ainda não é pior que o de julho.",
+          "D": "Em abril, a sequência atinge 400 unidades, abaixo das 700 de julho. É o primeiro mês a satisfazer a condição.",
+          "E": "Em maio as vendas já estariam abaixo do patamar, mas a primeira ocorrência seria em abril. A pergunta exige identificar quando a condição começa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:139": {
@@ -983,6 +2135,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Com o Sol a pino, a sombra corresponde à vista superior das letras verticais. Cada letra projeta uma faixa retangular de mesma espessura, com largura correspondente à sua extensão horizontal; P, N e E geram faixas largas e I uma faixa estreita, preservando os espaçamentos iguais, como em E."
+        ],
+        "alternatives": {
+          "A": "A faixa única une todas as letras e elimina os espaços entre elas. A projeção ortogonal preserva os intervalos entre os sólidos separados.",
+          "B": "A disposição não conserva adequadamente a sequência de larguras e o espaçamento uniforme entre as quatro letras. A segunda faixa deve corresponder ao I estreito.",
+          "C": "A primeira sombra aparece estreita, como se o P fosse reduzido à haste. A parte superior do P também ocupa largura e deve integrar a projeção.",
+          "D": "A primeira faixa estreita não representa toda a largura do P. Além disso, a sequência deve distinguir somente a segunda letra como a mais estreita.",
+          "E": "A imagem mostra quatro faixas com a mesma espessura, separadas por intervalos iguais. A segunda é estreita e as demais preservam as larguras de P, N e E."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:140": {
@@ -1003,6 +2179,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para obter flor rosa valorizada, o pH deve satisfazer 7 < pH < 8. Como pH = −log10 x, temos 7 < −log10 x < 8, ou −8 < log10 x < −7. Portanto, 10⁻⁸ < x < 10⁻⁷."
+        ],
+        "alternatives": {
+          "A": "Valores acima de 10⁻⁸ também podem superar 10⁻⁷ e produzir pH menor que 7. É necessário impor os dois limites para a concentração.",
+          "B": "Concentrações menores que 10⁻⁷ garantem pH maior que 7, mas podem produzir pH igual ou superior a 8. Falta o limite inferior de 10⁻⁸.",
+          "C": "O intervalo entre 7 e 8 é o do pH, não o da concentração de H⁺. A relação logarítmica transforma esses limites em potências negativas de dez.",
+          "D": "Não há multiplicação do pH por dez para obter a concentração. É preciso inverter a função logarítmica corretamente.",
+          "E": "O intervalo de concentração entre 10⁻⁸ e 10⁻⁷ corresponde exatamente a pH entre 7 e 8. Ele atende simultaneamente à cor rosa e ao valor comercial solicitado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:141": {
@@ -1023,6 +2223,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Se o objeto vale V, o transporte custa V/5 = 0,20V. Para não ultrapassar V de gasto total, a recompensa R deve satisfazer R + 0,20V ≤ V. Logo, R ≤ 0,80V, permitindo oferecer no máximo 80% do valor do objeto."
+        ],
+        "alternatives": {
+          "A": "20% é o custo do transporte, não a maior recompensa. Depois de pagá-lo, restam 80% do valor como limite para a oferta.",
+          "B": "25% atenderia ao limite, mas não seria a maior oferta possível. A despesa total ainda ficaria bem abaixo do valor do objeto.",
+          "C": "40% de recompensa somados a 20% de transporte resultam em apenas 60%. Há margem para oferecer mais sem ultrapassar o teto.",
+          "D": "60% de recompensa geram gasto total de 80% do valor. Ainda seria possível aumentar a oferta em mais 20 pontos percentuais.",
+          "E": "A soma de 80% de recompensa com 20% de transporte é 100% do valor. Essa é a maior oferta que respeita o limite de gasto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:142": {
@@ -1043,6 +2267,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Como cada permanência dura um minuto, a diferença de energia acumulada entre dois pontos do gráfico é numericamente a potência da lâmpada. As diferenças são 20, 15, 5, 15, 20, 10, 20 e 15 W, correspondendo aos cômodos 1, 4, 5, 4, 1, 6, 1 e 4."
+        ],
+        "alternatives": {
+          "A": "A sequência associa corretamente cada incremento de energia à potência do cômodo. Os oito intervalos de um minuto conduzem a 1→4→5→4→1→6→1→4.",
+          "B": "O segundo cômodo seria o quarto de 13 W, mas o gráfico cresce 15 W·min nesse intervalo. A sequência deixa de corresponder já na segunda permanência.",
+          "C": "A sequência inicial coincide, mas acrescenta um nono cômodo e troca a última potência de 15 W por 13 W. O gráfico possui oito intervalos e termina no cômodo 4.",
+          "D": "A segunda permanência indicada seria de 13 W e não de 15 W. Além disso, a lista apresenta nove cômodos para apenas oito minutos de observação.",
+          "E": "Depois de 20 e 15 W, a terceira potência deve ser 5 W, não os 13 W do cômodo 2. A sequência também possui uma permanência a mais que o gráfico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:143": {
@@ -1063,6 +2311,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Multiplicando cada gasto pela taxa, os custos diários são: França R$ 989,10; EUA R$ 1084,20; Austrália R$ 856,00; Canadá R$ 861,00; Reino Unido R$ 1229,60. A Austrália apresenta o menor custo e respeita o teto de R$ 1000,00."
+        ],
+        "alternatives": {
+          "A": "400·2,14 = R$ 856,00, menor valor entre os destinos. O custo também está abaixo do teto estabelecido pelo casal.",
+          "B": "O Canadá custa 410·2,10 = R$ 861,00 por dia. Embora dentro do teto, é R$ 5,00 mais caro que a Austrália.",
+          "C": "Os EUA custam 390·2,78 = R$ 1084,20. O valor ultrapassa o limite diário e não é o menor custo.",
+          "D": "A França custa 315·3,14 = R$ 989,10. Está dentro do orçamento, mas custa mais que Austrália e Canadá.",
+          "E": "O Reino Unido custa 290·4,24 = R$ 1229,60. Além de não ser o mais barato, excede o teto diário."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:144": {
@@ -1083,6 +2355,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para escrever 0,00011 em notação científica, deslocamos a vírgula quatro casas para a direita, obtendo o coeficiente 1,1. Para compensar esse deslocamento, usamos a potência 10⁻⁴: 0,00011 mm = 1,1 × 10⁻⁴ mm."
+        ],
+        "alternatives": {
+          "A": "1,1 × 10⁻¹ equivale a 0,11 mm. Esse número é mil vezes maior que o diâmetro informado.",
+          "B": "1,1 × 10⁻² equivale a 0,011 mm. O valor é cem vezes maior que 0,00011 mm.",
+          "C": "1,1 × 10⁻³ equivale a 0,0011 mm. Essa medida é dez vezes maior que a fornecida.",
+          "D": "Multiplicar 1,1 por 10⁻⁴ desloca a vírgula quatro casas à esquerda. O resultado é exatamente 0,00011 mm.",
+          "E": "1,1 × 10⁻⁵ equivale a 0,000011 mm. Essa medida é dez vezes menor que o diâmetro indicado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:145": {
@@ -1103,6 +2399,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No início, nível e experiência iguais a 1 dão ataque 2 e defesa 1, então A = 2en² e D = ne². Para J1, A = 2·5·4² = 160; para J2, D = 2·6² = 72. A diferença é 160 − 72 = 88."
+        ],
+        "alternatives": {
+          "A": "112 não é a diferença entre os valores corretos de ataque e defesa. É necessário conservar a constante 2 do ataque e elevar ao quadrado as variáveis certas.",
+          "B": "O ataque de J1 é 160 e a defesa de J2 é 72. A diferença de 88 explica a vitória do atacante.",
+          "C": "60 não resulta das proporcionalidades calibradas pelas condições iniciais. O quadrado recai no nível para ataque e na experiência para defesa.",
+          "D": "28 pode surgir de combinar valores sem os fatores adequados, mas não corresponde a 160 − 72. As duas forças têm expressões diferentes.",
+          "E": "24 não corresponde à comparação das forças calculadas. Os números de nível e experiência não devem ser apenas multiplicados sem os quadrados previstos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:146": {
@@ -1123,6 +2443,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O raio original é 3 m. Ao aumentar o diâmetro de 6 m em 8 m, o novo diâmetro é 14 m e o raio é 7 m. Como a parte antiga permanece, a área adicional é 3(7² − 3²) = 3·40 = 120 m², superior aos 100 m² disponíveis."
+        ],
+        "alternatives": {
+          "A": "21 m² corresponde a 3·7, sem o quadrado exigido na fórmula da área. Não representa a coroa circular acrescentada.",
+          "B": "24 m² usa o aumento do diâmetro sem calcular as duas áreas. A pavimentação depende da diferença entre os quadrados dos raios.",
+          "C": "48 m² não resulta da diferença 3·49 − 3·9. A área adicional correta é 120 m², acima do estoque.",
+          "D": "A insuficiência do material está correta, mas 108 m² não é a área adicionada. O raio final é 7 m e deve-se descontar a área de raio 3 m.",
+          "E": "A diferença entre as áreas final e inicial é 147 − 27 = 120 m². Faltam 20 m² de material, portanto o estoque não basta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:147": {
@@ -1143,6 +2487,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A taxa de gasto é a razão entre calorias e tempo. Pelo gráfico: I = 20/10 = 2; II = 100/15 ≈ 6,67; III = 120/20 = 6; IV = 100/25 = 4; V = 80/30 ≈ 2,67 kcal/min. A maior razão é a da atividade II."
+        ],
+        "alternatives": {
+          "A": "I consome 20 kcal em 10 min, equivalendo a 2 kcal/min. Essa taxa é menor que a de II.",
+          "B": "II consome 100 kcal em 15 min, aproximadamente 6,67 kcal/min. É a maior taxa calculada entre os cinco pontos.",
+          "C": "III tem o maior total de 120 kcal, mas também dura 20 min. Sua taxa de 6 kcal/min é menor que a de II.",
+          "D": "IV consome as mesmas 100 kcal de II, porém em 25 min. Sua taxa é 4 kcal/min, inferior à de II.",
+          "E": "V consome 80 kcal em 30 min, cerca de 2,67 kcal/min. O maior tempo não implica maior gasto por minuto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:148": {
@@ -1163,6 +2531,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada dia corresponde a uma coluna da matriz, por isso somamos os acertos verticalmente. Os totais são 11 na segunda, 10 na terça, 10 na quarta, 10 na quinta e 10 na sexta; assim, a segunda-feira apresenta o maior número de acertos."
+        ],
+        "alternatives": {
+          "A": "A primeira coluna soma 3 + 3 + 2 + 3 + 0 = 11. É o único total superior a dez acertos.",
+          "B": "A segunda coluna contém cinco valores iguais a 2, somando 10. Esse total é inferior aos 11 da segunda-feira.",
+          "C": "A terceira coluna soma 0 + 4 + 2 + 4 + 0 = 10. Embora contenha notas altas, seu total não é o maior.",
+          "D": "A quarta coluna soma 1 + 1 + 3 + 1 + 4 = 10. A comparação deve ser entre colunas completas, não entre valores isolados.",
+          "E": "A quinta coluna soma 2 + 2 + 2 + 0 + 4 = 10. A segunda-feira tem um acerto a mais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:149": {
@@ -1183,6 +2575,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para uma mesma volta dos pedais, o comprimento de corrente deslocado é fixo. O número de voltas da catraca e o avanço são inversamente proporcionais ao seu diâmetro, então 7/d = 1,5. Logo, d = 7/1,5 ≈ 4,7 cm."
+        ],
+        "alternatives": {
+          "A": "Uma catraca de aproximadamente 2,3 cm faria o avanço triplicar. O pedido é aumentar apenas 50%, passando ao fator 1,5.",
+          "B": "Reduzir o diâmetro à metade dobra o número de voltas. Isso produziria aumento de 100%, maior que o desejado.",
+          "C": "O diâmetro deve ser dividido por 1,5, pois o avanço é inversamente proporcional a ele. O resultado é aproximadamente 4,7 cm.",
+          "D": "Com 5,3 cm, a razão 7/5,3 é cerca de 1,32. O avanço aumentaria aproximadamente 32%, abaixo de 50%.",
+          "E": "Aumentar o diâmetro para 10,5 cm reduz o avanço a dois terços do original. A relação é inversa, não direta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:150": {
@@ -1203,6 +2619,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No dia 1, a temperatura está abaixo de 10 °C e a umidade abaixo de 40%, validando o alerta cinza. No dia 12, a temperatura é 40 °C e a umidade é 20%, mas o gráfico e a faixa indicada no item exigem atenção às condições de temperatura; pelo gabarito oficial, apenas o dia 1 atende ao alerta emitido. No dia 13, a temperatura ultrapassa 40 °C, mas a umidade fica acima de 25%, invalidando o vermelho."
+        ],
+        "alternatives": {
+          "A": "O dia 1 apresenta temperatura inferior a 10 °C e umidade inferior a 40%. Assim, o alerta cinza é o único dos avisos listados confirmado pelo gabarito oficial.",
+          "B": "No gráfico, o dia 12 marca a temperatura no limite de 40 °C. O item não o considera dentro da faixa de emissão laranja na leitura adotada pelo gabarito.",
+          "C": "O dia 1 está correto, mas incluir o dia 12 contraria a leitura de intervalo usada no item. A opção oficial restringe a validade ao alerta cinza.",
+          "D": "A umidade do dia 13 está em torno de 40%, acima do limite de 25%. Mesmo com temperatura superior a 40 °C, não cabe alerta vermelho.",
+          "E": "O alerta vermelho do dia 13 falha pelo critério de umidade. Além disso, o dia 12 não é incluído na faixa laranja pela leitura oficial do item."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:151": {
@@ -1223,6 +2663,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada placa equivale a um retângulo de largura 40 cm e altura 60 − 20 = 40 cm, acrescido de um semicírculo de raio 20 cm. A área é 40·40 + 3,14·20²/2 = 1600 + 628 = 2228 cm². As dez placas totalizam 22280 cm²."
+        ],
+        "alternatives": {
+          "A": "16628 cm² não correspondem à decomposição da figura em retângulo e semicírculo. A área de uma placa é 2228 cm² e deve ser multiplicada por dez.",
+          "B": "A parte retangular mede 1600 cm² e o topo semicircular mede 628 cm². Dez vezes sua soma resulta em 22280 cm².",
+          "C": "28560 cm² correspondem a somar ao retângulo um círculo completo. A metade inferior do círculo já está incluída na região retangular e não deve ser duplicada.",
+          "D": "41120 cm² excedem a área da decomposição correta. A altura do retângulo não é 60 cm, pois esse total inclui os 20 cm superiores do semicírculo.",
+          "E": "66240 cm² não resultam das dimensões fornecidas. É preciso usar raio 20 cm, considerar só o semicírculo externo e multiplicar a área individual por dez."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:152": {
@@ -1243,6 +2707,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A capacidade de 0,3 m³ equivale a 300 litros; 80% desse volume são 240 litros. Como cada embalagem rende 2,7 litros, são necessárias 240/2,7 ≈ 88,89 embalagens. Arredondando para o próximo inteiro, o mínimo é 89."
+        ],
+        "alternatives": {
+          "A": "Nove embalagens rendem apenas 24,3 litros. Esse valor decorre de uma conversão incorreta entre metros cúbicos e litros.",
+          "B": "Doze embalagens fornecem 32,4 litros, muito menos que os 240 exigidos. A capacidade deve ser convertida para 300 litros antes de aplicar os 80%.",
+          "C": "O quociente é aproximadamente 88,89, portanto 88 não bastam e 89 é o mínimo. As 89 embalagens fornecem volume suficiente para o banho.",
+          "D": "112 embalagens se aproximam da quantidade para encher os 300 litros totais. O enunciado exige apenas 80% da capacidade.",
+          "E": "134 embalagens ultrapassam largamente o volume necessário. O cálculo correto divide 240 litros pelo rendimento de 2,7 litros."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:153": {
@@ -1263,6 +2751,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A redução absoluta de 2014 para 2015 foi de 900 − 850 = 50 acidentes por ano. Mantendo essa queda, os valores seriam 800 em 2016, 750 em 2017 e 700 em 2018."
+        ],
+        "alternatives": {
+          "A": "150 é a redução total ao longo dos três anos depois de 2015. A pergunta solicita o número de acidentes restante, e não a queda acumulada.",
+          "B": "450 usa uma redução anual maior que os 50 acidentes especificados. A tendência deve ser a diferença entre 2014 e 2015.",
+          "C": "550 não resulta de três reduções de 50 a partir de 850. É preciso contar apenas os intervalos de 2015 até 2018.",
+          "D": "Subtrair 3·50 de 850 resulta em 700 acidentes. Esse é o valor projetado para 2018.",
+          "E": "800 seria a projeção para 2016, primeiro ano após 2015. Ainda faltam duas reduções de 50 até 2018."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:154": {
@@ -1283,6 +2795,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para obter o valor à vista, descontamos cada prestação até a data da compra. A primeira vale 202/1,01 = 200 reais e a segunda vale 204,02/(1,01)² = 200 reais. A soma dos valores presentes é R$ 400,00."
+        ],
+        "alternatives": {
+          "A": "398,02 não é a soma dos valores presentes das duas parcelas. Descontar valores nominais sem respeitar o prazo de cada pagamento leva a erro.",
+          "B": "Cada prestação equivale a R$ 200,00 na data da compra. A soma desses dois valores descontados é R$ 400,00.",
+          "C": "401,94 pode surgir de descontar o total por um único período. As parcelas vencem em datas diferentes e exigem fatores distintos.",
+          "D": "404,00 não considera corretamente o desconto da segunda parcela por dois meses. O valor à vista deve excluir todos os juros futuros.",
+          "E": "406,02 é a soma nominal das prestações. Ela inclui juros e não corresponde ao preço à vista negociado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:155": {
@@ -1303,6 +2839,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada sócio inicial tem participação considerada de 1000000/3 + 800000/4 = R$ 533333,33. O quarto investiu apenas R$ 200000,00. Dividindo cada valor pelo total de R$ 1800000,00, as parcelas são aproximadamente 29,63% para cada inicial e 11,11% para o quarto."
+        ],
+        "alternatives": {
+          "A": "Os três iniciais ficam com cerca de 29,63% cada um, e o quarto com 11,11%. Os valores apresentados são as aproximações compatíveis com o rateio.",
+          "B": "O quarto sócio investiu 200000/1800000, ou 11,11%, não 13,89%. A divisão deve considerar os aportes efetivamente atribuídos a cada um.",
+          "C": "A divisão igual ignora que o quarto sócio não participou do primeiro milhão. Somente o segundo investimento foi repartido igualmente entre os quatro.",
+          "D": "18,52% considera apenas 1000000/3 em relação ao total. Falta acrescentar os R$ 200000,00 do segundo aporte de cada sócio inicial.",
+          "E": "Os percentuais não incorporam corretamente os aportes iniciais e somam menos que a totalidade da venda. Cada inicial tem participação superior à do quarto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:156": {
@@ -1323,6 +2883,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os valores são proporcionais a 1/2, 1/3 e 1/5. Multiplicando por 30, obtemos pesos 15, 10 e 6, cuja soma é 31. Cada parte vale R$ 1000,00; a máquina de cinco anos recebe 6 partes, ou R$ 6000,00."
+        ],
+        "alternatives": {
+          "A": "R$ 3100,00 correspondem a 10% do total, mas o peso da máquina mais antiga é 6/31. A divisão não é diretamente proporcional às idades.",
+          "B": "Os pesos inversos normalizados são 15, 10 e 6. A máquina de cinco anos recebe 6/31 de R$ 31000,00, resultando em R$ 6000,00.",
+          "C": "R$ 6200,00 são um quinto do total. Isso ignora que os três inversos precisam ser normalizados pela sua soma.",
+          "D": "R$ 15000,00 são destinados à máquina de dois anos, cujo peso inverso é o maior. A mais antiga deve receber a menor parcela.",
+          "E": "Metade do total não é a participação da máquina de cinco anos. O pagamento inverso à idade exige peso 1/5 entre os três pesos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:157": {
@@ -1343,6 +2927,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O rendimento de 2010 é 1250·1,072 = R$ 1340,00. A projeção de 2020 aplica 10% sobre esse novo valor, dando 1340·1,10 = R$ 1474,00. Os aumentos são sucessivos e não devem ser simplesmente somados sobre a base inicial."
+        ],
+        "alternatives": {
+          "A": "R$ 1340,00 é o rendimento já corrigido para 2010. Ainda falta aplicar os 10% previstos para a década seguinte.",
+          "B": "Esse valor não corresponde a aumentar R$ 1340,00 em 10%. O acréscimo de 2020 é R$ 134,00.",
+          "C": "R$ 1375,00 aplicam apenas 10% sobre os R$ 1250,00 iniciais. O aumento de 7,2% também precisa ser considerado.",
+          "D": "R$ 1465,00 resultam de somar 7,2% e 10% sobre a base inicial. O segundo percentual incide sobre o valor já aumentado em 2010.",
+          "E": "O produto 1250·1,072·1,10 é 1474. Ele representa corretamente os dois reajustes sucessivos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:158": {
@@ -1363,6 +2971,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O produto entre amplitude e frequência é 2000·0,2 = 400. Como log400 = log(4·100) = 2log2 + 2 ≈ 2,6, a magnitude é 3,30 + 2,60 = 5,90. Pela tabela, o evento é moderado."
+        ],
+        "alternatives": {
+          "A": "A categoria pequeno termina em 3,9. A magnitude calculada é 5,9, acima desse intervalo.",
+          "B": "A categoria ligeiro vai de 4,0 a 4,9. O valor de 5,9 não pertence a essa faixa.",
+          "C": "A magnitude 5,9 está no limite superior da faixa de 5,0 a 5,9. Portanto, a descrição correta é moderado.",
+          "D": "A categoria grande começa em 6,0. Mesmo próxima desse limite, a magnitude aproximada fornecida é 5,9.",
+          "E": "Eventos extremos têm magnitude pelo menos 10,0 na tabela. O resultado obtido é muito inferior a esse patamar."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:159": {
@@ -1383,6 +3015,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O bloco mínimo é 5, 4, 3, 2, 1, 2, 3, 4, com oito posições. Como 2015 = 8·251 + 7, o item procurado ocupa a sétima posição do bloco, cujo código é 3: caixa de direção."
+        ],
+        "alternatives": {
+          "A": "Rolamento tem código 1, que ocupa a quinta posição do bloco. O resto da divisão de 2015 por 8 é 7, não 5.",
+          "B": "Catalisador tem código 4, presente na segunda e na oitava posições. A posição procurada é a sétima.",
+          "C": "Amortecedor tem código 5 e inicia cada bloco. Isso ocorreria em uma posição de resto 1 na divisão por oito.",
+          "D": "Pastilha de freio tem código 2, presente nas posições quatro e seis. O resto 7 seleciona o código 3.",
+          "E": "Após 251 blocos completos, faltam sete termos para alcançar o item 2015. O sétimo termo é 3, correspondente à caixa de direção."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:160": {
@@ -1403,6 +3059,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Escolhemos um parceiro destro para o primeiro canhoto de 6 maneiras e para o segundo de 5 maneiras. Restam quatro destros, que podem formar duas duplas de 3 modos. Logo, o total é 6·5·3 = 90, sem dar ordem às duplas."
+        ],
+        "alternatives": {
+          "A": "69 não corresponde ao produto das escolhas válidas nem à exclusão dos casos proibidos. É preciso separar os dois canhotos e emparelhar os demais sem ordenar as duplas.",
+          "B": "70 não contempla todas as escolhas de parceiros para os canhotos. O produto completo é 6·5·3, pois os quatro destros restantes admitem três pareamentos.",
+          "C": "Há 30 maneiras de escolher parceiros distintos para os dois canhotos. Para cada uma, restam três formas de parear os quatro destros, totalizando 90.",
+          "D": "104 subtrai apenas um caso das 105 divisões possíveis. Porém há 15 casos em que os canhotos ficam juntos, pois os seis destros podem ser pareados de 15 modos.",
+          "E": "105 é o total de pareamentos sem a restrição. É necessário excluir os 15 em que os dois canhotos formam uma dupla."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:161": {
@@ -1423,6 +3103,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada um dos quatro vértices cortados gera uma nova face triangular equilátera. Cada uma das quatro faces triangulares originais perde seus três cantos e se transforma em hexágono; como os cortes ocorrem a um terço das arestas, os lados desses hexágonos são iguais, resultando em quatro hexágonos regulares e quatro triângulos equiláteros."
+        ],
+        "alternatives": {
+          "A": "Os quatro vértices originam quatro triângulos, e as quatro faces originais tornam-se hexágonos regulares. A simetria e o corte em terços garantem essa configuração.",
+          "B": "O tetraedro possui quatro faces originais, todas afetadas pelos cortes. Portanto, surgem quatro hexágonos, e não apenas dois.",
+          "C": "Cortar os três cantos de cada face triangular produz seis lados. Não se obtêm quatro quadriláteros como faces remanescentes.",
+          "D": "Além de errar a contagem, a alternativa substitui hexágonos por quadriláteros. A simetria do tetraedro também produz triângulos equiláteros, não apenas genericamente isósceles.",
+          "E": "São quatro, e não três, as faces originais que se tornam hexágonos. O quarto hexágono não desaparece no truncamento."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:162": {
@@ -1443,6 +3147,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A escala linear de 1:200 implica uma escala de volumes de 1:200³. O reservatório real comporta 45·200³ = 360000000 cm³ = 360000 litros. Dividindo pelo consumo diário de 30000 litros, obtemos 12 dias de abastecimento."
+        ],
+        "alternatives": {
+          "A": "Trinta dias exigiriam 900000 litros, acima da capacidade real. A escala volumétrica correta fornece 360000 litros.",
+          "B": "Quinze dias demandariam 450000 litros. Esse volume supera o obtido ao multiplicar 45 cm³ por 200³.",
+          "C": "O volume real é 360000 litros, e a razão por 30000 litros diários é 12. A potência cúbica da escala é essencial para o resultado.",
+          "D": "Seis dias corresponderiam a apenas 180000 litros, metade da capacidade. O cálculo deve utilizar integralmente o fator volumétrico 200³.",
+          "E": "Três dias exigiriam apenas 90000 litros. A escala de volume não pode ser confundida com a escala linear ou com uma fração dela."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:163": {
@@ -1463,6 +3191,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O preço é constante em R$ 12,00 até 6 m³. De 6 a 10 m³, cresce com inclinação 3, chegando a R$ 24,00; acima de 10 m³, cresce com inclinação 6, até R$ 54,00 aos 15 m³. O gráfico deve ser contínuo, inicialmente horizontal e depois crescente com inclinação maior na última faixa."
+        ],
+        "alternatives": {
+          "A": "O desenho apresenta trecho horizontal inicial, seguido de crescimento moderado e depois mais acentuado. Essa sequência corresponde às três tarifas acumuladas.",
+          "B": "A inclinação diminui na última faixa, mas a tarifa por metro cúbico passa de 3 para 6 reais. O gráfico deveria se tornar mais íngreme.",
+          "C": "O preço fica constante na última faixa do desenho. Na regra dada, cada metro cúbico acima de dez acrescenta R$ 6,00.",
+          "D": "O gráfico apresenta apenas uma inclinação após o trecho constante. Falta a mudança de taxa quando o consumo ultrapassa 10 m³.",
+          "E": "O trecho inicial já cresce, contrariando o preço fixo até 6 m³. A primeira faixa deve aparecer como um segmento horizontal."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:164": {
@@ -1483,6 +3235,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Admitindo independência entre as visualizações, a chance de não perceber nenhuma das n placas é (1/2)ⁿ. Queremos 1 − (1/2)ⁿ > 0,99, ou 2ⁿ > 100. O menor inteiro é n = 7, pois 2⁶ = 64 e 2⁷ = 128. Como uma placa já existe, são necessárias seis novas."
+        ],
+        "alternatives": {
+          "A": "99 novas placas seriam suficientes, mas estão muito acima do mínimo. Sete placas totais já dão probabilidade maior que 99%.",
+          "B": "A probabilidade não cresce pela simples soma de 1/2 para cada placa. O cálculo do evento complementar mostra que bastam seis novas.",
+          "C": "Cinquenta novas placas não são o mínimo. A exigência é superada quando o total de placas chega a sete.",
+          "D": "Com sete placas, a chance de perceber ao menos uma é 127/128, superior a 99%. Como uma já estava instalada, faltam seis novas.",
+          "E": "Uma nova placa produziria duas no total e probabilidade de 3/4. Esse valor é muito inferior a 99%."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:165": {
@@ -1503,6 +3279,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A soma das alturas era 20·1,80 = 36 m. A troca reduz essa soma em 0,20 m, sem alterar a quantidade de jogadores, dando 35,80/20 = 1,79 m para a nova média."
+        ],
+        "alternatives": {
+          "A": "Subtrair 0,20 diretamente de 1,80 trataria como se todos os jogadores fossem menores. A redução deve ser distribuída pelos vinte integrantes na média.",
+          "B": "A média cai apenas 0,20/20 = 0,01 m. Uma queda de 0,02 m seria duas vezes maior que a correta.",
+          "C": "A soma diminui 0,20 m e o grupo mantém vinte jogadores. A média reduz-se em 0,01 m, passando a 1,79 m.",
+          "D": "O novo jogador é mais baixo, logo a média não pode aumentar. A substituição reduz o total de alturas.",
+          "E": "Além de aumentar a média no sentido errado, o valor não corresponde à variação por jogador. A mudança correta é uma redução de 0,01 m."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:166": {
@@ -1523,6 +3323,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O total de garrafas fora da especificação é 0·52 + 1·5 + 2·2 + 3·1 = 12. Dividindo pelos 60 dias observados, a média diária é 12/60 = 0,2 garrafa."
+        ],
+        "alternatives": {
+          "A": "0,1 corresponderia a apenas seis ocorrências no período. A tabela registra doze garrafas ao multiplicar quantidades por frequências.",
+          "B": "A média ponderada usa os dias de cada quantidade como pesos. O total de doze garrafas em sessenta dias resulta em 0,2 por dia.",
+          "C": "1,5 é a média simples de 0, 1, 2 e 3, ignorando suas frequências. Como 52 dias tiveram zero, eles precisam influenciar o resultado.",
+          "D": "2,0 não considera os sessenta dias nem a predominância de dias sem falhas. A média deve dividir o total de garrafas pelo total de dias.",
+          "E": "3,0 é o maior número de falhas ocorrido num dia, não a média. Esse valor aconteceu apenas uma vez no período."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:167": {
@@ -1543,6 +3367,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Uma jarda mede 0,9144 m = 91,44 cm e contém três pés. Portanto, um pé mede 91,44/3 = 30,48 cm. Dividindo por 2,54 cm por polegada, obtemos 30,48/2,54 = 12 polegadas."
+        ],
+        "alternatives": {
+          "A": "0,12 pode decorrer de não converter metros para centímetros. As unidades de comprimento devem ser igualadas antes da divisão por 2,54.",
+          "B": "0,3048 é a medida de um pé em metros, não em polegadas. Ainda é necessário converter para a unidade solicitada.",
+          "C": "1,08 não resulta das equivalências do quadro. Um pé corresponde a 30,48 cm, que contêm doze segmentos de 2,54 cm.",
+          "D": "Dividir 0,9144 m por três dá 0,3048 m por pé. Essa medida equivale a 12 polegadas.",
+          "E": "36 polegadas correspondem a uma jarda inteira. Como uma jarda tem três pés, cada pé possui um terço desse total."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:168": {
@@ -1563,6 +3411,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Como nenhum índice é zero ou um, temos 0 < X < 1. Nesse intervalo, quanto menor o expoente, maior o valor da potência. Os expoentes são 1, 1/2, 1/3, 2 e 3; o menor é 1/3, de modo que X^(1/3), do terceiro país, é o maior."
+        ],
+        "alternatives": {
+          "A": "Para 0 < X < 1, extrair raízes aumenta o valor em relação a X. Assim, o índice do primeiro país é menor que os do segundo e do terceiro.",
+          "B": "A raiz quadrada supera X, mas fica abaixo da raiz cúbica quando X está entre zero e um. Portanto, o segundo país não tem o maior índice.",
+          "C": "O expoente 1/3 é o menor dos apresentados. Para uma base entre zero e um, isso produz o maior valor.",
+          "D": "Elevar X ao quadrado reduz seu valor nesse intervalo. O quarto país fica abaixo do primeiro, não acima de todos.",
+          "E": "O cubo de um número entre zero e um é ainda menor que seu quadrado. O quinto país tem o menor índice dentre as opções."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:169": {
@@ -1583,6 +3455,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A planta pode ser dividida em três retângulos: 8·8, 3·7 e 3·5, totalizando 100 m². A espessura é 5 cm = 0,05 m, portanto o volume é 100·0,05 = 5 m³. Um caminhão de 5 m³ fornece exatamente o concreto necessário."
+        ],
+        "alternatives": {
+          "A": "Dez caminhões de 10 m³ forneceriam 100 m³. Esse valor confunde a área de 100 m² com o volume, sem multiplicar pela espessura de 0,05 m.",
+          "B": "Cinco caminhões de 10 m³ forneceriam 50 m³, dez vezes a necessidade. A conversão de 5 cm para metros é essencial ao cálculo.",
+          "C": "A área de 100 m² multiplicada pela espessura de 0,05 m resulta em 5 m³. Um único caminhão dessa capacidade satisfaz o pedido com a menor quantidade.",
+          "D": "Dez caminhões de 2 m³ somam 20 m³, acima dos 5 m³ necessários. Além do excesso, não constituem a menor quantidade de veículos.",
+          "E": "Um caminhão de 2 m³ não comporta os 5 m³ exigidos pela laje. Sua capacidade é insuficiente para o volume calculado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:170": {
@@ -1603,6 +3499,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O volume de sangue é estimado em 8% da massa corporal, ou 0,08m litros. A concentração é a razão q/(0,08m), em gramas por litro. A condição prejudicial descrita é, portanto, q/(0,08m) > 0,4."
+        ],
+        "alternatives": {
+          "A": "O denominador 0,8m representa 80% da massa, não os 8% indicados. A conversão percentual correta é 0,08.",
+          "B": "A expressão inverte a razão entre massa de álcool e volume de sangue. Também não utiliza corretamente o fator de 8% no denominador.",
+          "C": "O valor 0,4 é o limite de concentração, não a fração que define o volume sanguíneo. Os papéis dos números foram trocados.",
+          "D": "A razão representa volume por massa de álcool, inversa da concentração solicitada. A quantidade q deve aparecer no numerador.",
+          "E": "O denominador 0,08m expressa o volume de sangue e q expressa a massa de álcool. A desigualdade maior que 0,4 traduz exatamente o limite prejudicial."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:171": {
@@ -1623,6 +3543,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O retângulo original tem largura 18 cm e altura 12 cm. Como EC = 12 cm, a distância horizontal entre A e E é 18 − 12 = 6 cm, e a vertical é 12 cm. Pelo teorema de Pitágoras, AE = √(6² + 12²) = √180 = 6√5 cm."
+        ],
+        "alternatives": {
+          "A": "2√22 tem quadrado igual a 88, diferente de 6² + 12² = 180. Não corresponde aos catetos determinados pela figura.",
+          "B": "6√3 corresponde a √108, não à soma dos quadrados dos deslocamentos horizontal e vertical. O cateto vertical mede 12 cm.",
+          "C": "12 cm é a altura da folha, mas AE também percorre uma distância horizontal de 6 cm. Como hipotenusa, deve medir mais que 12 cm.",
+          "D": "Os catetos de 6 e 12 cm dão AE² = 180. Simplificar √180 resulta em 6√5 cm.",
+          "E": "12√2 usaria dois catetos de 12 cm. A distância horizontal de A até E é apenas 6 cm, pois EC ocupa 12 dos 18 cm da base."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:172": {
@@ -1643,6 +3587,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Como o grupo de basquete tem uma pessoa a mais, a turma possui número ímpar e o aluno de altura mediana integra esse grupo dos mais altos. A mediana é 1,67 m e pertence exclusivamente a F: P e J ficam abaixo dela, enquanto F e M ficam no grupo de basquete."
+        ],
+        "alternatives": {
+          "A": "P e J têm alturas inferiores à mediana e pertencem à metade dos menores. Por isso, não podem ambos integrar o grupo dos mais altos.",
+          "B": "J mede 1,66 m, abaixo da mediana de 1,67 m. Ele fica no futebol, assim como P.",
+          "C": "P e J ficam abaixo do aluno central F e jogam futebol. F, que ocupa a posição mediana, e M, mais alto, integram o basquete.",
+          "D": "F é o aluno de altura mediana e o basquete contém o elemento central por ter uma pessoa a mais. Portanto, F não fica no futebol.",
+          "E": "M está acima da mediana e pertence ao grupo dos mais altos. F também integra esse grupo, de modo que não jogam todos futebol."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:173": {
@@ -1663,6 +3631,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Dos X funcionários, um é gerente e X − 1 são diaristas. Cada diarista recebe 2·80 = R$ 160,00 por semana, então Y = 1000 + 160(X − 1) = 160X + 840."
+        ],
+        "alternatives": {
+          "A": "A expressão usa apenas uma diária de R$ 80,00 por funcionário. Cada diarista trabalha dois dias na semana.",
+          "B": "Além de considerar só uma diária, soma o gerente sem retirá-lo da contagem de X. O total inclui apenas X − 1 diaristas.",
+          "C": "O coeficiente 80 ignora o segundo dia trabalhado. O termo constante também não representa a substituição de um diarista pelo gerente.",
+          "D": "O gasto é 160 reais por cada um dos X − 1 diaristas mais mil reais do gerente. A simplificação produz 160X + 840.",
+          "E": "Essa expressão paga R$ 160,00 a todos os X funcionários e ainda acrescenta o salário do gerente. É necessário descontar o gerente do número de diaristas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:174": {
@@ -1683,6 +3675,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para haver contato recíproco, as distâncias de P a Q e S devem ser no máximo 3 km, e a R no máximo 2 km, considerando o menor raio de cada par. No bar I=(5,6), as distâncias são √5 até Q=(3,7), √2 até R=(6,7) e 3 até S=(5,3), todas permitidas."
+        ],
+        "alternatives": {
+          "A": "No bar I, as distâncias a Q, R e S são respectivamente √5, √2 e 3 km. Elas satisfazem os limites recíprocos de 3, 2 e 3 km.",
+          "B": "No bar II=(4,5), a distância até R é √8 km, maior que os 2 km definidos por R. Assim, não ocorre contato com os três usuários.",
+          "C": "No bar III=(5,5), a distância até R é √5 km, ainda acima do raio de 2 km. Estar dentro do raio de P não basta para reciprocidade.",
+          "D": "No bar IV=(4,6), a distância a R é √5 km e a S é √10 km. Esses valores ultrapassam, respectivamente, 2 km e o raio de 3 km de P.",
+          "E": "No bar V=(3,4), a distância até R é √18 km, maior que os 2 km de R. Isso impede o contato simultâneo, apesar da proximidade de Q e S."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:175": {
@@ -1703,6 +3719,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Somando os pontos do gráfico na ordem domingo a sábado, os refrigerantes totalizam 7+4+4+5+8+8+8=44, os caldos 4+3+1+2+4+7+7=28 e os pastéis 10+2+4+4+7+8+10=45. Os novos pastéis serão tantos quanto refrigerantes e caldos anteriores juntos: 44+28=72. O acréscimo é 72−45=27."
+        ],
+        "alternatives": {
+          "A": "Vinte não é a diferença entre o novo total previsto de 72 pastéis e o anterior de 45. É necessário somar os valores de todos os dias das três séries.",
+          "B": "Os refrigerantes e caldos anteriores somam 72 unidades, que serão o novo total de pastéis. Descontados os 45 pastéis anteriores, o aumento é 27.",
+          "C": "44 é o total de refrigerantes da semana anterior. Ele é apenas uma parcela do cálculo da previsão, não o aumento de pastéis.",
+          "D": "55 não resulta da previsão de 72 menos o histórico de 45. A leitura deve distinguir as linhas de pastel, refrigerante e caldo no gráfico.",
+          "E": "71 não corresponde ao acréscimo solicitado e se aproxima indevidamente do novo total. A pergunta exige subtrair as vendas anteriores de pastéis."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:176": {
@@ -1723,6 +3763,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em 100 declarações, 20 são inconsistentes e 25% dessas são fraudulentas, totalizando 5. Das 80 consistentes, 6,25% também são fraudulentas, outras 5. Entre as 10 fraudes, 5 foram consideradas inconsistentes, então P(inconsistente|fraudulenta)=5/10=0,5."
+        ],
+        "alternatives": {
+          "A": "0,05 é a proporção conjunta de declarações inconsistentes e fraudulentas no total. A pergunta condiciona o universo às fraudes, exigindo dividir por 0,10.",
+          "B": "0,10 é a probabilidade total de fraude, somando os dois grupos. Não é a proporção das inconsistentes dentro das fraudulentas.",
+          "C": "Somar taxas sem ponderar pelos tamanhos dos grupos não produz a probabilidade condicional. O universo correto contém dez fraudes em cada cem declarações.",
+          "D": "0,3125 soma 25% e 6,25%, apesar de serem percentuais de grupos diferentes. Eles devem ser ponderados e depois usados na condição solicitada.",
+          "E": "Há cinco fraudes inconsistentes e cinco fraudes consistentes em cada cem declarações. Metade das fraudes foi marcada como inconsistente, resultando em 0,5000."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:177": {
@@ -1743,6 +3807,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As taxas são U/(U+R): I=8000/12000≈66,7%; II=10000/18000≈55,6%; III=11000/16000=68,75%; IV=18000/28000≈64,3%; V=17000/29000≈58,6%. O maior valor pertence ao município III, embora IV tenha maior população urbana absoluta."
+        ],
+        "alternatives": {
+          "A": "I tem taxa de 8000/(8000+4000)=2/3, cerca de 66,7%. Ela é inferior aos 68,75% de III.",
+          "B": "II tem 10000 urbanos em 18000 habitantes, cerca de 55,6%. A comparação deve usar a população total, não apenas o número de urbanos.",
+          "C": "III apresenta 11000/(11000+5000)=68,75%. Essa é a maior participação urbana entre os municípios.",
+          "D": "IV tem o maior número absoluto de moradores urbanos, mas sua população rural também é grande. A taxa de aproximadamente 64,3% fica abaixo da de III.",
+          "E": "V tem 17000 urbanos em 29000 habitantes, cerca de 58,6%. O total urbano elevado não garante a maior razão de urbanização."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:178": {
@@ -1763,6 +3851,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O volume inicial é π·2²·3,30=13,2π m³. Os quatro canos armazenam 4·π·0,05²·20=0,2π m³, restando 13π nos tanques. A soma das áreas das bases é π·2²+4·π·1,5²=13π m². Portanto, a altura comum é 13π/13π=1,00 m."
+        ],
+        "alternatives": {
+          "A": "1,44 m não conserva o volume quando se somam as áreas dos cinco reservatórios e o volume dos canos. É necessário incluir o tanque central no nível final.",
+          "B": "1,16 m também produziria volume maior que o disponível nos cinco tanques. As áreas das bases somam 13π m².",
+          "C": "1,10 m não resulta do balanço entre 13,2π iniciais e 0,2π retidos nos canos. O quociente correto é 13π por 13π.",
+          "D": "Após preencher os canos, restam 13π m³ distribuídos em bases de área total 13π m². A altura comum é exatamente 1 m.",
+          "E": "0,95 m deixaria parte do volume inicial sem contabilização. Com a geometria fornecida, a conservação da água estabelece altura de 1 m."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:179": {
@@ -1783,6 +3895,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O orçamento original é 10000+40000+2500·40=R$150000,00; o novo teto é 90% disso, R$135000,00. O projeto passa a R$5000,00 e a construção a 3125·40=R$125000,00. Sobram R$5000,00 para os custos fixos, uma redução de R$35000,00 sobre R$40000,00, equivalente a 87,5%."
+        ],
+        "alternatives": {
+          "A": "23,3% aproxima a redução de R$35000,00 dividida pelo orçamento total de R$150000,00. O desconto solicitado incide sobre os custos fixos de R$40000,00.",
+          "B": "25% é o aumento da tarifa por metro quadrado, não o desconto fixo necessário. O orçamento precisa cair a R$135000,00 apesar desse aumento.",
+          "C": "Um desconto de 50% deixaria R$20000,00 de custos fixos e total de R$150000,00. Isso não alcança a redução global de 10%.",
+          "D": "Os custos fixos devem cair de R$40000,00 para R$5000,00. A redução de 35000/40000 corresponde a 87,5%.",
+          "E": "Eliminar todos os custos fixos produziria orçamento de R$130000,00, redução maior que a prevista. Para atingir exatamente R$135000,00, ainda devem ser cobrados R$5000,00."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     },
     "q:180": {
@@ -1803,6 +3939,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2019 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Igualar h(t) a 6 dá sen(βt/2−π/2)=1/2. Os três primeiros argumentos são π/6, 5π/6 e 13π/6, que correspondem a tempos 4π/(3β), 8π/(3β) e 16π/(3β). Para o terceiro ocorrer antes de 4 s, usando π≈3, exige-se 16/β<4, ou β>4. O menor inteiro é 5."
+        ],
+        "alternatives": {
+          "A": "Com β=1, o terceiro encontro com 6 cm ocorreria em 16 s pela aproximação dada. Isso está muito além dos quatro segundos.",
+          "B": "Com β=2, o terceiro encontro ocorreria em 8 s. A condição de três ocorrências antes de 4 s não é atendida.",
+          "C": "Com β=4, o terceiro encontro ocorre exatamente em 4 s. O enunciado exige menos de quatro segundos, portanto a igualdade não basta.",
+          "D": "Com β=5, o terceiro encontro ocorre em 16/5=3,2 s. É o menor inteiro que satisfaz a desigualdade estrita β>4.",
+          "E": "β=8 também satisfaz a condição, mas não é o menor inteiro possível. β=5 já permite as três ocorrências no intervalo exigido."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2019/2019_PV_impresso_D2_CD5.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2019/gabarito_2_dia_caderno_5_amarelo_aplicacao_regular.pdf"
+          }
+        ]
       }
     }
   }

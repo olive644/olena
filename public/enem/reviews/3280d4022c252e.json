@@ -23,6 +23,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A hachura do problema ambiental se concentra no semiárido nordestino, abrangendo sobretudo a Caatinga. A combinação de vulnerabilidade climática e uso inadequado do solo pode degradar terras secas, reduzindo cobertura e produtividade. Esse processo é a desertificação, sem significar apenas a expansão de um deserto natural."
+        ],
+        "alternatives": {
+          "A": "A localização no semiárido e a degradação de áreas secas correspondem à desertificação. A atividade humana pode intensificar a vulnerabilidade decorrente de chuvas escassas e irregulares.",
+          "B": "Rios temporários são comuns na região, mas a hachura cobre áreas terrestres amplas e não uma rede de cursos poluídos. A figura não delimita a qualidade da água dos rios.",
+          "C": "Queimadas ocorrem em vários biomas, inclusive fora do Nordeste semiárido. A concentração espacial destacada corresponde ao problema de degradação de terras secas.",
+          "D": "O desmatamento ciliar seguiria margens de rios e não se restringiria ao padrão regional apresentado. Ele pode contribuir para degradação, mas não nomeia o fenômeno amplo mapeado.",
+          "E": "A contaminação subterrânea exigiria dados sobre aquíferos e fontes de poluentes. O mapa destaca uma área climática e de uso do solo, sem indicar essa distribuição de contaminação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:10": {
@@ -43,6 +67,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A aquisição financiada pelo Estado enaltece bandeirantes e relaciona a expansão territorial brasileira à história paulista. A memória selecionada transforma o protagonismo de São Paulo em fundamento de sua posição nacional. A homenagem ao destruidor de Palmares também mostra que essa construção não valoriza todas as experiências sociais igualmente."
+        ],
+        "alternatives": {
+          "A": "A narrativa faz do sertanismo paulista o elo decisivo da formação territorial do país. Ela legitima a centralidade política de São Paulo pela memória histórica.",
+          "B": "A obra homenageia quem destruiu Palmares, sem exaltar a resistência dos escravizados. A alternativa atribui à seleção um sentido oposto ao descrito.",
+          "C": "O financiamento artístico é um meio, mas o objetivo indicado é construir uma interpretação histórica. O valor da arte regional não resume a função política da escolha.",
+          "D": "A memória não representa indistintamente a saga de todo o povo. Ela privilegia agentes paulistas e uma leitura específica do processo colonial.",
+          "E": "O foco é o bandeirante como herói regional, sem a valorização do protagonismo indígena. A participação indígena pode ser apagada por esse tipo de memória."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:11": {
@@ -63,6 +111,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os meses são representados por tarefas como semear, colher, cuidar de animais e preparar alimentos. A distribuição dessas atividades acompanha as condições sazonais. O calendário revela um tempo ligado à natureza e ao trabalho agrário, sem organização central pelas horas do relógio."
+        ],
+        "alternatives": {
+          "A": "O ciclo anual existe, mas a figura não exige um mito do eterno retorno. O conteúdo concreto é o ajuste do trabalho às estações, sem uma doutrina mítica explícita.",
+          "B": "Não se mostram relógios ou autonomia sobre horas de atividade. O ritmo indicado depende do calendário agrário e de condições naturais.",
+          "C": "Uma concepção escatológica se orienta ao fim dos tempos e à salvação. As imagens, porém, apresentam tarefas sazonais, sem esse desfecho religioso.",
+          "D": "Plantio, colheita e cuidados com animais se distribuem conforme os meses e estações. Isso exprime uma concepção natural do tempo do trabalho.",
+          "E": "A classificação romântica projeta um movimento posterior sobre uma fonte medieval. O caráter rural não basta para definir romantismo ou mera idealização bucólica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:12": {
@@ -83,6 +155,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A desconcentração industrial transfere unidades e empregos para cidades fora dos grandes núcleos metropolitanos. Novas oportunidades alteram os destinos migratórios e favorecem centros intermediários. Essa realocação contribui para desacelerar o crescimento populacional das metrópoles tradicionais."
+        ],
+        "alternatives": {
+          "A": "A falta geral de matérias-primas não é apresentada como explicação do rearranjo urbano. A localização de atividades pode mudar por custos, infraestrutura e incentivos, sem escassez material absoluta.",
+          "B": "A degradação rodoviária dificultaria conexões, mas não é o processo central de redistribuição produtiva. O texto aponta novos arranjos regionais, associados à dispersão de atividades.",
+          "C": "Maior crescimento vegetativo tenderia a acelerar o aumento populacional, sem explicar sua desaceleração. A alternativa contraria a tendência observada.",
+          "D": "Centralizar poder político não desloca necessariamente empregos e população para centros menores. A dinâmica apresentada é espacial e produtiva.",
+          "E": "A transferência de indústrias cria polos de atração fora das grandes metrópoles. Essa mudança ajuda a redistribuir os fluxos populacionais e reduzir a concentração anterior."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:13": {
@@ -103,6 +199,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Trasímaco apresenta certo e errado como regras aprendidas na sociedade, produzidas por seres humanos. A justiça deixa de ser uma verdade natural ou independente dos interesses históricos. Sua correlação com a ética se explica por convenções sociais contingentes."
+        ],
+        "alternatives": {
+          "A": "O texto afirma que as regras são ensinadas e inventadas. Isso se opõe a uma origem biológica fixa da justiça.",
+          "B": "A existência de verdades anteriores aos interesses é justamente o que o sofista contesta. Sua posição vincula as regras à organização humana da sociedade.",
+          "C": "Não se invocam mandamentos de deuses como fundamento. As normas são apresentadas como criações humanas.",
+          "D": "A aprendizagem social e a invenção das regras fazem da justiça uma convenção. Seu conteúdo depende de circunstâncias e interesses, sem validade natural necessária.",
+          "E": "Sentimentos podem acompanhar juízos, mas o argumento não os apresenta como origem principal. O foco recai sobre normas ensinadas pela sociedade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:14": {
@@ -123,6 +243,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Sérgio Buarque destaca relações pessoais, familiares e afetivas que se sobrepõem a formas impessoais de cooperação e ordenação. Na vida pública, isso favorece o tratamento do interesse coletivo segundo vínculos privados. O personalismo aparece como traço formador dessa prevalência."
+        ],
+        "alternatives": {
+          "A": "A rigidez e a aplicação impessoal de normas seriam características racionalizadoras. O texto descreve sua fragilidade diante das relações pessoais.",
+          "B": "Família, facção e afeto orientam decisões que deveriam ser públicas e gerais. Essa sobreposição exprime a prevalência dos interesses privados.",
+          "C": "O todo incoerente e amorfo indica debilidade institucional, sem solidez. A alternativa inverte o diagnóstico do historiador.",
+          "D": "A burocracia racional se baseia em procedimentos impessoais, contrariando a predominância passional descrita. O texto não afirma sua legitimidade como traço dominante.",
+          "E": "Lutas entre facções e relações precárias não demonstram estabilidade. A passagem destaca dificuldade de ordenar a vida coletiva por estruturas duradouras."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:15": {
@@ -143,6 +287,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Ao mapear suas próprias terras, grupos tradicionais tornam visíveis usos, referências e vínculos territoriais que mapas externos podem omitir. O domínio das técnicas permite sustentar reivindicações e afirmar pertencimento. A cartografia funciona como instrumento de valorização das identidades coletivas."
+        ],
+        "alternatives": {
+          "A": "O projeto pode ajudar a enfrentar pressões da fronteira agrícola, sem promovê-la. Seus sujeitos são os grupos tradicionais que representam seus territórios.",
+          "B": "A produção de mapas fortalece a permanência e a defesa das terras, sem objetivo de remover populações. A alternativa inverte a finalidade do protagonismo cartográfico.",
+          "C": "A técnica pode apoiar direitos e condições de vida, mas não elimina automaticamente a pobreza. O resultado diretamente descrito é a representação autônoma do território coletivo.",
+          "D": "Os mapas registram referências e usos reconhecidos pelos próprios grupos. Assim, dão visibilidade e valor a suas identidades e vínculos territoriais.",
+          "E": "Não se trata de planejar agroindústrias modernas. A tecnologia de georreferenciamento é apropriada para representar terras e experiências tradicionais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:16": {
@@ -163,6 +331,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para Hume, a imaginação pode combinar e alterar conteúdos, mas não criar do nada seus materiais elementares. Ouro, montanha, cavalo e virtude são conhecidos pela experiência externa ou interna antes de serem recombinados. As ideias derivam, portanto, das impressões sensíveis."
+        ],
+        "alternatives": {
+          "A": "A experiência fornece o material elementar que a mente transforma em ideias. O exemplo da montanha de ouro mostra combinação de conteúdos previamente percebidos.",
+          "B": "A mente realmente opera sobre percepções, mas classificá-las não é o vínculo de origem solicitado. O argumento central é que os materiais do pensamento vêm da experiência.",
+          "C": "O acaso não é apresentado como condição da formação das ideias. Sua menor vivacidade em relação às impressões não depende de experiências aleatórias.",
+          "D": "Sentimentos são um tipo de experiência interna, mas não comandam toda a organização da memória. O texto atribui à mente operações de composição e transformação.",
+          "E": "A fonte não é exclusivamente o sentimento, pois inclui sensações externas e experiência em sentido amplo. Ouro, montanha e cavalo exemplificam essa origem variada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:17": {
@@ -183,6 +375,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A analogia do navio afirma que ventos diferentes precisam de uma direção para alcançar o porto. Do mesmo modo, ações humanas diversas devem ser orientadas a uma finalidade coletiva. Tomás de Aquino usa essa unidade de direção para justificar a monarquia como promotora do bem comum."
+        ],
+        "alternatives": {
+          "A": "Não se descrevem movimentos religiosos que precisem ser reprimidos. O argumento parte da diversidade das ações humanas e da necessidade de orientá-las.",
+          "B": "A justificativa se concentra no papel de um dirigente, sem propor participação ampliada da sociedade civil. A direção unitária, e não a deliberação popular, é a analogia central.",
+          "C": "O governante coordena esforços diversos para que a comunidade alcance sua finalidade. O porto representa o bem comum ao qual a sociedade deve se dirigir.",
+          "D": "A influência de filosofia antiga não torna o texto uma proposta de reforma religiosa. A questão discutida é a organização política.",
+          "E": "O trecho não estabelece separação entre poderes temporal e espiritual. Ele justifica a direção política pela finalidade da vida humana."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:18": {
@@ -203,6 +419,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A Justiça Eleitoral cria uma instância especializada para organizar e fiscalizar eleições, retirando etapas decisivas do controle direto dos grupos governantes. Sua função é reduzir interferências e fraudes que marcavam as apurações. Isso amplia a credibilidade institucional do processo eleitoral."
+        ],
+        "alternatives": {
+          "A": "Eleições presidenciais diretas já existiam antes de 1932. A criação do órgão não inaugura esse tipo de voto, mas altera sua administração e fiscalização.",
+          "B": "A supervisão especializada procura impedir manipulação de apurações por mandatários. Esse combate às fraudes é o avanço institucional destacado.",
+          "C": "A instituição surge em 1932, antes da ditadura militar mencionada implicitamente. Sua função original não se define por regras posteriores de candidatura.",
+          "D": "Corrupção administrativa e fraude eleitoral são problemas diferentes. O texto trata da garantia e fiscalização das eleições, sem um órgão geral de combate à corrupção.",
+          "E": "O voto censitário havia sido afastado muito antes, e sua extinção não é a medida criada em 1932. O foco do trecho está no controle institucional do processo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:19": {
@@ -223,6 +463,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A fala celebra a entrada de bilhões de dólares e adia o início do pagamento para dez anos depois. O comentário sobre a criança ironiza a transferência da dívida ao futuro. A charge aborda a captação de recursos externos pelo regime e seus custos para gerações seguintes."
+        ],
+        "alternatives": {
+          "A": "Não há referência a repressão ou doutrina de segurança. O tema explícito são dólares recebidos e pagamento futuro.",
+          "B": "A entrada de recursos em moeda estrangeira e a obrigação de pagamento caracterizam financiamento externo. A criança simboliza quem suportará a dívida depois.",
+          "C": "O governo é retratado obtendo dinheiro para gastar, sem anunciar redução de despesas. A crítica se relaciona ao endividamento, não a cortes orçamentários.",
+          "D": "Não se mostra compra ou tomada estatal de empresas estrangeiras. A relação internacional mencionada é a entrada de empréstimos.",
+          "E": "A criança não recebe um benefício distributivo, mas é associada ao encargo futuro. A charge questiona custos sociais da dívida, sem celebrar redistribuição de renda."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:2": {
@@ -243,6 +507,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A iluminação artificial permite manter atividades mesmo sem luz solar. Com isso, o relógio e a organização produtiva passam a definir horários que antes dependiam mais do dia e da noite. A consequência é ampliar a parte do tempo que pode ser convertida em jornada de trabalho."
+        ],
+        "alternatives": {
+          "A": "A possibilidade de produzir à noite não garante melhora da qualidade do produto. O texto discute organização temporal, sem avaliar padrões técnicos da produção.",
+          "B": "A redução de emprego rural não é demonstrada pela difusão da luz noturna. A transformação pode afetar diferentes espaços, mas seu efeito direto é sobre os horários.",
+          "C": "A marcação pelo relógio pode intensificar o controle patronal, sem conceder autonomia ao trabalhador. O texto não afirma liberdade individual para escolher a jornada.",
+          "D": "A iluminação não reduz necessariamente o esforço exigido pelas máquinas. Ela apenas torna mais horas disponíveis para operar e trabalhar.",
+          "E": "A noite passa a poder ser aproveitada produtivamente. A antiga separação natural entre tempo de atividade e descanso é enfraquecida pela luz artificial."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:20": {
@@ -263,6 +551,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Queimar bandeiras estaduais em 1937 simboliza subordinar identidades políticas regionais ao poder central do Estado Novo. O discurso trata divergências como discórdia e nega espaço a outros símbolos. O pacto proposto é autoritário e centralizador, limitando a autonomia dos interesses regionais."
+        ],
+        "alternatives": {
+          "A": "Eliminar símbolos estaduais não elimina diferenças de renda e desenvolvimento entre regiões. O discurso trata de unidade política, sem um programa de equalização socioeconômica.",
+          "B": "O ato reduz simbolicamente a autonomia dos estados e contraria o federalismo. A experiência norte-americana não é o modelo dessa centralização.",
+          "C": "A imposição de um único símbolo nacional expressa o controle autoritário das diferenças regionais. O Estado Novo pretende concentrar a representação política no centro.",
+          "D": "A cerimônia é ela própria um rito cívico intenso. Portanto, o regime não rejeita esses ritos, mas os mobiliza para construir lealdade nacional.",
+          "E": "A unidade territorial é invocada, mas o texto não comprova uma ameaça separatista concreta como motivo suficiente. O ato visa conter autonomia e pluralidade regional de modo mais amplo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:21": {
@@ -283,6 +595,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As restrições a aplicativos, equipamentos e serviços norte-americanos são apresentadas como respostas à espionagem. O receio é que informações estratégicas possam ser acessadas ou controladas por atores externos. A preocupação central é a segurança dos dados, mesmo que as medidas também produzam efeitos comerciais."
+        ],
+        "alternatives": {
+          "A": "Não se descreve concessão de recursos estatais à indústria. Proibir ou evitar fornecedores por espionagem é uma questão de proteção informacional.",
+          "B": "A influência cultural não é o risco explicitado pelos governos. O problema citado envolve equipamentos, serviços e acesso a informações.",
+          "C": "As medidas podem proteger mercados, mas o enunciado as vincula à espionagem. A causa específica identificada é a segurança dos dados.",
+          "D": "A perda de empregos pela automação não é discutida. Os países temem vulnerabilidades de informação, sem um efeito tecnológico sobre o trabalho como foco.",
+          "E": "O risco de espionagem ameaça a confidencialidade e o controle das informações. Evitar certos fornecedores é uma resposta a essa vulnerabilidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:22": {
@@ -303,6 +639,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Euclides valoriza a resistência extrema de poucos defensores diante de milhares de soldados, construindo uma imagem de bravura. Soares chama os sobreviventes de fanáticos e atribui a guerra ao banditismo e à fúria. Os relatos fixam, respectivamente, heroísmo resistente e irracionalidade dos sertanejos."
+        ],
+        "alternatives": {
+          "A": "O primeiro relato não apresenta os defensores como manipulados e o segundo não focaliza incompetência. Seus vocabulários destacam resistência e fanatismo.",
+          "B": "Euclides exalta a resistência, sem explicá-la por ignorância. Soares emprega termos condenatórios, sem valorizar a solidariedade dos sobreviventes.",
+          "C": "Não há hesitação dos defensores no primeiro texto: eles resistem até a morte. O segundo interpreta sua obstinação como fanatismo, além da simples persistência.",
+          "D": "O primeiro descreve um fim sem sobreviventes, sem centrar a análise na esperança. No segundo, fúria e fanatismo desqualificam a valentia, em vez de celebrá-la.",
+          "E": "A resistência desproporcional é enaltecida por Euclides como bravura. O vocabulário de Soares a reduz a fanatismo e loucura, construindo avaliação oposta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:23": {
@@ -323,6 +683,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O segundo texto mostra que a população negra livre já era numerosa antes de 1888. O primeiro acrescenta que a Abolição teve importância além do número de pessoas libertadas: suprimiu a legitimidade jurídica da propriedade de uma pessoa por outra, alterando politicamente a sociedade escravista."
+        ],
+        "alternatives": {
+          "A": "As estratégias de alforria são mencionadas, mas o complemento central é o alcance político da extinção da instituição escravista.",
+          "B": "O texto destaca a ruptura com a propriedade sobre pessoas, e não a continuidade do controle jurídico dos proprietários.",
+          "C": "A novidade não consiste simplesmente na presença de negros livres, pois o segundo texto demonstra que ela era anterior à lei.",
+          "D": "Libertar relativamente poucas pessoas não torna a lei ineficaz: ela extinguiu a base legal da escravidão.",
+          "E": "A Abolição rompeu a legitimidade da escravidão, o que explica sua relevância política para além das cifras de libertação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:24": {
@@ -343,6 +727,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A comparação contrapõe a dominação colonial já vivida pelos africanos ao projeto de expansão fascista na Segunda Guerra. O racismo nazifascista hierarquizava populações com base em supostas características biológicas, tornando sua vitória uma ameaça adicional aos povos africanos."
+        ],
+        "alternatives": {
+          "A": "A oposição à democracia liberal não identifica a ameaça que mobilizou os africanos contra o Eixo nessa guerra.",
+          "B": "O problema destacado é uma hegemonia política e racial, não a devastação ambiental atribuída ao capitalismo.",
+          "C": "O fascismo, particularmente na vertente nazista, legitimava dominação e extermínio por uma pretensa hierarquia biológica das raças.",
+          "D": "A planificação econômica não corresponde ao projeto do Eixo contra o qual se deu o engajamento descrito.",
+          "E": "O colonialismo já era a dominação existente; o texto contrapõe a ele uma ameaça considerada ainda mais perigosa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:25": {
@@ -363,6 +771,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os movimentos apresentados não se limitaram ao fim do governo militar ou à realização de eleições. Ao estabelecer diálogo permanente com a população e o Estado, ampliaram a participação, a reivindicação de direitos e a presença democrática nas relações cotidianas."
+        ],
+        "alternatives": {
+          "A": "A interlocução dos movimentos com a sociedade não é apresentada como campanha para deslegitimar os partidos recém-criados.",
+          "B": "A reconstrução da cultura política torna a democracia uma prática social contínua, para além do comparecimento às urnas.",
+          "C": "O texto amplia a democratização além do regime representativo e das eleições, por isso essa formulação restringe sua contribuição.",
+          "D": "A disputa com sindicatos não aparece como contribuição principal dos novos movimentos para a redemocratização.",
+          "E": "A atuação como interlocutores articula demandas e diálogo; o texto não a explica como fragmentação das lutas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:26": {
@@ -383,6 +815,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para Hobbes, a relativa igualdade natural faz com que diferentes indivíduos possam esperar conquistar os mesmos bens. Sem uma autoridade comum capaz de impor regras, o desejo pelo mesmo objeto gera competição e desconfiança, produzindo conflito no estado de natureza."
+        ],
+        "alternatives": {
+          "A": "A competição pelo objeto desejado por ambos produz conflito quando não existe um poder comum que os contenha.",
+          "B": "Clérigos não constituem uma autoridade universal de resolução de conflitos no estado de natureza hobbesiano.",
+          "C": "A consulta a anciãos pressupõe uma organização social reconhecida que não fundamenta o argumento do trecho.",
+          "D": "Governantes pertencem à sociedade civil constituída pelo pacto, posterior à situação tratada no enunciado.",
+          "E": "A igualdade de aspirações não garante cooperação; a escassez e a insegurança favorecem a competição entre os indivíduos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:27": {
@@ -403,6 +859,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O intemperismo depende da combinação entre disponibilidade de água e temperatura. No semiárido, embora as temperaturas sejam elevadas, a baixa precipitação restringe a atuação da água e as reações de alteração das rochas, correspondendo ao grau muito fraco indicado nas figuras."
+        ],
+        "alternatives": {
+          "A": "O clima tropical apresenta uma estação chuvosa mais expressiva, oferecendo mais água para a alteração das rochas.",
+          "B": "As áreas litorâneas geralmente recebem umidade e chuvas que intensificam o intemperismo químico.",
+          "C": "O clima equatorial reúne calor e elevada precipitação, condições favoráveis ao intemperismo intenso.",
+          "D": "A escassez de chuva no semiárido limita o intemperismo, mesmo sob temperaturas relativamente elevadas.",
+          "E": "O clima subtropical dispõe de chuvas relativamente regulares; não corresponde à faixa brasileira de maior deficiência hídrica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:28": {
@@ -423,6 +903,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto associa o poder político da pólis ao debate público e à argumentação. A ágora integrava esse espaço de encontro e discussão dos cidadãos, em uma democracia de participação direta, embora a cidadania excluísse mulheres, escravizados e estrangeiros."
+        ],
+        "alternatives": {
+          "A": "A democracia ateniense não organizava a participação dos cidadãos em torno da autoridade de reis.",
+          "B": "Os cidadãos não se limitavam a conhecer decisões prontas dos magistrados: participavam do debate político.",
+          "C": "A reunião do corpo de cidadãos para discutir os assuntos comuns corresponde à centralidade política da palavra descrita.",
+          "D": "A função política do espaço público não se restringia a decisões militares tomadas por exércitos em reuniões fechadas.",
+          "E": "A democracia ateniense valorizava a participação direta dos cidadãos, e não a delegação exclusiva da fala a representantes eleitos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:29": {
@@ -443,6 +947,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A integração das técnicas de informação permite controlar equipamentos e coordenar a produção em escala mundial. A automação substitui parte das tarefas antes realizadas por trabalhadores, podendo elevar o desemprego estrutural quando os postos eliminados não são compensados por novas ocupações."
+        ],
+        "alternatives": {
+          "A": "As vantagens locacionais continuam orientando investimentos, e a expansão da legislação trabalhista não é consequência necessária da integração técnica.",
+          "B": "As tecnologias ampliam fluxos logísticos e não implicam fortalecimento automático dos sindicatos.",
+          "C": "A modernização não exige queda dos investimentos industriais nem desvalorização geral do trabalho qualificado.",
+          "D": "As redes técnicas permitem dispersão produtiva; a redução da jornada semanal tampouco decorre obrigatoriamente desse processo.",
+          "E": "A automação fabril altera a demanda de trabalho e pode eliminar postos, ligando a transformação produtiva ao desemprego estrutural."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:3": {
@@ -463,6 +991,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Freire contrapõe integração crítica à acomodação passiva diante da realidade. Compreender temas e tarefas de seu tempo exige formar juízo próprio e participar da transformação do mundo. O pensamento autônomo permite superar a impotência e o simples ajustamento."
+        ],
+        "alternatives": {
+          "A": "A atitude crítica exige examinar a realidade por conta própria, sem apenas aceitar suas condições. Essa autonomia sustenta a integração ativa defendida pelo autor.",
+          "B": "Uma qualificação profissional pode ser útil, mas não garante a postura crítica discutida. O texto trata da relação do sujeito com seu tempo, além do preparo ocupacional.",
+          "C": "O autor não propõe voltar a valores antigos como solução. Sua ênfase é apreender criticamente os desafios presentes.",
+          "D": "A realização de desejos individuais não equivale a compreender e enfrentar tarefas históricas coletivas. O foco não é apenas satisfação pessoal.",
+          "E": "A renda pode alterar condições de vida, mas não é apresentada como origem suficiente da consciência crítica. A passagem destaca um modo de pensar e agir."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:30": {
@@ -483,6 +1035,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A água infiltrada pode saturar o solo, aumentar o peso do material e reduzir sua estabilidade na encosta. Uma drenagem eficiente reduz o acúmulo e a pressão da água, diminuindo a probabilidade de deslizamentos e outros movimentos de massa."
+        ],
+        "alternatives": {
+          "A": "A exposição do solo remove proteção vegetal e favorece erosão e instabilidade, em vez de minimizar os movimentos.",
+          "B": "A drenagem retira o excesso de água e ajuda a manter a estabilidade dos materiais da vertente.",
+          "C": "A resistência da rocha matriz não elimina o deslocamento do solo ou de materiais inconsolidados depositados sobre ela.",
+          "D": "A mecanização pode compactar ou expor o solo, e não constitui por si só uma medida de estabilização da encosta.",
+          "E": "Chuvas elevadas aumentam a saturação dos materiais e podem desencadear deslizamentos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:31": {
@@ -503,6 +1079,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As cavidades arredondadas escavadas na rocha do leito fluvial são produzidas pela abrasão. A água em turbilhão movimenta seixos e areia repetidamente contra a superfície, aprofundando depressões conhecidas como marmitas de erosão."
+        ],
+        "alternatives": {
+          "A": "O fraturamento tectônico é um processo interno e não explica a escavação circular pela correnteza do rio.",
+          "B": "O solapamento de argilas retira material de margens ou camadas frágeis, sem explicar as cavidades rochosas arredondadas.",
+          "C": "O giro de seixos e areia em águas turbilhonares provoca abrasão e escava as depressões do leito.",
+          "D": "A alteração química decompõe minerais, mas a forma descrita resulta principalmente do desgaste mecânico pelo material transportado.",
+          "E": "O assoreamento deposita sedimentos no leito; a imagem trata da remoção e escavação da rocha."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:32": {
@@ -523,6 +1123,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As veredas são ambientes úmidos do Cerrado associados à presença de água próxima da superfície. Seus solos e sua vegetação retêm água e ajudam a regular sua liberação para os cursos fluviais, sustentando vazões inclusive nos períodos secos."
+        ],
+        "alternatives": {
+          "A": "A vegetação xerófila está adaptada à escassez de água, enquanto as veredas são ambientes de elevada umidade.",
+          "B": "Leques aluviais são depósitos sedimentares e não expressam a função de armazenamento hídrico destacada para as veredas.",
+          "C": "A função ressaltada não é fazer a água desaparecer em um sumidouro, mas conservá-la e regular sua disponibilidade.",
+          "D": "O aprofundamento do talvegue corresponde à erosão do canal, e não à retenção que mantém o abastecimento hídrico.",
+          "E": "A retenção de água nas áreas de vereda regula o escoamento e contribui para alimentar os cursos de água do Cerrado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:33": {
@@ -543,6 +1167,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O agricultor passa de uma avaliação aproximada da umidade para um sistema que reúne dados meteorológicos e características do cultivo. Essas informações permitem acompanhar as necessidades das plantas e definir quando e quanto irrigar, aperfeiçoando o monitoramento da produção."
+        ],
+        "alternatives": {
+          "A": "O cadastro e a estação meteorológica permitem acompanhar as condições do cultivo e orientar a irrigação com dados.",
+          "B": "A eventual valorização imobiliária não é a função das tecnologias de acompanhamento hídrico descritas.",
+          "C": "Medir o clima e ajustar a irrigação não altera ou corrige os fatores climáticos da região.",
+          "D": "O sistema informa a decisão técnica de irrigar, sem apresentar uma reorganização da divisão de tarefas da propriedade.",
+          "E": "A umidade e a necessidade de água não equivalem à fertilidade química do solo, que exige outras avaliações e intervenções."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:34": {
@@ -563,6 +1211,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Nietzsche destaca que Tales procura um princípio único para explicar a origem de tudo e formula essa explicação sem recorrer à fabulação mítica. A água é apresentada como causa primeira da realidade, exemplificando a busca racional pela arché entre os primeiros filósofos gregos."
+        ],
+        "alternatives": {
+          "A": "O ponto central não é converter cada percepção sensível em verdade, mas buscar um princípio racional comum à realidade.",
+          "B": "O uso de metáforas e narrativas de origem aproxima-se da fabulação que o texto explicitamente diferencia da proposta de Tales.",
+          "C": "A procura racional de uma causa primeira corresponde à água entendida como princípio originário de todas as coisas.",
+          "D": "O argumento enfatiza a unidade do existente, expressa em 'Tudo é um', e não um catálogo metódico de diferenças.",
+          "E": "A referência à água não transforma a questão em mera comprovação empírica; trata-se de uma hipótese racional sobre a origem universal."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:35": {
@@ -583,6 +1255,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A troca imaginária de nacionalidade e religião mantém a atitude da menina, mas altera o julgamento esperado do público. O autor exige reconhecer o ponto de vista do outro e avaliar criticamente os critérios aplicados a grupos diferentes, exercício de alteridade."
+        ],
+        "alternatives": {
+          "A": "A experiência não descreve negociações entre governos, que seriam próprias da prática diplomática.",
+          "B": "Reconhecer no outro uma atitude semelhante à celebrada em nosso grupo questiona julgamentos etnocêntricos e exercita a alteridade.",
+          "C": "O problema é o duplo critério cultural, não a criação ou expansão de instituições democráticas.",
+          "D": "A oposição entre as reações não é apresentada como diferença de níveis de progresso entre sociedades.",
+          "E": "A autodeterminação diz respeito à autonomia dos povos, enquanto o foco aqui é compreender e julgar a perspectiva alheia."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:36": {
@@ -603,6 +1299,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A barba, a postura solene e as insígnias de poder apresentam Pedro II como um governante adulto, distante da infância em que assumiu o trono. A associação com o documento legal reforça a imagem de uma monarquia constitucional e de um soberano que governa segundo as leis."
+        ],
+        "alternatives": {
+          "A": "A composição solene e a aparência adulta procuram transmitir maturidade, não irresponsabilidade juvenil.",
+          "B": "A aparência madura e a referência às leis legitimam Pedro II como imperador constitucional apto a governar.",
+          "C": "Embora use traje cerimonial de inspiração militar, o conjunto não representa uma batalha ou uma vitória comandada por ele.",
+          "D": "Os símbolos monárquicos não indicam submissão do governo à autoridade papal.",
+          "E": "A referência às leis contraria a leitura de um poder absolutista sem limites constitucionais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:37": {
@@ -623,6 +1343,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Le Goff relaciona o crescimento das cidades medievais à diferenciação de ofícios. Nesse ambiente, ensinar e escrever tornam-se atividades profissionais específicas, permitindo o surgimento do intelectual como parte de uma divisão urbana do trabalho."
+        ],
+        "alternatives": {
+          "A": "O trecho não atribui o aparecimento do intelectual a um apoio eclesiástico ao trabalho abstrato.",
+          "B": "A especialização profissional do professor e erudito é vinculada diretamente ao desenvolvimento das cidades.",
+          "C": "As corporações são instituições urbanas relevantes, mas sua organização não é o mecanismo destacado no texto.",
+          "D": "A expansão escolar pode acompanhar o processo, mas a explicação apresentada relaciona urbanização e especialização de ofícios.",
+          "E": "Escrever e ensinar definem uma profissão; o autor não interpreta essa combinação como simples sobrecarga de trabalho."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:38": {
@@ -643,6 +1387,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As etapas de financiamento, projeto, fabricação e publicidade estão distribuídas entre diversos países. Coordenar esse circuito exige redes empresariais e circulação rápida de dados, permitindo organizar unidades distantes como partes de um mesmo processo produtivo."
+        ],
+        "alternatives": {
+          "A": "Linhas de montagem e estoques não bastam para coordenar as etapas dispersas internacionalmente descritas no texto.",
+          "B": "A burocracia e o baixo salário não explicam a integração de pesquisa, publicidade, financiamento e fabricação em vários países.",
+          "C": "O texto descreve articulação transnacional de empresas, sem pressupor direção estatal da produção.",
+          "D": "As redes de produção e as tecnologias da informação permitem coordenar decisões, dados e etapas realizadas em lugares diferentes.",
+          "E": "O protecionismo criaria obstáculos à circulação internacional que viabiliza essa produção globalmente fragmentada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:39": {
@@ -663,6 +1431,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto analisa a busca de reconhecimento por meio da exposição da própria imagem. Selfies, visibilidade e circulação do nome funcionam como espelhos pelos quais o indivíduo constrói sua identidade e procura valorização, caracterizando uma prática autorreferente."
+        ],
+        "alternatives": {
+          "A": "A obsessão por aparecer e ser comentado concentra a identidade na própria imagem e na atenção recebida.",
+          "B": "A promessa de democratização aparece sob crítica e não constitui o aspecto principal destacado sobre a identidade midiática.",
+          "C": "A velocidade de produção das notícias não explica a centralidade dos selfies e do desejo de espelhamento.",
+          "D": "A difusão informacional é o contexto, mas a crítica se dirige à valorização de si mediante exposição pública.",
+          "E": "A integração entre tecnologias não é o alvo específico da análise sobre fama e construção da imagem individual."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:4": {
@@ -683,6 +1475,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O homem interpreta como tentativa de envenenamento uma refeição de frutas e verduras. O humor depende de reconhecer alimentos associados a resíduos de agrotóxicos. A charge critica o uso desses produtos nas plantações e o risco que chega ao consumidor por alimentos aparentemente saudáveis."
+        ],
+        "alternatives": {
+          "A": "A lista de alimentos não vem acompanhada de preços ou reclamações sobre custo. A suspeita de morte remete à contaminação, sem uma crítica ao comércio caro.",
+          "B": "O personagem não comemora nem analisa uma demanda por produtos naturais. Ele teme substâncias nocivas presentes nos alimentos servidos.",
+          "C": "A quantidade total de alimentos produzida não é mencionada. O problema é a forma de produção e sua segurança.",
+          "D": "Pimentão, alface, tomate, morango e uva são apresentados como alimentos frescos. A crítica não se dirige à preferência por derivados industriais.",
+          "E": "A associação da refeição a envenenamento satiriza os resíduos de agrotóxicos nas culturas citadas. O alvo é o risco produzido por seu uso agrícola."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:40": {
@@ -703,6 +1519,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para Weber, o desencantamento está ligado à crença moderna de que os acontecimentos podem ser explicados e dominados por conhecimento e cálculo. Isso reduz o recurso a forças misteriosas e a explicações tradicionais, sem significar que cada indivíduo efetivamente conheça todas as condições de sua vida."
+        ],
+        "alternatives": {
+          "A": "O trecho não apresenta a industrialização como prova de um progresso moral ou civilizatório inevitável.",
+          "B": "A racionalização não significa que todo pensamento mítico tenha sido extinto pelo capitalismo.",
+          "C": "O domínio pelo cálculo não garante emancipação; essa avaliação normativa não é afirmada no trecho.",
+          "D": "A modernidade enfraquece a centralidade explicativa das crenças tradicionais ao ampliar a confiança no cálculo racional.",
+          "E": "Ciência e racionalização não exigem o desaparecimento de religiões monoteístas como condição histórica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:41": {
@@ -723,6 +1563,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O princípio da precaução recomenda avaliar possíveis danos antes de liberar uma tecnologia quando há incertezas relevantes. A participação de grupos sociais nesse debate torna públicas as decisões sobre benefícios, riscos e condições de uso, sem exigir a rejeição de toda inovação."
+        ],
+        "alternatives": {
+          "A": "A precaução subordina a liberação à proteção da saúde e do ambiente, e não à prioridade irrestrita dos interesses econômicos.",
+          "B": "Pedir estudos adicionais reconhece a necessidade de conhecimento científico, em vez de negar a ciência.",
+          "C": "A discussão social das consequências da tecnologia permite avaliar coletivamente os riscos antes de sua liberação.",
+          "D": "O texto prevê avaliação e eventual liberação, não uma paralisação geral das mudanças tecnológicas e sociais.",
+          "E": "O objetivo é ponderar benefícios e riscos, reduzindo a exposição a danos incertos antes da adoção."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:42": {
@@ -743,6 +1607,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Beauvoir distingue a condição biológica das formas sociais de ser mulher. Ao mostrar que os papéis femininos são construídos historicamente, sua reflexão oferece base para contestar desigualdades e organizar mobilizações feministas pela igualdade de gênero."
+        ],
+        "alternatives": {
+          "A": "A criminalização da violência pode integrar pautas feministas, mas a ação judicial não define o movimento social dos anos 1960 descrito.",
+          "B": "O enfrentamento da dupla jornada é uma reivindicação, mas a atuação de um poder legislativo não caracteriza a organização do movimento.",
+          "C": "A contestação dos papéis de gênero socialmente impostos fundamentou protestos e reivindicações por igualdade entre mulheres e homens.",
+          "D": "A oposição religiosa a casamentos homoafetivos não corresponde ao movimento feminista fundamentado no pensamento de Beauvoir.",
+          "E": "Políticas afirmativas podem decorrer de mobilizações, mas não substituem a ação coletiva que caracteriza esse movimento social."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:43": {
@@ -763,6 +1651,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Mannheim sustenta que o indivíduo encontra uma linguagem e um conjunto de significados produzidos pelo grupo. Essas referências orientam sua maneira de perceber e interpretar o mundo, tornando o conhecimento socialmente condicionado, ainda que não eliminem a iniciativa individual."
+        ],
+        "alternatives": {
+          "A": "A linguagem e os significados compartilhados orientam o pensamento, mostrando o condicionamento social do conhecimento.",
+          "B": "O condicionamento não pressupõe submissão consciente nem manipulação deliberada das informações pelo grupo.",
+          "C": "O texto não estabelece uma categoria de indivíduos excepcionais com monopólio da divergência.",
+          "D": "A aquisição social da linguagem não se restringe à educação formal ministrada pela escola.",
+          "E": "Aprender línguas não elimina os contextos sociais que dão significado às palavras e às formas de pensar."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:44": {
@@ -783,6 +1695,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Sítios arqueológicos preservam vestígios materiais que permitem conhecer sociedades antigas e construir referências de memória. A demolição de Nimrod destrói parte desse patrimônio histórico, afetando a herança cultural das populações e o conhecimento do passado."
+        ],
+        "alternatives": {
+          "A": "O patrimônio de uma região pode registrar culturas diversas; sua perda não é definida como desestruturação de uma homogeneidade cultural.",
+          "B": "Os vestígios da antiga capital assíria integram o patrimônio histórico material, diretamente atingido pela demolição.",
+          "C": "Os sítios assírios não constituem instrumentos de controle político ocidental cuja destruição explique o impacto mencionado.",
+          "D": "A destruição de monumentos não pressupõe que a população iraquiana formasse uma unidade étnica.",
+          "E": "A consequência destacada é a perda de vestígios arqueológicos, não o desmantelamento de uma religião oficial."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:45": {
@@ -803,6 +1739,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O enunciado define preservação como intocabilidade e rejeição do aproveitamento econômico sob qualquer justificativa. Nessa concepção específica, proteger a natureza exige impedir sua exploração de modo permanente, distinguindo-se de propostas de uso sustentável dos recursos."
+        ],
+        "alternatives": {
+          "A": "A sustentabilidade admite atividades econômicas sob critérios de reposição e menor impacto, enquanto a definição do texto não as admite.",
+          "B": "Conter impactos pode permitir exploração controlada, possibilidade recusada pela ideia de intocabilidade apresentada.",
+          "C": "A utilização progressiva dos recursos é incompatível com a proibição de aproveitamento econômico descrita.",
+          "D": "A intocabilidade da natureza implica vedar permanentemente sua exploração econômica na concepção adotada pelo texto.",
+          "E": "Escolher áreas para explorar pressupõe aproveitamento econômico, excluído pela definição apresentada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:5": {
@@ -823,6 +1783,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A divisão entre os que oram, combatem e trabalham apresenta os estamentos medievais como complementares e indispensáveis. Essa explicação religiosa naturaliza a desigualdade e a exploração camponesa. Revoltas de camponeses se opuseram concretamente a essa ordem ao contestar obrigações e domínio senhorial."
+        ],
+        "alternatives": {
+          "A": "A complementaridade atribuída aos estamentos legitima a hierarquia. As revoltas camponesas contestam a posição e os encargos impostos a quem trabalha.",
+          "B": "O texto procura preservar a hierarquia, sem subvertê-la. A centralização monárquica também não é apresentada como uma reação específica à exploração descrita.",
+          "C": "A ordem medieval restringe igualdade, mas revoluções burguesas pertencem a outra configuração histórica. A oposição diretamente relacionada aos estamentos rurais é a revolta camponesa.",
+          "D": "A ideologia justifica obrigações desiguais, sem controlar a exploração em favor dos trabalhadores. A unificação monetária não contesta necessariamente essa estrutura.",
+          "E": "A ordem divina é invocada para legitimar a sociedade, sem ser questionada. A Reforma Católica tampouco se define como oposição à tripartição medieval."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:6": {
@@ -843,6 +1827,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Gândavo transforma diferenças da língua em supostas faltas de religião, leis e governo, usando instituições europeias como medida universal. Essa leitura não reconhece formas indígenas próprias de organização e crença. O trecho evidencia etnocentrismo e incompreensão dos valores socioculturais nativos."
+        ],
+        "alternatives": {
+          "A": "A ausência de letras não demonstra simplicidade social. O cronista impõe um julgamento europeu que não descreve adequadamente as instituições indígenas.",
+          "B": "A dominação colonial é o contexto, mas a pergunta examina o sentido do comentário linguístico. O traço revelado é a incapacidade de reconhecer outros valores e instituições.",
+          "C": "A superioridade europeia é uma pretensão do narrador, sem ser uma conclusão válida da análise. A questão pede identificar o preconceito, e não confirmá-lo.",
+          "D": "O vínculo entre letras e instituições expressa uma leitura etnocêntrica. O português interpreta a diferença como ausência de ordem, ignorando a organização indígena.",
+          "E": "O problema não é somente aprender sons ou vocabulário. O cronista usa sua descrição para desqualificar a cultura, o que ultrapassa uma dificuldade linguística."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:7": {
@@ -863,6 +1871,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O autor critica o mercado por produzir polarização social na China. Na concepção socialista mobilizada pelo texto, a transformação deveria reduzir a divisão entre classes até sua superação. A ampliação de desigualdades e posições antagônicas é apresentada como contrária a esse horizonte."
+        ],
+        "alternatives": {
+          "A": "Desestatizar a economia não é uma característica fundamental do socialismo. A propriedade e o controle coletivos costumam ocupar lugar importante nesse projeto.",
+          "B": "O partido único é uma forma política de determinadas experiências históricas, sem ser o princípio econômico que a polarização contraria. A crítica trata da divisão social.",
+          "C": "Livre concorrência é um mecanismo associado à economia de mercado. O texto justamente questiona sua compatibilidade com a construção socialista.",
+          "D": "Sindicatos também existem em sociedades capitalistas e não definem a oposição central. O problema destacado é o crescimento da desigualdade de classes.",
+          "E": "A extinção gradual das classes é o objetivo contraposto à polarização. A reforma de mercado é criticada por fortalecer divisões em vez de superá-las."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:8": {
@@ -883,6 +1915,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A crise hipotecária não ficou restrita aos compradores de imóveis porque dívidas e títulos estavam conectados a bancos e investidores de muitos países. A perda de confiança e o crédito retraído se propagaram pelos circuitos financeiros e produtivos. A interdependência econômica explica a passagem do problema local à crise global."
+        ],
+        "alternatives": {
+          "A": "O texto descreve inadimplência e desvalorização imobiliária, sem atribuir a origem a excesso geral de bens de consumo. Esse fator não explica o canal de propagação mundial.",
+          "B": "A crise relatada começa no mercado de hipotecas dos Estados Unidos. Um colapso industrial asiático não é o mecanismo inicial ou de difusão apresentado.",
+          "C": "As conexões entre crédito, investimentos e economias nacionais transmitem perdas de um mercado para outros. Essa interdependência amplia o alcance da crise.",
+          "D": "O isolamento dificultaria a transmissão, enquanto a crise se globaliza justamente pela integração. A alternativa inverte a condição necessária à difusão.",
+          "E": "A austeridade em países em desenvolvimento pode ser uma resposta ou agravante em alguns contextos. Ela não explica a transmissão inicial de hipotecas norte-americanas ao sistema mundial."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:9": {
@@ -903,6 +1959,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Neto chama negros do Harlem, de Chicago, do sul dos Estados Unidos e da África de irmãos e participantes de uma mesma história. O pan-africanismo articula solidariedade entre populações africanas e da diáspora. Essa união sustenta lutas por igualdade e libertação colonial."
+        ],
+        "alternatives": {
+          "A": "Ações afirmativas são políticas específicas que o poema não formula. A convocação é mais ampla e reúne igualdade e emancipação de povos negros.",
+          "B": "As referências geográficas ampliam a solidariedade, sem comparar estatisticamente desigualdades entre Angola e Estados Unidos. O pronome nossa enfatiza uma história partilhada.",
+          "C": "O poema é da década de 1940, anterior à independência angolana. Portanto, não descreve um balanço de pobreza posterior à descolonização.",
+          "D": "Não há um pedido específico de participação estadunidense em luta armada. A união poética excede uma estratégia militar determinada.",
+          "E": "A voz se incorpora a um canto comum dos negros de diferentes países. Essa fraternidade expressa a solidariedade pan-africana em torno de igualdade e independência."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:46": {
@@ -923,6 +2003,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em altitudes elevadas, a pressão atmosférica diminui e também cai a pressão parcial do oxigênio. Menos O2 fica disponível no sangue e o equilíbrio Hb + O2 ⇌ HbO2 desloca-se para a esquerda, reduzindo a proporção de hemoglobina oxigenada."
+        ],
+        "alternatives": {
+          "A": "A pressão arterial não corresponde à pressão parcial de oxigênio responsável pelo deslocamento do equilíbrio indicado.",
+          "B": "A hipoxia descrita está associada à altitude e à disponibilidade de O2, sem exigir aumento da temperatura corporal.",
+          "C": "A queda de temperatura ambiental não explica diretamente a menor oferta de oxigênio ao sangue nessa situação.",
+          "D": "A menor pressão parcial de O2 reduz sua disponibilidade e favorece a dissociação da hemoglobina oxigenada.",
+          "E": "A redução de hemácias não é a causa imediata da hipoxia de altitude; a adaptação prolongada pode até aumentar sua produção."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:47": {
@@ -943,6 +2047,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os corantes escurecem a água e reduzem a penetração da luz. Como os organismos fotossintetizantes dependem da energia luminosa, a primeira consequência considerada é a redução da fotossíntese, que pode posteriormente comprometer a produção de oxigênio e a cadeia alimentar."
+        ],
+        "alternatives": {
+          "A": "A eutrofização depende principalmente do enriquecimento por nutrientes, e não apenas do escurecimento da água por corantes.",
+          "B": "A menor disponibilidade de luz dificulta o crescimento fotossintético, em vez de provocar inicialmente a proliferação de algas.",
+          "C": "O bloqueio da luz reduz a energia disponível para os produtores aquáticos realizarem fotossíntese.",
+          "D": "A fotodegradação requer luz; o escurecimento reduz sua penetração e não a caracteriza como impacto inicial esperado.",
+          "E": "A menor fotossíntese tende a reduzir a produção de oxigênio, não a aumentar genericamente os gases dissolvidos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:48": {
@@ -963,6 +2091,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Proteínas destinadas à secreção são sintetizadas por ribossomos associados ao retículo endoplasmático rugoso. Em seguida, passam pelo complexo golgiense e são encaminhadas em vesículas para secreção. A radioatividade deve, portanto, predominar sucessivamente no retículo, no Golgi e nas vesículas."
+        ],
+        "alternatives": {
+          "A": "O gráfico começa com predomínio nas vesículas e termina no retículo, invertendo o percurso das proteínas secretadas.",
+          "B": "O gráfico inicia no Golgi e concentra a marcação posteriormente no retículo, sem mostrar a sequência normal da via secretora.",
+          "C": "A marcação predomina no retículo aos 5 minutos, no Golgi aos 10 e nas vesículas aos 15, seguindo a via de secreção.",
+          "D": "O gráfico propõe Golgi, vesículas e retículo, colocando o local inicial de síntese apenas ao final.",
+          "E": "Após começar no retículo, o gráfico salta para vesículas e retorna ao retículo, sem a passagem intermediária predominante pelo Golgi."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:49": {
@@ -983,6 +2135,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A potência útil do painel é P = 1 000 × 9,0 × 0,30 = 2 700 W. A velocidade de 108 km/h equivale a 30 m/s, exigindo energia cinética de 200 × 30²/2 = 90 000 J. Com a potência disponível e desprezando perdas adicionais, t = E/P = 90 000/2 700 ≈ 33 s."
+        ],
+        "alternatives": {
+          "A": "Em 1 segundo o painel fornece apenas 2 700 J, muito abaixo dos 90 000 J necessários para atingir 30 m/s.",
+          "B": "Em 4 segundos são fornecidos 10 800 J, insuficientes para a energia cinética solicitada.",
+          "C": "Dez segundos resultariam de usar os 9 000 W incidentes sem aplicar o rendimento de 30% do painel.",
+          "D": "A divisão de 90 000 J pela potência útil de 2 700 W fornece aproximadamente 33 segundos.",
+          "E": "Em 300 segundos seriam fornecidos 810 000 J, nove vezes a energia cinética necessária no modelo adotado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:50": {
@@ -1003,6 +2179,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Usando λ = c/f, a faixa UV-B, entre 9,34 × 10¹⁴ e 1,03 × 10¹⁵ Hz, corresponde aproximadamente a comprimentos de onda entre 291 e 321 nm. No gráfico, o filtro IV apresenta seu pico de absorção em torno de 310 nm, dentro dessa faixa."
+        ],
+        "alternatives": {
+          "A": "O filtro V tem máximo perto de 270 nm, fora do intervalo aproximado de 291 a 321 nm do UV-B.",
+          "B": "O filtro IV tem máximo próximo de 310 nm, situado no intervalo de comprimentos de onda do UV-B.",
+          "C": "O filtro III apresenta pico próximo de 260 nm, correspondente a frequências maiores que as do UV-B.",
+          "D": "O filtro II apresenta máximo próximo de 355 nm, na faixa UV-A, de menor frequência.",
+          "E": "O filtro I apresenta máximo perto de 420 nm, muito acima dos comprimentos de onda associados ao UV-B."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:51": {
@@ -1023,6 +2223,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A interação entre o material derivado do LCC e o petróleo reúne as partículas em agregados, caracterizando floculação. A incorporação de nanopartículas magnéticas permite que esses flocos sejam atraídos e retirados com um campo magnético, realizando separação magnética."
+        ],
+        "alternatives": {
+          "A": "Não há indicação de separação por subida dos flocos seguida de sedimentação; a retirada utiliza propriedades magnéticas.",
+          "B": "O processo não decompõe quimicamente o petróleo nem emprega rotação centrífuga para separar os componentes.",
+          "C": "A formação de agregados é floculação e sua retirada por atração das nanopartículas é separação magnética.",
+          "D": "Não se utilizam diferenças de ebulição nem uma peneira para remover o petróleo da água.",
+          "E": "O petróleo forma agregados em vez de ser separado por dissolução seletiva; magnetização sozinha não nomeia a retirada dos flocos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:52": {
@@ -1043,6 +2267,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O hidróxido de sódio é higroscópico e deliquescente: absorve vapor de água do ar em quantidade suficiente para formar uma solução. Por isso o sólido pode adquirir aspecto líquido à temperatura ambiente, sem que tenha ocorrido sua fusão."
+        ],
+        "alternatives": {
+          "A": "A absorção de umidade dissolve progressivamente o NaOH e produz o aspecto de sólido derretido.",
+          "B": "A temperatura ambiente não atinge o elevado ponto de fusão do hidróxido de sódio; o líquido observado contém água absorvida.",
+          "C": "O comportamento decorre de uma propriedade do próprio NaOH, não de oxidação de impurezas pelo oxigênio.",
+          "D": "A mera retenção de gases na superfície não explica a formação da solução aquosa responsável pelo aspecto líquido.",
+          "E": "O nitrogênio atmosférico não reage com NaOH nessas condições para produzir o efeito descrito."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:53": {
@@ -1063,6 +2311,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Há uma única inversão de fase entre os raios refletidos, equivalente a meio comprimento de onda. Para a primeira interferência construtiva, o percurso adicional 2E deve compensar essa diferença com mais meio comprimento de onda: 2E = λ/2, logo E = λ/4."
+        ],
+        "alternatives": {
+          "A": "Com E = λ/4, o percurso adicional é λ/2 e compensa a única inversão de fase, produzindo o primeiro máximo.",
+          "B": "Com E = λ/2, o percurso adicional é λ inteiro; a inversão de fase remanescente produz oposição entre os raios.",
+          "C": "Com E = 3λ/4 também pode ocorrer um máximo, mas sua espessura é maior que o mínimo λ/4 solicitado.",
+          "D": "Com E = λ, o percurso adicional é 2λ e não compensa a oposição causada pela inversão de fase.",
+          "E": "Com E = 2λ, o caminho adicional é 4λ, ainda mantendo a oposição da única inversão de fase."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:54": {
@@ -1083,6 +2355,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O cromossomo Y identificado em tecidos maternos indica células originadas de um feto masculino que permaneceram na mãe. Assim, o corpo da mulher pode conter células derivadas de um zigoto diferente daquele que a originou, contrariando a ideia de origem zigótica única para todas as suas células."
+        ],
+        "alternatives": {
+          "A": "A presença de células fetais não contradiz a possibilidade de o ambiente alterar características fenotípicas.",
+          "B": "A dominância trata da relação de expressão entre alelos e não explica a origem externa das células com cromossomo Y.",
+          "C": "A incorporação de células fetais não nega a ocorrência de mutações como fonte de variabilidade genética.",
+          "D": "A origem materna das mitocôndrias na fecundação não é contestada pela permanência de células fetais em tecidos da mãe.",
+          "E": "Células oriundas do zigoto que formou o filho coexistem com as da mãe, contrariando a origem única de todas as células corporais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:55": {
@@ -1103,6 +2399,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "São necessários 0,009 × 5 000 = 45 mol de nitrato. Cada mol de Ca(NO3)2 fornece dois mols de NO3−, então bastam 22,5 mol do sal. Sua massa molar é 40 + 2(14 + 3 × 16) = 164 g/mol, resultando em 3 690 g. A 90 g/L, o volume é 3 690/90 = 41 L."
+        ],
+        "alternatives": {
+          "A": "Vinte e seis litros contêm 2 340 g do sal, que fornecem cerca de 28,5 mol de nitrato, abaixo dos 45 mol requeridos.",
+          "B": "Quarenta e um litros fornecem 3 690 g, equivalentes a 22,5 mol do sal e 45 mol de nitrato.",
+          "C": "Quarenta e cinco é o número de mols de nitrato necessários, não o volume da solução comercial em litros.",
+          "D": "Cinquenta e um litros forneceriam cerca de 56 mol de nitrato, superando o alvo calculado para o tanque.",
+          "E": "Oitenta e dois litros resultam de ignorar que cada fórmula do nitrato de cálcio fornece dois íons nitrato."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:56": {
@@ -1123,6 +2443,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Diferenças de tamanho podem dificultar cruzamentos específicos sem isolar geneticamente todas as raças. Cruzamentos entre raças de tamanhos compatíveis mantêm a circulação de alelos pelo conjunto de cães, impedindo que a dificuldade mecânica pontual constitua isolamento reprodutivo completo."
+        ],
+        "alternatives": {
+          "A": "A deriva genética pode diferenciar populações, mas não explica a manutenção dos cães na mesma espécie apesar das diferenças de tamanho.",
+          "B": "A convergência adaptativa é semelhança adquirida por linhagens distintas e não a causa da conectividade reprodutiva entre raças.",
+          "C": "Um isolamento geográfico prolongado favoreceria divergência, em vez de justificar a ausência de especiação apresentada.",
+          "D": "A seleção pode modificar frequências de características, mas não substitui a circulação de genes como explicação para a unidade da espécie.",
+          "E": "O fluxo gênico direto ou intermediado por outras raças mantém a conexão genética e impede isolamento reprodutivo completo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:57": {
@@ -1143,6 +2487,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na etapa de armazenamento, a eletricidade excedente alimenta equipamentos que realizam trabalho para produzir nitrogênio líquido. A energia investida nessa transformação permite posterior recuperação parcial quando o líquido absorve calor, vaporiza e se expande acionando turbinas."
+        ],
+        "alternatives": {
+          "A": "A expansão ocorre na etapa de recuperação da energia, quando o nitrogênio movimenta as turbinas.",
+          "B": "A absorção de calor durante a ebulição participa da recuperação, não do armazenamento inicial do excedente elétrico.",
+          "C": "O trabalho empregado pelos equipamentos na liquefação utiliza o excedente elétrico e estabelece a condição para recuperação posterior.",
+          "D": "A retirada de água e CO2 prepara a mistura, mas não constitui o mecanismo de armazenamento da energia excedente.",
+          "E": "O calor liberado na liquefação sai para a vizinhança; ele não representa a energia armazenada para acionar as turbinas depois."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:58": {
@@ -1163,6 +2531,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A camada de estanho funciona como barreira entre o alimento e o aço, rico em ferro. A deformação pode romper esse revestimento e expor o ferro, permitindo corrosão e contato dos produtos de oxidação com o alimento, comprometendo sua conservação."
+        ],
+        "alternatives": {
+          "A": "O mecanismo relevante é a perda da proteção contra corrosão, não uma alteração de pressão produzida pelo amassado.",
+          "B": "A ruptura do estanho expõe o ferro à corrosão e pode provocar alterações no alimento armazenado.",
+          "C": "O dano pode comprometer a barreira protetora interna, portanto não se limita à aparência comercial da embalagem.",
+          "D": "O risco explicado no enunciado não é a classificação do estanho como metal tóxico, mas a exposição do ferro pela ruptura do revestimento.",
+          "E": "O verniz epóxi é uma proteção; o texto não fundamenta a contaminação em sua dissolução espontânea na água."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:59": {
@@ -1183,6 +2575,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No composto A, o grupo CH2OH apresenta uma hidroxila ligada a carbono saturado, caracterizando álcool. No composto B, aparece a ligação CH3COO entre um grupo carbonila e um oxigênio ligado a outra cadeia carbônica, assinatura de um éster."
+        ],
+        "alternatives": {
+          "A": "A hidroxila em carbono saturado identifica o álcool A, e o grupo COO entre cadeias identifica o éster B.",
+          "B": "O grupo CH2OH não é um aldeído, e a carbonila do composto B integra um éster, não uma cetona.",
+          "C": "O composto A contém hidroxila, e o composto B tem oxigênios, portanto não corresponde a éter seguido de hidrocarboneto.",
+          "D": "A hidroxila de A não está diretamente ligada a carbono de dupla ligação, e B não apresenta o grupo COOH de ácido.",
+          "E": "A não possui carboxila, e B não contém o nitrogênio necessário para caracterizar uma amida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:60": {
@@ -1203,6 +2619,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O 1-fenil-1-propeno tem estrutura C6H5-CH=CH-CH3. Na oxidação enérgica, a dupla ligação é rompida e cada carbono da dupla que contém hidrogênio dá origem a uma carboxila. Formam-se C6H5COOH, ácido benzoico, e CH3COOH, ácido etanoico."
+        ],
+        "alternatives": {
+          "A": "A clivagem da dupla gera uma carboxila ligada ao anel e outra ligada a CH3, produzindo os ácidos benzoico e etanoico.",
+          "B": "O fragmento alifático contém apenas dois carbonos após a clivagem, não três como no ácido propanoico.",
+          "C": "O carbono da dupla está diretamente ligado ao anel, portanto o produto aromático é benzoico, sem o CH2 do ácido 2-feniletanoico.",
+          "D": "Não há carbono terminal CH2 na dupla para formar ácido metanoico, e o produto aromático não possui o CH2 adicional indicado.",
+          "E": "Os produtos propostos excedem o número de carbonos disponível nos respectivos fragmentos da clivagem."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:61": {
@@ -1223,6 +2663,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Animais necessitam de nitrogênio para sintetizar proteínas, ácidos nucleicos e outras substâncias. Esse elemento chega a eles pela alimentação, incorporado à matéria orgânica de plantas ou de outros animais, depois de entrar no ciclo biológico pela ação de microrganismos."
+        ],
+        "alternatives": {
+          "A": "O N2 inspirado não é aproveitado diretamente pelas células animais como fonte de nitrogênio metabólico.",
+          "B": "Carboidratos vegetais comuns são formados por carbono, hidrogênio e oxigênio, sem fornecer o nitrogênio requerido.",
+          "C": "A ingestão de nitritos na água não constitui a via geral pela qual animais obtêm seu nitrogênio orgânico.",
+          "D": "O consumo de matéria orgânica transfere compostos nitrogenados de um nível trófico para outro.",
+          "E": "A associação com fixadores não é uma exigência geral dos animais, que obtêm nitrogênio dos alimentos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:62": {
@@ -1243,6 +2707,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A fenolftaleína apresenta coloração rosa em meio básico. A combustão produz óxidos de caráter ácido, como CO2, que se dissolvem na água ao agitar o frasco e diminuem a basicidade. Com a queda do pH para fora da faixa rosa do indicador, a solução perde a cor."
+        ],
+        "alternatives": {
+          "A": "Os óxidos ácidos da combustão dissolvem-se na água e reduzem o pH, fazendo desaparecer a cor rosa.",
+          "B": "A mudança de cor decorre da alteração de pH do meio, sem necessidade de evaporação da fenolftaleína.",
+          "C": "A vaporização de água não explica a neutralização da basicidade nem o comportamento do indicador.",
+          "D": "A queima não fornece gases alcalinos responsáveis por retirar a cor; o efeito relevante é acidificante.",
+          "E": "O aumento do pH favoreceria a coloração rosa da fenolftaleína, em sentido contrário ao resultado observado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:63": {
@@ -1263,6 +2751,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Ao abrir a geladeira, entra ar externo mais quente. Depois que a porta é fechada, esse ar esfria em um volume aproximadamente fixo, reduzindo a pressão interna. A pressão atmosférica externa passa a exercer maior força resultante contra a porta, dificultando sua abertura imediata."
+        ],
+        "alternatives": {
+          "A": "O espaço interno permanece praticamente fixo; o resfriamento provoca queda de pressão, não contração do volume disponível.",
+          "B": "A potência do motor não explica diretamente a força extra sobre a porta, determinada pela diferença de pressões.",
+          "C": "A força magnética da vedação não aumenta por causa da entrada e do resfriamento do ar.",
+          "D": "A pressão externa maior que a interna produz uma força que mantém a porta pressionada contra a geladeira.",
+          "E": "A dificuldade não exige temperatura menor que a anterior à abertura; basta resfriar o ar quente que entrou."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:64": {
@@ -1283,6 +2795,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Pelo teorema da energia cinética, o trabalho resultante é igual à variação da energia cinética. Partindo do repouso e chegando a 12 m/s, o corredor apresenta W = 90 × 12²/2 = 6 480 J, aproximadamente 6,5 × 10³ J."
+        ],
+        "alternatives": {
+          "A": "O valor 540 corresponde a mv/2 e deixa de elevar a velocidade ao quadrado, como exige a energia cinética.",
+          "B": "A energia cinética final é 6 480 J, que se aproxima de 6,5 × 10³ J.",
+          "C": "O valor 8,6 × 10³ J não resulta da massa de 90 kg e da velocidade final de 12 m/s no teorema trabalho-energia.",
+          "D": "O valor próximo de 1,3 × 10⁴ J surge ao omitir o fator 1/2 na expressão da energia cinética.",
+          "E": "Multiplicar o momento linear pela distância de 30 m não fornece o trabalho resultante; a força não foi dada por esse produto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:65": {
@@ -1303,6 +2839,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Como se mistura uma parte de água a 10 °C com duas partes a 40 °C, a temperatura inicial de equilíbrio é (10 + 2 × 40)/3 = 30 °C. Depois de seis horas, ela caiu 14 °C. A variação percentual é 14/30 × 100 ≈ 46,7%, situada entre 40% e 55%."
+        ],
+        "alternatives": {
+          "A": "O selo A exigiria variação inferior a 10%, muito abaixo dos 46,7% calculados.",
+          "B": "O intervalo de 10% a 25% não contém a queda de 14 °C relativa aos 30 °C iniciais.",
+          "C": "O selo C termina em 40%, enquanto a variação percentual calculada é aproximadamente 46,7%.",
+          "D": "A queda relativa de aproximadamente 46,7% pertence ao intervalo de 40% a 55% do selo D.",
+          "E": "O selo E exige variação superior a 55%, maior que a observada no experimento."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:66": {
@@ -1323,6 +2883,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A fórmula 47, XY, +18 indica um menino com 47 cromossomos e uma cópia extra do cromossomo 18. A alteração afeta o número de um cromossomo específico, caracterizando uma aneuploidia, neste caso uma trissomia, e não um conjunto cromossômico completo."
+        ],
+        "alternatives": {
+          "A": "Deleção é perda de um segmento cromossômico, enquanto o cariótipo indica um cromossomo inteiro adicional.",
+          "B": "Euploidia envolve variação de conjuntos completos; o caso altera apenas o número do cromossomo 18.",
+          "C": "Poliploidia aumentaria conjuntos haploides inteiros, produzindo números como 69, não 47 cromossomos.",
+          "D": "Duplicação estrutural repete um segmento, e não explica a presença de três exemplares completos do cromossomo 18.",
+          "E": "O acréscimo isolado de um cromossomo é uma aneuploidia, especificamente a trissomia do 18."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:67": {
@@ -1343,6 +2927,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A perda de água pelo calor aumenta a necessidade de conservá-la. A ação do hormônio antidiurético eleva a reabsorção renal de água, reduzindo o volume urinário e concentrando os solutos presentes na urina, inclusive sais e ureia."
+        ],
+        "alternatives": {
+          "A": "A resposta à desidratação busca conservar água e não se caracteriza por aumentar a filtração glomerular.",
+          "B": "A maior reabsorção de água diminui o volume urinário, evitando perda hídrica adicional.",
+          "C": "A água é mais reabsorvida e a urina fica concentrada; não se espera diluição da ureia como resposta à sede.",
+          "D": "Com menos água eliminada, a urina apresenta maior concentração de sais e outros solutos.",
+          "E": "Glicose e aminoácidos são nutrientes normalmente reabsorvidos, e sua perda não constitui resposta adequada à desidratação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:68": {
@@ -1363,6 +2971,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Cada tomada deve ligar-se entre os dois condutores da rede, recebendo a tensão nominal em paralelo. A lâmpada também deve ficar em um ramo paralelo, com o interruptor em série apenas com ela. Assim, abrir o interruptor apaga a lâmpada e preserva a alimentação das tomadas."
+        ],
+        "alternatives": {
+          "A": "O interruptor fecha uma ligação direta entre os condutores da rede, em vez de interromper apenas o ramo da lâmpada.",
+          "B": "Uma das tomadas fica depois do interruptor e perde alimentação quando ele é aberto junto com a lâmpada.",
+          "C": "O interruptor fica no caminho comum da alimentação e afeta os demais dispositivos, além de haver tomadas em série.",
+          "D": "As tomadas e a lâmpada estão dispostas em série, impedindo que cada dispositivo receba independentemente a tensão nominal.",
+          "E": "As tomadas estão em paralelo com a rede e o interruptor atua apenas no ramo da lâmpada, atendendo às duas exigências."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:69": {
@@ -1383,6 +3015,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para manter a mesma produção de ATP, a célula precisa consumir mais glicose quando só dispõe da via anaeróbica, de baixo rendimento. O aumento do oxigênio permite maior participação da respiração aeróbica e reduz a quantidade de glicose necessária, correspondendo à curva decrescente 5."
+        ],
+        "alternatives": {
+          "A": "A curva 1 mantém consumo alto e constante, sem refletir o ganho de rendimento energético causado pelo oxigênio.",
+          "B": "A curva 2 aumenta o consumo de glicose, embora a respiração aeróbica produza mais ATP por molécula consumida.",
+          "C": "A curva 3 oscila intensamente, sem representar a redução progressiva esperada com o aumento de oxigênio.",
+          "D": "A curva 4 também oscila, em vez de diminuir conforme melhora o rendimento energético da glicose.",
+          "E": "A curva 5 diminui, pois a maior disponibilidade de oxigênio permite obter o ATP necessário com menos glicose."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:70": {
@@ -1403,6 +3059,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para a mesma força F, a deformação é x = F/k e a energia elástica armazenada vale kx²/2 = F²/(2k). Como kd = 2km, o estilingue duro armazena metade da energia do mole. Essa energia é proporcional a v² e, mantidas as condições de lançamento, o alcance também é proporcional a v². Logo Dd/Dm = 1/2."
+        ],
+        "alternatives": {
+          "A": "A razão 1/4 exigiria elevar novamente ao quadrado uma razão de energias que já é diretamente proporcional ao alcance.",
+          "B": "Com a mesma força, a energia e o alcance são inversamente proporcionais a k, fornecendo a razão 1/2.",
+          "C": "A mesma força não produz a mesma deformação nem a mesma energia nas borrachas de constantes diferentes.",
+          "D": "O resultado 2 corresponderia a inverter a razão ou a considerar a mesma deformação, condição diferente da fornecida.",
+          "E": "O resultado 4 não decorre da energia F²/(2k) e superestima o alcance do estilingue mais duro."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:71": {
@@ -1423,6 +3103,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A reação I é obtida somando III e IV com a reação II invertida. Nessa soma, H+ e CO3²− se cancelam. Ao inverter II, inverte-se sua constante: K = K2 × K3/K1 = (6,0 × 10⁻⁹)(2,5 × 10⁻⁷)/(3,0 × 10⁻¹¹) = 5,0 × 10⁻⁵."
+        ],
+        "alternatives": {
+          "A": "O valor 4,5 × 10⁻²⁶ é o produto das três constantes sem inverter II, operação que não produz a reação I.",
+          "B": "Multiplicar K2 e K3 e dividir por K1 fornece 5,0 × 10⁻⁵ para a equação desejada.",
+          "C": "O valor 0,8 × 10⁻⁹ não resulta da combinação III + IV − II necessária para cancelar as espécies intermediárias.",
+          "D": "O valor 0,2 × 10⁵ é o inverso de 5,0 × 10⁻⁵ e corresponderia à reação I no sentido contrário.",
+          "E": "O valor 2,2 × 10²⁶ decorre aproximadamente do inverso do produto simples, que também não representa a reação I."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:72": {
@@ -1443,6 +3147,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "No contexto histórico do enunciado, a existência de quatro sorotipos do vírus da dengue é o obstáculo destacado: diferenças antigênicas exigem proteção eficaz contra todos eles. A resposta esperada explica a dificuldade vacinal daquela época, sem transformar a afirmação de ausência de vacina em informação atual."
+        ],
+        "alternatives": {
+          "A": "Uma maior mutação do vírus da febre amarela dificultaria sua própria vacinação e não explica o contraste descrito.",
+          "B": "Os diferentes sorotipos apresentam variabilidade antigênica, exigindo que a vacina proteja contra múltiplas variantes da dengue.",
+          "C": "A adaptação à população humana não é o fator apresentado para explicar a dificuldade de obter proteção vacinal ampla.",
+          "D": "Os dois vírus possuem genoma de RNA; a dengue não apresenta simultaneamente DNA e RNA como material genético.",
+          "E": "A infecção por dengue induz resposta imune, mas essa resposta não garante proteção equivalente contra os demais sorotipos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:73": {
@@ -1463,6 +3191,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na fissão, um núcleo de urânio-235 atingido por um nêutron divide-se e libera energia e novos nêutrons. Esses nêutrons podem atingir outros núcleos de urânio-235, produzindo novas fissões que repetem o processo e sustentam a reação em cadeia."
+        ],
+        "alternatives": {
+          "A": "O calor é liberado na fissão, mas os agentes que desencadeiam novas fissões são os nêutrons emitidos.",
+          "B": "A reação em cadeia não consiste em converter urânio-238 em urânio-235 por meio da energia liberada.",
+          "C": "Os nêutrons emitidos na fissão atingem novos núcleos e fazem a reação se multiplicar sucessivamente.",
+          "D": "A bomba de urânio utiliza fissão, não fusão entre isótopos, e neutrinos não são os responsáveis pela cadeia.",
+          "E": "O processo não une núcleos para formar elementos mais pesados; ele divide núcleos de urânio-235."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:74": {
@@ -1483,6 +3235,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A engenharia genética introduz na bactéria uma sequência de DNA com a informação necessária para produzir insulina humana. A célula transcreve essa informação e a traduz em proteína usando sua maquinaria, possibilidade ligada ao compartilhamento do código genético entre os organismos."
+        ],
+        "alternatives": {
+          "A": "A sequência codificante de DNA fornece a informação hereditária que permite à bactéria sintetizar a insulina.",
+          "B": "Receber insulina pronta não fornece à bactéria a instrução genética necessária para continuar produzindo a proteína.",
+          "C": "O procedimento descrito utiliza DNA recombinante, não a introdução de um RNA recombinante como base estável do sistema.",
+          "D": "Um RNA mensageiro isolado é transitório e não corresponde à inserção genética empregada para estabelecer a produção bacteriana.",
+          "E": "Não é necessário transferir um cromossomo humano inteiro; introduz-se a sequência específica de interesse em um vetor adequado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:75": {
@@ -1503,6 +3279,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Camadas de ar a temperaturas diferentes possuem índices de refração diferentes. Ao atravessá-las, a luz muda de direção, podendo chegar aos olhos como se viesse de posições distintas das reais. Essa refração atmosférica produz a miragem descrita como Fata Morgana."
+        ],
+        "alternatives": {
+          "A": "Ressonância é uma resposta intensificada de um sistema a certa frequência e não explica o desvio da luz entre camadas de ar.",
+          "B": "A variação do índice de refração com a temperatura desvia os raios luminosos e forma imagens aparentes deslocadas.",
+          "C": "Difração é o espalhamento da onda em bordas ou aberturas, não o efeito das camadas atmosféricas de temperaturas diferentes.",
+          "D": "A reflexão na água fornece luz ao percurso, mas o fenômeno que a desvia na atmosfera e cria a miragem é a refração.",
+          "E": "A difusão espalha luz em várias direções por partículas ou irregularidades, sem caracterizar o mecanismo de refração descrito."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:76": {
@@ -1523,6 +3323,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Dos 100 kg do minério, 75 kg são ZnS. As equações indicam proporção molar de um mol de ZnS para um mol de Zn, então a massa teórica é 75 × 65/97 ≈ 50,3 kg. Aplicando rendimento de 80%, obtém-se 50,3 × 0,80 ≈ 40,2 kg de zinco metálico."
+        ],
+        "alternatives": {
+          "A": "Vinte e cinco quilogramas subestimam o produto; as duas equações preservam a proporção de um Zn por fórmula de ZnS.",
+          "B": "Trinta e três quilogramas não resultam da proporção 65/97 aplicada à massa pura e ao rendimento fornecidos.",
+          "C": "A correção pela pureza e pelo rendimento fornece aproximadamente 40 kg de zinco.",
+          "D": "Cinquenta quilogramas correspondem aproximadamente ao rendimento teórico dos 75 kg de ZnS, sem aplicar os 80% efetivos.",
+          "E": "Cinquenta e quatro quilogramas resultam aproximadamente de aplicar o rendimento a 100 kg de ZnS, ignorando a pureza de 75%."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:77": {
@@ -1543,6 +3367,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na eletrólise de Kolbe, duas moléculas do ácido perdem suas carboxilas como CO2 e os radicais restantes se unem. Para HOOC-CH2-C(CH3)3, unem-se dois grupos CH2-C(CH3)3, formando (CH3)3C-CH2-CH2-C(CH3)3. A cadeia principal tem seis carbonos e quatro metilas nas posições 2,2,5,5."
+        ],
+        "alternatives": {
+          "A": "A descarboxilação remove um carbono de cada ácido, deixando dez carbonos no produto, e não os doze indicados nesse nome.",
+          "B": "As ramificações ficam nos carbonos 2 e 5 da cadeia de seis, não nos carbonos centrais 3 e 4.",
+          "C": "A união dos dois radicais forma uma cadeia de seis carbonos com duas metilas no carbono 2 e duas no 5.",
+          "D": "Uma cadeia principal de oito carbonos com quatro metilas teria doze carbonos, incompatíveis com a perda de dois CO2.",
+          "E": "As duas metades do produto são simétricas, o que não corresponde à distribuição 2,2,4,4 apresentada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:78": {
@@ -1563,6 +3411,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A questão pede a alternativa que protege a área queimada sem lesar a bolha nem aplicar substâncias inadequadas. Entre as opções apresentadas, a cobertura com gaze umedecida evita o ressecamento da superfície e preserva a flictena até o encaminhamento para atendimento."
+        ],
+        "alternatives": {
+          "A": "O gelo diretamente sobre a lesão pode intensificar o dano ao tecido e não é a opção protetora indicada.",
+          "B": "Manteiga não trata a queimadura e pode contaminar a área, além de dificultar sua avaliação.",
+          "C": "Creme dental não é material de curativo e pode irritar ou contaminar o tecido lesionado.",
+          "D": "Perfurar a bolha rompe uma barreira de proteção e aumenta a exposição da lesão a infecções.",
+          "E": "Na comparação proposta pela prova, a gaze umedecida protege a superfície e reduz seu ressecamento sem romper a bolha."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:79": {
@@ -1583,6 +3455,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O fluido deve absorver uma quantidade elevada de calor sem apresentar grande aumento de temperatura. Pela relação Q = mcΔT, isso exige alto calor específico: para a mesma massa e o mesmo aquecimento, um fluido com maior c transporta mais energia até o radiador."
+        ],
+        "alternatives": {
+          "A": "O alto calor específico permite absorver muito calor com uma variação relativamente pequena de temperatura.",
+          "B": "O fluido opera principalmente no estado líquido, de modo que seu calor latente de fusão não controla a retirada de calor do motor.",
+          "C": "Baixa condutividade dificultaria a transferência de calor entre o motor, o fluido e o radiador.",
+          "D": "Uma temperatura de ebulição baixa facilitaria a vaporização indesejada do fluido no motor aquecido.",
+          "E": "Grande dilatação térmica não aumenta a capacidade de absorção de calor e pode ampliar variações de volume no circuito."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:80": {
@@ -1603,6 +3499,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os tecidos lipídicos são predominantemente apolares. Pesticidas de baixa polaridade têm maior afinidade por esse meio do que pela água e podem se acumular na gordura dos organismos. O fenômeno se relaciona à compatibilidade entre as interações intermoleculares do soluto e do meio."
+        ],
+        "alternatives": {
+          "A": "A baixa polaridade favorece a dissolução dos pesticidas em lipídios e seu acúmulo nos tecidos gordurosos.",
+          "B": "A massa molecular reduzida não determina afinidade por gordura; a polaridade é decisiva para a distribuição entre água e lipídios.",
+          "C": "A presença de halogênios isoladamente não basta para determinar a distribuição da substância entre os dois meios.",
+          "D": "O tamanho pequeno não garante lipossolubilidade, pois moléculas pequenas também podem ser muito polares.",
+          "E": "Hidroxilas favorecem interações com água e não são a característica geral responsável pelo acúmulo dos organoclorados em gordura."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:81": {
@@ -1623,6 +3543,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A mancha avermelhada corresponde ao cobre metálico depositado sobre a faca. O ferro sólido fornece elétrons e se oxida; os íons Cu2+ os recebem. Com os potenciais fornecidos, E° = 0,34 − (−0,04) = 0,38 V. O balanceamento exige 3 Cu2+ para 2 Fe, formando 3 Cu e 2 Fe3+."
+        ],
+        "alternatives": {
+          "A": "A redução de Ca2+ é muito desfavorável e a equação não deposita o cobre metálico responsável pela mancha.",
+          "B": "A reação produziria cálcio, não cobre, e não representa o ataque ao ferro metálico da faca.",
+          "C": "A oxidação de Fe2+ não utiliza diretamente o ferro sólido da faca e tem potencial resultante negativo com os dados da tabela.",
+          "D": "A redução de Ca2+ pelo ferro tem potencial negativo e não explica a deposição avermelhada de cobre.",
+          "E": "O ferro metálico se oxida e reduz Cu2+ a cobre, com equação balanceada e potencial padrão positivo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:82": {
@@ -1643,6 +3587,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O apoio está a três oitavos do comprimento da extremidade com arroz. Como a barra é homogênea, seu peso age no centro, a quatro oitavos da mesma extremidade, ficando a um oitavo do apoio. No equilíbrio de torques: 5g × 3L/8 = mg × L/8. Portanto, a massa da barra é 15 kg."
+        ],
+        "alternatives": {
+          "A": "Três quilogramas não equilibrariam o saco de 5 kg, cujo braço de alavanca é três vezes maior que o do peso da barra.",
+          "B": "O valor 3,75 kg não considera que o peso da barra atua no seu centro, apenas L/8 distante do apoio.",
+          "C": "Massas iguais só equilibrariam braços iguais; o saco está a 3L/8 e o centro da barra a L/8 do apoio.",
+          "D": "Seis quilogramas gerariam torque insuficiente no braço L/8 para equilibrar o saco de arroz no braço 3L/8.",
+          "E": "A massa da barra deve ser três vezes a do arroz para compensar seu braço de alavanca três vezes menor, resultando em 15 kg."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:83": {
@@ -1663,6 +3631,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A pele dos anfíbios é fina e permeável, permitindo trocas gasosas cutâneas. Essa mesma característica favorece a perda de água por evaporação, tornando importante a permanência em ambientes úmidos para manter a hidratação e a eficiência respiratória."
+        ],
+        "alternatives": {
+          "A": "A viviparidade não é a característica geral que explica a dependência hídrica dos anfíbios, muitos dos quais põem ovos.",
+          "B": "Pulmões permitem respirar ar e, por si sós, não explicam a restrição a ambientes úmidos.",
+          "C": "Anfíbios são ectotérmicos; a endotermia não caracteriza sua regulação térmica.",
+          "D": "A pele delgada e permeável facilita respiração cutânea e perda de água, exigindo condições de umidade.",
+          "E": "Membros desenvolvidos favorecem a locomoção terrestre e não são o motivo fisiológico da dependência de água."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:84": {
@@ -1683,6 +3675,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A combustão até água líquida libera 18,8 kJ por grama. Para terminar com água no estado gasoso, retira-se a contribuição de 2,4 kJ/g da condensação: ΔH = −18,8 − (−2,4) = −16,4 kJ/g. Para 5 g do bio-óleo, a variação é 5 × (−16,4) = −82,0 kJ, conforme o esquema fornecido."
+        ],
+        "alternatives": {
+          "A": "O valor −106 kJ resulta de somar a energia de condensação, embora o produto solicitado seja vapor de água.",
+          "B": "O valor −94 kJ corresponde à combustão de 5 g formando água líquida, sem corrigir o estado físico do produto.",
+          "C": "Retirar a parcela de condensação fornece −16,4 kJ/g e, para 5 g, −82,0 kJ.",
+          "D": "O valor −21,2 kJ soma incorretamente as parcelas por grama e ainda não multiplica pela massa de 5 g.",
+          "E": "O valor −16,4 kJ é a variação para 1 g no modelo da figura, faltando multiplicar pelos 5 g solicitados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:85": {
@@ -1703,6 +3719,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na câmara escura, a luz atravessa uma abertura e forma uma imagem invertida no anteparo. No olho, a imagem é projetada sobre a retina, onde os fotorreceptores convertem a luz em sinais nervosos. Assim, o tecido da ilustração desempenha a função análoga à retina."
+        ],
+        "alternatives": {
+          "A": "A íris controla a abertura da pupila e a quantidade de luz, sem funcionar como o anteparo que recebe a imagem.",
+          "B": "A retina é a superfície interna sensível à luz sobre a qual se forma a imagem, equivalente ao tecido da câmara escura.",
+          "C": "A pupila é a abertura de entrada da luz, análoga ao orifício da câmara, não ao tecido.",
+          "D": "A córnea participa da refração da luz na entrada do olho e não é o local de formação da imagem final.",
+          "E": "O cristalino ajuda a focalizar a luz, enquanto o tecido corresponde à superfície que recebe a imagem."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:86": {
@@ -1723,6 +3763,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A mesma nota corresponde à mesma frequência fundamental, mas cada instrumento produz uma combinação própria de harmônicos e um perfil temporal de vibração. Essas diferenças na forma da onda constituem o timbre e permitem reconhecer flauta e piano mesmo quando tocam a mesma nota."
+        ],
+        "alternatives": {
+          "A": "A intensidade distingue sons fortes e fracos, mas instrumentos podem ser reconhecidos mesmo quando têm intensidades semelhantes.",
+          "B": "A potência mede a energia sonora emitida por tempo e não caracteriza a combinação de harmônicos de cada instrumento.",
+          "C": "No mesmo meio e nas mesmas condições, os sons dos dois instrumentos propagam-se aproximadamente à mesma velocidade.",
+          "D": "O timbre depende da forma da onda e dos harmônicos, permitindo diferenciar instrumentos que emitem a mesma nota.",
+          "E": "A mesma nota tem a mesma frequência fundamental e altura, portanto essa característica não explica a identificação do instrumento."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:87": {
@@ -1743,6 +3807,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Células de um organismo têm, em geral, o mesmo genoma, mas ativam conjuntos diferentes de genes. A expressão seletiva produz proteínas e estruturas próprias de cada função, explicando as formas especializadas de neurônios, células musculares e outras células."
+        ],
+        "alternatives": {
+          "A": "A diferenciação normal não depende de produzir mutações específicas em cada tipo celular.",
+          "B": "Diferenças no DNA mitocondrial não são o mecanismo geral que define as funções e formas dos tecidos.",
+          "C": "Os tipos celulares compartilham, em geral, os mesmos genes; o que varia é quais deles são expressos.",
+          "D": "A ativação de diferentes porções do genoma gera conjuntos de proteínas e estruturas específicos para cada tipo celular.",
+          "E": "A diferenciação não exige números distintos de cromossomos; a maioria das células somáticas mantém o mesmo conjunto cromossômico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:88": {
@@ -1763,6 +3851,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O tempo de resposta permite estimar a distância entre o celular e uma torre. Uma distância define uma circunferência de posições possíveis no plano; duas circunferências podem ter dois pontos de interseção. Uma terceira torre em posição adequada elimina essa ambiguidade e permite localizar o aparelho."
+        ],
+        "alternatives": {
+          "A": "Uma torre fornece uma distância, deixando infinitos pontos possíveis sobre uma circunferência.",
+          "B": "Duas torres podem fornecer duas posições simétricas possíveis, sem determinar unicamente o ponto.",
+          "C": "Três distâncias independentes, para torres em configuração adequada, permitem selecionar uma posição única no plano.",
+          "D": "Uma quarta torre pode melhorar a conferência ou precisão, mas não é o número mínimo necessário no modelo plano.",
+          "E": "Usar as cinco torres é possível, porém excede o mínimo de três distâncias para a localização proposta."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:89": {
@@ -1783,6 +3895,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Um moluscicida atua contra moluscos, como caramujos. No ciclo da esquistossomose, caramujos do gênero Biomphalaria funcionam como hospedeiros intermediários do Schistosoma mansoni. Reduzir esses hospedeiros pode interromper parte da transmissão do parasita."
+        ],
+        "alternatives": {
+          "A": "A dengue é transmitida por mosquitos, e o controle de moluscos não atinge seu vetor.",
+          "B": "A malária depende de mosquitos Anopheles, não de caramujos como hospedeiros intermediários.",
+          "C": "A transmissão da filariose linfática envolve mosquitos, portanto a ação moluscicida não controla seu ciclo intermediário.",
+          "D": "A ascaridíase se transmite pela ingestão de ovos do verme e não possui molusco como hospedeiro intermediário.",
+          "E": "O caramujo Biomphalaria participa do ciclo do esquistossomo, de modo que a ação moluscicida pode reduzir a transmissão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     },
     "q:90": {
@@ -1803,6 +3939,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2015 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A rota verde apresentada transforma o reagente em ácido adípico em uma única etapa, ao contrário da sequência de transformações da rota tradicional. Reduzir etapas pode diminuir operações, reagentes auxiliares e geração de resíduos, contribuindo para os princípios da química verde."
+        ],
+        "alternatives": {
+          "A": "A etapa única reduz a sequência de transformações e as operações auxiliares em comparação com a rota tradicional mostrada.",
+          "B": "O esquema não informa que apenas a rota verde produz o ácido em estado puro, portanto essa comparação não é sustentada.",
+          "C": "A rota verde emprega peróxido de hidrogênio, H2O2, que é um agente oxidante.",
+          "D": "O composto Na2WO4 contém sódio e tungstênio, mostrando que há elementos metálicos nessa rota.",
+          "E": "O esquema não demonstra gasto energético nulo na separação do produto, afirmação que não pode ser inferida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2015/2015_PV_impresso_D1_CD1.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2015/CADERNO_1_AZUL_SABADO.pdf"
+          }
+        ]
       }
     }
   }

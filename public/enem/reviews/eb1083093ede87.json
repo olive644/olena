@@ -23,6 +23,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As redes digitais facilitaram a circulação de críticas aos governos autoritários e a articulação de manifestações. No contexto da Primavera Árabe, o acesso à internet não se limitou à informação: permitiu conectar participantes e difundir reivindicações de democracia, trabalho e liberdade."
+        ],
+        "alternatives": {
+          "A": "As mobilizações contestavam os regimes centralizadores, e não reforçavam sua atuação. A circulação de críticas favorecia a oposição.",
+          "B": "O texto afirma que os sites ajudaram a mobilizar manifestantes. Portanto a informação se articulava ao envolvimento político efetivo.",
+          "C": "O uso das redes aproximou participantes e favoreceu ações coletivas. Não foi apresentado como uma estratégia de simples afastamento para proteção individual.",
+          "D": "Vírus é uma metáfora para a difusão das ideias libertárias. O texto não trata da destruição de programas de computador.",
+          "E": "A circulação digital de reivindicações e a organização de protestos permitiram mobilizar populações contra governos autoritários. Essa é a função política descrita."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:10": {
@@ -43,6 +67,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A exposição diária a partículas nocivas do trânsito aumenta riscos de doenças respiratórias e cardiovasculares. Mantidas as demais condições, esse dano à saúde eleva a mortalidade e tende a reduzir a expectativa de vida de populações submetidas à poluição atmosférica crônica."
+        ],
+        "alternatives": {
+          "A": "A poluição não é apresentada como estímulo à fecundidade. O efeito destacado é o comprometimento da saúde pelo ar contaminado.",
+          "B": "A exposição crônica pode elevar doenças e mortes, reduzindo a duração média esperada da vida. Essa é a tendência demográfica associada ao risco relatado.",
+          "C": "O crescimento vegetativo depende de nascimentos e mortes. A poluição não implica aumento da diferença entre eles; pode elevar a mortalidade.",
+          "D": "O texto não sustenta aumento relativo de idosos. O comprometimento da sobrevivência não equivale a um envelhecimento populacional garantido.",
+          "E": "A proporção de jovens depende de fecundidade, mortalidade e migração. A consequência direta indicada pela poluição é a perda de saúde e longevidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:11": {
@@ -63,6 +111,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A araucária identifica a floresta ombrófila mista, presente sobretudo no Sul. A exploração intensa da madeira, vinculada a serrarias e à indústria de papel e celulose, participou da degradação dessa formação, junto à expansão de usos agropecuários do solo."
+        ],
+        "alternatives": {
+          "A": "A mineração exportadora do Sudeste não explica o principal processo associado à exploração de araucárias do Sul. A localização e o recurso são diferentes.",
+          "B": "A expansão de grãos no Centro-Oeste afeta sobretudo o Cerrado. Não corresponde à área predominante da floresta de araucárias.",
+          "C": "A cana nordestina se relaciona à destruição de outras formações da Mata Atlântica. Não identifica a exploração da floresta com araucárias.",
+          "D": "A retirada de madeira no Sul para usos industriais participou da degradação dessa formação. A alternativa relaciona corretamente recurso, atividade e região.",
+          "E": "A ocupação de encostas da Serra do Mar afeta vegetação atlântica, mas não é o processo específico de exploração da mata de araucárias apresentado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:12": {
@@ -83,6 +155,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A formação do reservatório de Sobradinho inundou áreas ocupadas ao longo do São Francisco. A retirada de moradores de lugares que seriam cobertos pela água produziu deslocamento compulsório da população ribeirinha, consequência sintetizada pela letra ao dizer que a obra tira gente e põe represa."
+        ],
+        "alternatives": {
+          "A": "O alagamento do reservatório exige retirar moradores das áreas inundadas. Essa migração forçada é uma consequência socioespacial direta da barragem.",
+          "B": "A formação de um grande lago não se caracteriza por rebaixamento necessário do lençol local. A consequência humana explicitada é o deslocamento de moradores.",
+          "C": "O alagamento pode ameaçar lugares de memória e vínculos culturais, não assegurar automaticamente sua preservação.",
+          "D": "A barragem não amplia diretamente áreas de clima árido. O efeito descrito é transformar terras ocupadas em um reservatório.",
+          "E": "Reservatórios também podem apoiar irrigação. A letra não destaca redução dessa prática, mas o alagamento e a saída de populações."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:13": {
@@ -103,6 +199,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A troca acelerada de produtos amplia a geração de resíduos, inclusive componentes tóxicos de equipamentos. Quando o descarte é inadequado, substâncias podem contaminar o solo e a água subterrânea. A continuidade do consumo desenfreado aumenta o volume e a complexidade desses problemas socioambientais."
+        ],
+        "alternatives": {
+          "A": "Resíduos mal destinados podem liberar contaminantes para o solo e o lençol freático. O aumento do descarte intensifica esses riscos.",
+          "B": "Decompositores não eliminam metais pesados nem tornam inofensivos todos os resíduos tecnológicos. A contaminação pode persistir e circular nos ecossistemas.",
+          "C": "Lixões abertos não são solução adequada de destinação. Eles expõem trabalhadores, solo e água a riscos e não controlam os impactos dos resíduos.",
+          "D": "O acesso de catadores a lixões não garante inclusão digna. A atividade sem proteção pode reproduzir vulnerabilidade e exposição a substâncias nocivas.",
+          "E": "O descarte incorreto não assegura encaminhamento a cooperativas. É preciso coleta, separação e tratamento adequados para recuperar materiais com segurança."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 5",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:14": {
@@ -123,6 +243,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na ordem mundial posterior à Guerra Fria, a influência se organiza em redes econômicas e áreas articuladas às grandes potências. A regionalização proposta ultrapassa a antiga oposição entre capitalismo e socialismo e destaca centros de comando e suas zonas de influência na economia globalizada."
+        ],
+        "alternatives": {
+          "A": "A identidade cultural não determina estagnação dos Estados. A representação busca relações de poder e redes econômicas, não uma imobilidade cultural.",
+          "B": "O contexto é de avanço do capitalismo globalizado e do neoliberalismo. A distribuição não demonstra predomínio de uma racionalidade anticapitalista.",
+          "C": "As grandes potências organizam fluxos e áreas de influência. Essa centralidade econômica oferece um critério de regionalização posterior ao fim da bipolaridade.",
+          "D": "A globalização não implica desaparecimento de todos os blocos regionais. A integração econômica também se estrutura por acordos e polos regionais.",
+          "E": "A influência econômica não se concentra de forma geral em países islâmicos. O critério do mapa é a articulação com grandes potências globais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:15": {
@@ -143,6 +287,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A deposição ácida altera o pH de águas e solos e reage com materiais expostos, deteriorando metais, pinturas e rochas de monumentos. Também pode danificar a vegetação e afetar organismos aquáticos. Esses efeitos químicos explicam os prejuízos ambientais e patrimoniais da chuva ácida."
+        ],
+        "alternatives": {
+          "A": "A acidez favorece corrosão e deterioração de materiais e altera ecossistemas terrestres e aquáticos. Essa combinação corresponde aos efeitos conhecidos do fenômeno.",
+          "B": "A chuva ácida não é uma solução para o aquecimento global. A retirada de alguns poluentes por deposição não anula os danos nem resolve a concentração de gases estufa.",
+          "C": "Assoreamento resulta de transporte e deposição de sedimentos. Não é uma consequência química direta que defina a chuva ácida.",
+          "D": "Enchentes dependem de volume de chuva, drenagem e uso do solo. Um pH baixo não determina sua ocorrência, e a corrosão não é necessariamente instantânea.",
+          "E": "A degradação de terras semiáridas corresponde a outro conjunto de processos. A chuva ácida não se restringe ao Nordeste nem é explicada por esse recorte climático."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 6",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:16": {
@@ -163,6 +331,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As redes de informação permitem distribuir tarefas entre locais e empresas diferentes e coordená-las em tempo real. Esse suporte técnico favorece contratos flexíveis, terceirização e reorganização rápida da produção, adequando o trabalho às estratégias empresariais e à mobilidade dos investimentos."
+        ],
+        "alternatives": {
+          "A": "A organização descrita descentraliza tarefas e não reforça necessariamente a ligação permanente dos operários com uma única linha de montagem.",
+          "B": "O teletrabalho pode crescer, mas o texto não permite considerá-lo uma solução geral para o desemprego crônico. A tecnologia também pode reduzir postos.",
+          "C": "A coordenação em rede facilita fragmentação de tarefas, contratos flexíveis e terceirização. Esses mecanismos acompanham a reorganização produtiva e a mobilidade do capital.",
+          "D": "Computadores não eliminam necessariamente especialistas e gestores. A rede exige coordenação e competências técnicas, embora transforme suas funções.",
+          "E": "Comunicação mais rápida não garante harmonia entre interesses de trabalhadores e empresas. Conflitos sobre remuneração e condições de trabalho podem persistir."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:17": {
@@ -183,6 +375,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A concentração fundiária e a dependência de trabalhadores em relação a proprietários davam aos coronéis poder econômico e político. O controle de benefícios, empregos e relações locais permitia pressionar eleitores, tornando o voto de cabresto uma expressão da estrutura agrária desigual da Primeira República."
+        ],
+        "alternatives": {
+          "A": "O trabalhador dependente e sem acesso a serviços não vive numa estrutura igualitária. A concentração de recursos sustenta o controle político.",
+          "B": "O texto mostra subordinação, e não uma harmonia equilibrada entre classes. A aparente gratidão ao patrão está ligada à dependência social.",
+          "C": "A escravidão foi abolida antes da Primeira República. A coerção eleitoral podia persistir em relações de trabalho juridicamente livres.",
+          "D": "A presença de forças repressivas pode integrar o mando local, mas o fundamento destacado é a organização agrária e a dependência do trabalhador.",
+          "E": "A concentração de terras e recursos sustenta o poder dos proprietários sobre trabalhadores e eleições. Essa estrutura agrária limita a cidadania efetiva."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:18": {
@@ -203,6 +419,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Movimentos sociais articulam interesses coletivos e levam demandas à arena pública, por diálogo, confronto e mobilização. Ao pressionar o Estado por direitos e políticas, ampliam a participação de grupos antes pouco ouvidos e contribuem para construir práticas democráticas."
+        ],
+        "alternatives": {
+          "A": "Os movimentos influenciam e disputam decisões, mas não determinam sozinhos a função do Estado. A democracia envolve diferentes atores e instituições.",
+          "B": "A tensão pode fazer parte da ação, mas não é o fim democrático destacado. O conflito torna demandas visíveis e pode ampliar direitos.",
+          "C": "A organização coletiva permite reivindicar direitos e cobrar respostas do poder público. Essa pressão amplia a participação na construção democrática.",
+          "D": "Defender demandas específicas não implica necessariamente prejudicar outros grupos. O texto enfatiza a ampliação das práticas participativas.",
+          "E": "A ação social pode cobrar ética pública, mas não garante que órgãos estatais adotem valores. O mecanismo expresso é a apresentação e pressão por demandas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:19": {
@@ -223,6 +463,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A exigência de renda mínima estabelecia voto censitário, restringindo a participação dos mais pobres. Na sociedade imperial, essa seleção favorecia proprietários e comerciantes com recursos, preservando o controle político por grupos economicamente privilegiados apesar da linguagem de cidadania."
+        ],
+        "alternatives": {
+          "A": "O voto censitário era compatível com modalidades restritas do liberalismo oitocentista. Não significava eliminar toda inspiração liberal.",
+          "B": "A renda mínima excluía grande parte da população livre e pobre. A regra não universalizava o sufrágio entre brasileiros livres.",
+          "C": "A norma não delimita privilégios exclusivos ao Sudeste cafeeiro. Seu critério é a posição econômica dos cidadãos em todo o Império.",
+          "D": "O filtro de renda limita a participação popular e favorece os detentores de bens e rendimentos. Assim concentra poder em proprietários e comerciantes.",
+          "E": "A norma não afasta a Igreja da política, e até prevê exceção de idade para clérigos. O núcleo da exclusão é a restrição de acesso ao voto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 7",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:2": {
@@ -243,6 +507,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As normas morais são construídas na vida humana e orientam a conduta de sujeitos capazes de reconhecer obrigações e decidir como agir. A diferença entre aprovar uma regra e cumpri-la expressa a tensão entre a lei que o ser humano reconhece para si e as ações que efetivamente realiza."
+        ],
+        "alternatives": {
+          "A": "O texto não atribui as regras à vontade divina. A ambiguidade moral decorre da relação humana com normas que reconhece e nem sempre pratica.",
+          "B": "Normas morais possuem força de obrigação para quem as reconhece. Não são apenas sugestões sem compromisso de cumprimento.",
+          "C": "A possibilidade de descumprir não prova incapacidade absoluta de realizar normas amplas. A questão enfatiza a autonomia e a responsabilidade do agente.",
+          "D": "Os seres humanos formulam e reconhecem regras às quais devem se submeter. Essa condição permite compreender a distância entre consciência da obrigação e prática.",
+          "E": "Moral e direito não são idênticos. Observar leis jurídicas não garante cumprir integralmente todas as obrigações morais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:20": {
@@ -263,6 +551,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto contrapõe a existência de tratados e de uma lei à persistência de casos e à ausência de condenações definitivas no período analisado. A distância entre previsão normativa e aplicação demonstra que criminalizar a tortura não assegura, por si só, investigação, responsabilização e proteção das vítimas."
+        ],
+        "alternatives": {
+          "A": "A persistência em larga escala contradiz a ideia de extinção da prática. O texto denuncia os limites da efetivação das normas.",
+          "B": "O reconhecimento legal do crime não garante sua punição concreta. A ausência de condenações no período evidencia a insuficiência da lei isolada.",
+          "C": "O trecho não atribui o problema a denúncias anônimas. Há casos registrados e presumíveis, sem explicação única para a impunidade.",
+          "D": "A falta de registro não é explicada por desconhecimento da lei. Tampouco torna a tortura legítima ou aceitável juridicamente.",
+          "E": "A ausência de jurisprudência não impede aplicar uma lei penal vigente. O texto não apresenta esse fator como causa comprovada da falta de condenações."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:21": {
@@ -283,6 +595,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A participação democrática pressupõe que cidadãos conheçam assuntos e decisões de interesse coletivo. A imprensa, com liberdade e fiscalização do governo, pode fornecer informações para formar juízos, discutir políticas e cobrar autoridades, fortalecendo o debate na esfera pública."
+        ],
+        "alternatives": {
+          "A": "Orientar consumo pode ser uma função de certos meios, mas não explica seu papel no processo decisório coletivo definido no primeiro texto.",
+          "B": "Informação acessível e fiscalização oferecem elementos para discutir decisões públicas. Essa função favorece participação e controle democrático.",
+          "C": "O jornalismo democrático não se limita à versão oficial. A fiscalização exige examinar criticamente informações e ações governamentais.",
+          "D": "O entretenimento não é o papel destacado pelo segundo texto. Sua ênfase está em liberdade, informação e acompanhamento do poder.",
+          "E": "Transmissões esportivas podem gerar identificação, mas unidade cultural não substitui debate político e fiscalização como condições democráticas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:22": {
@@ -303,6 +639,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os textos não negam a importância das oligarquias paulista e mineira, mas questionam a imagem de alternância pacífica e automática. Interesses econômicos e políticos distintos produziam disputas, predomínios variáveis e rupturas, tornando café com leite uma simplificação de um processo conflituoso."
+        ],
+        "alternatives": {
+          "A": "A força econômica paulista não eliminava a necessidade de alianças. Os próprios textos discutem uma união negociada e instável.",
+          "B": "Divisões internas tornam a análise complexa, mas não anulam a existência de alianças. A ressalva é à estabilidade idealizada de uma parceria exclusiva.",
+          "C": "Conflitos e divergências contradizem a ideia de um acordo sempre estável e automático. A expressão deve ser usada sem apagar essas disputas.",
+          "D": "O texto não explica a instabilidade por uma proibição federal de alianças. As oligarquias efetivamente negociavam e disputavam influência.",
+          "E": "Os textos destacam diferenças de interesses, inclusive no comércio exterior. Não apontam uma unificação econômica uniforme entre as oligarquias."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 8",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:23": {
@@ -323,6 +683,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Chernobyl é mobilizado como exemplo dos riscos de um desenvolvimento técnico sem controle social suficiente. O autor propõe gestão coletiva da ciência e da tecnologia para orientar escolhas por finalidades humanas, fazendo os projetos responderem aos interesses e à segurança da coletividade."
+        ],
+        "alternatives": {
+          "A": "A gestão coletiva deve definir finalidades e avaliar consequências para a sociedade. Isso coloca os interesses comuns como referência dos projetos técnicos.",
+          "B": "Submeter decisões apenas ao mercado não garante proteção humana e ambiental. O texto pede uma orientação coletiva mais ampla.",
+          "C": "O acidente revela limites da apropriação tecnológica da natureza. O autor não defende fazer do avanço técnico um fim independente de suas consequências.",
+          "D": "O argumento relaciona impactos naturais e sociais e exige gestão integrada. Não propõe separar natureza e sociedade.",
+          "E": "Uma gestão fechada em si mesma contraria o pedido de maior participação coletiva. A finalidade não é simplesmente ampliar a apropriação da natureza."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:24": {
@@ -343,6 +727,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A automação e a reorganização produtiva alteram tarefas e exigem competências para lidar com tecnologias e processos novos. A qualificação contínua passa a envolver empresas e trabalhadores, enquanto a redução de coletivos operários e de funções repetitivas transforma a organização do trabalho."
+        ],
+        "alternatives": {
+          "A": "A automação reduz a centralidade de trabalho manual repetitivo. A produção artesanal não é o modelo descrito no texto.",
+          "B": "A participação feminina no trabalho antecede a automação microeletrônica. O trecho não apresenta seu ingresso tardio como traço central.",
+          "C": "As novas tecnologias demandam atualização de competências e participação na qualificação. Essa exigência acompanha a transformação dos processos produtivos.",
+          "D": "Funções repetitivas são justamente aquelas que podem ser substituídas ou reduzidas pela automação. Não há aumento necessário dessas vagas.",
+          "E": "A produção flexível procura frequentemente reduzir estoques e ajustar produção à demanda. Grandes estoques não são a característica exigida pelo cenário descrito."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:25": {
@@ -363,6 +771,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A ampliação do eleitorado após a redemocratização inclui a conquista do direito de voto pelos analfabetos, reconhecida em 1985 e mantida pela Constituição de 1988. Esse ingresso ajuda a explicar a alteração da proporção de eleitores no intervalo de 1980 a 1996."
+        ],
+        "alternatives": {
+          "A": "A abolição ocorreu em 1888 e não criou automaticamente voto amplo para ex-escravizados, muitos dos quais eram excluídos pelo analfabetismo.",
+          "B": "O voto secreto não foi encerrado nos anos 1950. Sua manutenção é uma garantia eleitoral, não a conquista representada pelo intervalo.",
+          "C": "O voto feminino foi reconhecido nacionalmente em 1932, antes do intervalo de 1960 a 1970. A cronologia proposta está incorreta.",
+          "D": "O voto obrigatório não foi abolido entre 1970 e 1980. Essa afirmação não explica a mudança no eleitorado.",
+          "E": "A inclusão dos analfabetos em 1985 ampliou o direito de participação. O evento situa-se no intervalo de 1980 a 1996 e resulta de uma luta por cidadania."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:26": {
@@ -383,6 +815,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os defensores de 1930 usaram uma interpretação negativa de 1889 para apresentar sua própria chegada ao poder como ruptura necessária e mais representativa da nação. A seleção da memória histórica servia, assim, à legitimação da nova ordem política, e não a uma descrição neutra do passado."
+        ],
+        "alternatives": {
+          "A": "A ordem de 1930 não se resume a uma vitória de propostas democráticas liberais. O argumento do texto é o uso da memória para legitimar o grupo governante.",
+          "B": "A crítica a 1889 não tinha como objetivo principal restaurar figuras monárquicas. Buscava valorizar a ruptura conduzida em 1930.",
+          "C": "A política educacional não é o eixo da memória apresentada. A crítica enfatiza exclusão, militarismo e estrangeirismo da fundação republicana.",
+          "D": "Desqualificar a ordem anterior permitia apresentar o novo poder como renovação nacional. Essa construção de memória legitimava a chegada dos vencedores de 1930.",
+          "E": "A interpretação citada realça ausência popular em 1889. Não procura ressaltar uma participação ampla no momento da Proclamação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 9",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:27": {
@@ -403,6 +859,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Crianças ainda estão formando referências, capacidade crítica e compreensão dos papéis sociais. A exposição frequente à televisão pode favorecer a interiorização de modelos e comportamentos sem a mesma possibilidade de avaliação de adultos, o que explica a atenção às consequências sobre sua socialização."
+        ],
+        "alternatives": {
+          "A": "A observação participa do aprendizado, mas não explica sozinha a vulnerabilidade. A questão exige considerar a menor capacidade de avaliar criticamente os modelos recebidos.",
+          "B": "Adquirir informação e interagir não são necessariamente efeitos negativos. A vulnerabilidade decorre da incorporação menos crítica de padrões.",
+          "C": "O processo de socialização envolve aprender papéis e comportamentos. Uma visão crítica ainda em desenvolvimento torna crianças mais suscetíveis à influência desses modelos.",
+          "D": "Os programas não apresentam apenas tolerância e respeito. A pesquisa citada inclui justamente violência e outros padrões potencialmente problemáticos.",
+          "E": "A televisão não transmite exclusivamente modelos de respeito à lei. O conteúdo é diverso e pode influenciar a socialização em diferentes direções."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:28": {
@@ -423,6 +903,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A exclusão do mercado formal de moradia leva parte da população a ocupar áreas pouco valorizadas e frequentemente perigosas, como encostas e margens de cursos d’água. A falta de infraestrutura e de proteção amplia a exposição a enchentes e deslizamentos, com danos materiais e riscos de morte."
+        ],
+        "alternatives": {
+          "A": "A precariedade e a ausência de planejamento adequado são parte do problema. Não se pode definir esses espaços pela oferta previamente planejada de infraestrutura suficiente.",
+          "B": "Associações podem atuar, mas seu financiamento público não é uma característica geral assegurada. A questão pede uma condição territorial frequente.",
+          "C": "A ocupação de áreas naturais não garante sua preservação. A falta de saneamento e planejamento pode produzir degradação e risco.",
+          "D": "Encostas e margens de córregos expõem moradores a desmoronamentos e enchentes. Essa vulnerabilidade é coerente com as localizações citadas no texto.",
+          "E": "A segregação existe, mas não implica multiplicação efetiva de políticas capazes de revertê-la. A alternativa presume uma resposta pública que o texto não demonstra."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:29": {
@@ -443,6 +947,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na sociedade escravista, sapatos podiam atuar como sinal visível de liberdade e distinção, enquanto muitos escravizados eram mantidos descalços. O casal retratado com calçados e vestuário cuidado evidencia estratégias de afirmação de posição social entre negros libertos ou em situação relativamente favorecida."
+        ],
+        "alternatives": {
+          "A": "A imagem não comprova rapidez de incorporação dos libertos ao mercado urbano. A aparência do retrato não permite essa conclusão geral.",
+          "B": "Chapéu e sombrinha não constituem, nesse contexto, sinais específicos de preservação de tradições africanas. A distinção mais relevante é o uso de sapatos.",
+          "C": "Os calçados podiam distinguir pessoas livres ou relativamente favorecidas numa ordem que marcava muitos escravizados pela condição de descalços. Essa leitura relaciona vestuário e hierarquia social.",
+          "D": "A adoção de trajes europeus não significava distinguir-se de todos os brasileiros. Tais roupas integravam convenções sociais locais, inclusive de afirmação da liberdade.",
+          "E": "Os trajes não são identificados como uniforme de trabalho doméstico. O retrato sugere apresentação social cuidada, sem comprovar uma ocupação específica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 10",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:3": {
@@ -463,6 +991,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os caras-pintadas participaram das manifestações de 1992 contra a corrupção no governo Fernando Collor. A mobilização juvenil ampliou a pressão social por sua saída e marcou o processo de impeachment, exercendo participação cívica no contexto democrático posterior à ditadura."
+        ],
+        "alternatives": {
+          "A": "As Diretas Já ocorreram em 1983 e 1984, antes do movimento dos caras-pintadas. O objetivo era a eleição direta presidencial.",
+          "B": "A Lei da Ficha Limpa foi aprovada em 2010. Não é a pauta específica do movimento representado, ocorrido no início dos anos 1990.",
+          "C": "A articulação política do movimento não se caracterizou pelo uso das redes digitais contemporâneas para protestos relâmpago. O contexto é 1992.",
+          "D": "Os caras-pintadas promoveram manifestações públicas pelo afastamento de Collor. Não constituíam uma organização de revolução armada.",
+          "E": "A juventude deu visibilidade à indignação social e pressionou pelo impeachment de Collor. Esse é o episódio histórico associado às pinturas nos rostos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 2",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:30": {
@@ -483,6 +1035,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O fascismo italiano construiu um culto à figura de Mussolini, apresentado como chefe excepcional capaz de conduzir a nação. Essa atribuição de qualidades extraordinárias ao líder aproxima sua autoridade da dominação carismática, embora o regime também utilizasse instituições e coerção para se manter."
+        ],
+        "alternatives": {
+          "A": "A república norte-americana funda a legitimidade formal em Constituição e procedimentos legais. Esse modelo se aproxima da autoridade racional-legal.",
+          "B": "O culto ao Duce atribuía capacidades excepcionais ao líder e buscava adesão pessoal das massas. Essa crença caracteriza a dimensão carismática do poder fascista.",
+          "C": "A sacralidade do faraó se associa à autoridade tradicional e religiosa. Não é o melhor exemplo de obediência fundada em qualidades pessoais extraordinárias de um chefe moderno.",
+          "D": "O absolutismo francês recorria à tradição dinástica e ao direito divino. Esses fundamentos correspondem sobretudo à legitimação tradicional.",
+          "E": "A monarquia constitucional brasileira combinava hereditariedade e normas institucionais. O carisma pessoal não era seu princípio predominante de legitimação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:31": {
@@ -503,6 +1079,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A pergunta do ancião pressupõe a madeira como recurso para uma necessidade imediata, como aquecer-se. Os europeus buscavam pau-brasil para circuitos mercantis, especialmente sua matéria corante. O diálogo revela diferentes sentidos atribuídos ao produto do trabalho em sistemas culturais e econômicos distintos."
+        ],
+        "alternatives": {
+          "A": "O ancião interpreta a retirada da madeira pelo seu uso cotidiano, enquanto os europeus a destinam ao comércio. Essa diferença de finalidade é o núcleo do diálogo.",
+          "B": "O trecho não formula uma preocupação explícita de conservação ambiental. O estranhamento diz respeito ao trabalho de transportar madeira de tão longe.",
+          "C": "O ancião não manifesta um projeto de maximizar lucro. A alternativa apaga a diferença de perspectivas que a pergunta evidencia.",
+          "D": "Há curiosidade, mas não se demonstra reverência recíproca. O diálogo é usado para expor usos e valores econômicos diferentes.",
+          "E": "O aquecimento é a interpretação do ancião, não a finalidade efetiva do comércio de pau-brasil. A diferença não é apenas o armazenamento para o inverno."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:32": {
@@ -523,6 +1123,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A inclusão da história africana e afro-brasileira combate a invisibilidade de contribuições negras na formação do país. Ao incorporar essas experiências ao currículo comum, a lei favorece reconhecimento da diversidade e da pluralidade étnico-racial, questionando narrativas centradas apenas na herança europeia."
+        ],
+        "alternatives": {
+          "A": "A lei não é o ato que legitima genericamente as ciências humanas. Ela modifica conteúdos para reconhecer a contribuição histórica e cultural negra.",
+          "B": "O ensino se destina a todos os estudantes, e não apenas à população afro-brasileira. A mudança busca transformar o reconhecimento social da diversidade.",
+          "C": "O objetivo é superar perspectivas etnocêntricas, valorizando histórias e culturas antes marginalizadas. Não se pretende reforçar uma hierarquia cultural.",
+          "D": "A lei trata do currículo, não garante sozinha igualdade material de acesso e permanência escolar. Essa igualdade exige outras políticas.",
+          "E": "O reconhecimento das contribuições africanas e negras amplia a compreensão da formação nacional. Esse é um avanço no respeito à pluralidade étnico-racial."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:33": {
@@ -543,6 +1167,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A colonização mercantil buscava produzir gêneros valorizados no mercado europeu. O açúcar já possuía demanda crescente e preços elevados, e Portugal conhecia sua produção em ilhas atlânticas. O potencial de lucro explica a escolha dessa cultura para organizar a exploração colonial no Brasil."
+        ],
+        "alternatives": {
+          "A": "A demanda e o alto valor do açúcar ofereciam retornos atraentes ao comércio colonial. Isso correspondia à lógica mercantil de exploração da colônia.",
+          "B": "A circulação anterior por intermédio árabe não significa uma aliança histórica determinante com Portugal. O incentivo central era o mercado europeu lucrativo.",
+          "C": "Uma carência de trabalhadores dificultaria a produção, em vez de justificar a escolha econômica do produto. A mão de obra foi organizada coercitivamente.",
+          "D": "Feitorias africanas participavam de redes portuguesas, mas não constituíam a razão principal para selecionar o açúcar. Seu valor comercial era o elemento decisivo.",
+          "E": "Os povos indígenas não dominavam uma técnica equivalente à produção açucareira dos engenhos portugueses. A experiência técnica veio de outros circuitos atlânticos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 11",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:34": {
@@ -563,6 +1211,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O medo de revoltas escravas e de propostas igualitárias levou setores proprietários a conduzir a Independência de forma conservadora. Ao participar do movimento, buscavam romper vínculos políticos com Portugal sem permitir transformações populares que ameaçassem escravidão, propriedade e hierarquias sociais."
+        ],
+        "alternatives": {
+          "A": "Não se organizou um partido nacional com participação controlada de afro-brasileiros como medida central descrita. A questão é o controle elitista do processo de ruptura.",
+          "B": "A elite não adotou amplamente os clamores igualitários e abolicionistas da Conjuração Baiana. Sua preocupação era evitar que ganhassem força.",
+          "C": "Não houve uma aliança geral com lideranças escravas para implementar mudanças populares. A preservação da escravidão marcou a Independência conduzida pelos proprietários.",
+          "D": "Dirigir a ruptura permitia conter a participação popular radical e proteger os interesses da elite. Essa intenção explica o caráter conservador do processo.",
+          "E": "A elite independentista se articulou em torno de D. Pedro, em vez de isolá-lo necessariamente. A monarquia foi um instrumento de continuidade e ordem."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:35": {
@@ -583,6 +1255,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O crescimento das trocas e das cidades aumentou a circulação de pessoas e mercadorias. As muralhas deixaram de representar apenas fechamento defensivo e suas portas ganharam importância como pontos de passagem e controle de fluxos, acompanhando a expansão comercial e urbana no fim da Idade Média."
+        ],
+        "alternatives": {
+          "A": "A ampliação do comércio e da vida urbana intensificou os fluxos através das portas. Isso explica a mudança de função das muralhas.",
+          "B": "Migrações participaram do crescimento urbano, mas a transformação funcional dos pórticos se liga de modo mais abrangente à circulação comercial e às cidades.",
+          "C": "Parques industriais modernos pertencem a um período posterior. Não explicam a alteração urbana no final da Idade Média.",
+          "D": "A multiplicação de castelos e feudos enfatizaria a fragmentação e a defesa. O texto trata de uma abertura funcional associada à circulação urbana.",
+          "E": "O controle de epidemias podia envolver barreiras, mas não é o processo que explica a transformação das muralhas em passagens numa economia urbana em expansão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:36": {
@@ -603,6 +1299,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A predominância histórica do catolicismo no Brasil se relaciona à colonização portuguesa e à condição de religião oficial durante o Império. A articulação entre Estado e Igreja favoreceu catequese, instituições e difusão da fé católica, produzindo uma presença social duradoura."
+        ],
+        "alternatives": {
+          "A": "O catolicismo brasileiro incorporou e negociou práticas culturais diversas. Uma suposta incapacidade absoluta de incorporação não explica seu crescimento.",
+          "B": "O passado colonial e imperial não se caracterizou por liberdade religiosa plena na esfera pública. O catolicismo possuía privilégios oficiais.",
+          "C": "A permissão ampla e igualitária a religiões não cristãs não foi a base do predomínio católico. Havia restrições e hierarquias religiosas.",
+          "D": "O vínculo oficial com o Estado e a ação missionária favoreceram a difusão e institucionalização católica. Esse processo ajuda a explicar o percentual elevado de adeptos.",
+          "E": "Religiões africanas influenciaram práticas brasileiras, mas a causa histórica principal do predomínio católico é sua posição oficial e sua associação ao poder colonial e imperial."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 12",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:37": {
@@ -623,6 +1343,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A substituição da queima e do corte manual por máquinas pode elevar o rendimento e organizar etapas produtivas de modo mais eficiente. Essa modernização responde à restrição ambiental e às estratégias econômicas do setor, embora também possa reduzir postos de trabalho e criar novos impactos."
+        ],
+        "alternatives": {
+          "A": "O uso de máquinas não implica necessariamente perda direta de nutrientes como consequência central. O texto destaca modernização e restrição às queimadas.",
+          "B": "A mecanização permite maior eficiência e produtividade na colheita, articulando adaptação à norma ambiental e racionalização econômica. Essa é a mudança compatível com o processo descrito.",
+          "C": "Máquinas podem substituir grande quantidade de cortadores. Não há aumento necessário da oferta total de empregos nesse ambiente produtivo.",
+          "D": "Equipamentos pesados podem aumentar a compactação do solo. A alternativa inverte um risco associado à mecanização.",
+          "E": "Máquinas podem emitir poluentes, mas essa alternativa não expressa o ganho produtivo que relaciona a modernização à substituição das queimadas no contexto da questão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:38": {
@@ -643,6 +1387,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A arte renascentista incorporou investigações sobre anatomia, perspectiva, luz, proporção e movimento. Essas pesquisas uniam observação e experimentação à criação de imagens, expressando a relação entre conhecimento científico e produção artística descrita no texto."
+        ],
+        "alternatives": {
+          "A": "A fé continuou presente em temas, mas o trecho enfatiza pesquisa racional e técnica para representar natureza e espaço, não o misticismo.",
+          "B": "O estudo científico de forma, luz e corpo alimentou procedimentos artísticos. Essa interdependência caracteriza a produção renascentista destacada.",
+          "C": "O comércio ajudou a sustentar o Renascimento, mas a relação específica apresentada entre investigação e representação é a de ciência e arte.",
+          "D": "Política e economia compõem o contexto, porém não identificam os dois campos diretamente articulados na conquista da forma e da luz.",
+          "E": "Astronomia e religião não resumem os objetos citados. O texto inclui técnicas e conhecimentos aplicados diretamente à representação artística."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:39": {
@@ -663,6 +1431,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto descreve ampliação de investimentos e aquisição de terras por agentes chineses em países com instituições frágeis. A dependência econômica e o controle de grandes projetos podem limitar a autonomia dos governos anfitriões, originando o temor de relações semelhantes a protetorados."
+        ],
+        "alternatives": {
+          "A": "O trecho não afirma que FMI ou Banco Mundial imponham bloqueios aos investimentos. A preocupação é a influência criada pelo capital e pela terra adquirida.",
+          "B": "Não são apresentadas ONGs como agentes capazes de limitar os investimentos. A alternativa acrescenta uma relação ausente do texto.",
+          "C": "O texto não atribui os projetos a uma aliança necessária com capitais ocidentais. Seu foco é a atuação chinesa e os riscos de dependência.",
+          "D": "Investimentos e controle territorial podem criar poder de influência sobre decisões nacionais. Essa relação explica o receio de comprometimento da soberania.",
+          "E": "O aumento de diplomatas e a formação de um mercado comum não são demonstrados. O texto permite discutir dependência econômica, não afirmar esse bloco institucional."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:4": {
@@ -683,6 +1475,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A expansão da soja mecanizada ampliou a pressão por terras em áreas de fronteira agrícola, convertendo vegetação nativa em grandes propriedades produtoras. Esse avanço também desloca outras atividades e aumenta a valorização fundiária, contribuindo para acelerar o desmatamento amazônico no contexto descrito."
+        ],
+        "alternatives": {
+          "A": "A mineração gera impactos importantes, mas a alternativa não identifica o processo agropecuário de expansão territorial que mais diretamente acelera a conversão de grandes áreas.",
+          "B": "As monoculturas mecanizadas de soja avançam sobre a fronteira agrícola e incentivam abertura de terras. Essa dinâmica contribui para a perda de floresta.",
+          "C": "A construção original da Transamazônica pertence sobretudo aos anos 1970. O enunciado pede um processo econômico de expansão contemporânea, como o avanço da soja.",
+          "D": "Reservas extrativistas buscam compatibilizar uso de recursos e manutenção da floresta. Não correspondem ao vetor de substituição florestal apresentado.",
+          "E": "A concentração industrial de Manaus tem impactos, mas não explica diretamente a expansão extensa da retirada de floresta para uso do solo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:40": {
@@ -703,6 +1519,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O café se difundiu pela Península Árabe e por redes ligadas ao mundo muçulmano antes de chegar à Europa cristã. A suspeita religiosa e a ideia de batizar a bebida expressam a percepção de um produto associado ao islamismo, reinterpretado para torná-lo aceitável no universo católico."
+        ],
+        "alternatives": {
+          "A": "A bebida vinha de sociedades com tradição religiosa muçulmana, não de um movimento ateísta. A oposição era entre referências confessionais.",
+          "B": "O percurso árabe e otomano citado aponta ao mundo islâmico. Não há fundamento no trecho para atribuir a rejeição a uma origem judaica.",
+          "C": "O hinduísmo não corresponde às áreas de difusão destacadas. A Península Árabe e Constantinopla integram a associação com o islamismo.",
+          "D": "A circulação pelo mundo árabe e muçulmano explica a suspeita de alguns clérigos. O batismo simbólico procurava dar identidade cristã à bebida.",
+          "E": "O consumo de café não foi apresentado como prática específica de protestantes. A associação histórica indicada é com o mundo islâmico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 13",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:41": {
@@ -723,6 +1563,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As reformas defendidas pelo CGT incluíam extinguir o latifúndio e regulamentar remessas de lucros. Essas propostas colocavam limites ao exercício da propriedade e aos interesses privados em nome de objetivos nacionais e sociais, diferindo da prioridade ao livre mercado atribuída à UDN."
+        ],
+        "alternatives": {
+          "A": "Reforma bancária e regulação de lucros pressupõem intervenção pública. O CGT não defendia eliminar toda atuação estatal na economia.",
+          "B": "O crescimento de bens de consumo não é a finalidade específica que distingue as propostas. O manifesto destaca alterações na propriedade e no controle econômico.",
+          "C": "A regulamentação pode afetar a indústria, mas o conjunto de medidas é mais bem expresso por limites ao poder da propriedade privada, especialmente o latifúndio.",
+          "D": "Regular remessas de lucros não equivale a privilegiar a atração de capital estrangeiro. O manifesto buscava maior controle nacional e social.",
+          "E": "Extinguir o latifúndio e submeter fluxos privados a regulação limitam prerrogativas da propriedade. Essa orientação distingue o projeto do CGT do livre mercado mencionado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:42": {
@@ -743,6 +1607,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O CPC vinculava produção cultural a mobilização política e defesa de reformas de base. Setores conservadores interpretavam essa aproximação com a esquerda sob a lógica anticomunista, apresentando-a como difusão comunista e ameaça à ordem democrática, em vez de reconhecê-la como conscientização popular."
+        ],
+        "alternatives": {
+          "A": "Para os conservadores citados, o conteúdo político de esquerda era associado ao comunismo e tratado como ameaça. A alternativa reproduz essa interpretação do período.",
+          "B": "A valorização positiva da cultura popular corresponde mais à visão de seus apoiadores. Não explica a oposição conservadora destacada na questão.",
+          "C": "O conflito não se limitava à competência administrativa do Estado para educar. O elemento central era a disputa ideológica e o anticomunismo.",
+          "D": "A leitura de serviço democrático à população se aproxima da avaliação da esquerda, não da crítica conservadora solicitada.",
+          "E": "O CPC atuava na cultura e na mobilização, sem substituir institucionalmente os sindicatos. A crítica conservadora não se resumia à diminuição da força operária."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:43": {
@@ -763,6 +1651,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A Revolta da Vacina ocorreu num contexto de reformas urbanas, remoções e imposição de medidas sanitárias sem diálogo suficiente com a população. A resistência expressa descontentamento com uma modernização autoritária, que prometia benefícios coletivos enquanto violava experiências, moradias e autonomia de grupos populares."
+        ],
+        "alternatives": {
+          "A": "A imposição sanitária se somava a reformas e expulsões urbanas. A reação popular evidencia a insatisfação com o modo autoritário de realizar a modernização.",
+          "B": "A revolta não se explica como adesão consciente à política de vacinação. Ela se voltou contra a obrigatoriedade e as formas de intervenção estatal.",
+          "C": "A Primeira República mantinha restrições à cidadania e respondeu com repressão. O episódio não demonstra garantia plena de liberdade de expressão democrática.",
+          "D": "O planejamento sanitário contextualiza a medida, mas não explica por si a revolta. É necessário considerar imposição, insegurança e exclusão social.",
+          "E": "A mobilização foi de oposição às medidas governamentais, e não demonstração de apoio à vacinação universal conduzida pelo governo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 14",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:44": {
@@ -783,6 +1695,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O esquema coloca bancos e financiamentos articulados à produção de insumos, ao comércio e ao agricultor. Essa posição evidencia que o crédito participa de diferentes etapas da cadeia agroindustrial, ligando atividades rurais a serviços financeiros e mostrando sua importância na organização da produção."
+        ],
+        "alternatives": {
+          "A": "O agricultor depende de insumos, financiamento, intermediários e mercado. O organograma revela integração, e não autonomia do setor primário.",
+          "B": "Os bancos aparecem conectados a diferentes componentes da cadeia, fornecendo crédito para seu funcionamento. Sua posição ressalta o peso do setor financeiro.",
+          "C": "A cadeia liga agricultura, indústria, comércio e consumo. Isso demonstra aproximação funcional entre campo e cidade, não distanciamento.",
+          "D": "O esquema não prova subordinação geral da indústria à agricultura. Mostra interdependência e participação financeira em etapas distintas.",
+          "E": "A disposição não assegura igualdade de poder entre os atores. A presença do financiamento em posição articuladora evidencia relações que não são necessariamente horizontais."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:45": {
@@ -803,6 +1739,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Diferenças de renda, emprego e condições de vida estimulam pessoas a buscar trabalho em outros países. Ao mesmo tempo, muitos Estados desenvolvidos intensificaram controles de entrada e permanência. A coexistência entre atração econômica e restrição migratória constitui uma tensão característica das migrações contemporâneas."
+        ],
+        "alternatives": {
+          "A": "A busca de trabalho é um motivo amplo das migrações e convive com controles mais rígidos em países de destino. Essa combinação corresponde ao quadro descrito.",
+          "B": "Qualificação pode motivar deslocamentos, mas a abertura irrestrita de fronteiras não caracteriza em geral as políticas dos países desenvolvidos.",
+          "C": "Projetos de pesquisa envolvem uma parcela dos migrantes. A proteção de bens não define a política migratória geral discutida.",
+          "D": "A expansão da fronteira agrícola não explica os principais fluxos para países desenvolvidos. Esses países também podem atrair, em vez de expulsar, profissionais qualificados.",
+          "E": "Conflitos geram refugiados, mas o fortalecimento genérico de políticas sociais não expressa a tendência de controle de entrada e permanência destacada nesse contexto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 15",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:5": {
@@ -823,6 +1783,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A modernização do Centro-Oeste esteve ligada à expansão de lavouras mecanizadas e pecuária sobre o Cerrado. Novas redes de transporte, armazenagem e cidades foram organizadas para atender essa fronteira agropecuária, transformando a economia regional e degradando parte da vegetação nativa."
+        ],
+        "alternatives": {
+          "A": "A indústria de base não foi o principal motor da ocupação moderna do Centro-Oeste descrita. A infraestrutura se vinculou fortemente ao agronegócio.",
+          "B": "O ciclo da borracha é associado à Amazônia e a outro contexto histórico. Não explica a urbanização moderna de todo o Centro-Oeste.",
+          "C": "A expansão de cultivos e pecuária criou demanda por cidades, serviços e logística. Essa fronteira agropecuária transformou extensas áreas do Cerrado.",
+          "D": "A exploração pontual na Chapada dos Guimarães não explica a reorganização regional de infraestrutura e urbanização destacada pelo texto.",
+          "E": "O extrativismo pantaneiro não é o processo de modernização econômica predominante apontado. O avanço agropecuário tem alcance territorial muito maior."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:6": {
@@ -843,6 +1827,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O gráfico relaciona elevada precipitação nas florestas tropicais a uma faixa mais profunda de material alterado e solos. A água, junto às temperaturas altas, intensifica reações de intemperismo químico. Por isso as áreas úmidas de menor latitude apresentam maior aprofundamento da alteração das rochas."
+        ],
+        "alternatives": {
+          "A": "O máximo de chuva e de alteração profunda aparece no domínio tropical úmido, não no trecho temperado do gráfico.",
+          "B": "A faixa tropical úmida apresenta maior, e não menor, pluviosidade. A água favorece a alteração profunda das rochas.",
+          "C": "As latitudes próximas de 30° incluem domínios secos no esquema. A baixa umidade não produz a maior profundidade de solos ali mostrada.",
+          "D": "O gráfico mostra aprofundamento do material alterado na região tropical chuvosa. A alternativa inverte tanto a profundidade quanto a intensidade do intemperismo.",
+          "E": "A combinação de muita chuva e temperaturas elevadas em menores latitudes favorece alteração química profunda. O gráfico associa essa faixa aos solos mais espessos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 3",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:7": {
@@ -863,6 +1871,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O melhoramento de sementes pode produzir variedades mais ajustadas a condições ambientais distintas e aumentar sua viabilidade agronômica. Para uma oleaginosa usada em biocombustíveis, isso permite ampliar regiões de cultivo e oportunidades produtivas, sem implicar eliminação completa do petróleo ou das emissões."
+        ],
+        "alternatives": {
+          "A": "A adaptação de variedades a condições climáticas diferentes pode ampliar a área produtora. Essa é uma oportunidade compatível com o melhoramento agronômico descrito.",
+          "B": "O texto não estabelece venda direta ao varejo nem benefícios exclusivos a pequenos produtores. Ele descreve tecnologia de sementes e expansão empresarial.",
+          "C": "Uma nova cultura energética não garante o abandono de todo combustível derivado de petróleo. A alternativa transforma uma possibilidade parcial em substituição absoluta.",
+          "D": "A substituição de alimentos por culturas energéticas não necessariamente barateia a comida. Pode até aumentar competição por terra e recursos.",
+          "E": "Biocombustíveis não são automaticamente livres de emissões. Produção, transporte e combustão podem emitir gases, mesmo com diferenças no balanço de carbono."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:8": {
@@ -883,6 +1915,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A vegetação intercepta chuva, protege o solo e suas raízes ajudam a estabilizar encostas. O desmatamento retira essas funções, favorecendo escoamento superficial, erosão e instabilidade em chuvas intensas. Assim atua em sentido contrário à conservação e à prevenção de catástrofes."
+        ],
+        "alternatives": {
+          "A": "A aração pode causar erosão se mal executada, mas o desmatamento é a ação que remove diretamente a proteção vegetal das encostas no conjunto proposto.",
+          "B": "O terraceamento reduz a velocidade do escoamento e pode diminuir erosão quando bem dimensionado. Ele é uma técnica conservacionista.",
+          "C": "O pousio pode permitir recuperação da cobertura e das condições do solo. Não representa necessariamente intensificação da remoção hídrica.",
+          "D": "A drenagem planejada pode conduzir água de modo a reduzir instabilidade. A retirada da vegetação é o vetor inequívoco de agravamento entre as alternativas.",
+          "E": "Desmatar expõe o solo ao impacto da chuva e reduz a sustentação pelas raízes. Isso favorece erosão e movimentos de massa em encostas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:9": {
@@ -903,6 +1959,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Asfalto e concreto substituem superfícies vegetadas, reduzem infiltração e evapotranspiração e acumulam calor. Nas áreas centrais densamente construídas, essa impermeabilização contribui para intensificar ilhas de calor, somando-se à energia liberada por veículos e atividades urbanas."
+        ],
+        "alternatives": {
+          "A": "Recuperar cursos d’água pode favorecer umidade e reorganização ambiental. Não é o fator principal de intensificação da ilha de calor.",
+          "B": "Áreas verdes oferecem sombra e evapotranspiração, contribuindo para resfriamento. Sua recomposição tende a reduzir o fenômeno.",
+          "C": "Materiais mais refletivos absorvem menos radiação solar. Seu uso pode reduzir aquecimento, e não maximizar a ilha de calor.",
+          "D": "A substituição do solo permeável e vegetado por superfícies construídas reduz resfriamento evaporativo e favorece armazenamento de calor. Esse processo intensifica o fenômeno.",
+          "E": "Vias expressas podem aumentar superfícies e emissões, mas gerenciamento de tráfego não é necessariamente agravante. A impermeabilização é a relação direta e geral pedida."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 4",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:46": {
@@ -923,6 +2003,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A agitação browniana provoca rotações aleatórias nos dois sentidos, de modo que seus efeitos tendem a se compensar. A função idealizada da trava é impedir um sentido e selecionar o outro, orientando o movimento que ergueria o peso. Isso descreve o propósito do mecanismo, sem demonstrar produção líquida de trabalho em equilíbrio térmico."
+        ],
+        "alternatives": {
+          "A": "A trava não serve simplesmente para prender o motor à estrutura. Ela foi introduzida para selecionar um sentido de rotação.",
+          "B": "A pressão sobre dentes não é apresentada como controlador de velocidade. O problema do inventor é a alternância aleatória dos sentidos.",
+          "C": "O mecanismo restringe um sentido, mas não constitui um instrumento de leitura fácil do módulo da velocidade tangencial.",
+          "D": "A trava procura romper a compensação entre rotações aleatórias e orientar o movimento. Essa é a necessidade funcional indicada no enunciado.",
+          "E": "O número de dentes pode marcar ângulos, mas o objetivo descrito não é medir deslocamento angular. É impedir que a rotação inversa desfaça o movimento desejado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:47": {
@@ -943,6 +2047,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Frutas e grãos são produzidos por plantas, que ocupam o primeiro nível trófico. O homem que os consome atua como consumidor primário; o tigre que o devora é consumidor secundário. Os abutres que depois comem o tigre recebem matéria de um consumidor secundário e ocupam o nível terciário."
+        ],
+        "alternatives": {
+          "A": "O tigre não produz matéria orgânica por autotrofia. Ele se alimenta de um consumidor, e os abutres também são consumidores.",
+          "B": "O tigre come o homem que já consumiu vegetais. Portanto não ocupa o nível primário, mas o secundário.",
+          "C": "A sequência é plantas, homem, tigre e abutres. Ela coloca tigre como consumidor secundário e abutres como terciários.",
+          "D": "Os abutres são heterótrofos e não podem ser produtores. O tigre também não é terciário na cadeia específica descrita.",
+          "E": "A posição secundária do tigre está correta, mas os abutres que o consomem passam ao nível terciário, não ao primário."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:48": {
@@ -963,6 +2091,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "As hemácias contêm hemoglobina, proteína responsável por grande parte do transporte de oxigênio no sangue. Uma queda intensa de sua quantidade reduz a capacidade de fornecer esse gás aos tecidos. Repor essas células ao cavalo ajuda a prevenir anemia e prejuízo da oxigenação após as sangrias."
+        ],
+        "alternatives": {
+          "A": "A redução de hemácias não provoca necessariamente febre persistente. Seu efeito funcional mais direto é diminuir a capacidade de transporte de oxigênio.",
+          "B": "A defesa imune depende especialmente de leucócitos e moléculas como anticorpos. Hemácias não são as células principais da imunidade.",
+          "C": "A retirada de hemácias não leva necessariamente a hipertensão. O prejuízo central é a redução da capacidade de levar oxigênio aos tecidos.",
+          "D": "Leucemia é uma doença ligada à proliferação anormal de células hematopoiéticas. Não resulta simplesmente de uma baixa contagem de hemácias após sangria.",
+          "E": "Menos hemácias significam menos hemoglobina disponível para transportar oxigênio. A devolução dessas células preserva a oxigenação dos tecidos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 16",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:49": {
@@ -983,6 +2135,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O paciente apresenta plaquetas abaixo da faixa informada, o que pode comprometer a hemostasia e explicar o sangramento nasal. A redução de hemácias também pode contribuir para cansaço e dificuldade respiratória por menor transporte de oxigênio, enquanto os leucócitos estão dentro da faixa normal."
+        ],
+        "alternatives": {
+          "A": "As plaquetas estão em 200 mil/mm³, abaixo do mínimo de 250 mil apresentado. Sua participação na coagulação relaciona essa queda ao sangramento.",
+          "B": "Os glóbulos brancos estão na faixa normal e atuam na defesa, não como os principais agentes da coagulação. A justificativa troca suas funções.",
+          "C": "As hemácias estão reduzidas, mas sua função é transportar gases, não exercer defesa imunológica. A explicação funcional está incorreta.",
+          "D": "Os glóbulos brancos não estão reduzidos e não são responsáveis pelo transporte predominante de gases. O sangramento se relaciona mais diretamente às plaquetas.",
+          "E": "Plaquetas participam da hemostasia e não carregam oxigênio como as hemácias. A alternativa atribui a função à célula errada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:50": {
@@ -1003,6 +2179,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na combustão completa, cada átomo de carbono origina uma molécula de CO2. Deve-se comparar mols de CO2 por energia liberada: benzeno 6/3268, etanol 2/1368, glicose 6/2808, metano 1/890 e octano 8/5471. A maior razão é a da glicose, cerca de 0,00214 mol/kJ."
+        ],
+        "alternatives": {
+          "A": "O benzeno libera seis mols de CO2 por mol, mas também mais energia que a glicose. Sua razão 6/3268 é menor que 6/2808.",
+          "B": "O metano produz um mol de CO2 para 890 kJ, tendo a menor razão aproximada entre as opções. Não é o maior emissor por energia.",
+          "C": "A glicose produz seis mols de CO2 com apenas 2 808 kJ. Essa razão é a maior do quadro para uma mesma quantidade de energia.",
+          "D": "O octano tem mais carbonos por molécula, mas libera muita energia por mol. Sua razão 8/5471 fica abaixo da glicose.",
+          "E": "O etanol produz dois mols de CO2 por 1 368 kJ. Essa proporção é inferior à de seis mols por 2 808 kJ da glicose."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:51": {
@@ -1023,6 +2223,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Biodigestores transformam resíduos orgânicos em biogás por decomposição anaeróbia. Esse combustível pode fornecer calor para o preparo da farinha, aproveitando materiais disponíveis na região e reduzindo a retirada de lenha nativa, sem depender necessariamente de combustíveis comerciais mais caros."
+        ],
+        "alternatives": {
+          "A": "Grandes fornos elétricos exigem investimento e consumo de energia que podem aumentar custos. Não são a alternativa local de aproveitamento de resíduos proposta.",
+          "B": "Árvores para lenha podem integrar um planejamento sustentável, mas precisam crescer. A exigência de resposta em curto prazo favorece o uso de resíduos em biodigestores.",
+          "C": "Permitir corte nativo apenas a pequenos produtores não elimina a pressão sobre a Mata Atlântica. A alternativa mantém o dano que se pretende evitar.",
+          "D": "O biogás aproveita resíduos regionais como fonte de energia térmica e reduz o uso de lenha da mata. Essa opção atende à conservação com possibilidade de baixo custo operacional.",
+          "E": "Buscar carvão onde a fiscalização é menor apenas desloca a pressão ambiental. A ausência de controle não torna a extração sustentável."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 17",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:52": {
@@ -1043,6 +2267,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O problema apresentado é a contaminação por microrganismos que podem causar diarreia. Entre as etapas listadas, a cloração atua como desinfecção, inativando agentes patogênicos. Separar partículas pode melhorar a água, mas não substitui o controle microbiológico exigido."
+        ],
+        "alternatives": {
+          "A": "A filtração pode reter partículas e alguns organismos, dependendo do filtro, mas não garante por si a desinfecção adequada da água do rio.",
+          "B": "O cloro em condições adequadas inativa microrganismos patogênicos. A cloração é a etapa que enfrenta diretamente o risco microbiológico descrito.",
+          "C": "A coagulação reúne partículas em flocos para facilitar remoção. Não é a etapa principal de destruição de microrganismos.",
+          "D": "A fluoretação se relaciona à prevenção de cáries, e não à eliminação dos agentes de doenças de veiculação hídrica.",
+          "E": "A decantação separa materiais pela sedimentação. Ela pode reduzir turbidez, mas não assegura a eliminação dos patógenos presentes."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:53": {
@@ -1063,6 +2311,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A vacinação apresenta antígenos ao sistema imune e induz memória imunológica. Numa exposição posterior ao HPV, células de memória favorecem uma resposta secundária mais rápida e eficaz, reduzindo o estabelecimento da infecção e seus efeitos. Esse mecanismo explica a proteção duradoura."
+        ],
+        "alternatives": {
+          "A": "Um aumento inespecífico de macrófagos não explica a proteção específica contra HPV. A imunização envolve reconhecimento e memória do antígeno.",
+          "B": "Anticorpos específicos podem estar presentes, mas a principal diferença que sustenta a resposta rápida posterior é a formação de células de memória.",
+          "C": "Hemácias transportam gases e não constituem a base da proteção vacinal. Sua produção não é o mecanismo específico contra HPV.",
+          "D": "A vacina não se define por gerar rapidamente grandes concentrações de linfócitos matadores após qualquer infecção. O enunciado destaca imunidade preventiva e memória específica.",
+          "E": "Células de memória reconhecem antígenos já apresentados e aceleram a defesa em nova exposição. Essa resposta secundária diferencia os vacinados."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:54": {
@@ -1083,6 +2355,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Pelo modelo de estimativa adotado na questão, ponderam-se as densidades pelos percentuais de cada metal. As amostras I a V resultam em 8,90; 8,82; 8,70; 8,78 e 8,94 g/mL. Apenas II e IV ficam no intervalo de 8,74 a 8,82 g/mL, incluindo os limites. Essa regra simplificada não equivale a uma determinação experimental de densidade de ligas."
+        ],
+        "alternatives": {
+          "A": "A amostra I fornece 8,90 na estimativa ponderada, acima do limite de 8,82. Portanto o par não atende integralmente à faixa.",
+          "B": "As amostras I e III fornecem 8,90 e 8,70, respectivamente acima e abaixo da faixa. Nenhuma atende pelo critério numérico adotado.",
+          "C": "As estimativas de II e IV são 8,82 e 8,78. Ambas pertencem ao intervalo inclusivo de 8,74 a 8,82 g/mL.",
+          "D": "III fica abaixo do mínimo e V acima do máximo, com 8,70 e 8,94. O par não satisfaz a norma na estimativa proposta.",
+          "E": "IV atende com 8,78, mas V excede o máximo com 8,94. A presença de uma amostra válida não torna o par correto."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:55": {
@@ -1103,6 +2399,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O óleo é um meio predominantemente apolar. Compostos com maior afinidade por água e grupos polares tendem a permanecer na fração sólida em vez de se dissolver no óleo. A hidrofilia dessas substâncias explica sua separação da fase oleosa no processamento descrito."
+        ],
+        "alternatives": {
+          "A": "Lipofilia significa afinidade por meios oleosos e favoreceria a dissolução no óleo. É o contrário da propriedade procurada.",
+          "B": "A hidrofilia expressa afinidade por água e menor compatibilidade com a fase apolar do óleo. Isso ajuda a manter os compostos na torta.",
+          "C": "Hipocromia se refere à menor intensidade de coloração em certos contextos. Não caracteriza a afinidade entre substância e solvente.",
+          "D": "Cromatofilia está ligada à afinidade por corantes. Não é o critério de solubilidade que explica a permanência na fração não oleosa.",
+          "E": "Hiperpolarização não é a propriedade usual de afinidade por solventes descrita. A alternativa adequada é hidrofilia."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 18",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:56": {
@@ -1123,6 +2443,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O captador depende de cordas que possam ser magnetizadas e alterar o fluxo magnético da bobina ao vibrar. O aço apresenta essa resposta, mas o náilon tem magnetização desprezível nas condições descritas. Sem variação suficiente de fluxo, o sinal elétrico não é induzido de modo útil."
+        ],
+        "alternatives": {
+          "A": "A corda não constitui o fio que leva corrente da bobina ao amplificador. Sua função é produzir variação de fluxo magnético ao oscilar.",
+          "B": "O comprimento e a elasticidade podem mudar, mas não explicam a ausência do sinal. O captador requer resposta magnética da corda.",
+          "C": "O náilon praticamente não se magnetiza pelo ímã. Assim sua oscilação não modifica o fluxo da bobina como a corda de aço.",
+          "D": "O problema não é uma corrente excessiva, e sim a falta de indução significativa. O náilon não cria a variação magnética necessária.",
+          "E": "A frequência de vibração pode ser ajustada pela tensão e pelo comprimento. A incapacidade do captador é relacionada ao material não magnético, não a uma frequência necessariamente inaudível."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:57": {
@@ -1143,6 +2487,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A microvespa deposita ovos nos ovos da borboleta, e suas larvas utilizam o conteúdo do hospedeiro, impedindo sua eclosão. Esse parasitismo, mais especificamente parasitoidismo de ovos, reduz o nascimento da praga e constitui controle biológico por introdução ou favorecimento de seu inimigo natural."
+        ],
+        "alternatives": {
+          "A": "A vespa explora os ovos da espécie-alvo e impede o desenvolvimento das lagartas. Essa relação parasitária realiza o controle biológico descrito.",
+          "B": "Não há transferência ou inserção de um gene letal no genoma das borboletas. A redução ocorre pela ação do parasitoide.",
+          "C": "A relação não é simplesmente disputa por um alimento externo comum. A vespa utiliza diretamente o ovo de outro inseto como hospedeiro.",
+          "D": "O texto não modifica condições ambientais para selecionar organismos. Ele utiliza uma interação ecológica entre espécies.",
+          "E": "O método evita definir o controle pela aplicação química de inseticidas. O agente empregado é um organismo vivo que ataca a praga."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:58": {
@@ -1163,6 +2531,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Grupos hidroxila possuem oxigênio eletronegativo ligado a hidrogênio e podem formar ligações de hidrogênio com moléculas de água. Essa interação favorece a atração e retenção de umidade pelos umectantes, ajudando a manter água na superfície da pele."
+        ],
+        "alternatives": {
+          "A": "As moléculas citadas não precisam se dissociar em íons para reter água. A interação dominante dos grupos OH é a ligação de hidrogênio.",
+          "B": "Forças de London existem entre moléculas, mas não explicam a interação específica e relativamente forte dos grupos hidroxila com água.",
+          "C": "Reter água não exige produzir novas moléculas por ligações covalentes. Trata-se de uma interação entre moléculas já existentes.",
+          "D": "Ligações de hidrogênio são um caso específico de interação entre dipolos. A opção mais precisa para a participação dos grupos OH é a alternativa E.",
+          "E": "Hidroxilas dos umectantes interagem com a água por ligações de hidrogênio. Essa afinidade contribui para captar e conservar umidade."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:59": {
@@ -1183,6 +2575,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A presença de uma suspensão com elevada concentração de substâncias dissolvidas altera a disponibilidade de água no microambiente. Pelo mecanismo osmótico considerado na questão, microrganismos podem perder água e ter sua manutenção prejudicada. Isso explica a alternativa esperada sem atribuir o efeito a aquecimento solar ou fotoativação da cal."
+        ],
+        "alternatives": {
+          "A": "A difusão genérica da cal não é o mecanismo indicado para a retirada de água. A questão associa a destruição do microambiente à diferença de disponibilidade hídrica.",
+          "B": "O meio com cal favorece perda de água dos organismos por osmose, comprometendo sua sobrevivência. Essa é a interpretação solicitada entre as opções.",
+          "C": "Não é necessário supor ativação fotoquímica oxidante pela luz. O mecanismo apresentado nas alternativas envolve mudança das condições hídricas.",
+          "D": "A cor branca tende a refletir parte da radiação, e o texto não demonstra temperatura letal no tronco. O efeito não depende desse aquecimento.",
+          "E": "A eliminação não é explicada por uma aceleração específica da evaporação. A alternativa esperada é o fluxo osmótico que retira água dos microrganismos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 19",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:60": {
@@ -1203,6 +2619,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Para potências iguais, P = U²/R fornece R proporcional ao quadrado da tensão. A opera a 127 V e B a 220 V; portanto RA/RB = (127/220)² ≈ 0,333. A razão é mais próxima de 0,3, e a maior tensão de B permite menor corrente para a mesma potência."
+        ],
+        "alternatives": {
+          "A": "A razão quadrática das tensões é aproximadamente um terço. Esse valor corresponde à opção 0,3.",
+          "B": "O valor 0,6 é próximo da razão simples 127/220. Para resistência sob potência constante, é preciso elevar essa razão ao quadrado.",
+          "C": "O valor 0,8 não resulta da relação P=U²/R nem das tensões nominais informadas. A resistência de A é cerca de um terço da de B.",
+          "D": "O valor 1,7 aproxima a razão inversa das tensões. A questão pede RA/RB e a relação deve ser quadrática.",
+          "E": "O valor 3 é aproximadamente RB/RA. Ele inverte a razão solicitada, que é menor que um."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:61": {
@@ -1223,6 +2663,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na replicação semiconservativa, as duas fitas parentais se separam e cada uma serve de molde para uma nova fita complementar. Cada molécula filha conserva, assim, uma fita antiga e contém uma fita recém-sintetizada. A distribuição isotópica observada por Meselson e Stahl confirmou esse modelo."
+        ],
+        "alternatives": {
+          "A": "O modelo conservativo manteria uma dupla hélice inteiramente antiga e outra inteiramente nova. Os resultados não sustentaram essa separação de moléculas.",
+          "B": "No modelo dispersivo, cada fita seria um mosaico de segmentos novos e antigos. Não é a organização demonstrada pela replicação semiconservativa.",
+          "C": "Cada dupla hélice filha reúne uma fita parental e outra nova. Essa conservação de metade da estrutura original define o modelo confirmado.",
+          "D": "A replicação produz material novo e não gera apenas moléculas parentais. O enunciado propõe uma duplicação, não simples conservação sem síntese.",
+          "E": "Fita molde e fita codificadora são termos ligados à transcrição de genes. Não definem a distinção entre uma fita antiga e uma nova na replicação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 20",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:62": {
@@ -1243,6 +2707,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A necessidade atômica indicada é C:N:P = 106:16:1. Dividindo a disponibilidade por cada exigência, obtêm-se 21,2/106=0,2 para C, 1,2/16=0,075 para N e 0,2/1=0,2 para P. O menor valor relativo é o do nitrogênio, que limita a produção apesar de não ter a menor concentração absoluta."
+        ],
+        "alternatives": {
+          "A": "O carbono fornece 0,2 unidade da proporção requerida, valor superior aos 0,075 do nitrogênio. Não é o primeiro elemento a faltar.",
+          "B": "O nitrogênio tem a menor disponibilidade em relação à proporção exigida. A razão 1,2/16 limita o crescimento antes das razões de carbono e fósforo.",
+          "C": "O fósforo tem menor concentração absoluta, mas também é exigido em quantidade muito menor. Sua disponibilidade relativa é maior que a de N.",
+          "D": "CO2 é uma forma de fornecimento de carbono, cujo balanço relativo não é o limitante. A comparação deve usar as proporções atômicas fornecidas.",
+          "E": "O fosfato fornece fósforo, mas o balanço de P atende a mais unidades de produção que o de N. O menor número isolado não determina a limitação."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 21",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:63": {
@@ -1263,6 +2751,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O pico de absorção está próximo de 490 a 500 nm, na região azul-esverdeada indicada pela roda. A cor percebida corresponde ao setor oposto ao de maior absorção, que no esquema é o vermelho. Não se deve confundir a cor absorvida com a cor transmitida ou refletida predominante."
+        ],
+        "alternatives": {
+          "A": "Azul corresponde a uma parte importante da radiação absorvida. A regra da questão pede a cor oposta na roda, não a mesma do pico.",
+          "B": "O pico está próximo do limite entre azul e verde, mas a substância é vista na cor complementar a essa absorção. O resultado indicado é vermelho.",
+          "C": "Violeta não está no setor oposto ao pico de aproximadamente 490-500 nm. A posição na roda deve ser comparada diametralmente.",
+          "D": "Laranja se opõe a uma faixa mais azul da roda, aproximadamente 430 nm. O pico mostrado está próximo de 500 nm.",
+          "E": "O setor vermelho fica oposto à faixa de maior absorção na representação fornecida. Essa é a cor prevista para a substância."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:64": {
@@ -1283,6 +2795,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O mapa mostra a persistência da transmissão em determinada faixa da América do Sul, especialmente na região tropical amazônica. Essa ocorrência habitual e territorialmente delimitada caracteriza uma endemia. O mapa de distribuição não demonstra aumento súbito de casos que permitiria falar em epidemia ou surto."
+        ],
+        "alternatives": {
+          "A": "A doença mantém área de ocorrência delimitada no continente. Esse padrão habitual regional é compatível com endemia.",
+          "B": "Peste não é uma categoria definida apenas pelo calor ou pela latitude. A palavra não substitui a classificação epidemiológica requerida.",
+          "C": "Epidemia exige aumento de casos acima do esperado num período. A presença espacial no mapa não prova esse crescimento.",
+          "D": "Surto também exige elevação localizada de casos em relação ao esperado. O mapa representa distribuição de transmissão, sem uma série temporal de aumento.",
+          "E": "A transmissão não abrange todo o continente e uma pandemia exige ampla propagação internacional. A classificação regional pedida é endemia."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:65": {
@@ -1303,6 +2839,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Alterações epigenéticas modificam a atividade gênica sem trocar a sequência de nucleotídeos. A metilação de bases em regiões reguladoras pode silenciar genes, incluindo genes protetores contra tumores. Esse mecanismo exemplifica uma mudança química de regulação, distinta de mutações ou alterações cromossômicas numéricas."
+        ],
+        "alternatives": {
+          "A": "Aneuploidia altera a quantidade de cromossomos. Não é uma mudança apenas no estado de regulação epigenética do DNA.",
+          "B": "Poliploidia modifica o número de conjuntos cromossômicos. O conceito de epigenética apresentado não exige essa mudança numérica.",
+          "C": "Uma mutação modifica a sequência genética. Isso difere do silenciamento por marcas químicas sem alteração da sequência.",
+          "D": "A substituição de bases no gene da hemoglobina é uma mutação. Não constitui o exemplo de regulação epigenética solicitado.",
+          "E": "Modificações como metilação de bases podem inativar genes sem mudar a ordem de nucleotídeos. Esse silenciamento pode participar de processos cancerosos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 22",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:66": {
@@ -1323,6 +2883,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Motores térmicos convertem parte da energia transferida como calor em trabalho, mas precisam rejeitar uma parcela ao ambiente ou a uma fonte fria. A impossibilidade de conversão integral em um ciclo corresponde à segunda lei da termodinâmica e explica o rendimento sempre inferior a cem por cento."
+        ],
+        "alternatives": {
+          "A": "A combustão libera energia térmica e o motor troca calor. A impossibilidade não é liberar calor, mas transformar todo o calor recebido em trabalho útil.",
+          "B": "O trabalho pode ser controlado por mecanismos e condições de operação. Isso não é o motivo termodinâmico da perda de rendimento descrita.",
+          "C": "A segunda lei impede converter integralmente calor em trabalho em um ciclo. Uma parcela de energia precisa ser rejeitada.",
+          "D": "Motores efetivamente transformam parte da energia térmica em movimento. A alternativa nega justamente a conversão que o equipamento realiza.",
+          "E": "O uso da energia do combustível pode ser regulado. O limite fundamental está na eficiência da conversão térmica, não numa suposta falta de controle químico."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:67": {
@@ -1343,6 +2927,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A melhor discriminação ocorre onde os alvos apresentam refletâncias mais diferentes. Entre 0,8 e 0,9 µm, a grama tem refletância próxima de 50%, concreto cerca de 35%, solo arenoso em torno de 25%, asfalto abaixo de 10% e água quase zero. Essa separação facilita identificar cada superfície."
+        ],
+        "alternatives": {
+          "A": "Entre 0,4 e 0,5, vários alvos apresentam refletâncias baixas e próximas. A distinção entre eles é menor que no infravermelho próximo.",
+          "B": "Entre 0,5 e 0,6, grama, solo e asfalto ainda se aproximam em parte da faixa. Não é a separação mais clara de todos os alvos.",
+          "C": "Entre 0,6 e 0,7, grama e solo arenoso têm valores próximos. Isso dificulta distingui-los apenas por essa banda.",
+          "D": "Entre 0,7 e 0,8, a curva da grama cruza outras refletâncias durante sua subida. A faixa seguinte oferece maior estabilidade e separação.",
+          "E": "De 0,8 a 0,9, as cinco curvas ocupam níveis distintos. A maior separação de refletâncias favorece a discriminação dos alvos."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:68": {
@@ -1363,6 +2971,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O experimento mostra que um genoma sintetizado pode dirigir a atividade de uma célula receptora. Essa capacidade abre perspectivas de projetar funções biológicas e orientar microrganismos para produzir substâncias de interesse, como fármacos, vacinas e combustíveis, sem significar que toda a célula tenha sido construída do zero."
+        ],
+        "alternatives": {
+          "A": "Sequenciar genomas já era uma capacidade existente e é diferente de sintetizar um cromossomo funcional. A inovação descrita é controlar a célula com informação projetada.",
+          "B": "A célula receptora já existia e o material sintetizado relevante era DNA. Não se descreve criação completa de vida a partir apenas de carboidratos e lipídeos.",
+          "C": "A liberação em ambientes naturais não é o objetivo apresentado nem uma consequência necessária. O valor tecnológico está na programação de funções.",
+          "D": "Um genoma construído pode orientar atividades celulares de interesse industrial. Essa possibilidade fundamenta aplicações em medicamentos, vacinas e combustíveis.",
+          "E": "O cromossomo receptor foi neutralizado e o sintético passou a comandar a produção. A alternativa atribui o resultado à expressão predominante do genoma original."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 23",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:69": {
@@ -1383,6 +3015,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Vacinas apresentam antígenos de modo a estimular uma resposta imune específica e formar memória. Entre seus efeitos está a produção de anticorpos contra o agente infeccioso, permitindo resposta mais eficiente numa exposição posterior. Elas não fornecem normalmente anticorpos prontos, como fazem soros."
+        ],
+        "alternatives": {
+          "A": "Anticorpos prontos caracterizam imunização passiva, como a administração de soros. A vacina estimula o próprio organismo a produzi-los.",
+          "B": "A vacina não age apenas como um produto que mata diretamente o agente. Sua função principal é ativar a defesa específica do vacinado.",
+          "C": "Hemácias transportam gases e não são o mecanismo de resposta específica à vacina. A imunidade envolve leucócitos e anticorpos.",
+          "D": "Vacinas não são uma transferência de linfócitos prontos para o receptor. Elas apresentam antígenos para ativar as células do próprio sistema imune.",
+          "E": "O estímulo antigênico induz anticorpos específicos e memória. Essa resposta ativa aumenta a capacidade de enfrentar o agente causador da doença."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:70": {
@@ -1403,6 +3059,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A lâmpada acende quando há um circuito fechado que liga cada polo da pilha a um contato diferente da lâmpada: a base central e a carcaça metálica lateral. Nos esquemas 1, 3 e 7, o filamento fica entre esses contatos e participa do caminho da corrente. Nos demais há circuito incompleto ou ligação inadequada."
+        ],
+        "alternatives": {
+          "A": "Os esquemas 1 e 3 são válidos, mas o 6 não conecta corretamente os dois contatos da lâmpada aos polos. O terceiro válido é 7.",
+          "B": "O esquema 4 não estabelece o caminho adequado pelo filamento e o 5 também não completa os contatos necessários. O conjunto não é correto.",
+          "C": "Embora 1 e 3 funcionem, no 5 a conexão não inclui adequadamente os dois terminais da lâmpada. Ele não substitui o esquema 7.",
+          "D": "Nos esquemas 1, 3 e 7, os dois contatos distintos da lâmpada são ligados aos polos opostos, fechando o circuito através do filamento.",
+          "E": "O esquema 2 não fecha corretamente o circuito e o 5 não apresenta o contato necessário para a corrente pelo filamento. Só 1 desse conjunto é válido."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:71": {
@@ -1423,6 +3103,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Resíduos celulósicos são abundantes e podem reduzir competição direta com cultivos alimentares, mas sua transformação em combustível exige romper uma estrutura resistente. Assim, a viabilidade econômica depende de tecnologias eficientes de degradação da celulose, além de considerar emprego e impactos ambientais ao longo da produção."
+        ],
+        "alternatives": {
+          "A": "O aproveitamento energético pode gerar trabalho e apresentar vantagens ambientais, mas o baixo custo depende de conversão eficiente da celulose. A alternativa reconhece esse requisito tecnológico.",
+          "B": "A afirmação de que a produção não gera empregos é absoluta e sem base. Também não se pode equiparar de modo geral todos os impactos aos de combustíveis fósseis.",
+          "C": "Matéria-prima abundante não impede geração de empregos. A conversão, logística e operação industrial continuam exigindo atividades produtivas.",
+          "D": "A segunda geração não elimina necessariamente trabalho. A alternativa atribui um impedimento sem sustentação e simplifica também a disponibilidade de terras para a primeira.",
+          "E": "A transição energética pode transformar cadeias de emprego, mas não implica excluir todos os postos dos setores citados. O texto destaca novas matérias-primas e desafios de conversão."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 24",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:72": {
@@ -1443,6 +3147,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Uma amida se forma pela ligação entre o nitrogênio de uma amina e o carbono de um grupo carboxila, com eliminação de água em uma condensação. No ácido cólico, é a carboxila que reage com a amina da glicina ou da taurina, produzindo o vínculo amídico dos ácidos conjugados."
+        ],
+        "alternatives": {
+          "A": "A carboxila fornece a carbonila que se liga ao nitrogênio da amina. Essa reação gera a função amida.",
+          "B": "Aldeídos não são o grupo carboxílico necessário à formação da amida descrita. O ácido cólico apresenta uma carboxila terminal adequada.",
+          "C": "Hidroxilas alcoólicas podem reagir em outros processos, mas não fornecem a carbonila da amida. O grupo que participa é a carboxila.",
+          "D": "Uma cetona não é o grupo que sofre essa condensação com a amina para gerar a amida. A função ácida é a relevante.",
+          "E": "O grupo inicial indicado é um ácido carboxílico, não um éster. A conjugação usa sua carboxila para formar a ligação com nitrogênio."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:73": {
@@ -1463,6 +3191,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O empuxo corresponde à diferença entre o peso de 30 N e a leitura aparente de 24 N, portanto 6 N. Metade do cubo de 10 cm ocupa 500 cm³, ou 0,0005 m³. De E=ρgV, resulta ρ=6/(10×0,0005)=1200 kg/m³, equivalente a 1,2 g/cm³."
+        ],
+        "alternatives": {
+          "A": "O valor 0,6 resulta de usar o volume total do cubo, embora apenas metade esteja submersa. O volume deslocado é de 500 cm³.",
+          "B": "O empuxo de 6 N atua sobre 0,0005 m³ de água deslocada. A densidade calculada é 1 200 kg/m³ ou 1,2 g/cm³.",
+          "C": "O valor 1,5 não corresponde ao quociente entre empuxo e gV. É preciso subtrair a leitura do peso real antes de calcular a densidade.",
+          "D": "O valor 2,4 não resulta do empuxo correto. A leitura 24 N é a tração no dinamômetro, não a força de empuxo.",
+          "E": "O valor 4,8 usa a leitura de 24 N como se fosse empuxo para o volume submerso. O empuxo é apenas 30−24=6 N."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:74": {
@@ -1483,6 +3235,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A luz e o som interagem de maneira diferente com água e sedimentos. A radiação visível sofre forte atenuação no material que recobre o navio, enquanto ondas acústicas podem penetrar e produzir ecos úteis à investigação. A escolha do sonar se fundamenta nessa diferença de atenuação, não apenas na velocidade de propagação."
+        ],
+        "alternatives": {
+          "A": "A luz ser mais rápida não garante penetração ou formação de imagem através dos sedimentos. A propriedade decisiva é como a intensidade se atenua.",
+          "B": "O som também pode sofrer absorção e perda de intensidade. A alternativa erra ao negar esse efeito e ainda não focaliza os materiais depositados.",
+          "C": "A refração não é explicada por uma intensidade que diminui com a profundidade dessa forma. O problema central é a penetração e a atenuação nos materiais.",
+          "D": "Luz e som perdem intensidade de maneiras distintas na água e nos sedimentos. Essa diferença pode tornar os ecos acústicos mais adequados à imagem sob as camadas.",
+          "E": "Comparar apenas a intensidade de reflexão na primeira camada não explica a imagem através dos depósitos. É necessário considerar a atenuação e a penetração das ondas."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-22",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 25",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:75": {
@@ -1503,6 +3279,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O equilíbrio representa hidroxiapatita sólida formando íons em solução. O aumento de H⁺ consome OH⁻, um dos produtos, e favorece novo deslocamento para a direita para repô-lo. Essa dissolução remove mineral do esmalte e corresponde à desmineralização dentária em meio ácido."
+        ],
+        "alternatives": {
+          "A": "A adição de OH⁻ aumenta um produto e tenderia a favorecer a formação do sólido, não a dissolução descrita. O refrigerante aumenta a acidez, não a basicidade.",
+          "B": "H⁺ reage com OH⁻ e reduz sua concentração livre. A retirada de um produto favorece a dissolução da hidroxiapatita, deslocando o equilíbrio para a direita.",
+          "C": "Embora a direção esquerda favoreça mineralização, o processo perguntado é a perda de mineral causada pelo aumento de H⁺. A alternativa não descreve essa situação.",
+          "D": "H⁺ realmente consome OH⁻, mas isso favorece o sentido que produz mais íons, à direita. O sentido indicado está invertido.",
+          "E": "Aumentar Ca²⁺ favoreceria o efeito do íon comum e a formação de sólido. Não explica a dissolução provocada pela acidez."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:76": {
@@ -1523,6 +3323,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O estudo afirma que as larvas atuais se alimentam sobretudo de solanáceas, e não de qualquer vegetal disponível. A mudança em relação às plantas consumidas pelos ancestrais mostra uma história de associação alimentar, sem eliminar a especificidade atual por determinadas plantas hospedeiras."
+        ],
+        "alternatives": {
+          "A": "O texto rejeita a ideia de consumo indiscriminado. As larvas não são apresentadas como capazes de digerir todas as plantas das duas florestas.",
+          "B": "As apocináceas são associadas aos ancestrais. A pergunta trata das larvas atuais, cujo alimento predominante pertence às solanáceas.",
+          "C": "A adaptação descrita não amplia a dieta a todos os vegetais. Ela envolve uma mudança de grupo hospedeiro com preferência específica.",
+          "D": "Voracidade generalizada é a noção de senso comum contestada pelo estudo. A dieta observada tem seleção de plantas.",
+          "E": "As larvas atuais consomem principalmente plantas da família Solanaceae. Essa associação específica é o resultado que confronta a generalização popular."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:77": {
@@ -1543,6 +3367,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Ao ser solta, a régua sofre uma força peso aproximadamente constante, que produz aceleração gravitacional. Partindo do repouso e desprezando o ar, a distância vale d=gt²/2. Por depender do quadrado do tempo, ela cresce proporcionalmente mais rápido que o próprio tempo de reação."
+        ],
+        "alternatives": {
+          "A": "A energia mecânica se conserva aproximadamente na queda, com transformação de potencial em cinética. Não é seu aumento que causa a aceleração.",
+          "B": "A resistência do ar não explica o crescimento acelerado da distância. Ela se opõe ao movimento e tenderia a reduzir a aceleração.",
+          "C": "A aceleração não precisa variar para a distância crescer quadraticamente. No modelo da experiência, ela é aproximadamente constante e igual a g.",
+          "D": "A força peso constante gera aceleração constante e aumento da velocidade. Assim a distância depende de t², como os dados sugerem.",
+          "E": "Com velocidade constante, a distância cresceria linearmente com o tempo. A régua solta do repouso está em movimento acelerado."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 26",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:78": {
@@ -1563,6 +3411,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A caixa acoplada libera um volume previamente limitado pelo tamanho do reservatório, ao contrário de uma válvula cuja água pode fluir enquanto permanece acionada. A limitação de água por descarga explica a economia associada ao sistema, sem depender apenas da pressão ou da altura do sifão."
+        ],
+        "alternatives": {
+          "A": "A altura do sifão participa do funcionamento hidráulico, mas não limita diretamente o volume liberado pelo reservatório em cada acionamento.",
+          "B": "O tanque armazena e libera uma quantidade definida por ciclo. Esse limite de volume é o elemento que garante a economia em relação ao fluxo menos controlado da válvula.",
+          "C": "O nível no vaso varia durante a descarga e não é o parâmetro que determina a quantidade total previamente disponível no tanque.",
+          "D": "O diâmetro afeta a rapidez do fluxo, mas não é o princípio central de limitação do gasto. A água liberada está limitada ao volume da caixa.",
+          "E": "A válvula de enchimento regula a reposição, mas a característica decisiva da descarga é haver um volume armazenado limitado. Eficiência genérica não identifica esse mecanismo."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:79": {
@@ -1583,6 +3455,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Em resíduos acumulados com pouco oxigênio, a decomposição anaeróbia pode terminar em produção de metano por microrganismos metanogênicos. O gás pode se acumular em antigos lixões. A alternativa B expressa essa origem, embora a classificação moderna situe os produtores finais de metano entre arqueias, e não bactérias."
+        ],
+        "alternatives": {
+          "A": "A respiração aeróbia utiliza oxigênio e não é a via principal de produção de metano em lixões. O ambiente metanogênico é anaeróbio.",
+          "B": "A decomposição sem oxigênio da matéria orgânica gera biogás com metano. Esse é o processo associado ao antigo depósito de lixo descrito.",
+          "C": "A fotossíntese de plantas e algas não tem metano como produto principal. Ela fixa carbono e pode liberar oxigênio.",
+          "D": "A formulação omite a decomposição orgânica e a atividade microbiana que explicam o metano do lixo. A existência de CO2 e ausência de oxigênio não bastam sozinhas.",
+          "E": "Metano contém carbono mais reduzido que o do CO2. Não é obtido por oxidação aeróbia do gás carbônico, como propõe a alternativa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:80": {
@@ -1603,6 +3499,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O texto destaca que reservatórios podem emitir metano, um gás de efeito estufa, devido à decomposição de matéria orgânica inundada. Como a hidroeletricidade ocupa grande parte da oferta brasileira apresentada, essas emissões podem ter peso relevante. A questão, portanto, rejeita a classificação de emissão nula para essa fonte."
+        ],
+        "alternatives": {
+          "A": "A emissão de metano impede tratar hidrelétricas como livres de contribuição ao efeito estufa. O texto justamente problematiza essa imagem de fonte limpa.",
+          "B": "Eficiência ou participação na oferta não respondem à pergunta sobre emissão de gases. O critério solicitado é o impacto climático.",
+          "C": "A afirmação de que não alteram gases estufa contradiz a emissão de metano descrita. Renovabilidade não equivale a emissão zero.",
+          "D": "Reservatórios podem liberar metano e, pela grande participação da fonte, contribuir de forma relevante para emissões. Essa é a interpretação proposta pelo texto.",
+          "E": "A hidreletricidade não é apresentada como alternativa pouco difundida em comparação às demais. Sua participação de 80% amplia a relevância do impacto discutido."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:81": {
@@ -1623,6 +3543,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A solução contém n=CV=0,1×0,020=0,002 mol de H2O2. Pela equação, cinco mols de peróxido reagem com dois de permanganato. A quantidade necessária de KMnO4 é (2/5)×0,002=0,0008 mol, ou 8,0×10⁻⁴ mol."
+        ],
+        "alternatives": {
+          "A": "Dois mols ignoram a conversão dos 20 mL para litros e a proporção estequiométrica. A amostra contém apenas 0,002 mol de peróxido.",
+          "B": "Os 2,0×10⁻³ mol são a quantidade de H2O2, não de KMnO4. É preciso aplicar o fator 2/5.",
+          "C": "O valor 0,8 mol surge de tratar 20 mL como 20 L. A conversão correta reduz o resultado em mil vezes.",
+          "D": "Os 0,002 mol de peróxido exigem dois quintos dessa quantidade de permanganato. O resultado é 8,0×10⁻⁴ mol.",
+          "E": "O valor 5,0×10⁻³ inverte a razão dos coeficientes. O permanganato é exigido em quantidade menor que o peróxido, pois seus coeficientes são dois e cinco."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 27",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:82": {
@@ -1643,6 +3587,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A fêmea Photuris atrai um macho de outro gênero e o mata para se alimentar. Há benefício alimentar para a predadora e prejuízo com morte para a presa. Essa interação entre espécies diferentes caracteriza predatismo, mesmo que a atração imite sinais de acasalamento."
+        ],
+        "alternatives": {
+          "A": "Comensalismo não envolve a morte e o consumo do outro participante. Aqui o macho é utilizado como alimento.",
+          "B": "Inquilinismo se refere ao uso de outro organismo como abrigo ou suporte. O episódio descreve ataque alimentar.",
+          "C": "A interação não traz ajuda recíproca. A fêmea se beneficia às custas da morte do macho atraído.",
+          "D": "A captura, morte e ingestão de outro organismo constituem predatismo. O sinal enganoso é uma estratégia da predadora.",
+          "E": "Mutualismo exige benefício para ambos os participantes. A presa é morta, portanto a relação não é mutualística."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:83": {
@@ -1663,6 +3631,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Fertilizantes adicionam formas reativas de nitrogênio ao solo. Íons solúveis como nitrato e amônio podem ser transportados pela água para rios e lagos, aumentando nutrientes e contribuindo para contaminação e eutrofização. O balanço de carbono do combustível não elimina esses impactos do cultivo."
+        ],
+        "alternatives": {
+          "A": "O problema citado envolve formas nitrogenadas solúveis, capazes de atingir águas. Acumular sais insolúveis não é a consequência principal descrita.",
+          "B": "A adubação não implica necessariamente eliminar todos os desnitrificantes. O impacto destacado decorre do excesso de compostos nitrogenados e de seu transporte.",
+          "C": "Nitrato e amônio podem ser carreados ou lixiviados para corpos d’água. Essa mobilidade favorece contaminação e desequilíbrio por nutrientes.",
+          "D": "A amônia em água apresenta caráter básico, não explica queda de pH pela formação indicada. A justificativa química está invertida.",
+          "E": "A simples formação das espécies listadas não demonstra consumo direto de todo oxigênio do solo. A alternativa mais adequada relaciona solubilidade e contaminação hídrica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:84": {
@@ -1683,6 +3675,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O espalhamento da onda ao atravessar uma abertura ou contornar um obstáculo caracteriza difração. Ondas sonoras apresentam esse comportamento de modo facilmente observável: podem contornar um muro e chegar ao ouvinte que não vê diretamente a fonte da conversa."
+        ],
+        "alternatives": {
+          "A": "O som contorna o obstáculo e alcança a região atrás dele. Essa propagação em torno de barreiras é um exemplo de difração.",
+          "B": "A repetição do grito é eco, produzido por reflexão. Não é o espalhamento ao redor de uma abertura ou obstáculo.",
+          "C": "A percepção pelo chão se relaciona à propagação em meios materiais e a suas velocidades. Não identifica por si difração.",
+          "D": "A mudança de altura percebida na aproximação e no afastamento é efeito Doppler. O fenômeno é distinto do contorno de obstáculos.",
+          "E": "A quebra da taça se associa à ressonância, quando há grande transferência de energia numa frequência própria. Não corresponde à difração."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 28",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:85": {
@@ -1703,6 +3719,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "A desvantagem destacada é a liberação de poluentes para o ar. Sistemas de filtragem e controle de emissões nas chaminés retêm parte dos contaminantes antes da descarga atmosférica, reduzindo esse impacto. A medida não deve ser confundida com simplesmente queimar mais lixo para gerar mais energia."
+        ],
+        "alternatives": {
+          "A": "Queimar mais resíduos pode aumentar a energia produzida, mas também a quantidade de emissões. Isso não reduz diretamente a desvantagem apresentada.",
+          "B": "Filtros adequados reduzem a saída de partículas e outros poluentes conforme sua tecnologia. Essa intervenção enfrenta diretamente a poluição atmosférica do processo.",
+          "C": "Baratear a operação por aumento de escala não garante menor emissão. O objetivo ambiental exige tratamento dos gases e não apenas mais carga.",
+          "D": "Coleta seletiva pode reduzir rejeitos e recuperar materiais, mas não deve ter como finalidade principal aumentar a massa incinerada. A justificativa está inadequada.",
+          "E": "Reduzir a temperatura pode piorar a combustão e a formação de poluentes. Além disso, não garante produzir mais energia elétrica."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:86": {
@@ -1723,6 +3763,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Na etapa I, a corrida acumula energia cinética. Durante o apoio, parte passa temporariamente à deformação elástica da vara e depois à energia potencial gravitacional do atleta. Na maior altura, etapa III, a conversão da energia da corrida em elevação deve ser máxima, desprezadas as dissipações."
+        ],
+        "alternatives": {
+          "A": "A etapa IV é a queda no colchão, e não o armazenamento elástico que permite alcançar o ponto mais alto. A sequência e o tipo de energia estão incorretos.",
+          "B": "A etapa IV não corresponde à altura máxima. O objetivo é acumular energia potencial gravitacional na etapa III, antes da descida.",
+          "C": "A energia da corrida inicial é convertida, com participação intermediária da vara, em energia potencial gravitacional no ponto mais alto da etapa III.",
+          "D": "Na etapa II ocorre apoio e deformação da vara, mas a etapa IV não é o momento relevante de energia elástica para elevar o atleta. A cadeia está invertida.",
+          "E": "A energia inicial predominante da corrida é cinética, e a energia no ponto alto é gravitacional. A alternativa troca ambos os tipos de energia."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:87": {
@@ -1743,6 +3807,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os insetos citados e os seres humanos pertencem ao reino Animalia. Eles não compartilham filo ou classe: insetos são artrópodes e humanos são cordados. Assim, entre as unidades listadas, o reino é o nível taxonômico comum que expressa a afinidade proposta pelo poema."
+        ],
+        "alternatives": {
+          "A": "Humanos pertencem a Chordata e os insetos a Arthropoda. O filo não é compartilhado por todos os organismos citados.",
+          "B": "Todos são animais e compartilham o reino Animalia. Esse nível abrange os diferentes filos presentes na comparação.",
+          "C": "Humanos são mamíferos e os organismos do poema são insetos. Não integram a mesma classe.",
+          "D": "Famílias são categorias muito mais restritas e não reúnem humanos e esses insetos. A afinidade comum aparece no reino.",
+          "E": "Cada grupo inclui espécies distintas, e humanos não são da mesma espécie dos insetos. O poema não deve ser lido como equivalência taxonômica literal."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 29",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:88": {
@@ -1763,6 +3851,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Os resíduos animais fornecem compostos nitrogenados que as algas podem incorporar em seu crescimento, reduzindo sua concentração na água. Como organismos fotossintéticos, elas também liberam oxigênio, utilizado na respiração aeróbia. Essa integração favorece a reciclagem de nutrientes e o equilíbrio do cultivo."
+        ],
+        "alternatives": {
+          "A": "Metais pesados não são nutrientes necessários à síntese de biomassa e podem ser tóxicos. Sua absorção não justifica atribuir aos animais essa função benéfica geral.",
+          "B": "Nitrogênio não é convertido em carbono por organismos. A alternativa viola a conservação dos elementos ao afirmar transformação em gás carbônico.",
+          "C": "A fotossíntese consome CO2 e libera oxigênio. O gás utilizado na respiração aeróbia é o oxigênio, não o CO2 indicado.",
+          "D": "As algas incorporam nutrientes dos resíduos e liberam O2 na fotossíntese. Esse intercâmbio explica o benefício do cultivo integrado.",
+          "E": "As algas descritas realizam fotossíntese. A quimiossíntese não é o processo responsável pela liberação de oxigênio nesse sistema."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:89": {
@@ -1783,6 +3895,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "O Aedes aegypti depende de recipientes com água para o desenvolvimento de larvas e pupas. Retirar objetos que possam acumular água interrompe a disponibilidade desses criadouros e reduz a formação de novos adultos, atuando diretamente sobre a reprodução do vetor."
+        ],
+        "alternatives": {
+          "A": "Telas podem reduzir entrada e picadas, mas o mosquito não exige ambientes fechados para se reproduzir. A explicação proposta está incorreta.",
+          "B": "A substituição de casas de barro se associa ao controle de outros vetores em certos contextos. As larvas de Aedes se desenvolvem em água, não na parede.",
+          "C": "Eliminar recipientes que acumulem água reduz locais de desenvolvimento larval. Essa é uma medida direta para interromper o ciclo reprodutivo.",
+          "D": "A higiene dos alimentos previne outras doenças, mas não remove o criadouro aquático do mosquito. Larvas não dependem de alimentos expostos desse modo.",
+          "E": "Filtros domésticos tratam água para consumo, mas não eliminam recipientes externos. O mosquito pode se reproduzir em água parada sem a contaminação indicada."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 30",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     },
     "q:90": {
@@ -1803,6 +3939,30 @@
           "processedAt": "2026-11-22",
           "scope": "Participantes de 2011 com nota e vetor de 45 respostas deste caderno. Língua estrangeira separada por opção; questões comuns incluem os dois idiomas. Sem respostas de usuários do OlenaStudy. "
         }
+      },
+      "solution": {
+        "paragraphs": [
+          "Ruminantes abrigam microrganismos que participam da fermentação do alimento no sistema digestório. Esse processo produz metano, liberado principalmente por eructação. Como o CH4 é um gás de efeito estufa, grandes rebanhos podem contribuir para o aquecimento global por essa emissão."
+        ],
+        "alternatives": {
+          "A": "A fermentação digestiva dos ruminantes gera metano. Sua liberação é uma das fontes de gases de efeito estufa associadas à pecuária.",
+          "B": "A ruminação não tem o óxido nitroso como seu principal gás característico. N2O pode surgir em outros processos do manejo de solo e dejetos.",
+          "C": "CFCs não são produtos naturais da digestão nem uma emissão necessária do transporte de carne. A alternativa não identifica o mecanismo biológico destacado.",
+          "D": "A respiração dos animais não produz óxido nitroso como gás característico. O mecanismo pedido é a fermentação entérica com metano.",
+          "E": "O consumo de pastagens não emite necessariamente dióxido de enxofre. Esse gás não explica a contribuição digestiva dos bovinos ao efeito estufa."
+        },
+        "verification": "ai-authored-official-key-checked",
+        "checkedAt": "2026-11-23",
+        "sources": [
+          {
+            "title": "Inep, prova oficial, página 31",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/provas/2011/dia1_caderno1_azul.pdf"
+          },
+          {
+            "title": "Inep, gabarito oficial",
+            "url": "https://download.inep.gov.br/educacao_basica/enem/gabaritos/2011/01_AZUL_GABARITO.pdf"
+          }
+        ]
       }
     }
   }

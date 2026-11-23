@@ -1,3 +1,7 @@
+## Retomada de 23/11/2026
+
+Cobertura completa de 3.145 entradas em 2010 a 2026. Chaves e presença das cinco alternativas auditadas sem falhas. Aprofundamento das entradas antigas permanece em andamento, sobretudo 2021, 2023 e 2024. A questão 154 de 2022 vale E, sem exclusão editorial. Estatísticas reais cobrem 2.960 entradas de 2010 a 2025. Conteúdo com IA no desenvolvimento e conferência de gabarito não equivale a revisão humana independente.
+
 # Continuidade do módulo Enem
 
 Estado entregue em 22/11/2026. O proprietário pediu a publicação desta PR para o Claude continuar. A produção editorial foi pausada; não apresentar esta entrega como acervo completo.

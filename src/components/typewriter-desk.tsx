@@ -13,9 +13,10 @@ import {
   useState,
   type Dispatch,
   type CSSProperties,
+  type ReactNode,
 } from "react";
 import { createWorkspaceId, type WorkspaceState, type WorkspaceAction } from "../domain/workspace";
-import { ESSAY_CATEGORIES, ESSAY_PROPOSALS, type EssayProposal } from "../data/essay-catalog";
+import { ESSAY_CATEGORIES, ESSAY_PROPOSALS } from "../data/essay-catalog";
 import { uiText } from "../i18n/runtime";
 import { PaperArrow } from "./paper-arrow";
 import { PaperDigits } from "./paper-digits";
@@ -150,7 +151,13 @@ export function TypewriterDesk(props: DeskProps) {
           </>
         ) : enemOpen ? (
           <Suspense fallback={<p role="status">{uiText("Abrindo acervo do Enem…")}</p>}>
-            <EnemArchive scope={props.collectionId} onBack={() => setEnemOpen(false)} />
+            <EnemArchive
+              scope={props.collectionId}
+              workspace={props.workspace}
+              collectionId={props.collectionId}
+              dispatch={props.dispatch}
+              onBack={() => setEnemOpen(false)}
+            />
           </Suspense>
         ) : (
           <section className="essay-vestibular">
@@ -268,13 +275,20 @@ function EssayCategory({
     </section>
   );
 }
-function EssayWriting({
+export function EssayWriting({
   workspace,
   collectionId,
   dispatch,
   onBack,
   proposal,
-}: DeskProps & { proposal: EssayProposal }) {
+  proposalContent,
+  onSubmit,
+}: DeskProps & {
+  proposal: { id: string; title: string; category: string };
+  proposalContent?: ReactNode;
+  onSubmit?(submission: { text: string; elapsedSeconds: number }): void;
+}) {
+  const catalogProposal = ESSAY_PROPOSALS.find((item) => item.id === proposal.id);
   const draft = workspace.materials.find(
     (item) =>
       !item.archived &&
@@ -664,78 +678,89 @@ function EssayWriting({
               onCut={(event) => event.preventDefault()}
               onContextMenu={(event) => event.preventDefault()}
             >
-              <header>
-                <img src="/olena-favicon-192.png" alt={"Olena"} width="44" height="44" />
-                <div>
-                  <h1>{uiText(proposal.title)}</h1>
-                  <small>{uiText("Assunto: {0}", [proposal.category])}</small>
-                </div>
-              </header>
-              <h2>{uiText("Proposta de redação")}</h2>
-              <p>
-                {uiText(
-                  "Com base na leitura dos textos motivadores e nos conhecimentos construídos ao longo de sua formação, produza um texto dissertativo-argumentativo, em modalidade escrita formal da língua portuguesa, sobre o tema “{0}”. Apresente uma tese e desenvolva argumentos que analisem o problema, suas causas e seus efeitos na sociedade. Selecione e relacione informações, exemplos e repertórios pertinentes, com coerência e coesão, para sustentar seu ponto de vista. Ao concluir, proponha uma intervenção relacionada à discussão, indicando quem pode agir, o que deve ser feito, como a ação pode ser realizada e qual resultado se pretende alcançar, respeitando os direitos humanos. Utilize os textos motivadores como apoio à reflexão, sem reproduzir seus trechos como substitutos da sua argumentação.",
-                  [proposal.title],
-                )}
-              </p>
-              <div className="essay-support-texts">
-                <div className="essay-support-column">
-                  <section>
-                    <h3>{uiText("Texto I")}</h3>
-                    <button
-                      type="button"
-                      className="essay-support-expand-mobile"
-                      aria-label={uiText("Ampliar Texto I")}
-                      onClick={() => setExpandedSupport(0)}
+              {proposalContent ??
+                (catalogProposal ? (
+                  <>
+                    <header>
+                      <img src="/olena-favicon-192.png" alt={"Olena"} width="44" height="44" />
+                      <div>
+                        <h1>{uiText(proposal.title)}</h1>
+                        <small>{uiText("Assunto: {0}", [proposal.category])}</small>
+                      </div>
+                    </header>
+                    <h2>{uiText("Proposta de redação")}</h2>
+                    <p>
+                      {uiText(
+                        "Com base na leitura dos textos motivadores e nos conhecimentos construídos ao longo de sua formação, produza um texto dissertativo-argumentativo, em modalidade escrita formal da língua portuguesa, sobre o tema “{0}”. Apresente uma tese e desenvolva argumentos que analisem o problema, suas causas e seus efeitos na sociedade. Selecione e relacione informações, exemplos e repertórios pertinentes, com coerência e coesão, para sustentar seu ponto de vista. Ao concluir, proponha uma intervenção relacionada à discussão, indicando quem pode agir, o que deve ser feito, como a ação pode ser realizada e qual resultado se pretende alcançar, respeitando os direitos humanos. Utilize os textos motivadores como apoio à reflexão, sem reproduzir seus trechos como substitutos da sua argumentação.",
+                        [proposal.title],
+                      )}
+                    </p>
+                    <div className="essay-support-texts">
+                      <div className="essay-support-column">
+                        <section>
+                          <h3>{uiText("Texto I")}</h3>
+                          <button
+                            type="button"
+                            className="essay-support-expand-mobile"
+                            aria-label={uiText("Ampliar Texto I")}
+                            onClick={() => setExpandedSupport(0)}
+                          >
+                            <PaperEditorIcon name="expand" />
+                          </button>
+                          {ESSAY_VISUALS[catalogProposal.id].context
+                            .split("\n\n")
+                            .map((paragraph, index) => (
+                              <p key={index}>{uiText(paragraph)}</p>
+                            ))}
+                          <EssayVisualSupport proposalId={catalogProposal.id} />
+                        </section>
+                      </div>
+                      <div className="essay-support-column">
+                        <section>
+                          <h3>{uiText("Texto II")}</h3>
+                          <button
+                            type="button"
+                            className="essay-support-expand-mobile"
+                            aria-label={uiText("Ampliar Texto II")}
+                            onClick={() => setExpandedSupport(1)}
+                          >
+                            <PaperEditorIcon name="expand" />
+                          </button>
+                          {ESSAY_VISUALS[catalogProposal.id].authorText
+                            .split("\n\n")
+                            .map((paragraph, index) => (
+                              <p key={index}>{uiText(paragraph)}</p>
+                            ))}
+                          <small>{uiText("Texto de apoio autoral Olena")}</small>
+                        </section>
+                        <section>
+                          <h3>{uiText("Texto III")}</h3>
+                          <button
+                            type="button"
+                            className="essay-support-expand-mobile"
+                            aria-label={uiText("Ampliar Texto III")}
+                            onClick={() => setExpandedSupport(2)}
+                          >
+                            <PaperEditorIcon name="expand" />
+                          </button>
+                          {ESSAY_VISUALS[catalogProposal.id].discussion
+                            .split("\n\n")
+                            .map((paragraph, index) => (
+                              <p key={index}>{uiText(paragraph)}</p>
+                            ))}
+                          <small>{uiText("Texto de apoio autoral Olena")}</small>
+                        </section>
+                      </div>
+                    </div>
+                    <a
+                      href="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/outros-documentos"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      <PaperEditorIcon name="expand" />
-                    </button>
-                    {ESSAY_VISUALS[proposal.id].context.split("\n\n").map((paragraph, index) => (
-                      <p key={index}>{uiText(paragraph)}</p>
-                    ))}
-                    <EssayVisualSupport proposalId={proposal.id} />
-                  </section>
-                </div>
-                <div className="essay-support-column">
-                  <section>
-                    <h3>{uiText("Texto II")}</h3>
-                    <button
-                      type="button"
-                      className="essay-support-expand-mobile"
-                      aria-label={uiText("Ampliar Texto II")}
-                      onClick={() => setExpandedSupport(1)}
-                    >
-                      <PaperEditorIcon name="expand" />
-                    </button>
-                    {ESSAY_VISUALS[proposal.id].authorText.split("\n\n").map((paragraph, index) => (
-                      <p key={index}>{uiText(paragraph)}</p>
-                    ))}
-                    <small>{uiText("Texto de apoio autoral Olena")}</small>
-                  </section>
-                  <section>
-                    <h3>{uiText("Texto III")}</h3>
-                    <button
-                      type="button"
-                      className="essay-support-expand-mobile"
-                      aria-label={uiText("Ampliar Texto III")}
-                      onClick={() => setExpandedSupport(2)}
-                    >
-                      <PaperEditorIcon name="expand" />
-                    </button>
-                    {ESSAY_VISUALS[proposal.id].discussion.split("\n\n").map((paragraph, index) => (
-                      <p key={index}>{uiText(paragraph)}</p>
-                    ))}
-                    <small>{uiText("Texto de apoio autoral Olena")}</small>
-                  </section>
-                </div>
-              </div>
-              <a
-                href="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/outros-documentos"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {uiText("Consultar orientações oficiais de redação do Inep")}
-              </a>
+                      {uiText("Consultar orientações oficiais de redação do Inep")}
+                    </a>
+                  </>
+                ) : null)}
             </article>
           </div>
         </div>
@@ -915,16 +940,16 @@ function EssayWriting({
           {uiText("Abrir folha de redação")}
         </button>
       )}
-      {expandedSupport !== null && (
+      {expandedSupport !== null && catalogProposal && (
         <LibraryDialog
           title={uiText(["Texto I", "Texto II", "Texto III"][expandedSupport]!)}
           onClose={() => setExpandedSupport(null)}
           className="essay-support-reading-modal"
         >
           {[
-            ESSAY_VISUALS[proposal.id].context,
-            ESSAY_VISUALS[proposal.id].authorText,
-            ESSAY_VISUALS[proposal.id].discussion,
+            ESSAY_VISUALS[catalogProposal.id].context,
+            ESSAY_VISUALS[catalogProposal.id].authorText,
+            ESSAY_VISUALS[catalogProposal.id].discussion,
           ]
             [expandedSupport]!.split("\n\n")
             .map((paragraph, index) => (
@@ -964,6 +989,7 @@ function EssayWriting({
               createdAt: new Date().toISOString(),
             });
           }
+          onSubmit?.({ text, elapsedSeconds: seconds });
           setCompleted(true);
           if (clockRunning) toggleClock();
         }}

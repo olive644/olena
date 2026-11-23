@@ -1,6 +1,20 @@
+## Navegação creme e grafite, 23/11/2026
+
+Por pedido do proprietário, itens da navegação voltaram às variantes originais paper, sem colorful. Grafite no claro, creme no escuro e creme sobre o item ativo roxo, em PC e celular. Avatar preservado. Verificação no navegador nos dois temas/larguras confirmou variantes; 24 testes de app passaram. Capturas tmp/nav-restored-*.png.
+
+## Enem por área e editor compartilhado, 23/11/2026
+
+src/data/enem-progress.ts centraliza compatibilidade attempt/attempts, preenchimento A-E por idioma e média das áreas. Não converter enviada em 100% de objetiva; redação vale 100% quando enviada. Preservar tentativas das outras áreas ao salvar. EnemArchive recebe workspace/collectionId/dispatch do TypewriterDesk. EnemEssayWriting reutiliza EssayWriting com proposalContent e onSubmit, persistindo no workspace com tag por ano/variante; EnemEssayPrompt mostra só a página da proposta encontrada por texto ou OCR local. Estilos compartilhados da folha precisam funcionar também fora de #main-content, pois o editor Enem é portaled. Ver limite de bundle pendente em CURRENT_STATE_AUDIT.
+
+## Leitor PDF e gabarito oficial, 22/11/2026
+
+Leitor PDF: importar estaticamente a URL `pdf.worker.min.mjs?url`, mantendo `import("pdfjs-dist")` opcional. A importação dinâmica da URL produzia um valor inválido em `workerSrc` na prévia Vite, embora o build funcionasse. O navegador confirmou o erro antes e renderização depois, em PC e celular.
+
+O proprietário revogou a exclusão editorial da questão 154 do amarelo 2022. Usar o gabarito oficial E na correção e os parâmetros existentes na TRI, sem filtro editorial. A solução salva explica 10.000 gemas, 500.000 moedas totais e acréscimo de 400.000 sobre o pacote básico. Não restaurar a anulação anterior.
+
 ## Resoluções originais salvas Enem, 22/11/2026
 
-Publicação de lotes: `py -3.12 scripts/publish-enem-solutions.py LOTE.json --year ANO --day DIA`. Usa `tmp/enem-key-audit.json`, catálogo e índice de páginas para validar a correspondência; preserva estatísticas. Conteúdo novo tem origem `ai-authored-official-key-checked`, distinguida na interface, sem inferir revisão humana. Justificativas precisam explicar os erros e as evidências, não apenas repetir letras. Estatísticas: `scripts/complete-enem-statistics.py` baixa fontes licenciadas, verifica checksum e chama agregação em lotes de 25 mil vetores. Mapeamentos ainda dependem dos bundles TRI, portanto áreas não mapeadas e 2010/2017 permanecem pendentes. Progresso de importação em `tmp/enem-statistics-progress.json`. Cobertura editorial parcial registrada no README dos reviews; não anunciar acervo completo.
+Publicação de lotes: `py -3.12 scripts/publish-enem-solutions.py LOTE.json --year ANO --day DIA`. Usa `docs/research/enem-official-key-audit.json`, catálogo e índice de páginas para validar a correspondência; preserva estatísticas. Conteúdo novo tem origem `ai-authored-official-key-checked`, sem inferir revisão humana. Por solicitação do proprietário, conferência, data e referências ficam nos metadados e não aparecem abaixo das resoluções. Justificativas precisam explicar os erros e as evidências, não apenas repetir letras. Ao aprofundar conteúdo existente, preservar os parágrafos da resolução e substituir apenas `alternatives`. Estatísticas reais usam mapeamentos independentes da disponibilidade de parâmetros TRI e cobrem 2.960 entradas de 2010 a 2025. Progresso de importação em `tmp/enem-statistics-progress.json`; cobertura editorial parcial em `docs/research/enem-review-coverage.json`. Não anunciar acervo completo ou inventar estatísticas de 2026.
 
 ## Abas de redação e vestibular, 19/11/2026
 
