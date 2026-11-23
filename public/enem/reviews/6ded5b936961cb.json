@@ -77,9 +77,7 @@
     "english:4": {
       "answer": "D",
       "solution": {
-        "paragraphs": [
-          "Origens e línguas diferentes compõem a identidade apresentada no poema."
-        ],
+        "paragraphs": ["Origens e línguas diferentes compõem a identidade apresentada no poema."],
         "alternatives": {
           "A": "A presença da Europa é reconhecida como parte da história do eu lírico, mas ele afirma não ter um lar naquele continente. Isso impede interpretar o trecho como exaltação exclusiva da origem europeia: ela é apenas uma das referências de sua formação.",
           "B": "Os guetos de Nova York aparecem entre muitas marcas de origem e pertencimento, inclusive como lugares que o eu lírico não conheceu. Não há uma defesa específica de sua cultura que explique o conjunto do poema; a identidade descrita resulta de várias experiências.",

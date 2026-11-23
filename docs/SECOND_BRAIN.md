@@ -2149,12 +2149,12 @@ Reutilizados orçamento, API autenticada e medidor das PRs 686/688/689 na main. 
 
 Removida geração automática local de resumo, flashcards, quizzes e simulados na pasta. Reutilizados library-ai.ts, extração de fontes e generateWithOlena da main. Custo estimado para todas as categorias; tamanho altera custo de quiz/prova. Sem saldo desabilita, saldo insuficiente avisa sem bloquear tentativa. Backend mantém orçamento/reserva/acerto da main. 49 testes aprovados; conferência de cada modal em PC/mobile com fonte textual e saldo de teste sem gerar IA real.
 
-
 ### Acervo oficial Enem — 2026-11-21
+
 Vestibular abre Enem dentro do app. Removidos título Provas anteriores e parágrafo sobre acervos; Fuvest permanece como link oficial. Grade original com 34 cartões (2010–2026, dias 1/2), 479 links de cadernos e gabaritos publicados, capas reais extraídas dos PDFs do Inep. Todos os links de prova encontrados nas páginas anuais estão indexados. Filtros ano/dia/progresso, salvos/conclusão e histórico de leitura neste dispositivo; não se apresentam tentativas ou notas fictícias. Seleção de variante e leitor PDF reutilizado com URL oficial; CSP permite somente download.inep.gov.br para esses arquivos. PDFs completos carregam por demanda; capas locais totalizam cerca de 2,4 MB. Scripts de atualização em scripts/fetch-enem-*.py, cache em tmp. TypeScript/ESLint focados e 8 testes aprovados; grade, filtros, variantes e renderização oficial conferidos em Edge 1366/390. Sem publicar nesta etapa.
 
-
 ### Ampliação Enem 2000–2026 — 2026-11-21
+
 Acervo ampliado para 45 cartões e 498 versões oficiais. Edições 2000–2008 identificadas como Dia único (day=0); 2009–2026 mantêm dias 1 e 2. Cabeçalho mostra limites derivados do catálogo; filtro inclui Dia único. Capas reais das 11 edições adicionadas extraídas de PDFs oficiais. Os 498 links de prova publicados nas páginas anuais foram indexados, sem lacunas. Nove testes aprovados; geração do catálogo mantém IDs anteriores e histórico.
 
 ## 22/11/2026: conteúdo salvo da revisão Enem
