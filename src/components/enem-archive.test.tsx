@@ -213,3 +213,18 @@ it("mostra o carregamento e permite tentar de novo quando o catálogo falha", as
   await screen.findByLabelText("Ano", { selector: "summary" });
   expect(document.querySelectorAll(".enem-paper-card")).toHaveLength(34);
 });
+
+it("fecha o balão anterior ao abrir o progresso de outra prova", async () => {
+  await openArchive("one-progress");
+  const panels = document.querySelectorAll<HTMLDetailsElement>(".enem-card-progress");
+  const first = panels[0]!;
+  const second = panels[1]!;
+  first.open = true;
+  fireEvent(first, new Event("toggle"));
+  expect(first.open).toBe(true);
+  second.open = true;
+  fireEvent(second, new Event("toggle"));
+  expect(second.open).toBe(true);
+  expect(first.open).toBe(false);
+  expect(second.getAttribute("name")).toBe(first.getAttribute("name"));
+});

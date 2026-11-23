@@ -49,6 +49,25 @@ function readHistory(key: string, ids: ReadonlySet<string>): History {
 function dayLabel(day: number) {
   return day === 0 ? uiText("Dia único") : `${day}º ${uiText("dia")}`;
 }
+function positionProgress(element: HTMLDetailsElement) {
+  if (!element.open) return;
+  element
+    .closest(".enem-archive")
+    ?.querySelectorAll<HTMLDetailsElement>(".enem-card-progress[open]")
+    .forEach((other) => {
+      if (other !== element) other.open = false;
+    });
+  const trigger = element.querySelector("summary")?.getBoundingClientRect();
+  const balloon = element.querySelector<HTMLElement>(".enem-card-progress-balloon");
+  if (!trigger || !balloon) return;
+  const container = element.closest(".enem-archive")?.getBoundingClientRect();
+  const minimum = Math.max(12, (container?.left ?? 0) + 12);
+  const left = Math.max(
+    minimum,
+    Math.min(trigger.right - balloon.offsetWidth, window.innerWidth - balloon.offsetWidth - 12),
+  );
+  element.style.setProperty("--progress-left", `${left - trigger.left}px`);
+}
 function Bookmark() {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true">
@@ -331,6 +350,14 @@ function EnemArchiveView({
   const [documentType, setDocumentType] = useState<"paper" | "answer">("paper");
   const [feedback, setFeedback] = useState<{ id: string; kind: string; stamp: number }>();
   const [downloadStatus, setDownloadStatus] = useState("");
+  useEffect(() => {
+    const resize = () =>
+      document
+        .querySelectorAll<HTMLDetailsElement>(".enem-card-progress[open]")
+        .forEach(positionProgress);
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
+  }, []);
   async function downloadPaper(paper: Paper, documentUrl?: string, answer = false) {
     setDownloadStatus(uiText("Baixando prova…"));
     try {
@@ -1089,18 +1116,9 @@ function EnemArchiveView({
               </button>
               <details
                 className="enem-card-progress"
+                name="enem-card-progress"
                 onToggle={(event) => {
-                  const element = event.currentTarget;
-                  if (!element.open) return;
-                  const rect = element.getBoundingClientRect();
-                  element.style.setProperty(
-                    "--progress-left",
-                    `${Math.max(12, Math.min(rect.left, window.innerWidth - 324))}px`,
-                  );
-                  element.style.setProperty(
-                    "--progress-top",
-                    `${Math.max(12, Math.min(rect.bottom + 8, window.innerHeight - 280))}px`,
-                  );
+                  positionProgress(event.currentTarget);
                 }}
               >
                 <summary aria-label={`${uiText("Progresso da prova")}: ${summary.percent}%`}>
