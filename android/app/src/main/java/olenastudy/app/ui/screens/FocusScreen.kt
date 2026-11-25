@@ -6,6 +6,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.platform.LocalContext
+import olenastudy.app.focus.FocusSound
+import olenastudy.app.focus.FocusSounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -111,6 +116,17 @@ fun FocusScreen(controller: FocusController) {
     }
 
     // Android 13 pede permissão para mostrar o aviso de fim de fase. Pedimos ao iniciar o Pomodoro.
+    val context = LocalContext.current
+    val sounds = remember { FocusSounds(context) }
+    DisposableEffect(Unit) { onDispose { sounds.release() } }
+    // Mordida: toca quando o tomate avança um estágio com o Pomodoro de foco correndo, como no site.
+    val stage =
+        if (pomodoro.phase == FocusPhase.Focus) Pomodoro.tomatoStage(pomodoro.remainingAt(now).toDouble() / (pomodoro.durationMinutes * 60_000.0)) else 0
+    var lastStage by remember { mutableIntStateOf(stage) }
+    LaunchedEffect(stage) {
+        if (pomodoro.running && stage == lastStage + 1) sounds.play(FocusSound.Bite)
+        lastStage = stage
+    }
     val askNotifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
     val isTimer = snapshot.mode == FocusMode.Timer
     FocusContent(
@@ -122,12 +138,20 @@ fun FocusScreen(controller: FocusController) {
                 if (!isTimer && !pomodoro.running && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
+                val wasRunning = if (isTimer) stopwatch.running else pomodoro.running
+                sounds.play(if (wasRunning) FocusSound.Pause else FocusSound.Start)
                 if (isTimer) controller.toggleStopwatch() else controller.togglePomodoro()
             },
-            onStopwatchReset = controller::resetStopwatch,
+            onStopwatchReset = {
+                sounds.play(FocusSound.Restart)
+                controller.resetStopwatch()
+            },
             onStopwatchFinish = controller::finishStopwatch,
             onSkip = controller::skip,
-            onRestartPhase = controller::restartPhase,
+            onRestartPhase = {
+                sounds.play(FocusSound.Restart)
+                controller.restartPhase()
+            },
             onPomodoroFinish = controller::finishPomodoro,
             onFocusMinutes = controller::setFocusMinutes,
         ),
