@@ -10,6 +10,9 @@
     <string name="nav_library">Biblioteca</string>
     <string name="nav_profile">Perfil</string>
     <string name="nav_bar_description">Navegação principal</string>
+    <string name="open_link_in_browser">Abrir no navegador</string>
+    <string name="link_browser_unavailable">Não foi possível abrir o navegador.</string>
+    <string name="link_not_supported">Não foi possível abrir esse link.</string>
 
     <!-- Telas ainda sem conteúdo: dizem a verdade em vez de fingir dados -->
     <string name="screen_today_title">Espaço do aluno</string>

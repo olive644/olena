@@ -29,6 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,6 +71,7 @@ import olenastudy.app.ui.screens.FocusScreen
 import olenastudy.app.ui.components.PaperDecoration
 import olenastudy.app.ui.components.paperPanel
 import olenastudy.app.ui.navigation.AppDestination
+import olenastudy.app.ui.navigation.AppLinkRequest
 import olenastudy.app.ui.screens.InProgressScreen
 import olenastudy.app.ui.screens.ProfileScreen
 import olenastudy.app.ui.screens.SettingsScreen
@@ -87,6 +89,8 @@ fun AppShell(
     onLookChange: (ProfileLook) -> Unit = {},
     info: ProfileInfo = ProfileInfo(),
     onInfoChange: (ProfileInfo) -> Unit = {},
+    appLinkRequest: AppLinkRequest? = null,
+    onAppLinkHandled: (Long) -> Unit = {},
 ) {
     val colors = OlenaTheme.colors
     val navController = rememberNavController()
@@ -118,6 +122,17 @@ fun AppShell(
             launchSingleTop = true
             restoreState = true
         }
+    }
+
+    LaunchedEffect(appLinkRequest?.id) {
+        val request = appLinkRequest ?: return@LaunchedEffect
+        navController.clearBackStack(request.destination.route)
+        navController.navigate(request.destination.route) {
+            popUpTo(AppDestination.start.route) { saveState = false }
+            launchSingleTop = true
+            restoreState = false
+        }
+        onAppLinkHandled(request.id)
     }
 
     Box(Modifier.fillMaxSize().background(colors.page)) {

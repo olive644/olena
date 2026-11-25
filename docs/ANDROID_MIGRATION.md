@@ -14,19 +14,19 @@ Legenda: **existente** significa implementação identificada no código; **parc
 
 Fonte web: `src/domain/app-routes.ts`. Destinos nativos: `android/app/src/main/java/olenastudy/app/ui/navigation/AppDestination.kt`; conexões reais no `ui/AppShell.kt`.
 
-| Rota web        | Destino Android atual       | Estado e continuidade                                                                              |
-| --------------- | --------------------------- | -------------------------------------------------------------------------------------------------- |
-| `/`             | `today`, HomeScreen         | Parcial: resumo usa tarefas, agenda e foco do aparelho. Etapa 8 conecta o workspace da conta.      |
-| `/planejador`   | `planner`, AgendaScreen     | Parcial: agenda e tarefas locais. Etapa 9 completa o calendário e sincronização.                   |
-| `/aprender`     | `learn`, PracticeScreen     | Parcial: entrada e ilhas, sem lições. Etapas 11 a 13.                                              |
-| `/foco`         | `focus`, FocusScreen        | Parcial: contador, Pomodoro e registros locais. Etapa 10.                                          |
-| `/biblioteca`   | `library`, InProgressScreen | Pendente: destino existe, funcionalidade não. Etapas 15 a 18 e 22 a 23.                            |
-| `/perfil`       | `profile`, ProfileScreen    | Parcial: perfil e diálogos sem conta. Etapas 5, 6 e 14.                                            |
-| `/notificacoes` | Sem destino                 | Pendente, etapa 26. O sino do cabeçalho não comprova uma caixa de notificações funcional.          |
-| `/cadernos`     | Sem destino                 | Pendente, etapas 19 a 21.                                                                          |
-| `/aulas`        | Sem destino                 | Pendente, etapa 24. Preservar o planejador de aulas de inglês existente.                           |
-| `/atividades`   | Sem destino                 | Pendente, etapa 25.                                                                                |
-| `/habitos`      | Sem alias nativo            | No site é alias de Perfil, não módulo independente. Preservar compatibilidade de links na etapa 2. |
+| Rota web        | Destino Android atual       | Estado e continuidade                                                                         |
+| --------------- | --------------------------- | --------------------------------------------------------------------------------------------- |
+| `/`             | `today`, HomeScreen         | Parcial: resumo usa tarefas, agenda e foco do aparelho. Etapa 8 conecta o workspace da conta. |
+| `/planejador`   | `planner`, AgendaScreen     | Parcial: agenda e tarefas locais. Etapa 9 completa o calendário e sincronização.              |
+| `/aprender`     | `learn`, PracticeScreen     | Parcial: entrada e ilhas, sem lições. Etapas 11 a 13.                                         |
+| `/foco`         | `focus`, FocusScreen        | Parcial: contador, Pomodoro e registros locais. Etapa 10.                                     |
+| `/biblioteca`   | `library`, InProgressScreen | Pendente: destino existe, funcionalidade não. Etapas 15 a 18 e 22 a 23.                       |
+| `/perfil`       | `profile`, ProfileScreen    | Parcial: perfil e diálogos sem conta. Etapas 5, 6 e 14.                                       |
+| `/notificacoes` | Sem destino                 | Pendente, etapa 26. O sino do cabeçalho não comprova uma caixa de notificações funcional.     |
+| `/cadernos`     | Sem destino                 | Pendente, etapas 19 a 21.                                                                     |
+| `/aulas`        | Sem destino                 | Pendente, etapa 24. Preservar o planejador de aulas de inglês existente.                      |
+| `/atividades`   | Sem destino                 | Pendente, etapa 25.                                                                           |
+| `/habitos`      | Alias de `profile`          | Compatibilidade de links implementada na etapa 2b. Não recria um módulo independente.         |
 
 Espaço continua sendo a entrada. Preservar a barra móvel com Espaço, Agenda, Praticar, Foco, Biblioteca e Perfil. Ferramentas adicionais terão acesso contextual no workspace, sem ressuscitar o menu móvel removido. Links de perfil, convites, materiais e retornos de login precisam de resolução própria; não basta adicionar os seis destinos ao NavHost.
 
@@ -36,7 +36,7 @@ Os caminhos abaixo são relativos a `src/` no web e a `android/app/src/main/java
 
 | Fluxo e ações a preservar                                                              | Fontes web                                                                                                  | Situação nativa e dados                                                                                                                | Etapa  |
 | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| Navegação, retorno, links, restauração e diálogos                                      | `components/app-navigation.tsx`, `domain/app-routes.ts`                                                     | Parcial: NavHost e barra existem; manifesto só possui intent de launcher, sem links de entrada                                         | 2      |
+| Navegação, retorno, links, restauração e diálogos                                      | `components/app-navigation.tsx`, `domain/app-routes.ts`                                                     | Parcial: retorno/restauração na 2a e links na 2b; estados e componentes compartilhados pendentes                                       | 2      |
 | Papel, ícones, fechar, carregamento, seleção, foco e movimento reduzido                | `paper-controls.css`, `components/helena-loading.tsx`, `docs/DESIGN_SYSTEM.md`                              | Parcial: componentes Paper existem; paridade dos estados e HelenaLoading não verificada                                                | 2      |
 | Entrada, criação de conta, recuperação, verificação, reautenticação e saída            | `data/account-auth.ts`, `data/firebase-account.ts`, `components/account-access-panel.tsx`                   | Pendente: sem Firebase Auth nas dependências Android; sem conta em MainActivity                                                        | 3      |
 | Google, e-mail/senha, Apple e Discord quando habilitados                               | `components/account-access-panel.tsx`, `views/google-login.tsx`, `backend/discord-auth-handler.ts`          | Pendente; disponibilidade real de cada provedor não verificada. Discord tem retorno web e cookie, ver dependências                     | 3      |
@@ -152,4 +152,5 @@ A conclusão exige cobertura de todas as rotas e ações acima, dados da mesma c
 - Preparação posterior autorizada: JDK 21 instalado em `D:/Apps/DevTools/Java/jdk-21.0.13.1+2`, SDK em `D:/Apps/DevTools/Android/Sdk` e caches/AVDs em `D:/DevCaches`. Emulador API 36 iniciou com WHPX. Passaram 119 testes (32 de screenshot), assembleDebug e verifyPaparazziDebug. Navegação pelas seis abas confirmada em claro/escuro no emulador, com 12 capturas e sem crash observado. Prova básica, sem validação funcional integral; resultados e limites ficam na auditoria.
 - Correção preparatória para a etapa 2: na branch local `fix/android-gallery-lint`, os três erros das galerias foram corrigidos sem suprimir detectores. Passaram lintDebug, os 119 testes, assembleDebug e verifyPaparazziDebug. Seleção de abas nas duas galerias conferida no emulador em claro/escuro, conforme a auditoria. A etapa 2 de navegação e componentes ainda não está concluída.
 - Etapa 2a, branch local `feat/android-navigation-base`: Configurações ganhou rota própria e retorno consistente por seção, lista e perfil. Navegação unificada para atalhos e barra, seleção do Perfil nas subpáginas, restauração ao alternar abas e recriar a atividade. Adicionada a infraestrutura androidTest e sete cenários de navegação. Links externos e componentes compartilhados continuam pendentes na etapa 2; não tratar esta entrega como conclusão da base completa.
+- Etapa 2b, branch local `feat/android-app-links`: links HTTPS das telas disponíveis abrem o destino nativo, tanto na abertura inicial como no app já aberto, com Voltar para o Espaço. Parâmetros, perfis públicos e módulos pendentes permanecem no site. O encaminhamento exclui o próprio app e a entrada remove extras não confiáveis. Links consumidos não são repetidos após recriar a tela. A verificação de domínio de produção permanece separada; estados e componentes compartilhados continuam pendentes na etapa 2.
 - Publicação: não realizada. npm run verify segue reprovado no checkout atual. Além disso, `gh auth status` retornou credencial inválida no ambiente restrito desta sessão; a autenticação precisa ser conferida com rede disponível antes de concluir que a credencial está inválida. Não registrar um link de PR até a criação ser confirmada.
