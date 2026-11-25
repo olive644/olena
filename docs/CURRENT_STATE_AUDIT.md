@@ -6034,4 +6034,10 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Editar perfil: nome, @, bio, pronomes e até 5 redes, com a validação e as mensagens de `validateProfileDraft` e a regra de `recognizeSocialLink` (testadas contra a saída do código TypeScript do site). Sem conta, o @ fica desativado e os dados ficam só neste aparelho; não é sincronização.
 - Contagens "0 / 187" e "0 / 78" e os símbolos "+" das vagas são imagens do site no estado vazio. Quando o app tiver conquistas, precisam virar dados.
 - Validação: Paparazzi nos dois temas e capturas do aparelho (Android, tema escuro) para Perfil, personalização e Editar perfil, comparadas com capturas do site. Não verificado: tema claro no aparelho, teclado em telas pequenas, rolagem longa das abas Molduras, Headers e Fundo.
-- Fora do escopo desta entrega: card de compartilhar perfil, "Encontre seus amigos", galerias de Conquistas e Arcano, menu de hambúrguer do cabeçalho e subpáginas de Configurações. Dependem de conta, de dados ou de telas ainda não feitas.
+- Fora do escopo desta entrega: card de compartilhar perfil, "Encontre seus amigos", galeria de Arcano, menu de hambúrguer do cabeçalho e subpáginas de Configurações. Dependem de conta, de dados ou de telas ainda não feitas.
+
+### CI mais rápido para o site e fora do e2e para o Android, 25/11/2026
+
+- O e2e do celular passa de 1 para 2 workers por parte (`scripts/ci-scope.mjs`), porque desde 25/10 os dois projetos usam Chromium e o celular era o caminho crítico (cerca de 1.048 s de testes contra 646 s do desktop). Ganho **não medido**: a própria execução desta pull request é a primeira medição. Se surgirem testes instáveis, o valor volta a 1.
+- `android/` passa a escopo `none` (sem e2e do site). Lint, testes e verificações de segurança seguem rodando.
+- Nomes dos checks e dos gates preservados. Detalhes e a medição de 7 dias em `docs/CI_MINUTOS.md`.

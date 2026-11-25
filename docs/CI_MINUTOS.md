@@ -178,3 +178,16 @@ Conclusão da medição: **nenhum corte sozinho cabe em 2.000 minutos por mês**
 ## Auditoria de dependências, decisão de 17/11/2026
 
 O aviso GHSA-fc5q-39xc-vjpf (alta, ReDoS em extglobs repetidos) atingiu o `picomatch`, que entra só pelas ferramentas de desenvolvimento (vite, vitest, typescript-eslint via tinyglobby e fdir). Não existe versão corrigida: a 4.0.7 é a mais nova e é a afetada, e a sugestão do npm (`audit fix --force`) rebaixaria o Vite. Por decisão da dona do projeto, o check obrigatório "Dependency audit and SBOM" passou a bloquear só vulnerabilidades altas e críticas das dependências de produção (`npm audit --omit=dev`, hoje zero). A auditoria completa continua no mesmo job como passo que não bloqueia, para o aviso das ferramentas seguir visível. Nome do check, SBOM e demais gates não mudaram. Reverter este ajuste (voltar a `npm audit --audit-level=high` sem filtro) assim que existir `picomatch` corrigido e o lockfile for atualizado. Não verificado: se o picomatch é executado com padrões vindos de fora; pelo uso nas ferramentas de build, não parece.
+
+## Mobile com dois workers e pasta android/ fora do e2e, 25/11/2026
+
+Medição de 7 dias (87 execuções de `application.yml`, 18 a 25/11/2026): 4.672 minutos somados, 77% deles no e2e (celular 1.889, desktop 1.731). Tempo de relógio médio de uma execução verde: 15,7 min (53 execuções). Em uma execução de pull request, cada parte do celular levou cerca de 1.048 s só de testes com 1 worker, contra 646 s do desktop com 2 workers: o celular é o caminho crítico.
+
+Mudanças:
+
+- O mobile passa de 1 para 2 workers por parte. O valor 1 vinha da época do WebKit (decisão de 2026-10, ver `docs/CURRENT_STATE_AUDIT.md`); hoje os dois projetos usam Chromium. O ganho esperado é de alguns minutos de relógio, **mas não foi medido**: a própria execução desta pull request é a primeira medição, e se aparecerem testes instáveis o valor volta a 1.
+- `android/` passa a contar como "fora do e2e do site" (escopo `none`), junto com a documentação: o navegador não carrega nada dessa pasta e `src/android-twa.test.ts` cobre o único arquivo que o site lê dela. O lint, os testes e as verificações de segurança continuam rodando. O job que compila o Android no CI ainda não existe e entra em uma etapa própria.
+
+Não mudou: nomes dos checks, os dois gates, o escopo de backend, a execução semanal. Os nomes das partes (`desktop shard 1/2` etc.) ficaram iguais de propósito; aumentar o número de partes para reduzir o relógio muda esses nomes e fica para depois da medição.
+
+Alternativa para o e2e só depois do lint (`needs: [changes, quality]`): economiza cerca de 210 min por semana, mas atrasa cerca de 6 min as execuções verdes. Não aplicada.

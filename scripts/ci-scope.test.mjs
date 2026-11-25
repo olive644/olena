@@ -224,3 +224,29 @@ test("o gate do desktop segue o resultado do e2e e mantém o nome histórico do 
   assert.equal(evaluateGate({ ...base, scope: "full", e2eResult: "failure" }).ok, false);
   assert.equal(evaluateGate({ ...base, scope: "full", e2eResult: "cancelled" }).ok, false);
 });
+
+test("pull request só da pasta android/ não roda o e2e do site, mas misturada com interface roda tudo", () => {
+  assert.equal(
+    decideScope({
+      event: "pull_request",
+      changedFiles: [
+        "android/app/build.gradle.kts",
+        "android/app/src/main/java/olenastudy/app/MainActivity.kt",
+      ],
+    }),
+    "none",
+  );
+  assert.equal(
+    decideScope({ event: "pull_request", changedFiles: ["android/gradlew", "src/app.tsx"] }),
+    "full",
+  );
+  assert.equal(isDocsFile("android/twa-manifest.json"), true);
+  assert.equal(isDocsFile("src/android/x.ts"), false);
+  assert.equal(isDocsFile("my-android/x.kt"), false);
+});
+
+test("o mobile usa dois workers por parte, como o desktop", () => {
+  const mobile = matrixFor("full").include.filter((entry) => entry.project === "mobile");
+  assert.equal(mobile.length, 2);
+  for (const entry of mobile) assert.equal(entry.workers, 2);
+});
