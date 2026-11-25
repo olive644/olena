@@ -145,6 +145,7 @@
     <string name="agenda_filter_tasks">Tarefas</string>
     <string name="settings_title">Configurações</string>
     <string name="settings_back">Voltar ao perfil</string>
+    <string name="settings_back_to_list">Voltar às configurações</string>
     <string name="settings_account">Conta</string>
     <string name="settings_security">Segurança</string>
     <string name="settings_support">Conversar com o time</string>

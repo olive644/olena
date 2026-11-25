@@ -27,6 +27,11 @@ class AppDestinationTest {
     }
 
     @Test
+    fun `configurações mantém o Perfil selecionado na navegação`() {
+        assertEquals(AppDestination.Profile, AppDestination.fromRoute(AppDestination.SETTINGS_ROUTE))
+    }
+
+    @Test
     fun `o ícone muda com o tema e com a seleção`() {
         val planner = AppDestination.Planner
         assertNotEquals(planner.icon(selected = false, darkTheme = false), planner.icon(selected = false, darkTheme = true))

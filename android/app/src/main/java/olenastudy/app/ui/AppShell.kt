@@ -29,9 +29,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -92,7 +89,6 @@ fun AppShell(
     onInfoChange: (ProfileInfo) -> Unit = {},
 ) {
     val colors = OlenaTheme.colors
-    var settingsOpen by rememberSaveable { mutableStateOf(false) }
     val navController = rememberNavController()
     val entry by navController.currentBackStackEntryAsState()
     val current = AppDestination.fromRoute(entry?.destination?.route)
@@ -111,6 +107,12 @@ fun AppShell(
             )
         }
     fun onNavigate(destination: AppDestination) {
+        if (destination == current) {
+            if (entry?.destination?.route != destination.route) {
+                navController.popBackStack(destination.route, inclusive = false)
+            }
+            return
+        }
         navController.navigate(destination.route) {
             popUpTo(AppDestination.start.route) { saveState = true }
             launchSingleTop = true
@@ -147,13 +149,7 @@ fun AppShell(
                     composable(destination.route) {
                         when (destination) {
                             AppDestination.Profile ->
-                                if (settingsOpen) {
-                                    androidx.compose.runtime.CompositionLocalProvider(olenastudy.app.ui.screens.LocalFocusController provides focusController) {
-                                        SettingsScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, onBack = { settingsOpen = false })
-                                    }
-                                } else {
-                                    ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, look = look, onLookChange = onLookChange, info = info, onInfoChange = onInfoChange, onOpenSettings = { settingsOpen = true })
-                                }
+                                ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, look = look, onLookChange = onLookChange, info = info, onInfoChange = onInfoChange, onOpenSettings = { navController.navigate(AppDestination.SETTINGS_ROUTE) { launchSingleTop = true } })
                             AppDestination.Today -> HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
                             AppDestination.Learn -> PracticeScreen()
                             AppDestination.Focus -> FocusScreen(focusController)
@@ -162,21 +158,18 @@ fun AppShell(
                         }
                     }
                 }
+                composable(AppDestination.SETTINGS_ROUTE) {
+                    androidx.compose.runtime.CompositionLocalProvider(olenastudy.app.ui.screens.LocalFocusController provides focusController) {
+                        SettingsScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, onBack = { navController.popBackStack() })
+                    }
+                }
             }
         }
         }
         PaperNavigationBar(
             avatarId = look.avatarId,
             current = current,
-            onSelect = { destination ->
-                if (destination != current) {
-                    navController.navigate(destination.route) {
-                        popUpTo(AppDestination.start.route) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
-            },
+            onSelect = ::onNavigate,
         )
     }
     }

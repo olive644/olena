@@ -36,8 +36,9 @@ enum class AppDestination(
         }
 
     companion object {
+        const val SETTINGS_ROUTE = "profile/settings"
         val start = Today
 
-        fun fromRoute(route: String?): AppDestination = entries.firstOrNull { it.route == route } ?: start
+        fun fromRoute(route: String?): AppDestination = entries.firstOrNull { it.route == route?.substringBefore('/') } ?: start
     }
 }
