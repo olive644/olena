@@ -2,6 +2,17 @@ package olenastudy.app.ui.screens
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.material3.AlertDialog
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import olenastudy.app.ui.components.paperPanel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -90,6 +101,7 @@ fun InProgressScreen(@StringRes title: Int) {
 @Composable
 fun ProfileScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit) {
     val colors = OlenaTheme.colors
+    var settingsOpen by rememberSaveable { mutableStateOf(false) }
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(14.dp),
@@ -101,6 +113,12 @@ fun ProfileScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit) 
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxWidth().height(168.dp),
             )
+            PaperTile(
+                onClick = { settingsOpen = true },
+                description = stringResource(R.string.profile_settings),
+                modifier = Modifier.align(Alignment.TopEnd).padding(top = 12.dp, end = 14.dp).size(width = 58.dp, height = 47.dp),
+            ) { Image(painterResource(R.drawable.art_icon_settings), null, Modifier.size(30.dp)) }
+            Image(painterResource(R.drawable.art_icon_pen), null, Modifier.align(Alignment.TopEnd).padding(top = 118.dp, end = 14.dp).size(30.dp))
             Image(
                 painterResource(R.drawable.art_avatar_helena),
                 contentDescription = stringResource(R.string.profile_avatar_description),
@@ -109,13 +127,27 @@ fun ProfileScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit) 
             LevelBadge(Modifier.padding(start = 92.dp, top = 188.dp))
         }
         Column(Modifier.padding(horizontal = 16.dp).padding(top = 38.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(stringResource(R.string.profile_title), fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 34.sp, color = colors.text)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(stringResource(R.string.profile_title), fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 30.sp, color = colors.text)
+                Image(painterResource(R.drawable.art_icon_pen), null, Modifier.size(26.dp))
+            }
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                Image(painterResource(R.drawable.ic_nav_profile_active), null, Modifier.padding(end = 8.dp).size(22.dp))
                 Text(stringResource(R.string.profile_level), style = MaterialTheme.typography.titleMedium, color = colors.text, modifier = Modifier.weight(1f))
                 Text(stringResource(R.string.profile_xp), style = MaterialTheme.typography.bodyMedium, color = colors.muted)
             }
             Box(Modifier.fillMaxWidth().height(10.dp).background(colors.line, RoundedCornerShape(6.dp)))
-            SocialChip(R.drawable.ic_profile_friend, stringResource(R.string.profile_add_friend))
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                PaperTile(onClick = {}, description = stringResource(R.string.profile_add_friend), modifier = Modifier.height(44.dp)) {
+                    Row(Modifier.padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Image(painterResource(R.drawable.ic_profile_friend), null, Modifier.size(26.dp))
+                        Text(stringResource(R.string.profile_add_friend), fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 14.sp, color = Color(0xFF292432), maxLines = 1)
+                    }
+                }
+                PaperTile(onClick = {}, description = stringResource(R.string.profile_qr), modifier = Modifier.size(width = 44.dp, height = 44.dp)) {
+                    Image(painterResource(R.drawable.art_icon_qr), null, Modifier.size(26.dp))
+                }
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 SocialChip(R.drawable.ic_profile_followers, stringResource(R.string.profile_followers))
                 SocialChip(R.drawable.ic_profile_following, stringResource(R.string.profile_following))
@@ -138,16 +170,22 @@ fun ProfileScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit) 
                 }
             }
         }
-        PaperCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text(stringResource(R.string.profile_appearance_title), style = MaterialTheme.typography.titleLarge, color = colors.text)
-                Text(stringResource(R.string.profile_appearance_hint), style = MaterialTheme.typography.bodyMedium, color = colors.muted)
-                ThemeChoice(R.string.theme_system, ThemeMode.System, themeMode, onThemeModeChange)
-                ThemeChoice(R.string.theme_light, ThemeMode.Light, themeMode, onThemeModeChange)
-                ThemeChoice(R.string.theme_dark, ThemeMode.Dark, themeMode, onThemeModeChange)
-            }
-        }
         Box(Modifier.height(12.dp))
+    }
+    if (settingsOpen) {
+        AlertDialog(
+            onDismissRequest = { settingsOpen = false },
+            title = { Text(stringResource(R.string.profile_appearance_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(stringResource(R.string.profile_appearance_hint), style = MaterialTheme.typography.bodyMedium, color = colors.muted)
+                    ThemeChoice(R.string.theme_system, ThemeMode.System, themeMode, onThemeModeChange)
+                    ThemeChoice(R.string.theme_light, ThemeMode.Light, themeMode, onThemeModeChange)
+                    ThemeChoice(R.string.theme_dark, ThemeMode.Dark, themeMode, onThemeModeChange)
+                }
+            },
+            confirmButton = { PaperButton(stringResource(R.string.agenda_cancel), { settingsOpen = false }, style = PaperButtonStyle.Quiet) },
+        )
     }
 }
 
@@ -173,16 +211,41 @@ private fun LevelBadge(modifier: Modifier) {
     }
 }
 
+/** Peça de papel clara e em relevo (botão secundário do site): fundo branco, base e faceta no canto. */
+@Composable
+private fun PaperTile(onClick: () -> Unit, description: String, modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
+    val colors = OlenaTheme.colors
+    val dark = colors.isDark
+    Box(
+        modifier = modifier
+            .semantics { contentDescription = description }
+            .paperPanel(
+                fill = if (dark) Color(0xFFFFF9EF) else Color.White,
+                base = if (dark) Color(0xFFC8BAA4) else Color(0xFFD7CBB7),
+                facetLight = Color(0xFFF1E9DC),
+                facetDark = Color(0xFFE6DAC3),
+                border = Color.Transparent,
+                shape = RoundedCornerShape(topStart = 8.dp, topEnd = 16.dp, bottomEnd = 10.dp, bottomStart = 13.dp),
+                radius = 13.dp,
+                facet = 18.dp,
+                shift = 4.dp,
+            )
+            .clickable(role = Role.Button, onClick = onClick),
+        contentAlignment = Alignment.Center,
+        content = content,
+    )
+}
+
 @Composable
 private fun SocialChip(icon: Int, label: String) {
     val colors = OlenaTheme.colors
     Row(
-        Modifier.clip(RoundedCornerShape(12.dp)).background(colors.soft).padding(horizontal = 10.dp, vertical = 8.dp),
+        Modifier.height(44.dp).clip(RoundedCornerShape(12.dp)).background(colors.soft).padding(horizontal = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Image(painterResource(icon), null, Modifier.size(22.dp), alpha = 0.6f)
-        Text(label, style = MaterialTheme.typography.labelMedium, color = colors.muted, maxLines = 1)
+        Image(painterResource(icon), null, Modifier.size(26.dp))
+        Text(label, fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = colors.text, maxLines = 1)
     }
 }
 

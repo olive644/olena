@@ -134,4 +134,6 @@
     <string name="focus_summary_no_long_break"> · sem pausa longa</string>
     <string name="agenda_create_task">Criar tarefa</string>
     <string name="agenda_reserve_study">Reservar estudo</string>
+    <string name="profile_settings">Configurações</string>
+    <string name="profile_qr">QR do perfil</string>
 </resources>
