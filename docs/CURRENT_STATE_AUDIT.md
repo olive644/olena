@@ -6026,3 +6026,9 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Estatísticas de respostas de 2025: 185 questões, 4.810.772 participantes lidos dos microdados oficiais do Inep (`RESULTADOS_2025.csv`, ZIP com compressão Deflate64 que o Python padrão não abre; extraído com `zipfile-inflate64` fora do repositório). `build-enem-question-statistics.py` agora aceita um CSV solto e detecta o separador. A fonte registrada nas questões de 2025 é o Inep, não a redistribuição do Zenodo.
 - 2022 dia 2: 80 de 90 resoluções. Ficaram de fora 118, 119, 158, 163, 165 e 178 (dependem de figuras pequenas que não foi possível conferir com segurança), 153 (só bate com o gabarito lendo a mediana dos meses de lucro positivo), 154 e 156 (as contas não chegam à letra do gabarito oficial; na 154 a maioria dos participantes marcou D) e 175 (anulada). Nenhuma delas foi forçada para a chave.
 - `docs/research/enem-review-coverage.json` recalculado. Em 2025 as resoluções já estavam completas; faltavam só as estatísticas.
+
+### CI mais rápido para o site e fora do e2e para o Android, 25/11/2026
+
+- O e2e do celular passa de 1 para 2 workers por parte (`scripts/ci-scope.mjs`), porque desde 25/10 os dois projetos usam Chromium e o celular era o caminho crítico (cerca de 1.048 s de testes contra 646 s do desktop). Ganho **não medido**: a própria execução desta pull request é a primeira medição. Se surgirem testes instáveis, o valor volta a 1.
+- `android/` passa a escopo `none` (sem e2e do site). Lint, testes e verificações de segurança seguem rodando.
+- Nomes dos checks e dos gates preservados. Detalhes e a medição de 7 dias em `docs/CI_MINUTOS.md`.
