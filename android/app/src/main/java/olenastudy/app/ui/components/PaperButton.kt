@@ -1,6 +1,8 @@
 package olenastudy.app.ui.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -42,6 +44,8 @@ fun PaperButton(
     modifier: Modifier = Modifier,
     style: PaperButtonStyle = PaperButtonStyle.Primary,
     selected: Boolean = false,
+    enabled: Boolean = true,
+    leading: (@Composable () -> Unit)? = null,
 ) {
     val colors = OlenaTheme.colors
     val (base, ink) =
@@ -58,7 +62,11 @@ fun PaperButton(
     val press by animateFloatAsState(if (pressed) 0.97f else 1f, tween(120), label = "button-press")
     Box(
         modifier = modifier
-            .graphicsLayer { scaleX = press; scaleY = press }
+            .graphicsLayer {
+                scaleX = press
+                scaleY = press
+                alpha = if (enabled) 1f else 0.45f
+            }
             .defaultMinSize(minHeight = 48.dp)
             .clip(ButtonShape)
             .drawBehind {
@@ -82,10 +90,13 @@ fun PaperButton(
                     }
                 drawPath(cornerPath, edge)
             }
-            .clickable(interactionSource = source, indication = null, role = Role.Button, onClick = onClick)
+            .clickable(enabled = enabled, interactionSource = source, indication = null, role = Role.Button, onClick = onClick)
             .padding(horizontal = 20.dp, vertical = 12.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(text = text, style = MaterialTheme.typography.labelLarge, color = ink)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            leading?.invoke()
+            if (text.isNotEmpty()) Text(text = text, style = MaterialTheme.typography.labelLarge, color = ink)
+        }
     }
 }
