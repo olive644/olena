@@ -6,7 +6,7 @@
 //   full    pull request que mexe na interface ou em qualquer outra coisa, execução semanal e
 //           execução manual: desktop e mobile.
 //   desktop push na main: o mesmo código já passou completo na pull request.
-//   none    pull request que só mexe em documentação: nenhum e2e.
+//   none    pull request que só mexe em documentação ou na pasta android/: nenhum e2e.
 //   desktop também vale para pull request que só mexe em backend e documentação: o mobile
 //           só difere do desktop em layout e toque, e o backend roda igual nos dois.
 // Em caso de dúvida (erro ao listar os arquivos, evento desconhecido) o escopo é "full".
@@ -27,6 +27,9 @@ const DOCS_ONLY = [
   // JSON estáticos que o app não importa, testados por testes unitários (src/security-txt.test.ts,
   // src/android-twa.test.ts). Só um nível, para não pegar subpastas com outro uso.
   /^public\/\.well-known\/[^/]+\.(txt|json)$/,
+  // App nativo Android (Gradle e Kotlin): o navegador não carrega nada dessa pasta, e o que o site
+  // lê dela (android/twa-manifest.json) é coberto por src/android-twa.test.ts, que roda sempre.
+  /^android\//,
 ];
 
 const MATRIX = {
@@ -48,14 +51,14 @@ const MATRIX = {
     project: "mobile",
     label: "mobile shard 1/2",
     browser: "chromium",
-    workers: 1,
+    workers: 2,
     shard: "1/2",
   },
   mobile2: {
     project: "mobile",
     label: "mobile shard 2/2",
     browser: "chromium",
-    workers: 1,
+    workers: 2,
     shard: "2/2",
   },
 };
@@ -107,7 +110,8 @@ export function evaluateGate({ job, scope, changesResult, e2eResult }) {
     return e2eResult === "skipped"
       ? {
           ok: true,
-          message: "Só documentação ou arquivos de verificação estáticos mudaram: e2e dispensado.",
+          message:
+            "Só documentação, arquivos de verificação estáticos ou a pasta android/ mudaram: e2e dispensado.",
         }
       : { ok: false, message: `Escopo "none" com e2e em estado "${e2eResult}".` };
   if (scope === "desktop")
