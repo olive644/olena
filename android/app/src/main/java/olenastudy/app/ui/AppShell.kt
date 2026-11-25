@@ -41,7 +41,16 @@ import olenastudy.app.data.settings.ThemeMode
 import olenastudy.app.data.agenda.AgendaRepository
 import olenastudy.app.focus.FocusController
 import olenastudy.app.ui.screens.AgendaScreen
+import olenastudy.app.ui.screens.HomeScreen
+import olenastudy.app.ui.screens.HomeSummary
+import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import java.time.LocalDate
+import java.time.ZoneId
+import olenastudy.app.domain.agenda.Agenda
+import olenastudy.app.domain.focus.FocusFlower
 import olenastudy.app.ui.screens.FocusScreen
+import olenastudy.app.ui.components.PaperDecoration
 import olenastudy.app.ui.components.paperPanel
 import olenastudy.app.ui.navigation.AppDestination
 import olenastudy.app.ui.screens.InProgressScreen
@@ -60,11 +69,31 @@ fun AppShell(
     val navController = rememberNavController()
     val entry by navController.currentBackStackEntryAsState()
     val current = AppDestination.fromRoute(entry?.destination?.route)
+    val focusSnapshot by focusController.snapshot.collectAsStateWithLifecycle()
+    val events by agendaRepository.events.collectAsStateWithLifecycle(initialValue = emptyList())
+    val summary =
+        remember(focusSnapshot.records, events) {
+            val nowMs = System.currentTimeMillis()
+            val flower = FocusFlower.state(focusSnapshot.records, nowMs, ZoneId.systemDefault())
+            HomeSummary(
+                pendingTasks = 0,
+                focusMinutesToday = flower.minutesToday,
+                agendaToday = Agenda.eventsOn(events, LocalDate.now().toString()).size,
+                flowerBloomed = flower.progress >= 0.5,
+            )
+        }
+    fun onNavigate(destination: AppDestination) {
+        navController.navigate(destination.route) {
+            popUpTo(AppDestination.start.route) { saveState = true }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
 
+    Box(Modifier.fillMaxSize().background(colors.page)) {
+    PaperDecoration()
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colors.page),
+        modifier = Modifier.fillMaxSize(),
     ) {
         Column(
             modifier = Modifier
@@ -72,13 +101,14 @@ fun AppShell(
                 .fillMaxWidth()
                 .statusBarsPadding(),
         ) {
-            PageHeader(Modifier.padding(horizontal = 14.dp, vertical = 8.dp))
+            if (current != AppDestination.Profile) PageHeader(Modifier.padding(horizontal = 14.dp, vertical = 8.dp))
             Box(Modifier.weight(1f).fillMaxWidth()) {
             NavHost(navController = navController, startDestination = AppDestination.start.route) {
                 AppDestination.entries.forEach { destination ->
                     composable(destination.route) {
                         when (destination) {
                             AppDestination.Profile -> ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange)
+                            AppDestination.Today -> HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
                             AppDestination.Focus -> FocusScreen(focusController)
                             AppDestination.Planner -> AgendaScreen(agendaRepository)
                             else -> InProgressScreen(destination.titleRes())
@@ -100,6 +130,7 @@ fun AppShell(
                 }
             },
         )
+    }
     }
 }
 

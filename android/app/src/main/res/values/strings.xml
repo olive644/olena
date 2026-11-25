@@ -98,4 +98,26 @@
     <string name="weekday_fri">Sex</string>
     <string name="weekday_sat">Sáb</string>
     <string name="weekday_sun">Dom</string>
+    <!-- Espaço do aluno -->
+    <string name="home_math_invite">Explore as ilhas de Matemática comigo. Cada resposta abre um novo caminho!</string>
+    <string name="home_explore_math">Explorar Matemática</string>
+    <string name="home_oliver_description">Oliver aparece por trás do widget de Matemática</string>
+    <string name="home_island_description">Ilha de Fundamentos de Matemática</string>
+    <string name="home_flower_description">Sua flor de foco</string>
+    <string name="home_stat_pending">Pendências</string>
+    <string name="home_stat_focus">Foco</string>
+    <string name="home_stat_agenda">Agenda</string>
+
+    <!-- Perfil -->
+    <string name="profile_avatar_description">Avatar da Helena</string>
+    <string name="profile_title">Seu perfil</string>
+    <string name="profile_level">Nível 1</string>
+    <string name="profile_xp">0 / 100 XP</string>
+    <string name="profile_add_friend">Adicionar amigo</string>
+    <string name="profile_followers">Seguidores</string>
+    <string name="profile_following">Seguindo</string>
+    <string name="profile_social_needs_account">Amigos, seguidores e QR dependem da conta e chegam com o login.</string>
+    <string name="profile_achievements">Conquistas</string>
+    <string name="profile_arcana">Arcano</string>
+    <string name="profile_favorite">Favorita</string>
 </resources>

@@ -24,9 +24,10 @@ COLOR = re.compile(r"^#[0-9A-Fa-f]{6}$")
 
 def vector_xml(label: str, source: str, box: list, shapes) -> str:
     """Monta o VectorDrawable a partir de formas <path fill d>. Recusa qualquer outra coisa."""
-    if box[0] != 0 or box[1] != 0 or box[2] != box[3]:
+    if box[0] != 0 or box[1] != 0:
         raise ValueError(f"{label}: viewBox inesperado {box}")
-    size = int(box[2]) if box[2].is_integer() else box[2]
+    width = int(box[2]) if box[2].is_integer() else box[2]
+    height = int(box[3]) if box[3].is_integer() else box[3]
     paths = []
     for node in shapes:
         if node.tag != f"{NS}path":
@@ -40,10 +41,10 @@ def vector_xml(label: str, source: str, box: list, shapes) -> str:
         '<?xml version="1.0" encoding="utf-8"?>',
         f"<!-- Gerado por scripts/svg-to-android-vector.py a partir de {source}. Não editar à mão. -->",
         '<vector xmlns:android="http://schemas.android.com/apk/res/android"',
-        f'    android:width="{size}dp"',
-        f'    android:height="{size}dp"',
-        f'    android:viewportWidth="{size}"',
-        f'    android:viewportHeight="{size}">',
+        f'    android:width="{width}dp"',
+        f'    android:height="{height}dp"',
+        f'    android:viewportWidth="{width}"',
+        f'    android:viewportHeight="{height}">',
     ]
     for color, data in paths:
         lines += ["    <path", f'        android:fillColor="{color}"', f'        android:pathData="{data}" />']
@@ -98,6 +99,20 @@ def main() -> int:
                 convert_symbol(SOURCE / sprite, symbol_id), encoding="utf-8", newline="\n"
             )
             count += 1
+    singles = {
+        "student-pending.svg": "ic_student_pending.xml",
+        "student-focus.svg": "ic_student_focus.xml",
+        "student-agenda.svg": "ic_student_agenda.xml",
+        "profile-friend.svg": "ic_profile_friend.xml",
+        "profile-followers.svg": "ic_profile_followers.xml",
+        "profile-following.svg": "ic_profile_following.xml",
+    }
+    for source_name, target_name in singles.items():
+        (TARGET / target_name).write_text(convert(SOURCE / source_name), encoding="utf-8", newline="\n")
+        count += 1
+    (TARGET / "ic_paper_arrow.xml").write_text(convert(ROOT / "public/paper-arrow.svg"), encoding="utf-8", newline="\n")
+    (TARGET / "ic_profile_cover.xml").write_text(convert(ROOT / "public/profile-covers/helena.svg"), encoding="utf-8", newline="\n")
+    count += 2
     (TARGET / "ic_agenda_month_art.xml").write_text(
         convert_art_group(SOURCE / "agenda-month-calendar.svg", "art"), encoding="utf-8", newline="\n"
     )

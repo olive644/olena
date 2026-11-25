@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/navigation-icons/paper/profile-friend.svg. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FF51259B"
+        android:pathData="m12 4 12 2 5 10-8 9H10L5 15Zm-6 25 19-2 7 18H2Z" />
+    <path
+        android:fillColor="#FFA779EF"
+        android:pathData="m12 1 12 2 5 10-8 9H10L5 12Zm-6 25 19-2 7 18H2Z" />
+    <path
+        android:fillColor="#FFE9DAFB"
+        android:pathData="m12 1-1 10 6 5-7 6-5-10Zm-6 25 7-1-6 17H2Z" />
+    <path
+        android:fillColor="#FFFACC15"
+        android:pathData="M34 22h7v8h7v7h-7v8h-7v-8h-7v-7h7Z" />
+    <path
+        android:fillColor="#FFFFE88D"
+        android:pathData="M34 22h3v11H27v-3h7Z" />
+</vector>

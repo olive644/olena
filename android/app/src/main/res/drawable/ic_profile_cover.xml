@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/profile-covers/helena.svg. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="1200dp"
+    android:height="320dp"
+    android:viewportWidth="1200"
+    android:viewportHeight="320">
+    <path
+        android:fillColor="#FF211830"
+        android:pathData="M0 0h1200v320H0Z" />
+    <path
+        android:fillColor="#FF392653"
+        android:pathData="M0 0h320L150 130 0 100ZM1200 0H960l120 180 120-60Z" />
+    <path
+        android:fillColor="#FFA779EF"
+        android:pathData="m670 38 42 8-38 26-17 42 16 39 40 24-42 9-42-22-21-39 7-46 25-29Z" />
+    <path
+        android:fillColor="#FFFFE88D"
+        android:pathData="m810 54 7 17 18 5-17 8-6 18-8-17-17-6 17-8ZM425 92l5 13 14 5-13 6-6 14-6-13-13-6 13-6Z" />
+    <path
+        android:fillColor="#FF392653"
+        android:pathData="m200 180 110-95 87 116 133-54 152 120H200Z" />
+    <path
+        android:fillColor="#FF7433E0"
+        android:pathData="m600 305 100-120 95 53 111-100 104 167Z" />
+    <path
+        android:fillColor="#FFA779EF"
+        android:pathData="m700 185 29 70 66-17ZM906 138l-40 119 90-67Z" />
+    <path
+        android:fillColor="#FF392653"
+        android:pathData="M0 300 160 261l190 59H0ZM1200 255l-240 65h240Z" />
+    <path
+        android:fillColor="#FFFFE88D"
+        android:pathData="m470 48 4 6-4 6-4-6ZM930 39l3 5-3 5-3-5ZM560 102l3 4-3 4-3-4Z" />
+</vector>

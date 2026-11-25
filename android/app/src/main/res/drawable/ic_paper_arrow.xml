@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/paper-arrow.svg. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <path
+        android:fillColor="#FF39264F"
+        android:pathData="m5 17 15-1-1-8 17 13-17 14 1-9-15 1Z" />
+    <path
+        android:fillColor="#FFFACC15"
+        android:pathData="m4 13 16 1-2-9 18 14-17 12 1-10-16 2Z" />
+    <path
+        android:fillColor="#FFFFE88D"
+        android:pathData="m4 13 16 1-2-9 18 14-15-2Z" />
+    <path
+        android:fillColor="#FFDEA719"
+        android:pathData="m21 17 15 2-17 12Z" />
+</vector>

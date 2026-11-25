@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/navigation-icons/paper/student-focus.svg. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FF51259B"
+        android:pathData="m10 10 13-7 14 8 4 26-16 9-17-9Z" />
+    <path
+        android:fillColor="#FFA779EF"
+        android:pathData="m10 10 13-7 2 20-17 14Z" />
+    <path
+        android:fillColor="#FF7C3AED"
+        android:pathData="m25 23 12-12 4 26-16 9Z" />
+    <path
+        android:fillColor="#FFFFF9EF"
+        android:pathData="m22 11 7 12-6 13-7-12Z" />
+    <path
+        android:fillColor="#FFFACC15"
+        android:pathData="m35 2 3 7 7 2-7 3-3 7-3-7-7-3 7-2Z" />
+</vector>
