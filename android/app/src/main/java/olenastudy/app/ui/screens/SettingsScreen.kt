@@ -172,7 +172,7 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                         Text("Tema do aplicativo", fontFamily = ManropeFamily, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = colors.text)
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                             listOf("Claro" to ThemeMode.Light, "Escuro" to ThemeMode.Dark, "Sistema" to ThemeMode.System).forEach { (label, mode) ->
-                                PaperButton(label, { onThemeModeChange(mode) }, Modifier.weight(1f), if (mode == themeMode) PaperButtonStyle.Primary else PaperButtonStyle.Quiet, selected = mode == themeMode, horizontalPadding = 6.dp)
+                                ThemeTile(label, mode == themeMode, Modifier.weight(1f)) { onThemeModeChange(mode) }
                             }
                         }
                         Body("O tema acompanha sua conta. Sistema segue a aparência de cada dispositivo.")
@@ -253,34 +253,16 @@ private fun notificationsAllowed(context: Context): Boolean =
     Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
         context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
 
-/** Cartão de papel de uma área: marca em roxo, título e o conteúdo. */
+/** Cartão da área: marca em roxo, título e conteúdo, com as medidas exatas do site (SettingsKit). */
 @Composable
 internal fun Card(eyebrow: String?, title: String, content: @Composable () -> Unit) {
-    val colors = OlenaTheme.colors
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .paperPanel(
-                fill = colors.surface,
-                base = colors.line,
-                facetLight = colors.soft,
-                facetDark = colors.soft,
-                border = colors.line,
-                shape = RoundedCornerShape(topStart = 14.dp, topEnd = 28.dp, bottomEnd = 18.dp, bottomStart = 24.dp),
-                radius = 24.dp,
-                facet = 30.dp,
-                shift = 5.dp,
-            )
-            .padding(horizontal = 20.dp, vertical = 22.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        if (eyebrow != null) Text(eyebrow, fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 11.sp, letterSpacing = 1.6.sp, color = colors.violet)
-        Text(title, fontFamily = ManropeFamily, fontWeight = FontWeight.Medium, fontSize = 20.sp, color = colors.text)
+    StCard {
+        if (eyebrow != null) StEyebrow(eyebrow)
+        StTitle(title)
         content()
     }
 }
 
-/** Linha rótulo e valor, como os pares "E-mail" e "Fuso da conta" do site. */
 @Composable
 private fun InfoRow(label: String, value: String) {
     val colors = OlenaTheme.colors
@@ -292,12 +274,12 @@ private fun InfoRow(label: String, value: String) {
 
 @Composable
 internal fun Eyebrow(text: String) {
-    Text(text.uppercase(), fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 11.sp, letterSpacing = 1.4.sp, color = OlenaTheme.colors.violet)
+    StLegend(text)
 }
 
 @Composable
 internal fun Body(text: String) {
-    Text(text, style = MaterialTheme.typography.bodyMedium, color = OlenaTheme.colors.text)
+    StBody(text, size = 15f, muted = false)
 }
 
 @Composable
@@ -336,21 +318,15 @@ internal fun Toggle(title: String, hint: String, checked: Boolean, onChange: (Bo
                 .border(2.dp, if (checked) Ink else colors.lineStrong, RoundedCornerShape(6.dp)),
             contentAlignment = Alignment.Center,
         ) {
-            if (checked) Text("✓", fontWeight = FontWeight.ExtraBold, fontSize = 15.sp, color = Ink)
+            if (checked) StCheck()
         }
     }
 }
 
-/** Botões de escolha: o escolhido fica roxo. Vários podem ficar marcados (preferências combináveis). */
-@OptIn(ExperimentalLayoutApi::class)
+/** Botões de escolha em duas colunas: o escolhido fica amarelo com o visto, como no site. Vários podem ficar marcados. */
 @Composable
 internal fun Choices(options: List<Pair<String, String>>, selected: Set<String>, onPick: (String) -> Unit) {
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        options.forEach { (id, label) ->
-            val on = id in selected
-            PaperButton(label, { onPick(id) }, style = if (on) PaperButtonStyle.Primary else PaperButtonStyle.Quiet, selected = on)
-        }
-    }
+    StGrid(options.map { (id, label) -> { mod: Modifier -> StChoice(label, id in selected, mod) { onPick(id) } } })
 }
 
 /** Peça de papel clara e em relevo, igual aos botões secundários do site. */
@@ -403,4 +379,37 @@ internal fun rememberSettingsState(): SettingsState {
     val prefs by store.snapshot.collectAsState(initial = null)
     val scope = rememberCoroutineScope()
     return SettingsState(prefs, store, scope)
+}
+
+/** Escolha de tema em três colunas: roxo quando selecionado (como o site), branco em relevo nos outros. */
+@Composable
+private fun ThemeTile(text: String, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+    val line = StLine
+    Box(
+        modifier
+            .height(64.dp)
+            .semantics { this.selected = selected }
+            .paperPanel(
+                fill = if (selected) Color(0xFF7433E0) else StSurface,
+                base = if (selected) Color(0xFF4B209B) else line,
+                facetLight = if (selected) Color(0xFF8A4CE5) else if (OlenaTheme.colors.isDark) Color(0xFF262230) else Color(0xFFFBF2E2),
+                facetDark = Color.Transparent,
+                border = if (selected) Color(0xFF7433E0) else line,
+                shape = StButtonShape,
+                radius = 13.dp,
+                facet = 14.dp,
+                shift = 4.dp,
+            )
+            .clickable(role = Role.RadioButton, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text,
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 13.sp,
+            maxLines = 1,
+            color = if (selected) Color(0xFFFFF9EF) else OlenaTheme.colors.text,
+        )
+    }
 }
