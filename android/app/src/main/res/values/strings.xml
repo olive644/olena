@@ -31,7 +31,7 @@
     <string name="focus_phase_short_break">Pausa curta</string>
     <string name="focus_phase_long_break">Pausa longa</string>
     <string name="focus_completed">Focos concluídos: %1$d</string>
-    <string name="focus_start">Iniciar</string>
+    <string name="focus_start">Começar</string>
     <string name="focus_pause">Pausar</string>
     <string name="focus_skip">Pular</string>
     <string name="focus_restart">Reiniciar</string>
@@ -67,4 +67,19 @@
     <string name="widget_today_empty">Nada marcado para hoje.</string>
     <string name="widget_today_more">+%1$d compromissos</string>
     <string name="widget_today_description">Os compromissos de hoje da sua Agenda.</string>
+    <string name="focus_resume">Continuar</string>
+    <string name="focus_finish">Concluir</string>
+    <string name="focus_mode_timer">Cronômetro</string>
+    <string name="focus_mode_pomodoro">Pomodoro</string>
+    <string name="focus_mode_previous">Modo anterior</string>
+    <string name="focus_mode_next">Próximo modo</string>
+    <string name="focus_flower_label">Sua flor de foco</string>
+    <string name="focus_flower_sleeping">Sua flor está adormecida. Comece seu primeiro cronômetro para cuidar dela.</string>
+    <string name="focus_flower_missed">Ela sentiu sua falta. Uma sessão faz a rosa florescer novamente.</string>
+    <string name="focus_flower_safe">Ela está segura por hoje. Continue para vê-la crescer.</string>
+    <string name="focus_flower_start">Comece uma sessão hoje para manter a rosa viva.</string>
+    <string name="focus_flower_progress">min até florescer por completo</string>
+    <string name="focus_long_break_text">Você completou quatro rodadas. Descanse por 15 minutos.</string>
+    <string name="focus_short_break_text">Respire por 5 minutos. O próximo ciclo começa sozinho.</string>
+    <string name="header_updates">Atualizações do sistema</string>
 </resources>

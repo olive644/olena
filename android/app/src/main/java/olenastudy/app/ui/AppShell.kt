@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -41,6 +42,7 @@ import olenastudy.app.data.agenda.AgendaRepository
 import olenastudy.app.focus.FocusController
 import olenastudy.app.ui.screens.AgendaScreen
 import olenastudy.app.ui.screens.FocusScreen
+import olenastudy.app.ui.components.paperPanel
 import olenastudy.app.ui.navigation.AppDestination
 import olenastudy.app.ui.screens.InProgressScreen
 import olenastudy.app.ui.screens.ProfileScreen
@@ -64,12 +66,14 @@ fun AppShell(
             .fillMaxSize()
             .background(colors.page),
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
                 .statusBarsPadding(),
         ) {
+            PageHeader(Modifier.padding(horizontal = 14.dp, vertical = 8.dp))
+            Box(Modifier.weight(1f).fillMaxWidth()) {
             NavHost(navController = navController, startDestination = AppDestination.start.route) {
                 AppDestination.entries.forEach { destination ->
                     composable(destination.route) {
@@ -82,6 +86,7 @@ fun AppShell(
                     }
                 }
             }
+        }
         }
         PaperNavigationBar(
             current = current,
@@ -103,17 +108,26 @@ fun AppShell(
  * o rótulo em violeta e um sublinhado amarelo, como o site marca a seleção.
  */
 @Composable
-private fun PaperNavigationBar(current: AppDestination, onSelect: (AppDestination) -> Unit) {
+fun PaperNavigationBar(current: AppDestination, onSelect: (AppDestination) -> Unit) {
     val colors = OlenaTheme.colors
     val description = stringResource(R.string.nav_bar_description)
-    Column(modifier = Modifier.background(colors.surface)) {
-        Box(Modifier.fillMaxWidth().height(1.dp).background(colors.line))
+    Box(modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 12.dp, vertical = 10.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .navigationBarsPadding()
+                .paperPanel(
+                    fill = if (colors.isDark) colors.surface else colors.page,
+                    base = if (colors.isDark) colors.lineStrong else Color(0xFFC8BAA4),
+                    facetLight = if (colors.isDark) colors.soft else Color(0xFFEEE5D5),
+                    facetDark = if (colors.isDark) colors.line else Color(0xFFE6DAC3),
+                    border = Color.Transparent,
+                    shape = RoundedCornerShape(topStart = 14.dp, topEnd = 22.dp, bottomEnd = 16.dp, bottomStart = 19.dp),
+                    radius = 19.dp,
+                    facet = 26.dp,
+                    shift = 7.dp,
+                )
                 .semantics { contentDescription = description }
-                .padding(horizontal = 4.dp, vertical = 6.dp),
+                .padding(horizontal = 4.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             AppDestination.entries.forEach { destination ->
@@ -129,30 +143,75 @@ private fun NavigationItem(destination: AppDestination, selected: Boolean, onCli
     val label = stringResource(destination.label)
     Column(
         modifier = Modifier
-            .width(60.dp)
+            .width(58.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable(role = Role.Tab, onClick = onClick)
             .semantics { this.selected = selected }
             .padding(vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
-            painter = painterResource(destination.icon(selected, colors.isDark)),
-            contentDescription = null,
-            modifier = Modifier.size(30.dp),
-        )
+        // Selecionado: tile violeta com a faceta clara e a base escura, como no site; o ícone dentro
+        // é o da variante escura. Os outros usam o ícone do tema.
+        val iconRes = if (selected && destination != AppDestination.Profile) destination.icon(false, true) else destination.icon(selected, colors.isDark)
+        Box(
+            modifier = if (selected) Modifier.size(width = 38.dp, height = 33.dp).paperTile() else Modifier.size(width = 38.dp, height = 33.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Image(painter = painterResource(iconRes), contentDescription = null, modifier = Modifier.size(30.dp))
+        }
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold,
-            color = if (selected) colors.violet else colors.muted,
+            fontWeight = FontWeight.Bold,
+            color = colors.text,
+            maxLines = 1,
         )
-        Box(
+    }
+}
+
+private val TileShape = RoundedCornerShape(topStart = 7.dp, topEnd = 13.dp, bottomEnd = 8.dp, bottomStart = 11.dp)
+
+/** Tile violeta do destino ativo: faceta clara no canto, canto escuro e base deslocada. */
+private fun Modifier.paperTile(): Modifier =
+    this.paperPanel(
+        fill = Color(0xFF7433E0),
+        base = Color(0xFF4B209B),
+        facetLight = Color(0xFF8A4CE5),
+        facetDark = Color(0xFF5C28B5),
+        border = Color.Transparent,
+        shape = TileShape,
+        radius = 11.dp,
+        facet = 11.dp,
+        shift = 4.dp,
+    )
+
+/** Cabeçalho de papel de todas as telas: cartão com o sino de atualizações do sistema. */
+@Composable
+fun PageHeader(modifier: Modifier = Modifier) {
+    val colors = OlenaTheme.colors
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(68.dp)
+            .paperPanel(
+                fill = if (colors.isDark) colors.surface else colors.page,
+                base = if (colors.isDark) colors.lineStrong else Color(0xFFC8BAA4),
+                facetLight = if (colors.isDark) colors.soft else Color(0xFFEEE5D5),
+                facetDark = if (colors.isDark) colors.line else Color(0xFFE6DAC3),
+                border = Color.Transparent,
+                shape = RoundedCornerShape(topStart = 14.dp, topEnd = 22.dp, bottomEnd = 16.dp, bottomStart = 19.dp),
+                radius = 19.dp,
+                facet = 30.dp,
+                shift = 5.dp,
+            ),
+    ) {
+        Image(
+            painter = painterResource(if (colors.isDark) R.drawable.art_bell_dark else R.drawable.art_bell_light),
+            contentDescription = stringResource(R.string.header_updates),
             modifier = Modifier
-                .padding(top = 2.dp)
-                .width(18.dp)
-                .height(3.dp)
-                .background(if (selected) colors.yellow else androidx.compose.ui.graphics.Color.Transparent, RoundedCornerShape(2.dp)),
+                .align(Alignment.CenterEnd)
+                .padding(end = 12.dp)
+                .size(width = 58.dp, height = 44.dp),
         )
     }
 }

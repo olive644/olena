@@ -61,6 +61,14 @@ fun PaperButton(
                         close()
                     }
                 drawPath(facetPath, facet)
+                val cornerPath =
+                    Path().apply {
+                        moveTo(size.width, size.height - edgeHeight)
+                        lineTo(size.width * 0.82f, size.height - edgeHeight)
+                        lineTo(size.width, size.height * 0.38f)
+                        close()
+                    }
+                drawPath(cornerPath, edge)
             }
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = 20.dp, vertical = 12.dp),

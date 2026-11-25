@@ -23,3 +23,13 @@ class FocusClockTest {
         assertEquals("99:59:59", formatClock((99 * 3600 + 59 * 60 + 59) * 1000L))
     }
 }
+
+class FocusStopwatchFormatTest {
+    @org.junit.Test
+    fun `cronometro mostra horas minutos e segundos sempre com dois digitos`() {
+        org.junit.Assert.assertEquals("00:00:00", formatStopwatch(0))
+        org.junit.Assert.assertEquals("00:00:59", formatStopwatch(59_999))
+        org.junit.Assert.assertEquals("01:05:00", formatStopwatch(65 * 60_000L))
+        org.junit.Assert.assertEquals("00:00:00", formatStopwatch(-1))
+    }
+}

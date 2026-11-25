@@ -77,4 +77,13 @@ object Pomodoro {
 
     /** Aceita só durações inteiras de 1 a 5999 minutos, como `isPomodoroDuration` do site. */
     fun isValidMinutes(value: Int): Boolean = value in 1..MAX_MINUTES
+
+    const val TOMATO_BITES = 8
+
+    /**
+     * Etapa do tomate (0 = inteiro, 8 = só o miolo) para a fração de tempo que falta, igual a
+     * `tomatoStage` do site: a mordida k chega quando k oitavos do tempo já passaram.
+     */
+    fun tomatoStage(remainingFraction: Double): Int =
+        Math.floor((1 - remainingFraction) * TOMATO_BITES + 1e-9).toInt().coerceIn(0, TOMATO_BITES)
 }
