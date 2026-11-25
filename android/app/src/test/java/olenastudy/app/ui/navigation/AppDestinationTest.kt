@@ -36,10 +36,9 @@ class AppDestinationTest {
     }
 
     @Test
-    fun `o perfil usa ícone mais claro no tema escuro e outro quando ativo`() {
+    fun `o perfil mostra o mesmo avatar em qualquer tema e estado`() {
         val profile = AppDestination.Profile
-        assertNotEquals(profile.icon(selected = false, darkTheme = false), profile.icon(selected = false, darkTheme = true))
-        assertEquals(profile.icon(selected = true, darkTheme = false), profile.icon(selected = true, darkTheme = true))
-        assertTrue(profile.icon(selected = true, darkTheme = false) != profile.icon(selected = false, darkTheme = false))
+        val all = listOf(false, true).flatMap { dark -> listOf(false, true).map { selected -> profile.icon(selected, dark) } }.toSet()
+        assertEquals(1, all.size)
     }
 }

@@ -157,7 +157,7 @@ private fun NavigationItem(destination: AppDestination, selected: Boolean, onCli
             modifier = if (selected) Modifier.size(width = 38.dp, height = 33.dp).paperTile() else Modifier.size(width = 38.dp, height = 33.dp),
             contentAlignment = Alignment.Center,
         ) {
-            Image(painter = painterResource(iconRes), contentDescription = null, modifier = Modifier.size(30.dp))
+            Image(painter = painterResource(iconRes), contentDescription = null, modifier = Modifier.size(if (destination == AppDestination.Profile) 32.dp else 30.dp))
         }
         Text(
             text = label,

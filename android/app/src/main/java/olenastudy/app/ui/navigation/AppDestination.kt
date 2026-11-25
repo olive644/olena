@@ -23,8 +23,8 @@ enum class AppDestination(
     Learn("learn", R.string.nav_learn, R.drawable.ic_nav_gamepad_claro, R.drawable.ic_nav_gamepad_escuro, R.drawable.ic_nav_gamepad_roxo),
     Focus("focus", R.string.nav_focus, R.drawable.ic_nav_focus_claro, R.drawable.ic_nav_focus_escuro, R.drawable.ic_nav_focus_roxo),
     Library("library", R.string.nav_library, R.drawable.ic_nav_library_claro, R.drawable.ic_nav_library_escuro, R.drawable.ic_nav_library_roxo),
-    // No tema escuro o ícone de repouso do Perfil é o mais claro (profile-active.svg), como o site faz com `profileAdaptive`.
-    Profile("profile", R.string.nav_profile, R.drawable.ic_nav_profile, R.drawable.ic_nav_profile_active, R.drawable.ic_nav_profile_active),
+    // O Perfil mostra o avatar da pessoa (a Helena por padrão), igual ao site; o app ainda não tem conta, então usa o padrão.
+    Profile("profile", R.string.nav_profile, R.drawable.art_avatar_helena, R.drawable.art_avatar_helena, R.drawable.art_avatar_helena),
     ;
 
     @DrawableRes
