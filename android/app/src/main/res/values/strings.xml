@@ -139,4 +139,8 @@
     <string name="focus_finish_pomodoro">Encerrar e registrar</string>
     <string name="profile_customize_title">Personalize seu perfil</string>
     <string name="profile_tab_avatars">Avatares</string>
+    <string name="agenda_filter_all">Tudo</string>
+    <string name="agenda_filter_appointments">Compromissos</string>
+    <string name="agenda_filter_study">Estudos</string>
+    <string name="agenda_filter_tasks">Tarefas</string>
 </resources>

@@ -136,11 +136,15 @@ fun AgendaContent(
     var viewName by rememberSaveable { mutableStateOf(initialView.name) }
     var query by rememberSaveable { mutableStateOf("") }
     var createKind by rememberSaveable { mutableStateOf<String?>(null) }
+    var kindFilter by rememberSaveable { mutableStateOf("") }
     var deleting by remember { mutableStateOf<StudyEvent?>(null) }
     val date = LocalDate.parse(dateText)
     val view = AgendaView.valueOf(viewName)
     val colors = OlenaTheme.colors
-    val shown = if (query.isBlank()) events else events.filter { it.title.contains(query.trim(), ignoreCase = true) }
+    val byText = if (query.isBlank()) events else events.filter { it.title.contains(query.trim(), ignoreCase = true) }
+    // Filtro por tipo, como no site: compromissos, estudos reservados ou tarefas.
+    val shown = if (kindFilter.isEmpty()) byText else if (kindFilter == "task") emptyList() else byText.filter { it.kind == kindFilter }
+    val visibleTasks = if (kindFilter.isEmpty() || kindFilter == "task") tasks else emptyList()
 
     Column(
         modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 14.dp, vertical = 12.dp),
@@ -155,6 +159,11 @@ fun AgendaContent(
                     ViewTile(R.drawable.ic_agenda_week, stringResource(R.string.agenda_view_week), view == AgendaView.Week) { viewName = AgendaView.Week.name }
                     ViewTile(R.drawable.ic_agenda_month, stringResource(R.string.agenda_view_month), view == AgendaView.Month) { viewName = AgendaView.Month.name }
                     ViewTile(R.drawable.ic_agenda_list, stringResource(R.string.agenda_view_list), view == AgendaView.List) { viewName = AgendaView.List.name }
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth()) {
+                    listOf("" to R.string.agenda_filter_all, "appointment" to R.string.agenda_filter_appointments, "study" to R.string.agenda_filter_study, "task" to R.string.agenda_filter_tasks).forEach { (value, label) ->
+                        PaperButton(stringResource(label), { kindFilter = value }, Modifier.weight(1f), PaperButtonStyle.Quiet, selected = kindFilter == value)
+                    }
                 }
                 Text(stringResource(R.string.agenda_search_title), style = MaterialTheme.typography.titleLarge, color = colors.text)
                 OutlinedTextField(
@@ -186,9 +195,9 @@ fun AgendaContent(
                         PaperButton(stringResource(R.string.agenda_reserve_study), { createKind = "study" }, Modifier.weight(1f))
                         PaperButton(stringResource(R.string.agenda_new), { createKind = "appointment" }, Modifier.weight(1f))
                     }
-                    Tasks.dueOn(tasks, dateText).forEach { task -> TaskRow(task, { onToggleTask(task.id) }, { onRemoveTask(task.id) }) }
+                    Tasks.dueOn(visibleTasks, dateText).forEach { task -> TaskRow(task, { onToggleTask(task.id) }, { onRemoveTask(task.id) }) }
                     val dayEvents = Agenda.eventsOn(shown, dateText)
-                    if (dayEvents.isEmpty() && Tasks.dueOn(tasks, dateText).isEmpty()) {
+                    if (dayEvents.isEmpty() && Tasks.dueOn(visibleTasks, dateText).isEmpty()) {
                         Text(stringResource(R.string.agenda_empty), style = MaterialTheme.typography.bodyLarge, color = colors.muted)
                     }
                     dayEvents.forEach { event -> EventRow(event) { deleting = event } }
