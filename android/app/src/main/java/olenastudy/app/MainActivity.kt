@@ -4,36 +4,44 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import olenastudy.app.data.agenda.AgendaRepository
+import olenastudy.app.focus.FocusController
+import kotlinx.coroutines.launch
+import olenastudy.app.data.settings.ThemeMode
+import olenastudy.app.data.settings.ThemeSettings
+import olenastudy.app.ui.AppShell
 import olenastudy.app.ui.OlenaTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val settings = ThemeSettings(applicationContext)
+        val focusController = FocusController(applicationContext, lifecycleScope)
+        val agendaRepository = AgendaRepository(applicationContext)
         setContent {
-            OlenaTheme {
-                Home()
+            val scope = rememberCoroutineScope()
+            val themeMode by remember { settings.themeMode }.collectAsStateWithLifecycle(initialValue = ThemeMode.System)
+            val dark =
+                when (themeMode) {
+                    ThemeMode.System -> isSystemInDarkTheme()
+                    ThemeMode.Light -> false
+                    ThemeMode.Dark -> true
+                }
+            OlenaTheme(darkTheme = dark) {
+                AppShell(
+                    focusController = focusController,
+                    agendaRepository = agendaRepository,
+                    themeMode = themeMode,
+                    onThemeModeChange = { mode -> scope.launch { settings.setThemeMode(mode) } },
+                )
             }
         }
     }
-}
-
-@Composable
-private fun Home() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = "OlenaStudy nativo")
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun HomePreview() {
-    OlenaTheme { Home() }
 }

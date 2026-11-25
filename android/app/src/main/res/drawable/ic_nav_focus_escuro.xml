@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/navigation-icons/paper/escuro/focus.svg. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FFFFF9EF"
+        android:pathData="M18 3 30 3 30 8 27 8 27 11 37 16 43 27 39 38 29 44 16 42 7 34 6 22 13 14 21 11 21 8 18 8Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M13 14 24 11 24 17 12 24 7 34 6 22Z" />
+    <path
+        android:fillColor="#FFCABDA5"
+        android:pathData="M24 17 37 16 43 27 39 38 29 44 24 36Z" />
+    <path
+        android:fillColor="#FFFACC15"
+        android:pathData="M22 19 26 19 26 28 33 28 33 32 22 32Z" />
+    <path
+        android:fillColor="#FFFFE88D"
+        android:pathData="M18 3 30 3 27 6 18 6Z" />
+</vector>

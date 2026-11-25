@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/navigation-icons/paper/roxo/library.svg. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FF7C3AED"
+        android:pathData="M5 17 14 15 16 41 7 42ZM18 7 29 6 30 41 19 41ZM32 13 40 11 45 39 36 41Z" />
+    <path
+        android:fillColor="#FFA879F5"
+        android:pathData="M5 17 14 15 12 20 6 21ZM18 7 29 6 25 12 18 13ZM32 13 40 11 39 17 33 19Z" />
+    <path
+        android:fillColor="#FFFACC15"
+        android:pathData="M20 17 27 17 27 20 20 20ZM8 31 14 30 14 33 8 34ZM36 29 41 28 42 31 37 32Z" />
+    <path
+        android:fillColor="#FF51219E"
+        android:pathData="M25 12 29 6 30 41 26 41Z" />
+</vector>

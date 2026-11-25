@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/navigation-icons/paper/profile.svg. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FF17131D"
+        android:pathData="m17 6 11-1 7 7-1 11-7 5-11-4-4-10Z" />
+    <path
+        android:fillColor="#FF292432"
+        android:pathData="m17 3 11-1 7 7-1 11-7 5-11-4-4-10Z" />
+    <path
+        android:fillColor="#FF51465D"
+        android:pathData="m17 3 11-1-5 12-7 7-4-10Z" />
+    <path
+        android:fillColor="#FF17131D"
+        android:pathData="m14 29 12-3 11 6 6 12-15 3L5 44l2-10Z" />
+    <path
+        android:fillColor="#FF292432"
+        android:pathData="m14 26 12-3 11 6 6 12-15 3L5 41l2-10Z" />
+    <path
+        android:fillColor="#FF51465D"
+        android:pathData="m14 26 12-3-5 12-16 6 2-10Z" />
+</vector>
