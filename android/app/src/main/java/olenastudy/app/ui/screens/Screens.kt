@@ -276,9 +276,12 @@ private fun EmptySlot(modifier: Modifier) {
     val colors = OlenaTheme.colors
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 18.dp, bottomEnd = 10.dp, bottomStart = 16.dp))
             .background(colors.soft)
             .drawBehind {
+                val cut = size.width * 0.26f
+                drawPath(Path().apply { moveTo(0f, 0f); lineTo(cut, 0f); lineTo(0f, cut); close() }, colors.lineStrong.copy(alpha = 0.28f))
+                drawPath(Path().apply { moveTo(size.width, size.height); lineTo(size.width - cut, size.height); lineTo(size.width, size.height - cut); close() }, colors.lineStrong.copy(alpha = 0.22f))
                 drawRoundRect(
                     color = colors.lineStrong,
                     cornerRadius = androidx.compose.ui.geometry.CornerRadius(14.dp.toPx()),
