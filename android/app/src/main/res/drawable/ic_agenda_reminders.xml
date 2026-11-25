@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/navigation-icons/paper/agenda-toolbar.svg#reminders. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FFFACC15"
+        android:pathData="m19 39 6-2 5 3-3 5-6-1Z" />
+    <path
+        android:fillColor="#FF292432"
+        android:pathData="m21 5 7 1 2 7 7 7-1 13 6 5-3 4-32-3 1-5 6-5 1-13 6-5Z" />
+    <path
+        android:fillColor="#FF51465D"
+        android:pathData="m21 5 3 9-5 19-11 1 6-5 1-13 6-5Z" />
+    <path
+        android:fillColor="#FF7C3AED"
+        android:pathData="m27 14 7 7-1 12-6-2Z" />
+</vector>

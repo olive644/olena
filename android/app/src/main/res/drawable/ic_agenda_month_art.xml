@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/navigation-icons/paper/agenda-month-calendar.svg#art. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FF17131D"
+        android:pathData="M7 12h34v29l-5 4H7Z" />
+    <path
+        android:fillColor="#FF292432"
+        android:pathData="M5 9h36v29l-5 4H5Z" />
+    <path
+        android:fillColor="#FF51465D"
+        android:pathData="M5 9h36l-5 6H5Z" />
+    <path
+        android:fillColor="#FFFFF9EF"
+        android:pathData="M9 20h28v15l-4 3H9Z" />
+    <path
+        android:fillColor="#FFD8CDB9"
+        android:pathData="m33 38 4-3h-4Z" />
+    <path
+        android:fillColor="#FFFACC15"
+        android:pathData="M12 4h5v11h-5Zm18 0h5v11h-5Z" />
+    <path
+        android:fillColor="#FF292432"
+        android:pathData="M13 23h5v4h-5Zm9 0h5v4h-5Zm-9 8h5v4h-5Z" />
+    <path
+        android:fillColor="#FF7C3AED"
+        android:pathData="M22 30h6v6h-6Z" />
+</vector>

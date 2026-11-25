@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/navigation-icons/paper/claro/today.svg. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FF292432"
+        android:pathData="M5 23 24 5 43 23 39 25 39 42 9 42 9 25Z" />
+    <path
+        android:fillColor="#FF51465D"
+        android:pathData="M5 23 24 5 24 12 11 25Z" />
+    <path
+        android:fillColor="#FF16131E"
+        android:pathData="M24 12 39 25 39 42 24 42Z" />
+    <path
+        android:fillColor="#FFFACC15"
+        android:pathData="M20 30 28 30 28 42 20 42Z" />
+    <path
+        android:fillColor="#FFFFE88D"
+        android:pathData="M20 30 24 27 28 30Z" />
+</vector>

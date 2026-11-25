@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/navigation-icons/paper/student-agenda.svg. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FF087EBC"
+        android:pathData="m5 11 34-4 6 7-2 30-37 1Z" />
+    <path
+        android:fillColor="#FFFFF9EF"
+        android:pathData="m4 9 34-3 5 8-2 27-36 1Z" />
+    <path
+        android:fillColor="#FF26BDD3"
+        android:pathData="m4 9 34-3 5 8-38 4Z" />
+    <path
+        android:fillColor="#FF087EBC"
+        android:pathData="m5 18 38-4-2 5-36 4Z" />
+    <path
+        android:fillColor="#FFFACC15"
+        android:pathData="m12 2 5-1 1 13-5 1Zm18-1 5 1-1 11-5 1Z" />
+    <path
+        android:fillColor="#FF7C3AED"
+        android:pathData="m12 26 6-1v6l-6 1Zm13-1 6-1v6l-6 1Zm-13 11 6-1v4l-6 1Z" />
+    <path
+        android:fillColor="#FF26BDD3"
+        android:pathData="m25 35 6-1v4l-6 1Z" />
+</vector>

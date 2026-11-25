@@ -35,8 +35,12 @@ public/speech-runtime/
 *.keystore
 *.jks
 android/build/
-android/app/
+android/app/build/
 android/.gradle/
+android/local.properties
+android/.kotlin/
+*.apk
+*.aab
 
 # Capturas que os e2e gravam em tempo de execução (não são versionadas)
 artifacts/math-review-polish/

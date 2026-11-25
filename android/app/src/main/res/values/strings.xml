@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OlenaStudy</string>
+
+    <!-- Navegação principal (mesmos nomes da barra móvel do site) -->
+    <string name="nav_today">Espaço</string>
+    <string name="nav_planner">Agenda</string>
+    <string name="nav_learn">Praticar</string>
+    <string name="nav_focus">Foco</string>
+    <string name="nav_library">Biblioteca</string>
+    <string name="nav_profile">Perfil</string>
+    <string name="nav_bar_description">Navegação principal</string>
+
+    <!-- Telas ainda sem conteúdo: dizem a verdade em vez de fingir dados -->
+    <string name="screen_today_title">Espaço do aluno</string>
+    <string name="screen_planner_title">Agenda</string>
+    <string name="screen_learn_title">Praticar</string>
+    <string name="screen_focus_title">Foco</string>
+    <string name="screen_library_title">Biblioteca</string>
+    <string name="screen_profile_title">Perfil</string>
+    <string name="screen_in_progress">Esta tela do app nativo ainda está em construção. Enquanto isso, o OlenaStudy completo continua no site.</string>
+
+    <!-- Perfil: aparência -->
+    <string name="profile_appearance_title">Aparência</string>
+    <string name="profile_appearance_hint">A escolha vale só neste aparelho.</string>
+    <string name="theme_system">Seguir o aparelho</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Escuro</string>
+    <!-- Foco -->
+    <string name="focus_phase_focus">Foco</string>
+    <string name="focus_phase_short_break">Pausa curta</string>
+    <string name="focus_phase_long_break">Pausa longa</string>
+    <string name="focus_completed">Focos concluídos: %1$d</string>
+    <string name="focus_start">Começar</string>
+    <string name="focus_pause">Pausar</string>
+    <string name="focus_skip">Pular</string>
+    <string name="focus_restart">Reiniciar</string>
+    <string name="focus_length_title">Duração do foco</string>
+    <string name="focus_minutes_short">%1$d min</string>
+    <string name="focus_channel_name">Fim de foco e de pausa</string>
+    <string name="focus_notification_focus_done_title">Foco concluído</string>
+    <string name="focus_notification_focus_done_text">Hora da pausa. Toque para voltar ao app.</string>
+    <string name="focus_notification_break_done_title">Pausa terminou</string>
+    <string name="focus_notification_break_done_text">Vamos voltar ao foco?</string>
+    <!-- Agenda -->
+    <string name="agenda_today">Hoje</string>
+    <string name="agenda_empty">Nada marcado para este dia.</string>
+    <string name="agenda_new">Criar compromisso</string>
+    <string name="agenda_save">Salvar</string>
+    <string name="agenda_cancel">Cancelar</string>
+    <string name="agenda_delete">Excluir</string>
+    <string name="agenda_delete_title">Excluir compromisso?</string>
+    <string name="agenda_delete_text">"%1$s" será apagado deste aparelho e de todas as repetições.</string>
+    <string name="agenda_field_title">Título</string>
+    <string name="agenda_field_time">Horário</string>
+    <string name="agenda_field_duration">Duração</string>
+    <string name="agenda_field_repeat">Repetir</string>
+    <string name="agenda_repeat_none">Não repetir</string>
+    <string name="agenda_repeat_daily">Diariamente</string>
+    <string name="agenda_repeat_weekly">Semanalmente</string>
+    <string name="agenda_repeat_monthly">Mensalmente</string>
+    <string name="agenda_repeat_yearly">Anualmente</string>
+    <string name="agenda_local_note">Os compromissos ficam só neste aparelho por enquanto. O envio para a sua conta chega com o login.</string>
+
+    <!-- Widget -->
+    <string name="widget_today_title">Hoje</string>
+    <string name="widget_today_empty">Nada marcado para hoje.</string>
+    <string name="widget_today_more">+%1$d compromissos</string>
+    <string name="widget_today_description">Os compromissos de hoje da sua Agenda.</string>
+    <string name="focus_resume">Continuar</string>
+    <string name="focus_finish">Concluir</string>
+    <string name="focus_mode_timer">Cronômetro</string>
+    <string name="focus_mode_pomodoro">Pomodoro</string>
+    <string name="focus_mode_previous">Modo anterior</string>
+    <string name="focus_mode_next">Próximo modo</string>
+    <string name="focus_flower_label">Sua flor de foco</string>
+    <string name="focus_flower_sleeping">Sua flor está adormecida. Comece seu primeiro cronômetro para cuidar dela.</string>
+    <string name="focus_flower_missed">Ela sentiu sua falta. Uma sessão faz a rosa florescer novamente.</string>
+    <string name="focus_flower_safe">Ela está segura por hoje. Continue para vê-la crescer.</string>
+    <string name="focus_flower_start">Comece uma sessão hoje para manter a rosa viva.</string>
+    <string name="focus_flower_progress">min até florescer por completo</string>
+    <string name="focus_long_break_text">Você completou quatro rodadas. Descanse por 15 minutos.</string>
+    <string name="focus_short_break_text">Respire por 5 minutos. O próximo ciclo começa sozinho.</string>
+    <string name="header_updates">Atualizações do sistema</string>
+    <string name="agenda_sync_caption">Entre na sua conta para sincronizar Agenda e Foco</string>
+    <string name="agenda_view_day">Dia</string>
+    <string name="agenda_view_week">Semana</string>
+    <string name="agenda_view_month">Mês</string>
+    <string name="agenda_view_list">Lista</string>
+    <string name="agenda_search_title">Buscar na agenda</string>
+    <string name="agenda_search_hint">Título, descrição ou local</string>
+    <string name="agenda_go_today">Ir para hoje</string>
+    <string name="agenda_list_empty">Nada marcado nos próximos 30 dias.</string>
+    <string name="weekday_mon">Seg</string>
+    <string name="weekday_tue">Ter</string>
+    <string name="weekday_wed">Qua</string>
+    <string name="weekday_thu">Qui</string>
+    <string name="weekday_fri">Sex</string>
+    <string name="weekday_sat">Sáb</string>
+    <string name="weekday_sun">Dom</string>
+    <!-- Espaço do aluno -->
+    <string name="home_math_invite">Explore as ilhas de Matemática comigo. Cada resposta abre um novo caminho!</string>
+    <string name="home_explore_math">Explorar Matemática</string>
+    <string name="home_oliver_description">Oliver aparece por trás do widget de Matemática</string>
+    <string name="home_island_description">Ilha de Fundamentos de Matemática</string>
+    <string name="home_flower_description">Sua flor de foco</string>
+    <string name="home_stat_pending">Pendências</string>
+    <string name="home_stat_focus">Foco</string>
+    <string name="home_stat_agenda">Agenda</string>
+
+    <!-- Perfil -->
+    <string name="profile_avatar_description">Avatar da Helena</string>
+    <string name="profile_title">Seu perfil</string>
+    <string name="profile_level">Nível 1</string>
+    <string name="profile_xp">0 / 100 XP</string>
+    <string name="profile_add_friend">Adicionar amigo</string>
+    <string name="profile_followers">Seguidores</string>
+    <string name="profile_following">Seguindo</string>
+    <string name="profile_social_needs_account">Amigos, seguidores e QR dependem da conta e chegam com o login.</string>
+    <string name="profile_achievements">Conquistas</string>
+    <string name="profile_arcana">Arcano</string>
+    <string name="profile_favorite">Favorita</string>
+</resources>
