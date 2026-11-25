@@ -1,0 +1,704 @@
+[
+  {
+    "id": "major-00",
+    "name": "O Louco",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "0",
+    "nameH": 15
+  },
+  {
+    "id": "major-01",
+    "name": "O Mago",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "I",
+    "nameH": 15
+  },
+  {
+    "id": "major-02",
+    "name": "A Sacerdotisa",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "II",
+    "nameH": 15
+  },
+  {
+    "id": "major-03",
+    "name": "A Imperatriz",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "III",
+    "nameH": 15
+  },
+  {
+    "id": "major-04",
+    "name": "O Imperador",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "IV",
+    "nameH": 15
+  },
+  {
+    "id": "major-05",
+    "name": "O Hierofante",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "V",
+    "nameH": 15
+  },
+  {
+    "id": "major-06",
+    "name": "Os Enamorados",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "VI",
+    "nameH": 15
+  },
+  {
+    "id": "major-07",
+    "name": "O Carro",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "VII",
+    "nameH": 15
+  },
+  {
+    "id": "major-08",
+    "name": "A Força",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "VIII",
+    "nameH": 15
+  },
+  {
+    "id": "major-09",
+    "name": "O Eremita",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "IX",
+    "nameH": 15
+  },
+  {
+    "id": "major-10",
+    "name": "A Roda da Fortuna",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "X",
+    "nameH": 30
+  },
+  {
+    "id": "major-11",
+    "name": "A Justiça",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "XI",
+    "nameH": 15
+  },
+  {
+    "id": "major-12",
+    "name": "O Enforcado",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "XII",
+    "nameH": 15
+  },
+  {
+    "id": "major-13",
+    "name": "A Morte",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "XIII",
+    "nameH": 15
+  },
+  {
+    "id": "major-14",
+    "name": "A Temperança",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "XIV",
+    "nameH": 15
+  },
+  {
+    "id": "major-15",
+    "name": "O Diabo",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "XV",
+    "nameH": 15
+  },
+  {
+    "id": "major-16",
+    "name": "A Torre",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "XVI",
+    "nameH": 15
+  },
+  {
+    "id": "major-17",
+    "name": "A Estrela",
+    "rarity": 3,
+    "rarityLabel": "Lendária",
+    "group": "major",
+    "mark": "XVII",
+    "nameH": 15
+  },
+  {
+    "id": "major-18",
+    "name": "A Lua",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "XVIII",
+    "nameH": 15
+  },
+  {
+    "id": "major-19",
+    "name": "O Sol",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "XIX",
+    "nameH": 15
+  },
+  {
+    "id": "major-20",
+    "name": "O Julgamento",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "XX",
+    "nameH": 15
+  },
+  {
+    "id": "major-21",
+    "name": "O Mundo",
+    "rarity": 2,
+    "rarityLabel": "Épica",
+    "group": "major",
+    "mark": "XXI",
+    "nameH": 15
+  },
+  {
+    "id": "wands-01",
+    "name": "Ás de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "A",
+    "nameH": 15
+  },
+  {
+    "id": "wands-02",
+    "name": "Dois de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "2",
+    "nameH": 15
+  },
+  {
+    "id": "wands-03",
+    "name": "Três de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "3",
+    "nameH": 15
+  },
+  {
+    "id": "wands-04",
+    "name": "Quatro de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "4",
+    "nameH": 15
+  },
+  {
+    "id": "wands-05",
+    "name": "Cinco de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "5",
+    "nameH": 15
+  },
+  {
+    "id": "wands-06",
+    "name": "Seis de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "6",
+    "nameH": 15
+  },
+  {
+    "id": "wands-07",
+    "name": "Sete de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "7",
+    "nameH": 15
+  },
+  {
+    "id": "wands-08",
+    "name": "Oito de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "8",
+    "nameH": 15
+  },
+  {
+    "id": "wands-09",
+    "name": "Nove de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "9",
+    "nameH": 15
+  },
+  {
+    "id": "wands-10",
+    "name": "Dez de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "10",
+    "nameH": 15
+  },
+  {
+    "id": "wands-11",
+    "name": "Pajem de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "P",
+    "nameH": 15
+  },
+  {
+    "id": "wands-12",
+    "name": "Cavaleiro de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "C",
+    "nameH": 30
+  },
+  {
+    "id": "wands-13",
+    "name": "Rainha de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "Q",
+    "nameH": 15
+  },
+  {
+    "id": "wands-14",
+    "name": "Rei de Paus",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "wands",
+    "mark": "K",
+    "nameH": 15
+  },
+  {
+    "id": "cups-01",
+    "name": "Ás de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "A",
+    "nameH": 15
+  },
+  {
+    "id": "cups-02",
+    "name": "Dois de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "2",
+    "nameH": 15
+  },
+  {
+    "id": "cups-03",
+    "name": "Três de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "3",
+    "nameH": 15
+  },
+  {
+    "id": "cups-04",
+    "name": "Quatro de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "4",
+    "nameH": 15
+  },
+  {
+    "id": "cups-05",
+    "name": "Cinco de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "5",
+    "nameH": 15
+  },
+  {
+    "id": "cups-06",
+    "name": "Seis de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "6",
+    "nameH": 15
+  },
+  {
+    "id": "cups-07",
+    "name": "Sete de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "7",
+    "nameH": 15
+  },
+  {
+    "id": "cups-08",
+    "name": "Oito de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "8",
+    "nameH": 15
+  },
+  {
+    "id": "cups-09",
+    "name": "Nove de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "9",
+    "nameH": 15
+  },
+  {
+    "id": "cups-10",
+    "name": "Dez de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "10",
+    "nameH": 15
+  },
+  {
+    "id": "cups-11",
+    "name": "Pajem de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "P",
+    "nameH": 15
+  },
+  {
+    "id": "cups-12",
+    "name": "Cavaleiro de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "C",
+    "nameH": 30
+  },
+  {
+    "id": "cups-13",
+    "name": "Rainha de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "Q",
+    "nameH": 15
+  },
+  {
+    "id": "cups-14",
+    "name": "Rei de Copas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "cups",
+    "mark": "K",
+    "nameH": 15
+  },
+  {
+    "id": "swords-01",
+    "name": "Ás de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "A",
+    "nameH": 15
+  },
+  {
+    "id": "swords-02",
+    "name": "Dois de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "2",
+    "nameH": 15
+  },
+  {
+    "id": "swords-03",
+    "name": "Três de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "3",
+    "nameH": 15
+  },
+  {
+    "id": "swords-04",
+    "name": "Quatro de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "4",
+    "nameH": 30
+  },
+  {
+    "id": "swords-05",
+    "name": "Cinco de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "5",
+    "nameH": 30
+  },
+  {
+    "id": "swords-06",
+    "name": "Seis de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "6",
+    "nameH": 15
+  },
+  {
+    "id": "swords-07",
+    "name": "Sete de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "7",
+    "nameH": 15
+  },
+  {
+    "id": "swords-08",
+    "name": "Oito de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "8",
+    "nameH": 15
+  },
+  {
+    "id": "swords-09",
+    "name": "Nove de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "9",
+    "nameH": 15
+  },
+  {
+    "id": "swords-10",
+    "name": "Dez de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "10",
+    "nameH": 15
+  },
+  {
+    "id": "swords-11",
+    "name": "Pajem de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "P",
+    "nameH": 30
+  },
+  {
+    "id": "swords-12",
+    "name": "Cavaleiro de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "C",
+    "nameH": 30
+  },
+  {
+    "id": "swords-13",
+    "name": "Rainha de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "Q",
+    "nameH": 30
+  },
+  {
+    "id": "swords-14",
+    "name": "Rei de Espadas",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "swords",
+    "mark": "K",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-01",
+    "name": "Ás de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "A",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-02",
+    "name": "Dois de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "2",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-03",
+    "name": "Três de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "3",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-04",
+    "name": "Quatro de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "4",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-05",
+    "name": "Cinco de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "5",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-06",
+    "name": "Seis de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "6",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-07",
+    "name": "Sete de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "7",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-08",
+    "name": "Oito de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "8",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-09",
+    "name": "Nove de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "9",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-10",
+    "name": "Dez de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "10",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-11",
+    "name": "Pajem de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "P",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-12",
+    "name": "Cavaleiro de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "C",
+    "nameH": 30
+  },
+  {
+    "id": "pentacles-13",
+    "name": "Rainha de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "Q",
+    "nameH": 15
+  },
+  {
+    "id": "pentacles-14",
+    "name": "Rei de Ouros",
+    "rarity": 0,
+    "rarityLabel": "Comum",
+    "group": "pentacles",
+    "mark": "K",
+    "nameH": 15
+  }
+]

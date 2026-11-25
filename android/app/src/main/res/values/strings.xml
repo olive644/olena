@@ -181,4 +181,14 @@
     <string name="achievements_tab_english">Inglês</string>
     <string name="achievements_tab_general">Gerais</string>
     <string name="profile_highlights">Destaques do perfil</string>
+    <string name="arcana_help">Arraste as cartas para os destaques. No celular, arraste pela estrela e deslize sobre a carta para rolar.</string>
+    <string name="arcana_favorite">Favorita</string>
+    <string name="arcana_not_owned">Ainda não obtida</string>
+    <string name="arcana_tab_all">Todos</string>
+    <string name="arcana_tab_major">Arcano maior</string>
+    <string name="arcana_tab_minor">Arcano menor</string>
+    <string name="arcana_tab_wands">Paus · Fogo</string>
+    <string name="arcana_tab_cups">Copas · Água</string>
+    <string name="arcana_tab_swords">Espadas · Ar</string>
+    <string name="arcana_tab_pentacles">Ouros · Terra</string>
 </resources>
