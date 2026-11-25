@@ -191,4 +191,32 @@
     <string name="arcana_tab_cups">Copas · Água</string>
     <string name="arcana_tab_swords">Espadas · Ar</string>
     <string name="arcana_tab_pentacles">Ouros · Terra</string>
+    <!-- Amigos, seguidores e cartão de compartilhar: textos do site (public/locales/pt-BR.json). -->
+    <string name="social_title">Encontre seus amigos</string>
+    <string name="social_close">Fechar amigos</string>
+    <string name="social_back_to_friends">Voltar para amigos</string>
+    <string name="social_actions">Encontrar amigos</string>
+    <string name="social_contacts">Escolher nos contatos</string>
+    <string name="social_search_by_name">Buscar por nome</string>
+    <string name="social_share_profile">Compartilhar perfil</string>
+    <string name="social_search_label">Buscar por nome ou @</string>
+    <string name="social_search_placeholder">Nome ou nome de usuário</string>
+    <string name="social_search_button">Buscar</string>
+    <string name="social_needs_account">Entre na conta para adicionar amigos.</string>
+    <string name="social_list_label">Lista de conexões</string>
+    <string name="social_list_toggle">Seguidores e seguindo</string>
+    <string name="social_back">Voltar</string>
+    <string name="social_no_followers">Nenhum seguidor ainda.</string>
+    <string name="social_no_following">Ainda não segue ninguém.</string>
+    <string name="share_brand">OlenaStudy</string>
+    <string name="share_qr_description">QR code do perfil</string>
+    <string name="share_tagline">Vamos estudar juntos?</string>
+    <string name="share_copy">Copiar link</string>
+    <string name="share_send">Compartilhar</string>
+    <string name="share_copied">Link copiado.</string>
+    <string name="share_copy_failed">Não foi possível copiar. Tente novamente ou use Compartilhar.</string>
+    <string name="share_send_failed">Não foi possível compartilhar. Você pode copiar o link.</string>
+    <string name="share_title">%1$s no OlenaStudy</string>
+    <string name="share_no_handle">Entre na conta para criar um @. Até lá, o QR abre o OlenaStudy.</string>
+    <!-- Menu lateral "Mais ferramentas" (mobile-more-sheet do site). -->
 </resources>

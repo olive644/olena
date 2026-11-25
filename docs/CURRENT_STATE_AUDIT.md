@@ -6034,7 +6034,7 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Editar perfil: nome, @, bio, pronomes e até 5 redes, com a validação e as mensagens de `validateProfileDraft` e a regra de `recognizeSocialLink` (testadas contra a saída do código TypeScript do site). Sem conta, o @ fica desativado e os dados ficam só neste aparelho; não é sincronização.
 - Contagens "0 / 187" e "0 / 78" e os símbolos "+" das vagas são imagens do site no estado vazio. Quando o app tiver conquistas, precisam virar dados.
 - Validação: Paparazzi nos dois temas e capturas do aparelho (Android, tema escuro) para Perfil, personalização e Editar perfil, comparadas com capturas do site. Não verificado: tema claro no aparelho, teclado em telas pequenas, rolagem longa das abas Molduras, Headers e Fundo.
-- Fora do escopo desta entrega: card de compartilhar perfil, "Encontre seus amigos", galeria de Arcano, menu de hambúrguer do cabeçalho e subpáginas de Configurações. Dependem de conta, de dados ou de telas ainda não feitas.
+- Fora do escopo desta entrega: card de compartilhar perfil, "Encontre seus amigos", galeria de Arcano e subpáginas de Configurações. Dependem de conta, de dados ou de telas ainda não feitas.
 
 ### CI mais rápido para o site e fora do e2e para o Android, 25/11/2026
 
@@ -6042,7 +6042,7 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - `android/` passa a escopo `none` (sem e2e do site). Lint, testes e verificações de segurança seguem rodando.
 - Nomes dos checks e dos gates preservados. Detalhes e a medição de 7 dias em `docs/CI_MINUTOS.md`.
 
-- Fora do escopo desta entrega: card de compartilhar perfil, "Encontre seus amigos", galerias de Conquistas e Arcano, menu de hambúrguer do cabeçalho e subpáginas de Configurações. Dependem de conta, de dados ou de telas ainda não feitas.
+- Fora do escopo desta entrega: card de compartilhar perfil, "Encontre seus amigos", galerias de Conquistas e Arcano e subpáginas de Configurações. Dependem de conta, de dados ou de telas ainda não feitas.
 
 ## Android: galeria de Arcano, 25/11/2026
 
@@ -6050,3 +6050,14 @@ Testado com quatro PDFs reais enviados pela dona do projeto (duas provas, dois g
 - Dados: `assets/arcana.json` (id, nome, raridade, grupo) gerado do próprio site, na mesma ordem do baralho. Arte: 78 cartas por tema em `assets/arcana/` e `assets/arcana-dark/` (WebP, 3,6 MB no total, com a sombra roxa de 1 x 3 px), mais ícones das abas, selos de raridade e a vaga vazia em `res/drawable-nodpi/art_arcana_*`. O quadro da carta muda com o tema no site, por isso há duas séries. A cor desbotada (saturação 0,3 e opacidade 0,45) é aplicada no app, como no site.
 - Testes: `ArcanaCatalogTest` (78 cartas, ids únicos, 22 maiores e 14 por naipe, arte nos dois temas, JSON quebrado vira lista vazia) e `ArcanaScreenshotTest` (Paparazzi, 390 x 844 dp, claro e escuro, topo e rolado). Comparação lado a lado com capturas do site: posições dentro de cerca de 2 dp.
 - Limites: o texto de ajuda usa espaçamento de letras negativo só para quebrar na mesma linha do site (as letras ficam um pouco mais juntas). A altura de cada item usa a medida do site (231,5 dp, mais 15 por linha extra do nome). Todas as cartas aparecem bloqueadas e as vagas de favoritas ficam vazias: arrastar, destacar e inspecionar cartas não foram feitos (dependem de conta e dados). O cabeçalho já fica fixo desde o início, então a captura do site sem rolagem (cabeçalho 16 dp mais abaixo) difere em 16 dp. Não verificado: aparelho real (adb fora do PATH nesta sessão), TalkBack e fonte grande.
+
+## Android: telas sociais do Perfil, 25/11/2026
+
+- Novas telas, todas abertas a partir do Perfil, com medidas varridas do site em 390 px (1 px = 1 dp, 1 px de fonte = 1 sp) nos temas claro e escuro: "Encontre seus amigos" (`FriendsContent`), card de compartilhar perfil (`ShareCardContent`), Seguidores e Seguindo (`ConnectionsContent`) e o menu "Mais ferramentas" com o botão hambúrguer (`MoreMenuContent`, `MoreMenuTrigger`). Os textos vêm de `public/locales/pt-BR.json`.
+- Sem conta o app não consulta nem envia nada. O aviso é o do site para quem não entrou ("Entre na conta para adicionar amigos."), "Escolher nos contatos" fica desativado como no site sem API de contatos, e as listas mostram o estado vazio real ("Nenhum seguidor ainda." e "Ainda não segue ninguém."). Nada simula busca, seguidor ou envio em nuvem.
+- O QR é gerado no aparelho por `domain/qr/QrCode.kt` (Kotlin puro, versões 1 a 10, modo byte, correção M ou H, máscara pela penalidade da `qrcode-generator` do site). Nenhuma dependência nova. `QrCodeTest` compara 14 matrizes (v1 a v10, M e H) com as geradas pela biblioteca do site (`node scripts/qr-vectors.cjs` regera `QrVectors.kt`). O desenho (células arredondadas, três finders de papel, estrela no centro) segue `RoomQrCode`, com correção H como o site.
+- Sem `@` (ainda não há conta) o link do cartão aponta só para `https://olenastudy.app`, com aviso na tela; com `@` válido é `/perfil?usuario=@` (`ProfileShare`, testado). Copiar usa o ClipboardManager e Compartilhar usa `Intent.ACTION_SEND`.
+- Correção do proprietário: o Modo Sala e o menu de três linhas ("Mais ferramentas") não existem mais no site no celular, então o hambúrguer, o painel e os itens extras foram removidos do app. A varredura tinha usado uma compilação local do site desatualizada; vale refazer as medidas contra o site publicado.
+- Ícones exportados do site por `scripts/export-social-icons.cjs` (PNG em `drawable-nodpi`, prefixos `art_friends_*` e `art_more_*`).
+- Provas: Paparazzi claro e escuro (`SocialScreenshotTest`, 8 imagens) e aparelho físico (Android, tema claro): "Compartilhar perfil" e Seguidores abertos pelo Perfil.
+- Limites e diferenças: o botão de salvar cartão como imagem não foi portado (só copiar e compartilhar). O cartão não mostra etiquetas, destaques nem cartas favoritas porque dependem de conta e conquistas. No site "Compartilhar perfil" fica desativado sem conta; no app ele abre o cartão local. O menu no app cobre também a barra de status e não anima a entrada. Tema escuro no aparelho, teclado, TalkBack e fonte grande não verificados (a fonte grande foi vista por acaso no título do diálogo, que agora quebra linha em vez de cortar). Comparação com o site é por medidas, não por sobreposição de pixels.
