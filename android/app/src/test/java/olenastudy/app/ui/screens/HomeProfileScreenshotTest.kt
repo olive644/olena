@@ -37,5 +37,6 @@ class HomeProfileScreenshotTest {
     @Test fun espaco_claro() = frame(false, AppDestination.Today) { HomeScreen(HomeSummary(), {}) }
     @Test fun espaco_escuro() = frame(true, AppDestination.Today) { HomeScreen(HomeSummary(focusMinutesToday = 45, agendaToday = 2, flowerBloomed = true), {}) }
     @Test fun perfil_claro() = frame(false, AppDestination.Profile, header = false) { ProfileScreen(ThemeMode.System) {} }
+    @Test fun perfil_moldura() = frame(false, AppDestination.Profile, header = false) { ProfileScreen(ThemeMode.System, look = olenastudy.app.domain.profile.ProfileLook(frameId = "pride", avatarId = "helena")) {} }
     @Test fun perfil_escuro() = frame(true, AppDestination.Profile, header = false) { ProfileScreen(ThemeMode.Dark) {} }
 }
