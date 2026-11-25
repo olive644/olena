@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -62,6 +63,14 @@ private enum class AchievementTab(val key: String, val icon: Int, val label: Int
 /** Galeria de Conquistas: título de papel, destaques do perfil, três abas e a grade de cartões bloqueados do site. */
 @Composable
 fun AchievementsScreen(onDismiss: () -> Unit) {
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
+        AchievementsContent(onDismiss)
+    }
+}
+
+/** Conteúdo da galeria sem a janela, para o Paparazzi. */
+@Composable
+fun AchievementsContent(onDismiss: () -> Unit) {
     val colors = OlenaTheme.colors
     val dark = colors.isDark
     val context = LocalContext.current
@@ -69,7 +78,6 @@ fun AchievementsScreen(onDismiss: () -> Unit) {
     var tabKey by rememberSaveable { mutableStateOf(AchievementTab.Math.key) }
     val tab = AchievementTab.entries.first { it.key == tabKey }
     val line = if (dark) Color(0xFF35313E) else Color(0xFFE6DDC9)
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
         Column(
             Modifier.fillMaxSize().background(colors.surface).statusBarsPadding().verticalScroll(rememberScrollState()).padding(horizontal = 14.dp),
         ) {
@@ -148,7 +156,6 @@ fun AchievementsScreen(onDismiss: () -> Unit) {
                 }
             }
         }
-    }
 }
 
 @Composable
@@ -156,7 +163,7 @@ private fun AchievementTileView(tile: AchievementTile, modifier: Modifier) {
     val colors = OlenaTheme.colors
     val dark = colors.isDark
     val context = LocalContext.current
-    val art = remember(tile.id) { context.assets.open("ach/${tile.id}.png").use { BitmapFactory.decodeStream(it) }?.asImageBitmap() }
+    val art = remember(tile.id, dark) { context.assets.open((if (dark) "ach_dark" else "ach") + "/${tile.id}.png").use { BitmapFactory.decodeStream(it) }?.asImageBitmap() }
     val rarityColor =
         when (tile.rarity) {
             "uncommon" -> if (dark) Color(0xFFC4A4FF) else Color(0xFF6B2BC5)
@@ -171,9 +178,9 @@ private fun AchievementTileView(tile: AchievementTile, modifier: Modifier) {
         Text(
             tile.name,
             fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 12.sp, color = colors.text, textAlign = TextAlign.Center, maxLines = 2,
-            modifier = Modifier.padding(top = 6.dp).height(31.dp),
+            modifier = Modifier.padding(top = 6.dp).heightIn(min = 31.dp),
         )
-        Text(tile.rarityLabel, fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 12.8.sp, color = rarityColor, modifier = Modifier.padding(top = 24.dp))
+        Text(tile.rarityLabel, fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 12.8.sp, color = rarityColor, modifier = Modifier.padding(top = 4.dp))
         Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             tile.current.forEach { Image(painterResource(paperDigitRes(it - '0', dark)), null, Modifier.size(width = 8.dp, height = 13.dp)) }
             Text(" / ", fontFamily = ManropeFamily, fontSize = 11.2.sp, color = colors.muted)
