@@ -78,84 +78,85 @@ fun AchievementsContent(onDismiss: () -> Unit) {
     var tabKey by rememberSaveable { mutableStateOf(AchievementTab.Math.key) }
     val tab = AchievementTab.entries.first { it.key == tabKey }
     val line = if (dark) Color(0xFF35313E) else Color(0xFFE6DDC9)
+    Column(
+        Modifier.fillMaxSize().background(colors.surface).statusBarsPadding().verticalScroll(rememberScrollState()).padding(horizontal = 14.dp),
+    ) {
+        Row(Modifier.fillMaxWidth().height(77.dp).padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Image(painterResource(if (dark) R.drawable.art_conq_title_dark else R.drawable.art_conq_title), stringResource(R.string.profile_achievements), Modifier.size(width = 148.dp, height = 32.dp))
+            Box(Modifier.weight(1f))
+            Box(Modifier.size(44.dp).clickable(role = Role.Button, onClick = onDismiss).semantics { contentDescription = "Fechar" }, contentAlignment = Alignment.Center) {
+                Image(painterResource(R.drawable.art_close), null, Modifier.size(28.dp))
+            }
+        }
         Column(
-            Modifier.fillMaxSize().background(colors.surface).statusBarsPadding().verticalScroll(rememberScrollState()).padding(horizontal = 14.dp),
+            Modifier
+                .padding(top = 12.dp)
+                .fillMaxWidth()
+                .paperPanel(
+                    fill = if (dark) Color(0xFF262230) else Color(0xFFFBF2E2),
+                    base = Color.Transparent,
+                    facetLight = line,
+                    facetDark = line,
+                    border = Color.Transparent,
+                    shape = RoundedCornerShape(0.dp),
+                    radius = 0.dp,
+                    facet = 24.dp,
+                    shift = 0.dp,
+                )
+                .padding(15.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Row(Modifier.fillMaxWidth().height(77.dp).padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Image(painterResource(if (dark) R.drawable.art_conq_title_dark else R.drawable.art_conq_title), stringResource(R.string.profile_achievements), Modifier.size(width = 148.dp, height = 32.dp))
-                Box(Modifier.weight(1f))
-                Box(Modifier.size(44.dp).clickable(role = Role.Button, onClick = onDismiss).semantics { contentDescription = "Fechar" }, contentAlignment = Alignment.Center) {
-                    Image(painterResource(R.drawable.art_close), null, Modifier.size(28.dp))
-                }
-            }
-            Column(
-                Modifier
-                    .padding(top = 12.dp)
-                    .fillMaxWidth()
-                    .paperPanel(
-                        fill = if (dark) Color(0xFF262230) else Color(0xFFFBF2E2),
-                        base = Color.Transparent,
-                        facetLight = line,
-                        facetDark = line,
-                        border = Color.Transparent,
-                        shape = RoundedCornerShape(0.dp),
-                        radius = 0.dp,
-                        facet = 24.dp,
-                        shift = 0.dp,
-                    )
-                    .padding(15.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                Text(stringResource(R.string.profile_highlights), fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = colors.text)
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-                    repeat(3) {
-                        Box(
-                            Modifier
-                                .weight(1f)
-                                .height(80.dp)
-                                .paperPanel(
-                                    fill = if (dark) Color(0xFF201D26) else Color.White,
-                                    base = line,
-                                    facetLight = Color.Transparent,
-                                    facetDark = if (dark) Color(0xFF262230) else Color(0xFFEEE5D5),
-                                    border = line,
-                                    shape = SlotShape,
-                                    radius = 13.dp,
-                                    facet = 22.dp,
-                                    shift = 3.dp,
-                                ),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Image(painterResource(if (dark) R.drawable.art_profile_plus_dark else R.drawable.art_profile_plus), null, Modifier.size(width = 26.dp, height = 30.dp))
-                        }
-                    }
-                }
-            }
-            Row(Modifier.padding(top = 22.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                AchievementTab.entries.forEach { t ->
-                    val selected = t == tab
-                    Column(
+            Text(stringResource(R.string.profile_highlights), fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = colors.text)
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+                repeat(3) {
+                    Box(
                         Modifier
-                            .size(width = 64.dp, height = 65.dp)
-                            .semantics { this.selected = selected; contentDescription = context.getString(t.label) }
-                            .clickable(role = Role.Tab) { tabKey = t.key },
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                            .weight(1f)
+                            .height(80.dp)
+                            .paperPanel(
+                                fill = if (dark) Color(0xFF201D26) else Color.White,
+                                base = line,
+                                facetLight = Color.Transparent,
+                                facetDark = if (dark) Color(0xFF262230) else Color(0xFFEEE5D5),
+                                border = line,
+                                shape = SlotShape,
+                                radius = 13.dp,
+                                facet = 22.dp,
+                                shift = 3.dp,
+                            ),
+                        contentAlignment = Alignment.Center,
                     ) {
-                        Image(painterResource(t.icon), null, Modifier.padding(top = 6.dp).size(48.dp))
-                        Box(Modifier.padding(top = 4.dp).size(width = 64.dp, height = 4.dp).clip(RoundedCornerShape(2.dp)).background(if (selected) Color(0xFFFACC15) else Color.Transparent))
-                    }
-                }
-            }
-            Box(Modifier.padding(top = 12.dp).fillMaxWidth().height(2.dp).background(line))
-            Column(Modifier.padding(top = 24.dp, bottom = 40.dp), verticalArrangement = Arrangement.spacedBy(25.dp)) {
-                AchievementCatalog.byTab(all, tab.key).chunked(3).forEach { row ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
-                        row.forEach { tile -> AchievementTileView(tile, Modifier.weight(1f)) }
-                        repeat(3 - row.size) { Box(Modifier.weight(1f)) }
+                        Image(painterResource(if (dark) R.drawable.art_profile_plus_dark else R.drawable.art_profile_plus), null, Modifier.size(width = 26.dp, height = 30.dp))
                     }
                 }
             }
         }
+        Row(Modifier.padding(top = 22.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            AchievementTab.entries.forEach { t ->
+                val selected = t == tab
+                val label = stringResource(t.label)
+                Column(
+                    Modifier
+                        .size(width = 64.dp, height = 65.dp)
+                        .semantics { this.selected = selected; contentDescription = label }
+                        .clickable(role = Role.Tab) { tabKey = t.key },
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Image(painterResource(t.icon), null, Modifier.padding(top = 6.dp).size(48.dp))
+                    Box(Modifier.padding(top = 4.dp).size(width = 64.dp, height = 4.dp).clip(RoundedCornerShape(2.dp)).background(if (selected) Color(0xFFFACC15) else Color.Transparent))
+                }
+            }
+        }
+        Box(Modifier.padding(top = 12.dp).fillMaxWidth().height(2.dp).background(line))
+        Column(Modifier.padding(top = 24.dp, bottom = 40.dp), verticalArrangement = Arrangement.spacedBy(25.dp)) {
+            AchievementCatalog.byTab(all, tab.key).chunked(3).forEach { row ->
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+                    row.forEach { tile -> AchievementTileView(tile, Modifier.weight(1f)) }
+                    repeat(3 - row.size) { Box(Modifier.weight(1f)) }
+                }
+            }
+        }
+    }
 }
 
 @Composable
