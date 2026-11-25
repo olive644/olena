@@ -42,6 +42,7 @@ import olenastudy.app.data.focus.FocusMode
 import olenastudy.app.data.focus.FocusSnapshot
 import olenastudy.app.domain.focus.FocusFlower
 import olenastudy.app.domain.focus.FocusPhase
+import olenastudy.app.domain.focus.FocusWeek
 import olenastudy.app.domain.focus.Pomodoro
 import olenastudy.app.focus.FocusController
 import olenastudy.app.ui.ManropeFamily
@@ -217,6 +218,7 @@ fun FocusContent(snapshot: FocusSnapshot, nowMs: Long, actions: FocusActions) {
                 style = MaterialTheme.typography.bodyMedium,
                 color = colors.muted,
             )
+            PomodoroWeek(snapshot, now)
         }
 
         val label =
@@ -288,4 +290,38 @@ private fun ModeArrow(@DrawableRes art: Int, enabled: Boolean, description: Stri
             .padding(0.dp),
         alpha = if (enabled) 1f else 0.35f,
     )
+}
+
+/** Semana de tomates e resumo das durações, como no Pomodoro do site. */
+@Composable
+private fun PomodoroWeek(snapshot: FocusSnapshot, nowMs: Long) {
+    val colors = OlenaTheme.colors
+    val zone = ZoneId.systemDefault()
+    val today = java.time.Instant.ofEpochMilli(nowMs).atZone(zone).toLocalDate()
+    val active = FocusWeek.activeDays(snapshot.records, zone)
+    val config = snapshot.config
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 6.dp)) {
+        Text(stringResource(R.string.focus_week_title), fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = colors.text)
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            FocusWeek.days(today).forEachIndexed { index, day ->
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val res =
+                        when {
+                            day in active -> if (colors.isDark) R.drawable.art_streak_on_dark else R.drawable.art_streak_on
+                            else -> if (colors.isDark) R.drawable.art_streak_off_dark else R.drawable.art_streak_off
+                        }
+                    Image(painterResource(res), null, Modifier.size(width = 30.dp, height = 26.dp))
+                    Text(FocusWeek.LABELS[index].toString(), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = colors.muted)
+                }
+            }
+        }
+        val summary =
+            stringResource(R.string.focus_summary_study_break, FocusWeek.formatDuration(config.focusMinutes), FocusWeek.formatDuration(config.shortBreakMinutes)) +
+                if (config.longBreaks) {
+                    " · " + stringResource(R.string.focus_summary_long_break, FocusWeek.formatDuration(config.longBreakMinutes))
+                } else {
+                    stringResource(R.string.focus_summary_no_long_break)
+                }
+        Text(summary, style = MaterialTheme.typography.bodyMedium, color = colors.text, textAlign = TextAlign.Center)
+    }
 }

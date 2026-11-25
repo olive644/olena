@@ -128,4 +128,8 @@
     <string name="practice_preparing">Em preparação</string>
     <string name="practice_ok">Entendi</string>
     <string name="practice_lessons_notice">As lições de %1$s ainda não estão no app nativo. Enquanto isso, elas continuam no OlenaStudy pelo navegador.</string>
+    <string name="focus_week_title">Pomodoros concluídos nesta semana</string>
+    <string name="focus_summary_study_break">%1$s de estudo · %2$s de pausa</string>
+    <string name="focus_summary_long_break">%1$s após quatro rodadas</string>
+    <string name="focus_summary_no_long_break"> · sem pausa longa</string>
 </resources>
