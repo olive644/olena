@@ -1,5 +1,6 @@
 package olenastudy.app.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
@@ -91,6 +92,9 @@ fun AppShell(
 ) {
     val colors = OlenaTheme.colors
     var settingsOpen by rememberSaveable { mutableStateOf(false) }
+    var menuOpen by rememberSaveable { mutableStateOf(false) }
+    // Itens do menu sem tela nativa (Modo Sala, Cadernos): mostram a tela "em construção" com o rótulo do site.
+    var extraTitle by rememberSaveable { mutableStateOf<Int?>(null) }
     val navController = rememberNavController()
     val entry by navController.currentBackStackEntryAsState()
     val current = AppDestination.fromRoute(entry?.destination?.route)
@@ -127,7 +131,7 @@ fun AppShell(
                 .fillMaxWidth()
                 .statusBarsPadding(),
         ) {
-            if (current != AppDestination.Profile) PageHeader(Modifier.padding(horizontal = 14.dp, vertical = 8.dp))
+            if (current != AppDestination.Profile) PageHeader(Modifier.padding(horizontal = 14.dp, vertical = 8.dp), onOpenMenu = { menuOpen = true })
             Box(Modifier.weight(1f).fillMaxWidth()) {
             // Mesma chegada de tela do site no celular: surge em 280 ms subindo 8 px, e a tela anterior some sem saída.
             val arrive = tween<Float>(280, easing = CubicBezierEasing(0.2f, 0.75f, 0.25f, 1f))
@@ -148,7 +152,7 @@ fun AppShell(
                                 if (settingsOpen) {
                                     SettingsScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, onBack = { settingsOpen = false })
                                 } else {
-                                    ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, look = look, onLookChange = onLookChange, info = info, onInfoChange = onInfoChange, onOpenSettings = { settingsOpen = true })
+                                    ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, look = look, onLookChange = onLookChange, info = info, onInfoChange = onInfoChange, onOpenSettings = { settingsOpen = true }, onOpenMenu = { menuOpen = true })
                                 }
                             AppDestination.Today -> HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
                             AppDestination.Learn -> PracticeScreen()
@@ -159,11 +163,18 @@ fun AppShell(
                     }
                 }
             }
+            extraTitle?.let { title ->
+                Column(Modifier.fillMaxSize().background(colors.page)) {
+                    if (current == AppDestination.Profile) PageHeader(Modifier.padding(horizontal = 14.dp, vertical = 8.dp), onOpenMenu = { menuOpen = true })
+                    InProgressScreen(title)
+                }
+            }
         }
         }
         PaperNavigationBar(
             current = current,
             onSelect = { destination ->
+                extraTitle = null
                 if (destination != current) {
                     navController.navigate(destination.route) {
                         popUpTo(AppDestination.start.route) { saveState = true }
@@ -172,6 +183,23 @@ fun AppShell(
                     }
                 }
             },
+        )
+    }
+    if (menuOpen) {
+        BackHandler { menuOpen = false }
+        MoreMenuSheet(
+            onSelect = { item ->
+                menuOpen = false
+                when (item) {
+                    MoreMenuItem.Library -> {
+                        extraTitle = null
+                        onNavigate(AppDestination.Library)
+                    }
+                    MoreMenuItem.Room -> extraTitle = R.string.menu_room
+                    MoreMenuItem.Notes -> extraTitle = R.string.menu_notes
+                }
+            },
+            onClose = { menuOpen = false },
         )
     }
     }
@@ -264,7 +292,7 @@ private fun Modifier.paperTile(): Modifier =
 
 /** Cabeçalho de papel de todas as telas: cartão com o sino de atualizações do sistema. */
 @Composable
-fun PageHeader(modifier: Modifier = Modifier) {
+fun PageHeader(modifier: Modifier = Modifier, onOpenMenu: (() -> Unit)? = null) {
     val colors = OlenaTheme.colors
     Box(
         modifier = modifier
@@ -282,6 +310,7 @@ fun PageHeader(modifier: Modifier = Modifier) {
                 shift = 5.dp,
             ),
     ) {
+        if (onOpenMenu != null) MoreMenuTrigger(onClick = onOpenMenu, modifier = Modifier.align(Alignment.CenterStart).padding(start = 6.dp))
         Image(
             painter = painterResource(if (colors.isDark) R.drawable.art_bell_dark else R.drawable.art_bell_light),
             contentDescription = stringResource(R.string.header_updates),

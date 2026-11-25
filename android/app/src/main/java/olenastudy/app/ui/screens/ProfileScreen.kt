@@ -48,6 +48,7 @@ import olenastudy.app.domain.profile.ProfileInfo
 import olenastudy.app.domain.profile.ProfileLook
 import olenastudy.app.domain.profile.ProfileRules
 import olenastudy.app.ui.ManropeFamily
+import olenastudy.app.ui.MoreMenuTrigger
 import olenastudy.app.ui.OlenaTheme
 import olenastudy.app.ui.components.paperPanel
 import olenastudy.app.ui.components.paperDigitRes
@@ -66,13 +67,17 @@ fun ProfileScreen(
     info: ProfileInfo = ProfileInfo(),
     onInfoChange: (ProfileInfo) -> Unit = {},
     onOpenSettings: () -> Unit = {},
+    onOpenMenu: () -> Unit = {},
 ) {
     val colors = OlenaTheme.colors
     var avatarOpen by rememberSaveable { mutableStateOf(false) }
     var editOpen by rememberSaveable { mutableStateOf(false) }
     var achievementsOpen by rememberSaveable { mutableStateOf(false) }
+    var friendsOpen by rememberSaveable { mutableStateOf(false) }
+    var shareOpen by rememberSaveable { mutableStateOf(false) }
+    var connections by rememberSaveable { mutableStateOf<ConnectionKind?>(null) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        CoverCard(look = look, info = info, onAvatar = { avatarOpen = true }, onEdit = { editOpen = true }, onSettings = onOpenSettings)
+        CoverCard(look = look, info = info, onAvatar = { avatarOpen = true }, onEdit = { editOpen = true }, onSettings = onOpenSettings, onMenu = onOpenMenu, onFriends = { friendsOpen = true }, onQr = { shareOpen = true }, onConnections = { connections = it })
         Column(Modifier.padding(top = 36.dp)) {
             SectionHeader(title = stringResource(R.string.profile_achievements), titleWidth = 118.dp, count = R.drawable.art_profile_count_a, countDark = R.drawable.art_profile_count_a_dark, countSize = 64.dp to 22.dp, arrowSize = 30.dp, arrowEnd = 6.dp, onClick = { achievementsOpen = true })
             Row(Modifier.padding(top = 24.dp).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -87,6 +92,19 @@ fun ProfileScreen(
         }
     }
     if (achievementsOpen) AchievementsScreen(onDismiss = { achievementsOpen = false })
+    if (friendsOpen) FriendsDialog(onDismiss = { friendsOpen = false }, onOpenShare = { friendsOpen = false; shareOpen = true })
+    connections?.let { kind ->
+        ConnectionsDialog(initial = kind, onDismiss = { connections = null }, onBack = { connections = null; friendsOpen = true })
+    }
+    if (shareOpen) {
+        ProfileShareDialog(
+            name = info.name.ifBlank { stringResource(R.string.profile_title) },
+            username = info.username,
+            look = look,
+            onBack = { shareOpen = false; friendsOpen = true },
+            onDismiss = { shareOpen = false },
+        )
+    }
     if (editOpen) {
         ProfileEditDialog(
             current = info,
@@ -111,7 +129,17 @@ fun ProfileScreen(
 
 /** Cartão do topo: capa, avatar, nome, nível, XP, amigos e contagens, com as posições do site. */
 @Composable
-private fun CoverCard(look: ProfileLook, info: ProfileInfo, onAvatar: () -> Unit, onEdit: () -> Unit, onSettings: () -> Unit) {
+private fun CoverCard(
+    look: ProfileLook,
+    info: ProfileInfo,
+    onAvatar: () -> Unit,
+    onEdit: () -> Unit,
+    onSettings: () -> Unit,
+    onMenu: () -> Unit,
+    onFriends: () -> Unit,
+    onQr: () -> Unit,
+    onConnections: (ConnectionKind) -> Unit,
+) {
     val colors = OlenaTheme.colors
     val dark = colors.isDark
     val line = if (dark) Color(0xFF35313E) else Color(0xFFE6DDC9)
@@ -131,6 +159,7 @@ private fun CoverCard(look: ProfileLook, info: ProfileInfo, onAvatar: () -> Unit
             ),
     ) {
         Image(painterResource(coverArt(look.coverId)), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(168.dp))
+        MoreMenuTrigger(onClick = onMenu, modifier = Modifier.align(Alignment.TopStart).offset(8.dp, 10.dp))
         SiteTile(
             onClick = onSettings,
             description = stringResource(R.string.profile_settings),
@@ -175,26 +204,26 @@ private fun CoverCard(look: ProfileLook, info: ProfileInfo, onAvatar: () -> Unit
             }
             Box(Modifier.padding(top = 4.dp).fillMaxWidth().height(9.dp).clip(ProgressShape).background(line))
             Row(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                SiteButton(Modifier.size(width = 150.dp, height = 44.dp), stringResource(R.string.profile_add_friend)) {
+                SiteButton(Modifier.size(width = 150.dp, height = 44.dp), stringResource(R.string.profile_add_friend), onClick = onFriends) {
                     Row(Modifier.padding(start = 11.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Image(painterResource(R.drawable.ic_profile_friend), null, Modifier.size(24.dp))
                         Text(stringResource(R.string.profile_add_friend), fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 12.sp, color = colors.text, maxLines = 1)
                     }
                 }
-                SiteButton(Modifier.size(44.dp), stringResource(R.string.profile_qr), Alignment.Center) {
+                SiteButton(Modifier.size(44.dp), stringResource(R.string.profile_qr), Alignment.Center, onClick = onQr) {
                     Image(painterResource(if (colors.isDark) R.drawable.art_icon_qr_dark else R.drawable.art_icon_qr), null, Modifier.size(width = 15.dp, height = 26.dp))
                 }
             }
             Row(Modifier.padding(top = 6.dp, bottom = 21.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                CountChip(Modifier.size(width = 114.dp, height = 44.dp), R.drawable.ic_profile_followers, stringResource(R.string.profile_followers))
-                CountChip(Modifier.size(width = 104.dp, height = 44.dp), R.drawable.ic_profile_following, stringResource(R.string.profile_following))
+                CountChip(Modifier.size(width = 114.dp, height = 44.dp), R.drawable.ic_profile_followers, stringResource(R.string.profile_followers)) { onConnections(ConnectionKind.Followers) }
+                CountChip(Modifier.size(width = 104.dp, height = 44.dp), R.drawable.ic_profile_following, stringResource(R.string.profile_following)) { onConnections(ConnectionKind.Following) }
             }
         }
     }
 }
 
 @Composable
-private fun LevelBadge(modifier: Modifier) {
+internal fun LevelBadge(modifier: Modifier) {
     Box(
         modifier = modifier
             .size(width = 48.dp, height = 42.dp)
@@ -214,7 +243,7 @@ private fun LevelBadge(modifier: Modifier) {
 
 /** Botão secundário do site: fundo claro em relevo, base de 4 dp e faceta no canto. */
 @Composable
-private fun SiteButton(modifier: Modifier, description: String, align: Alignment = Alignment.CenterStart, content: @Composable BoxScope.() -> Unit) {
+private fun SiteButton(modifier: Modifier, description: String, align: Alignment = Alignment.CenterStart, onClick: () -> Unit = {}, content: @Composable BoxScope.() -> Unit) {
     val dark = OlenaTheme.colors.isDark
     val line = if (dark) Color(0xFF35313E) else Color(0xFFE6DDC9)
     Box(
@@ -231,7 +260,7 @@ private fun SiteButton(modifier: Modifier, description: String, align: Alignment
                 facet = 14.dp,
                 shift = 4.dp,
             )
-            .clickable(role = Role.Button) {},
+            .clickable(role = Role.Button, onClick = onClick),
         contentAlignment = align,
         content = content,
     )
@@ -261,10 +290,10 @@ private fun SiteTile(onClick: () -> Unit, description: String, modifier: Modifie
 }
 
 @Composable
-private fun CountChip(modifier: Modifier, icon: Int, label: String) {
+private fun CountChip(modifier: Modifier, icon: Int, label: String, onClick: () -> Unit = {}) {
     val colors = OlenaTheme.colors
     Row(
-        modifier.clip(ButtonShape).background(if (colors.isDark) Color(0xFF262230) else Color(0xFFFBF2E2)).padding(start = 10.dp),
+        modifier.clip(ButtonShape).background(if (colors.isDark) Color(0xFF262230) else Color(0xFFFBF2E2)).clickable(role = Role.Button, onClick = onClick).padding(start = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
