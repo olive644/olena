@@ -1,5 +1,7 @@
 package olenastudy.app.ui
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -153,10 +156,10 @@ fun PaperNavigationBar(current: AppDestination, onSelect: (AppDestination) -> Un
             modifier = Modifier
                 .fillMaxWidth()
                 .paperPanel(
-                    fill = if (colors.isDark) colors.surface else colors.page,
-                    base = if (colors.isDark) colors.lineStrong else Color(0xFFC8BAA4),
-                    facetLight = if (colors.isDark) colors.soft else Color(0xFFEEE5D5),
-                    facetDark = if (colors.isDark) colors.line else Color(0xFFE6DAC3),
+                    fill = if (colors.isDark) Color(0xFF292432) else colors.page,
+                    base = if (colors.isDark) Color(0xFF17151C) else Color(0xFFC8BAA4),
+                    facetLight = if (colors.isDark) Color(0xFF393244) else Color(0xFFEEE5D5),
+                    facetDark = if (colors.isDark) Color(0xFF17151C) else Color(0xFFE6DAC3),
                     border = Color.Transparent,
                     shape = RoundedCornerShape(topStart = 14.dp, topEnd = 22.dp, bottomEnd = 16.dp, bottomStart = 19.dp),
                     radius = 19.dp,
@@ -190,8 +193,10 @@ private fun NavigationItem(destination: AppDestination, selected: Boolean, onCli
         // Selecionado: tile violeta com a faceta clara e a base escura, como no site; o ícone dentro
         // é o da variante escura. Os outros usam o ícone do tema.
         val iconRes = if (selected && destination != AppDestination.Profile) destination.icon(false, true) else destination.icon(selected, colors.isDark)
+        val pop by animateFloatAsState(if (selected) 1f else 0.88f, tween(240), label = "nav-pop")
         Box(
-            modifier = if (selected) Modifier.size(width = 38.dp, height = 33.dp).paperTile() else Modifier.size(width = 38.dp, height = 33.dp),
+            modifier = (if (selected) Modifier.size(width = 38.dp, height = 33.dp).paperTile() else Modifier.size(width = 38.dp, height = 33.dp))
+                .graphicsLayer { scaleX = pop; scaleY = pop },
             contentAlignment = Alignment.Center,
         ) {
             Image(painter = painterResource(iconRes), contentDescription = null, modifier = Modifier.size(if (destination == AppDestination.Profile) 32.dp else 30.dp))
@@ -200,7 +205,7 @@ private fun NavigationItem(destination: AppDestination, selected: Boolean, onCli
             text = label,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,
-            color = colors.text,
+            color = if (colors.isDark) Color(0xFFFFF9EF) else Color(0xFF292432),
             maxLines = 1,
         )
     }
@@ -231,10 +236,10 @@ fun PageHeader(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .height(68.dp)
             .paperPanel(
-                fill = if (colors.isDark) colors.surface else colors.page,
-                base = if (colors.isDark) colors.lineStrong else Color(0xFFC8BAA4),
-                facetLight = if (colors.isDark) colors.soft else Color(0xFFEEE5D5),
-                facetDark = if (colors.isDark) colors.line else Color(0xFFE6DAC3),
+                fill = if (colors.isDark) Color(0xFF292432) else colors.page,
+                base = if (colors.isDark) Color(0xFF17151C) else Color(0xFFC8BAA4),
+                facetLight = if (colors.isDark) Color(0xFF393244) else Color(0xFFEEE5D5),
+                facetDark = if (colors.isDark) Color(0xFF17151C) else Color(0xFFE6DAC3),
                 border = Color.Transparent,
                 shape = RoundedCornerShape(topStart = 14.dp, topEnd = 22.dp, bottomEnd = 16.dp, bottomStart = 19.dp),
                 radius = 19.dp,

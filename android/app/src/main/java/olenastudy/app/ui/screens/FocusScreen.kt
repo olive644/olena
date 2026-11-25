@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -174,7 +177,14 @@ fun FocusContent(snapshot: FocusSnapshot, nowMs: Long, actions: FocusActions) {
                 } else {
                     val fraction = pomodoro.remainingAt(now).toDouble() / (pomodoro.durationMinutes * 60_000.0)
                     val stage = if (pomodoro.phase == FocusPhase.Focus) Pomodoro.tomatoStage(fraction) else 0
-                    Image(painterResource(TomatoStages[stage]), null, Modifier.height(220.dp))
+                    // Como no site: o relógio fica sobre a minhoca colada no tomate.
+                    Box(Modifier.size(width = 280.dp, height = 252.dp), contentAlignment = Alignment.Center) {
+                        Image(painterResource(TomatoStages[stage]), null, Modifier.fillMaxSize())
+                        Box(Modifier.align(Alignment.Center).offset(y = 20.dp).width(235.dp).aspectRatio(320f / 120f), contentAlignment = Alignment.Center) {
+                            Image(painterResource(R.drawable.art_pomodoro_worm), null, Modifier.fillMaxSize())
+                            PaperDigits(formatClock(pomodoro.remainingAt(now)), digitHeight = 40.dp, modifier = Modifier.padding(end = 38.dp))
+                        }
+                    }
                 }
             }
             ModeArrow(R.drawable.art_arrow_next, enabled = !locked, description = stringResource(R.string.focus_mode_next)) {
@@ -212,12 +222,6 @@ fun FocusContent(snapshot: FocusSnapshot, nowMs: Long, actions: FocusActions) {
                     ),
                 )
             }
-            PaperDigits(formatClock(pomodoro.remainingAt(now)), digitHeight = 64.dp, modifier = Modifier.padding(top = 4.dp))
-            Text(
-                stringResource(R.string.focus_completed, pomodoro.completed),
-                style = MaterialTheme.typography.bodyMedium,
-                color = colors.muted,
-            )
             PomodoroWeek(snapshot, now)
         }
 
