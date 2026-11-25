@@ -51,6 +51,9 @@ import java.util.UUID
 import kotlinx.coroutines.launch
 import olenastudy.app.R
 import olenastudy.app.data.agenda.AgendaRepository
+import olenastudy.app.data.agenda.TaskRepository
+import olenastudy.app.domain.agenda.StudyTask
+import olenastudy.app.domain.agenda.Tasks
 import olenastudy.app.domain.agenda.Agenda
 import olenastudy.app.domain.agenda.Recurrence
 import olenastudy.app.domain.agenda.StudyEvent
@@ -87,10 +90,11 @@ fun monthGrid(date: LocalDate): List<LocalDate> {
 }
 
 @Composable
-fun AgendaScreen(repository: AgendaRepository) {
+fun AgendaScreen(repository: AgendaRepository, taskRepository: TaskRepository) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val events by repository.events.collectAsStateWithLifecycle(initialValue = emptyList())
+    val tasks by taskRepository.tasks.collectAsStateWithLifecycle(initialValue = emptyList())
     fun changed(block: suspend () -> Unit) {
         scope.launch {
             block()
@@ -99,31 +103,39 @@ fun AgendaScreen(repository: AgendaRepository) {
     }
     AgendaContent(
         events = events,
+        tasks = tasks,
         today = LocalDate.now(),
         initialView = AgendaView.Month,
         onAdd = { event -> changed { repository.add(event) } },
         onRemove = { id -> changed { repository.remove(id) } },
+        onAddTask = { task -> changed { taskRepository.add(task) } },
+        onToggleTask = { id -> changed { taskRepository.toggle(id) } },
+        onRemoveTask = { id -> changed { taskRepository.remove(id) } },
     )
 }
 
 /** Imagem estática para os testes de tela: mesmo conteúdo, sem banco. */
 @Composable
 fun AgendaPreview(events: List<StudyEvent>, today: LocalDate, view: AgendaView) =
-    AgendaContent(events, today, view, onAdd = {}, onRemove = {})
+    AgendaContent(events, emptyList(), today, view, onAdd = {}, onRemove = {}, onAddTask = {}, onToggleTask = {}, onRemoveTask = {})
 
 /** Conteúdo da Agenda, sem acesso a dados: recebe os compromissos e devolve criar e excluir. */
 @Composable
 fun AgendaContent(
     events: List<StudyEvent>,
+    tasks: List<StudyTask>,
     today: LocalDate,
     initialView: AgendaView,
     onAdd: (StudyEvent) -> Unit,
     onRemove: (String) -> Unit,
+    onAddTask: (StudyTask) -> Unit,
+    onToggleTask: (String) -> Unit,
+    onRemoveTask: (String) -> Unit,
 ) {
     var dateText by rememberSaveable { mutableStateOf(today.toString()) }
     var viewName by rememberSaveable { mutableStateOf(initialView.name) }
     var query by rememberSaveable { mutableStateOf("") }
-    var creating by rememberSaveable { mutableStateOf(false) }
+    var createKind by rememberSaveable { mutableStateOf<String?>(null) }
     var deleting by remember { mutableStateOf<StudyEvent?>(null) }
     val date = LocalDate.parse(dateText)
     val view = AgendaView.valueOf(viewName)
@@ -169,9 +181,14 @@ fun AgendaContent(
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(dayTitle(date), style = MaterialTheme.typography.headlineMedium, color = colors.text)
                     Box(Modifier.fillMaxWidth().height(2.dp).background(colors.yellow.copy(alpha = 0.55f)))
-                    PaperButton(stringResource(R.string.agenda_new), { creating = true }, Modifier.fillMaxWidth())
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                        PaperButton(stringResource(R.string.agenda_create_task), { createKind = "task" }, Modifier.weight(1f))
+                        PaperButton(stringResource(R.string.agenda_reserve_study), { createKind = "study" }, Modifier.weight(1f))
+                        PaperButton(stringResource(R.string.agenda_new), { createKind = "appointment" }, Modifier.weight(1f))
+                    }
+                    Tasks.dueOn(tasks, dateText).forEach { task -> TaskRow(task, { onToggleTask(task.id) }, { onRemoveTask(task.id) }) }
                     val dayEvents = Agenda.eventsOn(shown, dateText)
-                    if (dayEvents.isEmpty()) {
+                    if (dayEvents.isEmpty() && Tasks.dueOn(tasks, dateText).isEmpty()) {
                         Text(stringResource(R.string.agenda_empty), style = MaterialTheme.typography.bodyLarge, color = colors.muted)
                     }
                     dayEvents.forEach { event -> EventRow(event) { deleting = event } }
@@ -181,15 +198,27 @@ fun AgendaContent(
         Text(stringResource(R.string.agenda_local_note), style = MaterialTheme.typography.bodyMedium, color = colors.muted)
     }
 
-    if (creating) {
-        NewEventDialog(
-            date = dateText,
-            onDismiss = { creating = false },
-            onSave = { event ->
-                creating = false
-                onAdd(event)
-            },
-        )
+    when (createKind) {
+        "task" ->
+            TaskDialog(
+                date = dateText,
+                onDismiss = { createKind = null },
+                onSave = { task ->
+                    createKind = null
+                    onAddTask(task)
+                },
+            )
+        "study", "appointment" ->
+            NewEventDialog(
+                date = dateText,
+                kind = createKind!!,
+                onDismiss = { createKind = null },
+                onSave = { event ->
+                    createKind = null
+                    onAdd(event)
+                },
+            )
+        else -> Unit
     }
     deleting?.let { event ->
         AlertDialog(
@@ -370,14 +399,14 @@ private fun EventRow(event: StudyEvent, onDelete: () -> Unit) {
 }
 
 @Composable
-private fun NewEventDialog(date: String, onDismiss: () -> Unit, onSave: (StudyEvent) -> Unit) {
+private fun NewEventDialog(date: String, kind: String, onDismiss: () -> Unit, onSave: (StudyEvent) -> Unit) {
     var title by rememberSaveable { mutableStateOf("") }
     var minutesOfDay by remember { mutableIntStateOf(9 * 60) }
     var duration by remember { mutableIntStateOf(30) }
     var repeat by remember { mutableStateOf(Recurrence.none) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.agenda_new)) },
+        title = { Text(stringResource(if (kind == "study") R.string.agenda_reserve_study else R.string.agenda_new)) },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedTextField(
@@ -410,6 +439,7 @@ private fun NewEventDialog(date: String, onDismiss: () -> Unit, onSave: (StudyEv
                             date = date,
                             time = formatMinutesOfDay(minutesOfDay),
                             durationMinutes = duration,
+                            kind = kind,
                             recurrenceFrequency = repeat,
                         ),
                     )
@@ -442,3 +472,53 @@ private fun repeatLabel(recurrence: Recurrence): Int =
         Recurrence.monthly -> R.string.agenda_repeat_monthly
         Recurrence.yearly -> R.string.agenda_repeat_yearly
     }
+
+@Composable
+private fun TaskRow(task: StudyTask, onToggle: () -> Unit, onRemove: () -> Unit) {
+    val colors = OlenaTheme.colors
+    Row(
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.soft).clickable(onClick = onToggle).padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Box(
+            Modifier.size(24.dp).background(if (task.completed) colors.yellow else colors.surface, RoundedCornerShape(6.dp)),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (task.completed) Text("✓", fontWeight = FontWeight.ExtraBold, color = Color(0xFF292432))
+        }
+        Text(
+            task.title,
+            style = MaterialTheme.typography.bodyLarge,
+            color = if (task.completed) colors.muted else colors.text,
+            textDecoration = if (task.completed) androidx.compose.ui.text.style.TextDecoration.LineThrough else null,
+            modifier = Modifier.weight(1f),
+        )
+        Text(stringResource(R.string.agenda_delete), style = MaterialTheme.typography.labelMedium, color = colors.muted, modifier = Modifier.clickable(onClick = onRemove).padding(6.dp))
+    }
+}
+
+@Composable
+private fun TaskDialog(date: String, onDismiss: () -> Unit, onSave: (StudyTask) -> Unit) {
+    var title by rememberSaveable { mutableStateOf("") }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.agenda_create_task)) },
+        text = {
+            OutlinedTextField(
+                value = title,
+                onValueChange = { title = it.take(120) },
+                label = { Text(stringResource(R.string.agenda_field_title)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        },
+        confirmButton = {
+            PaperButton(stringResource(R.string.agenda_save), {
+                val name = title.trim()
+                if (name.isNotEmpty()) onSave(StudyTask(UUID.randomUUID().toString(), name, date))
+            })
+        },
+        dismissButton = { PaperButton(stringResource(R.string.agenda_cancel), onDismiss, style = PaperButtonStyle.Quiet) },
+    )
+}

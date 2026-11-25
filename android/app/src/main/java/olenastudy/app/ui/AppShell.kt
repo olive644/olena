@@ -39,6 +39,8 @@ import androidx.navigation.compose.rememberNavController
 import olenastudy.app.R
 import olenastudy.app.data.settings.ThemeMode
 import olenastudy.app.data.agenda.AgendaRepository
+import olenastudy.app.data.agenda.TaskRepository
+import olenastudy.app.domain.agenda.Tasks
 import olenastudy.app.focus.FocusController
 import olenastudy.app.ui.screens.AgendaScreen
 import olenastudy.app.ui.screens.HomeScreen
@@ -63,6 +65,7 @@ import olenastudy.app.ui.screens.titleRes
 fun AppShell(
     focusController: FocusController,
     agendaRepository: AgendaRepository,
+    taskRepository: TaskRepository,
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
 ) {
@@ -72,12 +75,13 @@ fun AppShell(
     val current = AppDestination.fromRoute(entry?.destination?.route)
     val focusSnapshot by focusController.snapshot.collectAsStateWithLifecycle()
     val events by agendaRepository.events.collectAsStateWithLifecycle(initialValue = emptyList())
+    val tasks by taskRepository.tasks.collectAsStateWithLifecycle(initialValue = emptyList())
     val summary =
-        remember(focusSnapshot.records, events) {
+        remember(focusSnapshot.records, events, tasks) {
             val nowMs = System.currentTimeMillis()
             val flower = FocusFlower.state(focusSnapshot.records, nowMs, ZoneId.systemDefault())
             HomeSummary(
-                pendingTasks = 0,
+                pendingTasks = Tasks.pendingCount(tasks),
                 focusMinutesToday = flower.minutesToday,
                 agendaToday = Agenda.eventsOn(events, LocalDate.now().toString()).size,
                 flowerBloomed = flower.progress >= 0.5,
@@ -112,7 +116,7 @@ fun AppShell(
                             AppDestination.Today -> HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
                             AppDestination.Learn -> PracticeScreen()
                             AppDestination.Focus -> FocusScreen(focusController)
-                            AppDestination.Planner -> AgendaScreen(agendaRepository)
+                            AppDestination.Planner -> AgendaScreen(agendaRepository, taskRepository)
                             else -> InProgressScreen(destination.titleRes())
                         }
                     }
