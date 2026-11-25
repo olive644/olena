@@ -265,7 +265,7 @@ fun FocusContent(snapshot: FocusSnapshot, nowMs: Long, actions: FocusActions) {
                 PaperButton(
                     text = stringResource(R.string.focus_finish_pomodoro),
                     onClick = actions.onPomodoroFinish,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1.45f),
                     enabled = doneMs >= 1000,
                 )
             }

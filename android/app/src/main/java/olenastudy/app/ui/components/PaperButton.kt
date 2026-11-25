@@ -96,7 +96,7 @@ fun PaperButton(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             leading?.invoke()
-            if (text.isNotEmpty()) Text(text = text, style = MaterialTheme.typography.labelLarge, color = ink)
+            if (text.isNotEmpty()) Text(text = text, style = MaterialTheme.typography.labelLarge, color = ink, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         }
     }
 }

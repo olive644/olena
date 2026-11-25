@@ -22,6 +22,7 @@ enum class ThemeMode {
 
 private val Context.settingsStore by preferencesDataStore(name = "settings")
 private val ThemeKey = stringPreferencesKey("theme_mode")
+private val AvatarKey = stringPreferencesKey("avatar_id")
 
 /**
  * Preferências do aparelho. O tema é só do aparelho (cache local); o que for do aluno de verdade,
@@ -29,6 +30,13 @@ private val ThemeKey = stringPreferencesKey("theme_mode")
  */
 class ThemeSettings(private val context: Context) {
     val themeMode: Flow<ThemeMode> = context.settingsStore.data.map { ThemeMode.parse(it[ThemeKey]) }
+
+    /** Avatar escolhido no perfil; id desconhecido ou ausente vira o padrão ao ler. */
+    val avatarId: Flow<String> = context.settingsStore.data.map { it[AvatarKey] ?: "helena" }
+
+    suspend fun setAvatarId(id: String) {
+        context.settingsStore.edit { it[AvatarKey] = id }
+    }
 
     suspend fun setThemeMode(mode: ThemeMode) {
         context.settingsStore.edit { it[ThemeKey] = mode.name }

@@ -137,4 +137,6 @@
     <string name="profile_settings">Configurações</string>
     <string name="profile_qr">QR do perfil</string>
     <string name="focus_finish_pomodoro">Encerrar e registrar</string>
+    <string name="profile_customize_title">Personalize seu perfil</string>
+    <string name="profile_tab_avatars">Avatares</string>
 </resources>

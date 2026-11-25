@@ -99,9 +99,10 @@ fun InProgressScreen(@StringRes title: Int) {
  * esmaecidos, sem ação. A aparência do app fica no fim, no lugar da engrenagem do site.
  */
 @Composable
-fun ProfileScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit) {
+fun ProfileScreen(themeMode: ThemeMode, avatarId: String = "helena", onAvatarChange: (String) -> Unit = {}, onThemeModeChange: (ThemeMode) -> Unit) {
     val colors = OlenaTheme.colors
     var settingsOpen by rememberSaveable { mutableStateOf(false) }
+    var avatarOpen by rememberSaveable { mutableStateOf(false) }
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(14.dp),
@@ -120,9 +121,9 @@ fun ProfileScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit) 
             ) { Image(painterResource(R.drawable.art_icon_settings), null, Modifier.size(30.dp)) }
             Image(painterResource(R.drawable.art_icon_pen), null, Modifier.align(Alignment.TopEnd).padding(top = 118.dp, end = 14.dp).size(30.dp))
             Image(
-                painterResource(R.drawable.art_avatar_helena),
+                painterResource(avatarArt(avatarId)),
                 contentDescription = stringResource(R.string.profile_avatar_description),
-                modifier = Modifier.padding(start = 16.dp, top = 112.dp).size(112.dp),
+                modifier = Modifier.padding(start = 16.dp, top = 112.dp).size(112.dp).clickable(role = Role.Button) { avatarOpen = true },
             )
             LevelBadge(Modifier.padding(start = 92.dp, top = 188.dp))
         }
@@ -171,6 +172,16 @@ fun ProfileScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit) 
             }
         }
         Box(Modifier.height(12.dp))
+    }
+    if (avatarOpen) {
+        ProfileAvatarDialog(
+            currentId = avatarId,
+            onDismiss = { avatarOpen = false },
+            onSave = { id ->
+                avatarOpen = false
+                onAvatarChange(id)
+            },
+        )
     }
     if (settingsOpen) {
         AlertDialog(

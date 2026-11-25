@@ -71,6 +71,8 @@ fun AppShell(
     taskRepository: TaskRepository,
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
+    avatarId: String = "helena",
+    onAvatarChange: (String) -> Unit = {},
 ) {
     val colors = OlenaTheme.colors
     val navController = rememberNavController()
@@ -115,7 +117,7 @@ fun AppShell(
                 AppDestination.entries.forEach { destination ->
                     composable(destination.route) {
                         when (destination) {
-                            AppDestination.Profile -> ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange)
+                            AppDestination.Profile -> ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, avatarId = avatarId, onAvatarChange = onAvatarChange)
                             AppDestination.Today -> HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
                             AppDestination.Learn -> PracticeScreen()
                             AppDestination.Focus -> FocusScreen(focusController)
