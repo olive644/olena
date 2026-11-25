@@ -1,5 +1,11 @@
 package olenastudy.app.ui
 
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -113,7 +119,18 @@ fun AppShell(
         ) {
             if (current != AppDestination.Profile) PageHeader(Modifier.padding(horizontal = 14.dp, vertical = 8.dp))
             Box(Modifier.weight(1f).fillMaxWidth()) {
-            NavHost(navController = navController, startDestination = AppDestination.start.route) {
+            // Mesma chegada de tela do site no celular: surge em 280 ms subindo 8 px, e a tela anterior some sem saída.
+            val arrive = tween<Float>(280, easing = CubicBezierEasing(0.2f, 0.75f, 0.25f, 1f))
+            val rise = tween<IntOffset>(280, easing = CubicBezierEasing(0.2f, 0.75f, 0.25f, 1f))
+            val riseDistance = with(LocalDensity.current) { 8.dp.roundToPx() }
+            NavHost(
+                navController = navController,
+                startDestination = AppDestination.start.route,
+                enterTransition = { fadeIn(arrive) + slideInVertically(rise) { riseDistance } },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { fadeIn(arrive) + slideInVertically(rise) { riseDistance } },
+                popExitTransition = { ExitTransition.None },
+            ) {
                 AppDestination.entries.forEach { destination ->
                     composable(destination.route) {
                         when (destination) {
