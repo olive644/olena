@@ -121,7 +121,7 @@ private fun CoverCard(look: ProfileLook, onAvatar: () -> Unit, onSettings: () ->
             modifier = Modifier.align(Alignment.TopEnd).padding(top = 12.dp, end = 8.dp).size(width = 58.dp, height = 44.dp),
             shift = 3.dp,
         ) { Image(painterResource(R.drawable.art_icon_settings), null, Modifier.size(22.dp)) }
-        Box(Modifier.offset(334.dp, 113.dp).size(44.dp), contentAlignment = Alignment.Center) {
+        Box(Modifier.align(Alignment.TopEnd).padding(top = 113.dp, end = 12.dp).size(44.dp), contentAlignment = Alignment.Center) {
             Image(painterResource(R.drawable.art_icon_pen), null, Modifier.size(30.dp))
         }
         Box(Modifier.offset(16.dp, 116.dp).size(112.dp).clickable(role = Role.Button, onClick = onAvatar)) {
@@ -163,7 +163,7 @@ private fun CoverCard(look: ProfileLook, onAvatar: () -> Unit, onSettings: () ->
                 Text(stringResource(R.string.profile_add_friend), fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 12.sp, color = colors.text, maxLines = 1)
             }
         }
-        SiteButton(Modifier.offset(174.dp, 324.dp).size(44.dp), stringResource(R.string.profile_qr)) {
+        SiteButton(Modifier.offset(174.dp, 324.dp).size(44.dp), stringResource(R.string.profile_qr), Alignment.Center) {
             Image(painterResource(if (colors.isDark) R.drawable.art_icon_qr_dark else R.drawable.art_icon_qr), null, Modifier.size(width = 15.dp, height = 26.dp))
         }
         CountChip(Modifier.offset(16.dp, 374.dp).size(width = 114.dp, height = 44.dp), R.drawable.ic_profile_followers, stringResource(R.string.profile_followers))
@@ -192,7 +192,7 @@ private fun LevelBadge(modifier: Modifier) {
 
 /** Botão secundário do site: fundo claro em relevo, base de 4 dp e faceta no canto. */
 @Composable
-private fun SiteButton(modifier: Modifier, description: String, content: @Composable BoxScope.() -> Unit) {
+private fun SiteButton(modifier: Modifier, description: String, align: Alignment = Alignment.CenterStart, content: @Composable BoxScope.() -> Unit) {
     val dark = OlenaTheme.colors.isDark
     val line = if (dark) Color(0xFF35313E) else Color(0xFFE6DDC9)
     Box(
@@ -210,7 +210,7 @@ private fun SiteButton(modifier: Modifier, description: String, content: @Compos
                 shift = 4.dp,
             )
             .clickable(role = Role.Button) {},
-        contentAlignment = Alignment.CenterStart,
+        contentAlignment = align,
         content = content,
     )
 }
