@@ -1,6 +1,15 @@
 package olenastudy.app.ui.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
@@ -35,18 +44,29 @@ fun PaperButton(
     modifier: Modifier = Modifier,
     style: PaperButtonStyle = PaperButtonStyle.Primary,
     selected: Boolean = false,
+    enabled: Boolean = true,
+    leading: (@Composable () -> Unit)? = null,
 ) {
     val colors = OlenaTheme.colors
     val (base, ink) =
         when (style) {
-            PaperButtonStyle.Primary -> colors.violet to Color.White
+            PaperButtonStyle.Primary -> Color(0xFF7433E0) to Color.White
             PaperButtonStyle.Accent -> colors.yellow to colors.ink
             PaperButtonStyle.Quiet -> (if (selected) colors.lavender else colors.soft) to colors.text
         }
-    val facet = lerp(base, Color.White, 0.28f)
-    val edge = lerp(base, Color.Black, 0.22f)
+    val primary = style == PaperButtonStyle.Primary
+    val facet = if (primary) Color(0xFF8A4CE5) else lerp(base, Color.White, 0.28f)
+    val edge = if (primary) Color(0xFF4B209B) else lerp(base, Color.Black, 0.22f)
+    val source = remember { MutableInteractionSource() }
+    val pressed by source.collectIsPressedAsState()
+    val press by animateFloatAsState(if (pressed) 0.97f else 1f, tween(120), label = "button-press")
     Box(
         modifier = modifier
+            .graphicsLayer {
+                scaleX = press
+                scaleY = press
+                alpha = if (enabled) 1f else 0.45f
+            }
             .defaultMinSize(minHeight = 48.dp)
             .clip(ButtonShape)
             .drawBehind {
@@ -70,10 +90,13 @@ fun PaperButton(
                     }
                 drawPath(cornerPath, edge)
             }
-            .clickable(role = Role.Button, onClick = onClick)
+            .clickable(enabled = enabled, interactionSource = source, indication = null, role = Role.Button, onClick = onClick)
             .padding(horizontal = 20.dp, vertical = 12.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(text = text, style = MaterialTheme.typography.labelLarge, color = ink)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            leading?.invoke()
+            if (text.isNotEmpty()) Text(text = text, style = MaterialTheme.typography.labelLarge, color = ink, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        }
     }
 }

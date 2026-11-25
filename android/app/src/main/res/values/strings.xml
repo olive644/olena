@@ -120,4 +120,27 @@
     <string name="profile_achievements">Conquistas</string>
     <string name="profile_arcana">Arcano</string>
     <string name="profile_favorite">Favorita</string>
+    <!-- Praticar -->
+    <string name="practice_enter">Entrar em %1$s</string>
+    <string name="practice_previous">Mundo anterior</string>
+    <string name="practice_next">Próximo mundo</string>
+    <string name="practice_explore">Explorar %1$s</string>
+    <string name="practice_preparing">Em preparação</string>
+    <string name="practice_ok">Entendi</string>
+    <string name="practice_lessons_notice">As lições de %1$s ainda não estão no app nativo. Enquanto isso, elas continuam no OlenaStudy pelo navegador.</string>
+    <string name="focus_week_title">Pomodoros concluídos nesta semana</string>
+    <string name="focus_summary_study_break">%1$s de estudo · %2$s de pausa</string>
+    <string name="focus_summary_long_break">%1$s após quatro rodadas</string>
+    <string name="focus_summary_no_long_break"> · sem pausa longa</string>
+    <string name="agenda_create_task">Criar tarefa</string>
+    <string name="agenda_reserve_study">Reservar estudo</string>
+    <string name="profile_settings">Configurações</string>
+    <string name="profile_qr">QR do perfil</string>
+    <string name="focus_finish_pomodoro">Encerrar e registrar</string>
+    <string name="profile_customize_title">Personalize seu perfil</string>
+    <string name="profile_tab_avatars">Avatares</string>
+    <string name="agenda_filter_all">Tudo</string>
+    <string name="agenda_filter_appointments">Compromissos</string>
+    <string name="agenda_filter_study">Estudos</string>
+    <string name="agenda_filter_tasks">Tarefas</string>
 </resources>

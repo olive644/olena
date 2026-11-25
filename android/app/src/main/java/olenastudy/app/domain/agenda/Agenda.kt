@@ -31,6 +31,8 @@ data class StudyEvent(
     val excludedDates: List<String> = emptyList(),
     val endDate: String? = null,
     val description: String = "",
+    /** "appointment" (compromisso) ou "study" (estudo reservado), como no site. */
+    val kind: String = "appointment",
 )
 
 /**

@@ -93,6 +93,18 @@ class FocusController(
         advance(s, recordFocus = s.pomodoro.phase == FocusPhase.Focus && s.pomodoro.remainingAt(clock()) < s.pomodoro.durationMinutes * 60_000L)
     }
 
+    /** "Encerrar e registrar": grava o tempo de foco feito até agora, como o site, e reinicia a fase. */
+    fun finishPomodoro() {
+        val s = _snapshot.value
+        val now = clock()
+        val state = s.pomodoro
+        val doneMs = state.durationMinutes * 60_000L - state.remainingAt(now)
+        if (doneMs < 1000) return
+        val records =
+            if (state.phase == FocusPhase.Focus) s.records + FocusRecord(now, Stopwatch.recordedMinutes(doneMs), "pomodoro") else s.records
+        commit(s.copy(pomodoro = Pomodoro.restartPhase(state), records = records))
+    }
+
     fun restartPhase() = commit(_snapshot.value.copy(pomodoro = Pomodoro.restartPhase(_snapshot.value.pomodoro)))
 
     fun setFocusMinutes(minutes: Int) {

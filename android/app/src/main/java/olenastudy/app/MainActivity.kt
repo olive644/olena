@@ -11,6 +11,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import olenastudy.app.data.agenda.AgendaRepository
+import olenastudy.app.data.agenda.TaskRepository
 import olenastudy.app.focus.FocusController
 import kotlinx.coroutines.launch
 import olenastudy.app.data.settings.ThemeMode
@@ -25,9 +26,11 @@ class MainActivity : ComponentActivity() {
         val settings = ThemeSettings(applicationContext)
         val focusController = FocusController(applicationContext, lifecycleScope)
         val agendaRepository = AgendaRepository(applicationContext)
+        val taskRepository = TaskRepository(applicationContext)
         setContent {
             val scope = rememberCoroutineScope()
             val themeMode by remember { settings.themeMode }.collectAsStateWithLifecycle(initialValue = ThemeMode.System)
+            val avatarId by remember { settings.avatarId }.collectAsStateWithLifecycle(initialValue = "helena")
             val dark =
                 when (themeMode) {
                     ThemeMode.System -> isSystemInDarkTheme()
@@ -38,8 +41,11 @@ class MainActivity : ComponentActivity() {
                 AppShell(
                     focusController = focusController,
                     agendaRepository = agendaRepository,
+                    taskRepository = taskRepository,
                     themeMode = themeMode,
                     onThemeModeChange = { mode -> scope.launch { settings.setThemeMode(mode) } },
+                    avatarId = avatarId,
+                    onAvatarChange = { id -> scope.launch { settings.setAvatarId(id) } },
                 )
             }
         }

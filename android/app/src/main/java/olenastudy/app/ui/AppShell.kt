@@ -1,5 +1,13 @@
 package olenastudy.app.ui
 
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -39,9 +48,12 @@ import androidx.navigation.compose.rememberNavController
 import olenastudy.app.R
 import olenastudy.app.data.settings.ThemeMode
 import olenastudy.app.data.agenda.AgendaRepository
+import olenastudy.app.data.agenda.TaskRepository
+import olenastudy.app.domain.agenda.Tasks
 import olenastudy.app.focus.FocusController
 import olenastudy.app.ui.screens.AgendaScreen
 import olenastudy.app.ui.screens.HomeScreen
+import olenastudy.app.ui.screens.PracticeScreen
 import olenastudy.app.ui.screens.HomeSummary
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -62,8 +74,11 @@ import olenastudy.app.ui.screens.titleRes
 fun AppShell(
     focusController: FocusController,
     agendaRepository: AgendaRepository,
+    taskRepository: TaskRepository,
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
+    avatarId: String = "helena",
+    onAvatarChange: (String) -> Unit = {},
 ) {
     val colors = OlenaTheme.colors
     val navController = rememberNavController()
@@ -71,12 +86,13 @@ fun AppShell(
     val current = AppDestination.fromRoute(entry?.destination?.route)
     val focusSnapshot by focusController.snapshot.collectAsStateWithLifecycle()
     val events by agendaRepository.events.collectAsStateWithLifecycle(initialValue = emptyList())
+    val tasks by taskRepository.tasks.collectAsStateWithLifecycle(initialValue = emptyList())
     val summary =
-        remember(focusSnapshot.records, events) {
+        remember(focusSnapshot.records, events, tasks) {
             val nowMs = System.currentTimeMillis()
             val flower = FocusFlower.state(focusSnapshot.records, nowMs, ZoneId.systemDefault())
             HomeSummary(
-                pendingTasks = 0,
+                pendingTasks = Tasks.pendingCount(tasks),
                 focusMinutesToday = flower.minutesToday,
                 agendaToday = Agenda.eventsOn(events, LocalDate.now().toString()).size,
                 flowerBloomed = flower.progress >= 0.5,
@@ -103,14 +119,26 @@ fun AppShell(
         ) {
             if (current != AppDestination.Profile) PageHeader(Modifier.padding(horizontal = 14.dp, vertical = 8.dp))
             Box(Modifier.weight(1f).fillMaxWidth()) {
-            NavHost(navController = navController, startDestination = AppDestination.start.route) {
+            // Mesma chegada de tela do site no celular: surge em 280 ms subindo 8 px, e a tela anterior some sem saída.
+            val arrive = tween<Float>(280, easing = CubicBezierEasing(0.2f, 0.75f, 0.25f, 1f))
+            val rise = tween<IntOffset>(280, easing = CubicBezierEasing(0.2f, 0.75f, 0.25f, 1f))
+            val riseDistance = with(LocalDensity.current) { 8.dp.roundToPx() }
+            NavHost(
+                navController = navController,
+                startDestination = AppDestination.start.route,
+                enterTransition = { fadeIn(arrive) + slideInVertically(rise) { riseDistance } },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { fadeIn(arrive) + slideInVertically(rise) { riseDistance } },
+                popExitTransition = { ExitTransition.None },
+            ) {
                 AppDestination.entries.forEach { destination ->
                     composable(destination.route) {
                         when (destination) {
-                            AppDestination.Profile -> ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange)
+                            AppDestination.Profile -> ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, avatarId = avatarId, onAvatarChange = onAvatarChange)
                             AppDestination.Today -> HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
+                            AppDestination.Learn -> PracticeScreen()
                             AppDestination.Focus -> FocusScreen(focusController)
-                            AppDestination.Planner -> AgendaScreen(agendaRepository)
+                            AppDestination.Planner -> AgendaScreen(agendaRepository, taskRepository)
                             else -> InProgressScreen(destination.titleRes())
                         }
                     }
@@ -147,10 +175,10 @@ fun PaperNavigationBar(current: AppDestination, onSelect: (AppDestination) -> Un
             modifier = Modifier
                 .fillMaxWidth()
                 .paperPanel(
-                    fill = if (colors.isDark) colors.surface else colors.page,
-                    base = if (colors.isDark) colors.lineStrong else Color(0xFFC8BAA4),
-                    facetLight = if (colors.isDark) colors.soft else Color(0xFFEEE5D5),
-                    facetDark = if (colors.isDark) colors.line else Color(0xFFE6DAC3),
+                    fill = if (colors.isDark) Color(0xFF292432) else colors.page,
+                    base = if (colors.isDark) Color(0xFF17151C) else Color(0xFFC8BAA4),
+                    facetLight = if (colors.isDark) Color(0xFF393244) else Color(0xFFEEE5D5),
+                    facetDark = if (colors.isDark) Color(0xFF17151C) else Color(0xFFE6DAC3),
                     border = Color.Transparent,
                     shape = RoundedCornerShape(topStart = 14.dp, topEnd = 22.dp, bottomEnd = 16.dp, bottomStart = 19.dp),
                     radius = 19.dp,
@@ -184,8 +212,10 @@ private fun NavigationItem(destination: AppDestination, selected: Boolean, onCli
         // Selecionado: tile violeta com a faceta clara e a base escura, como no site; o ícone dentro
         // é o da variante escura. Os outros usam o ícone do tema.
         val iconRes = if (selected && destination != AppDestination.Profile) destination.icon(false, true) else destination.icon(selected, colors.isDark)
+        val pop by animateFloatAsState(if (selected) 1f else 0.88f, tween(240), label = "nav-pop")
         Box(
-            modifier = if (selected) Modifier.size(width = 38.dp, height = 33.dp).paperTile() else Modifier.size(width = 38.dp, height = 33.dp),
+            modifier = (if (selected) Modifier.size(width = 38.dp, height = 33.dp).paperTile() else Modifier.size(width = 38.dp, height = 33.dp))
+                .graphicsLayer { scaleX = pop; scaleY = pop },
             contentAlignment = Alignment.Center,
         ) {
             Image(painter = painterResource(iconRes), contentDescription = null, modifier = Modifier.size(if (destination == AppDestination.Profile) 32.dp else 30.dp))
@@ -194,7 +224,7 @@ private fun NavigationItem(destination: AppDestination, selected: Boolean, onCli
             text = label,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,
-            color = colors.text,
+            color = if (colors.isDark) Color(0xFFFFF9EF) else Color(0xFF292432),
             maxLines = 1,
         )
     }
@@ -225,10 +255,10 @@ fun PageHeader(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .height(68.dp)
             .paperPanel(
-                fill = if (colors.isDark) colors.surface else colors.page,
-                base = if (colors.isDark) colors.lineStrong else Color(0xFFC8BAA4),
-                facetLight = if (colors.isDark) colors.soft else Color(0xFFEEE5D5),
-                facetDark = if (colors.isDark) colors.line else Color(0xFFE6DAC3),
+                fill = if (colors.isDark) Color(0xFF292432) else colors.page,
+                base = if (colors.isDark) Color(0xFF17151C) else Color(0xFFC8BAA4),
+                facetLight = if (colors.isDark) Color(0xFF393244) else Color(0xFFEEE5D5),
+                facetDark = if (colors.isDark) Color(0xFF17151C) else Color(0xFFE6DAC3),
                 border = Color.Transparent,
                 shape = RoundedCornerShape(topStart = 14.dp, topEnd = 22.dp, bottomEnd = 16.dp, bottomStart = 19.dp),
                 radius = 19.dp,

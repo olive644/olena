@@ -6,12 +6,21 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.platform.LocalContext
+import olenastudy.app.focus.FocusSound
+import olenastudy.app.focus.FocusSounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,6 +51,7 @@ import olenastudy.app.data.focus.FocusMode
 import olenastudy.app.data.focus.FocusSnapshot
 import olenastudy.app.domain.focus.FocusFlower
 import olenastudy.app.domain.focus.FocusPhase
+import olenastudy.app.domain.focus.FocusWeek
 import olenastudy.app.domain.focus.Pomodoro
 import olenastudy.app.focus.FocusController
 import olenastudy.app.ui.ManropeFamily
@@ -80,6 +90,7 @@ data class FocusActions(
     val onStopwatchFinish: () -> Unit = {},
     val onSkip: () -> Unit = {},
     val onRestartPhase: () -> Unit = {},
+    val onPomodoroFinish: () -> Unit = {},
     val onFocusMinutes: (Int) -> Unit = {},
 )
 
@@ -105,6 +116,17 @@ fun FocusScreen(controller: FocusController) {
     }
 
     // Android 13 pede permissão para mostrar o aviso de fim de fase. Pedimos ao iniciar o Pomodoro.
+    val context = LocalContext.current
+    val sounds = remember { FocusSounds(context) }
+    DisposableEffect(Unit) { onDispose { sounds.release() } }
+    // Mordida: toca quando o tomate avança um estágio com o Pomodoro de foco correndo, como no site.
+    val stage =
+        if (pomodoro.phase == FocusPhase.Focus) Pomodoro.tomatoStage(pomodoro.remainingAt(now).toDouble() / (pomodoro.durationMinutes * 60_000.0)) else 0
+    var lastStage by remember { mutableIntStateOf(stage) }
+    LaunchedEffect(stage) {
+        if (pomodoro.running && stage == lastStage + 1) sounds.play(FocusSound.Bite)
+        lastStage = stage
+    }
     val askNotifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
     val isTimer = snapshot.mode == FocusMode.Timer
     FocusContent(
@@ -116,12 +138,21 @@ fun FocusScreen(controller: FocusController) {
                 if (!isTimer && !pomodoro.running && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
+                val wasRunning = if (isTimer) stopwatch.running else pomodoro.running
+                sounds.play(if (wasRunning) FocusSound.Pause else FocusSound.Start)
                 if (isTimer) controller.toggleStopwatch() else controller.togglePomodoro()
             },
-            onStopwatchReset = controller::resetStopwatch,
+            onStopwatchReset = {
+                sounds.play(FocusSound.Restart)
+                controller.resetStopwatch()
+            },
             onStopwatchFinish = controller::finishStopwatch,
             onSkip = controller::skip,
-            onRestartPhase = controller::restartPhase,
+            onRestartPhase = {
+                sounds.play(FocusSound.Restart)
+                controller.restartPhase()
+            },
+            onPomodoroFinish = controller::finishPomodoro,
             onFocusMinutes = controller::setFocusMinutes,
         ),
     )
@@ -173,7 +204,14 @@ fun FocusContent(snapshot: FocusSnapshot, nowMs: Long, actions: FocusActions) {
                 } else {
                     val fraction = pomodoro.remainingAt(now).toDouble() / (pomodoro.durationMinutes * 60_000.0)
                     val stage = if (pomodoro.phase == FocusPhase.Focus) Pomodoro.tomatoStage(fraction) else 0
-                    Image(painterResource(TomatoStages[stage]), null, Modifier.height(220.dp))
+                    // Como no site: o relógio fica sobre a minhoca colada no tomate.
+                    Box(Modifier.size(width = 280.dp, height = 252.dp), contentAlignment = Alignment.Center) {
+                        Image(painterResource(TomatoStages[stage]), null, Modifier.fillMaxSize())
+                        Box(Modifier.align(Alignment.Center).offset(y = 20.dp).width(235.dp).aspectRatio(320f / 120f), contentAlignment = Alignment.Center) {
+                            Image(painterResource(R.drawable.art_pomodoro_worm), null, Modifier.fillMaxSize())
+                            PaperDigits(formatClock(pomodoro.remainingAt(now)), digitHeight = 40.dp, modifier = Modifier.padding(end = 38.dp))
+                        }
+                    }
                 }
             }
             ModeArrow(R.drawable.art_arrow_next, enabled = !locked, description = stringResource(R.string.focus_mode_next)) {
@@ -211,12 +249,7 @@ fun FocusContent(snapshot: FocusSnapshot, nowMs: Long, actions: FocusActions) {
                     ),
                 )
             }
-            PaperDigits(formatClock(pomodoro.remainingAt(now)), digitHeight = 64.dp, modifier = Modifier.padding(top = 4.dp))
-            Text(
-                stringResource(R.string.focus_completed, pomodoro.completed),
-                style = MaterialTheme.typography.bodyMedium,
-                color = colors.muted,
-            )
+            PomodoroWeek(snapshot, now)
         }
 
         val label =
@@ -225,13 +258,9 @@ fun FocusContent(snapshot: FocusSnapshot, nowMs: Long, actions: FocusActions) {
             } else {
                 if (pomodoro.running) R.string.focus_pause else R.string.focus_start
             }
-        PaperButton(
-            text = stringResource(label),
-            onClick = actions.onPrimary,
-            modifier = Modifier.fillMaxWidth(),
-        )
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-            if (isTimer) {
+        if (isTimer) {
+            PaperButton(text = stringResource(label), onClick = actions.onPrimary, modifier = Modifier.fillMaxWidth())
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
                 PaperButton(stringResource(R.string.focus_restart), actions.onStopwatchReset, Modifier.weight(1f), PaperButtonStyle.Quiet)
                 PaperButton(
                     stringResource(R.string.focus_finish),
@@ -239,9 +268,30 @@ fun FocusContent(snapshot: FocusSnapshot, nowMs: Long, actions: FocusActions) {
                     Modifier.weight(1f),
                     if (olenastudy.app.domain.focus.Stopwatch.canFinish(elapsedMs)) PaperButtonStyle.Accent else PaperButtonStyle.Quiet,
                 )
-            } else {
-                PaperButton(stringResource(R.string.focus_skip), actions.onSkip, Modifier.weight(1f), PaperButtonStyle.Quiet)
-                PaperButton(stringResource(R.string.focus_restart), actions.onRestartPhase, Modifier.weight(1f), PaperButtonStyle.Quiet)
+            }
+        } else {
+            // Como no site: Começar com play, reiniciar só com ícone e Encerrar e registrar.
+            val doneMs = pomodoro.durationMinutes * 60_000L - pomodoro.remainingAt(now)
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                PaperButton(
+                    text = stringResource(label),
+                    onClick = actions.onPrimary,
+                    modifier = Modifier.weight(1f),
+                    leading = { PlayGlyph() },
+                )
+                PaperButton(
+                    text = "",
+                    onClick = actions.onRestartPhase,
+                    leading = {
+                        Image(painterResource(R.drawable.art_icon_reset_light), stringResource(R.string.focus_restart), Modifier.size(26.dp))
+                    },
+                )
+                PaperButton(
+                    text = stringResource(R.string.focus_finish_pomodoro),
+                    onClick = actions.onPomodoroFinish,
+                    modifier = Modifier.weight(1.45f),
+                    enabled = doneMs >= 1000,
+                )
             }
         }
         if (!isTimer && !pomodoro.running && pomodoro.phase == FocusPhase.Focus) {
@@ -258,6 +308,27 @@ fun FocusContent(snapshot: FocusSnapshot, nowMs: Long, actions: FocusActions) {
                 }
             }
         }
+    }
+}
+
+/** Triângulo de play de papel: branco com a faceta clara, como o ícone do botão Começar. */
+@Composable
+private fun PlayGlyph() {
+    androidx.compose.foundation.Canvas(Modifier.size(22.dp)) {
+        val body = androidx.compose.ui.graphics.Path().apply {
+            moveTo(size.width * 0.12f, size.height * 0.06f)
+            lineTo(size.width * 0.94f, size.height * 0.5f)
+            lineTo(size.width * 0.12f, size.height * 0.94f)
+            close()
+        }
+        drawPath(body, Color(0xFFFFF9EF))
+        val facet = androidx.compose.ui.graphics.Path().apply {
+            moveTo(size.width * 0.12f, size.height * 0.06f)
+            lineTo(size.width * 0.94f, size.height * 0.5f)
+            lineTo(size.width * 0.12f, size.height * 0.5f)
+            close()
+        }
+        drawPath(facet, Color(0xFFE6DAF8))
     }
 }
 
@@ -288,4 +359,38 @@ private fun ModeArrow(@DrawableRes art: Int, enabled: Boolean, description: Stri
             .padding(0.dp),
         alpha = if (enabled) 1f else 0.35f,
     )
+}
+
+/** Semana de tomates e resumo das durações, como no Pomodoro do site. */
+@Composable
+private fun PomodoroWeek(snapshot: FocusSnapshot, nowMs: Long) {
+    val colors = OlenaTheme.colors
+    val zone = ZoneId.systemDefault()
+    val today = java.time.Instant.ofEpochMilli(nowMs).atZone(zone).toLocalDate()
+    val active = FocusWeek.activeDays(snapshot.records, zone)
+    val config = snapshot.config
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 6.dp)) {
+        Text(stringResource(R.string.focus_week_title), fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = colors.text)
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            FocusWeek.days(today).forEachIndexed { index, day ->
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val res =
+                        when {
+                            day in active -> if (colors.isDark) R.drawable.art_streak_on_dark else R.drawable.art_streak_on
+                            else -> if (colors.isDark) R.drawable.art_streak_off_dark else R.drawable.art_streak_off
+                        }
+                    Image(painterResource(res), null, Modifier.size(width = 36.dp, height = 40.dp))
+                    Text(FocusWeek.LABELS[index].toString(), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = colors.muted)
+                }
+            }
+        }
+        val summary =
+            stringResource(R.string.focus_summary_study_break, FocusWeek.formatDuration(config.focusMinutes), FocusWeek.formatDuration(config.shortBreakMinutes)) +
+                if (config.longBreaks) {
+                    " · " + stringResource(R.string.focus_summary_long_break, FocusWeek.formatDuration(config.longBreakMinutes))
+                } else {
+                    stringResource(R.string.focus_summary_no_long_break)
+                }
+        Text(summary, style = MaterialTheme.typography.bodyMedium, color = colors.text, textAlign = TextAlign.Center)
+    }
 }
