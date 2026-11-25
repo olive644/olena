@@ -27,6 +27,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,12 +44,14 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import olenastudy.app.R
 import olenastudy.app.data.settings.ThemeMode
+import olenastudy.app.domain.profile.ProfileLook
 import olenastudy.app.data.agenda.AgendaRepository
 import olenastudy.app.data.agenda.TaskRepository
 import olenastudy.app.domain.agenda.Tasks
@@ -67,6 +72,7 @@ import olenastudy.app.ui.components.paperPanel
 import olenastudy.app.ui.navigation.AppDestination
 import olenastudy.app.ui.screens.InProgressScreen
 import olenastudy.app.ui.screens.ProfileScreen
+import olenastudy.app.ui.screens.SettingsScreen
 import olenastudy.app.ui.screens.titleRes
 
 /** Casca do app: conteúdo do destino atual e a barra de navegação de papel embaixo. */
@@ -77,10 +83,11 @@ fun AppShell(
     taskRepository: TaskRepository,
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
-    avatarId: String = "helena",
-    onAvatarChange: (String) -> Unit = {},
+    look: ProfileLook = ProfileLook(),
+    onLookChange: (ProfileLook) -> Unit = {},
 ) {
     val colors = OlenaTheme.colors
+    var settingsOpen by rememberSaveable { mutableStateOf(false) }
     val navController = rememberNavController()
     val entry by navController.currentBackStackEntryAsState()
     val current = AppDestination.fromRoute(entry?.destination?.route)
@@ -134,7 +141,12 @@ fun AppShell(
                 AppDestination.entries.forEach { destination ->
                     composable(destination.route) {
                         when (destination) {
-                            AppDestination.Profile -> ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, avatarId = avatarId, onAvatarChange = onAvatarChange)
+                            AppDestination.Profile ->
+                                if (settingsOpen) {
+                                    SettingsScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, onBack = { settingsOpen = false })
+                                } else {
+                                    ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, look = look, onLookChange = onLookChange, onOpenSettings = { settingsOpen = true })
+                                }
                             AppDestination.Today -> HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
                             AppDestination.Learn -> PracticeScreen()
                             AppDestination.Focus -> FocusScreen(focusController)
@@ -190,19 +202,18 @@ fun PaperNavigationBar(current: AppDestination, onSelect: (AppDestination) -> Un
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             AppDestination.entries.forEach { destination ->
-                NavigationItem(destination, selected = destination == current, onClick = { onSelect(destination) })
+                NavigationItem(destination, selected = destination == current, onClick = { onSelect(destination) }, modifier = Modifier.weight(1f))
             }
         }
     }
 }
 
 @Composable
-private fun NavigationItem(destination: AppDestination, selected: Boolean, onClick: () -> Unit) {
+private fun NavigationItem(destination: AppDestination, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val colors = OlenaTheme.colors
     val label = stringResource(destination.label)
     Column(
-        modifier = Modifier
-            .width(58.dp)
+        modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .clickable(role = Role.Tab, onClick = onClick)
             .semantics { this.selected = selected }
@@ -223,9 +234,11 @@ private fun NavigationItem(destination: AppDestination, selected: Boolean, onCli
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
+            fontSize = 10.sp,
             fontWeight = FontWeight.Bold,
             color = if (colors.isDark) Color(0xFFFFF9EF) else Color(0xFF292432),
             maxLines = 1,
+            softWrap = false,
         )
     }
 }

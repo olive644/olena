@@ -16,6 +16,7 @@ import olenastudy.app.focus.FocusController
 import kotlinx.coroutines.launch
 import olenastudy.app.data.settings.ThemeMode
 import olenastudy.app.data.settings.ThemeSettings
+import olenastudy.app.domain.profile.ProfileLook
 import olenastudy.app.ui.AppShell
 import olenastudy.app.ui.OlenaTheme
 
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val scope = rememberCoroutineScope()
             val themeMode by remember { settings.themeMode }.collectAsStateWithLifecycle(initialValue = ThemeMode.System)
-            val avatarId by remember { settings.avatarId }.collectAsStateWithLifecycle(initialValue = "helena")
+            val look by remember { settings.look }.collectAsStateWithLifecycle(initialValue = ProfileLook())
             val dark =
                 when (themeMode) {
                     ThemeMode.System -> isSystemInDarkTheme()
@@ -44,8 +45,8 @@ class MainActivity : ComponentActivity() {
                     taskRepository = taskRepository,
                     themeMode = themeMode,
                     onThemeModeChange = { mode -> scope.launch { settings.setThemeMode(mode) } },
-                    avatarId = avatarId,
-                    onAvatarChange = { id -> scope.launch { settings.setAvatarId(id) } },
+                    look = look,
+                    onLookChange = { next -> scope.launch { settings.setLook(next) } },
                 )
             }
         }

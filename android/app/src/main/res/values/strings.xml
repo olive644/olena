@@ -143,4 +143,22 @@
     <string name="agenda_filter_appointments">Compromissos</string>
     <string name="agenda_filter_study">Estudos</string>
     <string name="agenda_filter_tasks">Tarefas</string>
+    <string name="settings_title">Configurações</string>
+    <string name="settings_back">Voltar ao perfil</string>
+    <string name="settings_account">Conta</string>
+    <string name="settings_security">Segurança</string>
+    <string name="settings_support">Conversar com o time</string>
+    <string name="settings_appearance">Aparência e acessibilidade</string>
+    <string name="settings_study">Estudo e foco</string>
+    <string name="settings_notebooks">Cadernos</string>
+    <string name="settings_agenda">Agenda e notificações</string>
+    <string name="settings_privacy">Privacidade e dados</string>
+    <string name="settings_version">OlenaStudy · App Android (beta)</string>
+    <string name="settings_soon_title">Em breve no app</string>
+    <string name="settings_soon_text">Esta área ainda não existe no app. Por enquanto ela fica no site.</string>
+    <string name="profile_tab_frames">Molduras</string>
+    <string name="profile_tab_headers">Headers</string>
+    <string name="profile_tab_background">Fundo do perfil</string>
+    <string name="profile_use_character">Usar personagem</string>
+    <string name="profile_who_studies">Quem está estudando?</string>
 </resources>
