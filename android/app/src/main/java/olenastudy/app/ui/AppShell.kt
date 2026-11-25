@@ -148,7 +148,9 @@ fun AppShell(
                         when (destination) {
                             AppDestination.Profile ->
                                 if (settingsOpen) {
-                                    SettingsScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, onBack = { settingsOpen = false })
+                                    androidx.compose.runtime.CompositionLocalProvider(olenastudy.app.ui.screens.LocalFocusController provides focusController) {
+                                        SettingsScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, onBack = { settingsOpen = false })
+                                    }
                                 } else {
                                     ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, look = look, onLookChange = onLookChange, info = info, onInfoChange = onInfoChange, onOpenSettings = { settingsOpen = true })
                                 }

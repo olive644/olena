@@ -105,6 +105,21 @@ class FocusController(
         commit(s.copy(pomodoro = Pomodoro.restartPhase(state), records = records))
     }
 
+    /** Configurações > Estudo e foco: troca as durações do Pomodoro. Um relógio parado na fase atual já passa a usar o valor novo. */
+    fun setConfig(config: PomodoroConfig) {
+        if (!Pomodoro.isValidMinutes(config.focusMinutes) || !Pomodoro.isValidMinutes(config.shortBreakMinutes) || !Pomodoro.isValidMinutes(config.longBreakMinutes)) return
+        val s = _snapshot.value
+        val minutes =
+            when (s.pomodoro.phase) {
+                FocusPhase.Focus -> config.focusMinutes
+                FocusPhase.ShortBreak -> config.shortBreakMinutes
+                FocusPhase.LongBreak -> config.longBreakMinutes
+            }
+        val untouched = !s.pomodoro.running && s.pomodoro.remainingMs == s.pomodoro.durationMinutes * 60_000L
+        val state = if (untouched) s.pomodoro.copy(durationMinutes = minutes, remainingMs = minutes * 60_000L) else s.pomodoro
+        commit(s.copy(config = config, pomodoro = state))
+    }
+
     fun restartPhase() = commit(_snapshot.value.copy(pomodoro = Pomodoro.restartPhase(_snapshot.value.pomodoro)))
 
     fun setFocusMinutes(minutes: Int) {

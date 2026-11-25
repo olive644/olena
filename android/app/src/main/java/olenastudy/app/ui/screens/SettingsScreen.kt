@@ -155,12 +155,15 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
             when (section) {
                 Section.Account ->
                     Card("SUA IDENTIDADE", "Informações") {
+                        Text("Seu perfil", fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = colors.text)
+                        InfoRow("E-mail", "Nenhum e-mail conectado")
+                        InfoRow("Fuso da conta", java.time.ZoneId.systemDefault().id.replace("_", " "))
                         PaperButton("Entrar com Google", { note = "Entrar com a conta chega ao app junto com o login e a sincronização." }, Modifier.fillMaxWidth())
                     }
                 Section.Security ->
-                    Card(null, "Esta sessão") { Body("Entre na sua conta para consultar e encerrar esta sessão.") }
+                    Card("SEGURANÇA", "Esta sessão") { Body("Entre na sua conta para consultar e encerrar esta sessão.") }
                 Section.Support ->
-                    Card(null, "Conversar com o time") {
+                    Card("ATENDIMENTO HUMANO", "Conversar com o time") {
                         Body("Conte o que aconteceu. Não envie senhas, códigos de acesso ou documentos pessoais. O time responderá nesta conversa.")
                         PaperButton("Iniciar conversa", { note = "A conversa com o time depende da conta e chega com o login." }, Modifier.fillMaxWidth())
                     }
@@ -183,51 +186,8 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                         Toggle("Caderno em 3D", "Experimental: folhas em 3D com som de papel. Pode pesar em aparelhos mais lentos.", flag(SettingFlags.Notebook3d)) { onFlag(SettingFlags.Notebook3d, it) }
                     }
                 }
-                Section.Study -> {
-                    Card(null, "Seu ritmo de foco") {
-                        Eyebrow("META DIÁRIA")
-                        Choices(
-                            listOf("" to "Sem meta fixa", "5" to "5 minutos", "15" to "15 minutos", "30" to "30 minutos", "60" to "60 minutos"),
-                            selected = setOf(choice(SettingChoices.DailyGoal)),
-                        ) { onChoice(SettingChoices.DailyGoal, it) }
-                        Text("Matéria inicial", fontFamily = ManropeFamily, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = colors.text)
-                        Choices(listOf("" to "Escolher depois", "english" to "Inglês"), selected = setOf(choice(SettingChoices.StartSubject))) { onChoice(SettingChoices.StartSubject, it) }
-                        Body("As durações da rodada ficam na aba Foco do app.")
-                    }
-                    Card(null, "Preferências de estudo") {
-                        Body("Estas escolhas organizam recomendações futuras. Você pode combinar modalidades.")
-                        Text("Como você prefere aprender?", fontFamily = ManropeFamily, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = colors.text)
-                        val learn = choice(SettingChoices.Learn).split(",").filter { it.isNotEmpty() }.toSet()
-                        Choices(
-                            listOf("visual" to "Visual", "listen" to "Ouvindo e conversando", "read" to "Lendo e escrevendo", "practice" to "Praticando"),
-                            selected = learn,
-                        ) { id -> onChoice(SettingChoices.Learn, (if (id in learn) learn - id else learn + id).joinToString(",")) }
-                        Text("Como organizar o estudo?", fontFamily = ManropeFamily, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = colors.text)
-                        Choices(listOf("steps" to "Passo a passo", "overview" to "Visão geral primeiro"), selected = setOf(choice(SettingChoices.Organize))) { onChoice(SettingChoices.Organize, it) }
-                        Text("Qual ritmo combina com você?", fontFamily = ManropeFamily, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = colors.text)
-                        Choices(listOf("continuous" to "Foco contínuo", "alternate" to "Alternar estudo e pausas"), selected = setOf(choice(SettingChoices.Rhythm))) { onChoice(SettingChoices.Rhythm, it) }
-                        Text("Programação", fontFamily = ManropeFamily, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = colors.text)
-                        Choices(
-                            listOf("" to "Agora não", "python" to "Python", "js" to "JavaScript", "both" to "Python e JavaScript", "web" to "HTML e CSS"),
-                            selected = setOf(choice(SettingChoices.Programming)),
-                        ) { onChoice(SettingChoices.Programming, it) }
-                    }
-                }
-                Section.Notebooks ->
-                    Card(null, "Escrita e ferramentas") {
-                        Eyebrow("Escrita e toque")
-                        Toggle("Ajuste inteligente", "Suaviza o movimento e endireita linhas quase retas.", flag(SettingFlags.SmartAdjust)) { onFlag(SettingFlags.SmartAdjust, it) }
-                        Toggle("Formas ao segurar", "Segure a caneta parada no fim do traço para acertar retas, elipses, retângulos e triângulos.", flag(SettingFlags.ShapeHold)) { onFlag(SettingFlags.ShapeHold, it) }
-                        Toggle("Prever a ponta da caneta", "Desenha um pedacinho à frente da caneta para a tinta parecer sair com menos atraso.", flag(SettingFlags.PredictPen)) { onFlag(SettingFlags.PredictPen, it) }
-                        Toggle("Prévia ao pairar a caneta", "Mostra onde a ponta vai pousar antes de tocar a folha, em canetas que avisam isso.", flag(SettingFlags.HoverPreview)) { onFlag(SettingFlags.HoverPreview, it) }
-                        Toggle("Só caneta, dedo move", "Use os dedos para navegar e a caneta para escrever.", flag(SettingFlags.PenOnly)) { onFlag(SettingFlags.PenOnly, it) }
-                        Toggle("Avanço da janela de escrita", "A janela acompanha a escrita automaticamente.", flag(SettingFlags.WindowAdvance)) { onFlag(SettingFlags.WindowAdvance, it) }
-                        Eyebrow("Texto")
-                        Toggle("Correção automática de texto", "Revisa acentos e início das frases.", flag(SettingFlags.AutoCorrect)) { onFlag(SettingFlags.AutoCorrect, it) }
-                        Eyebrow("Coordenadas")
-                        Toggle("Medições nos eixos", "Mostra valores nas divisões dos eixos.", flag(SettingFlags.AxisValues)) { onFlag(SettingFlags.AxisValues, it) }
-                        Toggle("Eixos com o mesmo tamanho", "Mantém a mesma extensão horizontal e vertical.", flag(SettingFlags.AxisEqual)) { onFlag(SettingFlags.AxisEqual, it) }
-                    }
+                Section.Study -> StudySettingsContent()
+                Section.Notebooks -> NotebookSettingsContent()
                 Section.Agenda -> {
                     var granted by remember { mutableStateOf(notificationsAllowed(context)) }
                     val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted = notificationsAllowed(context) }
@@ -250,7 +210,7 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                     }
                 }
                 Section.Privacy -> {
-                    Card(null, "Exportar uma cópia") {
+                    Card("SEUS DADOS", "Exportar uma cópia") {
                         Body("Baixa os estudos e preferências disponíveis neste aparelho em JSON. Arquivos que existem somente na nuvem e conversas do atendimento não são baixados por esta ação.")
                         Body("A cópia contém seus textos e dados pessoais, sem criptografia. Guarde em um lugar seguro.")
                         Body("Aguarde a conta carregar ou entre para exportar os dados corretos.")
@@ -295,7 +255,7 @@ private fun notificationsAllowed(context: Context): Boolean =
 
 /** Cartão de papel de uma área: marca em roxo, título e o conteúdo. */
 @Composable
-private fun Card(eyebrow: String?, title: String, content: @Composable () -> Unit) {
+internal fun Card(eyebrow: String?, title: String, content: @Composable () -> Unit) {
     val colors = OlenaTheme.colors
     Column(
         modifier = Modifier
@@ -320,18 +280,28 @@ private fun Card(eyebrow: String?, title: String, content: @Composable () -> Uni
     }
 }
 
+/** Linha rótulo e valor, como os pares "E-mail" e "Fuso da conta" do site. */
 @Composable
-private fun Eyebrow(text: String) {
+private fun InfoRow(label: String, value: String) {
+    val colors = OlenaTheme.colors
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(label, fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 12.sp, color = colors.muted)
+        Text(value, fontFamily = ManropeFamily, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = colors.text)
+    }
+}
+
+@Composable
+internal fun Eyebrow(text: String) {
     Text(text.uppercase(), fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 11.sp, letterSpacing = 1.4.sp, color = OlenaTheme.colors.violet)
 }
 
 @Composable
-private fun Body(text: String) {
+internal fun Body(text: String) {
     Text(text, style = MaterialTheme.typography.bodyMedium, color = OlenaTheme.colors.text)
 }
 
 @Composable
-private fun Link(text: String, onClick: () -> Unit) {
+internal fun Link(text: String, onClick: () -> Unit) {
     Text(
         text,
         fontFamily = ManropeFamily,
@@ -344,7 +314,7 @@ private fun Link(text: String, onClick: () -> Unit) {
 
 /** Ajuste liga/desliga: título, explicação e a caixa de papel, que fica amarela quando marcada. */
 @Composable
-private fun Toggle(title: String, hint: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+internal fun Toggle(title: String, hint: String, checked: Boolean, onChange: (Boolean) -> Unit) {
     val colors = OlenaTheme.colors
     Row(
         Modifier
@@ -374,7 +344,7 @@ private fun Toggle(title: String, hint: String, checked: Boolean, onChange: (Boo
 /** Botões de escolha: o escolhido fica roxo. Vários podem ficar marcados (preferências combináveis). */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun Choices(options: List<Pair<String, String>>, selected: Set<String>, onPick: (String) -> Unit) {
+internal fun Choices(options: List<Pair<String, String>>, selected: Set<String>, onPick: (String) -> Unit) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         options.forEach { (id, label) ->
             val on = id in selected
@@ -385,7 +355,7 @@ private fun Choices(options: List<Pair<String, String>>, selected: Set<String>, 
 
 /** Peça de papel clara e em relevo, igual aos botões secundários do site. */
 @Composable
-private fun SettingsTile(onClick: () -> Unit, description: String, modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
+internal fun SettingsTile(onClick: () -> Unit, description: String, modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
     val dark = OlenaTheme.colors.isDark
     Box(
         modifier = modifier
@@ -405,4 +375,32 @@ private fun SettingsTile(onClick: () -> Unit, description: String, modifier: Mod
         contentAlignment = Alignment.Center,
         content = content,
     )
+}
+
+/** Acesso às preferências do aparelho para as seções de Configurações (DataStore, via AppPreferences). */
+internal class SettingsState(
+    private val prefs: androidx.datastore.preferences.core.Preferences?,
+    private val store: AppPreferences,
+    private val scope: kotlinx.coroutines.CoroutineScope,
+) {
+    fun flag(f: Flag): Boolean = prefs?.flag(f) ?: f.default
+
+    fun choice(name: String): String = prefs?.choice(name) ?: ""
+
+    fun setFlag(f: Flag, value: Boolean) {
+        scope.launch { store.set(f, value) }
+    }
+
+    fun setChoice(name: String, value: String) {
+        scope.launch { store.setChoice(name, value) }
+    }
+}
+
+@Composable
+internal fun rememberSettingsState(): SettingsState {
+    val context = LocalContext.current
+    val store = remember { AppPreferences(context.applicationContext) }
+    val prefs by store.snapshot.collectAsState(initial = null)
+    val scope = rememberCoroutineScope()
+    return SettingsState(prefs, store, scope)
 }

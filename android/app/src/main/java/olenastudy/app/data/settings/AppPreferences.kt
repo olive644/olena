@@ -33,6 +33,12 @@ object SettingFlags {
     val AxisValues = Flag("notebook_axis_values", true)
     val AxisEqual = Flag("notebook_axis_equal", true)
 
+    // Cadernos: outros ajustes do site
+    val ScribbleErase = Flag("notebook_scribble_erase", true)
+    val PenMeter = Flag("notebook_pen_meter", false)
+    val SnapObjects = Flag("notebook_snap_objects", true)
+    val AlignGuides = Flag("notebook_align_guides", true)
+
     // Notificações por tipo
     val NotifyFollowers = Flag("notify_followers", true)
     val NotifyActivity = Flag("notify_activity", true)
@@ -48,6 +54,7 @@ object SettingFlags {
             ReduceMotion, HighlightSelections, SoundEffects, Vibration, Notebook3d,
             SmartAdjust, ShapeHold, PredictPen, HoverPreview, PenOnly, WindowAdvance,
             AutoCorrect, AxisValues, AxisEqual,
+            ScribbleErase, PenMeter, SnapObjects, AlignGuides,
             NotifyFollowers, NotifyActivity, NotifyAgenda, NotifyNews, NotifyXp,
             ShareActivity,
         )
@@ -61,6 +68,11 @@ object SettingChoices {
     const val Organize = "study_organize"
     const val Rhythm = "study_rhythm"
     const val Programming = "study_programming"
+
+    // Cadernos: atalhos de caneta e mesa (valores: tool, pen, highlighter, eraser, pan, select)
+    const val PenSideButton = "pen_side_button"
+    const val PenSecondButton = "pen_second_button"
+    const val PenEraserTip = "pen_eraser_tip"
 }
 
 private val Context.appPrefsStore by preferencesDataStore(name = "app_prefs")
