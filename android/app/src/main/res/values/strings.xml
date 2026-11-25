@@ -45,7 +45,7 @@
     <!-- Agenda -->
     <string name="agenda_today">Hoje</string>
     <string name="agenda_empty">Nada marcado para este dia.</string>
-    <string name="agenda_new">Novo compromisso</string>
+    <string name="agenda_new">Criar compromisso</string>
     <string name="agenda_save">Salvar</string>
     <string name="agenda_cancel">Cancelar</string>
     <string name="agenda_delete">Excluir</string>
@@ -82,4 +82,20 @@
     <string name="focus_long_break_text">Você completou quatro rodadas. Descanse por 15 minutos.</string>
     <string name="focus_short_break_text">Respire por 5 minutos. O próximo ciclo começa sozinho.</string>
     <string name="header_updates">Atualizações do sistema</string>
+    <string name="agenda_sync_caption">Entre na sua conta para sincronizar Agenda e Foco</string>
+    <string name="agenda_view_day">Dia</string>
+    <string name="agenda_view_week">Semana</string>
+    <string name="agenda_view_month">Mês</string>
+    <string name="agenda_view_list">Lista</string>
+    <string name="agenda_search_title">Buscar na agenda</string>
+    <string name="agenda_search_hint">Título, descrição ou local</string>
+    <string name="agenda_go_today">Ir para hoje</string>
+    <string name="agenda_list_empty">Nada marcado nos próximos 30 dias.</string>
+    <string name="weekday_mon">Seg</string>
+    <string name="weekday_tue">Ter</string>
+    <string name="weekday_wed">Qua</string>
+    <string name="weekday_thu">Qui</string>
+    <string name="weekday_fri">Sex</string>
+    <string name="weekday_sat">Sáb</string>
+    <string name="weekday_sun">Dom</string>
 </resources>

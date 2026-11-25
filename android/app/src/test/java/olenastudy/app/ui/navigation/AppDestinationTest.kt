@@ -36,9 +36,10 @@ class AppDestinationTest {
     }
 
     @Test
-    fun `o perfil usa o mesmo ícone de repouso nos dois temas`() {
+    fun `o perfil usa ícone mais claro no tema escuro e outro quando ativo`() {
         val profile = AppDestination.Profile
-        assertEquals(profile.icon(selected = false, darkTheme = false), profile.icon(selected = false, darkTheme = true))
+        assertNotEquals(profile.icon(selected = false, darkTheme = false), profile.icon(selected = false, darkTheme = true))
+        assertEquals(profile.icon(selected = true, darkTheme = false), profile.icon(selected = true, darkTheme = true))
         assertTrue(profile.icon(selected = true, darkTheme = false) != profile.icon(selected = false, darkTheme = false))
     }
 }

@@ -1,10 +1,22 @@
 package olenastudy.app.ui.screens
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
@@ -18,12 +30,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -34,72 +54,131 @@ import olenastudy.app.data.agenda.AgendaRepository
 import olenastudy.app.domain.agenda.Agenda
 import olenastudy.app.domain.agenda.Recurrence
 import olenastudy.app.domain.agenda.StudyEvent
+import olenastudy.app.ui.ManropeFamily
 import olenastudy.app.ui.OlenaTheme
 import olenastudy.app.ui.components.PaperButton
 import olenastudy.app.ui.components.PaperButtonStyle
 import olenastudy.app.ui.components.PaperCard
+import olenastudy.app.ui.components.paperPanel
 import olenastudy.app.widget.AgendaWidget
 
-private val DateLabel = DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM", Locale("pt", "BR"))
+private val PtBr = Locale("pt", "BR")
 private val Durations = listOf(15, 30, 45, 60, 90)
 private val Repeats = listOf(Recurrence.none, Recurrence.daily, Recurrence.weekly, Recurrence.monthly)
 
+enum class AgendaView { Day, Week, Month, List }
+
 fun formatMinutesOfDay(minutes: Int): String = "%02d:%02d".format(minutes / 60, minutes % 60)
+
+/** "Novembro De 2026": o site capitaliza cada palavra do mês e do ano. */
+fun monthTitle(date: LocalDate): String =
+    date.format(DateTimeFormatter.ofPattern("MMMM 'de' yyyy", PtBr)).split(" ").joinToString(" ") { it.replaceFirstChar(Char::uppercase) }
+
+/** "Quarta-Feira, 25 De Novembro", como o título do dia no site. */
+fun dayTitle(date: LocalDate): String =
+    date.format(DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM", PtBr)).split(" ").joinToString(" ") { part ->
+        part.split("-").joinToString("-") { it.replaceFirstChar(Char::uppercase) }
+    }
+
+/** As 42 datas da grade do mês, começando na segunda-feira da semana do dia 1 (igual a `monthDates` do site). */
+fun monthGrid(date: LocalDate): List<LocalDate> {
+    val first = date.withDayOfMonth(1).with(DayOfWeek.MONDAY)
+    return List(42) { first.plusDays(it.toLong()) }
+}
 
 @Composable
 fun AgendaScreen(repository: AgendaRepository) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val events by repository.events.collectAsStateWithLifecycle(initialValue = emptyList())
-    var dateText by rememberSaveable { mutableStateOf(LocalDate.now().toString()) }
-    var creating by rememberSaveable { mutableStateOf(false) }
-    var deleting by remember { mutableStateOf<StudyEvent?>(null) }
-    val date = LocalDate.parse(dateText)
-    val today = events.let { Agenda.eventsOn(it, dateText) }
-
     fun changed(block: suspend () -> Unit) {
         scope.launch {
             block()
             AgendaWidget().updateAll(context)
         }
     }
+    AgendaContent(
+        events = events,
+        today = LocalDate.now(),
+        initialView = AgendaView.Month,
+        onAdd = { event -> changed { repository.add(event) } },
+        onRemove = { id -> changed { repository.remove(id) } },
+    )
+}
 
-    ScreenScaffold(R.string.screen_planner_title) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-            PaperButton("‹", { dateText = date.minusDays(1).toString() }, Modifier.weight(1f), PaperButtonStyle.Quiet)
-            PaperButton(stringResource(R.string.agenda_today), { dateText = LocalDate.now().toString() }, Modifier.weight(2f), PaperButtonStyle.Quiet)
-            PaperButton("›", { dateText = date.plusDays(1).toString() }, Modifier.weight(1f), PaperButtonStyle.Quiet)
-        }
-        Text(
-            text = date.format(DateLabel).replaceFirstChar { it.uppercase() },
-            style = MaterialTheme.typography.titleLarge,
-            color = OlenaTheme.colors.text,
-        )
-        if (today.isEmpty()) {
-            PaperCard(Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.agenda_empty), style = MaterialTheme.typography.bodyLarge, color = OlenaTheme.colors.muted)
+/** Imagem estática para os testes de tela: mesmo conteúdo, sem banco. */
+@Composable
+fun AgendaPreview(events: List<StudyEvent>, today: LocalDate, view: AgendaView) =
+    AgendaContent(events, today, view, onAdd = {}, onRemove = {})
+
+/** Conteúdo da Agenda, sem acesso a dados: recebe os compromissos e devolve criar e excluir. */
+@Composable
+fun AgendaContent(
+    events: List<StudyEvent>,
+    today: LocalDate,
+    initialView: AgendaView,
+    onAdd: (StudyEvent) -> Unit,
+    onRemove: (String) -> Unit,
+) {
+    var dateText by rememberSaveable { mutableStateOf(today.toString()) }
+    var viewName by rememberSaveable { mutableStateOf(initialView.name) }
+    var query by rememberSaveable { mutableStateOf("") }
+    var creating by rememberSaveable { mutableStateOf(false) }
+    var deleting by remember { mutableStateOf<StudyEvent?>(null) }
+    val date = LocalDate.parse(dateText)
+    val view = AgendaView.valueOf(viewName)
+    val colors = OlenaTheme.colors
+    val shown = if (query.isBlank()) events else events.filter { it.title.contains(query.trim(), ignoreCase = true) }
+
+    Column(
+        modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp),
+    ) {
+        // Painel de ferramentas: visões e busca, como no site.
+        PaperCard(Modifier.fillMaxWidth()) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(stringResource(R.string.agenda_sync_caption), style = MaterialTheme.typography.bodyLarge, color = colors.text)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    ViewTile(R.drawable.ic_agenda_day, stringResource(R.string.agenda_view_day), view == AgendaView.Day) { viewName = AgendaView.Day.name }
+                    ViewTile(R.drawable.ic_agenda_week, stringResource(R.string.agenda_view_week), view == AgendaView.Week) { viewName = AgendaView.Week.name }
+                    ViewTile(R.drawable.ic_agenda_month, stringResource(R.string.agenda_view_month), view == AgendaView.Month) { viewName = AgendaView.Month.name }
+                    ViewTile(R.drawable.ic_agenda_list, stringResource(R.string.agenda_view_list), view == AgendaView.List) { viewName = AgendaView.List.name }
+                }
+                Text(stringResource(R.string.agenda_search_title), style = MaterialTheme.typography.titleLarge, color = colors.text)
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = { query = it.take(80) },
+                    placeholder = { Text(stringResource(R.string.agenda_search_hint)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                )
             }
         }
-        today.forEach { event ->
+
+        when (view) {
+            AgendaView.Month -> MonthPanel(date, today, shown, onPick = { dateText = it.toString() }, onToday = { dateText = today.toString() }, onMonth = { dateText = it.toString() })
+            AgendaView.Week -> WeekPanel(date, shown, onPick = { dateText = it.toString() })
+            AgendaView.List -> ListPanel(shown, today, onDelete = { deleting = it })
+            AgendaView.Day -> Unit
+        }
+
+        if (view != AgendaView.List) {
+            // Painel do dia: título, ação de criar e os compromissos do dia.
             PaperCard(Modifier.fillMaxWidth()) {
-                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(event.title, style = MaterialTheme.typography.titleMedium, color = OlenaTheme.colors.text)
-                    Text(
-                        "${event.time} · ${event.durationMinutes} min" +
-                            if (event.recurrenceFrequency != Recurrence.none) " · " + stringResource(repeatLabel(event.recurrenceFrequency)) else "",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = OlenaTheme.colors.muted,
-                    )
-                    PaperButton(stringResource(R.string.agenda_delete), { deleting = event }, Modifier.fillMaxWidth(), PaperButtonStyle.Quiet)
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(dayTitle(date), style = MaterialTheme.typography.headlineMedium, color = colors.text)
+                    Box(Modifier.fillMaxWidth().height(2.dp).background(colors.yellow.copy(alpha = 0.55f)))
+                    PaperButton(stringResource(R.string.agenda_new), { creating = true }, Modifier.fillMaxWidth())
+                    val dayEvents = Agenda.eventsOn(shown, dateText)
+                    if (dayEvents.isEmpty()) {
+                        Text(stringResource(R.string.agenda_empty), style = MaterialTheme.typography.bodyLarge, color = colors.muted)
+                    }
+                    dayEvents.forEach { event -> EventRow(event) { deleting = event } }
                 }
             }
         }
-        PaperButton(stringResource(R.string.agenda_new), { creating = true }, Modifier.fillMaxWidth())
-        Text(
-            stringResource(R.string.agenda_local_note),
-            style = MaterialTheme.typography.bodyMedium,
-            color = OlenaTheme.colors.muted,
-        )
+        Text(stringResource(R.string.agenda_local_note), style = MaterialTheme.typography.bodyMedium, color = colors.muted)
     }
 
     if (creating) {
@@ -108,7 +187,7 @@ fun AgendaScreen(repository: AgendaRepository) {
             onDismiss = { creating = false },
             onSave = { event ->
                 creating = false
-                changed { repository.add(event) }
+                onAdd(event)
             },
         )
     }
@@ -120,11 +199,173 @@ fun AgendaScreen(repository: AgendaRepository) {
             confirmButton = {
                 PaperButton(stringResource(R.string.agenda_delete), {
                     deleting = null
-                    changed { repository.remove(event.id) }
+                    onRemove(event.id)
                 })
             },
             dismissButton = { PaperButton(stringResource(R.string.agenda_cancel), { deleting = null }, style = PaperButtonStyle.Quiet) },
         )
+    }
+}
+
+@Composable
+private fun ViewTile(@DrawableRes icon: Int, label: String, selected: Boolean, onClick: () -> Unit) {
+    val colors = OlenaTheme.colors
+    Column(
+        modifier = Modifier
+            .paperPanel(
+                fill = if (colors.isDark) colors.surface else colors.page,
+                base = if (colors.isDark) colors.lineStrong else Color(0xFFC8BAA4),
+                facetLight = if (colors.isDark) colors.soft else Color(0xFFEEE5D5),
+                facetDark = if (colors.isDark) colors.line else Color(0xFFE6DAC3),
+                border = Color.Transparent,
+                shape = RoundedCornerShape(topStart = 8.dp, topEnd = 14.dp, bottomEnd = 10.dp, bottomStart = 12.dp),
+                radius = 12.dp,
+                facet = 16.dp,
+                shift = 4.dp,
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 10.dp, vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(painterResource(icon), null, Modifier.size(34.dp))
+        Text(label, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = colors.text, maxLines = 1)
+        Box(Modifier.padding(top = 2.dp).width(30.dp).height(3.dp).background(if (selected) colors.yellow else Color.Transparent, RoundedCornerShape(2.dp)))
+    }
+}
+
+@Composable
+private fun MonthPanel(
+    date: LocalDate,
+    today: LocalDate,
+    events: List<StudyEvent>,
+    onPick: (LocalDate) -> Unit,
+    onToday: () -> Unit,
+    onMonth: (LocalDate) -> Unit,
+) {
+    val colors = OlenaTheme.colors
+    PaperCard(Modifier.fillMaxWidth()) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Image(painterResource(R.drawable.ic_agenda_month_art), null, Modifier.size(52.dp))
+                Text(monthTitle(date), style = MaterialTheme.typography.titleMedium, color = colors.text, modifier = Modifier.weight(1f))
+                PaperButton(stringResource(R.string.agenda_go_today), onToday)
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                PaperButton("‹", { onMonth(date.minusMonths(1)) }, Modifier.weight(1f), PaperButtonStyle.Quiet)
+                PaperButton("›", { onMonth(date.plusMonths(1)) }, Modifier.weight(1f), PaperButtonStyle.Quiet)
+            }
+            Row(Modifier.fillMaxWidth()) {
+                listOf(R.string.weekday_mon, R.string.weekday_tue, R.string.weekday_wed, R.string.weekday_thu, R.string.weekday_fri, R.string.weekday_sat, R.string.weekday_sun).forEach {
+                    Text(stringResource(it), Modifier.weight(1f), textAlign = TextAlign.Center, style = MaterialTheme.typography.labelMedium, color = colors.muted)
+                }
+            }
+            monthGrid(date).chunked(7).forEach { week ->
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth()) {
+                    week.forEach { day ->
+                        DayCell(
+                            day = day,
+                            inMonth = day.month == date.month,
+                            isToday = day == today,
+                            selected = day == date,
+                            hasEvents = Agenda.eventsOn(events, day.toString()).isNotEmpty(),
+                            modifier = Modifier.weight(1f),
+                            onClick = { onPick(day) },
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DayCell(day: LocalDate, inMonth: Boolean, isToday: Boolean, selected: Boolean, hasEvents: Boolean, modifier: Modifier, onClick: () -> Unit) {
+    val colors = OlenaTheme.colors
+    val bg = when {
+        selected || isToday -> Color(0xFF7433E0)
+        else -> colors.soft
+    }
+    val ink = when {
+        selected || isToday -> Color.White
+        inMonth -> colors.text
+        else -> colors.muted
+    }
+    Box(
+        modifier = modifier
+            .aspectRatio(0.92f)
+            .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 11.dp, bottomEnd = 9.dp, bottomStart = 10.dp))
+            .background(bg)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            day.dayOfMonth.toString(),
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 20.sp,
+            color = ink,
+        )
+        if (hasEvents) {
+            Box(Modifier.align(Alignment.TopEnd).padding(5.dp).size(8.dp).background(colors.yellow, RoundedCornerShape(2.dp)))
+        }
+    }
+}
+
+@Composable
+private fun WeekPanel(date: LocalDate, events: List<StudyEvent>, onPick: (LocalDate) -> Unit) {
+    val colors = OlenaTheme.colors
+    val first = date.with(DayOfWeek.MONDAY)
+    PaperCard(Modifier.fillMaxWidth()) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(monthTitle(date), style = MaterialTheme.typography.titleMedium, color = colors.text)
+            List(7) { first.plusDays(it.toLong()) }.forEach { day ->
+                val list = Agenda.eventsOn(events, day.toString())
+                Row(
+                    Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(if (day == date) colors.lavender else colors.soft).clickable { onPick(day) }.padding(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Text(day.format(DateTimeFormatter.ofPattern("EEE d", PtBr)).replaceFirstChar(Char::uppercase), style = MaterialTheme.typography.labelLarge, color = colors.text, modifier = Modifier.width(64.dp))
+                    Text(
+                        if (list.isEmpty()) "-" else list.joinToString(" · ") { "${it.time} ${it.title}" },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (list.isEmpty()) colors.muted else colors.text,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ListPanel(events: List<StudyEvent>, start: LocalDate, onDelete: (StudyEvent) -> Unit) {
+    val colors = OlenaTheme.colors
+    val days = List(30) { start.plusDays(it.toLong()) }.map { it to Agenda.eventsOn(events, it.toString()) }.filter { it.second.isNotEmpty() }
+    PaperCard(Modifier.fillMaxWidth()) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            if (days.isEmpty()) Text(stringResource(R.string.agenda_list_empty), style = MaterialTheme.typography.bodyLarge, color = colors.muted)
+            days.forEach { (day, list) ->
+                Text(dayTitle(day), style = MaterialTheme.typography.titleMedium, color = colors.text)
+                list.forEach { EventRow(it) { onDelete(it) } }
+            }
+        }
+    }
+}
+
+@Composable
+private fun EventRow(event: StudyEvent, onDelete: () -> Unit) {
+    val colors = OlenaTheme.colors
+    Column(
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.soft).padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Text(event.title, style = MaterialTheme.typography.titleMedium, color = colors.text)
+        Text(
+            "${event.time} · ${event.durationMinutes} min" +
+                if (event.recurrenceFrequency != Recurrence.none) " · " + stringResource(repeatLabel(event.recurrenceFrequency)) else "",
+            style = MaterialTheme.typography.bodyMedium,
+            color = colors.muted,
+        )
+        PaperButton(stringResource(R.string.agenda_delete), onDelete, Modifier.fillMaxWidth(), PaperButtonStyle.Quiet)
     }
 }
 
@@ -138,10 +379,7 @@ private fun NewEventDialog(date: String, onDismiss: () -> Unit, onSave: (StudyEv
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.agenda_new)) },
         text = {
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it.take(120) },
@@ -190,7 +428,7 @@ private fun <T> Chips(items: List<T>, selected: T, label: @Composable (T) -> Str
                 row.forEach { item ->
                     PaperButton(label(item), { onSelect(item) }, Modifier.weight(1f), PaperButtonStyle.Quiet, selected = item == selected)
                 }
-                repeat(3 - row.size) { androidx.compose.foundation.layout.Spacer(Modifier.weight(1f)) }
+                repeat(3 - row.size) { Spacer(Modifier.weight(1f)) }
             }
         }
     }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/navigation-icons/paper/agenda-detail.svg#guests. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FF51465D"
+        android:pathData="m7 7 10-2 6 8-4 10H9L4 15Zm22-1 10 1 5 8-5 9H29l-5-10Z" />
+    <path
+        android:fillColor="#FF292432"
+        android:pathData="M8 26h13l4 18H2Zm21 0h12l5 18H24Z" />
+    <path
+        android:fillColor="#FFFACC15"
+        android:pathData="m18 35 6-5 6 5-6 9Z" />
+    <path
+        android:fillColor="#FF7C3AED"
+        android:pathData="M8 26h5L6 44H2Z" />
+</vector>

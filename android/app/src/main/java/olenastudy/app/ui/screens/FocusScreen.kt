@@ -161,7 +161,14 @@ fun FocusContent(snapshot: FocusSnapshot, nowMs: Long, actions: FocusActions) {
             }
             Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 if (isTimer) {
-                    val rose = if (flower.wilted) R.drawable.art_rose_sleeping else if (flower.progress >= 0.5) R.drawable.art_rose_bloom else R.drawable.art_rose_sleeping
+                    val dark = colors.isDark
+                    val rose =
+                        when {
+                            flower.wilted && !dark -> R.drawable.art_rose_wilted
+                            flower.wilted -> R.drawable.art_rose_wilted_dark
+                            flower.progress >= 0.5 -> if (dark) R.drawable.art_rose_bloom_dark else R.drawable.art_rose_bloom
+                            else -> if (dark) R.drawable.art_rose_sleeping_dark else R.drawable.art_rose_sleeping
+                        }
                     Image(painterResource(rose), null, Modifier.height(220.dp))
                 } else {
                     val fraction = pomodoro.remainingAt(now).toDouble() / (pomodoro.durationMinutes * 60_000.0)

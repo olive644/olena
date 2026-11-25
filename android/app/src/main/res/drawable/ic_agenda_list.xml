@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado por scripts/svg-to-android-vector.py a partir de public/navigation-icons/paper/agenda-toolbar.svg#list. Não editar à mão. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FF51465D"
+        android:pathData="m10 7 24-3 8 10-3 28-27 2-5-5Z" />
+    <path
+        android:fillColor="#FF292432"
+        android:pathData="M8 7h22l9 9v25H8Z" />
+    <path
+        android:fillColor="#FFFFF9EF"
+        android:pathData="M13 12h14v8h8v16H13Z" />
+    <path
+        android:fillColor="#FFD8CDB9"
+        android:pathData="m27 12 8 8h-8Z" />
+    <path
+        android:fillColor="#FF7C3AED"
+        android:pathData="M15 23h17v3H15Zm0 7h17v3H15Z" />
+</vector>
