@@ -120,4 +120,12 @@
     <string name="profile_achievements">Conquistas</string>
     <string name="profile_arcana">Arcano</string>
     <string name="profile_favorite">Favorita</string>
+    <!-- Praticar -->
+    <string name="practice_enter">Entrar em %1$s</string>
+    <string name="practice_previous">Mundo anterior</string>
+    <string name="practice_next">Próximo mundo</string>
+    <string name="practice_explore">Explorar %1$s</string>
+    <string name="practice_preparing">Em preparação</string>
+    <string name="practice_ok">Entendi</string>
+    <string name="practice_lessons_notice">As lições de %1$s ainda não estão no app nativo. Enquanto isso, elas continuam no OlenaStudy pelo navegador.</string>
 </resources>

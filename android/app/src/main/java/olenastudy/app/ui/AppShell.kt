@@ -42,6 +42,7 @@ import olenastudy.app.data.agenda.AgendaRepository
 import olenastudy.app.focus.FocusController
 import olenastudy.app.ui.screens.AgendaScreen
 import olenastudy.app.ui.screens.HomeScreen
+import olenastudy.app.ui.screens.PracticeScreen
 import olenastudy.app.ui.screens.HomeSummary
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -109,6 +110,7 @@ fun AppShell(
                         when (destination) {
                             AppDestination.Profile -> ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange)
                             AppDestination.Today -> HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
+                            AppDestination.Learn -> PracticeScreen()
                             AppDestination.Focus -> FocusScreen(focusController)
                             AppDestination.Planner -> AgendaScreen(agendaRepository)
                             else -> InProgressScreen(destination.titleRes())
