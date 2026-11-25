@@ -46,6 +46,7 @@ fun PaperButton(
     selected: Boolean = false,
     enabled: Boolean = true,
     leading: (@Composable () -> Unit)? = null,
+    horizontalPadding: androidx.compose.ui.unit.Dp = 20.dp,
 ) {
     val colors = OlenaTheme.colors
     val (base, ink) =
@@ -91,7 +92,7 @@ fun PaperButton(
                 drawPath(cornerPath, edge)
             }
             .clickable(enabled = enabled, interactionSource = source, indication = null, role = Role.Button, onClick = onClick)
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+            .padding(horizontal = horizontalPadding, vertical = 12.dp),
         contentAlignment = Alignment.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
