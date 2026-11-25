@@ -70,10 +70,11 @@ fun ProfileScreen(
     val colors = OlenaTheme.colors
     var avatarOpen by rememberSaveable { mutableStateOf(false) }
     var editOpen by rememberSaveable { mutableStateOf(false) }
+    var achievementsOpen by rememberSaveable { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         CoverCard(look = look, info = info, onAvatar = { avatarOpen = true }, onEdit = { editOpen = true }, onSettings = onOpenSettings)
         Column(Modifier.padding(top = 36.dp)) {
-            SectionHeader(title = stringResource(R.string.profile_achievements), titleWidth = 118.dp, count = R.drawable.art_profile_count_a, countDark = R.drawable.art_profile_count_a_dark, countSize = 64.dp to 22.dp, arrowSize = 30.dp, arrowEnd = 6.dp)
+            SectionHeader(title = stringResource(R.string.profile_achievements), titleWidth = 118.dp, count = R.drawable.art_profile_count_a, countDark = R.drawable.art_profile_count_a_dark, countSize = 64.dp to 22.dp, arrowSize = 30.dp, arrowEnd = 6.dp, onClick = { achievementsOpen = true })
             Row(Modifier.padding(top = 24.dp).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 repeat(3) { AchievementSlot(Modifier.weight(1f).height(110.dp)) }
             }
@@ -85,6 +86,7 @@ fun ProfileScreen(
             Box(Modifier.height(130.dp))
         }
     }
+    if (achievementsOpen) AchievementsScreen(onDismiss = { achievementsOpen = false })
     if (editOpen) {
         ProfileEditDialog(
             current = info,
@@ -272,9 +274,9 @@ private fun CountChip(modifier: Modifier, icon: Int, label: String) {
 }
 
 @Composable
-private fun SectionHeader(title: String, titleWidth: Dp, count: Int, countDark: Int, countSize: Pair<Dp, Dp>, arrowSize: Dp, arrowEnd: Dp) {
+private fun SectionHeader(title: String, titleWidth: Dp, count: Int, countDark: Int, countSize: Pair<Dp, Dp>, arrowSize: Dp, arrowEnd: Dp, onClick: () -> Unit = {}) {
     val colors = OlenaTheme.colors
-    Row(Modifier.fillMaxWidth().height(44.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth().height(44.dp).clickable(role = Role.Button, onClick = onClick), verticalAlignment = Alignment.CenterVertically) {
         Text(title, fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 18.4.sp, color = colors.text, maxLines = 1, modifier = Modifier.width(titleWidth))
         Image(painterResource(if (colors.isDark) countDark else count), null, Modifier.size(width = countSize.first, height = countSize.second))
         Box(Modifier.weight(1f))

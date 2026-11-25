@@ -177,4 +177,8 @@
     <string name="profile_add_social">Adicionar rede</string>
     <string name="profile_guest_hint">Sem conta, as alterações ficam neste aparelho.</string>
     <string name="profile_save">Salvar perfil</string>
+    <string name="achievements_tab_math">Matemática</string>
+    <string name="achievements_tab_english">Inglês</string>
+    <string name="achievements_tab_general">Gerais</string>
+    <string name="profile_highlights">Destaques do perfil</string>
 </resources>
