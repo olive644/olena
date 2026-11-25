@@ -51,6 +51,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import olenastudy.app.R
 import olenastudy.app.data.settings.ThemeMode
+import olenastudy.app.domain.profile.ProfileInfo
 import olenastudy.app.domain.profile.ProfileLook
 import olenastudy.app.data.agenda.AgendaRepository
 import olenastudy.app.data.agenda.TaskRepository
@@ -85,6 +86,8 @@ fun AppShell(
     onThemeModeChange: (ThemeMode) -> Unit,
     look: ProfileLook = ProfileLook(),
     onLookChange: (ProfileLook) -> Unit = {},
+    info: ProfileInfo = ProfileInfo(),
+    onInfoChange: (ProfileInfo) -> Unit = {},
 ) {
     val colors = OlenaTheme.colors
     var settingsOpen by rememberSaveable { mutableStateOf(false) }
@@ -145,7 +148,7 @@ fun AppShell(
                                 if (settingsOpen) {
                                     SettingsScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, onBack = { settingsOpen = false })
                                 } else {
-                                    ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, look = look, onLookChange = onLookChange, onOpenSettings = { settingsOpen = true })
+                                    ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, look = look, onLookChange = onLookChange, info = info, onInfoChange = onInfoChange, onOpenSettings = { settingsOpen = true })
                                 }
                             AppDestination.Today -> HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
                             AppDestination.Learn -> PracticeScreen()

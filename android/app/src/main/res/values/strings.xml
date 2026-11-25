@@ -161,4 +161,20 @@
     <string name="profile_tab_background">Fundo do perfil</string>
     <string name="profile_use_character">Usar personagem</string>
     <string name="profile_who_studies">Quem está estudando?</string>
+    <string name="profile_edit_title">Editar perfil</string>
+    <string name="profile_field_name">Nome</string>
+    <string name="profile_field_username">Nome de usuário</string>
+    <string name="profile_username_guest">Entre na conta para criar um @.</string>
+    <string name="profile_field_bio">Bio</string>
+    <string name="profile_field_pronouns">Pronomes</string>
+    <string name="profile_pronouns_none">Não informar</string>
+    <string name="profile_pronouns_custom">Personalizado</string>
+    <string name="profile_pronouns_custom_label">Pronomes personalizados</string>
+    <string name="profile_pronouns_example">Ex.: ele/dela</string>
+    <string name="profile_socials">Redes sociais</string>
+    <string name="profile_social">Rede social</string>
+    <string name="profile_social_hint">Cole o link do seu perfil</string>
+    <string name="profile_add_social">Adicionar rede</string>
+    <string name="profile_guest_hint">Sem conta, as alterações ficam neste aparelho.</string>
+    <string name="profile_save">Salvar perfil</string>
 </resources>

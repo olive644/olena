@@ -44,7 +44,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import olenastudy.app.R
+import olenastudy.app.domain.profile.ProfileInfo
 import olenastudy.app.domain.profile.ProfileLook
+import olenastudy.app.domain.profile.ProfileRules
 import olenastudy.app.ui.ManropeFamily
 import olenastudy.app.ui.OlenaTheme
 import olenastudy.app.ui.components.paperPanel
@@ -61,12 +63,15 @@ fun ProfileScreen(
     look: ProfileLook = ProfileLook(),
     onLookChange: (ProfileLook) -> Unit = {},
     onThemeModeChange: (olenastudy.app.data.settings.ThemeMode) -> Unit = {},
+    info: ProfileInfo = ProfileInfo(),
+    onInfoChange: (ProfileInfo) -> Unit = {},
     onOpenSettings: () -> Unit = {},
 ) {
     val colors = OlenaTheme.colors
     var avatarOpen by rememberSaveable { mutableStateOf(false) }
+    var editOpen by rememberSaveable { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        CoverCard(look = look, onAvatar = { avatarOpen = true }, onSettings = onOpenSettings)
+        CoverCard(look = look, info = info, onAvatar = { avatarOpen = true }, onEdit = { editOpen = true }, onSettings = onOpenSettings)
         Column(Modifier.padding(top = 36.dp)) {
             SectionHeader(title = stringResource(R.string.profile_achievements), titleWidth = 118.dp, count = R.drawable.art_profile_count_a, countDark = R.drawable.art_profile_count_a_dark, countSize = 64.dp to 22.dp, arrowSize = 30.dp, arrowEnd = 6.dp)
             Row(Modifier.padding(top = 24.dp).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -79,6 +84,16 @@ fun ProfileScreen(
             }
             Box(Modifier.height(130.dp))
         }
+    }
+    if (editOpen) {
+        ProfileEditDialog(
+            current = info,
+            onDismiss = { editOpen = false },
+            onSave = { next ->
+                editOpen = false
+                onInfoChange(next)
+            },
+        )
     }
     if (avatarOpen) {
         ProfileAvatarDialog(
@@ -94,14 +109,13 @@ fun ProfileScreen(
 
 /** Cartão do topo: capa, avatar, nome, nível, XP, amigos e contagens, com as posições do site. */
 @Composable
-private fun CoverCard(look: ProfileLook, onAvatar: () -> Unit, onSettings: () -> Unit) {
+private fun CoverCard(look: ProfileLook, info: ProfileInfo, onAvatar: () -> Unit, onEdit: () -> Unit, onSettings: () -> Unit) {
     val colors = OlenaTheme.colors
     val dark = colors.isDark
     val line = if (dark) Color(0xFF35313E) else Color(0xFFE6DDC9)
     Box(
         Modifier
             .fillMaxWidth()
-            .height(439.dp)
             .paperPanel(
                 fill = if (dark) Color(0xFF201D26) else Color.White,
                 base = line,
@@ -129,45 +143,51 @@ private fun CoverCard(look: ProfileLook, onAvatar: () -> Unit, onSettings: () ->
             frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.offset((-13.44).dp, (-13.44).dp).size(138.88.dp)) }
         }
         LevelBadge(Modifier.offset(89.dp, 191.dp))
-        Text(
-            stringResource(R.string.profile_title),
-            fontFamily = ManropeFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
-            color = colors.text,
-            modifier = Modifier.offset(16.dp, 241.dp),
-        )
-        Box(Modifier.offset(134.dp, 237.dp).size(44.dp), contentAlignment = Alignment.Center) {
-            Image(painterResource(R.drawable.art_icon_pen), null, Modifier.size(30.dp))
-        }
-        Image(painterResource(R.drawable.art_profile_star), null, Modifier.offset(16.dp, 287.dp).size(18.dp))
-        Text(
-            stringResource(R.string.profile_level),
-            fontFamily = ManropeFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 10.4.sp,
-            color = colors.text,
-            modifier = Modifier.offset(40.dp, 288.dp),
-        )
-        Text(
-            stringResource(R.string.profile_xp),
-            fontFamily = ManropeFamily,
-            fontSize = 10.4.sp,
-            color = colors.text,
-            modifier = Modifier.align(Alignment.TopEnd).padding(top = 288.dp, end = 16.dp),
-        )
-        Box(Modifier.offset(16.dp, 309.dp).fillMaxWidth().padding(end = 32.dp).height(9.dp).clip(ProgressShape).background(line))
-        SiteButton(Modifier.offset(16.dp, 324.dp).size(width = 150.dp, height = 44.dp), stringResource(R.string.profile_add_friend)) {
-            Row(Modifier.padding(start = 11.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Image(painterResource(R.drawable.ic_profile_friend), null, Modifier.size(24.dp))
-                Text(stringResource(R.string.profile_add_friend), fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 12.sp, color = colors.text, maxLines = 1)
+        Column(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 237.dp)) {
+            Row(Modifier.height(44.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    info.name.ifBlank { stringResource(R.string.profile_title) },
+                    fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = colors.text, maxLines = 1,
+                    modifier = Modifier.padding(top = 4.dp),
+                )
+                Box(Modifier.size(44.dp).clickable(role = Role.Button, onClick = onEdit).semantics { contentDescription = "Editar perfil" }, contentAlignment = Alignment.Center) {
+                    Image(painterResource(R.drawable.art_icon_pen), null, Modifier.size(30.dp))
+                }
+            }
+            if (info.username.isNotBlank() || info.pronouns.isNotBlank()) {
+                Text(
+                    listOfNotNull(info.username.takeIf { it.isNotBlank() }?.let { "@$it" }, info.pronouns.takeIf { it.isNotBlank() }).joinToString("  "),
+                    fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 12.sp, color = colors.muted,
+                )
+            }
+            if (info.bio.isNotBlank()) {
+                Text(info.bio, fontFamily = ManropeFamily, fontSize = 12.sp, color = colors.text, maxLines = 4, modifier = Modifier.padding(top = 4.dp))
+            }
+            info.socialLinks.mapNotNull { ProfileRules.recognizeSocialLink(it) }.takeIf { it.isNotEmpty() }?.let { found ->
+                Text(found.joinToString("  ") { it.network.label }, fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 12.sp, color = colors.violet, modifier = Modifier.padding(top = 4.dp))
+            }
+            Row(Modifier.padding(top = 6.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Image(painterResource(R.drawable.art_profile_star), null, Modifier.size(18.dp))
+                Text(stringResource(R.string.profile_level), fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 10.4.sp, color = colors.text, modifier = Modifier.padding(start = 6.dp).weight(1f))
+                Text(stringResource(R.string.profile_xp), fontFamily = ManropeFamily, fontSize = 10.4.sp, color = colors.text)
+            }
+            Box(Modifier.padding(top = 4.dp).fillMaxWidth().height(9.dp).clip(ProgressShape).background(line))
+            Row(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                SiteButton(Modifier.size(width = 150.dp, height = 44.dp), stringResource(R.string.profile_add_friend)) {
+                    Row(Modifier.padding(start = 11.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Image(painterResource(R.drawable.ic_profile_friend), null, Modifier.size(24.dp))
+                        Text(stringResource(R.string.profile_add_friend), fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 12.sp, color = colors.text, maxLines = 1)
+                    }
+                }
+                SiteButton(Modifier.size(44.dp), stringResource(R.string.profile_qr), Alignment.Center) {
+                    Image(painterResource(if (colors.isDark) R.drawable.art_icon_qr_dark else R.drawable.art_icon_qr), null, Modifier.size(width = 15.dp, height = 26.dp))
+                }
+            }
+            Row(Modifier.padding(top = 6.dp, bottom = 21.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                CountChip(Modifier.size(width = 114.dp, height = 44.dp), R.drawable.ic_profile_followers, stringResource(R.string.profile_followers))
+                CountChip(Modifier.size(width = 104.dp, height = 44.dp), R.drawable.ic_profile_following, stringResource(R.string.profile_following))
             }
         }
-        SiteButton(Modifier.offset(174.dp, 324.dp).size(44.dp), stringResource(R.string.profile_qr), Alignment.Center) {
-            Image(painterResource(if (colors.isDark) R.drawable.art_icon_qr_dark else R.drawable.art_icon_qr), null, Modifier.size(width = 15.dp, height = 26.dp))
-        }
-        CountChip(Modifier.offset(16.dp, 374.dp).size(width = 114.dp, height = 44.dp), R.drawable.ic_profile_followers, stringResource(R.string.profile_followers))
-        CountChip(Modifier.offset(136.dp, 374.dp).size(width = 104.dp, height = 44.dp), R.drawable.ic_profile_following, stringResource(R.string.profile_following))
     }
 }
 
