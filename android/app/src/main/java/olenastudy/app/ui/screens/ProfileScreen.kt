@@ -71,6 +71,7 @@ fun ProfileScreen(
     var avatarOpen by rememberSaveable { mutableStateOf(false) }
     var editOpen by rememberSaveable { mutableStateOf(false) }
     var achievementsOpen by rememberSaveable { mutableStateOf(false) }
+    var arcanaOpen by rememberSaveable { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         CoverCard(look = look, info = info, onAvatar = { avatarOpen = true }, onEdit = { editOpen = true }, onSettings = onOpenSettings)
         Column(Modifier.padding(top = 36.dp)) {
@@ -79,7 +80,7 @@ fun ProfileScreen(
                 repeat(3) { AchievementSlot(Modifier.weight(1f).height(110.dp)) }
             }
             Box(Modifier.height(54.dp))
-            SectionHeader(title = stringResource(R.string.profile_arcana), titleWidth = 71.dp, count = R.drawable.art_profile_count_b, countDark = R.drawable.art_profile_count_b_dark, countSize = 50.dp to 22.dp, arrowSize = 32.dp, arrowEnd = 4.dp)
+            SectionHeader(title = stringResource(R.string.profile_arcana), titleWidth = 71.dp, count = R.drawable.art_profile_count_b, countDark = R.drawable.art_profile_count_b_dark, countSize = 50.dp to 22.dp, arrowSize = 32.dp, arrowEnd = 4.dp, onClick = { arcanaOpen = true })
             Row(Modifier.padding(top = 16.dp).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 repeat(3) { CardSlot(Modifier.weight(1f)) }
             }
@@ -87,6 +88,7 @@ fun ProfileScreen(
         }
     }
     if (achievementsOpen) AchievementsScreen(onDismiss = { achievementsOpen = false })
+    if (arcanaOpen) ArcanaScreen(onDismiss = { arcanaOpen = false })
     if (editOpen) {
         ProfileEditDialog(
             current = info,
