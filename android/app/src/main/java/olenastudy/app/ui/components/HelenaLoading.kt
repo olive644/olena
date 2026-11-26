@@ -15,6 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.ui.graphics.ImageBitmap
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import olenastudy.app.ui.ManropeFamily
 import olenastudy.app.ui.OlenaTheme
 
-private const val FRAMES = 30
+private const val FRAMES = 90
 
 /**
  * Loading original do site (`HelenaLoading`): o lápis animado de 3 s, 152 de largura, e o texto "Preparando seu espaço…"
@@ -40,11 +45,11 @@ private const val FRAMES = 30
 fun HelenaLoading(modifier: Modifier = Modifier, label: String = "Preparando seu espaço…") {
     val colors = OlenaTheme.colors
     val context = LocalContext.current
-    val frames =
-        remember(colors.isDark) {
-            val suffix = if (colors.isDark) "_dark" else ""
-            List(FRAMES) { i -> context.assets.open("loading/pencil${suffix}_${i.toString().padStart(2, '0')}.png").use { BitmapFactory.decodeStream(it) }.asImageBitmap() }
-        }
+    // Decodifica os quadros fora da thread principal para a animação abrir sem engasgar.
+    val frames by produceState<List<ImageBitmap>>(emptyList(), colors.isDark) {
+        val suffix = if (colors.isDark) "_dark" else ""
+        value = withContext(Dispatchers.IO) { List(FRAMES) { i -> context.assets.open("loading/pencil${suffix}_${i.toString().padStart(2, '0')}.png").use { BitmapFactory.decodeStream(it) }.asImageBitmap() } }
+    }
     val progress by rememberInfiniteTransition(label = "helena-loading").animateFloat(
         initialValue = 0f,
         targetValue = FRAMES.toFloat(),
@@ -56,7 +61,7 @@ fun HelenaLoading(modifier: Modifier = Modifier, label: String = "Preparando seu
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
     ) {
-        Image(frames[progress.toInt().coerceIn(0, FRAMES - 1)], null, Modifier.size(152.dp))
+        if (frames.isEmpty()) Spacer(Modifier.size(152.dp)) else Image(frames[progress.toInt().coerceIn(0, FRAMES - 1)], null, Modifier.size(152.dp))
         Text(label, fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 14.4.sp, color = colors.muted, textAlign = TextAlign.Center)
     }
 }

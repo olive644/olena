@@ -7,6 +7,13 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -334,6 +341,8 @@ fun ShareCardContent(
     onBack: () -> Unit,
     onCopy: () -> Unit,
     onShare: () -> Unit,
+    onDownload: () -> Unit = {},
+    layer: androidx.compose.ui.graphics.layer.GraphicsLayer? = null,
 ) {
     val p = palette()
     val matrix = remember(link) { QrCode.encode(link, QrLevel.H) }
@@ -342,7 +351,7 @@ fun ShareCardContent(
             Image(painterResource(R.drawable.art_arrow_prev), null, Modifier.size(24.dp))
             ButtonLabel(stringResource(R.string.social_back_to_friends))
         }
-        Box(Modifier.padding(vertical = 20.dp).fillMaxWidth().clip(CardShape).background(Color(0xFFCFC4AF)).padding(bottom = 6.dp)) {
+        Box(Modifier.padding(vertical = 20.dp).fillMaxWidth().clip(CardShape).background(Color(0xFFCFC4AF)).padding(bottom = 6.dp).then(if (layer != null) Modifier.drawWithContent { layer.record { this@drawWithContent.drawContent() }; drawLayer(layer) } else Modifier)) {
             Box(Modifier.fillMaxWidth().background(Cream)) {
                 Image(painterResource(coverArt(look.coverId)), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(120.dp))
                 Column(Modifier.fillMaxWidth().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -380,6 +389,10 @@ fun ShareCardContent(
             SocialButton(onClick = onShare, modifier = Modifier.height(44.dp).semantics { contentDescription = send }) {
                 Image(painterResource(if (p.dark) R.drawable.art_friends_share_dark else R.drawable.art_friends_share_light), null, Modifier.size(24.dp))
             }
+            val save = stringResource(R.string.share_save)
+            SocialButton(onClick = onDownload, modifier = Modifier.height(44.dp).semantics { contentDescription = save }) {
+                Image(painterResource(if (p.dark) R.drawable.art_icon_download_dark else R.drawable.art_icon_download), null, Modifier.size(24.dp))
+            }
         }
         if (status != null) Text(status, fontFamily = ManropeFamily, fontSize = 16.sp, color = p.text, modifier = Modifier.padding(top = 12.dp).fillMaxWidth(), textAlign = TextAlign.Center)
         if (username.isBlank()) Text(stringResource(R.string.share_no_handle), fontFamily = ManropeFamily, fontSize = 12.sp, color = p.placeholder, modifier = Modifier.padding(top = 12.dp).fillMaxWidth(), textAlign = TextAlign.Center)
@@ -392,6 +405,8 @@ fun ProfileShareDialog(name: String, username: String, look: ProfileLook, onBack
     val context = LocalContext.current
     val link = remember(username) { ProfileShare.link(username) }
     var status by rememberSaveable { mutableStateOf<Int?>(null) }
+    val layer = androidx.compose.ui.graphics.rememberGraphicsLayer()
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
     val title = stringResource(R.string.share_title, name)
     val tagline = stringResource(R.string.share_tagline)
     SocialDialog(stringResource(R.string.social_share_profile), stringResource(R.string.social_close), onDismiss) {
@@ -401,9 +416,35 @@ fun ProfileShareDialog(name: String, username: String, look: ProfileLook, onBack
             onBack = onBack,
             onCopy = { status = if (copyToClipboard(context, link)) R.string.share_copied else R.string.share_copy_failed },
             onShare = { if (!sendLink(context, title, ProfileShare.shareText(tagline, link))) status = R.string.share_send_failed },
+            layer = layer,
+            onDownload = {
+                scope.launch {
+                    val bitmap = layer.toImageBitmap().asAndroidBitmap()
+                    status = if (saveCard(context, bitmap, "olena-perfil-${username.ifBlank { "cartao" }}.png")) R.string.share_saved else R.string.share_save_failed
+                }
+            },
         )
     }
 }
+
+/** Salva o cartão como PNG em Imagens/OlenaStudy (Android 10 ou mais novo, sem pedir permissão). */
+private suspend fun saveCard(context: Context, bitmap: android.graphics.Bitmap, fileName: String): Boolean =
+    withContext(Dispatchers.IO) {
+        try {
+            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q) return@withContext false
+            val values =
+                android.content.ContentValues().apply {
+                    put(android.provider.MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                    put(android.provider.MediaStore.Images.Media.MIME_TYPE, "image/png")
+                    put(android.provider.MediaStore.Images.Media.RELATIVE_PATH, "Pictures/OlenaStudy")
+                }
+            val uri = context.contentResolver.insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values) ?: return@withContext false
+            context.contentResolver.openOutputStream(uri)?.use { bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it) } ?: return@withContext false
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
 
 private fun copyToClipboard(context: Context, text: String): Boolean =
     try {

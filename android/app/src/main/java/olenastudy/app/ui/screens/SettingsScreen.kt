@@ -113,6 +113,7 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                 onClick = { if (section == null) onBack() else sectionName = null },
                 description = stringResource(R.string.settings_back),
                 modifier = Modifier.size(width = 58.dp, height = 44.dp),
+                cream = true,
             ) { Image(painterResource(R.drawable.ic_paper_arrow), null, Modifier.size(30.dp).scale(scaleX = -1f, scaleY = 1f)) }
         }
         Text(
@@ -129,7 +130,7 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                 SettingsTile(onClick = { sectionName = row.name }, description = row.title, modifier = Modifier.fillMaxWidth().height(56.dp)) {
                     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                         Image(painterResource(row.icon), null, Modifier.size(28.dp))
-                        Text(row.title, fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 14.sp, color = Ink, modifier = Modifier.weight(1f))
+                        Text(row.title, fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 14.sp, color = OlenaTheme.colors.text, modifier = Modifier.weight(1f))
                         Text("›", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF66616B))
                     }
                 }
@@ -324,21 +325,21 @@ internal fun Choices(options: List<Pair<String, String>>, selected: Set<String>,
 
 /** Peça de papel clara e em relevo, igual aos botões secundários do site. */
 @Composable
-internal fun SettingsTile(onClick: () -> Unit, description: String, modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
-    val dark = OlenaTheme.colors.isDark
+internal fun SettingsTile(onClick: () -> Unit, description: String, modifier: Modifier = Modifier, cream: Boolean = false, content: @Composable BoxScope.() -> Unit) {
+    val shape = RoundedCornerShape(topStart = 5.dp, topEnd = 13.dp, bottomEnd = 6.dp, bottomStart = 11.dp)
     Box(
         modifier = modifier
             .semantics { contentDescription = description }
             .paperPanel(
-                fill = if (dark) Color(0xFFFFF9EF) else Color.White,
-                base = if (dark) Color(0xFFC8BAA4) else Color(0xFFD7CBB7),
-                facetLight = Color(0xFFF1E9DC),
-                facetDark = Color(0xFFE6DAC3),
-                border = Color.Transparent,
-                shape = RoundedCornerShape(topStart = 8.dp, topEnd = 16.dp, bottomEnd = 10.dp, bottomStart = 13.dp),
+                fill = if (cream) Color(0xFFFFF9EF) else Dlg.secondary,
+                base = if (cream) Color(0xFFC8BAA4) else Dlg.line,
+                facetLight = if (cream) Color(0xFFE9DDC6) else Dlg.secondaryFacet,
+                facetDark = Color.Transparent,
+                border = if (cream) Color(0xFFD7CBB7) else Dlg.line,
+                shape = shape,
                 radius = 13.dp,
-                facet = 18.dp,
-                shift = 4.dp,
+                facet = 16.dp,
+                shift = if (cream) 3.dp else 4.dp,
             )
             .clickable(role = Role.Button, onClick = onClick),
         contentAlignment = Alignment.Center,
