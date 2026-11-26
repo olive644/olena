@@ -6041,6 +6041,14 @@ Resultado da segunda execução de `npm run verify`: falhou no lint com 198476 e
 
 Limites: sem validação visual nova, mudança de interface, modelo de ameaça implementado ou integração remota nesta entrega. O SDK no caminho padrão é um junction para D:/Android/Sdk, cujo destino não foi encontrado nesta sessão; adb e emulator também não estão no PATH. Não afirmar que o app foi testado em aparelho ou emulador.
 
+### Publicação para revisão da base Android, 25/11/2026
+
+Após a validação das etapas locais, o proprietário autorizou explicitamente publicar a PR da base de navegação. A entrega reúne o inventário, os três bloqueios de lint corrigidos, retorno/restauração de Configurações e entrada por links. Não há autorização para merge nem para ativar merge automático. As instruções anteriores de manter somente local ficam históricas para esta entrega.
+
+Conferências antes do envio: árvore de trabalho limpa no início; main remota ainda em b108c84c, a mesma base dos testes; nenhuma PR aberta para feat/android-app-links. npm run verify foi repetido antes de publicar a branch, com log em tmp/android-navigation-pr-verify.log: parou no lint com 198709 erros do Prettier e 32 avisos. Não houve erro de outra regra nessa rodada; os erros incluem remoção de CRLF em arquivos fora do escopo da PR. As etapas seguintes do verify não executaram e não são declaradas aprovadas. Não foi aplicada formatação em massa para contornar o checkout. As verificações Android, os 128 testes JVM e as 38 execuções instrumentadas continuam sendo as provas desta entrega; a mudança posterior é somente documental. O CI da PR precisa ser conferido antes de qualquer merge.
+
+O diff desta entrega contém somente android/ e documentação. O escopo none do e2e permanece conforme scripts/ci-scope.mjs, sem mudanças nos workflows ou nos nomes de checks. CI_MINUTOS.md e OPERACAO_E_CUSTOS.md foram relidos antes da publicação; não foram solicitados reruns ou execuções manuais. Descrição preparada com resultados locais e limites da associação de domínio, da versão debug e da validação em aparelho físico.
+
 ### Etapa 2b: entrada por links, 25/11/2026
 
 Branch local feat/android-app-links, baseada em 112e1d68. Um teste instrumentado reproduziu o comportamento anterior: ACTION_VIEW para /foco abria o Espaço, sem selecionar Foco. AppLinks agora classifica URLs em destino nativo, continuação no site ou entrada rejeitada. O manifesto registra apenas HTTPS nos dois hosts oficiais, com os caminhos /, /planejador, /aprender, /foco, /perfil e /habitos, incluindo barra final opcional. URL sem caminho explícito não é reclamada pelo filtro; o parser também aceita a raiz sem barra quando a entrada é direcionada ao app.
