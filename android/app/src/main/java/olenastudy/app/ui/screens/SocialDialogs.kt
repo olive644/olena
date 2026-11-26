@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -354,7 +355,7 @@ fun ShareCardContent(
                     Spacer(Modifier.height(16.dp))
                     Box(Modifier.size(160.dp)) {
                         Image(painterResource(avatarArt(look.avatarId)), contentDescription = null, modifier = Modifier.fillMaxSize())
-                        frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.offset((-19.2).dp, (-19.2).dp).size(198.4.dp)) }
+                        frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.align(Alignment.Center).requiredSize(198.4.dp)) }
                         LevelBadge(Modifier.offset(104.dp, 107.dp))
                     }
                     Spacer(Modifier.height(6.dp))

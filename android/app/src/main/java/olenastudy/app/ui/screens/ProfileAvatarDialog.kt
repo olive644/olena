@@ -125,7 +125,7 @@ fun ProfileAvatarDialog(current: ProfileLook, onDismiss: () -> Unit, onSave: (Pr
                 }
             }
             Box(Modifier.fillMaxWidth().height(1.dp).background(Color(0xFFE6DDC9)))
-            Box(Modifier.fillMaxWidth().height(96.dp).clip(RoundedCornerShape(topStart = 4.dp, topEnd = 20.dp, bottomEnd = 4.dp, bottomStart = 12.dp)).background(Color.White)) {
+            Box(Modifier.fillMaxWidth().height(96.dp).clip(RoundedCornerShape(topStart = 4.dp, topEnd = 20.dp, bottomEnd = 4.dp, bottomStart = 12.dp)).background(Color.White).profileBackground(look.backgroundId)) {
                 Image(painterResource(coverArt(look.coverId)), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(64.dp))
                 Box(Modifier.align(Alignment.TopCenter).padding(top = 24.dp).size(64.dp)) {
                     Image(
@@ -297,14 +297,8 @@ private fun OptionGrid(kind: Kind, items: List<Cosmetic>, look: ProfileLook, ear
 /** Amostra de fundo: a arte do site quando existe; "Papel original", "Céu de papel" e "Caderno geométrico" são cores. */
 @Composable
 private fun BackgroundSwatch(id: String) {
-    val resId = drawableByName("art_bg_$id")
     val shape = RoundedCornerShape(8.dp)
-    if (resId != 0) {
-        Image(painterResource(resId), null, contentScale = ContentScale.Crop, modifier = Modifier.size(width = 52.dp, height = 62.dp).clip(shape))
-    } else {
-        val fill = if (id == "night") Color(0xFF17151C) else Color(0xFFFFF9EF)
-        Box(Modifier.size(width = 52.dp, height = 62.dp).clip(shape).background(fill).paperPanel(fill, Color.Transparent, Color.Transparent, Color.Transparent, CreamLine, shape, 8.dp, 0.dp, 0.dp))
-    }
+    Box(Modifier.size(width = 52.dp, height = 62.dp).clip(shape).background(Color(0xFFFFF9EF)).profileBackground(id).paperPanel(Color.Transparent, Color.Transparent, Color.Transparent, Color.Transparent, CreamLine, shape, 8.dp, 0.dp, 0.dp))
 }
 
 private val LookSaver =

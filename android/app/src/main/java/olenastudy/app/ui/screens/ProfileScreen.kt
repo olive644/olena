@@ -156,7 +156,8 @@ private fun CoverCard(
                 radius = 0.dp,
                 facet = 0.dp,
                 shift = 5.dp,
-            ),
+            )
+            .profileBackground(look.backgroundId),
     ) {
         Image(painterResource(coverArt(look.coverId)), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(168.dp))
         SiteTile(
@@ -172,7 +173,7 @@ private fun CoverCard(
             Image(
                 painterResource(avatarArt(look.avatarId)),
                 contentDescription = stringResource(R.string.profile_avatar_description),
-                modifier = Modifier.fillMaxSize().then(if (look.frameId != "none") Modifier.clip(androidx.compose.foundation.shape.CircleShape).background(Color.White) else Modifier),
+                modifier = Modifier.fillMaxSize().then(if (look.frameId != "none") Modifier.clip(androidx.compose.foundation.shape.CircleShape) else Modifier),
             )
             frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.align(Alignment.Center).requiredSize(138.88.dp)) }
         }
