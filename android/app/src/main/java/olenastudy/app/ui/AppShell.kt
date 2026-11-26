@@ -178,10 +178,25 @@ fun AppShell(
                     }
                 }
                 composable(AppDestination.SETTINGS_ROUTE) {
-                    androidx.compose.runtime.CompositionLocalProvider(olenastudy.app.ui.screens.LocalFocusController provides focusController) {
+                    androidx.compose.runtime.CompositionLocalProvider(olenastudy.app.ui.screens.LocalFocusController provides focusController, olenastudy.app.ui.screens.LocalProfileLook provides look, olenastudy.app.ui.screens.LocalProfileInfo provides info) {
                         SettingsScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, onBack = { navController.popBackStack() })
                     }
                 }
+            }
+            // Loading original do site na troca de abas: o lápis animado por um instante, como o fallback das rotas.
+            var tabLoading by remember { mutableStateOf(false) }
+            var firstTab by remember { mutableStateOf(true) }
+            androidx.compose.runtime.LaunchedEffect(current) {
+                if (firstTab) {
+                    firstTab = false
+                } else {
+                    tabLoading = true
+                    kotlinx.coroutines.delay(450)
+                    tabLoading = false
+                }
+            }
+            androidx.compose.animation.AnimatedVisibility(visible = tabLoading, enter = fadeIn(tween(120)), exit = androidx.compose.animation.fadeOut(tween(200))) {
+                Box(Modifier.fillMaxSize().background(colors.page)) { olenastudy.app.ui.components.HelenaLoading(stringResource(R.string.loading_app), Modifier.fillMaxSize()) }
             }
         }
         }

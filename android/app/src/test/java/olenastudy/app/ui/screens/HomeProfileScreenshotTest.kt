@@ -38,5 +38,7 @@ class HomeProfileScreenshotTest {
     @Test fun espaco_escuro() = frame(true, AppDestination.Today) { HomeScreen(HomeSummary(focusMinutesToday = 45, agendaToday = 2, flowerBloomed = true), {}) }
     @Test fun perfil_claro() = frame(false, AppDestination.Profile, header = false) { ProfileScreen(ThemeMode.System) {} }
     @Test fun perfil_moldura() = frame(false, AppDestination.Profile, header = false) { ProfileScreen(ThemeMode.System, look = olenastudy.app.domain.profile.ProfileLook(frameId = "pride", avatarId = "helena")) {} }
+    @Test fun perfil_fundo_trans() = frame(false, AppDestination.Profile, header = false) { ProfileScreen(ThemeMode.System, look = olenastudy.app.domain.profile.ProfileLook(backgroundId = "trans", frameId = "pride")) {} }
+    @Test fun perfil_fundo_ceu() = frame(true, AppDestination.Profile, header = false) { ProfileScreen(ThemeMode.Dark, look = olenastudy.app.domain.profile.ProfileLook(backgroundId = "night")) {} }
     @Test fun perfil_escuro() = frame(true, AppDestination.Profile, header = false) { ProfileScreen(ThemeMode.Dark) {} }
 }

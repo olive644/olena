@@ -34,7 +34,7 @@ import olenastudy.app.ui.LocalReduceMotion
 
 enum class PaperButtonStyle { Primary, Accent, Quiet }
 
-private val ButtonShape = RoundedCornerShape(14.dp)
+private val ButtonShape = RoundedCornerShape(topStart = 5.dp, topEnd = 13.dp, bottomEnd = 6.dp, bottomStart = 11.dp)
 
 /**
  * Botão de papel recortado, como os do site: faceta mais clara no canto superior esquerdo e uma
@@ -56,11 +56,12 @@ fun PaperButton(
         when (style) {
             PaperButtonStyle.Primary -> Color(0xFF7433E0) to Color.White
             PaperButtonStyle.Accent -> colors.yellow to colors.ink
-            PaperButtonStyle.Quiet -> (if (selected) colors.lavender else colors.soft) to colors.text
+            PaperButtonStyle.Quiet -> (if (selected) colors.lavender else if (colors.isDark) Color(0xFF201D26) else Color.White) to colors.text
         }
     val primary = style == PaperButtonStyle.Primary
-    val facet = if (primary) Color(0xFF8A4CE5) else lerp(base, Color.White, 0.28f)
-    val edge = if (primary) Color(0xFF4B209B) else lerp(base, Color.Black, 0.22f)
+    val quiet = style == PaperButtonStyle.Quiet && !selected
+    val facet = if (primary) Color(0xFF8A4CE5) else if (quiet) (if (colors.isDark) Color(0xFF262230) else Color(0xFFFBF2E2)) else lerp(base, Color.White, 0.28f)
+    val edge = if (primary) Color(0xFF4B209B) else if (quiet) (if (colors.isDark) Color(0xFF35313E) else Color(0xFFE6DDC9)) else lerp(base, Color.Black, 0.22f)
     val source = remember { MutableInteractionSource() }
     val pressed by source.collectIsPressedAsState()
     val focused by source.collectIsFocusedAsState()

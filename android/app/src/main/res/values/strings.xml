@@ -230,4 +230,7 @@
     <string name="read_error_title">Não foi possível ler seus dados</string>
     <string name="read_error_body">Tente abrir novamente. Esta falha não apaga o que está salvo neste aparelho.</string>
     <string name="read_retry">Tentar novamente</string>
+    <string name="share_save">Salvar cartão</string>
+    <string name="share_saved">Cartão salvo.</string>
+    <string name="share_save_failed">Não foi possível salvar o cartão. Tente copiar o link.</string>
 </resources>
