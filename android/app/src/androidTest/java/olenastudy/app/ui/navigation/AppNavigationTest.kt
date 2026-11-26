@@ -11,6 +11,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import olenastudy.app.MainActivity
 import org.junit.Rule
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -18,6 +19,8 @@ import org.junit.runner.RunWith
 class AppNavigationTest {
     @get:Rule
     val compose = createAndroidComposeRule<MainActivity>()
+
+    @Before fun waitForStartupRead() = compose.awaitAppReady()
 
     private fun openSettings() {
         compose.onNodeWithText("Perfil").performClick()
@@ -60,6 +63,7 @@ class AppNavigationTest {
     fun recreationPreservesTheSectionAndItsReturnPath() {
         openStudySettings()
         compose.activityRule.scenario.recreate()
+        compose.awaitAppReady()
         compose.onNodeWithText("Seu ritmo de foco").assertIsDisplayed()
         back()
         compose.onNodeWithContentDescription("Conta").assertIsDisplayed()

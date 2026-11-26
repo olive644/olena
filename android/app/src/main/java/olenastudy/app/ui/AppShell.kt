@@ -55,6 +55,9 @@ import olenastudy.app.domain.profile.ProfileInfo
 import olenastudy.app.domain.profile.ProfileLook
 import olenastudy.app.data.agenda.AgendaRepository
 import olenastudy.app.data.agenda.TaskRepository
+import olenastudy.app.data.agenda.agendaData
+import olenastudy.app.ui.components.ReadStateContent
+import olenastudy.app.ui.components.rememberReadState
 import olenastudy.app.domain.agenda.Tasks
 import olenastudy.app.focus.FocusController
 import olenastudy.app.ui.screens.AgendaScreen
@@ -97,19 +100,6 @@ fun AppShell(
     val entry by navController.currentBackStackEntryAsState()
     val current = AppDestination.fromRoute(entry?.destination?.route)
     val focusSnapshot by focusController.snapshot.collectAsStateWithLifecycle()
-    val events by agendaRepository.events.collectAsStateWithLifecycle(initialValue = emptyList())
-    val tasks by taskRepository.tasks.collectAsStateWithLifecycle(initialValue = emptyList())
-    val summary =
-        remember(focusSnapshot.records, events, tasks) {
-            val nowMs = System.currentTimeMillis()
-            val flower = FocusFlower.state(focusSnapshot.records, nowMs, ZoneId.systemDefault())
-            HomeSummary(
-                pendingTasks = Tasks.pendingCount(tasks),
-                focusMinutesToday = flower.minutesToday,
-                agendaToday = Agenda.eventsOn(events, LocalDate.now().toString()).size,
-                flowerBloomed = flower.progress >= 0.5,
-            )
-        }
     fun onNavigate(destination: AppDestination) {
         if (destination == current) {
             if (entry?.destination?.route != destination.route) {
@@ -165,7 +155,19 @@ fun AppShell(
                         when (destination) {
                             AppDestination.Profile ->
                                 ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, look = look, onLookChange = onLookChange, info = info, onInfoChange = onInfoChange, onOpenSettings = { navController.navigate(AppDestination.SETTINGS_ROUTE) { launchSingleTop = true } })
-                            AppDestination.Today -> HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
+                            AppDestination.Today -> {
+                                val read = rememberReadState(remember(agendaRepository, taskRepository) { agendaData(agendaRepository, taskRepository) })
+                                ReadStateContent(read.state, read.retry, stringResource(R.string.loading_space)) { data ->
+                                    val flower = FocusFlower.state(focusSnapshot.records, System.currentTimeMillis(), ZoneId.systemDefault())
+                                    val summary = HomeSummary(
+                                        pendingTasks = Tasks.pendingCount(data.tasks),
+                                        focusMinutesToday = flower.minutesToday,
+                                        agendaToday = Agenda.eventsOn(data.events, LocalDate.now().toString()).size,
+                                        flowerBloomed = flower.progress >= 0.5,
+                                    )
+                                    HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
+                                }
+                            }
                             AppDestination.Learn -> PracticeScreen()
                             AppDestination.Focus -> FocusScreen(focusController)
                             AppDestination.Planner -> AgendaScreen(agendaRepository, taskRepository)

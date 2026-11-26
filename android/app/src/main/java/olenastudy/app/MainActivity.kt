@@ -13,16 +13,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import olenastudy.app.data.agenda.AgendaRepository
 import olenastudy.app.data.agenda.TaskRepository
 import olenastudy.app.focus.FocusController
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.combine
+import olenastudy.app.data.ReadState
+import olenastudy.app.data.settings.AppPreferences
+import olenastudy.app.data.settings.SettingFlags
+import olenastudy.app.data.settings.flag
 import olenastudy.app.data.settings.ThemeMode
 import olenastudy.app.data.settings.ThemeSettings
-import olenastudy.app.domain.profile.ProfileInfo
-import olenastudy.app.domain.profile.ProfileLook
+import olenastudy.app.ui.components.ReadStateContent
+import olenastudy.app.ui.components.rememberReadState
 import olenastudy.app.ui.AppShell
 import olenastudy.app.ui.OlenaTheme
 import olenastudy.app.ui.navigation.AppDestination
@@ -46,34 +52,44 @@ class MainActivity : ComponentActivity() {
         }
         enableEdgeToEdge()
         val settings = ThemeSettings(applicationContext)
+        val preferences = AppPreferences(applicationContext)
         val focusController = FocusController(applicationContext, lifecycleScope)
         val agendaRepository = AgendaRepository(applicationContext)
         val taskRepository = TaskRepository(applicationContext)
         setContent {
             val scope = rememberCoroutineScope()
-            val themeMode by remember { settings.themeMode }.collectAsStateWithLifecycle(initialValue = ThemeMode.System)
-            val info by remember { settings.info }.collectAsStateWithLifecycle(initialValue = ProfileInfo())
-            val look by remember { settings.look }.collectAsStateWithLifecycle(initialValue = ProfileLook())
+            val startup = rememberReadState(remember { combine(settings.snapshot, preferences.snapshot) { profile, prefs -> profile to prefs } })
+            val loaded = (startup.state as? ReadState.Ready)?.value
+            var lastLoaded by remember { mutableStateOf(loaded) }
+            SideEffect { if (loaded != null) lastLoaded = loaded }
+            val appearance = loaded ?: lastLoaded
+            val themeMode = appearance?.first?.themeMode ?: ThemeMode.System
             val dark =
                 when (themeMode) {
                     ThemeMode.System -> isSystemInDarkTheme()
                     ThemeMode.Light -> false
                     ThemeMode.Dark -> true
                 }
-            OlenaTheme(darkTheme = dark) {
-                AppShell(
-                    focusController = focusController,
-                    agendaRepository = agendaRepository,
-                    taskRepository = taskRepository,
-                    themeMode = themeMode,
-                    onThemeModeChange = { mode -> scope.launch { settings.setThemeMode(mode) } },
-                    look = look,
-                    onLookChange = { next -> scope.launch { settings.setLook(next) } },
-                    info = info,
-                    onInfoChange = { next -> scope.launch { settings.setInfo(next) } },
-                    appLinkRequest = appLinkRequest,
-                    onAppLinkHandled = { id -> if (appLinkRequest?.id == id) appLinkRequest = null },
-                )
+            OlenaTheme(
+                darkTheme = dark,
+                reduceMotion = appearance?.second?.flag(SettingFlags.ReduceMotion) ?: true,
+                highlightSelections = appearance?.second?.flag(SettingFlags.HighlightSelections) ?: false,
+            ) {
+                ReadStateContent(startup.state, startup.retry, stringResource(R.string.loading_app)) { (profile, _) ->
+                    AppShell(
+                        focusController = focusController,
+                        agendaRepository = agendaRepository,
+                        taskRepository = taskRepository,
+                        themeMode = themeMode,
+                        onThemeModeChange = { mode -> scope.launch { settings.setThemeMode(mode) } },
+                        look = profile.look,
+                        onLookChange = { next -> scope.launch { settings.setLook(next) } },
+                        info = profile.info,
+                        onInfoChange = { next -> scope.launch { settings.setInfo(next) } },
+                        appLinkRequest = appLinkRequest,
+                        onAppLinkHandled = { id -> if (appLinkRequest?.id == id) appLinkRequest = null },
+                    )
+                }
             }
         }
     }

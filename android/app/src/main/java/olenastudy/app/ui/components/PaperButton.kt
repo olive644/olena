@@ -7,6 +7,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.graphicsLayer
@@ -28,6 +29,8 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import olenastudy.app.ui.OlenaTheme
+import olenastudy.app.ui.LocalHighlightSelections
+import olenastudy.app.ui.LocalReduceMotion
 
 enum class PaperButtonStyle { Primary, Accent, Quiet }
 
@@ -60,7 +63,10 @@ fun PaperButton(
     val edge = if (primary) Color(0xFF4B209B) else lerp(base, Color.Black, 0.22f)
     val source = remember { MutableInteractionSource() }
     val pressed by source.collectIsPressedAsState()
-    val press by animateFloatAsState(if (pressed) 0.97f else 1f, tween(120), label = "button-press")
+    val focused by source.collectIsFocusedAsState()
+    val focusColor = if (LocalHighlightSelections.current) colors.yellow else ink
+    val reduceMotion = LocalReduceMotion.current
+    val press by animateFloatAsState(if (pressed && !reduceMotion) 0.97f else 1f, tween(if (reduceMotion) 0 else 120), label = "button-press")
     Box(
         modifier = modifier
             .graphicsLayer {
@@ -90,6 +96,10 @@ fun PaperButton(
                         close()
                     }
                 drawPath(cornerPath, edge)
+                if (focused) {
+                    val inset = 12.dp.toPx()
+                    drawLine(focusColor, Offset(inset, size.height - 7.dp.toPx()), Offset(size.width - inset, size.height - 7.dp.toPx()), strokeWidth = 3.dp.toPx())
+                }
             }
             .clickable(enabled = enabled, interactionSource = source, indication = null, role = Role.Button, onClick = onClick)
             .padding(horizontal = horizontalPadding, vertical = 12.dp),

@@ -28,6 +28,7 @@ class AppLinkColdStartTest {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.olenastudy.com.br/foco"), context, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         ActivityScenario.launch<MainActivity>(intent).use {
+            compose.awaitAppReady()
             compose.onNodeWithText("Foco").assertIsSelected()
             compose.onNodeWithText("Começar").assertIsDisplayed()
             compose.waitForIdle()
@@ -42,9 +43,11 @@ class AppLinkColdStartTest {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.olenastudy.com.br/foco"), context, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         ActivityScenario.launch<MainActivity>(intent).use { scenario ->
+            compose.awaitAppReady()
             compose.onNodeWithText("Foco").assertIsSelected()
             compose.onNodeWithText("Agenda").performClick()
             scenario.recreate()
+            compose.awaitAppReady()
             compose.onNodeWithText("Agenda").assertIsSelected()
         }
     }
@@ -57,6 +60,7 @@ class AppLinkColdStartTest {
             .putExtra("route", AppDestination.SETTINGS_ROUTE)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         ActivityScenario.launch<MainActivity>(intent).use { scenario ->
+            compose.awaitAppReady()
             compose.onNodeWithText("Foco").assertIsSelected()
             scenario.onActivity { assertNull(it.intent.extras) }
         }

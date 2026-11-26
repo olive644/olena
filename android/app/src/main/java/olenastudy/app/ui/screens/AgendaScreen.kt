@@ -42,7 +42,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.appwidget.updateAll
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -52,6 +51,9 @@ import kotlinx.coroutines.launch
 import olenastudy.app.R
 import olenastudy.app.data.agenda.AgendaRepository
 import olenastudy.app.data.agenda.TaskRepository
+import olenastudy.app.data.agenda.agendaData
+import olenastudy.app.ui.components.ReadStateContent
+import olenastudy.app.ui.components.rememberReadState
 import olenastudy.app.domain.agenda.StudyTask
 import olenastudy.app.domain.agenda.Tasks
 import olenastudy.app.domain.agenda.Agenda
@@ -93,25 +95,26 @@ fun monthGrid(date: LocalDate): List<LocalDate> {
 fun AgendaScreen(repository: AgendaRepository, taskRepository: TaskRepository) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val events by repository.events.collectAsStateWithLifecycle(initialValue = emptyList())
-    val tasks by taskRepository.tasks.collectAsStateWithLifecycle(initialValue = emptyList())
+    val read = rememberReadState(remember(repository, taskRepository) { agendaData(repository, taskRepository) })
     fun changed(block: suspend () -> Unit) {
         scope.launch {
             block()
             AgendaWidget().updateAll(context)
         }
     }
-    AgendaContent(
-        events = events,
-        tasks = tasks,
-        today = LocalDate.now(),
-        initialView = AgendaView.Month,
-        onAdd = { event -> changed { repository.add(event) } },
-        onRemove = { id -> changed { repository.remove(id) } },
-        onAddTask = { task -> changed { taskRepository.add(task) } },
-        onToggleTask = { id -> changed { taskRepository.toggle(id) } },
-        onRemoveTask = { id -> changed { taskRepository.remove(id) } },
-    )
+    ReadStateContent(read.state, read.retry, stringResource(R.string.loading_agenda)) { data ->
+        AgendaContent(
+            events = data.events,
+            tasks = data.tasks,
+            today = LocalDate.now(),
+            initialView = AgendaView.Month,
+            onAdd = { event -> changed { repository.add(event) } },
+            onRemove = { id -> changed { repository.remove(id) } },
+            onAddTask = { task -> changed { taskRepository.add(task) } },
+            onToggleTask = { id -> changed { taskRepository.toggle(id) } },
+            onRemoveTask = { id -> changed { taskRepository.remove(id) } },
+        )
+    }
 }
 
 /** Imagem estática para os testes de tela: mesmo conteúdo, sem banco. */

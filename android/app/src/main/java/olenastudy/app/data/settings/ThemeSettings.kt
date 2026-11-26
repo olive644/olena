@@ -2,6 +2,7 @@ package olenastudy.app.data.settings
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -36,38 +37,42 @@ private val LinksKey = stringPreferencesKey("profile_links")
 private val CoverKey = stringPreferencesKey("profile_cover")
 private val BackgroundKey = stringPreferencesKey("profile_background")
 
+data class SettingsSnapshot(val themeMode: ThemeMode, val look: ProfileLook, val info: ProfileInfo)
+
+/** Uma única versão do arquivo, sem combinar partes de leituras diferentes do perfil. */
+internal fun readSettings(values: Preferences) = SettingsSnapshot(
+    themeMode = ThemeMode.parse(values[ThemeKey]),
+    look = ProfileLook(
+        avatarId = ProfileAvatars.resolve(values[AvatarKey]).id,
+        frameId = ProfileCosmetics.frame(values[FrameKey]),
+        coverId = ProfileCosmetics.cover(values[CoverKey]),
+        backgroundId = ProfileCosmetics.background(values[BackgroundKey]),
+    ),
+    info = ProfileInfo(
+        name = values[NameKey] ?: "",
+        username = values[UsernameKey] ?: "",
+        bio = values[BioKey] ?: "",
+        pronouns = values[PronounsKey] ?: "",
+        socialLinks = (values[LinksKey] ?: "").split('\n').filter { it.isNotBlank() },
+    ),
+)
+
 /**
  * Preferências do aparelho. O tema é só do aparelho (cache local); o que for do aluno de verdade,
  * como progresso e agenda, pertence à conta e entra por outro caminho.
  */
 class ThemeSettings(private val context: Context) {
-    val themeMode: Flow<ThemeMode> = context.settingsStore.data.map { ThemeMode.parse(it[ThemeKey]) }
+    val snapshot: Flow<SettingsSnapshot> = context.settingsStore.data.map(::readSettings)
+    val themeMode: Flow<ThemeMode> = snapshot.map { it.themeMode }
 
     /** Avatar escolhido no perfil; id desconhecido ou ausente vira o padrão ao ler. */
     val avatarId: Flow<String> = context.settingsStore.data.map { it[AvatarKey] ?: "helena" }
 
     /** Avatar, moldura, capa e fundo do perfil. Valores desconhecidos voltam ao padrão ao ler. */
-    val look: Flow<ProfileLook> =
-        context.settingsStore.data.map {
-            ProfileLook(
-                avatarId = ProfileAvatars.resolve(it[AvatarKey]).id,
-                frameId = ProfileCosmetics.frame(it[FrameKey]),
-                coverId = ProfileCosmetics.cover(it[CoverKey]),
-                backgroundId = ProfileCosmetics.background(it[BackgroundKey]),
-            )
-        }
+    val look: Flow<ProfileLook> = snapshot.map { it.look }
 
     /** Nome, bio, pronomes e redes do perfil. Neste aparelho até o login existir. */
-    val info: Flow<ProfileInfo> =
-        context.settingsStore.data.map {
-            ProfileInfo(
-                name = it[NameKey] ?: "",
-                username = it[UsernameKey] ?: "",
-                bio = it[BioKey] ?: "",
-                pronouns = it[PronounsKey] ?: "",
-                socialLinks = (it[LinksKey] ?: "").split('\n').filter { link -> link.isNotBlank() },
-            )
-        }
+    val info: Flow<ProfileInfo> = snapshot.map { it.info }
 
     suspend fun setInfo(info: ProfileInfo) {
         context.settingsStore.edit {

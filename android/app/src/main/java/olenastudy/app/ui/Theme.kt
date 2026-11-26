@@ -67,6 +67,8 @@ val DarkOlenaColors = OlenaColors(
 )
 
 private val LocalOlenaColors = staticCompositionLocalOf { LightOlenaColors }
+val LocalReduceMotion = staticCompositionLocalOf { true }
+val LocalHighlightSelections = staticCompositionLocalOf { false }
 
 /** Acesso às cores da marca: `OlenaTheme.colors.violet`, `OlenaTheme.colors.page`, etc. */
 object OlenaTheme {
@@ -120,10 +122,16 @@ private fun OlenaColors.toMaterial() =
 @Composable
 fun OlenaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    reduceMotion: Boolean = true,
+    highlightSelections: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colors = if (darkTheme) DarkOlenaColors else LightOlenaColors
-    CompositionLocalProvider(LocalOlenaColors provides colors) {
+    CompositionLocalProvider(
+        LocalOlenaColors provides colors,
+        LocalReduceMotion provides reduceMotion,
+        LocalHighlightSelections provides highlightSelections,
+    ) {
         MaterialTheme(
             colorScheme = colors.toMaterial(),
             typography = OlenaTypography,

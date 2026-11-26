@@ -22,6 +22,7 @@ import olenastudy.app.MainActivity
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.atomic.AtomicBoolean
@@ -30,6 +31,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 class AppLinksTest {
     @get:Rule
     val compose = createAndroidComposeRule<MainActivity>()
+
+    @Before fun waitForStartupRead() = compose.awaitAppReady()
 
     private fun openSettings() {
         compose.onNodeWithText("Perfil").performClick()
@@ -105,6 +108,7 @@ class AppLinksTest {
         deliverLink("https://www.olenastudy.com.br/foco")
         compose.onNodeWithText("Agenda").performClick()
         compose.activityRule.scenario.recreate()
+        compose.awaitAppReady()
         compose.onNodeWithText("Agenda").assertIsSelected()
     }
 
