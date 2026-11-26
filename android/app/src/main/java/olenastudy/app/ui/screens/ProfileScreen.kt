@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -173,7 +174,7 @@ private fun CoverCard(
                 contentDescription = stringResource(R.string.profile_avatar_description),
                 modifier = Modifier.fillMaxSize().then(if (look.frameId != "none") Modifier.clip(androidx.compose.foundation.shape.CircleShape).background(Color.White) else Modifier),
             )
-            frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.offset((-13.44).dp, (-13.44).dp).size(138.88.dp)) }
+            frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.align(Alignment.Center).requiredSize(138.88.dp)) }
         }
         LevelBadge(Modifier.offset(89.dp, 191.dp))
         Column(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 237.dp)) {
