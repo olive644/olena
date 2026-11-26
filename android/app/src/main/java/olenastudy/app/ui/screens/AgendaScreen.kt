@@ -172,7 +172,7 @@ fun AgendaContent(
                     placeholder = { Text(stringResource(R.string.agenda_search_hint)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(topStart = 5.dp, topEnd = 13.dp, bottomEnd = 6.dp, bottomStart = 11.dp),
                 )
             }
         }
@@ -359,7 +359,7 @@ private fun WeekPanel(date: LocalDate, events: List<StudyEvent>, onPick: (LocalD
             List(7) { first.plusDays(it.toLong()) }.forEach { day ->
                 val list = Agenda.eventsOn(events, day.toString())
                 Row(
-                    Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(if (day == date) colors.lavender else colors.soft).clickable { onPick(day) }.padding(12.dp),
+                    Modifier.fillMaxWidth().clip(RoundedCornerShape(topStart = 5.dp, topEnd = 13.dp, bottomEnd = 6.dp, bottomStart = 11.dp)).background(if (day == date) colors.lavender else colors.soft).clickable { onPick(day) }.padding(12.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     Text(day.format(DateTimeFormatter.ofPattern("EEE d", PtBr)).replaceFirstChar(Char::uppercase), style = MaterialTheme.typography.labelLarge, color = colors.text, modifier = Modifier.width(64.dp))
@@ -393,7 +393,7 @@ private fun ListPanel(events: List<StudyEvent>, start: LocalDate, onDelete: (Stu
 private fun EventRow(event: StudyEvent, onDelete: () -> Unit) {
     val colors = OlenaTheme.colors
     Column(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.soft).padding(12.dp),
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(topStart = 5.dp, topEnd = 13.dp, bottomEnd = 6.dp, bottomStart = 11.dp)).background(colors.soft).padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Text(event.title, style = MaterialTheme.typography.titleMedium, color = colors.text)
@@ -486,16 +486,11 @@ private fun repeatLabel(recurrence: Recurrence): Int =
 private fun TaskRow(task: StudyTask, onToggle: () -> Unit, onRemove: () -> Unit) {
     val colors = OlenaTheme.colors
     Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(colors.soft).clickable(onClick = onToggle).padding(12.dp),
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(topStart = 5.dp, topEnd = 13.dp, bottomEnd = 6.dp, bottomStart = 11.dp)).background(colors.soft).clickable(onClick = onToggle).padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Box(
-            Modifier.size(24.dp).background(if (task.completed) colors.yellow else colors.surface, RoundedCornerShape(6.dp)),
-            contentAlignment = Alignment.Center,
-        ) {
-            if (task.completed) Text("✓", fontWeight = FontWeight.ExtraBold, color = Color(0xFF292432))
-        }
+        olenastudy.app.ui.components.PaperCheckbox(checked = task.completed)
         Text(
             task.title,
             style = MaterialTheme.typography.bodyLarge,

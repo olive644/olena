@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -69,6 +70,7 @@ fun ProfileScreen(
 ) {
     val colors = OlenaTheme.colors
     var avatarOpen by rememberSaveable { mutableStateOf(false) }
+    var coverTab by rememberSaveable { mutableStateOf(false) }
     var editOpen by rememberSaveable { mutableStateOf(false) }
     var achievementsOpen by rememberSaveable { mutableStateOf(false) }
     var arcanaOpen by rememberSaveable { mutableStateOf(false) }
@@ -76,7 +78,7 @@ fun ProfileScreen(
     var shareOpen by rememberSaveable { mutableStateOf(false) }
     var connections by rememberSaveable { mutableStateOf<ConnectionKind?>(null) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        CoverCard(look = look, info = info, onAvatar = { avatarOpen = true }, onEdit = { editOpen = true }, onSettings = onOpenSettings, onFriends = { friendsOpen = true }, onQr = { shareOpen = true }, onConnections = { connections = it })
+        CoverCard(look = look, info = info, onAvatar = { coverTab = false; avatarOpen = true }, onCover = { coverTab = true; avatarOpen = true }, onEdit = { editOpen = true }, onSettings = onOpenSettings, onFriends = { friendsOpen = true }, onQr = { shareOpen = true }, onConnections = { connections = it })
         Column(Modifier.padding(top = 36.dp)) {
             SectionHeader(title = stringResource(R.string.profile_achievements), titleWidth = 118.dp, count = R.drawable.art_profile_count_a, countDark = R.drawable.art_profile_count_a_dark, countSize = 64.dp to 22.dp, arrowSize = 30.dp, arrowEnd = 6.dp, onClick = { achievementsOpen = true })
             Row(Modifier.padding(top = 24.dp).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -118,6 +120,7 @@ fun ProfileScreen(
     if (avatarOpen) {
         ProfileAvatarDialog(
             current = look,
+            startOnCovers = coverTab,
             onDismiss = { avatarOpen = false },
             onSave = { next ->
                 avatarOpen = false
@@ -133,6 +136,7 @@ private fun CoverCard(
     look: ProfileLook,
     info: ProfileInfo,
     onAvatar: () -> Unit,
+    onCover: () -> Unit,
     onEdit: () -> Unit,
     onSettings: () -> Unit,
     onFriends: () -> Unit,
@@ -155,7 +159,8 @@ private fun CoverCard(
                 radius = 0.dp,
                 facet = 0.dp,
                 shift = 5.dp,
-            ),
+            )
+            .profileBackground(look.backgroundId, topDp = 260f),
     ) {
         Image(painterResource(coverArt(look.coverId)), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(168.dp))
         SiteTile(
@@ -164,12 +169,16 @@ private fun CoverCard(
             modifier = Modifier.align(Alignment.TopEnd).padding(top = 12.dp, end = 8.dp).size(width = 58.dp, height = 44.dp),
             shift = 3.dp,
         ) { Image(painterResource(R.drawable.art_icon_settings), null, Modifier.size(22.dp)) }
-        Box(Modifier.align(Alignment.TopEnd).padding(top = 113.dp, end = 12.dp).size(44.dp), contentAlignment = Alignment.Center) {
+        Box(Modifier.align(Alignment.TopEnd).padding(top = 113.dp, end = 12.dp).size(44.dp).clickable(role = Role.Button, onClick = onCover).semantics { contentDescription = "Escolher o header do perfil" }, contentAlignment = Alignment.Center) {
             Image(painterResource(R.drawable.art_icon_pen), null, Modifier.size(30.dp))
         }
         Box(Modifier.offset(16.dp, 116.dp).size(112.dp).clickable(role = Role.Button, onClick = onAvatar)) {
-            Image(painterResource(avatarArt(look.avatarId)), contentDescription = stringResource(R.string.profile_avatar_description), modifier = Modifier.fillMaxSize())
-            frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.offset((-13.44).dp, (-13.44).dp).size(138.88.dp)) }
+            Image(
+                painterResource(avatarArt(look.avatarId)),
+                contentDescription = stringResource(R.string.profile_avatar_description),
+                modifier = Modifier.fillMaxSize().then(if (look.frameId != "none") Modifier.clip(androidx.compose.foundation.shape.CircleShape) else Modifier),
+            )
+            frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.align(Alignment.Center).requiredSize(138.88.dp)) }
         }
         LevelBadge(Modifier.offset(89.dp, 191.dp))
         Column(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 237.dp)) {

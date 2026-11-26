@@ -23,8 +23,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -41,6 +44,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -65,6 +69,7 @@ import olenastudy.app.data.settings.flag
 import olenastudy.app.ui.ManropeFamily
 import olenastudy.app.ui.OlenaTheme
 import olenastudy.app.ui.components.PaperButton
+import olenastudy.app.ui.components.PaperCheckbox
 import olenastudy.app.ui.components.PaperButtonStyle
 import olenastudy.app.ui.components.paperPanel
 
@@ -104,31 +109,38 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
     fun choice(n: String) = prefs?.choice(n) ?: ""
 
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        Row(Modifier.fillMaxWidth().padding(top = 12.dp), horizontalArrangement = Arrangement.End) {
+        Row(Modifier.fillMaxWidth().padding(top = 12.dp).offset(x = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)) {
+            SettingsTile(
+                onClick = { note = "O inglês chega ao app junto com a tradução completa das telas." },
+                description = "Mudar idioma para inglês",
+                modifier = Modifier.size(width = 58.dp, height = 44.dp),
+                cream = true,
+            ) { Image(painterResource(R.drawable.art_flag_br), null, Modifier.size(32.dp)) }
             SettingsTile(
                 onClick = { if (section == null) onBack() else sectionName = null },
                 description = stringResource(R.string.settings_back),
                 modifier = Modifier.size(width = 58.dp, height = 44.dp),
-            ) { Image(painterResource(R.drawable.ic_paper_arrow), null, Modifier.size(30.dp).scale(scaleX = -1f, scaleY = 1f)) }
+                cream = true,
+            ) { Image(painterResource(R.drawable.ic_paper_arrow), null, Modifier.size(28.dp).scale(scaleX = -1f, scaleY = 1f)) }
         }
         Text(
             stringResource(R.string.settings_title),
             fontFamily = ManropeFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 26.sp,
-            letterSpacing = (-1.4).sp,
+            fontSize = 26.4.sp,
+            letterSpacing = (-1.452).sp,
             color = colors.text,
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = Modifier.padding(top = 5.dp),
         )
         if (section == null) {
             Section.entries.forEach { row ->
                 SettingsTile(onClick = { sectionName = row.name }, description = row.title, modifier = Modifier.fillMaxWidth().height(56.dp)) {
                     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                         Image(painterResource(row.icon), null, Modifier.size(28.dp))
-                        Text(row.title, fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 14.sp, color = Ink, modifier = Modifier.weight(1f))
+                        Text(row.title, fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 14.sp, color = OlenaTheme.colors.text, modifier = Modifier.weight(1f))
                         Text("›", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF66616B))
                     }
                 }
@@ -151,14 +163,33 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             )
         } else {
-            Text(section.title, fontFamily = ManropeFamily, fontWeight = FontWeight.Medium, fontSize = 20.sp, color = colors.text)
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(section.title, fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 19.2.sp, color = colors.text)
             when (section) {
                 Section.Account ->
-                    Card("SUA IDENTIDADE", "Informações") {
-                        Text("Seu perfil", fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = colors.text)
-                        InfoRow("E-mail", "Nenhum e-mail conectado")
-                        InfoRow("Fuso da conta", java.time.ZoneId.systemDefault().id.replace("_", " "))
-                        PaperButton("Entrar com Google", { note = "Entrar com a conta chega ao app junto com o login e a sincronização." }, Modifier.fillMaxWidth())
+                    StCard {
+                      Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                        Text(
+                            "SUA IDENTIDADE", fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, letterSpacing = 1.44.sp,
+                            color = if (colors.isDark) Color(0xFF8B5CF6) else Color(0xFF6D28D9),
+                        )
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Image(painterResource(avatarArt(LocalProfileLook.current.avatarId)), null, Modifier.size(48.dp))
+                            Text(LocalProfileInfo.current.name.ifBlank { "Seu perfil" }, fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = colors.text)
+                        }
+                        Text("Informações", fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 15.2.sp, color = colors.text)
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                                Text("E-mail", fontFamily = ManropeFamily, fontSize = 12.8.sp, color = colors.muted, modifier = Modifier.width(90.dp))
+                                Text("Nenhum e-mail conectado", fontFamily = ManropeFamily, fontSize = 12.8.sp, color = colors.text)
+                            }
+                            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                                Text("Fuso da conta", fontFamily = ManropeFamily, fontSize = 12.8.sp, color = colors.muted, modifier = Modifier.width(90.dp))
+                                Text(java.time.ZoneId.systemDefault().id.replace('_', ' '), fontFamily = ManropeFamily, fontSize = 12.8.sp, color = colors.text)
+                            }
+                        }
+                        StButton("Entrar com Google") { note = "Entrar com a conta chega ao app junto com o login e a sincronização." }
+                      }
                     }
                 Section.Security ->
                     Card("SEGURANÇA", "Esta sessão") { Body("Entre na sua conta para consultar e encerrar esta sessão.") }
@@ -169,11 +200,15 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                     }
                 Section.Appearance -> {
                     Card("APARÊNCIA", "Seu papel, sua luz") {
-                        Text("Tema do aplicativo", fontFamily = ManropeFamily, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = colors.text)
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-                            listOf("Claro" to ThemeMode.Light, "Escuro" to ThemeMode.Dark, "Sistema" to ThemeMode.System).forEach { (label, mode) ->
-                                ThemeTile(label, mode == themeMode, Modifier.weight(1f)) { onThemeModeChange(mode) }
+                        Text("Tema do aplicativo", fontFamily = ManropeFamily, fontSize = 16.sp, color = colors.text, modifier = Modifier.padding(start = 2.dp))
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(horizontal = 2.dp)) {
+                            fun art(mode: ThemeMode) = if (colors.isDark) (if (mode == ThemeMode.Dark) R.drawable.art_theme_dark_dk else R.drawable.art_theme_light_dk) else (if (mode == ThemeMode.Dark) R.drawable.art_theme_dark else R.drawable.art_theme_light)
+                            Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+                                listOf("Claro" to ThemeMode.Light, "Escuro" to ThemeMode.Dark).forEach { (label, mode) ->
+                                    ThemeTile(label, mode == themeMode, Modifier.weight(1f), art(mode)) { onThemeModeChange(mode) }
+                                }
                             }
+                            ThemeTile("Sistema", ThemeMode.System == themeMode, Modifier.fillMaxWidth(), art(ThemeMode.Light)) { onThemeModeChange(ThemeMode.System) }
                         }
                         Body("O tema acompanha sua conta. Sistema segue a aparência de cada dispositivo.")
                     }
@@ -183,7 +218,6 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                         Toggle("Realçar seleções", "Destaques mais fortes nas opções selecionadas, além das cores e dos símbolos.", flag(SettingFlags.HighlightSelections)) { onFlag(SettingFlags.HighlightSelections, it) }
                         Toggle("Efeitos sonoros", "Sons de acerto, erro e recompensas nos minigames e na sala. Não altera as vozes dos exercícios.", flag(SettingFlags.SoundEffects)) { onFlag(SettingFlags.SoundEffects, it) }
                         Toggle("Vibrações", "Feedback tátil ao navegar e selecionar, quando o aparelho permitir.", flag(SettingFlags.Vibration)) { onFlag(SettingFlags.Vibration, it) }
-                        Toggle("Caderno em 3D", "Experimental: folhas em 3D com som de papel. Pode pesar em aparelhos mais lentos.", flag(SettingFlags.Notebook3d)) { onFlag(SettingFlags.Notebook3d, it) }
                     }
                 }
                 Section.Study -> StudySettingsContent()
@@ -191,21 +225,26 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                 Section.Agenda -> {
                     var granted by remember { mutableStateOf(notificationsAllowed(context)) }
                     val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted = notificationsAllowed(context) }
-                    Card(null, "Lembretes neste aparelho") {
-                        Eyebrow("Notificações por tipo")
-                        Toggle("Novos seguidores", "Avisos na tela e no sino quando alguém seguir você.", flag(SettingFlags.NotifyFollowers)) { onFlag(SettingFlags.NotifyFollowers, it) }
-                        Toggle("Atividades e curtidas", "Conquistas de amigos e apoio às suas atividades.", flag(SettingFlags.NotifyActivity)) { onFlag(SettingFlags.NotifyActivity, it) }
-                        Toggle("Lembretes da agenda", "Avisos dos eventos enquanto o aplicativo estiver aberto.", flag(SettingFlags.NotifyAgenda)) { onFlag(SettingFlags.NotifyAgenda, it) }
-                        Toggle("Novidades do aplicativo", "Atualizações publicadas no sino de notificações.", flag(SettingFlags.NotifyNews)) { onFlag(SettingFlags.NotifyNews, it) }
-                        Toggle("Recompensas de XP", "Avisos de pontos recebidos. Desativar não impede ganhar XP.", flag(SettingFlags.NotifyXp)) { onFlag(SettingFlags.NotifyXp, it) }
-                        Body(if (granted) "Estado: Permitidos" else "Estado: Bloqueados neste aparelho")
+                    Card("AGENDA E NOTIFICAÇÕES", "Lembretes neste aparelho") {
+                        Text("Notificações por tipo", fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = colors.text, modifier = Modifier.padding(start = 2.dp))
+                        Column {
+                        Toggle("Novos seguidores", "Avisos na tela e no sino quando alguém seguir você.", flag(SettingFlags.NotifyFollowers), divider = true) { onFlag(SettingFlags.NotifyFollowers, it) }
+                        Toggle("Atividades e curtidas", "Conquistas de amigos e apoio às suas atividades.", flag(SettingFlags.NotifyActivity), divider = true) { onFlag(SettingFlags.NotifyActivity, it) }
+                        Toggle("Lembretes da agenda", "Avisos dos eventos enquanto o aplicativo estiver aberto.", flag(SettingFlags.NotifyAgenda), divider = true) { onFlag(SettingFlags.NotifyAgenda, it) }
+                        Toggle("Novidades do aplicativo", "Atualizações publicadas no sino de notificações.", flag(SettingFlags.NotifyNews), divider = true) { onFlag(SettingFlags.NotifyNews, it) }
+                        Toggle("Recompensas de XP", "Avisos de pontos recebidos. Desativar não impede ganhar XP.", flag(SettingFlags.NotifyXp), divider = true) { onFlag(SettingFlags.NotifyXp, it) }
+                        }
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text("Estado:", fontFamily = ManropeFamily, fontSize = 16.sp, color = colors.text)
+                            Text(if (granted) "Permitidos" else "Bloqueados neste aparelho", fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = colors.text)
+                        }
                         Body("Os lembretes funcionam enquanto o aplicativo estiver aberto. Escolha a antecedência dentro de cada evento da Agenda.")
                         if (!granted) Body("Para permitir, use o botão abaixo ou abra as configurações do aplicativo no aparelho.")
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-                            PaperButton("Permitir notificações", {
+                        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                            StButton("Permitir notificações", Modifier.fillMaxWidth()) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ask.launch(Manifest.permission.POST_NOTIFICATIONS) else granted = true
-                            }, Modifier.weight(1f))
-                            PaperButton("Verificar permissão", { granted = notificationsAllowed(context) }, Modifier.weight(1f), PaperButtonStyle.Quiet)
+                            }
+                            StButton("Verificar permissão", Modifier.fillMaxWidth()) { granted = notificationsAllowed(context) }
                         }
                     }
                 }
@@ -214,23 +253,34 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                         Body("Baixa os estudos e preferências disponíveis neste aparelho em JSON. Arquivos que existem somente na nuvem e conversas do atendimento não são baixados por esta ação.")
                         Body("A cópia contém seus textos e dados pessoais, sem criptografia. Guarde em um lugar seguro.")
                         Body("Aguarde a conta carregar ou entre para exportar os dados corretos.")
-                        PaperButton("Exportar meus dados", { note = "A exportação depende da conta e chega com o login." }, Modifier.fillMaxWidth())
+                        StButton("Exportar meus dados", Modifier.fillMaxWidth()) { note = "A exportação depende da conta e chega com o login." }
                     }
-                    Card("PRIVACIDADE", "Privacidade") {
-                        PaperButton("Ver detalhes", { openUrl(context, PRIVACY_URL) }, Modifier.fillMaxWidth(), PaperButtonStyle.Quiet)
+                    StCard {
+                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(
+                                "PRIVACIDADE", fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 11.2.sp, letterSpacing = 1.008.sp,
+                                color = if (colors.isDark) Color(0xFF8B5CF6) else Color(0xFF6D28D9),
+                            )
+                            Text(
+                                "Ver detalhes", fontFamily = ManropeFamily, fontSize = 16.sp, color = colors.text, textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline,
+                                modifier = Modifier.clickable(role = Role.Button) { openUrl(context, PRIVACY_URL) }.padding(horizontal = 4.dp, vertical = 11.dp),
+                            )
+                        }
                         Body("Usamos armazenamento necessário para sua conta, estudos e preferências.")
-                        Link("Política de privacidade") { openUrl(context, PRIVACY_URL) }
+                        StLinkButton("Política de privacidade", Modifier) { openUrl(context, PRIVACY_URL) }
                     }
                     Card(null, "Suas atividades") {
                         Toggle(
                             "Mostrar atividades para todo mundo",
                             "Compartilhe novas conquistas de prática, foco e sequências. Conteúdo dos seus estudos nunca é publicado. Ao desativar, as atividades e curtidas são removidas.",
                             flag(SettingFlags.ShareActivity),
+                            stacked = true,
                         ) { onFlag(SettingFlags.ShareActivity, it) }
                         Body("Entre na conta para gerenciar atividades compartilhadas.")
                     }
-                    Card(null, "Termos de uso") { Link("Termos de uso") { openUrl(context, TERMS_URL) } }
+                    Card("DOCUMENTOS", "Termos de uso") { StLinkButton("Termos de uso", Modifier.fillMaxWidth()) { openUrl(context, TERMS_URL) } }
                 }
+            }
             }
         }
         Box(Modifier.height(120.dp))
@@ -258,8 +308,27 @@ private fun notificationsAllowed(context: Context): Boolean =
 internal fun Card(eyebrow: String?, title: String, content: @Composable () -> Unit) {
     StCard {
         if (eyebrow != null) StEyebrow(eyebrow)
-        StTitle(title)
+        Column { StTitle(title); Box(Modifier.height(3.dp)) }
         content()
+    }
+}
+
+/** Botão secundário com a seta de papel (links Política de privacidade e Termos de uso). */
+@Composable
+internal fun StLinkButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val line = StLine
+    Box(
+        modifier
+            .heightIn(min = 45.dp)
+            .paperPanel(StSurface, line, if (OlenaTheme.colors.isDark) Color(0xFF262230) else Color(0xFFFBF2E2), Color.Transparent, line, StButtonShape, 13.dp, 14.dp, 4.dp)
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(text, fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 12.16.sp, color = OlenaTheme.colors.text, textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline)
+            Image(painterResource(R.drawable.ic_paper_arrow), null, Modifier.size(22.dp))
+        }
     }
 }
 
@@ -279,46 +348,39 @@ internal fun Eyebrow(text: String) {
 
 @Composable
 internal fun Body(text: String) {
-    StBody(text, size = 15f, muted = false)
+    StBody(text, size = 16f, muted = false)
 }
 
 @Composable
 internal fun Link(text: String, onClick: () -> Unit) {
-    Text(
-        text,
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 15.sp,
-        color = OlenaTheme.colors.violet,
-        modifier = Modifier.clickable(role = Role.Button, onClick = onClick).padding(vertical = 6.dp),
-    )
+    Row(Modifier.clickable(role = Role.Button, onClick = onClick).padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(text, fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = OlenaTheme.colors.violet)
+        Image(painterResource(R.drawable.ic_paper_arrow), null, Modifier.size(22.dp))
+    }
 }
 
 /** Ajuste liga/desliga: título, explicação e a caixa de papel, que fica amarela quando marcada. */
 @Composable
-internal fun Toggle(title: String, hint: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+internal fun Toggle(title: String, hint: String, checked: Boolean, stacked: Boolean = false, divider: Boolean = false, onChange: (Boolean) -> Unit) {
     val colors = OlenaTheme.colors
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .clickable(role = Role.Checkbox) { onChange(!checked) }
-            .semantics { selected = checked }
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(title, fontFamily = ManropeFamily, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = colors.text)
-            Text(hint, style = MaterialTheme.typography.bodyMedium, fontSize = 13.sp, color = colors.muted)
-        }
-        Box(
-            Modifier
-                .size(24.dp)
-                .background(if (checked) Color(0xFFFACC15) else colors.surface, RoundedCornerShape(6.dp))
-                .border(2.dp, if (checked) Ink else colors.lineStrong, RoundedCornerShape(6.dp)),
-            contentAlignment = Alignment.Center,
-        ) {
-            if (checked) StCheck()
+    val lineColor = StLine
+    @Composable
+    fun texts(mod: Modifier) = Column(mod, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(title, fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 16.sp, lineHeight = 22.sp, color = colors.text)
+        Text(hint, fontFamily = ManropeFamily, fontSize = 13.33.sp, lineHeight = 20.sp, color = colors.muted)
+    }
+    val base = Modifier
+        .fillMaxWidth()
+        .clickable(role = Role.Checkbox) { onChange(!checked) }
+        .semantics { selected = checked }
+        .then(if (divider) Modifier.drawBehind { drawLine(lineColor, androidx.compose.ui.geometry.Offset(0f, size.height - 0.5f), androidx.compose.ui.geometry.Offset(size.width, size.height - 0.5f), 1.dp.toPx()) } else Modifier)
+        .padding(top = 14.dp, bottom = if (divider) 15.dp else 14.dp)
+    if (stacked) {
+        Column(base, verticalArrangement = Arrangement.spacedBy(12.dp)) { texts(Modifier.fillMaxWidth()); PaperCheckbox(checked) }
+    } else {
+        Row(base, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            texts(Modifier.weight(1f))
+            PaperCheckbox(checked)
         }
     }
 }
@@ -331,21 +393,21 @@ internal fun Choices(options: List<Pair<String, String>>, selected: Set<String>,
 
 /** Peça de papel clara e em relevo, igual aos botões secundários do site. */
 @Composable
-internal fun SettingsTile(onClick: () -> Unit, description: String, modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
-    val dark = OlenaTheme.colors.isDark
+internal fun SettingsTile(onClick: () -> Unit, description: String, modifier: Modifier = Modifier, cream: Boolean = false, content: @Composable BoxScope.() -> Unit) {
+    val shape = RoundedCornerShape(topStart = 5.dp, topEnd = 13.dp, bottomEnd = 6.dp, bottomStart = 11.dp)
     Box(
         modifier = modifier
             .semantics { contentDescription = description }
             .paperPanel(
-                fill = if (dark) Color(0xFFFFF9EF) else Color.White,
-                base = if (dark) Color(0xFFC8BAA4) else Color(0xFFD7CBB7),
-                facetLight = Color(0xFFF1E9DC),
-                facetDark = Color(0xFFE6DAC3),
-                border = Color.Transparent,
-                shape = RoundedCornerShape(topStart = 8.dp, topEnd = 16.dp, bottomEnd = 10.dp, bottomStart = 13.dp),
+                fill = if (cream) Color(0xFFFFF9EF) else Dlg.secondary,
+                base = if (cream) Color(0xFFC8BAA4) else Dlg.line,
+                facetLight = if (cream) Color(0xFFE9DDC6) else Dlg.secondaryFacet,
+                facetDark = Color.Transparent,
+                border = if (cream) Color(0xFFD7CBB7) else Dlg.line,
+                shape = shape,
                 radius = 13.dp,
-                facet = 18.dp,
-                shift = 4.dp,
+                facet = 16.dp,
+                shift = if (cream) 3.dp else 4.dp,
             )
             .clickable(role = Role.Button, onClick = onClick),
         contentAlignment = Alignment.Center,
@@ -383,11 +445,11 @@ internal fun rememberSettingsState(): SettingsState {
 
 /** Escolha de tema em três colunas: roxo quando selecionado (como o site), branco em relevo nos outros. */
 @Composable
-private fun ThemeTile(text: String, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+private fun ThemeTile(text: String, selected: Boolean, modifier: Modifier, icon: Int, onClick: () -> Unit) {
     val line = StLine
     Box(
         modifier
-            .height(64.dp)
+            .height(if (selected) 74.dp else 71.dp)
             .semantics { this.selected = selected }
             .paperPanel(
                 fill = if (selected) Color(0xFF7433E0) else StSurface,
@@ -403,13 +465,16 @@ private fun ThemeTile(text: String, selected: Boolean, modifier: Modifier, onCli
             .clickable(role = Role.RadioButton, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
+      Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Image(painterResource(icon), null, Modifier.size(24.dp))
         Text(
             text,
             fontFamily = ManropeFamily,
             fontWeight = FontWeight.ExtraBold,
-            fontSize = 13.sp,
+            fontSize = if (selected) 13.28.sp else 12.16.sp,
             maxLines = 1,
             color = if (selected) Color(0xFFFFF9EF) else OlenaTheme.colors.text,
         )
+      }
     }
 }

@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,6 +48,7 @@ import olenastudy.app.domain.profile.ProfileCosmetics
 import olenastudy.app.domain.profile.ProfileCosmetics.Kind
 import olenastudy.app.domain.profile.ProfileLook
 import olenastudy.app.ui.ManropeFamily
+import olenastudy.app.ui.OlenaTheme
 import olenastudy.app.ui.components.PaperButton
 import olenastudy.app.ui.components.PaperButtonStyle
 import olenastudy.app.ui.components.paperPanel
@@ -101,9 +104,9 @@ private enum class Tab(val label: Int) {
 
 /** "Personalize seu perfil": pré-visualização, quatro abas e a grade de opções, com as medidas do site. */
 @Composable
-fun ProfileAvatarDialog(current: ProfileLook, onDismiss: () -> Unit, onSave: (ProfileLook) -> Unit, earned: Set<String> = emptySet()) {
+fun ProfileAvatarDialog(current: ProfileLook, onDismiss: () -> Unit, onSave: (ProfileLook) -> Unit, earned: Set<String> = emptySet(), startOnCovers: Boolean = false) {
     var look by rememberSaveable(stateSaver = LookSaver) { mutableStateOf(current) }
-    var tabName by rememberSaveable { mutableStateOf(Tab.Avatar.name) }
+    var tabName by rememberSaveable { mutableStateOf(if (startOnCovers) Tab.Cover.name else Tab.Avatar.name) }
     val tab = Tab.valueOf(tabName)
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(
@@ -111,23 +114,26 @@ fun ProfileAvatarDialog(current: ProfileLook, onDismiss: () -> Unit, onSave: (Pr
                 .padding(horizontal = 19.dp, vertical = 40.dp)
                 .fillMaxWidth()
                 .clip(DialogShape)
-                .background(Color(0xFFFFF9EF))
+                .background(Dlg.bg)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 17.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Row(Modifier.fillMaxWidth().height(44.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.profile_customize_title), fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Ink, modifier = Modifier.weight(1f))
+                Text(stringResource(R.string.profile_customize_title), fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = OlenaTheme.colors.text, modifier = Modifier.weight(1f))
                 Box(Modifier.size(44.dp).clickable(role = Role.Button, onClick = onDismiss).semantics { contentDescription = "Fechar" }, contentAlignment = Alignment.Center) {
                     Image(painterResource(R.drawable.art_close), null, Modifier.size(28.dp))
                 }
             }
-            Box(Modifier.fillMaxWidth().height(1.dp).background(Color(0xFFE6DDC9)))
-            Box(Modifier.fillMaxWidth().height(96.dp).clip(RoundedCornerShape(topStart = 4.dp, topEnd = 20.dp, bottomEnd = 4.dp, bottomStart = 12.dp)).background(Color.White)) {
+            Box(Modifier.fillMaxWidth().height(1.dp).background(Dlg.line))
+            Box(Modifier.fillMaxWidth().height(96.dp).clip(RoundedCornerShape(topStart = 4.dp, topEnd = 20.dp, bottomEnd = 4.dp, bottomStart = 12.dp)).background(Color.White).profileBackground(look.backgroundId)) {
                 Image(painterResource(coverArt(look.coverId)), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(64.dp))
                 Box(Modifier.align(Alignment.TopCenter).padding(top = 24.dp).size(64.dp)) {
-                    Image(painterResource(avatarArt(look.avatarId)), stringResource(R.string.profile_avatar_description), Modifier.size(64.dp))
-                    frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.size(79.dp).padding(0.dp)) }
+                    Image(
+                        painterResource(avatarArt(look.avatarId)), stringResource(R.string.profile_avatar_description),
+                        Modifier.size(64.dp),
+                    )
+                    frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.align(Alignment.Center).requiredSize(79.36.dp)) }
                 }
             }
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -158,11 +164,11 @@ private fun TabButton(label: String, selected: Boolean, modifier: Modifier, onCl
             .height(44.dp)
             .semantics { this.selected = selected }
             .paperPanel(
-                fill = if (selected) Color(0xFFFACC15) else Color.White,
-                base = if (selected) Color(0xFFB88C13) else Color(0xFFE6DDC9),
-                facetLight = if (selected) Color(0xFFFFE066) else Color(0xFFFBF2E2),
+                fill = if (selected) Color(0xFFFACC15) else Dlg.secondary,
+                base = if (selected) Color(0xFFB88C13) else Dlg.line,
+                facetLight = if (selected) Color(0xFFFFE066) else Dlg.secondaryFacet,
                 facetDark = Color.Transparent,
-                border = if (selected) Color(0xFFE6DDC9) else Color(0xFFE6DDC9),
+                border = if (selected) Color(0xFFE4BD35) else Dlg.line,
                 shape = CardShape,
                 radius = 13.dp,
                 facet = 14.dp,
@@ -171,7 +177,7 @@ private fun TabButton(label: String, selected: Boolean, modifier: Modifier, onCl
             .clickable(role = Role.Tab, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 12.sp, color = if (selected) Color(0xFF17151C) else Color(0xFF0F0F14))
+        Text(label, fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 12.sp, color = if (selected) Color(0xFF17151C) else OlenaTheme.colors.text)
     }
 }
 
@@ -249,11 +255,11 @@ private fun OptionGrid(kind: Kind, items: List<Cosmetic>, look: ProfileLook, ear
                             .weight(1f)
                             .semantics { contentDescription = item.name; this.selected = selected }
                             .paperPanel(
-                                fill = if (selected) Color(0xFFFACC15) else Color.White,
-                                base = CreamBase,
+                                fill = if (selected) Color(0xFFFACC15) else Dlg.secondary,
+                                base = Dlg.line,
                                 facetLight = Color.Transparent,
                                 facetDark = Color.Transparent,
-                                border = CreamLine,
+                                border = Dlg.line,
                                 shape = CardShape,
                                 radius = 13.dp,
                                 facet = 0.dp,
@@ -276,10 +282,10 @@ private fun OptionGrid(kind: Kind, items: List<Cosmetic>, look: ProfileLook, ear
                         }
                         Text(
                             item.name + if (selected) " ✓" else "",
-                            fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 11.52.sp, color = Ink, textAlign = TextAlign.Center, maxLines = 2,
+                            fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 11.52.sp, color = if (selected) Ink else OlenaTheme.colors.text, textAlign = TextAlign.Center, maxLines = 2,
                         )
                         if (!unlocked) {
-                            Text(ProfileCosmetics.lockedHint(kind, item.id), fontFamily = ManropeFamily, fontSize = 10.sp, color = Color(0xFF6B6570), textAlign = TextAlign.Center)
+                            Text(ProfileCosmetics.lockedHint(kind, item.id), fontFamily = ManropeFamily, fontSize = 10.sp, color = OlenaTheme.colors.muted, textAlign = TextAlign.Center)
                         }
                     }
                 }
@@ -292,14 +298,8 @@ private fun OptionGrid(kind: Kind, items: List<Cosmetic>, look: ProfileLook, ear
 /** Amostra de fundo: a arte do site quando existe; "Papel original", "Céu de papel" e "Caderno geométrico" são cores. */
 @Composable
 private fun BackgroundSwatch(id: String) {
-    val resId = drawableByName("art_bg_$id")
     val shape = RoundedCornerShape(8.dp)
-    if (resId != 0) {
-        Image(painterResource(resId), null, contentScale = ContentScale.Crop, modifier = Modifier.size(width = 52.dp, height = 62.dp).clip(shape))
-    } else {
-        val fill = if (id == "night") Color(0xFF17151C) else Color(0xFFFFF9EF)
-        Box(Modifier.size(width = 52.dp, height = 62.dp).clip(shape).background(fill).paperPanel(fill, Color.Transparent, Color.Transparent, Color.Transparent, CreamLine, shape, 8.dp, 0.dp, 0.dp))
-    }
+    Box(Modifier.size(width = 52.dp, height = 62.dp).clip(shape).background(Color(0xFFFFF9EF)).profileBackground(id).paperPanel(Color.Transparent, Color.Transparent, Color.Transparent, Color.Transparent, CreamLine, shape, 8.dp, 0.dp, 0.dp))
 }
 
 private val LookSaver =

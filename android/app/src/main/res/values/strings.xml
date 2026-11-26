@@ -219,4 +219,7 @@
     <string name="share_title">%1$s no OlenaStudy</string>
     <string name="share_no_handle">Entre na conta para criar um @. Até lá, o QR abre o OlenaStudy.</string>
     <!-- Menu lateral "Mais ferramentas" (mobile-more-sheet do site). -->
+    <string name="share_save">Salvar cartão</string>
+    <string name="share_saved">Cartão salvo.</string>
+    <string name="share_save_failed">Não foi possível salvar o cartão. Tente copiar o link.</string>
 </resources>
