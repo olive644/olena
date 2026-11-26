@@ -65,6 +65,7 @@ import olenastudy.app.data.settings.flag
 import olenastudy.app.ui.ManropeFamily
 import olenastudy.app.ui.OlenaTheme
 import olenastudy.app.ui.components.PaperButton
+import olenastudy.app.ui.components.PaperCheckbox
 import olenastudy.app.ui.components.PaperButtonStyle
 import olenastudy.app.ui.components.paperPanel
 
@@ -311,15 +312,7 @@ internal fun Toggle(title: String, hint: String, checked: Boolean, onChange: (Bo
             Text(title, fontFamily = ManropeFamily, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = colors.text)
             Text(hint, style = MaterialTheme.typography.bodyMedium, fontSize = 13.sp, color = colors.muted)
         }
-        Box(
-            Modifier
-                .size(24.dp)
-                .background(if (checked) Color(0xFFFACC15) else colors.surface, RoundedCornerShape(6.dp))
-                .border(2.dp, if (checked) Ink else colors.lineStrong, RoundedCornerShape(6.dp)),
-            contentAlignment = Alignment.Center,
-        ) {
-            if (checked) StCheck()
-        }
+        PaperCheckbox(checked)
     }
 }
 
