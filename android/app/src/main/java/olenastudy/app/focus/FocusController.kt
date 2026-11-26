@@ -18,6 +18,8 @@ import olenastudy.app.domain.focus.Pomodoro
 import olenastudy.app.domain.focus.PomodoroConfig
 import olenastudy.app.domain.focus.Stopwatch
 import olenastudy.app.domain.focus.StopwatchState
+import olenastudy.app.domain.focus.canChangeFocusMode
+import olenastudy.app.domain.focus.catchUpPomodoro
 
 /**
  * Liga os relógios ao armazenamento e aos alarmes. Nenhuma ação usa valores padrão enquanto
@@ -68,7 +70,7 @@ class FocusController internal constructor(
     /** Como no site, só troca de modo com tudo parado e zerado. */
     fun setMode(mode: FocusMode) {
         val s = loaded() ?: return
-        if (s.mode == mode || s.pomodoro.running || s.stopwatch.running || s.stopwatch.accumulatedMs > 0) return
+        if (s.mode == mode || !canChangeFocusMode(s.pomodoro, s.stopwatch, clock())) return
         commit(s.copy(mode = mode))
     }
 
@@ -107,6 +109,13 @@ class FocusController internal constructor(
     fun onExpired() {
         val s = loaded() ?: return
         if (s.pomodoro.isExpiredAt(clock())) advance(s, recordFocus = true)
+    }
+
+    /** Tela ativa: a próxima fase começa sozinha. A recuperação após fechar continua pausada. */
+    fun onForegroundExpired() {
+        val s = loaded() ?: return
+        val result = catchUpPomodoro(s.pomodoro, s.config, clock())
+        if (result.state != s.pomodoro) commit(s.copy(pomodoro = result.state, records = s.records + result.records))
     }
 
     /** "Pular": vai para a próxima fase. Se era foco, o tempo feito vira uma sessão, como "concluir". */

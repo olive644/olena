@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="30dp" android:height="30dp"
+    android:viewportWidth="48" android:viewportHeight="48">
+    <!-- Mesmo symbol reset de paper-editor-icon.svg, com a paleta do contador web. -->
+    <group android:translateX="2" android:translateY="3">
+        <path android:fillColor="#17151C" android:pathData="M7 8v12h13l-5 -5 8 -2 8 7 -2 10 -12 3 -5 -5 -5 5 8 7 17 -3 7 -15 -9 -15 -17 2Z" />
+    </group>
+    <group android:translateY="1">
+        <path android:fillColor="#51465D" android:pathData="M7 8v12h13l-5 -5 8 -2 8 7 -2 10 -12 3 -5 -5 -5 5 8 7 17 -3 7 -15 -9 -15 -17 2Z" />
+    </group>
+    <path android:fillColor="#FFF9EF" android:pathData="M7 8v12h13l-5 -5 8 -2 8 7 -2 10 -12 3 -5 -5 -5 5 8 7 17 -3 7 -15 -9 -15 -17 2Z" />
+    <path android:fillColor="#C7A7FF" android:pathData="m7 8 6 5 10 -6 9 4 -9 -6 -10 4Z" />
+</vector>

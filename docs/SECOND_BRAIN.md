@@ -1,3 +1,8 @@
+## Continuação isolada do Foco, 25/11/2026
+
+Branch local `feat/focus-parity-on704` baseada na PR 704. Preservar ReadState, navegação e armazenamento; não usar o checkout antigo `helenastudy-android` como fonte de produto nem instalar seu APK no aparelho. A cópia de trabalho é `C:/Users/User/.codex/worktrees/android-focus-current/helenastudy-site`.
+
+`FocusModeChange` centraliza o bloqueio de modo e `PomodoroCatchUp` avança fases vencidas apenas pelo callback da tela ativa. O callback de recuperação existente mantém a próxima fase pausada. `FocusTomato` executa o mesmo arquivo Rive da web com a máquina Tomate e entradas instante/etapa; captura e movimento reduzido usam a arte estática. Testes visuais recebem `animateEntrance=false` para não capturar um quadro transparente da entrada. Validação nativa da animação e paridade da rosa/widget continuam pendentes.
 ## Migração Android por módulos, 25/11/2026
 
 Etapa 2d, branch `fix/android-focus-read`, sobre o commit local `9a498edb` da 2c: FocusController publica `ReadState<FocusSnapshot>` e bloqueia todos os comandos antes de uma leitura bem-sucedida. `retryRead` só parte de Failed; cliques durante a espera não são enfileirados para aplicar depois. Foco, resumo do Espaço e durações em Estudo e foco aguardam esse estado. FocusPersistence injeta armazenamento nos testes; a implementação do app continua sendo FocusStore.
