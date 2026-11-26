@@ -186,7 +186,7 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                         Text("Tema do aplicativo", fontFamily = ManropeFamily, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = colors.text)
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                             listOf("Claro" to ThemeMode.Light, "Escuro" to ThemeMode.Dark, "Sistema" to ThemeMode.System).forEach { (label, mode) ->
-                                ThemeTile(label, mode == themeMode, Modifier.weight(1f), if (mode == ThemeMode.Dark) R.drawable.art_theme_dark else R.drawable.art_theme_light) { onThemeModeChange(mode) }
+                                ThemeTile(label, mode == themeMode, Modifier.weight(1f), if (colors.isDark) (if (mode == ThemeMode.Dark) R.drawable.art_theme_dark_dk else R.drawable.art_theme_light_dk) else (if (mode == ThemeMode.Dark) R.drawable.art_theme_dark else R.drawable.art_theme_light)) { onThemeModeChange(mode) }
                             }
                         }
                         Body("O tema acompanha sua conta. Sistema segue a aparência de cada dispositivo.")
