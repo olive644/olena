@@ -59,6 +59,7 @@ import olenastudy.app.ui.OlenaTheme
 import olenastudy.app.ui.components.PaperButton
 import olenastudy.app.ui.components.PaperButtonStyle
 import olenastudy.app.ui.components.PaperDigits
+import olenastudy.app.ui.components.ReadStateContent
 
 private val FocusChoices = listOf(15, 25, 45, 60)
 
@@ -96,7 +97,14 @@ data class FocusActions(
 
 @Composable
 fun FocusScreen(controller: FocusController) {
-    val snapshot by controller.snapshot.collectAsStateWithLifecycle()
+    val state by controller.state.collectAsStateWithLifecycle()
+    ReadStateContent(state, controller::retryRead, stringResource(R.string.loading_focus)) { snapshot ->
+        LoadedFocusScreen(controller, snapshot)
+    }
+}
+
+@Composable
+private fun LoadedFocusScreen(controller: FocusController, snapshot: FocusSnapshot) {
     val pomodoro = snapshot.pomodoro
     val stopwatch = snapshot.stopwatch
     var now by remember { mutableLongStateOf(System.currentTimeMillis()) }

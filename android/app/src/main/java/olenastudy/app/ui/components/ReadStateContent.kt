@@ -46,13 +46,17 @@ fun <T> rememberReadState(source: Flow<T>): ReadResult<T> {
     return ReadResult(state) { attempt++ }
 }
 
-/** Mantém os estados saveable da tela durante erro e nova tentativa de leitura. */
+/**
+ * Mantém os estados saveable da tela durante erro e nova tentativa de leitura.
+ * scrollStatus=false delega a rolagem da espera e do erro ao contêiner pai.
+ */
 @Composable
 fun <T> ReadStateContent(
     state: ReadState<T>,
     onRetry: () -> Unit,
     loadingLabel: String,
     modifier: Modifier = Modifier,
+    scrollStatus: Boolean = true,
     content: @Composable (T) -> Unit,
 ) {
     val holder = rememberSaveableStateHolder()
@@ -60,7 +64,9 @@ fun <T> ReadStateContent(
         is ReadState.Ready -> holder.SaveableStateProvider("loaded-content") { content(state.value) }
         else -> Column(
             modifier = modifier.fillMaxSize().background(OlenaTheme.colors.page)
-                .safeDrawingPadding().verticalScroll(rememberScrollState()).padding(24.dp),
+                .safeDrawingPadding()
+                .then(if (scrollStatus) Modifier.verticalScroll(rememberScrollState()) else Modifier)
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         ) {

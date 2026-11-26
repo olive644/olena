@@ -1,6 +1,7 @@
 package olenastudy.app.focus
 
 import android.content.Context
+import java.io.IOException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -9,46 +10,64 @@ import kotlinx.coroutines.launch
 import olenastudy.app.data.focus.FocusMode
 import olenastudy.app.data.focus.FocusSnapshot
 import olenastudy.app.data.focus.FocusStore
+import olenastudy.app.data.focus.FocusPersistence
+import olenastudy.app.data.ReadState
 import olenastudy.app.domain.focus.FocusPhase
 import olenastudy.app.domain.focus.FocusRecord
 import olenastudy.app.domain.focus.Pomodoro
 import olenastudy.app.domain.focus.PomodoroConfig
-import olenastudy.app.domain.focus.PomodoroState
 import olenastudy.app.domain.focus.Stopwatch
 import olenastudy.app.domain.focus.StopwatchState
 
 /**
- * Liga os relógios (puros) ao aparelho: guarda o estado, marca e cancela o alarme. Toda mudança
- * passa por `commit`, que salva primeiro e só então mexe no alarme.
+ * Liga os relógios ao armazenamento e aos alarmes. Nenhuma ação usa valores padrão enquanto
+ * a primeira leitura estiver pendente ou com falha.
  */
-class FocusController(
-    private val context: Context,
+class FocusController internal constructor(
+    private val store: FocusPersistence,
     private val scope: CoroutineScope,
-    private val clock: () -> Long = System::currentTimeMillis,
+    private val clock: () -> Long,
+    private val syncAlarm: (FocusSnapshot) -> Unit,
 ) {
-    private val store = FocusStore(context)
-    private val _snapshot =
-        MutableStateFlow(FocusSnapshot(Pomodoro.initial(), PomodoroConfig(), FocusMode.Timer, StopwatchState(), emptyList()))
-    private val _ready = MutableStateFlow(false)
+    constructor(context: Context, scope: CoroutineScope, clock: () -> Long = System::currentTimeMillis) : this(
+        FocusStore(context), scope, clock,
+        { saved ->
+            val deadline = saved.pomodoro.deadlineMs
+            if (saved.pomodoro.running && deadline != null) FocusAlarm.schedule(context, deadline, saved.pomodoro.phase) else FocusAlarm.cancel(context)
+        },
+    )
 
-    val snapshot: StateFlow<FocusSnapshot> = _snapshot.asStateFlow()
-    val ready: StateFlow<Boolean> = _ready.asStateFlow()
+    private val _state = MutableStateFlow<ReadState<FocusSnapshot>>(ReadState.Loading)
+    val state: StateFlow<ReadState<FocusSnapshot>> = _state.asStateFlow()
 
-    init {
+    init { read() }
+
+    fun retryRead() {
+        if (_state.value == ReadState.Failed) read()
+    }
+
+    private fun read() {
+        _state.value = ReadState.Loading
         scope.launch {
-            val saved = store.load()
-            _snapshot.value = saved
+            val saved = try {
+                store.load()
+            } catch (_: IOException) {
+                _state.value = ReadState.Failed
+                return@launch
+            }
+            _state.value = ReadState.Ready(saved)
             // O app ficou fechado e o prazo venceu: a fase já acabou, entra na próxima, pausada.
             if (saved.pomodoro.isExpiredAt(clock())) onExpired() else syncAlarm(saved)
-            _ready.value = true
         }
     }
+
+    private fun loaded(): FocusSnapshot? = (_state.value as? ReadState.Ready)?.value
 
     // ---- Modo ----
 
     /** Como no site, só troca de modo com tudo parado e zerado. */
     fun setMode(mode: FocusMode) {
-        val s = _snapshot.value
+        val s = loaded() ?: return
         if (s.mode == mode || s.pomodoro.running || s.stopwatch.running || s.stopwatch.accumulatedMs > 0) return
         commit(s.copy(mode = mode))
     }
@@ -56,16 +75,19 @@ class FocusController(
     // ---- Cronômetro ----
 
     fun toggleStopwatch() {
-        val s = _snapshot.value
+        val s = loaded() ?: return
         val now = clock()
         commit(s.copy(stopwatch = if (s.stopwatch.running) Stopwatch.pause(s.stopwatch, now) else Stopwatch.start(s.stopwatch, now)))
     }
 
-    fun resetStopwatch() = commit(_snapshot.value.copy(stopwatch = StopwatchState()))
+    fun resetStopwatch() {
+        val s = loaded() ?: return
+        commit(s.copy(stopwatch = StopwatchState()))
+    }
 
     /** Concluir: grava os minutos como o site e zera. */
     fun finishStopwatch() {
-        val s = _snapshot.value
+        val s = loaded() ?: return
         val now = clock()
         val elapsed = s.stopwatch.elapsedAt(now)
         if (!Stopwatch.canFinish(elapsed)) return
@@ -76,26 +98,26 @@ class FocusController(
     // ---- Pomodoro ----
 
     fun togglePomodoro() {
-        val s = _snapshot.value
+        val s = loaded() ?: return
         val now = clock()
         commit(s.copy(pomodoro = if (s.pomodoro.running) Pomodoro.pause(s.pomodoro, now) else Pomodoro.start(s.pomodoro, now)))
     }
 
     /** Chamado pela tela quando o prazo vence com o app aberto, e na abertura se já venceu. */
     fun onExpired() {
-        val s = _snapshot.value
+        val s = loaded() ?: return
         if (s.pomodoro.isExpiredAt(clock())) advance(s, recordFocus = true)
     }
 
     /** "Pular": vai para a próxima fase. Se era foco, o tempo feito vira uma sessão, como "concluir". */
     fun skip() {
-        val s = _snapshot.value
+        val s = loaded() ?: return
         advance(s, recordFocus = s.pomodoro.phase == FocusPhase.Focus && s.pomodoro.remainingAt(clock()) < s.pomodoro.durationMinutes * 60_000L)
     }
 
     /** "Encerrar e registrar": grava o tempo de foco feito até agora, como o site, e reinicia a fase. */
     fun finishPomodoro() {
-        val s = _snapshot.value
+        val s = loaded() ?: return
         val now = clock()
         val state = s.pomodoro
         val doneMs = state.durationMinutes * 60_000L - state.remainingAt(now)
@@ -108,7 +130,7 @@ class FocusController(
     /** Configurações > Estudo e foco: troca as durações do Pomodoro. Um relógio parado na fase atual já passa a usar o valor novo. */
     fun setConfig(config: PomodoroConfig) {
         if (!Pomodoro.isValidMinutes(config.focusMinutes) || !Pomodoro.isValidMinutes(config.shortBreakMinutes) || !Pomodoro.isValidMinutes(config.longBreakMinutes)) return
-        val s = _snapshot.value
+        val s = loaded() ?: return
         val minutes =
             when (s.pomodoro.phase) {
                 FocusPhase.Focus -> config.focusMinutes
@@ -120,11 +142,14 @@ class FocusController(
         commit(s.copy(config = config, pomodoro = state))
     }
 
-    fun restartPhase() = commit(_snapshot.value.copy(pomodoro = Pomodoro.restartPhase(_snapshot.value.pomodoro)))
+    fun restartPhase() {
+        val s = loaded() ?: return
+        commit(s.copy(pomodoro = Pomodoro.restartPhase(s.pomodoro)))
+    }
 
     fun setFocusMinutes(minutes: Int) {
         if (!Pomodoro.isValidMinutes(minutes)) return
-        val s = _snapshot.value
+        val s = loaded() ?: return
         val config = s.config.copy(focusMinutes = minutes)
         // Trocar a duração só vale na fase de foco parada: não mexe num relógio que está correndo.
         val state =
@@ -150,13 +175,10 @@ class FocusController(
     }
 
     private fun commit(next: FocusSnapshot) {
-        _snapshot.value = next
+        if (loaded() == null) return
+        _state.value = ReadState.Ready(next)
         scope.launch { store.save(next) }
         syncAlarm(next)
     }
 
-    private fun syncAlarm(s: FocusSnapshot) {
-        val deadline = s.pomodoro.deadlineMs
-        if (s.pomodoro.running && deadline != null) FocusAlarm.schedule(context, deadline, s.pomodoro.phase) else FocusAlarm.cancel(context)
-    }
 }

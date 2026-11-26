@@ -226,6 +226,7 @@
     <string name="loading_app">Abrindo seu espaço…</string>
     <string name="loading_agenda">Carregando sua agenda…</string>
     <string name="loading_space">Carregando seu resumo…</string>
+    <string name="loading_focus">Carregando seu foco…</string>
     <string name="read_error_title">Não foi possível ler seus dados</string>
     <string name="read_error_body">Tente abrir novamente. Esta falha não apaga o que está salvo neste aparelho.</string>
     <string name="read_retry">Tentar novamente</string>

@@ -99,7 +99,7 @@ fun AppShell(
     val navController = rememberNavController()
     val entry by navController.currentBackStackEntryAsState()
     val current = AppDestination.fromRoute(entry?.destination?.route)
-    val focusSnapshot by focusController.snapshot.collectAsStateWithLifecycle()
+    val focusState by focusController.state.collectAsStateWithLifecycle()
     fun onNavigate(destination: AppDestination) {
         if (destination == current) {
             if (entry?.destination?.route != destination.route) {
@@ -157,15 +157,17 @@ fun AppShell(
                                 ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, look = look, onLookChange = onLookChange, info = info, onInfoChange = onInfoChange, onOpenSettings = { navController.navigate(AppDestination.SETTINGS_ROUTE) { launchSingleTop = true } })
                             AppDestination.Today -> {
                                 val read = rememberReadState(remember(agendaRepository, taskRepository) { agendaData(agendaRepository, taskRepository) })
-                                ReadStateContent(read.state, read.retry, stringResource(R.string.loading_space)) { data ->
-                                    val flower = FocusFlower.state(focusSnapshot.records, System.currentTimeMillis(), ZoneId.systemDefault())
-                                    val summary = HomeSummary(
-                                        pendingTasks = Tasks.pendingCount(data.tasks),
-                                        focusMinutesToday = flower.minutesToday,
-                                        agendaToday = Agenda.eventsOn(data.events, LocalDate.now().toString()).size,
-                                        flowerBloomed = flower.progress >= 0.5,
-                                    )
-                                    HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
+                                ReadStateContent(focusState, focusController::retryRead, stringResource(R.string.loading_space)) { focusSnapshot ->
+                                    ReadStateContent(read.state, read.retry, stringResource(R.string.loading_space)) { data ->
+                                        val flower = FocusFlower.state(focusSnapshot.records, System.currentTimeMillis(), ZoneId.systemDefault())
+                                        val summary = HomeSummary(
+                                            pendingTasks = Tasks.pendingCount(data.tasks),
+                                            focusMinutesToday = flower.minutesToday,
+                                            agendaToday = Agenda.eventsOn(data.events, LocalDate.now().toString()).size,
+                                            flowerBloomed = flower.progress >= 0.5,
+                                        )
+                                        HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
+                                    }
                                 }
                             }
                             AppDestination.Learn -> PracticeScreen()
