@@ -135,4 +135,25 @@ class FocusControllerReadTest {
         assertEquals(saved.records + FocusRecord(now, 25, "pomodoro"), next.records)
         assertEquals(listOf(next), store.writes)
     }
+
+    @Test fun pausedPomodoroCannotSwitchModeOrWriteAnotherSnapshot() = runBlocking {
+        val paused = saved.copy(
+            mode = FocusMode.Pomodoro,
+            stopwatch = StopwatchState(),
+            pomodoro = Pomodoro.initial().copy(remainingMs = 1490_000),
+        )
+        val store = Store { paused }
+        val controller = FocusController(store, this, { now }, {})
+        yield()
+        controller.setMode(FocusMode.Timer)
+        yield()
+        assertEquals(ReadState.Ready(paused), controller.state.value)
+        assertEquals(emptyList<FocusSnapshot>(), store.writes)
+        controller.restartPhase()
+        yield()
+        controller.setMode(FocusMode.Timer)
+        yield()
+        assertEquals(FocusMode.Timer, (controller.state.value as ReadState.Ready).value.mode)
+        assertEquals(paused.records, (controller.state.value as ReadState.Ready).value.records)
+    }
 }

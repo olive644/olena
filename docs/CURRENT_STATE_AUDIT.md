@@ -1,3 +1,13 @@
+## Foco Android: paridade isolada sobre PR 704, 25/11/2026
+
+Trabalho local em `feat/focus-parity-on704`, sem instalação no aparelho, push ou merge. A base é a PR 704 e sua leitura recuperável foi preservada. AppShell, tema e FocusStore não têm alterações nesta continuação.
+
+O Foco mantém as artes originais dos mini tomates, alinha os controles, adapta o relógio com horas à largura e deixa as setas paradas durante a transição de modo de 550 ms. Movimento reduzido desliga essa transição e o Rive. Trocar de modo fica bloqueado com sessão em andamento, inclusive Pomodoro pausado. Na tela ativa, o fim da fase começa a seguinte pelo prazo original; a recuperação após fechar o app continua pausada, como na base.
+
+A animação usa o mesmo `tomato.riv` da web, copiado sem alterações para `res/raw/focus_tomato.riv` (678.186 bytes; SHA-256 `07F1CE1A3DC7CAC9021AA735947896FB33E271142A1588BA8883578C858B8F64`). A dependência `app.rive:rive-android:11.17.0` é necessária para executar esse formato; AAR de 13.740.110 bytes antes de otimização e divisão por ABI. Consulta OSV nesta rodada não retornou vulnerabilidades conhecidas para essa versão direta. Isso não mede o aumento do APK nem audita todas as dependências transitivas.
+
+Primeira regeneração de dez capturas Paparazzi de Foco aprovada, em claro/escuro, mobile e amplo, incluindo pausa, execução e duração com horas. Os controles corrigidos passaram em dez capturas (`tmp/focus-parity/final-controls-images.log`); 14 testes de arte, leitura, bloqueio de modo e avanço de fases passaram (`final-controls-tests.log`). O ícone de reiniciar passou a usar os mesmos paths do symbol reset da web e sua paleta creme/lilás, em vetor de 28 dp. A última regeneração de dez capturas também foi aprovada (`exact-reset-images.log`), com inspeção do ícone no tema escuro. Não confundir captura estática com validação da animação em Android: o Rive ainda não foi executado em aparelho ou emulador nesta cópia. A rosa ainda usa quadros estáticos e o widget flutuante da web não foi portado. Paridade integral ainda não concluída.
+
 ## Base Android preparada para revisão, 25/11/2026
 
 O proprietário pediu a abertura do PR do conjunto já validado. A branch `fix/android-focus-read` reúne o inventário de migração, as correções preparatórias das galerias e as etapas 2a a 2d de navegação, links e leitura recuperável. A autorização atual substitui a orientação anterior de manter a continuação apenas local. Merge e merge automático não foram autorizados.

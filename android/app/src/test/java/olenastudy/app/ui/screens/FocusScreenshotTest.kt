@@ -33,7 +33,7 @@ class FocusScreenshotTest {
             OlenaTheme(darkTheme = dark) {
                 Column(Modifier.fillMaxSize().background(olenastudy.app.ui.OlenaTheme.colors.page).statusBarsPadding()) {
                     olenastudy.app.ui.PageHeader(Modifier.padding(horizontal = 14.dp, vertical = 8.dp))
-                    Column(Modifier.weight(1f)) { FocusContent(snapshot, now, FocusActions()) }
+                    Column(Modifier.weight(1f)) { FocusContent(snapshot, now, FocusActions(), animateEntrance = false) }
                     PaperNavigationBar(current = AppDestination.Focus, onSelect = {})
                 }
             }
@@ -53,4 +53,7 @@ class FocusScreenshotTest {
     @Test fun cronometro_florida_claro() = frame(false, timer(45))
     @Test fun pomodoro_claro() = frame(false, pomodoro())
     @Test fun pomodoro_escuro() = frame(true, pomodoro())
+    @Test fun pomodoro_pausado() = frame(false, pomodoro().copy(pomodoro = Pomodoro.initial().copy(remainingMs = 1490_000)))
+    @Test fun pomodoro_correndo() = frame(true, pomodoro().copy(pomodoro = Pomodoro.start(Pomodoro.initial(), now)))
+    @Test fun pomodoro_com_horas() = frame(false, pomodoro().copy(pomodoro = Pomodoro.initial(PomodoroConfig(focusMinutes = 65))))
 }
