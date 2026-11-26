@@ -1,3 +1,9 @@
+## Base Android preparada para revisão, 25/11/2026
+
+O proprietário pediu a abertura do PR do conjunto já validado. A branch `fix/android-focus-read` reúne o inventário de migração, as correções preparatórias das galerias e as etapas 2a a 2d de navegação, links e leitura recuperável. A autorização atual substitui a orientação anterior de manter a continuação apenas local. Merge e merge automático não foram autorizados.
+
+Antes da publicação, `npm run verify` foi executado novamente e parou no lint, com 198.709 erros e 32 avisos, principalmente formatação CRLF herdada em arquivos web que este conjunto não altera. Relatório local: `tmp/android-pr-verify.log`. As etapas seguintes desse comando não rodaram. O PR deve registrar essa falha, os resultados Android e os recortes e limites dos testes web descritos abaixo. A abertura para revisão não representa aprovação dos checks nem conclusão da migração.
+
 ## Android: leitura protegida do Foco, 25/11/2026
 
 Continuação local na branch `fix/android-focus-read`, sobre a etapa 2c preservada no commit local `9a498edb`. Sem push, nova PR ou merge. Esta é a etapa 2d da base de navegação e estados; autenticação e sincronização continuam em entregas próprias.
