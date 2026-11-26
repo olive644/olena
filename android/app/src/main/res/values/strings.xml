@@ -10,6 +10,9 @@
     <string name="nav_library">Biblioteca</string>
     <string name="nav_profile">Perfil</string>
     <string name="nav_bar_description">Navegação principal</string>
+    <string name="open_link_in_browser">Abrir no navegador</string>
+    <string name="link_browser_unavailable">Não foi possível abrir o navegador.</string>
+    <string name="link_not_supported">Não foi possível abrir esse link.</string>
 
     <!-- Telas ainda sem conteúdo: dizem a verdade em vez de fingir dados -->
     <string name="screen_today_title">Espaço do aluno</string>
@@ -145,6 +148,7 @@
     <string name="agenda_filter_tasks">Tarefas</string>
     <string name="settings_title">Configurações</string>
     <string name="settings_back">Voltar ao perfil</string>
+    <string name="settings_back_to_list">Voltar às configurações</string>
     <string name="settings_account">Conta</string>
     <string name="settings_security">Segurança</string>
     <string name="settings_support">Conversar com o time</string>
@@ -219,6 +223,13 @@
     <string name="share_title">%1$s no OlenaStudy</string>
     <string name="share_no_handle">Entre na conta para criar um @. Até lá, o QR abre o OlenaStudy.</string>
     <!-- Menu lateral "Mais ferramentas" (mobile-more-sheet do site). -->
+    <string name="loading_app">Abrindo seu espaço…</string>
+    <string name="loading_agenda">Carregando sua agenda…</string>
+    <string name="loading_space">Carregando seu resumo…</string>
+    <string name="loading_focus">Carregando seu foco…</string>
+    <string name="read_error_title">Não foi possível ler seus dados</string>
+    <string name="read_error_body">Tente abrir novamente. Esta falha não apaga o que está salvo neste aparelho.</string>
+    <string name="read_retry">Tentar novamente</string>
     <string name="share_save">Salvar cartão</string>
     <string name="share_saved">Cartão salvo.</string>
     <string name="share_save_failed">Não foi possível salvar o cartão. Tente copiar o link.</string>

@@ -29,9 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +55,9 @@ import olenastudy.app.domain.profile.ProfileInfo
 import olenastudy.app.domain.profile.ProfileLook
 import olenastudy.app.data.agenda.AgendaRepository
 import olenastudy.app.data.agenda.TaskRepository
+import olenastudy.app.data.agenda.agendaData
+import olenastudy.app.ui.components.ReadStateContent
+import olenastudy.app.ui.components.rememberReadState
 import olenastudy.app.domain.agenda.Tasks
 import olenastudy.app.focus.FocusController
 import olenastudy.app.ui.screens.AgendaScreen
@@ -73,6 +74,7 @@ import olenastudy.app.ui.screens.FocusScreen
 import olenastudy.app.ui.components.PaperDecoration
 import olenastudy.app.ui.components.paperPanel
 import olenastudy.app.ui.navigation.AppDestination
+import olenastudy.app.ui.navigation.AppLinkRequest
 import olenastudy.app.ui.screens.InProgressScreen
 import olenastudy.app.ui.screens.ProfileScreen
 import olenastudy.app.ui.screens.SettingsScreen
@@ -90,32 +92,37 @@ fun AppShell(
     onLookChange: (ProfileLook) -> Unit = {},
     info: ProfileInfo = ProfileInfo(),
     onInfoChange: (ProfileInfo) -> Unit = {},
+    appLinkRequest: AppLinkRequest? = null,
+    onAppLinkHandled: (Long) -> Unit = {},
 ) {
     val colors = OlenaTheme.colors
-    var settingsOpen by rememberSaveable { mutableStateOf(false) }
     val navController = rememberNavController()
     val entry by navController.currentBackStackEntryAsState()
     val current = AppDestination.fromRoute(entry?.destination?.route)
-    val focusSnapshot by focusController.snapshot.collectAsStateWithLifecycle()
-    val events by agendaRepository.events.collectAsStateWithLifecycle(initialValue = emptyList())
-    val tasks by taskRepository.tasks.collectAsStateWithLifecycle(initialValue = emptyList())
-    val summary =
-        remember(focusSnapshot.records, events, tasks) {
-            val nowMs = System.currentTimeMillis()
-            val flower = FocusFlower.state(focusSnapshot.records, nowMs, ZoneId.systemDefault())
-            HomeSummary(
-                pendingTasks = Tasks.pendingCount(tasks),
-                focusMinutesToday = flower.minutesToday,
-                agendaToday = Agenda.eventsOn(events, LocalDate.now().toString()).size,
-                flowerBloomed = flower.progress >= 0.5,
-            )
-        }
+    val focusState by focusController.state.collectAsStateWithLifecycle()
     fun onNavigate(destination: AppDestination) {
+        if (destination == current) {
+            if (entry?.destination?.route != destination.route) {
+                navController.popBackStack(destination.route, inclusive = false)
+            }
+            return
+        }
         navController.navigate(destination.route) {
             popUpTo(AppDestination.start.route) { saveState = true }
             launchSingleTop = true
             restoreState = true
         }
+    }
+
+    LaunchedEffect(appLinkRequest?.id) {
+        val request = appLinkRequest ?: return@LaunchedEffect
+        navController.clearBackStack(request.destination.route)
+        navController.navigate(request.destination.route) {
+            popUpTo(AppDestination.start.route) { saveState = false }
+            launchSingleTop = true
+            restoreState = false
+        }
+        onAppLinkHandled(request.id)
     }
 
     Box(Modifier.fillMaxSize().background(colors.page)) {
@@ -147,19 +154,32 @@ fun AppShell(
                     composable(destination.route) {
                         when (destination) {
                             AppDestination.Profile ->
-                                if (settingsOpen) {
-                                    androidx.compose.runtime.CompositionLocalProvider(olenastudy.app.ui.screens.LocalFocusController provides focusController, olenastudy.app.ui.screens.LocalProfileLook provides look, olenastudy.app.ui.screens.LocalProfileInfo provides info) {
-                                        SettingsScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, onBack = { settingsOpen = false })
+                                ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, look = look, onLookChange = onLookChange, info = info, onInfoChange = onInfoChange, onOpenSettings = { navController.navigate(AppDestination.SETTINGS_ROUTE) { launchSingleTop = true } })
+                            AppDestination.Today -> {
+                                val read = rememberReadState(remember(agendaRepository, taskRepository) { agendaData(agendaRepository, taskRepository) })
+                                ReadStateContent(focusState, focusController::retryRead, stringResource(R.string.loading_space)) { focusSnapshot ->
+                                    ReadStateContent(read.state, read.retry, stringResource(R.string.loading_space)) { data ->
+                                        val flower = FocusFlower.state(focusSnapshot.records, System.currentTimeMillis(), ZoneId.systemDefault())
+                                        val summary = HomeSummary(
+                                            pendingTasks = Tasks.pendingCount(data.tasks),
+                                            focusMinutesToday = flower.minutesToday,
+                                            agendaToday = Agenda.eventsOn(data.events, LocalDate.now().toString()).size,
+                                            flowerBloomed = flower.progress >= 0.5,
+                                        )
+                                        HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
                                     }
-                                } else {
-                                    ProfileScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, look = look, onLookChange = onLookChange, info = info, onInfoChange = onInfoChange, onOpenSettings = { settingsOpen = true })
                                 }
-                            AppDestination.Today -> HomeScreen(summary, onExploreMath = { onNavigate(AppDestination.Learn) })
+                            }
                             AppDestination.Learn -> PracticeScreen()
                             AppDestination.Focus -> FocusScreen(focusController)
                             AppDestination.Planner -> AgendaScreen(agendaRepository, taskRepository)
                             else -> InProgressScreen(destination.titleRes())
                         }
+                    }
+                }
+                composable(AppDestination.SETTINGS_ROUTE) {
+                    androidx.compose.runtime.CompositionLocalProvider(olenastudy.app.ui.screens.LocalFocusController provides focusController, olenastudy.app.ui.screens.LocalProfileLook provides look, olenastudy.app.ui.screens.LocalProfileInfo provides info) {
+                        SettingsScreen(themeMode = themeMode, onThemeModeChange = onThemeModeChange, onBack = { navController.popBackStack() })
                     }
                 }
             }
@@ -176,22 +196,14 @@ fun AppShell(
                 }
             }
             androidx.compose.animation.AnimatedVisibility(visible = tabLoading, enter = fadeIn(tween(120)), exit = androidx.compose.animation.fadeOut(tween(200))) {
-                Box(Modifier.fillMaxSize().background(colors.page)) { olenastudy.app.ui.components.HelenaLoading() }
+                Box(Modifier.fillMaxSize().background(colors.page)) { olenastudy.app.ui.components.HelenaLoading(stringResource(R.string.loading_app), Modifier.fillMaxSize()) }
             }
         }
         }
         PaperNavigationBar(
             avatarId = look.avatarId,
             current = current,
-            onSelect = { destination ->
-                if (destination != current) {
-                    navController.navigate(destination.route) {
-                        popUpTo(AppDestination.start.route) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
-            },
+            onSelect = ::onNavigate,
         )
     }
     }

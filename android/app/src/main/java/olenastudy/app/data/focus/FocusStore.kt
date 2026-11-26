@@ -1,6 +1,7 @@
 package olenastudy.app.data.focus
 
 import android.content.Context
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
+import java.io.IOException
 import olenastudy.app.domain.focus.FocusPhase
 import olenastudy.app.domain.focus.FocusRecord
 import olenastudy.app.domain.focus.Pomodoro
@@ -53,60 +55,67 @@ object FocusRecordsCodec {
 
     fun encode(records: List<FocusRecord>): String = json.encodeToString(serializer, records)
 
-    /** Texto ausente ou quebrado vira histórico vazio, nunca derruba o app. */
+    /** Só a ausência de histórico vira vazio. Conteúdo inválido bloqueia a leitura e a edição. */
     fun decode(text: String?): List<FocusRecord> =
         if (text.isNullOrBlank()) {
             emptyList()
         } else {
             try {
                 json.decodeFromString(serializer, text)
-            } catch (_: SerializationException) {
-                emptyList()
-            } catch (_: IllegalArgumentException) {
-                emptyList()
+            } catch (failure: SerializationException) {
+                throw IOException("Histórico de foco inválido.", failure)
+            } catch (failure: IllegalArgumentException) {
+                throw IOException("Histórico de foco inválido.", failure)
             }
         }
+}
+
+/** Lê uma versão completa do arquivo sem alterar as chaves nem recuperar por gravação. */
+internal fun readFocusSnapshot(prefs: Preferences): FocusSnapshot {
+    val config = PomodoroConfig(
+        focusMinutes = prefs[FocusMinutesKey]?.takeIf(Pomodoro::isValidMinutes) ?: 25,
+        shortBreakMinutes = prefs[ShortBreakKey]?.takeIf(Pomodoro::isValidMinutes) ?: 5,
+        longBreakMinutes = prefs[LongBreakKey]?.takeIf(Pomodoro::isValidMinutes) ?: 15,
+        longBreaks = prefs[LongBreaksKey] ?: true,
+    )
+    val duration = prefs[DurationKey]?.takeIf(Pomodoro::isValidMinutes) ?: config.focusMinutes
+    val state = PomodoroState(
+        phase = FocusPhase.entries.firstOrNull { it.name == prefs[PhaseKey] } ?: FocusPhase.Focus,
+        completed = (prefs[CompletedKey] ?: 0).coerceAtLeast(0),
+        durationMinutes = duration,
+        running = prefs[RunningKey] ?: false,
+        deadlineMs = prefs[DeadlineKey],
+        remainingMs = (prefs[RemainingKey] ?: duration * 60_000L).coerceIn(0, duration * 60_000L),
+    )
+    // Estado inconsistente (rodando sem prazo) volta a pausado em vez de quebrar o relógio.
+    val safe = if (state.running && state.deadlineMs == null) state.copy(running = false) else state
+    val stopwatchRunning = (prefs[StopwatchRunningKey] ?: false) && prefs[StopwatchStartedKey] != null
+    return FocusSnapshot(
+        pomodoro = safe,
+        config = config,
+        mode = FocusMode.entries.firstOrNull { it.name == prefs[ModeKey] } ?: FocusMode.Timer,
+        stopwatch = StopwatchState(
+            running = stopwatchRunning,
+            startedAtMs = if (stopwatchRunning) prefs[StopwatchStartedKey] else null,
+            accumulatedMs = (prefs[StopwatchAccumulatedKey] ?: 0L).coerceAtLeast(0),
+        ),
+        records = FocusRecordsCodec.decode(prefs[RecordsKey]),
+    )
+}
+
+interface FocusPersistence {
+    suspend fun load(): FocusSnapshot
+    suspend fun save(snapshot: FocusSnapshot)
 }
 
 /**
  * Cache do Foco neste aparelho. A sessão de Foco pertence à conta e vai sincronizar quando o login
  * entrar; até lá isto é só o que impede perder o relógio ao fechar o app. Não é "sincronização".
  */
-class FocusStore(private val context: Context) {
-    suspend fun load(): FocusSnapshot {
-        val prefs = context.focusStore.data.first()
-        val config = PomodoroConfig(
-            focusMinutes = prefs[FocusMinutesKey]?.takeIf(Pomodoro::isValidMinutes) ?: 25,
-            shortBreakMinutes = prefs[ShortBreakKey]?.takeIf(Pomodoro::isValidMinutes) ?: 5,
-            longBreakMinutes = prefs[LongBreakKey]?.takeIf(Pomodoro::isValidMinutes) ?: 15,
-            longBreaks = prefs[LongBreaksKey] ?: true,
-        )
-        val duration = prefs[DurationKey]?.takeIf(Pomodoro::isValidMinutes) ?: config.focusMinutes
-        val state = PomodoroState(
-            phase = FocusPhase.entries.firstOrNull { it.name == prefs[PhaseKey] } ?: FocusPhase.Focus,
-            completed = (prefs[CompletedKey] ?: 0).coerceAtLeast(0),
-            durationMinutes = duration,
-            running = prefs[RunningKey] ?: false,
-            deadlineMs = prefs[DeadlineKey],
-            remainingMs = (prefs[RemainingKey] ?: duration * 60_000L).coerceIn(0, duration * 60_000L),
-        )
-        // Estado inconsistente (rodando sem prazo) volta a pausado em vez de quebrar o relógio.
-        val safe = if (state.running && state.deadlineMs == null) state.copy(running = false) else state
-        val stopwatchRunning = (prefs[StopwatchRunningKey] ?: false) && prefs[StopwatchStartedKey] != null
-        return FocusSnapshot(
-            pomodoro = safe,
-            config = config,
-            mode = FocusMode.entries.firstOrNull { it.name == prefs[ModeKey] } ?: FocusMode.Timer,
-            stopwatch = StopwatchState(
-                running = stopwatchRunning,
-                startedAtMs = if (stopwatchRunning) prefs[StopwatchStartedKey] else null,
-                accumulatedMs = (prefs[StopwatchAccumulatedKey] ?: 0L).coerceAtLeast(0),
-            ),
-            records = FocusRecordsCodec.decode(prefs[RecordsKey]),
-        )
-    }
+class FocusStore(private val context: Context) : FocusPersistence {
+    override suspend fun load(): FocusSnapshot = readFocusSnapshot(context.focusStore.data.first())
 
-    suspend fun save(snapshot: FocusSnapshot) {
+    override suspend fun save(snapshot: FocusSnapshot) {
         context.focusStore.edit {
             val state = snapshot.pomodoro
             it[PhaseKey] = state.phase.name

@@ -27,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -48,6 +49,8 @@ import olenastudy.app.focus.FocusController
 import olenastudy.app.ui.ManropeFamily
 import olenastudy.app.ui.OlenaTheme
 import olenastudy.app.ui.components.paperPanel
+import olenastudy.app.ui.components.ReadStateContent
+import olenastudy.app.R
 
 /** O controlador do Foco, para as Configurações mudarem o Pomodoro. Nulo em pré-visualizações. */
 val LocalFocusController = compositionLocalOf<FocusController?> { null }
@@ -58,17 +61,25 @@ private const val SLIDER_MAX = 120
 /** Configurações > Estudo e foco: ritmo do Pomodoro, jeito de estudar e qualidade dos flashcards. */
 @Composable
 internal fun StudySettingsContent() {
+    val controller = LocalFocusController.current
+    if (controller == null) {
+        LoadedStudySettingsContent(PomodoroConfig(), {})
+    } else {
+        val state by controller.state.collectAsStateWithLifecycle()
+        ReadStateContent(state, controller::retryRead, stringResource(R.string.loading_focus), scrollStatus = false) { snapshot ->
+            LoadedStudySettingsContent(snapshot.config, controller::setConfig)
+        }
+    }
+}
+
+@Composable
+private fun LoadedStudySettingsContent(config: PomodoroConfig, change: (PomodoroConfig) -> Unit) {
     val context = LocalContext.current
     val prefs = remember { AppPreferences(context) }
     val scope = rememberCoroutineScope()
     val stored by prefs.snapshot.collectAsStateWithLifecycle(initialValue = null)
     fun get(name: String) = stored?.choice(name) ?: ""
     fun put(name: String, value: String) = scope.launch { prefs.setChoice(name, value) }
-
-    val controller = LocalFocusController.current
-    val snapshot = controller?.snapshot?.collectAsStateWithLifecycle()?.value
-    val config = snapshot?.config ?: PomodoroConfig()
-    fun change(next: PomodoroConfig) { controller?.setConfig(next) }
 
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         StCard {

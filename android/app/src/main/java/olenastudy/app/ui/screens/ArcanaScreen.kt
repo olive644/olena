@@ -200,16 +200,16 @@ private fun Highlights(modifier: Modifier, cream: Color, line: Color) {
 @Composable
 private fun Tabs(selected: ArcanaCategory, line: Color, cream: Color, onSelect: (ArcanaCategory) -> Unit) {
     val colors = OlenaTheme.colors
-    val context = LocalContext.current
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         ArcanaCategory.entries.chunked(5).forEach { row ->
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 row.forEach { c ->
                     val on = c == selected
+                    val label = stringResource(c.label())
                     Box(
                         Modifier
                             .size(56.dp)
-                            .semantics { this.selected = on; contentDescription = context.getString(c.label()) }
+                            .semantics { this.selected = on; contentDescription = label }
                             .clickable(role = Role.Tab) { onSelect(c) }
                             .paperPanel(
                                 fill = if (on) TabYellow else colors.surface,

@@ -13,10 +13,30 @@
         android:theme="@style/Theme.OlenaStudy">
         <activity
             android:name=".MainActivity"
+            android:launchMode="singleTop"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" />
+                <data android:host="www.olenastudy.com.br" />
+                <data android:host="olenastudy.com.br" />
+                <data android:path="/" />
+                <data android:path="/planejador" />
+                <data android:path="/planejador/" />
+                <data android:path="/aprender" />
+                <data android:path="/aprender/" />
+                <data android:path="/foco" />
+                <data android:path="/foco/" />
+                <data android:path="/perfil" />
+                <data android:path="/perfil/" />
+                <data android:path="/habitos" />
+                <data android:path="/habitos/" />
             </intent-filter>
         </activity>
         <receiver

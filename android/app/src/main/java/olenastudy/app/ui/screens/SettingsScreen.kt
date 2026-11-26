@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.compose.BackHandler
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -105,6 +106,8 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
     val section = Section.entries.firstOrNull { it.name == sectionName }
     val onFlag: (Flag, Boolean) -> Unit = { flag, value -> scope.launch { store.set(flag, value) } }
     val onChoice: (String, String) -> Unit = { name, value -> scope.launch { store.setChoice(name, value) } }
+    fun goBack() { if (section == null) onBack() else sectionName = null }
+    BackHandler(enabled = note == null) { goBack() }
     fun flag(f: Flag) = prefs?.flag(f) ?: f.default
     fun choice(n: String) = prefs?.choice(n) ?: ""
 
@@ -120,8 +123,8 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                 cream = true,
             ) { Image(painterResource(R.drawable.art_flag_br), null, Modifier.size(32.dp)) }
             SettingsTile(
-                onClick = { if (section == null) onBack() else sectionName = null },
-                description = stringResource(R.string.settings_back),
+                onClick = ::goBack,
+                description = stringResource(if (section == null) R.string.settings_back else R.string.settings_back_to_list),
                 modifier = Modifier.size(width = 58.dp, height = 44.dp),
                 cream = true,
             ) { Image(painterResource(R.drawable.ic_paper_arrow), null, Modifier.size(28.dp).scale(scaleX = -1f, scaleY = 1f)) }
