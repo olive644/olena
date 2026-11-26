@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -126,8 +127,11 @@ fun ProfileAvatarDialog(current: ProfileLook, onDismiss: () -> Unit, onSave: (Pr
             Box(Modifier.fillMaxWidth().height(96.dp).clip(RoundedCornerShape(topStart = 4.dp, topEnd = 20.dp, bottomEnd = 4.dp, bottomStart = 12.dp)).background(Color.White)) {
                 Image(painterResource(coverArt(look.coverId)), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(64.dp))
                 Box(Modifier.align(Alignment.TopCenter).padding(top = 24.dp).size(64.dp)) {
-                    Image(painterResource(avatarArt(look.avatarId)), stringResource(R.string.profile_avatar_description), Modifier.size(64.dp))
-                    frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.size(79.dp).padding(0.dp)) }
+                    Image(
+                        painterResource(avatarArt(look.avatarId)), stringResource(R.string.profile_avatar_description),
+                        Modifier.size(64.dp).then(if (look.frameId != "none") Modifier.clip(androidx.compose.foundation.shape.CircleShape).background(Color.White) else Modifier),
+                    )
+                    frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.offset((-7.68).dp, (-7.68).dp).size(79.36.dp)) }
                 }
             }
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -268,7 +272,7 @@ private fun OptionGrid(kind: Kind, items: List<Cosmetic>, look: ProfileLook, ear
                             when (kind) {
                                 Kind.Cover -> Image(painterResource(coverArt(item.id)), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(58.dp).clip(RoundedCornerShape(8.dp)))
                                 Kind.Frame -> {
-                                    Image(painterResource(avatarArt(look.avatarId)), null, Modifier.size(56.dp))
+                                    Image(painterResource(avatarArt(look.avatarId)), null, Modifier.size(56.dp).then(if (item.id != "none") Modifier.clip(androidx.compose.foundation.shape.CircleShape).background(Color.White) else Modifier))
                                     frameArt(item.id)?.let { Image(painterResource(it), null, Modifier.size(70.dp)) }
                                 }
                                 Kind.Background -> BackgroundSwatch(item.id)

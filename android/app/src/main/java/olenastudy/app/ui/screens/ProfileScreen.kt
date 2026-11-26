@@ -168,7 +168,11 @@ private fun CoverCard(
             Image(painterResource(R.drawable.art_icon_pen), null, Modifier.size(30.dp))
         }
         Box(Modifier.offset(16.dp, 116.dp).size(112.dp).clickable(role = Role.Button, onClick = onAvatar)) {
-            Image(painterResource(avatarArt(look.avatarId)), contentDescription = stringResource(R.string.profile_avatar_description), modifier = Modifier.fillMaxSize())
+            Image(
+                painterResource(avatarArt(look.avatarId)),
+                contentDescription = stringResource(R.string.profile_avatar_description),
+                modifier = Modifier.fillMaxSize().then(if (look.frameId != "none") Modifier.clip(androidx.compose.foundation.shape.CircleShape).background(Color.White) else Modifier),
+            )
             frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.offset((-13.44).dp, (-13.44).dp).size(138.88.dp)) }
         }
         LevelBadge(Modifier.offset(89.dp, 191.dp))

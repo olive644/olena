@@ -31,7 +31,7 @@ import olenastudy.app.ui.OlenaTheme
 
 enum class PaperButtonStyle { Primary, Accent, Quiet }
 
-private val ButtonShape = RoundedCornerShape(14.dp)
+private val ButtonShape = RoundedCornerShape(topStart = 5.dp, topEnd = 13.dp, bottomEnd = 6.dp, bottomStart = 11.dp)
 
 /**
  * Botão de papel recortado, como os do site: faceta mais clara no canto superior esquerdo e uma
