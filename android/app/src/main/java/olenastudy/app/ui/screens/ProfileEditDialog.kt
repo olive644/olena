@@ -48,8 +48,8 @@ import olenastudy.app.ui.components.PaperButton
 import olenastudy.app.ui.components.PaperButtonStyle
 import olenastudy.app.ui.components.paperPanel
 
-private val Ink = Color(0xFF292432)
-private val Muted = Color(0xFF6B6570)
+private val Ink: Color @Composable get() = Dlg.ink
+private val Muted: Color @Composable get() = Dlg.muted
 private val FieldShape = RoundedCornerShape(topStart = 5.dp, topEnd = 13.dp, bottomEnd = 6.dp, bottomStart = 11.dp)
 private val DialogShape = RoundedCornerShape(topStart = 22.dp, topEnd = 38.dp, bottomEnd = 24.dp, bottomStart = 30.dp)
 
@@ -76,7 +76,7 @@ fun ProfileEditDialog(current: ProfileInfo, onDismiss: () -> Unit, onSave: (Prof
                 .padding(horizontal = 19.dp, vertical = 40.dp)
                 .fillMaxWidth()
                 .clip(DialogShape)
-                .background(Color(0xFFFFF9EF))
+                .background(Dlg.bg)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 17.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
@@ -87,7 +87,7 @@ fun ProfileEditDialog(current: ProfileInfo, onDismiss: () -> Unit, onSave: (Prof
                     Image(painterResource(R.drawable.art_close), null, Modifier.size(28.dp))
                 }
             }
-            Box(Modifier.fillMaxWidth().height(1.dp).background(Color(0xFFE6DDC9)))
+            Box(Modifier.fillMaxWidth().height(1.dp).background(Dlg.line))
 
             Field(stringResource(R.string.profile_field_name), name, { name = it.take(ProfileRules.NAME_MAX) })
             Field(stringResource(R.string.profile_field_username), username, { }, enabled = false, hint = stringResource(R.string.profile_username_guest))
@@ -100,7 +100,7 @@ fun ProfileEditDialog(current: ProfileInfo, onDismiss: () -> Unit, onSave: (Prof
                     Modifier
                         .fillMaxWidth()
                         .height(46.dp)
-                        .paperPanel(Color.White, Color(0xFFE6DDC9), Color.Transparent, Color.Transparent, Color(0xFFD7CBB7), FieldShape, 13.dp, 0.dp, 3.dp)
+                        .paperPanel(Dlg.input, Dlg.line, Color.Transparent, Color.Transparent, Dlg.inputBorder, FieldShape, 13.dp, 0.dp, 3.dp)
                         .clickable(role = Role.DropdownList) { pickerOpen = !pickerOpen }
                         .padding(horizontal = 14.dp),
                     contentAlignment = Alignment.CenterStart,
@@ -120,7 +120,7 @@ fun ProfileEditDialog(current: ProfileInfo, onDismiss: () -> Unit, onSave: (Prof
                         Text(
                             label,
                             fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 13.sp, color = Ink,
-                            modifier = Modifier.fillMaxWidth().clip(FieldShape).background(if (value == pronounMode) Color(0xFFFACC15) else Color.White).clickable(role = Role.RadioButton) {
+                            modifier = Modifier.fillMaxWidth().clip(FieldShape).background(if (value == pronounMode) Color(0xFFFACC15) else Dlg.input).clickable(role = Role.RadioButton) {
                                 pronounMode = value
                                 pronouns = if (value == CUSTOM) pronouns else value
                                 pickerOpen = false
@@ -134,7 +134,7 @@ fun ProfileEditDialog(current: ProfileInfo, onDismiss: () -> Unit, onSave: (Prof
             }
 
             Column(
-                Modifier.fillMaxWidth().clip(RoundedCornerShape(topStart = 5.dp, topEnd = 22.dp, bottomEnd = 12.dp, bottomStart = 18.dp)).background(Color(0xFFFBF2E2)).padding(14.dp),
+                Modifier.fillMaxWidth().clip(RoundedCornerShape(topStart = 5.dp, topEnd = 22.dp, bottomEnd = 12.dp, bottomStart = 18.dp)).background(Dlg.section).padding(14.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Text(stringResource(R.string.profile_socials), fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Ink)
@@ -150,7 +150,7 @@ fun ProfileEditDialog(current: ProfileInfo, onDismiss: () -> Unit, onSave: (Prof
                             )
                         }
                         Box(
-                            Modifier.size(46.dp).paperPanel(Color.White, Color(0xFFE6DDC9), Color.Transparent, Color.Transparent, Color(0xFFD7CBB7), FieldShape, 13.dp, 0.dp, 3.dp)
+                            Modifier.size(46.dp).paperPanel(Dlg.input, Dlg.line, Color.Transparent, Color.Transparent, Dlg.inputBorder, FieldShape, 13.dp, 0.dp, 3.dp)
                                 .clickable(role = Role.Button) { links = links.filterIndexed { i, _ -> i != index }.ifEmpty { listOf("") } }
                                 .semantics { contentDescription = "Remover rede social ${index + 1}" },
                             contentAlignment = Alignment.Center,
@@ -207,7 +207,7 @@ private fun Field(
             Modifier
                 .fillMaxWidth()
                 .heightIn(min = minHeight)
-                .paperPanel(if (enabled) Color.White else Color(0xFFF1E9DC), Color(0xFFE6DDC9), Color.Transparent, Color.Transparent, Color(0xFFD7CBB7), FieldShape, 13.dp, 0.dp, 3.dp)
+                .paperPanel(if (enabled) Dlg.input else Dlg.inputOff, Dlg.line, Color.Transparent, Color.Transparent, Dlg.inputBorder, FieldShape, 13.dp, 0.dp, 3.dp)
                 .padding(horizontal = 14.dp, vertical = 12.dp),
             contentAlignment = if (singleLine) Alignment.CenterStart else Alignment.TopStart,
         ) {
@@ -216,8 +216,8 @@ private fun Field(
                 onValueChange = onChange,
                 enabled = enabled,
                 singleLine = singleLine,
-                textStyle = TextStyle(fontFamily = ManropeFamily, fontSize = 14.sp, color = Ink),
-                cursorBrush = SolidColor(Ink),
+                textStyle = TextStyle(fontFamily = ManropeFamily, fontSize = 14.sp, color = Dlg.inputText),
+                cursorBrush = SolidColor(Dlg.inputText),
                 keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
                 modifier = Modifier.fillMaxWidth(),
                 decorationBox = { inner ->
