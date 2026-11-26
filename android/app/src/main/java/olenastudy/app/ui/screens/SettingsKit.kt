@@ -166,3 +166,7 @@ internal fun StButton(text: String, modifier: Modifier = Modifier, onClick: () -
 }
 
 internal fun Modifier.stPress(): Modifier = this.graphicsLayer { }
+
+/** Aparência e dados do perfil para as Configurações (avatar e nome da seção Conta). */
+val LocalProfileLook = androidx.compose.runtime.compositionLocalOf { olenastudy.app.domain.profile.ProfileLook() }
+val LocalProfileInfo = androidx.compose.runtime.compositionLocalOf { olenastudy.app.domain.profile.ProfileInfo() }

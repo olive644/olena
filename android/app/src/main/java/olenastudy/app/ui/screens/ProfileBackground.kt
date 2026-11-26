@@ -18,22 +18,25 @@ import olenastudy.app.ui.OlenaTheme
  * demais esticam a arte do site sobre o cartão (100% x 100%).
  */
 @Composable
-fun Modifier.profileBackground(id: String): Modifier {
+fun Modifier.profileBackground(id: String, topDp: Float = 0f): Modifier {
     val dark = OlenaTheme.colors.isDark
     val context = LocalContext.current
     return when (id) {
         "paper" -> this
-        "night" -> tiled(ImageBitmap.imageResource(if (dark) R.drawable.art_bg_night_tile_dark else R.drawable.art_bg_night_tile), tileWidthDp = 540f, widthPx = 540)
+        "night" -> if (topDp > 0f) stretched(ImageBitmap.imageResource(if (dark) R.drawable.art_bg_night_tile_dark else R.drawable.art_bg_night_tile), topDp) else tiled(ImageBitmap.imageResource(if (dark) R.drawable.art_bg_night_tile_dark else R.drawable.art_bg_night_tile), tileWidthDp = 540f, widthPx = 540)
         "geometry" -> tiled(ImageBitmap.imageResource(if (dark) R.drawable.art_bg_geometry_tile_dark else R.drawable.art_bg_geometry_tile), tileWidthDp = 132f, widthPx = 132)
         else -> {
             val res = context.resources.getIdentifier("art_bg_$id", "drawable", context.packageName)
-            if (res == 0) this else stretched(ImageBitmap.imageResource(res))
+            if (res == 0) this else stretched(ImageBitmap.imageResource(res), topDp)
         }
     }
 }
 
-private fun Modifier.stretched(image: ImageBitmap): Modifier =
-    drawBehind { drawImage(image, dstSize = IntSize(size.width.toInt(), size.height.toInt())) }
+private fun Modifier.stretched(image: ImageBitmap, topDp: Float): Modifier =
+    drawBehind {
+        val top = (topDp * density).toInt().coerceAtMost(size.height.toInt())
+        drawImage(image, dstOffset = IntOffset(0, top), dstSize = IntSize(size.width.toInt(), (size.height.toInt() - top).coerceAtLeast(1)))
+    }
 
 private fun Modifier.tiled(image: ImageBitmap, tileWidthDp: Float, widthPx: Int): Modifier =
     drawBehind {

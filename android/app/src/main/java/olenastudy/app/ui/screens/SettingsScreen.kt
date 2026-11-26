@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -156,11 +157,22 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
             Text(section.title, fontFamily = ManropeFamily, fontWeight = FontWeight.Medium, fontSize = 20.sp, color = colors.text)
             when (section) {
                 Section.Account ->
-                    Card("SUA IDENTIDADE", "Informações") {
-                        Text("Seu perfil", fontFamily = ManropeFamily, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = colors.text)
-                        InfoRow("E-mail", "Nenhum e-mail conectado")
-                        InfoRow("Fuso da conta", java.time.ZoneId.systemDefault().id.replace("_", " "))
-                        PaperButton("Entrar com Google", { note = "Entrar com a conta chega ao app junto com o login e a sincronização." }, Modifier.fillMaxWidth())
+                    StCard {
+                        StEyebrow("Sua identidade")
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+                            Image(painterResource(avatarArt(LocalProfileLook.current.avatarId)), null, Modifier.size(48.dp))
+                            Text(LocalProfileInfo.current.name.ifBlank { "Seu perfil" }, fontFamily = ManropeFamily, fontWeight = FontWeight.SemiBold, fontSize = 17.sp, color = colors.text)
+                        }
+                        Text("Informações", fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = colors.text, modifier = Modifier.padding(top = 6.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Text("E-mail", fontFamily = ManropeFamily, fontSize = 14.sp, color = colors.muted, modifier = Modifier.width(112.dp))
+                            Text("Nenhum e-mail conectado", fontFamily = ManropeFamily, fontSize = 14.sp, color = colors.text)
+                        }
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Text("Fuso da conta", fontFamily = ManropeFamily, fontSize = 14.sp, color = colors.muted, modifier = Modifier.width(112.dp))
+                            Text(java.time.ZoneId.systemDefault().id, fontFamily = ManropeFamily, fontSize = 14.sp, color = colors.text)
+                        }
+                        StButton("Entrar com Google", Modifier.padding(top = 4.dp)) { note = "Entrar com a conta chega ao app junto com o login e a sincronização." }
                     }
                 Section.Security ->
                     Card("SEGURANÇA", "Esta sessão") { Body("Entre na sua conta para consultar e encerrar esta sessão.") }
@@ -174,7 +186,7 @@ fun SettingsScreen(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Unit,
                         Text("Tema do aplicativo", fontFamily = ManropeFamily, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = colors.text)
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                             listOf("Claro" to ThemeMode.Light, "Escuro" to ThemeMode.Dark, "Sistema" to ThemeMode.System).forEach { (label, mode) ->
-                                ThemeTile(label, mode == themeMode, Modifier.weight(1f)) { onThemeModeChange(mode) }
+                                ThemeTile(label, mode == themeMode, Modifier.weight(1f), if (mode == ThemeMode.Dark) R.drawable.art_theme_dark else R.drawable.art_theme_light) { onThemeModeChange(mode) }
                             }
                         }
                         Body("O tema acompanha sua conta. Sistema segue a aparência de cada dispositivo.")
@@ -286,14 +298,10 @@ internal fun Body(text: String) {
 
 @Composable
 internal fun Link(text: String, onClick: () -> Unit) {
-    Text(
-        text,
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 15.sp,
-        color = OlenaTheme.colors.violet,
-        modifier = Modifier.clickable(role = Role.Button, onClick = onClick).padding(vertical = 6.dp),
-    )
+    Row(Modifier.clickable(role = Role.Button, onClick = onClick).padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(text, fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = OlenaTheme.colors.violet)
+        Image(painterResource(R.drawable.ic_paper_arrow), null, Modifier.size(22.dp))
+    }
 }
 
 /** Ajuste liga/desliga: título, explicação e a caixa de papel, que fica amarela quando marcada. */
@@ -377,11 +385,11 @@ internal fun rememberSettingsState(): SettingsState {
 
 /** Escolha de tema em três colunas: roxo quando selecionado (como o site), branco em relevo nos outros. */
 @Composable
-private fun ThemeTile(text: String, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+private fun ThemeTile(text: String, selected: Boolean, modifier: Modifier, icon: Int, onClick: () -> Unit) {
     val line = StLine
     Box(
         modifier
-            .height(64.dp)
+            .height(74.dp)
             .semantics { this.selected = selected }
             .paperPanel(
                 fill = if (selected) Color(0xFF7433E0) else StSurface,
@@ -397,6 +405,8 @@ private fun ThemeTile(text: String, selected: Boolean, modifier: Modifier, onCli
             .clickable(role = Role.RadioButton, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
+      Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Image(painterResource(icon), null, Modifier.size(24.dp))
         Text(
             text,
             fontFamily = ManropeFamily,
@@ -405,5 +415,6 @@ private fun ThemeTile(text: String, selected: Boolean, modifier: Modifier, onCli
             maxLines = 1,
             color = if (selected) Color(0xFFFFF9EF) else OlenaTheme.colors.text,
         )
+      }
     }
 }

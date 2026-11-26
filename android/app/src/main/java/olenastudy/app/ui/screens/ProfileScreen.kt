@@ -160,7 +160,7 @@ private fun CoverCard(
                 facet = 0.dp,
                 shift = 5.dp,
             )
-            .profileBackground(look.backgroundId),
+            .profileBackground(look.backgroundId, topDp = 260f),
     ) {
         Image(painterResource(coverArt(look.coverId)), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(168.dp))
         SiteTile(

@@ -342,7 +342,6 @@ fun ShareCardContent(
     onCopy: () -> Unit,
     onShare: () -> Unit,
     onDownload: () -> Unit = {},
-    layer: androidx.compose.ui.graphics.layer.GraphicsLayer? = null,
 ) {
     val p = palette()
     val matrix = remember(link) { QrCode.encode(link, QrLevel.H) }
@@ -351,8 +350,8 @@ fun ShareCardContent(
             Image(painterResource(R.drawable.art_arrow_prev), null, Modifier.size(24.dp))
             ButtonLabel(stringResource(R.string.social_back_to_friends))
         }
-        Box(Modifier.padding(vertical = 20.dp).fillMaxWidth().clip(CardShape).background(Color(0xFFCFC4AF)).padding(bottom = 6.dp).then(if (layer != null) Modifier.drawWithContent { layer.record { this@drawWithContent.drawContent() }; drawLayer(layer) } else Modifier)) {
-            Box(Modifier.fillMaxWidth().background(Cream)) {
+        Box(Modifier.padding(vertical = 20.dp).fillMaxWidth().clip(CardShape).background(Color(0xFFCFC4AF)).padding(bottom = 6.dp)) {
+            Box(Modifier.fillMaxWidth().background(Cream).profileBackground(look.backgroundId, topDp = 120f)) {
                 Image(painterResource(coverArt(look.coverId)), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(120.dp))
                 Column(Modifier.fillMaxWidth().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -367,7 +366,7 @@ fun ShareCardContent(
                         frameArt(look.frameId)?.let { Image(painterResource(it), null, Modifier.align(Alignment.Center).requiredSize(198.4.dp)) }
                         LevelBadge(Modifier.offset(104.dp, 107.dp))
                     }
-                    Spacer(Modifier.height(6.dp))
+                    Spacer(Modifier.height(if (look.frameId != "none") 24.dp else 6.dp))
                     Text(name, fontFamily = ManropeFamily, fontWeight = FontWeight.Bold, fontSize = 18.72.sp, color = CardInk, textAlign = TextAlign.Center, modifier = Modifier.padding(vertical = 0.dp))
                     if (username.isNotBlank()) {
                         Spacer(Modifier.height(6.dp))
@@ -405,7 +404,6 @@ fun ProfileShareDialog(name: String, username: String, look: ProfileLook, onBack
     val context = LocalContext.current
     val link = remember(username) { ProfileShare.link(username) }
     var status by rememberSaveable { mutableStateOf<Int?>(null) }
-    val layer = androidx.compose.ui.graphics.rememberGraphicsLayer()
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     val title = stringResource(R.string.share_title, name)
     val tagline = stringResource(R.string.share_tagline)
@@ -416,10 +414,9 @@ fun ProfileShareDialog(name: String, username: String, look: ProfileLook, onBack
             onBack = onBack,
             onCopy = { status = if (copyToClipboard(context, link)) R.string.share_copied else R.string.share_copy_failed },
             onShare = { if (!sendLink(context, title, ProfileShare.shareText(tagline, link))) status = R.string.share_send_failed },
-            layer = layer,
             onDownload = {
                 scope.launch {
-                    val bitmap = layer.toImageBitmap().asAndroidBitmap()
+                    val bitmap = kotlinx.coroutines.withContext(Dispatchers.Default) { ShareCardPng.render(context, name, username, look, link) }
                     status = if (saveCard(context, bitmap, "olena-perfil-${username.ifBlank { "cartao" }}.png")) R.string.share_saved else R.string.share_save_failed
                 }
             },
