@@ -31,6 +31,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -170,7 +172,7 @@ fun AppShell(
                                     }
                                 }
                             }
-                            AppDestination.Learn -> PracticeScreen()
+                            AppDestination.Learn -> PracticeScreen(avatarId = look.avatarId, onOpenAccount = { onNavigate(AppDestination.Profile) })
                             AppDestination.Focus -> FocusScreen(focusController)
                             AppDestination.Planner -> AgendaScreen(agendaRepository, taskRepository)
                             else -> InProgressScreen(destination.titleRes())

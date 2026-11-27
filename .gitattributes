@@ -3,3 +3,5 @@
 android/gradlew text eol=lf
 android/gradlew.bat text eol=crlf
 *.jar binary
+android/app/src/main/assets/practice/*.json linguist-generated=true
+android/app/src/test/resources/practice/*.json linguist-generated=true

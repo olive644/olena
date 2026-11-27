@@ -2,6 +2,8 @@
 
 ## Referência e escopo
 
+Atualização de 26/11/2026: iniciou-se a etapa 11a em `feat/android-practice-port`, com Matemática jogável como visitante no primeiro percurso e motor testado para os seis percursos. Conta, sincronização, desbloqueios reais e recompensas continuam pendentes das etapas 3 e 4. A etapa 11 não está concluída. A rodada não cria uma segunda fonte persistente de progresso no dispositivo. Inglês permanece como próxima prioridade e deve preservar as oito partes atuais. Provas, comandos e limites desta entrega estão em `CURRENT_STATE_AUDIT.md` e `SECOND_BRAIN.md`.
+
 Inventário inicial em 25/11/2026, baseado no código do commit `b108c84c`, que integra a PR #702. Também estão integradas as PRs #699 (base nativa) e #701 (entrada de Praticar). Este documento inicia a etapa 1 do plano de migração. Não declara a migração funcional concluída.
 
 O destino é o app Android nativo em `android/`, com Kotlin e Jetpack Compose. Entram todos os módulos do aplicativo, inclusive ferramentas fora da barra móvel. Servidor, APIs, regras Firebase, site e infraestrutura permanecem existentes. O cliente Android consumirá os serviços atuais com a mesma conta. Incompatibilidades que exijam servidor viram dependências separadas, sem alterações de backend nesta sequência.
