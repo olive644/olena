@@ -16,7 +16,7 @@ const readyIds = Array.from({ length: 6 }, (_, unit) =>
 )
   .flat()
   .slice(0, 100);
-const directory = "C:/Users/User/Documents/Codex/2026-09-10/b/previews-english-a1";
+const directory = () => test.info().outputPath("english-a1");
 async function seed(page: Page, theme: string, activities: PracticeActivity[] = []) {
   const workspace = createInitialWorkspace();
   workspace.studyPreferences.initialIslandId = "languages"; // Older preference still opens English.
@@ -41,7 +41,7 @@ async function seed(page: Page, theme: string, activities: PracticeActivity[] = 
   await expect(
     page.getByRole("heading", { name: "Cais dos Encontros", exact: true }),
   ).toBeVisible();
-  await mkdir(directory, { recursive: true });
+  await mkdir(directory(), { recursive: true });
 }
 async function parts(page: Page) {
   await page.getByRole("button", { name: "Explorar Inglês", exact: true }).click();
@@ -149,7 +149,7 @@ for (const theme of ["light", "dark"]) {
       "/languages/islands/english.webp",
     );
     await page.screenshot({
-      path: `${directory}/${info.project.name}-${theme}-general.png`,
+      path: `${directory()}/${info.project.name}-${theme}-general.png`,
       fullPage: false,
     });
     for (let i = 0; i < 6; i++)
@@ -186,7 +186,7 @@ for (const theme of ["light", "dark"]) {
     ).toHaveCount(0);
     await expect(page.locator(".math-treasure,.math-place-treasure")).toHaveCount(0);
     await page.screenshot({
-      path: `${directory}/${info.project.name}-${theme}-materials.png`,
+      path: `${directory()}/${info.project.name}-${theme}-materials.png`,
       fullPage: false,
     });
     await noOverflow(page);
@@ -194,7 +194,7 @@ for (const theme of ["light", "dark"]) {
       el.scrollTop = el.scrollHeight;
     });
     await page.screenshot({
-      path: `${directory}/${info.project.name}-${theme}-materials-end.png`,
+      path: `${directory()}/${info.project.name}-${theme}-materials-end.png`,
       fullPage: false,
     });
     await expect(page.locator(".math-place-treasure")).toHaveCount(0);
@@ -320,7 +320,7 @@ for (const theme of ["light", "dark"]) {
       .evaluateAll((buttons) => buttons.map((button) => getComputedStyle(button).backgroundColor));
     expect(new Set(tones).size).toBe(3);
     await page.screenshot({
-      path: `${directory}/${info.project.name}-${theme}-activity.png`,
+      path: `${directory()}/${info.project.name}-${theme}-activity.png`,
       fullPage: false,
     });
     let lastFailedId = "";
@@ -364,7 +364,7 @@ for (const theme of ["light", "dark"]) {
       await expect(page.locator(".english-mentor")).toContainText("Sua resposta:");
       if (i === 0)
         await page.screenshot({
-          path: `${directory}/${info.project.name}-${theme}-correction.png`,
+          path: `${directory()}/${info.project.name}-${theme}-correction.png`,
           fullPage: false,
         });
       await noOverflow(page);
@@ -385,7 +385,7 @@ for (const theme of ["light", "dark"]) {
     await expect(
       page.getByRole("button", { name: "Levar Poeira cósmica aos espaços da ilha", exact: true }),
     ).toBeVisible();
-    await page.screenshot({ path: `${directory}/${info.project.name}-${theme}-results.png` });
+    await page.screenshot({ path: `${directory()}/${info.project.name}-${theme}-results.png` });
     await expect
       .poll(() =>
         page.evaluate(

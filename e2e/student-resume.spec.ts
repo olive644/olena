@@ -191,6 +191,7 @@ test("check do Espaço e Agenda representam a mesma tarefa e card Hoje navega", 
     localStorage.setItem("helena.onboarding.v1", '{"completed":true}');
     localStorage.setItem("helena.guest.v1", "1");
     localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(state));
+    localStorage.setItem("helena.agendaTimeZone.v1", "America/Sao_Paulo");
   }, workspace);
   await page.goto("/");
   const check = page.locator(".check-button");

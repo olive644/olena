@@ -3,6 +3,10 @@ package olenastudy.app.ui.screens
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,9 +28,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +48,8 @@ import olenastudy.app.domain.practice.PracticeIsland
 import olenastudy.app.domain.practice.PracticeIslands
 import olenastudy.app.ui.ManropeFamily
 import olenastudy.app.ui.OlenaTheme
+import olenastudy.app.ui.LocalHighlightSelections
+import olenastudy.app.ui.LocalReduceMotion
 import olenastudy.app.ui.components.PaperButton
 import olenastudy.app.ui.components.PaperButtonStyle
 
@@ -58,20 +68,25 @@ private fun art(id: String): Int =
     }
 
 /**
- * Entrada da aba Praticar, igual à do site: carrossel de ilhas com a de Matemática no centro, nome
- * da matéria, título, descrição e o botão de explorar. As lições ainda não existem no app, então o
- * botão diz isso com clareza em vez de abrir uma tela vazia.
+ * Entrada da aba Praticar com Matemática no centro. A rodada visitante usa o currículo da web;
+ * as demais atividades informam sua disponibilidade.
  */
 @Composable
-fun PracticeScreen() {
+fun PracticeScreen(avatarId: String = "helena", onOpenAccount: () -> Unit = {}) {
+    var mathematics by rememberSaveable { mutableStateOf(false) }
+    if (mathematics) {
+        MathPracticeScreen(avatarId, onBack = { mathematics = false }, onOpenAccount = onOpenAccount)
+        return
+    }
     val colors = OlenaTheme.colors
     val pager = rememberPagerState(initialPage = PracticeIslands.startIndex) { PracticeIslands.all.size }
     val scope = rememberCoroutineScope()
+    val reduceMotion = LocalReduceMotion.current
     var notice by remember { mutableStateOf<PracticeIsland?>(null) }
     val current = PracticeIslands.all[pager.currentPage]
 
     Column(
-        Modifier.fillMaxSize().padding(top = 12.dp),
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(top = 12.dp, bottom = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -98,11 +113,11 @@ fun PracticeScreen() {
             }
             Row(Modifier.fillMaxWidth().padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Arrow(R.drawable.art_arrow_prev, pager.currentPage > 0, stringResource(R.string.practice_previous)) {
-                    scope.launch { pager.animateScrollToPage(pager.currentPage - 1) }
+                    scope.launch { if (reduceMotion) pager.scrollToPage(pager.currentPage - 1) else pager.animateScrollToPage(pager.currentPage - 1) }
                 }
                 Box(Modifier.weight(1f))
                 Arrow(R.drawable.art_arrow_next, pager.currentPage < PracticeIslands.all.lastIndex, stringResource(R.string.practice_next)) {
-                    scope.launch { pager.animateScrollToPage(pager.currentPage + 1) }
+                    scope.launch { if (reduceMotion) pager.scrollToPage(pager.currentPage + 1) else pager.animateScrollToPage(pager.currentPage + 1) }
                 }
             }
         }
@@ -111,9 +126,10 @@ fun PracticeScreen() {
         Text(current.description, style = MaterialTheme.typography.bodyLarge, color = colors.muted, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 24.dp))
         PaperButton(
             text = if (current.available) stringResource(R.string.practice_explore, current.subject) else stringResource(R.string.practice_preparing),
-            onClick = { if (current.available) notice = current },
+            onClick = { if (current.id == "mathematics") mathematics = true else if (current.available) notice = current },
             modifier = Modifier.padding(top = 8.dp),
             style = if (current.available) PaperButtonStyle.Primary else PaperButtonStyle.Quiet,
+            enabled = current.available,
         )
     }
     notice?.let { island ->
@@ -128,10 +144,15 @@ fun PracticeScreen() {
 
 @Composable
 private fun Arrow(@DrawableRes art: Int, enabled: Boolean, description: String, onClick: () -> Unit) {
+    val source = remember { MutableInteractionSource() }
+    val focused by source.collectIsFocusedAsState()
+    val color = if (LocalHighlightSelections.current) OlenaTheme.colors.yellow else OlenaTheme.colors.text
     Image(
         painter = painterResource(art),
         contentDescription = description,
-        modifier = Modifier.width(44.dp).height(52.dp).let { if (enabled) it.clickable(onClick = onClick) else it },
+        modifier = Modifier.width(48.dp).height(52.dp).drawBehind {
+            if (focused) drawLine(color, Offset(8.dp.toPx(), size.height - 2.dp.toPx()), Offset(size.width - 8.dp.toPx(), size.height - 2.dp.toPx()), 3.dp.toPx())
+        }.clickable(enabled = enabled, interactionSource = source, indication = null, role = Role.Button, onClick = onClick),
         alpha = if (enabled) 1f else 0.3f,
     )
 }

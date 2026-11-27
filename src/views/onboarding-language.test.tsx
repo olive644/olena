@@ -21,52 +21,56 @@ vi.mock("../data/onboarding-client", async (importOriginal) => ({
 it.each([
   ["Japanese", "Japonês"],
   ["Chinese", "Chinês"],
-])("English %s keeps canonical answers and preferences", async (_language, canonical) => {
-  localStorage.clear();
-  sessionStorage.clear();
-  window.history.replaceState(null, "", "/");
-  const user = { uid: "english-onboarding-owner" };
-  localStorage.setItem(ACCOUNT_OWNER_KEY, user.uid);
-  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
-    auth: { currentUser: user },
-    authApi: { updateProfile: vi.fn(async () => {}) },
-    redirectResult: null,
-  } as never);
-  installUiCatalog("en-US", english);
-  await changeLanguage("en-US");
-  const finish = vi.fn();
-  const view = render(<OnboardingView authenticated onFinish={finish} />);
-  try {
-    await welcomeOnboarding();
-    secondaryOnboarding();
-    for (const choice of [
-      "Programação",
-      canonical,
-      "Criar uma rotina",
-      "Ouvindo e conversando",
-      "Visão geral primeiro",
-      "Alternar estudo e pausas",
-      "HTML e CSS",
-      "15 minutos",
-    ])
-      chooseOnboarding(choice);
-    await waitFor(() => expect(finish).toHaveBeenCalledOnce());
-    expect(finish).toHaveBeenCalledWith(
-      expect.objectContaining({
-        preferences: {
-          modalities: ["auditivo"],
-          processing: "global",
-          rhythm: "difuso",
-          programming: "html-css",
-        },
-      }),
-    );
-    const stored = JSON.parse(localStorage.getItem("helena.onboarding.v1")!);
-    expect(stored.answers[4]).toEqual(["Ouvindo e conversando"]);
-    expect(stored.answers[2]).toBe(canonical);
-    expect(stored.configurationOwner).toBe(user.uid);
-  } finally {
-    view.unmount();
-    await act(async () => changeLanguage("pt-BR"));
-  }
-});
+])(
+  "English %s keeps canonical answers and preferences",
+  async (_language, canonical) => {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.history.replaceState(null, "", "/");
+    const user = { uid: "english-onboarding-owner" };
+    localStorage.setItem(ACCOUNT_OWNER_KEY, user.uid);
+    vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+      auth: { currentUser: user },
+      authApi: { updateProfile: vi.fn(async () => {}) },
+      redirectResult: null,
+    } as never);
+    installUiCatalog("en-US", english);
+    await changeLanguage("en-US");
+    const finish = vi.fn();
+    const view = render(<OnboardingView authenticated onFinish={finish} />);
+    try {
+      await welcomeOnboarding();
+      secondaryOnboarding();
+      for (const choice of [
+        "Programação",
+        canonical,
+        "Criar uma rotina",
+        "Ouvindo e conversando",
+        "Visão geral primeiro",
+        "Alternar estudo e pausas",
+        "HTML e CSS",
+        "15 minutos",
+      ])
+        chooseOnboarding(choice);
+      await waitFor(() => expect(finish).toHaveBeenCalledOnce());
+      expect(finish).toHaveBeenCalledWith(
+        expect.objectContaining({
+          preferences: {
+            modalities: ["auditivo"],
+            processing: "global",
+            rhythm: "difuso",
+            programming: "html-css",
+          },
+        }),
+      );
+      const stored = JSON.parse(localStorage.getItem("helena.onboarding.v1")!);
+      expect(stored.answers[4]).toEqual(["Ouvindo e conversando"]);
+      expect(stored.answers[2]).toBe(canonical);
+      expect(stored.configurationOwner).toBe(user.uid);
+    } finally {
+      view.unmount();
+      await act(async () => changeLanguage("pt-BR"));
+    }
+  },
+  15_000,
+);

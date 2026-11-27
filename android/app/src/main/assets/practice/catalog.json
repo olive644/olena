@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "courses": [
+    {
+      "id": "foundations",
+      "initialQuestionSeconds": 14,
+      "title": "Pátio das Primeiras Contas",
+      "subject": "Ensino fundamental",
+      "color": "#167b85",
+      "shade": "#123f52",
+      "light": "#f5c85d",
+      "topics": ["Adição", "Subtração", "Multiplicação", "Divisão", "Frações", "Porcentagens"]
+    },
+    {
+      "id": "school",
+      "initialQuestionSeconds": 16,
+      "title": "Oficina das Equações",
+      "subject": "Ensino médio",
+      "color": "#b84f39",
+      "shade": "#572e39",
+      "light": "#ffd58a",
+      "topics": ["Equações", "Potências", "Funções", "Geometria", "Sequências", "Probabilidade"]
+    },
+    {
+      "id": "advanced",
+      "initialQuestionSeconds": 18,
+      "title": "Torre das Funções",
+      "subject": "Pré-cálculo",
+      "color": "#287b5b",
+      "shade": "#173d44",
+      "light": "#f0c77c",
+      "topics": [
+        "Funções",
+        "Logaritmos",
+        "Trigonometria",
+        "Vetores",
+        "Composição",
+        "Taxas de variação"
+      ]
+    },
+    {
+      "id": "calculus1",
+      "initialQuestionSeconds": 20,
+      "title": "Ponte das Tangentes",
+      "subject": "Cálculo I",
+      "color": "#326bb0",
+      "shade": "#19365d",
+      "light": "#f9c554",
+      "topics": [
+        "Limites",
+        "Derivadas",
+        "Regra da potência",
+        "Regra da soma",
+        "Tangentes",
+        "Extremos"
+      ]
+    },
+    {
+      "id": "calculus2",
+      "initialQuestionSeconds": 22,
+      "title": "Porto das Integrais",
+      "subject": "Cálculo II",
+      "color": "#248e94",
+      "shade": "#134f60",
+      "light": "#ffa779",
+      "topics": [
+        "Primitivas",
+        "Integral definida",
+        "Áreas",
+        "Polinômios",
+        "Volumes",
+        "Integrais de funções lineares"
+      ]
+    },
+    {
+      "id": "calculus3",
+      "initialQuestionSeconds": 24,
+      "title": "Mirante dos Vetores",
+      "subject": "Cálculo III",
+      "color": "#795088",
+      "shade": "#382d56",
+      "light": "#e9bb73",
+      "topics": [
+        "Funções multivariáveis",
+        "Derivadas parciais",
+        "Gradiente",
+        "Produto escalar",
+        "Divergência",
+        "Integrais duplas"
+      ]
+    }
+  ],
+  "english": [
+    {
+      "index": 0,
+      "id": "welcome",
+      "art": "welcome",
+      "title": "Cais das Boas-vindas",
+      "subject": "Apresentações e verbo to be"
+    },
+    {
+      "index": 1,
+      "id": "habits",
+      "art": "habits",
+      "title": "Praça dos Hábitos",
+      "subject": "Rotina e presente simples"
+    },
+    {
+      "index": 2,
+      "id": "memories",
+      "art": "memories",
+      "title": "Ponte das Memórias",
+      "subject": "Passado: o que aconteceu"
+    },
+    {
+      "index": 3,
+      "id": "plans",
+      "art": "plans",
+      "title": "Mirante dos Planos",
+      "subject": "Planos e futuro"
+    },
+    {
+      "index": 6,
+      "id": "market",
+      "art": "market",
+      "title": "Mercado dos Encontros",
+      "subject": "Situações práticas e negociação"
+    },
+    {
+      "index": 4,
+      "id": "ideas",
+      "art": "ideas",
+      "title": "Pátio das Ideias",
+      "subject": "Argumentação e concessões"
+    },
+    {
+      "index": 7,
+      "id": "archive",
+      "art": "archive",
+      "title": "Arquivo das Entrelinhas",
+      "subject": "Intenção, registro e inferência"
+    },
+    {
+      "index": 5,
+      "id": "meaning",
+      "art": "meaning",
+      "title": "Casa dos Sentidos",
+      "subject": "Ironia, atenuação e subentendidos"
+    }
+  ]
+}
