@@ -41,6 +41,7 @@ export function HandwritingPaperPicker({
   const [applied, setApplied] = useState<string | null>(null);
   const [notice, setNotice] = useState("");
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const appliedTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const stopSound = useRef<(() => void) | undefined>(undefined);
   const fired = useRef(false);
 
@@ -50,7 +51,13 @@ export function HandwritingPaperPicker({
     stopSound.current = undefined;
     setHolding(null);
   }
-  useEffect(() => () => cancelHold(), []);
+  useEffect(
+    () => () => {
+      cancelHold();
+      clearTimeout(appliedTimer.current);
+    },
+    [],
+  );
   useEffect(() => {
     if (!notice) return;
     const hide = setTimeout(() => setNotice(""), 3200);
@@ -59,9 +66,10 @@ export function HandwritingPaperPicker({
 
   async function applyToNotebook(key: string, change: NotebookPaperChange) {
     if (!onApplyToNotebook) return;
+    clearTimeout(appliedTimer.current);
     setApplied(key);
     playPaperAppliedSound();
-    setTimeout(() => setApplied(null), 1100);
+    appliedTimer.current = setTimeout(() => setApplied(null), 1100);
     const count = await onApplyToNotebook(change);
     setNotice(uiText("Folhas trocadas: {0}.", [count]));
   }

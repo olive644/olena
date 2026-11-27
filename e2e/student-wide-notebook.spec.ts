@@ -33,6 +33,7 @@ for (const data of ["empty", "tasks", "events", "both"] as const) {
     await page.addInitScript((state) => {
       localStorage.setItem("helena.onboarding.v1", '{"completed":true}');
       localStorage.setItem("helena.guest.v1", "1");
+      localStorage.setItem("helena.agendaTimeZone.v1", "America/Sao_Paulo");
       localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(state));
     }, workspace);
     await page.goto("/");

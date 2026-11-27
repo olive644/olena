@@ -88,6 +88,26 @@ it("segurar uma cor de folha troca a cor do caderno inteiro", async () => {
   expect(props.onApplyToNotebook).toHaveBeenCalledWith({ paperColor: "night" });
 });
 
+it("o timer de uma aplicação anterior não apaga o feedback da próxima", async () => {
+  const props = holdSetup();
+  press("Quadriculado");
+  await act(async () => vi.advanceTimersByTimeAsync(PAPER_HOLD_MS));
+  fireEvent.pointerUp(screen.getByRole("button", { name: "Quadriculado" }));
+  fireEvent.click(screen.getByRole("button", { name: "Quadriculado" }));
+  await act(async () => vi.advanceTimersByTimeAsync(200));
+  press("Cornell");
+  await act(async () => vi.advanceTimersByTimeAsync(PAPER_HOLD_MS));
+  const cornell = screen.getByRole("button", { name: "Cornell" });
+  expect(cornell.className).toContain("is-applied");
+  await act(async () => vi.advanceTimersByTimeAsync(201));
+  expect(cornell.className).toContain("is-applied");
+  expect(props.onApplyToNotebook).toHaveBeenCalledTimes(2);
+  expect(props.onApplyToNotebook).toHaveBeenNthCalledWith(1, { paper: "grid" });
+  expect(props.onApplyToNotebook).toHaveBeenNthCalledWith(2, { paper: "cornell" });
+  await act(async () => vi.advanceTimersByTimeAsync(900));
+  expect(cornell.className).not.toContain("is-applied");
+});
+
 it("o botão Caderno inteiro faz o mesmo por teclado e toque, sem precisar segurar", async () => {
   const props = holdSetup();
   fireEvent.click(screen.getByRole("button", { name: "Aplicar ao caderno inteiro" }));
